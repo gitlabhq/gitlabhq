@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project issue boards API **(FREE ALL)**
+# Project issue boards API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Every API call to [issue boards](../user/project/issue_board.md) must be authenticated.
 
@@ -215,7 +219,7 @@ Example response:
 
 ## Update an issue board
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
 
 Updates a project issue board.
 

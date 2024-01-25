@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import and export Rake tasks **(FREE SELF)**
+# Project import and export Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for [project import and export](../../user/project/settings/import_export.md).
 
@@ -41,7 +45,7 @@ gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimp
 
 ## Export large projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25598) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25598) in GitLab 12.9.
 
 You can use a Rake task to export large project.
 

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Token overview **(FREE ALL)**
+# GitLab Token overview
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This document lists tokens used in GitLab, their purpose and, where applicable, security guidance.
 

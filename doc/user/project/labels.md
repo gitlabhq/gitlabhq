@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Labels **(FREE ALL)**
+# Labels
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As your count of issues, merge requests, and epics grows in GitLab, it gets more challenging
 to keep track of those items. Especially as your organization grows from just a few people to
@@ -150,7 +154,11 @@ To create a group label:
    a specific color in the **Background color** field.
 1. Select **Create label**.
 
-### Create a group label from an epic **(PREMIUM ALL)**
+### Create a group label from an epic
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can also create a new group label from an epic.
 Labels you create this way belong to the same group as the epic.
@@ -309,7 +317,11 @@ The following labels are created:
 - `suggestion`
 - `support`
 
-## Scoped labels **(PREMIUM ALL)**
+## Scoped labels
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Teams can use scoped labels to annotate issues, merge requests, and epics with mutually exclusive
 labels. By preventing certain labels from being used together, you can create more complex workflows.
@@ -331,7 +343,7 @@ the previous `key` label is replaced with the new label.
 
 ### Filter by scoped labels
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12285) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12285) in GitLab 14.4.
 
 To filter issue, merge request, or epic lists by a given scope, enter
 `<scope>::*` in the searched label name.
@@ -451,9 +463,14 @@ The labels higher in the list get higher priority.
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
 
-## Lock labels when a merge request is merged **(FREE SAAS BETA)**
+## Lock labels when a merge request is merged
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, this feature is not available.

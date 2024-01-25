@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage epics **(PREMIUM ALL)**
+# Manage epics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page collects instructions for all the things you can do with [epics](index.md) or in relation
 to them.
@@ -58,7 +62,7 @@ The parent epic's start date then reflects this change and propagates upwards to
 
 ### Epic color
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79940) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `epic_color_highlight`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
@@ -96,7 +100,7 @@ To edit an epic's start date, due date, or labels:
 
 ### Reorder list items in the epic description
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.1.
 
 When you view an epic that has a list in the description, you can also reorder the list items.
 
@@ -249,7 +253,7 @@ To filter:
 
 ### Filter with the OR operator
 
-> OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> - OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -282,7 +286,7 @@ The sort option and order is saved and used wherever you browse epics, including
 
 ## Change activity sort order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214364) in GitLab 13.2.
 
 You can reverse the default order and interact with the activity feed sorted by most recent items
 at the top. Your preference is saved via local storage and automatically applied to every epic and issue
@@ -347,7 +351,7 @@ added to the epic.
 
 #### Add an existing issue to an epic
 
-> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 You can add existing issues to an epic, including issues in a project from a [different group hierarchy](index.md#child-issues-from-different-group-hierarchies).
 Newly added issues appear at the top of the list of issues in the **Child issues and epics** section.
@@ -375,7 +379,7 @@ To add an existing issue to an epic:
 
 #### Create an issue from an epic
 
-> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 Creating an issue from an epic enables you to maintain focus on the broader context of the epic
 while dividing work into smaller parts.
@@ -402,7 +406,7 @@ The new issue is assigned to the epic.
 
 ### Remove an issue from an epic
 
-> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 You can remove issues from an epic when you're on the epic's details page.
 After you remove an issue from an epic, the issue is no longer associated with this epic.
@@ -421,7 +425,7 @@ To remove an issue from an epic:
 
 ### Reorder issues assigned to an epic
 
-> Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
 
 New issues appear at the top of the list in the **Child issues and epics** section.
 You can reorder the list of issues by dragging them.
@@ -435,7 +439,11 @@ To reorder issues assigned to an epic:
 1. Go to the **Child issues and epics** section.
 1. Drag issues into the desired order.
 
-### Move issues between epics **(ULTIMATE ALL)**
+### Move issues between epics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33039) in GitLab 13.0.
 > - Minimum required role for the project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382506) from Reporter to Guest in GitLab 15.8.
@@ -461,7 +469,11 @@ For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](
 
 For more on epic templates, see [Epic Templates - Repeatable sets of issues](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/getting-started/104/).
 
-## Multi-level child epics **(ULTIMATE ALL)**
+## Multi-level child epics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 You can add any epic that belongs to a group or subgroup of the parent epic's group.
 New child epics appear at the top of the list of epics in the **Child issues and epics** section.
@@ -490,7 +502,7 @@ To add a child epic from another group, paste the epic's URL when [adding an exi
 
 ### Add a child epic to an epic
 
-> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 Prerequisites:
 
@@ -534,7 +546,7 @@ To move child epics to another epic:
 
 ### Reorder child epics assigned to an epic
 
-> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 New child epics appear at the top of the list in the **Child issues and epics** section.
 You can reorder the list of child epics.
@@ -550,7 +562,7 @@ To reorder child epics assigned to an epic:
 
 ### Remove a child epic from a parent epic
 
-> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/382503) from Reporter to Guest in GitLab 15.7.
 
 Prerequisites:
 

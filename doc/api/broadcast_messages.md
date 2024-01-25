@@ -4,7 +4,11 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Broadcast Messages API **(FREE SELF)**
+# Broadcast Messages API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - `target_access_levels` [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
 > - `color` parameter [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95829) in GitLab 15.6.
@@ -16,7 +20,11 @@ As of GitLab 12.8, GET requests do not require authentication. All other broadca
 - Guests result in `401 Unauthorized`.
 - Regular users result in `403 Forbidden`.
 
-## Get all broadcast messages **(FREE ALL)**
+## Get all broadcast messages 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 List all broadcast messages.
 
@@ -49,7 +57,11 @@ Example response:
 ]
 ```
 
-## Get a specific broadcast message **(FREE ALL)**
+## Get a specific broadcast message 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Get a specific broadcast message.
 

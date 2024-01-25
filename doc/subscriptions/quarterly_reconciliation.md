@@ -5,7 +5,11 @@ description: Billing examples.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Quarterly reconciliation and annual true-ups **(PREMIUM ALL)**
+# Quarterly reconciliation and annual true-ups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:

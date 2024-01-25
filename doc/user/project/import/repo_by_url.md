@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import project from repository by URL **(FREE ALL)**
+# Import project from repository by URL
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can import your existing repositories by providing the Git URL. You can't import GitLab issues and merge requests
 this way. Other methods provide more complete import methods.
@@ -13,7 +17,7 @@ If the repository is too large, the import can timeout.
 
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - [Repository by URL import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Repository by URL import source is enabled

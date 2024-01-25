@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy tokens **(FREE ALL)**
+# Deploy tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
@@ -163,7 +167,7 @@ docker push $CONTAINER_TEST_IMAGE
 
 ## Pull packages from a package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
 You can use a deploy token to pull packages from a package registry.
 
@@ -183,7 +187,7 @@ nuget install mypkg.nupkg
 
 ## Push packages to a package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
 You can use a deploy token to push packages to a GitLab package registry.
 
@@ -203,7 +207,7 @@ nuget push mypkg.nupkg -Source GitLab
 
 ## Pull images from the dependency proxy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
 
 You can use a deploy token to pull images from the dependency proxy.
 

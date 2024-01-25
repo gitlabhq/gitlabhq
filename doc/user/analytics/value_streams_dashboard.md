@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard **(ULTIMATE ALL)**
+# Value Streams Dashboard 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - Introduced in GitLab 15.8 as a Closed [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
 > - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
@@ -55,7 +59,7 @@ The contributor count metric is available only on GitLab.com at the group-level.
 
 ### DORA Performers score panel
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
 
 FLAG:
 By default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`.
@@ -95,7 +99,11 @@ panels:
 
 If multiple topics are provided, all topics will need to match for the project to be included in the results.
 
-## Enable or disable overview background aggregation **(ULTIMATE SELF)**
+## Enable or disable overview background aggregation 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.

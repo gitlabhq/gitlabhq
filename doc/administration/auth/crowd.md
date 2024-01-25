@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Atlassian Crowd as an authentication provider (deprecated) **(FREE SELF)**
+# Use Atlassian Crowd as an authentication provider (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369117) in GitLab 15.3 and is planned for

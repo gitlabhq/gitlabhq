@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Changes in merge requests **(FREE ALL)**
+# Changes in merge requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
@@ -34,9 +38,13 @@ To view the diff of changes included in a merge request:
 Files with many changes are collapsed to improve performance. GitLab displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
-### Collapse generated files **(FREE SELF)**
+### Collapse generated files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -222,7 +230,11 @@ per conflicted file on the merge request diff:
 
 ![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
 
-## Show scanner findings in diff **(ULTIMATE ALL)**
+## Show scanner findings in diff
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 You can show scanner findings in the diff. For details, see:
 

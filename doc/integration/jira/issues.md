@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue management **(FREE ALL)**
+# Jira issue management 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can [manage Jira issues directly in GitLab](configure.md).
 You can then refer to Jira issues by ID in GitLab commits and merge requests.
@@ -47,7 +51,11 @@ create only a single cross-reference back to that merge request in Jira.
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
-### Require associated Jira issue for merge requests to be merged **(ULTIMATE ALL)**
+### Require associated Jira issue for merge requests to be merged 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 With this integration, you can prevent merge requests from being merged if they do not refer to a Jira issue.
 To enable this feature:
@@ -63,7 +71,7 @@ Jira issue can't be merged. The merge request displays the message
 
 ## Customize Jira issue matching in GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112826) in GitLab 15.10.
 
 You can configure custom rules for how GitLab matches Jira issue keys by defining:
 
@@ -138,7 +146,11 @@ Consider this example:
    - GitLab adds a formatted comment to Jira, linking back to the commit that
      resolved the issue. You can [disable comments](#disable-comments-on-jira-issues).
 
-## View Jira issues **(PREMIUM ALL)**
+## View Jira issues
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can view and search issues from a selected Jira project directly in GitLab,
 provided your GitLab administrator [has configured the integration](configure.md#configure-the-integration).
@@ -161,7 +173,11 @@ Issues are grouped into tabs based on their
 - **Closed** tab: All issues with a Jira status categorized as Done.
 - **All** tab: All issues of any status.
 
-### Search and filter the issue list **(PREMIUM ALL)**
+### Search and filter the issue list
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To refine the list of issues, use the search bar to search for any text
 contained in an issue summary (title) or description. Use any combination

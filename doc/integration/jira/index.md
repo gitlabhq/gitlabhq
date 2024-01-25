@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira **(FREE ALL)**
+# Jira 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can [import your Jira issues to GitLab](../../user/project/import/jira.md).
 If you want to continue to use Jira, you can integrate Jira with GitLab instead.

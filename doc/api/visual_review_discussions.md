@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-# Visual Review discussions API (deprecated) **(PREMIUM ALL)**
+# Visual Review discussions API (deprecated) 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18710) in GitLab 12.5.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.

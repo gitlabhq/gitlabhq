@@ -4,7 +4,11 @@ group: Runner SaaS
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Runner SaaS **(FREE SAAS)**
+# Runner SaaS 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 You can run your CI/CD jobs on GitLab.com using SaaS runners hosted by GitLab to seamlessly build, test and deploy
 your application on different environments.

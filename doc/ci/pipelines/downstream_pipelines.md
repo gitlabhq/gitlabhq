@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Downstream pipelines **(FREE ALL)**
+# Downstream pipelines 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline
@@ -144,7 +148,7 @@ job3:
 
 ### Use a child pipeline configuration file in a different project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
 You can use [`include:project`](../yaml/index.md#includeproject) in a trigger job
 to trigger child pipelines with a configuration file in a different project:
@@ -381,7 +385,7 @@ trigger_job:
 
 ### View multi-project pipelines in pipeline graphs
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
@@ -389,7 +393,11 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline **(PREMIUM ALL)**
+## Fetch artifacts from an upstream pipeline 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ::Tabs
 
@@ -671,7 +679,11 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-### Pass dotenv variables created in a job **(PREMIUM ALL)**
+### Pass dotenv variables created in a job 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
 
@@ -719,7 +731,7 @@ are considered trigger variables, which have the [highest precedence](../variabl
 
 ## Downstream pipelines for deployments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
 
 You can use the [`environment`](../yaml/index.md#environment) keyword with [`trigger`](../yaml/index.md#trigger).
 You might want to use `environment` from a trigger job if your deployment and application projects are separately managed.

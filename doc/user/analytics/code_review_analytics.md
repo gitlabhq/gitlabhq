@@ -5,9 +5,13 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code review analytics **(PREMIUM ALL)**
+# Code review analytics 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Code review analytics displays a table of open merge requests that have at least one non-author comment.
 The review time is the amount of time since the first comment by a non-author in a merge request.

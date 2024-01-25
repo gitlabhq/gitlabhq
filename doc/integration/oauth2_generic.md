@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Generic OAuth2 gem as an OAuth 2.0 authentication provider **(FREE SELF)**
+# Use Generic OAuth2 gem as an OAuth 2.0 authentication provider 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 If your provider supports the OpenID specification, you should use [`omniauth-openid-connect`](../administration/auth/oidc.md) as your authentication provider.

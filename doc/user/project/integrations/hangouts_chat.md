@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Google Chat **(FREE ALL)**
+# Google Chat
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can configure your project to send notifications from GitLab to a
 room of your choice in [Google Chat](https://chat.google.com/) (formerly Google
@@ -38,7 +42,7 @@ For further details, see [the Google Chat documentation for configuring webhooks
 
 ### Enable threads in Google Chat
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27823) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27823) in GitLab 15.4.
 
 WARNING:
 In March 2023, Google [deprecated threaded replies in Google Chat](https://workspaceupdates.googleblog.com/2023/02/new-google-chat-spaces-will-be-in-line-threaded.html).

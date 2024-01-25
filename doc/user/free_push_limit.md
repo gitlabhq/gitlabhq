@@ -4,7 +4,11 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Free push limit **(FREE SAAS)**
+# Free push limit
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 A 100 MiB per-file limit applies when pushing new files to any project in the Free tier.
 

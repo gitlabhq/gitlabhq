@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Notification emails **(FREE ALL)**
+# Notification emails
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Enhanced email styling [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604) in GitLab 14.9 [with a feature flag](../../administration/feature_flags.md) named `enhanced_notify_css`. Disabled by default.
 > - Enhanced email styling [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/355907) in GitLab 14.9.
@@ -112,7 +116,7 @@ Or:
 
 #### Change email address used for group notifications
 
-> Introduced in GitLab 12.0.
+> - Introduced in GitLab 12.0.
 
 You can select an email address to receive notifications for each group you belong to.
 You can use group notifications, for example, if you work freelance, and want to keep email about clients' projects separate.
@@ -289,7 +293,7 @@ GitLab uses several methods to identify a known sign-in. All methods must fail f
 
 ## Notifications for attempted sign-ins using incorrect verification codes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374740) in GitLab 15.5.
 
 GitLab sends you an email notification if it detects an attempt to sign in to your account using a wrong two-factor
 authentication (2FA) code. This can help you detect that a bad actor gained access to your username and password, and is trying
@@ -297,7 +301,7 @@ to brute force 2FA.
 
 ## Notifications on designs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217095) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217095) in GitLab 13.6.
 
 Email notifications are sent to the participants when someone comments on a design.
 
@@ -309,7 +313,7 @@ The participants are:
 
 ## Notifications on group or project access expiration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.3.
 
 GitLab sends an email notification if a user's access to a group or project expires in seven days.
 This reminds group or project members to extend their access duration if they want to.
@@ -372,7 +376,11 @@ For example, an email with the reason `assigned` has this sentence in the footer
 
 > You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
 
-#### On-call alerts notifications **(PREMIUM ALL)**
+#### On-call alerts notifications
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 An [on-call alert](../../operations/incident_management/oncall_schedules.md)
 notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
@@ -382,7 +390,11 @@ notification email can have one of [the alert's](../../operations/incident_manag
 - `alert_resolved`
 - `alert_ignored`
 
-#### Incident escalation notifications **(PREMIUM ALL)**
+#### Incident escalation notifications
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 An [incident escalation](../../operations/incident_management/escalation_policies.md)
 notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:

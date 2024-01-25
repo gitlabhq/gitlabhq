@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limits on issue and epic creation **(FREE SELF)**
+# Rate limits on issue and epic creation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28129) in GitLab 12.10.
 
 Rate limits control the pace at which new epics and issues can be created.
 For example, if you set the limit to `300`, the

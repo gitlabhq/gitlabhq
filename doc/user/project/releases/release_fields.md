@@ -69,7 +69,7 @@ Each link as an asset has the following attributes:
 
 #### Permanent link to latest release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
 
 Latest release page is accessible through a permanent URL.
 GitLab redirects to the latest release page URL when it is visited.
@@ -91,7 +91,7 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 
 #### Permanent links to release assets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
 
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
@@ -134,7 +134,7 @@ curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" 
 
 #### Permanent links to latest release assets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
 
 The `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) can be used in combination with [permanent link to the latest release](#permanent-link-to-latest-release). It is useful when we want to link a permanent URL to download an asset from the *latest release*.
 
@@ -164,7 +164,7 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest/download
 
 #### Link Types
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
 The `link_type` parameter accepts one of the following four values:
@@ -261,9 +261,13 @@ links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.
 
-### Number of new and total features **(FREE SAAS)**
+### Number of new and total features
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
 
 On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
 

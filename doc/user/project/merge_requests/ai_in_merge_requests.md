@@ -4,7 +4,12 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo in merge requests **(ULTIMATE SAAS EXPERIMENT)**
+# GitLab Duo in merge requests
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status**: Experiment
 
 AI-assisted features in merge requests are designed to provide contextually relevant information during the lifecycle of a merge request.
 
@@ -12,7 +17,7 @@ Additional information on enabling these features and maturity can be found in o
 
 ## Fill in merge request templates
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -38,7 +43,7 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 
 ## Summarize merge request changes
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -54,7 +59,7 @@ Provide feedback on this experimental feature in [issue 408726](https://gitlab.c
 
 ## Summarize my merge request review
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -75,7 +80,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 ## Generate messages for merge or squash commits
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 

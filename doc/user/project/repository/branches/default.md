@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Default branch **(FREE ALL)**
+# Default branch
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you create a new [project](../../index.md), GitLab creates a default branch
 in the repository. A default branch has special configuration options not shared
@@ -58,7 +62,11 @@ GitLab administrators can configure a new default branch name at the
 [instance level](#instance-level-custom-initial-branch-name) or
 [group level](#group-level-custom-initial-branch-name).
 
-### Instance-level custom initial branch name **(FREE SELF)**
+### Instance-level custom initial branch name
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221013) in GitLab 13.2 [with a flag](../../../../administration/feature_flags.md) named `global_default_branch_name`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/325163) in GitLab 13.12. Feature flag `global_default_branch_name` removed.
@@ -79,7 +87,7 @@ overrides it.
 
 ### Group-level custom initial branch name
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221014) in GitLab 13.6.
 
 Users with the Owner role of groups and subgroups can configure the default branch name for a group:
 
@@ -92,9 +100,13 @@ Users with the Owner role of groups and subgroups can configure the default bran
 Projects created in this group after you change the setting use the custom branch name,
 unless a subgroup configuration overrides it.
 
-## Protect initial default branches **(FREE ALL)**
+## Protect initial default branches
 
-> Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Full protection after initial push [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118729) in GitLab 16.0.
 
 GitLab administrators and group owners can define [branch protections](../../../project/protected_branches.md)
 to apply to every repository's default branch
@@ -115,7 +127,11 @@ at the [instance level](#instance-level-default-branch-protection) and
 WARNING:
 Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.
 
-### Instance-level default branch protection **(FREE SELF)**
+### Instance-level default branch protection
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This setting applies only to each repository's default branch. To protect other branches,
 you must either:
@@ -134,9 +150,13 @@ groups and subgroups can override this instance-wide setting for their projects.
    [**Allow owners to manage default branch protection per group**](#prevent-overrides-of-default-branch-protection).
 1. Select **Save changes**.
 
-#### Prevent overrides of default branch protection **(PREMIUM SELF)**
+#### Prevent overrides of default branch protection
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211944) in GitLab 13.0.
 
 Instance-level protections for default branches
 can be overridden on a per-group basis by the group's owner. In
@@ -152,7 +172,11 @@ disable this privilege for group owners, enforcing the instance-level protection
 NOTE:
 GitLab administrators can still update the default branch protection of a group.
 
-### Group-level default branch protection **(PREMIUM ALL)**
+### Group-level default branch protection
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7583) in GitLab 12.9.
 > - [Settings moved and renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/340403) in GitLab 14.9.
@@ -236,7 +260,7 @@ renames a Git repository's (`example`) default branch.
 
 ## Default branch rename redirect
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329100) in GitLab 14.1
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329100) in GitLab 14.1
 
 URLs for specific files or directories in a project embed the project's default
 branch name, and are often found in documentation or browser bookmarks. When you

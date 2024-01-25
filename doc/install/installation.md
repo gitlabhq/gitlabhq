@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Self-compiled installation **(FREE SELF)**
+# Self-compiled installation 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the official installation guide to set up a production GitLab server
 using the source files. It was created for and tested on **Debian/Ubuntu** operating systems.
@@ -692,7 +696,11 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install GitLab-Elasticsearch-indexer on Enterprise Edition **(PREMIUM SELF)**
+### Install GitLab-Elasticsearch-indexer on Enterprise Edition 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line installs GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`

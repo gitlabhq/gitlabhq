@@ -5,7 +5,11 @@ description: Linux, Helm, Docker, Operator, source, or scripts.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Installation methods **(FREE SELF)**
+# Installation methods 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can install GitLab on several [cloud providers](cloud_providers.md),
 or use one of the following methods.

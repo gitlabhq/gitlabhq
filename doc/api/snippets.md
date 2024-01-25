@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Snippets API **(FREE ALL)**
+# Snippets API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Snippets API operates on [snippets](../user/snippets.md). Related APIs exist for
 [project snippets](project_snippets.md) and
@@ -457,7 +461,7 @@ Example response:
 
 ## List all snippets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419640) in GitLab 16.3.
 
 List all snippets the current user has access to.
 Users with the Administrator or Auditor access levels can see all snippets

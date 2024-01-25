@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Repository files API **(FREE ALL)**
+# Repository files API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can fetch, create, update, and delete files in your repository with this API.
 You can also [configure rate limits](../administration/settings/files_api_rate_limits.md)

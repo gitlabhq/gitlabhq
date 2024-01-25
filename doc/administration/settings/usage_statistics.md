@@ -4,7 +4,11 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Usage statistics **(FREE SELF)**
+# Usage statistics
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package Signatures **(FREE SELF)**
+# Package Signatures
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Linux packages produced by GitLab are created using [Omnibus](https://github.com/chef/omnibus), for which GitLab
 has added DEB signing using `debsigs` in [our own fork](https://gitlab.com/gitlab-org/omnibus).

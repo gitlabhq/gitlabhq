@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Zero downtime upgrades **(FREE SELF)**
+# Zero downtime upgrades
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 It's possible to upgrade to a newer major, minor, or patch version of GitLab
 without having to take your GitLab instance offline. However, for this to work
@@ -325,7 +329,11 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-### Redis HA (using Sentinel) **(PREMIUM SELF)**
+### Redis HA (using Sentinel)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Package upgrades may involve version updates to the bundled Redis service. On
 instances using [Redis for scaling](../administration/redis/index.md),
@@ -424,7 +432,11 @@ failover is complete, we can go ahead and upgrade the original primary node.
 Install the package for new version and follow regular package upgrade
 procedure.
 
-## Geo deployment **(PREMIUM SELF)**
+## Geo deployment
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 You can only upgrade one minor release at a time.
@@ -541,7 +553,11 @@ sure you remove `/etc/gitlab/skip-auto-reconfigure` and revert
 setting `gitlab_rails['auto_migrate'] = false` in
 `/etc/gitlab/gitlab.rb` after you've completed these steps.
 
-## Multi-node / HA deployment with Geo **(PREMIUM SELF)**
+## Multi-node / HA deployment with Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 You can only upgrade one minor release at a time. You also must first start with the Gitaly cluster, updating Gitaly one node one at a time. This will ensure access to the Git repositories for the remainder of the upgrade process.

@@ -4,9 +4,13 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project repository storage moves API **(FREE SELF)**
+# Project repository storage moves API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31285) in GitLab 13.0.
 
 Project repositories including wiki and design repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for example.
@@ -246,7 +250,7 @@ Example response:
 
 ## Schedule repository storage moves for all projects on a storage shard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47142) in GitLab 13.7.
 
 Schedules repository storage moves for each project repository stored on the source storage shard.
 This endpoint migrates all projects at once. For more information, see

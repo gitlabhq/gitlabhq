@@ -5,7 +5,11 @@ description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab SaaS subscription **(PREMIUM SAAS)**
+# GitLab SaaS subscription
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 GitLab SaaS is the GitLab software-as-a-service offering, which is available at GitLab.com.
 You don't need to install anything to use GitLab SaaS, you only need to
@@ -134,7 +138,7 @@ For example:
 
 ### Export seat usage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
 
 To export seat usage data as a CSV file:
 
@@ -163,7 +167,11 @@ For example, if you purchase a subscription for 10 users:
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
-### Free Guest users **(ULTIMATE ALL)**
+### Free Guest users
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.
@@ -439,7 +447,7 @@ state for all projects is removed, and their excess usage is deducted from the a
 
 #### For your group namespace
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
 
 If you're using GitLab SaaS, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use SSH keys to communicate with GitLab **(FREE ALL)**
+# Use SSH keys to communicate with GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Git is a distributed version control system, which means you can work locally,
 then share or *push* your changes to a server. In this case, the server you push to is GitLab.
@@ -60,21 +64,21 @@ operating systems.
 
 ### ED25519_SK SSH keys
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
 
 To use ED25519_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
 
 ### ECDSA_SK SSH keys
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78934) in GitLab 14.8.
 
 To use ECDSA_SK SSH keys on GitLab, your local client and GitLab server
 must have [OpenSSH 8.2](https://www.openssh.com/releasenotes.html#8.2) or later installed.
 
 ### RSA SSH keys
 
-> Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
+> - Maximum RSA key length [changed](https://gitlab.com/groups/gitlab-org/-/epics/11186) in GitLab 16.3.
 
 Available documentation suggests ED25519 is more secure than RSA.
 

@@ -6,7 +6,11 @@ remove_date: '2024-02-06'
 redirect_to: '../../update/deprecations.md#geo-housekeeping-rake-tasks'
 ---
 
-# Geo Rake tasks (removed) **(PREMIUM SELF)**
+# Geo Rake tasks (removed)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The Geo housekeeping Rake tasks were
 [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125927) in

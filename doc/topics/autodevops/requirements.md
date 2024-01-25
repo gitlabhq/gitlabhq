@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements for Auto DevOps **(FREE ALL)**
+# Requirements for Auto DevOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Before enabling [Auto DevOps](index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
@@ -27,7 +31,7 @@ To prepare the deployment:
 
 ## Auto DevOps deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 When using Auto DevOps to deploy your applications, choose the
 [continuous deployment strategy](../../ci/index.md)

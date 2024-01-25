@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epic Issues API **(PREMIUM ALL)**
+# Epic Issues API 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Every API call to the epic issues API endpoint must be authenticated.
 

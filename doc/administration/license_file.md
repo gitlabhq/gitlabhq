@@ -30,7 +30,7 @@ In GitLab 14.1.x to 14.7, if you have already activated your subscription with a
 
 ## Activate subscription during installation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
 
 To activate your subscription during installation, set the `GITLAB_ACTIVATION_CODE` environment variable with the activation code:
 

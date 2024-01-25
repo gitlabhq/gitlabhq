@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages SSL/TLS certificates **(FREE ALL)**
+# GitLab Pages SSL/TLS certificates
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Every GitLab Pages project on GitLab.com is available under
 HTTPS for the default Pages domain (`*.gitlab.io`). Once you set

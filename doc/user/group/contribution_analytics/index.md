@@ -3,9 +3,13 @@ stage: Plan
 group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Contribution analytics **(PREMIUM ALL)**
+# Contribution analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
 
 Contribution analytics provide an overview of the
 [contribution events](../../profile/contributions_calendar.md#user-contribution-events) made by your group's members.

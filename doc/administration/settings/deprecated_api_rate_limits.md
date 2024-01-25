@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deprecated API rate limits **(FREE SELF)**
+# Deprecated API rate limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
 
 Deprecated API endpoints are those which have been replaced with alternative
 functionality, but cannot be removed without breaking backward compatibility.

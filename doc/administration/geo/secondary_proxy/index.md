@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo proxying for secondary sites **(PREMIUM SELF)**
+# Geo proxying for secondary sites
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
 > - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.

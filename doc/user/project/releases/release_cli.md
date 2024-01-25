@@ -4,7 +4,6 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-
 # GitLab Release CLI tool
 
 The [GitLab Release CLI (`release-cli`)](https://gitlab.com/gitlab-org/release-cli)
@@ -26,7 +25,11 @@ release-cli create --name "Release $CI_COMMIT_SHA" --description \
   --assets-link "{\"name\":\"asset1\",\"url\":\"https://example.com/assets/1\",\"link_type\":\"other\"}"
 ```
 
-## Install the `release-cli` for the Shell executor **(FREE ALL)**
+## Install the `release-cli` for the Shell executor
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/release-cli/-/issues/21) in GitLab 13.8.
 > - [Changed](https://gitlab.com/gitlab-org/release-cli/-/merge_requests/108) in GitLab 14.2, the `release-cli` binaries are also [available in the package registry](https://gitlab.com/gitlab-org/release-cli/-/packages).

@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrations **(FREE ALL)**
+# Integrations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13203) in GitLab 12.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) from GitLab Ultimate to GitLab Free in 12.8.
@@ -14,7 +18,7 @@ can [trigger paging](paging.md#paging) for on-call rotations or be used to [crea
 
 ## Integrations list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/245331) in GitLab 13.5.
 
 With at least the Maintainer role, you can view the list of configured
 alerts integrations by navigating to **Settings > Monitor**
@@ -42,9 +46,13 @@ receive alert payloads in JSON format. You can always
    are available in the **View credentials** tab after you save the integration. You must also input
    the URL and Authorization Key in your external service.
 
-### HTTP Endpoints **(PREMIUM ALL)**
+### HTTP Endpoints
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab 13.6.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4442) in GitLab 13.6.
 
 In [GitLab Premium](https://about.gitlab.com/pricing/), you can create multiple
 unique HTTP endpoints to receive alerts from any external source in JSON format,
@@ -77,7 +85,7 @@ side of the integrations list.
 
 #### Map fields in custom alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4443) in GitLab 13.10.
 
 You can integrate your monitoring tool's alert format with GitLab alerts. To show the
 correct information in the [Alert list](alerts.md) and the
@@ -236,7 +244,7 @@ Ensure your requests are smaller than the
 
 #### Prometheus severity options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9
 
 Alerts from Prometheus can provide any of the case-insensitive follow values for [alert severity](../incident_management/alerts.md#alert-severity):
 
@@ -358,7 +366,7 @@ using one of the above header options if your tooling supports it.
 
 ## Response body
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342730) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342730) in GitLab 14.5.
 
 The JSON response body contains a list of any alerts created within the request:
 
@@ -379,7 +387,7 @@ Successful responses return a `200` response code.
 
 ## Triggering test alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab in 13.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab in 13.2.
 
 After a [project maintainer or owner](../../user/permissions.md)
 configures an integration, you can trigger a test
@@ -395,9 +403,13 @@ alert to confirm your integration works properly.
 
 GitLab displays an error or success message, depending on the outcome of your test.
 
-## Automatic grouping of identical alerts **(PREMIUM ALL)**
+## Automatic grouping of identical alerts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab 13.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214557) in GitLab 13.2.
 
 In GitLab versions 13.2 and greater, GitLab groups alerts based on their
 payload. When an incoming alert contains the same payload as another alert
@@ -411,7 +423,7 @@ If the existing alert is already `resolved`, GitLab creates a new alert instead.
 
 ## Recovery alerts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
 The alert in GitLab is automatically resolved when an HTTP Endpoint
 receives a payload with the end time of the alert set. For HTTP Endpoints
@@ -425,9 +437,13 @@ For more information on alert properties and mappings, see
 
 You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
 
-## Link to your Opsgenie Alerts **(PREMIUM ALL)**
+## Link to your Opsgenie Alerts
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.2.
 
 WARNING:
 We are building deeper integration with Opsgenie and other alerting tools through

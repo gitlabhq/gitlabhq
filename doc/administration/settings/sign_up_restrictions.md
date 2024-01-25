@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sign-up restrictions **(FREE SELF)**
+# Sign-up restrictions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can enforce the following restrictions on sign ups:
 
@@ -132,14 +136,18 @@ To remove the user cap:
 
 ## Minimum password length limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
 
 You can [change](../../security/password_length_limits.md#modify-minimum-password-length)
 the minimum number of characters a user must have in their password using the GitLab UI.
 
-### Password complexity requirements **(PREMIUM SELF)**
+### Password complexity requirements
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354965) in GitLab 15.2.
 
 By default, the only requirement for user passwords is [minimum password length](#minimum-password-length-limit).
 You can add additional complexity requirements. Changes to password complexity requirements apply to new passwords:

@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository analytics for projects **(FREE ALL)**
+# Repository analytics for projects 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use repository analytics to view information about a project's Git repository:
 

@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# PlantUML **(FREE SELF)**
+# PlantUML
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.

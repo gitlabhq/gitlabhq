@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# npm packages in the package registry **(FREE ALL)**
+# npm packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 For documentation of the specific API endpoints that the npm package manager client uses, see the [npm API documentation](../../../api/packages/npm.md).
 
@@ -234,7 +238,7 @@ To install a package from the instance level, the package must have been publish
 
 ### Package forwarding to npmjs.com
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
 
 When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
 
@@ -246,7 +250,7 @@ Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/e
 
 ## Deprecate a package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
 
 You can deprecate a package so that a deprecation warning displays when the package is fetched.
 
@@ -331,7 +335,7 @@ npm install @scope/package@my-tag              # Install a specific tag
 
 #### From CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
 
 You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/index.md)
 to run `npm dist-tag` commands in a GitLab CI/CD job. For example:

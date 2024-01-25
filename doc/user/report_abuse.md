@@ -4,7 +4,11 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Report abuse **(FREE ALL)**
+# Report abuse
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can report abuse from other GitLab users to GitLab administrators.
 
@@ -38,7 +42,7 @@ To report abuse from a user's profile page:
 
 ## Report abuse from a user's comment
 
-> Reporting abuse from comments in epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389992) in GitLab 15.10.
+> - Reporting abuse from comments in epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389992) in GitLab 15.10.
 
 To report abuse from a user's comment:
 

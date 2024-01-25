@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Find relevant log entries with a correlation ID **(FREE SELF)**
+# Find relevant log entries with a correlation ID
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab instances log a unique request tracking ID (known as the
 "correlation ID") for most requests. Each individual request to GitLab gets

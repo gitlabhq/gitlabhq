@@ -10484,6 +10484,9 @@ msgstr ""
 msgid "CiCatalog|Components"
 msgstr ""
 
+msgid "CiCatalog|Components:"
+msgstr ""
+
 msgid "CiCatalog|Create a pipeline component repository and make reusing pipeline configurations faster and easier."
 msgstr ""
 
@@ -38193,11 +38196,6 @@ msgstr ""
 
 msgid "ProjectCreationLevel|Roles allowed to create projects"
 msgstr ""
-
-msgid "ProjectExceededSize|Here is the project exceeding the storage quota:%{projects_list}"
-msgid_plural "ProjectExceededSize|From the %{repository_size_excess_project_count} projects exceeding the quota, below are the projects using the most storage:%{projects_list}"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "ProjectFileTree|Name"
 msgstr ""

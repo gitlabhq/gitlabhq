@@ -4,7 +4,11 @@ group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Web exporter (dedicated metrics server) **(FREE SELF)**
+# Web exporter (dedicated metrics server)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 When [monitoring GitLab with Prometheus](index.md), GitLab runs various collectors that
 sample the application for data related to usage, load and performance. GitLab can then make
@@ -54,7 +58,7 @@ Metrics can now be served and scraped from `localhost:8083/metrics`.
 
 ## Enable HTTPS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
 
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 

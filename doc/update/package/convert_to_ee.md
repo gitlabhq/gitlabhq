@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Convert Community Edition to Enterprise Edition **(FREE SELF)**
+# Convert Community Edition to Enterprise Edition
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To convert an existing GitLab Community Edition (CE) server installed using the Omnibus GitLab
 packages to GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE), you install the EE

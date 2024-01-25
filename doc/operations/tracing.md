@@ -4,7 +4,12 @@ group: Observability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Distributed tracing **(ULTIMATE SAAS BETA)**
+# Distributed tracing
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md#beta).
 > - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.

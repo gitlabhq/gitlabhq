@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Run DAST in an offline environment **(ULTIMATE ALL)**
+# Run DAST in an offline environment 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
 to external resources through the internet, some adjustments are required for the DAST job to

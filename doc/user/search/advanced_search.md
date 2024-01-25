@@ -4,9 +4,13 @@ group: Global Search
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Advanced search **(PREMIUM ALL)**
+# Advanced search
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 You can use advanced search for faster, more efficient search across the entire GitLab
 instance. Advanced search is based on Elasticsearch, a purpose-built full-text search
@@ -53,7 +57,7 @@ Advanced search uses [Elasticsearch syntax](https://www.elastic.co/guide/en/elas
 
 ### User search
 
-> Ability to refine user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
+> - Ability to refine user search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388409) in GitLab 15.10.
 
 When you search for a user, a [fuzzy query](https://www.elastic.co/guide/en/elasticsearch/reference/7.2/query-dsl-fuzzy-query.html) is used by default.
 You can refine user search with [Elasticsearch syntax](#syntax).

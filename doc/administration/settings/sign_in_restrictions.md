@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sign-in restrictions **(FREE SELF)**
+# Sign-in restrictions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
 
@@ -30,7 +34,7 @@ In the event of an external authentication provider outage, use the [GitLab Rail
 
 ## Admin Mode
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2158) in GitLab 13.10.
 
 If you're an administrator, you might want to work in GitLab without administrator access.
 You could either create a separate user account that does not have
@@ -155,7 +159,7 @@ period in hours.
 
 ## Email notification for unknown sign-ins
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218457) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218457) in GitLab 13.2.
 
 When enabled, GitLab notifies users of sign-ins from unknown IP addresses or devices. For more information,
 see [Email notification for unknown sign-ins](../../user/profile/notifications.md#notifications-for-unknown-sign-ins).

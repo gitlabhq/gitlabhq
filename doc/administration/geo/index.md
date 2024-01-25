@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo **(PREMIUM SELF)**
+# Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Geo is the solution for widely distributed development teams and for providing
 a warm-standby as part of a disaster recovery strategy.
@@ -230,7 +234,7 @@ For information on how to update your Geo sites to the latest GitLab version, se
 
 ### Pausing and resuming replication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35913) in GitLab 13.2.
 
 WARNING:
 In GitLab 13.2 and 13.3, promoting a secondary site to a primary while the

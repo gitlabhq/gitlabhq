@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Ruby gems API **(FREE SELF)**
+# Ruby gems API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the API documentation for [Ruby gems](../../user/packages/rubygems_registry/index.md).
 
@@ -47,7 +51,7 @@ Feature.disable(:rubygem_packages, Project.find(2))
 
 ## Download a gem file
 
-> Introduced in GitLab 13.10.
+> - Introduced in GitLab 13.10.
 
 Download a gem:
 
@@ -74,7 +78,7 @@ This writes the downloaded file to `my_gem-1.0.0.gem` in the current directory.
 
 ## Fetch a list of dependencies
 
-> Introduced in GitLab 13.10.
+> - Introduced in GitLab 13.10.
 
 Fetch a list of dependencies for a list of gems:
 
@@ -129,7 +133,7 @@ This writes the downloaded file to `mypkg-1.0-SNAPSHOT.jar` in the current direc
 
 ## Upload a gem
 
-> Introduced in GitLab 13.11.
+> - Introduced in GitLab 13.11.
 
 Upload a gem:
 

@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspace configuration **(PREMIUM ALL)**
+# Workspace configuration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -16,7 +20,7 @@ which you can customize to meet the specific needs of each project.
 
 ## Set up a workspace
 
-> Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
+> - Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
 
 ### Prerequisites
 
@@ -60,7 +64,7 @@ You also have access to the terminal and can install any necessary dependencies.
 
 ## Connect to a workspace with SSH
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10478) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10478) in GitLab 16.3.
 
 Prerequisites:
 

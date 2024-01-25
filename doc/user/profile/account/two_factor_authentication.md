@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Two-factor authentication **(FREE ALL)**
+# Two-factor authentication
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -94,7 +98,7 @@ in a safe place.
 
 ### Enable one-time password using FortiAuthenticator
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `forti_authenticator`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212312) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `forti_authenticator`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
@@ -160,7 +164,7 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
 
 ### Enable one-time password using Cisco Duo
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. On GitLab.com this feature is not available.
@@ -228,7 +232,7 @@ On your GitLab server:
 
 ### Enable one-time password using FortiToken Cloud
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
@@ -341,7 +345,7 @@ You can lose access to your account if you clear your browser data.
 
 ## Recovery codes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267730) in GitLab 13.7, **Copy codes** and **Print codes** buttons.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267730) in GitLab 13.7, **Copy codes** and **Print codes** buttons.
 
 Immediately after successfully enabling 2FA with a one-time password, you're prompted to download
 a set of generated recovery codes. If you ever lose access to your one-time password authenticator, you can use one of
@@ -466,7 +470,11 @@ If you forget to save your recovery codes when enabling 2FA, and you added an SS
 
 After signing in, immediately set up 2FA with a new device.
 
-### Have two-factor authentication disabled on your account **(PREMIUM SAAS)**
+### Have two-factor authentication disabled on your account
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 If other methods are unavailable, have a GitLab support contact submit a [support ticket](https://support.gitlab.com) to request
 a GitLab global administrator disable 2FA for your account:
@@ -476,7 +484,11 @@ a GitLab global administrator disable 2FA for your account:
 - Disabling this setting temporarily leaves your account in a less secure state. You should sign in and re-enable two-factor
   authentication as soon as possible.
 
-## Information for GitLab administrators **(FREE SELF)**
+## Information for GitLab administrators
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with a time-based one-time password (TOTP) server, synchronize your GitLab

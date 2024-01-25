@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dynamic Application Security Testing (DAST) **(ULTIMATE ALL)**
+# Dynamic Application Security Testing (DAST) 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 If you deploy your web application into a new environment, your application may
 become exposed to new types of attacks. For example, misconfigurations of your
@@ -78,7 +82,7 @@ analyzer-specific configuration instructions.
 
 ### View scan results
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
 and the [vulnerability report](../index.md#vulnerability-report).

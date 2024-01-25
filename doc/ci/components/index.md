@@ -4,7 +4,12 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD components **(FREE ALL BETA)**
+# CI/CD components
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
@@ -155,7 +160,12 @@ a patch fix like `1.5.1`, then `~latest` returns the `1.5.1` release.
 [Issue #427286](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) proposes to
 change this behavior.
 
-## CI/CD Catalog **(FREE ALL BETA)**
+## CI/CD Catalog
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 16.7.

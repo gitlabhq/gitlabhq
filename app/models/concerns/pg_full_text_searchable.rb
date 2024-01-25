@@ -58,7 +58,7 @@ module PgFullTextSearchable
 
     column_text = self[column].gsub(LONG_WORDS_REGEX, ' ')
     column_text = column_text[0..(TSVECTOR_MAX_LENGTH - 1)]
-    column_text = ActiveSupport::Inflector.transliterate(column_text)
+    column_text = Gitlab::I18n.with_default_locale { ActiveSupport::Inflector.transliterate(column_text) }
     column_text = column_text.gsub(XML_TAG_REGEX, ' \1 ')
 
     Arel::Nodes::NamedFunction.new(
@@ -136,7 +136,7 @@ module PgFullTextSearchable
       # URLs get broken up into separate words when : is removed below, so we just remove the whole scheme.
       query = remove_url_scheme(query)
       # Remove accents from search term to match indexed data
-      query = ActiveSupport::Inflector.transliterate(query)
+      query = Gitlab::I18n.with_default_locale { ActiveSupport::Inflector.transliterate(query) }
       # Prevent users from using tsquery operators that can cause syntax errors.
       query = filter_allowed_characters(query)
 

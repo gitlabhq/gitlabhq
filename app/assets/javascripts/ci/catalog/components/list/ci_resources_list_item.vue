@@ -8,6 +8,7 @@ import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 
 export default {
   i18n: {
+    components: s__('CiCatalog|Components:'),
     unreleased: s__('CiCatalog|Unreleased'),
     releasedMessage: s__('CiCatalog|Released %{timeAgo} by %{author}'),
   },
@@ -34,8 +35,12 @@ export default {
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
     },
-    resourceId() {
-      return cleanLeadingSeparator(this.resource.webPath);
+    componentNames() {
+      const components = this.resource.latestVersion?.components?.nodes;
+      return components?.map((component) => component.name).join(', ') || null;
+    },
+    detailsPageHref() {
+      return decodeURIComponent(this.detailsPageResolved.href);
     },
     detailsPageResolved() {
       return this.$router.resolve({
@@ -43,32 +48,35 @@ export default {
         params: { id: this.resourceId },
       });
     },
-    detailsPageHref() {
-      return decodeURIComponent(this.detailsPageResolved.href);
-    },
     entityId() {
       return getIdFromGraphQLId(this.resource.id);
+    },
+    formattedDate() {
+      return formatDate(this.latestVersion?.releasedAt);
+    },
+    hasComponents() {
+      return Boolean(this.componentNames);
+    },
+    hasReleasedVersion() {
+      return Boolean(this.latestVersion?.releasedAt);
+    },
+    latestVersion() {
+      return this.resource?.latestVersion || {};
+    },
+    name() {
+      return this.latestVersion?.name || this.$options.i18n.unreleased;
+    },
+    releasedAt() {
+      return getTimeago().format(this.latestVersion?.releasedAt);
+    },
+    resourceId() {
+      return cleanLeadingSeparator(this.resource.webPath);
     },
     starCount() {
       return this.resource?.starCount || 0;
     },
     starCountText() {
       return n__('Star', 'Stars', this.starCount);
-    },
-    hasReleasedVersion() {
-      return Boolean(this.latestVersion?.releasedAt);
-    },
-    formattedDate() {
-      return formatDate(this.latestVersion?.releasedAt);
-    },
-    latestVersion() {
-      return this.resource?.latestVersion || {};
-    },
-    releasedAt() {
-      return getTimeago().format(this.latestVersion?.releasedAt);
-    },
-    name() {
-      return this.latestVersion?.name || this.$options.i18n.unreleased;
     },
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
@@ -151,6 +159,14 @@ export default {
             </gl-sprintf>
           </span>
         </div>
+      </div>
+      <div
+        v-if="hasComponents"
+        data-testid="ci-resource-component-names"
+        class="gl-font-sm gl-mt-1"
+      >
+        <span class="gl-font-weight-bold"> &#8226; {{ $options.i18n.components }} </span>
+        <span class="gl-text-gray-900">{{ componentNames }}</span>
       </div>
     </div>
   </li>

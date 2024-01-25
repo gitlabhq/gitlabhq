@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Applications API **(FREE ALL)**
+# Applications API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8160) in GitLab 10.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/8160) in GitLab 10.5.
 
 The Applications API operates on instance-wide OAuth applications for:
 

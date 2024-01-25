@@ -99,7 +99,7 @@ In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab admin
 
 ## Use a custom name for the initial branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
 When you create a new project in GitLab, a default branch is created with the
 first push. The group owner can
@@ -191,7 +191,7 @@ To transfer a group:
 
 ## Disable email notifications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
 
 You can disable all email notifications related to the group, which includes its subgroups and projects.
 
@@ -205,7 +205,7 @@ To disable email notifications:
 
 ## Disable group mentions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
 anyone [mentions a group](../discussions/index.md#mentions)
@@ -223,7 +223,11 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
-## Export members as CSV **(PREMIUM ALL)**
+## Export members as CSV
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
@@ -318,7 +322,11 @@ To ensure that the user cap applies when groups, subgroups, or projects are shar
 
 User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
 
-## Group file templates **(PREMIUM ALL)**
+## Group file templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -340,7 +348,11 @@ To learn how to create templates for issues and merge requests, see
 Define project templates at a group level by setting a group as the template source.
 For more information, see [group-level project templates](custom_project_templates.md).
 
-### Enable group file template **(PREMIUM ALL)**
+### Enable group file template
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To enable group file templates:
 
@@ -350,9 +362,13 @@ To enable group file templates:
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
 
-## Group merge checks settings **(PREMIUM ALL)**
+## Group merge checks settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
@@ -421,7 +437,11 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
-## Group merge request approval settings **(PREMIUM ALL)**
+## Group merge request approval settings
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -443,7 +463,11 @@ Approval settings should not be confused with [approval rules](../project/merge_
 for the ability to set merge request approval rules for groups is tracked in
 [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Enable Code Suggestions for a group **(FREE SAAS)**
+## Enable Code Suggestions for a group
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
@@ -466,9 +490,13 @@ To update this setting:
 Individual users can disable Code Suggestions by disabling the feature in their
 [installed IDE editor extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
 
-## Enable Experiment and Beta features **(ULTIMATE SAAS)**
+## Enable Experiment and Beta features
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
 [Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
@@ -487,9 +515,13 @@ To enable Experiment features for a top-level group:
 1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
 
-## Group activity analytics **(PREMIUM ALL)**
+## Group activity analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 

@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GeoJSON files **(FREE ALL)**
+# GeoJSON files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14134) in GitLab 16.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14134) in GitLab 16.1.
 
 A GeoJSON file is a format for encoding geographical data structures using JavaScript Object Notation (JSON).
 It is commonly used for representing geographic features, such as points, lines, and polygons, along with their associated attributes.

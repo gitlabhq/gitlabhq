@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customer relations management (CRM) **(FREE ALL)**
+# Customer relations management (CRM)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).

@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens API **(FREE ALL)**
+# Personal access tokens API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can read more about [personal access tokens](../user/profile/personal_access_tokens.md).
 
@@ -147,7 +151,7 @@ Get a personal access token by either:
 
 ### Using a personal access token ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362239) in GitLab 15.1.
 
 Get a single personal access token by its ID. Users can get their own tokens.
 Administrators can get any token.
@@ -175,7 +179,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ### Using a request header
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373999) in GitLab 15.5
 
 Get a single personal access token and information about that token by passing the token in a header.
 
@@ -207,7 +211,7 @@ Example response:
 
 ## Rotate a personal access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
 Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week.
 
@@ -257,7 +261,7 @@ Example response:
 
 ### Automatic reuse detection
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395352) in GitLab 16.3
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395352) in GitLab 16.3
 
 For each rotated token, the previous and now revoked token is referenced. This
 chain of references defines a token family. In a token family, only the latest
@@ -332,7 +336,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 See the [Users API documentation](users.md#create-a-personal-access-token) for information on creating a personal access token.
 
-## Create a personal access token with limited scopes for the currently authenticated user **(FREE SELF)**
+## Create a personal access token with limited scopes for the currently authenticated user 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 See the [Users API documentation](users.md#create-a-personal-access-token-with-limited-scopes-for-the-currently-authenticated-user)
 for information on creating a personal access token for the currently authenticated user.

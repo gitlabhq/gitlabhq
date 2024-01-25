@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML API **(PREMIUM ALL)**
+# SAML API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 API for accessing SAML features.
 
@@ -51,7 +55,7 @@ Example response:
 
 ## Get a single SAML identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
 
 ```plaintext
 GET /groups/:id/saml/:uid
@@ -108,7 +112,7 @@ curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/sam
 
 ## Delete a single SAML identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
 
 ```plaintext
 DELETE /groups/:id/saml/:uid

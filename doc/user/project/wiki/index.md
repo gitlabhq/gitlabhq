@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Wiki **(FREE ALL)**
+# Wiki
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Page loading [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/336792) to asynchronous in GitLab 14.9.
 > - Page slug encoding method [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71753) to `ERB::Util.url_encode` in GitLab 14.9.
@@ -42,7 +46,7 @@ has [disabled it](#enable-or-disable-a-project-wiki).
 
 ## Configure a default branch for your wiki
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221159) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221159) in GitLab 14.1.
 
 The default branch for your wiki repository depends on your version of GitLab:
 
@@ -122,7 +126,7 @@ Wiki pages are stored as files in a Git repository, so certain characters have a
 
 ### Length restrictions for file and directory names
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24364) in GitLab 12.8.
 
 Many common file systems have a [limit of 255 bytes](https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits)
 for file and directory names. Git and GitLab both support paths exceeding
@@ -222,7 +226,7 @@ To view the changes for a wiki page:
 
 ### View changes between page versions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15242) in GitLab 13.2.
 
 You can see the changes made in a version of a wiki page, similar to versioned diff file views:
 
@@ -251,7 +255,7 @@ Commits to wikis are not counted in [repository analytics](../../analytics/repos
 
 ## Customize sidebar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23109) in GitLab 13.8, the sidebar can be customized by selecting the **Edit sidebar** button.
 
 Prerequisites:
 
@@ -395,7 +399,11 @@ In GitLab 14.9 and later, page slugs are now encoded using the
 If you use an Apache reverse proxy, you can add a `nocanon` argument to the `ProxyPass`
 line of your Apache configuration to ensure your page slugs render correctly.
 
-### Recreate a project wiki with the Rails console **(FREE SELF)**
+### Recreate a project wiki with the Rails console
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 This operation deletes all data in the wiki.

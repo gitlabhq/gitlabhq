@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sidekiq job migration Rake tasks **(FREE SELF)**
+# Sidekiq job migration Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 This operation should be very uncommon. We do not recommend it for the vast majority of GitLab instances.

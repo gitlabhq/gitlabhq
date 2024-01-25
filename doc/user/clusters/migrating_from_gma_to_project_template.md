@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrate from GitLab Managed Apps to Cluster Management Projects (deprecated) **(FREE ALL)**
+# Migrate from GitLab Managed Apps to Cluster Management Projects (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The GitLab Managed Apps were deprecated in GitLab 14.0
 in favor of user-controlled Cluster Management projects.

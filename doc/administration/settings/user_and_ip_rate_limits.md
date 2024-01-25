@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User and IP rate limits **(FREE SELF)**
+# User and IP rate limits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see
@@ -84,7 +88,7 @@ To enable the unauthenticated request rate limit:
 
 ## Use a custom rate limit response
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50693) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50693) in GitLab 13.8.
 
 A request that exceeds a rate limit returns a `429` response code and a
 plain-text body, which by default is `Retry later`.
@@ -99,7 +103,7 @@ To use a custom response:
 
 ## Maximum authenticated requests to `project/:id/jobs` per minute
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129319) in GitLab 16.5.
 
 To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](../../security/rate_limits.md#project-jobs-api-endpoint) of 600 calls per authenticated user.
 
@@ -112,7 +116,7 @@ To modify the maximum number of requests:
 
 ## Response headers
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `RateLimit` headers. `Retry-After` was introduced in an earlier version.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/731) in GitLab 13.8, the `RateLimit` headers. `Retry-After` was introduced in an earlier version.
 
 When a client exceeds the associated rate limit, the following requests are
 blocked. The server may respond with rate-limiting information allowing the
@@ -131,7 +135,7 @@ attached into the response headers.
 
 ## Use an HTTP header to bypass rate limiting
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/622) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/622) in GitLab 13.6.
 
 Depending on the needs of your organization, you may want to enable rate limiting
 but have some requests bypass the rate limiter.
@@ -168,7 +172,7 @@ To disable the bypass mechanism, make sure the environment variable
 
 ## Allow specific users to bypass authenticated request rate limiting
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49127) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49127) in GitLab 13.7.
 
 Similarly to the bypass header described above, it is possible to allow
 a certain set of users to bypass the rate limiter. This only applies
@@ -193,7 +197,7 @@ At application startup, the allowlist is logged in [`auth.log`](../logs/index.md
 
 ## Try out throttling settings before enforcing them
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/629) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/629) in GitLab 13.6.
 
 You can try out throttling settings by setting the `GITLAB_THROTTLE_DRY_RUN` environment variable to
 a comma-separated list of throttle names.

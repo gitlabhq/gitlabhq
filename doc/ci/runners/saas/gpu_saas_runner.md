@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GPU-enabled SaaS runners **(PREMIUM SAAS)**
+# GPU-enabled SaaS runners 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 GitLab provides GPU-enabled SaaS runners to accelerate heavy compute workloads for ModelOps
 or HPC such as the training or deployment of Large Language Models (LLMs) as part of ModelOps workloads.

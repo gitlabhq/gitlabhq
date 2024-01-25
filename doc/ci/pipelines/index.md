@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD pipelines **(FREE ALL)**
+# CI/CD pipelines 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 Watch the
@@ -150,7 +154,7 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -219,7 +223,7 @@ variables:
 
 ### Run a pipeline by using a URL query string
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
 
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
@@ -279,7 +283,7 @@ pipelines.
 
 ### Delete a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
 Users with the Owner role for a project can delete a pipeline
 by selecting the pipeline in the **Build > Pipelines** to get to the **Pipeline Details**
@@ -324,9 +328,13 @@ runners do not use regular runners, they must be [tagged](../yaml/index.md#tags)
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM ALL)**
+## Trigger a pipeline when an upstream project is rebuilt 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.

@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom group-level project templates **(PREMIUM ALL)**
+# Custom group-level project templates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
 
 When you create a project, you can [choose from a list of templates](../project/index.md).
 These templates, for things like GitLab Pages or Ruby, populate the new project with a copy of the files contained in the

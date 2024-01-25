@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configuring runners **(FREE ALL)**
+# Configuring runners 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -87,7 +91,7 @@ To set the maximum job timeout:
 
 ## Set `script` and `after_script` timeouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
 
 To control the amount of time `script` and `after_script` runs before it terminates, you can set specify a timeout.
 
@@ -417,7 +421,7 @@ osx job:
 
 ### Use CI/CD variables in tags
 
-> Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
+> - Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
 
 In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
 
@@ -622,7 +626,7 @@ Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 
 ### Sync or exclude specific submodules from CI jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
 
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
 You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
@@ -690,7 +694,7 @@ submodule commits as designed, and update them using an auto-remediation/depende
 
 ### Rewrite submodule URLs to HTTPS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
 
 Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
 This allows you to clone submodules on the same GitLab instance that use absolute URLs, even if they were
@@ -739,7 +743,7 @@ You can set it globally or per-job in the [`variables`](../yaml/index.md#variabl
 
 ### Git submodule depth
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
 
 Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
@@ -905,7 +909,7 @@ variables:
 
 ## Artifact provenance metadata
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
 
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
@@ -1016,7 +1020,7 @@ An example of provenance metadata that the GitLab Runner might generate is as fo
 
 ### Staging directory
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
 
 If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
 
@@ -1030,7 +1034,7 @@ used, this location is also used as scratch space when archiving.
 
 ### Configure `fastzip` to improve performance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
 
 To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.

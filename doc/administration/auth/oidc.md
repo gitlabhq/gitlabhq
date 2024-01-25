@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use OpenID Connect as an authentication provider **(FREE SELF)**
+# Use OpenID Connect as an authentication provider
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can use GitLab as a client application with [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.
@@ -459,7 +463,7 @@ gitlab_rails['omniauth_providers'] = [
 
 #### Configure Keycloak with a symmetric key algorithm
 
-> Introduced in GitLab 14.2.
+> - Introduced in GitLab 14.2.
 
 WARNING:
 The following instructions are included for completeness, but only use symmetric key
@@ -749,9 +753,13 @@ def sync_missing_provider(self, user: User, extern_uid: str)
 
 For more information, see the [GitLab API user method documentation](https://python-gitlab.readthedocs.io/en/stable/gl_objects/users.html#examples).
 
-## Configure users based on OIDC group membership **(PREMIUM ALL)**
+## Configure users based on OIDC group membership
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209898) in GitLab 15.10.
 
 You can configure OIDC group membership to:
 
@@ -928,7 +936,11 @@ based on group membership, configure GitLab to identify:
 
 ::EndTabs
 
-### Auditor groups **(PREMIUM SELF)**
+### Auditor groups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
 response to assign users as auditors based on group membership, configure GitLab to identify:

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Filtering outbound requests **(FREE SELF)**
+# Filtering outbound requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
 
@@ -69,7 +73,7 @@ Prerequisites:
 
 ## Filter requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
 
 Prerequisites:
 
@@ -94,7 +98,7 @@ rules.
 
 ## Allow outbound requests to certain IP addresses and domains
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
 
 Prerequisites:
 

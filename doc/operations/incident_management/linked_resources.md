@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linked resources in incidents **(PREMIUM ALL)**
+# Linked resources in incidents
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_resource_links_widget`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
@@ -50,7 +54,7 @@ To add a linked resource:
 
 ### Using a quick action
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5.
 
 To add multiple links to an incident, use the `/link`
 [quick action](../../user/project/quick_actions.md):
@@ -68,7 +72,7 @@ The description shows instead of the URL in the **Linked resources** section of 
 
 ### Link Zoom meetings from an incident
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230853) in GitLab 15.4.
 
 Use the `/zoom` [quick action](../../user/project/quick_actions.md) to add multiple Zoom links to an incident:
 

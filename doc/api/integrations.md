@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrations API **(FREE ALL)**
+# Integrations API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This API enables you to work with external services that integrate with GitLab.
 
@@ -325,7 +329,7 @@ GET /projects/:id/integrations/campfire
 
 ## ClickUp
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120732) in GitLab 16.1.
 
 ### Set up ClickUp
 
@@ -696,7 +700,11 @@ Get the external wiki settings for a project.
 GET /projects/:id/integrations/external-wiki
 ```
 
-## GitHub **(PREMIUM ALL)**
+## GitHub 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ### Set up GitHub
 
@@ -1566,7 +1574,7 @@ Example response:
 
 ## Squash TM
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
 
 ### Set up Squash TM
 

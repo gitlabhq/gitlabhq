@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab.com settings **(FREE SAAS)**
+# GitLab.com settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
@@ -110,7 +114,11 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
 
-## Delayed group deletion **(PREMIUM SAAS)**
+## Delayed group deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 After May 08, 2023, all groups have delayed deletion enabled by default.
 
@@ -118,7 +126,11 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
-## Delayed project deletion **(PREMIUM SAAS)**
+## Delayed project deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 After May 08, 2023, all groups have delayed project deletion enabled by default.
 

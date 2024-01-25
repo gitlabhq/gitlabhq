@@ -4,9 +4,13 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group wikis **(PREMIUM ALL)**
+# Group wikis
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13195) in GitLab 13.5.
 
 If you use GitLab groups to manage multiple projects, some of your documentation
 might span multiple groups. You can create group wikis, instead of [project wikis](index.md),
@@ -34,7 +38,7 @@ To access a group wiki:
 
 ## Export a group wiki
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9.
 
 Users with the Owner role in a group can
 [import or export a group wiki](../../project/settings/import_export.md#migrate-groups-by-uploading-an-export-file-deprecated) when they
@@ -59,7 +63,7 @@ All files in the wiki are available in this Git repository.
 
 ## Configure group wiki visibility
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208412) in GitLab 15.0.
 
 Wikis are enabled by default in GitLab. Group [administrators](../../permissions.md)
 can enable or disable a group wiki through the group settings.

@@ -4,9 +4,13 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge requests for confidential issues **(FREE ALL)**
+# Merge requests for confidential issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58583) in GitLab 12.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/58583) in GitLab 12.1.
 
 Merge requests in a public repository are also public, even when the merge
 request is created for a [confidential issue](../issues/confidential_issues.md).

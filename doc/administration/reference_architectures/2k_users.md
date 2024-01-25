@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 2,000 users **(FREE SELF)**
+# Reference architecture: up to 2,000 users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes the GitLab reference architecture designed for the load of up to 2,000 users
 with notable headroom (non-HA).
@@ -1057,7 +1061,11 @@ GitLab Runner returns job logs in chunks which the Linux package caches temporar
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
 
-## Configure advanced search **(PREMIUM SELF)**
+## Configure advanced search
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

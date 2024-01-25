@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import and migrate groups and projects **(FREE ALL)**
+# Import and migrate groups and projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To bring existing projects to GitLab, or copy GitLab groups and projects to a different location, you can:
 
@@ -23,7 +27,7 @@ You can also copy GitLab projects by using a GitLab file export, which is a supp
 
 ## Supported import sources
 
-> All importers default to disabled for GitLab self-managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
+> - All importers default to disabled for GitLab self-managed installations. This change was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118970) in GitLab 16.0.
 
 The import sources that are available to you by default depend on which GitLab you use:
 

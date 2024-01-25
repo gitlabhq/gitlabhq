@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Forks **(FREE ALL)**
+# Forks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,
@@ -150,7 +154,11 @@ an `upstream` remote repository for your fork:
    git push origin main
    ```
 
-### With repository mirroring **(PREMIUM ALL)**
+### With repository mirroring
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 

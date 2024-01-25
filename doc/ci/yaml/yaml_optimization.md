@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Optimize GitLab CI/CD configuration files **(FREE ALL)**
+# Optimize GitLab CI/CD configuration files 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can reduce complexity and duplicated configuration in your GitLab CI/CD configuration
 files by using:
@@ -165,7 +169,7 @@ You can see that the hidden jobs are conveniently used as templates, and
 
 ### YAML anchors for scripts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23005) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23005) in GitLab 12.5.
 
 You can use [YAML anchors](#anchors) with [script](index.md#script), [`before_script`](index.md#before_script),
 and [`after_script`](index.md#after_script) to use predefined commands in multiple jobs:
@@ -438,7 +442,7 @@ test-vars-2:
 
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74792) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74792) in GitLab 14.8.
 
 You can nest `!reference` tags up to 10 levels deep in `script`, `before_script`, and `after_script` sections. Use nested tags to define reusable sections when building more complex scripts. For example:
 

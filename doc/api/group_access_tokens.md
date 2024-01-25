@@ -4,13 +4,17 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group access tokens API **(FREE ALL)**
+# Group access tokens API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can read more about [group access tokens](../user/group/settings/group_access_tokens.md).
 
 ## List group access tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
 Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
 
@@ -46,7 +50,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get a group access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
 
 Get a [group access token](../user/group/settings/group_access_tokens.md) by ID.
 
@@ -126,7 +130,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Rotate a group access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
 Rotate a group access token. Revokes the previous token and creates a new token that expires in one week.
 
@@ -180,7 +184,7 @@ for more information.
 
 ## Revoke a group access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77236) in GitLab 14.7.
 
 Revoke a [group access token](../user/group/settings/group_access_tokens.md).
 

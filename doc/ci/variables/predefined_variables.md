@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Predefined CI/CD variables reference **(FREE ALL)**
+# Predefined CI/CD variables reference 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Predefined [CI/CD variables](index.md) are available in every GitLab CI/CD pipeline.
 

@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs **(FREE ALL)**
+# Jobs 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Pipeline configuration begins with jobs. Jobs are the most fundamental element of a `.gitlab-ci.yml` file.
 
@@ -262,7 +266,7 @@ In this example:
 
 ## Specifying variables when running manual jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30485) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30485) in GitLab 12.2.
 
 When running manual jobs you can supply additional job specific variables.
 
@@ -312,7 +316,7 @@ In the following example:
 
 ### Custom collapsible sections
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/14664) in GitLab 12.0.
 
 You can create [collapsible sections in job logs](#expand-and-collapse-job-log-sections)
 by manually outputting special codes
@@ -355,7 +359,7 @@ this line should be hidden when collapsed
 
 ### Pre-collapse sections
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198413) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198413) in GitLab 13.5.
 
 You can make the job log automatically collapse collapsible sections by adding the `collapsed` option to the section start.
 Add `[collapsed=true]` after the section name and before the `\r`. The section end marker
@@ -377,7 +381,7 @@ job1:
 
 ### Full screen mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363617) in GitLab 16.7.
 
 You can view the contents of a job log in full screen mode by clicking **Show full screen**.
 
@@ -451,7 +455,11 @@ The configuration can be added to:
   ]
   ```
 
-### Job using `resource_group` gets stuck **(FREE SELF)**
+### Job using `resource_group` gets stuck 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If a job using [`resource_group`](../yaml/index.md#resource_group) gets stuck, a
 GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):

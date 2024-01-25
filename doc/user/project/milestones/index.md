@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Milestones **(FREE ALL)**
+# Milestones
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Milestones in GitLab are a way to track issues and merge requests created to achieve a broader goal in a certain period of time.
 
@@ -110,7 +114,7 @@ The milestone sidebar on the milestone view shows the following:
 
 ## Create a milestone
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 You can create a milestone either in a project or a group.
 
@@ -131,7 +135,7 @@ To create a milestone:
 
 ## Edit a milestone
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
 
@@ -148,7 +152,7 @@ To edit a milestone:
 
 ## Delete a milestone
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
 

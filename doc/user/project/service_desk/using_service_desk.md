@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Service Desk **(FREE ALL)**
+# Use Service Desk
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
@@ -20,7 +24,7 @@ The email address is available at the top of the issue list.
 
 ## As an end user (issue creator)
 
-> Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6. In earlier versions, the Service Desk email address had to be in the "To" field.
+> - Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6. In earlier versions, the Service Desk email address had to be in the "To" field.
 
 To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
@@ -147,7 +151,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 ## Privacy considerations
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
 
 Service Desk issues are [confidential](../issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
@@ -168,7 +172,7 @@ displayed in the information note.
 
 ### Moving a Service Desk issue
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
 
 You can move a Service Desk issue the same way you
 [move a regular issue](../issues/managing_issues.md#move-an-issue) in GitLab.

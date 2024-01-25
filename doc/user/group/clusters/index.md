@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group-level Kubernetes clusters (certificate-based) (deprecated) **(FREE ALL)**
+# Group-level Kubernetes clusters (certificate-based) (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/34758) in GitLab 11.6.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -48,7 +52,7 @@ to the project, provided the cluster is not disabled.
 
 ## Multiple Kubernetes clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35094) in GitLab 13.2.
 
 You can associate more than one Kubernetes cluster to your group, and maintain different clusters
 for different environments, such as development, staging, and production.
@@ -79,7 +83,7 @@ for deployments with a cluster not managed by GitLab, you must ensure:
 
 ### Clearing the cluster cache
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
 
 If you choose to allow GitLab to manage your cluster for you, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
@@ -96,7 +100,7 @@ To clear the cache:
 
 ## Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters) When specifying a domain,
@@ -105,7 +109,11 @@ the [Auto DevOps](../../../topics/autodevops/index.md) stages.
 
 The domain should have a wildcard DNS configured to the Ingress IP address. [More details](../../project/clusters/gitlab_managed_clusters.md#base-domain).
 
-## Environment scopes **(PREMIUM ALL)**
+## Environment scopes
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When adding more than one Kubernetes cluster to your project, you need to differentiate
 them with an environment scope. The environment scope associates clusters with
@@ -161,7 +169,11 @@ The result is:
 - The Staging cluster is used for the `deploy to staging` job.
 - The Production cluster is used for the `deploy to production` job.
 
-## Cluster environments **(PREMIUM ALL)**
+## Cluster environments
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 For a consolidated view of which CI [environments](../../../ci/environments/index.md)
 are deployed to the Kubernetes cluster, see the documentation for

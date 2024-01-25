@@ -4,9 +4,13 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use GCP Secret Manager secrets in GitLab CI/CD **(PREMIUM ALL)**
+# Use GCP Secret Manager secrets in GitLab CI/CD 
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab and GitLab Runner 16.8.
 
 You can use secrets stored in the [Google Cloud (GCP) Secret Manager](https://cloud.google.com/security/products/secret-manager)
 in your GitLab CI/CD pipelines.

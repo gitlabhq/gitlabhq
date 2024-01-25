@@ -4,7 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan result policies **(ULTIMATE ALL)**
+# Scan result policies 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
 
@@ -357,7 +361,10 @@ We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/
 - Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 
-## Experimental features **(EXPERIMENT)**
+## Experimental features
+
+DETAILS:
+**Status:** Experiment
 
 ### Security policy scopes
 
@@ -428,7 +435,11 @@ scan_result_policy:
 
 ## Troubleshooting
 
-### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
+### Merge request rules widget shows a scan result policy is invalid or duplicated 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had scan result policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
 

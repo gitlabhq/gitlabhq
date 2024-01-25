@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Paging and notifications **(FREE ALL)**
+# Paging and notifications
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When there is a new alert or incident, it is important for a responder to be notified
 immediately so they can triage and respond to the problem. Responders can receive
@@ -12,7 +16,7 @@ notifications using the methods described on this page.
 
 ## Slack notifications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
 
 The GitLab for Slack app can be used to receive important incident notifications.
 
@@ -35,7 +39,11 @@ a single email notification for new alerts.
 
 [Update the alert's status](alerts.md#change-an-alerts-status) to manage email notifications for an alert.
 
-## Paging **(PREMIUM ALL)**
+## Paging
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In projects that have an [escalation policy](escalation_policies.md) configured, on-call responders
 can be automatically paged about critical problems through email.

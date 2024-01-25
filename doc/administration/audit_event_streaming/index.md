@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit event streaming **(ULTIMATE ALL)**
+# Audit event streaming
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - UI [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
 > - [Subgroup events recording](https://gitlab.com/gitlab-org/gitlab/-/issues/366878) fixed in GitLab 15.2.
@@ -130,7 +134,7 @@ To delete only the custom HTTP headers for a streaming destination:
 
 #### Verify event authenticity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
 
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
@@ -200,7 +204,7 @@ To override the `content-type` header default value for a top-level group stream
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
 
 Manage Google Cloud Logging destinations for top-level groups.
 
@@ -354,7 +358,11 @@ To delete AWS S3 streaming destinations to a top-level group:
 1. Select **Delete destination**.
 1. Confirm by selecting **Delete destination** in the dialog.
 
-## Instance streaming destinations **(ULTIMATE SELF)**
+## Instance streaming destinations
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
@@ -511,7 +519,7 @@ To override the `content-type` header default value for an instance streaming de
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
 
 Manage Google Cloud Logging destinations for an entire instance.
 

@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Discussions API **(FREE ALL)**
+# Discussions API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Discussions are a set of related notes on:
 
@@ -457,7 +461,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
 ```
 
-## Epics **(ULTIMATE ALL)**
+## Epics 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 ### List group epic discussion items
 

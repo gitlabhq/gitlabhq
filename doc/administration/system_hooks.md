@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# System hooks **(FREE SELF)**
+# System hooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
 requests and are triggered on the following events:

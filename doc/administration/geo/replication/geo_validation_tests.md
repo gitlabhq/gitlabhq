@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo validation tests **(PREMIUM SELF)**
+# Geo validation tests
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The Geo team performs manual testing and validation on common deployment configurations to ensure
 that Geo works when upgrading between minor GitLab versions and major PostgreSQL database versions.

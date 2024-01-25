@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rake tasks **(FREE SELF)**
+# Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides [Rake](https://ruby.github.io/rake/) tasks to assist you with common administration and operational
 processes.

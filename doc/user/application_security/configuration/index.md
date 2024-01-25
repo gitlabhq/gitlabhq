@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Security configuration **(FREE ALL)**
+# Security configuration 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > Security configuration page was [redesigned](https://gitlab.com/gitlab-org/gitlab/-/issues/326926) in GitLab 14.2.
 
@@ -68,7 +72,11 @@ You can configure the following security controls:
 - [Coverage Fuzzing](../coverage_fuzzing/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing).
 
-## Compliance **(ULTIMATE ALL)**
+## Compliance 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 You can configure the following security controls:
 

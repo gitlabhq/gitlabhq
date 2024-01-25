@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating from GitHub Actions **(FREE ALL)**
+# Migrating from GitHub Actions 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you're migrating from GitHub Actions to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your GitHub Action workflows.

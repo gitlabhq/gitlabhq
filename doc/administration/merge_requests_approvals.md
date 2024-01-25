@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approvals **(PREMIUM SELF)**
+# Merge request approvals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39060) in GitLab 12.8.
 
 Merge request approval rules prevent users from overriding certain settings on the project level.
 When enabled at the instance level, these settings [cascade](../user/project/merge_requests/approvals/settings.md#settings-cascading)

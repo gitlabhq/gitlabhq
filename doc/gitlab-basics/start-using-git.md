@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Introduction to using Git through the command line."
 ---
 
-# Command line Git **(FREE ALL)**
+# Command line Git
 
 [Git](https://git-scm.com/) is an open-source distributed version control system. GitLab is built
 on top of Git.

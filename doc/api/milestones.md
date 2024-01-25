@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project milestones API **(FREE ALL)**
+# Project milestones API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use project [milestones](../user/project/milestones/index.md) with the REST API.
 There's a separate [group milestones API](group_milestones.md) page.
@@ -180,7 +184,11 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
-## Get all burndown chart events for a single milestone **(PREMIUM ALL)**
+## Get all burndown chart events for a single milestone 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4737) in GitLab 12.1
 > - Moved to GitLab Premium in 13.9.

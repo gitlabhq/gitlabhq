@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading self-compiled installations **(FREE SELF)**
+# Upgrading self-compiled installations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Make sure you view this upgrade guide from the branch (version) of GitLab you
 would like to install (for example, `16.0`). You can select the required version of documentation in the dropdown list in the upper-right corner of GitLab documentation page.
@@ -185,7 +189,7 @@ git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/g
 
 #### New configuration options for `database.yml`
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119139) in GitLab 16.0 to have `ci:` section in `config/database.yml.postgresql`.
 
 There might be configuration options available for [`database.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/database.yml.postgresql).
 View them with the command below and apply them manually to your current `database.yml`:

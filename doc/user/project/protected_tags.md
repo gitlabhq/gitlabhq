@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected tags **(FREE ALL)**
+# Protected tags
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Protected [tags](repository/tags/index.md):
 
@@ -96,7 +100,7 @@ Users can still create branches, but not tags, with the protected names.
 
 ## Allow deploy keys to create protected tags
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325415) in GitLab 15.11.
 
 You can permit the owner of a [deploy key](deploy_keys/index.md) to create protected tags.
 The deploy key works, even if the user isn't a member of the related project. However, the owner of the deploy

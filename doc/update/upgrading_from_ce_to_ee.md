@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading from Community Edition to Enterprise Edition for self-compiled installations **(FREE SELF)**
+# Upgrading from Community Edition to Enterprise Edition for self-compiled installations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 In the past we used separate documents for upgrading from
@@ -78,7 +82,11 @@ sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:c
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
-### 4. Install `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
+### 4. Install `gitlab-elasticsearch-indexer`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 

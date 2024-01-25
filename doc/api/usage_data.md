@@ -4,13 +4,17 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Data API **(FREE SELF)**
+# Service Data API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Service Data API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
 ## Export Service Ping data
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
 
 Requires a Personal Access Token with `read_service_ping` scope.
 
@@ -42,7 +46,7 @@ Example response:
 
 ## Export metric definitions as a single YAML file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
 
 Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
 

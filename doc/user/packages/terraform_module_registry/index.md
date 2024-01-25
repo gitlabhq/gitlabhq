@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform Module Registry **(FREE ALL)**
+# Terraform Module Registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 > - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
@@ -97,7 +101,7 @@ Example response:
 
 ### Using a CI/CD template (recommended)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
 
 You can use the [`Terraform-Module.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml)
 or the advanced [`Terraform/Module-Base.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Module-Base.gitlab-ci.yml)
@@ -159,7 +163,7 @@ For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML 
 
 ### Allow duplicate Terraform modules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
 
 By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace. To allow publishing duplicate module names:
 

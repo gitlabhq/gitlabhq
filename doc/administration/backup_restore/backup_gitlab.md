@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up GitLab **(FREE SELF)**
+# Back up GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The exact procedure for backing up GitLab depends on many factors. Your particular deployment's usage and configuration determine what kind of data exists, where it is located, and how much there is. These factors influence your options for how to perform a back up, how to store it, and how to restore it.
 
@@ -649,7 +653,7 @@ sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 
 #### Back up specific repository storages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be backed up separately
@@ -743,7 +747,7 @@ For Linux package (Omnibus):
 
 ##### S3 Encrypted Buckets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
 
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
@@ -985,7 +989,7 @@ For self-compiled installations:
 
 ##### Using Azure Blob storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 ::Tabs
 

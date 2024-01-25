@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PyPI packages in the package registry **(FREE ALL)**
+# PyPI packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208747) in GitLab 12.10.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -76,7 +80,7 @@ path (for example, `group%2Fproject`), or the project's ID (for example `42`).
 
 ### Authenticate with a CI job token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202012) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/202012) in GitLab 13.4.
 
 To work with PyPI commands within [GitLab CI/CD](../../../ci/index.md), you
 can use `CI_JOB_TOKEN` instead of a personal access token or deploy token.

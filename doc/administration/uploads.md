@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Uploads administration **(FREE SELF)**
+# Uploads administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Uploads represent all user data that may be sent to GitLab as a single file. For example, avatars and note attachments are uploads. Uploads are integral to GitLab functionality and therefore cannot be disabled.
 
@@ -54,7 +58,11 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-## Using object storage **(FREE SELF)**
+## Using object storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you don't want to use the local disk where GitLab is installed to store the
 uploads, you can use an object storage provider like AWS S3 instead.

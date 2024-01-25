@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo with external PostgreSQL instances **(PREMIUM SELF)**
+# Geo with external PostgreSQL instances
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This document is relevant if you are using a PostgreSQL instance that is not
 managed by the Linux package. This includes

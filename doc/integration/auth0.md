@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Auth0 as an OAuth 2.0 authentication provider **(FREE SELF)**
+# Use Auth0 as an OAuth 2.0 authentication provider 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To enable the Auth0 OmniAuth provider, you must create an Auth0 account, and an
 application.

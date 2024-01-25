@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection **(FREE ALL)**
+# Secret Detection 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
 
@@ -286,7 +290,7 @@ In previous GitLab versions, the following variables were also available:
 
 #### Use FIPS-enabled images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 The default scanner images are built off a base Alpine image for size and maintainability. GitLab
 offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
@@ -322,7 +326,11 @@ pipeline.
 
 To enable full history Secret Detection, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
-## Custom rulesets **(ULTIMATE ALL)**
+## Custom rulesets 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
@@ -516,7 +524,11 @@ For more information on the syntax of remote configurations, see the
 [specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
 on the SAST customize rulesets page.
 
-## Running Secret Detection in an offline environment **(PREMIUM SELF)**
+## Running Secret Detection in an offline environment 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For self-managed GitLab instances in such an environment, Secret Detection requires

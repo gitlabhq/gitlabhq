@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merged results pipelines **(PREMIUM ALL)**
+# Merged results pipelines 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merged results` to `merged results pipelines` in GitLab 14.8.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).

@@ -4,7 +4,11 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Security Dashboards and Security Center **(ULTIMATE ALL)**
+# GitLab Security Dashboards and Security Center 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 ## Security Dashboards
 
@@ -22,7 +26,7 @@ For an overview, see [Security Dashboard](https://www.youtube.com/watch?v=Uo-pDn
 
 ## Vulnerability metrics in the Value Streams Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383697) in GitLab 16.0.
 
 You can view vulnerability metrics also in the [Value Streams Dashboard](../../../user/analytics/value_streams_dashboard.md) comparison panel, which helps you understand security exposure in the context of your organization's software delivery workflows.
 
@@ -105,7 +109,7 @@ To view group security dashboard:
 
 ## Security Center
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3426) in GitLab 13.4.
 
 The Security Center is a configurable personal space where you can view vulnerabilities across all the
 projects you belong to. The Security Center includes:

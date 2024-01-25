@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Where variables can be used **(FREE ALL)**
+# Where variables can be used 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As it's described in the [CI/CD variables](index.md) documentation, you can
 define many different variables. Some of them can be used for all GitLab CI/CD

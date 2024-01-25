@@ -6,7 +6,11 @@ info: This page is owned by the Solutions Architecture team.
 
 {::options parse_block_html="true" /}
 
-# Provision GitLab on a single EC2 instance in AWS **(FREE SELF)**
+# Provision GitLab on a single EC2 instance in AWS
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you want to provision a single GitLab instance on AWS, you have two options:
 

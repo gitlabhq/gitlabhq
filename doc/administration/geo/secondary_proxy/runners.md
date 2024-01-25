@@ -4,9 +4,14 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secondary runners **(PREMIUM SELF EXPERIMENT)**
+# Secondary runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.

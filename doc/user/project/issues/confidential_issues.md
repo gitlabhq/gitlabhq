@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Confidential issues **(FREE ALL)**
+# Confidential issues
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Confidential issues are [issues](index.md) visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-issues).

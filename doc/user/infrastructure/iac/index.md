@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure as Code with Terraform and GitLab **(FREE ALL)**
+# Infrastructure as Code with Terraform and GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To manage your infrastructure with GitLab, you can use the integration with
 Terraform to define resources that you can version, reuse, and share:
@@ -19,7 +23,7 @@ Terraform to define resources that you can version, reuse, and share:
 
 ## Integrate your project with Terraform
 
-> IaC Scanning was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
+> - IaC Scanning was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.6.
 
 The integration with GitLab and Terraform happens through GitLab CI/CD.
 Use an `include` attribute to add the Terraform template to your project and

@@ -7,7 +7,11 @@ description: Read through the GitLab installation methods.
 
 {::options parse_block_html="true" /}
 
-# Installing a GitLab POC on Amazon Web Services (AWS) **(FREE SELF)**
+# Installing a GitLab POC on Amazon Web Services (AWS) 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 

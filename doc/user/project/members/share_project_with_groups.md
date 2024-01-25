@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Share a project with a group **(FREE ALL)**
+# Share a project with a group
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you want a group to have access to your project,
 you can invite [a group](../../group/index.md) to the project.

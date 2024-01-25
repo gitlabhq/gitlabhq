@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Squash TM **(FREE SELF)**
+# Squash TM
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337855) in GitLab 15.10.
 
 When [Squash TM](https://www.squashtest.com/squash-gitlab-integration?lang=en) (Test Management)
 integration is enabled and configured in GitLab, issues (typically user stories) created in GitLab

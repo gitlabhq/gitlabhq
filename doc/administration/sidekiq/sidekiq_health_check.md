@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sidekiq Health Check **(FREE SELF)**
+# Sidekiq Health Check
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides liveness and readiness probes to indicate service health and
 reachability to the Sidekiq cluster. These endpoints

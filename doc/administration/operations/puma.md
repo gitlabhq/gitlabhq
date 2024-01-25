@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure the bundled Puma instance of the GitLab package **(FREE SELF)**
+# Configure the bundled Puma instance of the GitLab package
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Puma is a fast, multi-threaded, and highly concurrent HTTP 1.1 server for
 Ruby applications. It runs the core Rails application that provides the user-facing
@@ -182,7 +186,7 @@ losing Prometheus metrics.
 
 ### Using an encrypted SSL key
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7799) in GitLab 16.1.
 
 Puma supports the use of an encrypted private SSL key, which can be
 decrypted at runtime. The following instructions illustrate how to

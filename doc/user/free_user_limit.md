@@ -4,7 +4,11 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Free user limit **(FREE SAAS)**
+# Free user limit
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 A five-user limit applies to newly created top-level namespaces with
 private visibility on GitLab SaaS. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.

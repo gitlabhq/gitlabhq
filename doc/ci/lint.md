@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Validate GitLab CI/CD configuration **(FREE ALL)**
+# Validate GitLab CI/CD configuration 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the CI Lint tool to check the validity of GitLab CI/CD configuration.
 You can validate the syntax from a `.gitlab-ci.yml` file or any other sample CI/CD configuration.
@@ -32,7 +36,7 @@ To check CI/CD configuration with the CI lint tool:
 
 ## Simulate a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229794) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229794) in GitLab 13.3.
 
 You can simulate the creation of a GitLab CI/CD pipeline to find more complicated issues,
 including problems with [`needs`](yaml/index.md#needs) and [`rules`](yaml/index.md#rules)

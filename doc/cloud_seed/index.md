@@ -4,7 +4,11 @@ group: Incubation
 info: Cloud Seed (formerly 5mp) is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# Cloud Seed **(FREE ALL)**
+# Cloud Seed
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371332) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `google_cloud`. Disabled by default.
 > - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100545) in GitLab 15.5.

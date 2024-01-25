@@ -4,7 +4,11 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Searching in GitLab **(FREE ALL)**
+# Searching in GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab has two types of searches available: **basic** and **advanced**.
 
@@ -13,9 +17,13 @@ Both types of search are the same, except when you are searching through code.
 - When you use basic search to search code, your search includes one project at a time.
 - When you use [advanced search](advanced_search.md) to search code, your search includes all projects at once.
 
-## Global search scopes **(FREE SELF)**
+## Global search scopes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68640) in GitLab 14.3.
 
 To improve the performance of your instance's global search, an administrator can limit the search scope
 by disabling one or more [`ops` feature flags](../../development/feature_flags/index.md#ops-type).
@@ -125,7 +133,7 @@ To search for code in all GitLab, ask your administrator to enable [advanced sea
 
 ### View Git blame from code search
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327052) in GitLab 14.7.
 
 After you find search results, you can view who made the last change to the line
 where the results were found.
@@ -135,7 +143,7 @@ where the results were found.
 
 ### Filter code search results by language
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342651) in GitLab 15.10.
 
 To filter code search results by one or more languages:
 

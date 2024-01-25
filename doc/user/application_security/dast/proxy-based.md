@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST proxy-based analyzer **(ULTIMATE ALL)**
+# DAST proxy-based analyzer 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 WARNING:
 Proxy-based DAST is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
@@ -206,7 +210,7 @@ URLs to scan can be specified by either of the following methods:
 
 ##### Use `DAST_PATHS_FILE` CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6.
 
 To define the URLs to scan in a file, create a plain text file with one path per line.
 
@@ -235,7 +239,7 @@ variables:
 
 ##### Use `DAST_PATHS` CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
 
 To specify the paths to scan in a CI/CD variable, add a comma-separated list of the paths to the `DAST_PATHS`
 variable. You can only scan paths of a single host.
@@ -317,7 +321,7 @@ quotes (`"`), otherwise they are interpreted as numeric values.
 
 #### Hide sensitive information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 HTTP request and response headers may contain sensitive information, including cookies and
 authorization credentials. By default, the following headers are masked:
@@ -333,7 +337,7 @@ headers whose values you want masked. For details on how to mask headers, see
 
 #### Use Mutual TLS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299596) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299596) in GitLab 14.8.
 
 Mutual TLS allows a target application server to verify that requests are from a known source. Browser-based scans do not support Mutual TLS.
 

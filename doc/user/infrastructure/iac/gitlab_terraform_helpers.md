@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Terraform helpers **(FREE ALL)**
+# GitLab Terraform helpers
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides two helpers to ease your integration with the [GitLab-managed Terraform State](terraform_state.md).
 

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code coverage **(FREE ALL)**
+# Code coverage 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use code coverage to provide insights on what source code is being validated by a test suite. Code coverage is one of many test metrics that can determine software performance and quality.
 
@@ -84,7 +88,11 @@ To view a CSV file of the data, select **Download raw data (`.csv`)**.
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
-### View history of group code coverage **(PREMIUM ALL)**
+### View history of group code coverage 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To see the all the project's code coverage under a group over time, you can find view [group repository analytics](../../user/group/repositories_analytics/index.md).
 
@@ -95,7 +103,11 @@ To see the all the project's code coverage under a group over time, you can find
 You can use [pipeline badges](../../user/project/badges.md#test-coverage-report-badges) to indicate the pipeline status and
 test coverage of your projects. These badges are determined by the latest successful pipeline.
 
-## Coverage check approval rule **(PREMIUM ALL)**
+## Coverage check approval rule 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15765) in GitLab 14.0.
 > - [Made configurable in Project Settings](https://gitlab.com/gitlab-org/gitlab/-/issues/331001) in GitLab 14.1.

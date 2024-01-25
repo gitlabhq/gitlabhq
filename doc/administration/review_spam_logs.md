@@ -4,7 +4,11 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review spam logs **(FREE SELF)**
+# Review spam logs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab tracks user activity and flags certain behavior for potential spam.
 

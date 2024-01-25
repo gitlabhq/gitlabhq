@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Hardening Recommendations **(FREE SELF)**
+# GitLab Hardening Recommendations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This documentation is for GitLab instances where the overall system can be "hardened"
 against common and even not-so-common attacks. It is not designed to completely

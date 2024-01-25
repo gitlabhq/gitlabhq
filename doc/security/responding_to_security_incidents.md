@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Responding to security incidents **(FREE ALL)**
+# Responding to security incidents
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When a security incident occurs, you should follow the processes defined by your organization. The GitLab SIRT team created this guide:
 
@@ -19,7 +23,11 @@ Use the suggestions/recommendations mentioned in this guide at your own risk.
 
 ## Common breach scenarios
 
-### Credential exposure to public internet **(FREE SELF)**
+### Credential exposure to public internet
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This scenario refers to security events where sensitive authentication or authorization information has been exposed to the Internet due to misconfigurations or human errors. Such information might include:
 
@@ -47,14 +55,22 @@ Security incidents related to credentials exposure can vary in severity from low
 - Document the time of credential exposure and the time when you revoked the credentials.
 - Review GitLab audit logs to identify any unauthorized activity associated with the exposed token. Depending on the scope and type of token, search for audit events related to newly created users, tokens, run malicious pipelines,changes to code and changes to project settings.
 
-#### Event types **(PREMIUM SELF)**
+#### Event types
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - Review the available [audit events](../administration/audit_events.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
 - Focus on CI-related [audit events](../administration/audit_event_streaming/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
 
-### Suspected compromised user account **(FREE SELF)**
+### Suspected compromised user account
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 #### Response
 
@@ -66,7 +82,11 @@ If you suspect that a user account or bot account has been compromised, you shou
 - Get the user to [enable two factor authentication](../user/profile/account/two_factor_authentication.md) (2FA), and consider [enforcing 2FA at the instance or group level](two_factor_authentication.md).
 - After completing an investigation and mitigating impacts, unblock the user.
 
-#### Event types **(PREMIUM SELF)**
+#### Event types
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Review the [audit events](../administration/audit_events.md) available to you to identify any suspicious account behavior. For example:
 
@@ -82,7 +102,11 @@ Review the [audit events](../administration/audit_events.md) available to you to
 - Changes to connected SAML identity providers.
 - Changes to email addresses or notifications.
 
-### CI/CD-related security incidents **(FREE ALL)**
+### CI/CD-related security incidents
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 CI/CD workflows are an integral part of modern day software development and primarily used by developers and SREs to build, test and deploy code to production. Because these workflows are attached to the production environments, they often require access to sensitive secrets within the CI/CD pipelines. Security incidents related to CI/CD might vary based on your setup, but they can be broadly classified as follows:
 
@@ -115,7 +139,11 @@ When secrets stored as CI variables are not [masked](../ci/variables/index.md#ma
 - Review audit logs for the exposed secrets systems such as CloudTrail logs for AWS or CloudAudit Logs for GCP to determine if any suspicious changes were made at the time of exposure.
 - Review audit logs available to you for any suspicious modifications to user and project settings.
 
-### Suspected compromised instance **(FREE ALL)**
+### Suspected compromised instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Self-managed GitLab customers and administrators are responsible for:
 
@@ -143,11 +171,19 @@ If you suspect that your GitLab instance has been compromised, you should:
 - Restrict inbound and outbound network access to authorized users and servers only.
 - Ensure all logs are routed to an independent write-only datastore.
 
-#### Event types **(PREMIUM SELF)**
+#### Event types
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Review [system access audit events](../administration/audit_event_streaming/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
-### Misconfigured project or group settings **(PREMIUM ALL)**
+### Misconfigured project or group settings
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Security incidents can occur as a result of improperly configured project or group settings, potentially leading to unauthorized access to sensitive or proprietary data. These incidents may include but are not limited to:
 
@@ -165,7 +201,11 @@ If you suspect unauthorized modifications to project settings, consider taking t
 - If the user account appears suspicious, follow the steps outlined in the [suspected compromised user account guide](#suspected-compromised-user-account).
 - Consider reverting the settings to their original state by referring to the audit events and consulting the project owners and maintainers for guidance.
 
-#### Event types **(PREMIUM SELF)**
+#### Event types
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
 - Look for specific audit events of [compliance management](../administration/audit_event_streaming/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_streaming/audit_event_types.md#groups-and-projects).

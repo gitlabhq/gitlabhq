@@ -4,14 +4,22 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sorting and ordering issue lists **(FREE ALL)**
+# Sorting and ordering issue lists
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can sort a list of issues several ways.
 The available sorting options can change based on the context of the list.
 
-## Sorting by blocking issues **(PREMIUM ALL)**
+## Sorting by blocking issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34247/) in GitLab 13.7.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34247/) in GitLab 13.7.
 
 When you sort by **Blocking**, the issue list changes to sort descending by the
 number of issues each issue is [blocking](related_issues.md#blocking-issues).
@@ -45,7 +53,7 @@ update. Issues changed the most recently are shown first.
 
 ## Manual sorting
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62178) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62178) in GitLab 12.2.
 
 When you sort by **Manual** order, you can change
 the order by dragging and dropping the issues. The changed order persists, and
@@ -95,7 +103,7 @@ To learn how to change label priority, see [Label priority](../labels.md#set-lab
 
 ## Sorting by title
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67234) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67234) in GitLab 14.3.
 
 When you sort by **Title**, the issue order changes to sort alphabetically by the issue
 title in this order:
@@ -105,9 +113,13 @@ title in this order:
 - Numbers
 - Letters: first Latin, then accented (for example, `ö`)
 
-## Sorting by health status **(ULTIMATE ALL)**
+## Sorting by health status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377841) in GitLab 15.7.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377841) in GitLab 15.7.
 
 When you sort by **Health**, the issue list changes to sort by the
 [health status](managing_issues.md#health-status) of the issues

@@ -1248,9 +1248,13 @@ Example response:
 
 - CustomersDot
 
-## Group SCIM API **(PREMIUM SAAS)**
+## Group SCIM API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9388) in GitLab 11.10.
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.
@@ -1497,9 +1501,13 @@ curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/groups/t
 
 Returns an empty response with a `204` status code if successful.
 
-## Instance SCIM API **(PREMIUM SELF)**
+## Instance SCIM API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
 
 The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/application/Users` and `/application/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
 **system** use for SCIM provider integration, it is subject to change without notice.

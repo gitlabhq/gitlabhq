@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis replication and failover providing your own instance **(FREE SELF)**
+# Redis replication and failover providing your own instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you're hosting GitLab on a cloud provider, you can optionally use a managed
 service for Redis. For example, AWS offers ElastiCache that runs Redis.

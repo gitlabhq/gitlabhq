@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linux package deprecation policy **(FREE SELF)**
+# Linux package deprecation policy
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Linux packages come with number of different libraries and services which offers users plethora of configuration options.
 

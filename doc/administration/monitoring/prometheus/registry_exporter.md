@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Registry exporter **(FREE SELF)**
+# Registry exporter
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Registry exporter allows you to measure various Registry metrics.
 To enable it:

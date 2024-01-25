@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML SSO for GitLab.com groups **(PREMIUM SAAS)**
+# SAML SSO for GitLab.com groups
 
-> Introduced in GitLab 11.0.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
+
+> - Introduced in GitLab 11.0.
 
 Users can sign in to GitLab through their SAML identity provider.
 
@@ -236,7 +240,7 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 
 ## Configure GitLab
 
-> Ability to set a custom role as the default membership role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417285) in GitLab 16.7.
+> - Ability to set a custom role as the default membership role [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417285) in GitLab 16.7.
 
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
@@ -266,7 +270,7 @@ If you are having issues configuring GitLab, see the [troubleshooting documentat
 
 ## User access and management
 
-> SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
+> - SAML user provisioning [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/268142) in GitLab 13.7.
 
 After group SSO is configured and enabled, users can access the GitLab.com group through the identity provider's dashboard.
 If [SCIM](scim_setup.md) is configured, see [user access](scim_setup.md#user-access) on the SCIM page.
@@ -281,7 +285,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 ### Link SAML to your existing GitLab.com account
 
-> **Remember me** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121569) in GitLab 15.7.
+> - **Remember me** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/121569) in GitLab 15.7.
 
 To link SAML to your existing GitLab.com account:
 
@@ -312,7 +316,7 @@ are then redirected to sign in through the identity provider.
 
 ### Manage user SAML identity
 
-> Update of SAML identities using the SAML API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+> - Update of SAML identities using the SAML API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 GitLab.com uses the SAML **NameID** to identify users. The **NameID** is:
 
@@ -402,7 +406,7 @@ convert the information to XML. An example SAML response is shown here.
 
 ### Bypass user email confirmation with verified domains
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4.
 
 By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can
 [configure GitLab with a custom domain](../../enterprise_user/index.md#set-up-a-verified-domain) and GitLab

@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up Flux for GitOps **(FREE ALL)**
+# Tutorial: Set up Flux for GitOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial teaches you how to set up Flux for GitOps. You'll complete a bootstrap installation,
 install `agentk` in your cluster, and deploy a simple `nginx` application.
@@ -171,7 +175,7 @@ To install `agentk`:
      interval: 1h0m0s
      values:
        config:
-         kasAddress: "wss://kas.gitlab.com"  
+         kasAddress: "wss://kas.gitlab.com"
          secretName: gitlab-agent-token
    ```
 

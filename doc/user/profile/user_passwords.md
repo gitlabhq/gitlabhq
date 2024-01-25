@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User passwords **(FREE ALL)**
+# User passwords
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it
 easier for unauthorized people to log into your account.
@@ -23,7 +27,7 @@ authorization provider, you do not need to choose a password. GitLab
 
 ## Change your password
 
-> Password reset emails sent to any verified email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16311) in GitLab 16.1.
+> - Password reset emails sent to any verified email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16311) in GitLab 16.1.
 
 You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new
 password.

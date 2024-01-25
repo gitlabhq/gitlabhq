@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Tutorial: Update Git commit messages **(FREE ALL)**
+# Tutorial: Update Git commit messages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Occasionally, after you've made a few commits to your branch, you realize you need
 to update one or more commit messages. Perhaps you found a typo, or some automation warned you

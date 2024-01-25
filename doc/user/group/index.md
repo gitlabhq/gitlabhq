@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups **(FREE ALL)**
+# Groups
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
@@ -119,7 +123,7 @@ To edit group details:
 
 ## Leave a group
 
-> The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - The button to leave a group [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 When you leave a group:
 
@@ -134,7 +138,7 @@ To leave a group:
 
 ## Remove a group
 
-> Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+> - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
 To remove a group and its contents:
 
@@ -157,7 +161,11 @@ In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257),
 
 In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
-## Remove a group immediately **(PREMIUM ALL)**
+## Remove a group immediately
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336985) in GitLab 14.2.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -179,9 +187,13 @@ To immediately remove a group marked for deletion:
 
 This action deletes the group, its subgroups, projects, and all related resources, including issues and merge requests.
 
-## Restore a group **(PREMIUM ALL)**
+## Restore a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
 To restore a group that is marked for deletion:
 
@@ -278,7 +290,7 @@ You can sort members by **Account**, **Access granted**, **Max role**, or **Last
 
 ## Add users to a group
 
-> Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
+> - Expiring access email notification [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12704) in GitLab 16.2.
 
 You can give a user access to all projects in a group.
 
@@ -372,7 +384,7 @@ To change this setting globally, see [Default project creation protection](../..
 
 ## Get the group ID
 
-> Group ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - Group ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 You might need the group ID if you want to interact with it using the [GitLab API](../../api/index.md).
 

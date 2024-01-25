@@ -4,9 +4,13 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Push event activities limit and bulk push events **(FREE SELF)**
+# Push event activities limit and bulk push events
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31007) in GitLab 12.4.
 
 Set the number of branches or tags to limit the number of single push events
 allowed at once. If the number of events is greater than this, GitLab creates

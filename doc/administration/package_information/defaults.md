@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package defaults **(FREE SELF)**
+# Package defaults
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Unless configuration is specified in the `/etc/gitlab/gitlab.rb` file,
 the package assumes the defaults as noted below.

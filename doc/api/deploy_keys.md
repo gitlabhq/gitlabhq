@@ -4,14 +4,22 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy keys API **(FREE ALL)**
+# Deploy keys API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The deploy keys API can return in responses fingerprints of the public key in the following fields:
 
 - `fingerprint` (MD5 hash). Not available on FIPS-enabled systems.
 - `fingerprint_sha256` (SHA256 hash). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) in GitLab 15.2.
 
-## List all deploy keys **(FREE SELF)**
+## List all deploy keys 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > `projects_with_readonly_access` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119147) in GitLab 16.0.
 
@@ -137,7 +145,7 @@ Example response:
 
 ## List project deploy keys for user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88917) in GitLab 15.1.
 
 Get a list of a specified user (requestee) and the authenticated user's (requester) common [project deploy keys](../user/project/deploy_keys/index.md#scope). It lists only the **enabled project keys from the common projects of requester and requestee**.
 

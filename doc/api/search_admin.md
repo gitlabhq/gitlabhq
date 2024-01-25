@@ -4,9 +4,13 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Search admin API **(PREMIUM SELF)**
+# Search admin API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120751) in GitLab 16.1
 
 The search admin API returns information about [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations).
 

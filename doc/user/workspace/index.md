@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Workspaces **(PREMIUM ALL)**
+# Workspaces
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -31,7 +35,7 @@ A running workspace remains accessible even if user permissions are later revoke
 
 ### Open and manage workspaces from a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
 
 To open a workspace from a file or the repository file list:
 
@@ -169,7 +173,7 @@ For more information, see [Web IDE](../project/web_ide/index.md).
 
 ## Personal access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 
 When you [create a workspace](configuration.md#set-up-a-workspace), you get a personal access token with `write_repository` permission.
 This token is used to initially clone the project while starting the workspace.

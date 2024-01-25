@@ -4,9 +4,13 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Active sessions **(FREE ALL)**
+# Active sessions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17867) in GitLab 10.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17867) in GitLab 10.8.
 
 GitLab lists all devices that have logged into your account. You can
 review the sessions, and revoke any you don't recognize.
@@ -23,7 +27,7 @@ To list all active sessions:
 
 ## Active sessions limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31611) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31611) in GitLab 12.6.
 
 GitLab allows users to have up to 100 active sessions at once. If the number of active sessions
 exceeds 100, the oldest ones are deleted.

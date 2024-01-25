@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git server hooks **(FREE SELF)**
+# Git server hooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
@@ -38,7 +42,7 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
 
 Prerequisites:
 
@@ -169,7 +173,7 @@ subdirectories.
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
 
 Prerequisites:
 

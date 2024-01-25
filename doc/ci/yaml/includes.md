@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use CI/CD configuration from other files **(FREE ALL)**
+# Use CI/CD configuration from other files 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use [`include`](index.md#include) to include external YAML files in your CI/CD jobs.
 
@@ -298,7 +302,7 @@ default:
 
 ### Use nested includes with duplicate `includes` entries
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28987) in GitLab 14.8
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28987) in GitLab 14.8
 
 Nested includes can include the same configuration file. The duplicate configuration
 file is included multiple times, but the effect is the same as if it was only
@@ -502,7 +506,7 @@ for information about work to improve this behavior.
 
 ### `include` with `rules:changes`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342209) in GitLab 16.4.
 
 Use [`rules:changes`](index.md#ruleschanges) to conditionally include other configuration files
 based on changed files. For example:

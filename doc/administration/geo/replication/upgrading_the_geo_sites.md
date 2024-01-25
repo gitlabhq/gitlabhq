@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading the Geo sites **(PREMIUM SELF)**
+# Upgrading the Geo sites
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 Read these sections carefully before updating your Geo sites. Not following

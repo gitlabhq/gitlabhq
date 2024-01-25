@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval rules **(PREMIUM ALL)**
+# Merge request approval rules
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Approval rules define how many [approvals](index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
@@ -176,7 +180,7 @@ to use a single license.
 
 ### Code owners as eligible approvers
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you add [code owners](../../codeowners/index.md) to your repository, the owners of files
 become eligible approvers in the project. To enable this merge request approval rule:
@@ -256,7 +260,7 @@ appreciated, but not required. To make an approval rule optional:
 
 ## Approvals for protected branches
 
-> **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
+> - **All protected branches** target branch option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360930) in GitLab 15.3.
 
 Approval rules are often relevant only to specific branches, like your
 [default branch](../../repository/branches/default.md). To configure an
@@ -279,7 +283,11 @@ coverage.
 
 For more information, see [Coverage check approval rule](../../../../ci/testing/code_coverage.md#coverage-check-approval-rule).
 
-## Security Approvals **(ULTIMATE ALL)**
+## Security Approvals
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - Security approvals moved to merge request approvals settings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357021) in GitLab 15.0.
 > - Bot comment for approvals [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411656) in GitLab 16.2 [with a flag](../../../../administration/feature_flags.md) named `security_policy_approval_notification`. Enabled by default.

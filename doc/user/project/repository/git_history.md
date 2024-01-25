@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Documentation on Git file history."
 ---
 
-# Git file history **(FREE ALL)**
+# Git file history
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Git file History provides information about the commit history associated
 with a file. To use it:

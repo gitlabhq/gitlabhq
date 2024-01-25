@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab agent configuration **(PREMIUM ALL)**
+# GitLab agent configuration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -114,7 +118,7 @@ The default value for `network_policy.enabled` is `true`.
 
 #### `network_policy.egress`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
 
 Use this setting to define a list of IP CIDR ranges to allow as egress destinations from a workspace.
 
@@ -148,7 +152,7 @@ In this example, traffic from the workspace is allowed if:
 
 ### `default_resources_per_workspace_container`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
 
 Use this setting to define the default [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace container.
@@ -174,7 +178,7 @@ remote_development:
 
 ### `max_resources_per_workspace`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
 
 Use this setting to define the maximum [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace.
@@ -206,7 +210,7 @@ to perform bootstrapping operations such as cloning the project repository.
 
 ### `workspaces_quota`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
 
 Use this setting to set the maximum number of workspaces for the GitLab agent.
 
@@ -229,7 +233,7 @@ remote_development:
 
 ### `workspaces_per_user_quota`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
 
 Use this setting to set the maximum number of workspaces per user.
 

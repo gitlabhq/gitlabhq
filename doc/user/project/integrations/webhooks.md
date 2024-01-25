@@ -5,7 +5,11 @@ description: Custom HTTP callbacks, used to send events.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Webhooks **(FREE ALL)**
+# Webhooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
 that you define. They are usually triggered by an
@@ -38,7 +42,11 @@ including:
 - The maximum number of webhooks and their size, both per project and per group.
 - The number of webhook calls per minute.
 
-## Group webhooks **(PREMIUM ALL)**
+## Group webhooks
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can configure a group webhook, which is triggered by events
 that occur across all projects in the group and its subgroups. If you configure identical webhooks
@@ -323,7 +331,7 @@ You can [review recently triggered webhook payloads](#troubleshooting) in GitLab
 
 ## Troubleshooting
 
-> **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
+> - **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.
 
 GitLab records the history of each webhook request.
 You can view requests made in the last 2 days in the **Recent events** table.
@@ -383,7 +391,7 @@ GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#othe
 
 ### Webhook is not triggered
 
-> Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
+> - Webhooks not triggered in Silent Mode [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393639) in GitLab 16.3.
 
 If a webhook is not triggered, check that:
 

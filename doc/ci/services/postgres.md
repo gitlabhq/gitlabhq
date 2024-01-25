@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using PostgreSQL **(FREE ALL)**
+# Using PostgreSQL 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As many applications depend on PostgreSQL as their database, you
 eventually need it in order for your tests to run. Below you are guided how to

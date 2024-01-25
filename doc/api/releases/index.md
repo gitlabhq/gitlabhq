@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Releases API **(FREE ALL)**
+# Releases API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
 > - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
@@ -410,7 +414,7 @@ Example response:
 
 ## Download a release asset
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
 
 Download a release asset file by making a request with the following format:
 
@@ -433,7 +437,7 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 
 ### Get the latest release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358188) in GitLab 15.4.
 
 Latest release information is accessible through a permanent API URL.
 
@@ -600,16 +604,24 @@ Example response:
 }
 ```
 
-### Group milestones **(PREMIUM SELF)**
+### Group milestones 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235391) in GitLab 13.5.
 
 Group milestones associated with the project may be specified in the `milestones`
 array for [Create a release](#create-a-release) and [Update a release](#update-a-release)
 API calls. Only milestones associated with the project's group may be specified, and
 adding milestones for ancestor groups raises an error.
 
-## Collect release evidence **(PREMIUM SELF)**
+## Collect release evidence 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
@@ -833,7 +845,7 @@ Example response:
 
 ## Upcoming Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 A release with a `released_at` attribute set to a future date is labeled
 as an **Upcoming Release** [in the UI](../../user/project/releases/index.md#upcoming-releases).
@@ -842,7 +854,7 @@ Additionally, if a [release is requested from the API](#list-releases), for each
 
 ## Historical releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
 
 A release with a `released_at` attribute set to a past date is labeled
 as an **Historical release** [in the UI](../../user/project/releases/index.md#historical-releases).

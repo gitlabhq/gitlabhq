@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
+# Use Azure Key Vault secrets in GitLab CI/CD 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
 > - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.

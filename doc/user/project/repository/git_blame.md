@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Documentation on Git file blame."
 ---
 
-# Git file blame **(FREE ALL)**
+# Git file blame
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Git blame](https://git-scm.com/docs/git-blame) provides more information
 about every line in a file, including the last modified time, author, and

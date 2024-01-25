@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab 16 changes **(FREE SELF)**
+# GitLab 16 changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:
@@ -593,7 +597,11 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Specific information applies to installations using Geo:
 
@@ -672,7 +680,11 @@ Specific information applies to Linux package installations:
 - [Migrate your Gitaly configuration to the new structure](#gitaly-configuration-structure-change)
   to ensure all your `gitaly['..']` settings continue to work in GitLab 16.0 and later.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Specific information applies to installations using Geo:
 

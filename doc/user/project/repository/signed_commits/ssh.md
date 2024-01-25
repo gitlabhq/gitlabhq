@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Sign commits with SSH keys **(FREE ALL)**
+# Sign commits with SSH keys
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
@@ -145,7 +149,7 @@ for Git to associate SSH public keys with users:
 
 ## Revoke an SSH key for signing commits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108344) in GitLab 15.9.
 
 If an SSH key becomes compromised, revoke it. Revoking a key changes both future and past commits:
 

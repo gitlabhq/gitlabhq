@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a GitLab Pages website from a CI/CD template **(FREE ALL)**
+# Create a GitLab Pages website from a CI/CD template
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides `.gitlab-ci.yml` templates for the most popular Static Site Generators (SSGs).
 You can create your own `.gitlab-ci.yml` file from one of these templates, and run

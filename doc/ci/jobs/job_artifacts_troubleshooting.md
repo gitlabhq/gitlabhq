@@ -38,7 +38,7 @@ wasn't created.
 
 ## Error message `Missing /usr/bin/gitlab-runner-helper. Uploading artifacts is disabled.`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3068) in GitLab 15.2, GitLab Runner uses `RUNNER_DEBUG` instead of `DEBUG`, fixing this issue.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3068) in GitLab 15.2, GitLab Runner uses `RUNNER_DEBUG` instead of `DEBUG`, fixing this issue.
 
 In GitLab 15.1 and earlier, setting a CI/CD variable named `DEBUG` can cause artifact uploads to fail.
 

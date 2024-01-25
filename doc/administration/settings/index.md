@@ -5,7 +5,11 @@ description: Product settings.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Update your Admin Area settings **(FREE SELF)**
+# Update your Admin Area settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 As an administrator of a GitLab self-managed instance, you can manage the behavior of your
 deployment.

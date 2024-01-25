@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
+# Troubleshooting PostgreSQL replication and failover for Linux package installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 When working with PostgreSQL replication and failover, you might encounter the following issues.
 

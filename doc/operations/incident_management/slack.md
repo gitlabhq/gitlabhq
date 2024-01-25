@@ -4,7 +4,12 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incident management for Slack **(FREE SAAS BETA)**
+# Incident management for Slack
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344856) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `incident_declare_slash_command`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/378072) in GitLab 15.10 in [Beta](../../policy/experiment-beta-support.md#beta).

@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine **(FREE ALL)**
+# Tutorial: Configure GitLab Runner to use the Google Kubernetes Engine
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial describes how to configure GitLab Runner to use the Google Kubernetes Engine (GKE)
 to run jobs.

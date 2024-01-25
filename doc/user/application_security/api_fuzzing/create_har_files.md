@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# HTTP Archive format **(ULTIMATE ALL)**
+# HTTP Archive format 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 HTTP Archive (HAR) format files are an industry standard for exchanging information about HTTP
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions

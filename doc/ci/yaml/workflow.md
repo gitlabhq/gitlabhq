@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD `workflow` keyword **(FREE ALL)**
+# GitLab CI/CD `workflow` keyword 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the [`workflow`](index.md#workflow) keyword to control when pipelines are created.
 
@@ -63,7 +67,7 @@ request pipelines.
 
 ### Switch between branch pipelines and merge request pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201845) in GitLab 13.8.
 
 To make the pipeline switch from branch pipelines to merge request pipelines after
 a merge request is created, add a `workflow: rules` section to your `.gitlab-ci.yml` file.
@@ -136,7 +140,7 @@ This example assumes that your long-lived branches are [protected](../../user/pr
 
 ## `workflow:rules` templates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217732) in GitLab 13.0.
 
 GitLab provides templates that set up `workflow: rules`
 for common scenarios. These templates help prevent duplicate pipelines.

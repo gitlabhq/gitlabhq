@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Design management **(FREE ALL)**
+# Design management
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With Design Management you can upload design assets (including wireframes and mockups)
 to GitLab issues and keep them stored in a single place. Product designers, product managers, and
@@ -105,7 +109,7 @@ To move around the image while zoomed in, drag the image.
 
 ## Add a design to an issue
 
-> Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
+> - Ability to edit the description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388449) in GitLab 16.1.
 
 Prerequisites:
 
@@ -221,7 +225,7 @@ so that everyone involved can participate in the discussion.
 
 ## Delete a comment from a design
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385100) in GitLab 15.9.
 
 Prerequisites:
 

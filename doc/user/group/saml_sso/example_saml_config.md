@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Example group SAML and SCIM configurations **(PREMIUM SAAS)**
+# Example group SAML and SCIM configurations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 These are notes and screenshots regarding Group SAML and SCIM that the GitLab Support Team sometimes uses while troubleshooting, but which do not fit into the official documentation. GitLab is making this public, so that anyone can make use of the Support team's collected knowledge.
 

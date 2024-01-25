@@ -4,9 +4,13 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights **(ULTIMATE ALL)**
+# Insights
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
 Configure insights for your projects and groups to explore data such as:
 
@@ -66,7 +70,7 @@ To exclude a dimension, from the legend below the chart, select the name of the 
 
 ### Drill down on charts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
 
 You can drill down into the data of the **Bugs created per month by priority** and **Bugs created per month by severity** charts from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
 
@@ -249,7 +253,7 @@ monthlyBugsCreated:
 
 #### `query.data_source`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
 
 Use `data_source` to define the data source that exposes the data.
 
@@ -382,7 +386,7 @@ you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 #### `DORA` query parameters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
 
 Use DORA-specific queries with the `dora` data source to create a DORA chart definition.
 

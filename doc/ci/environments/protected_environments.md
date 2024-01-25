@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected environments **(PREMIUM ALL)**
+# Protected environments 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Environments](../environments/index.md) can be used for both testing and
 production reasons.
@@ -255,7 +259,7 @@ To protect a group-level environment, make sure your environments have the corre
 
 #### Using the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325249) in GitLab 15.1.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.

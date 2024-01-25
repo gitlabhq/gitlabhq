@@ -4,9 +4,13 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OpenID Connect (OIDC) Authentication Using ID Tokens **(FREE ALL)**
+# OpenID Connect (OIDC) Authentication Using ID Tokens 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 You can authenticate with third party services using GitLab CI/CD's
 [ID tokens](../yaml/index.md#id_tokens).
@@ -139,7 +143,11 @@ manual_authentication:
     - my-authentication-script.sh $VAULT_TOKEN $PASSWORD
 ```
 
-## Automatic ID Token authentication with HashiCorp Vault **(PREMIUM ALL)**
+## Automatic ID Token authentication with HashiCorp Vault 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use ID tokens to automatically fetch secrets from HashiCorp Vault with the
 [`secrets`](../yaml/index.md#secrets) keyword.

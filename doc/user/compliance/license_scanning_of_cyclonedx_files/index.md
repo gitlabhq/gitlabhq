@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# License scanning of CycloneDX files **(ULTIMATE ALL)**
+# License scanning of CycloneDX files
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.

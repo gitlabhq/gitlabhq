@@ -4,9 +4,13 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo sites API **(PREMIUM SELF)**
+# Geo sites API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0.
 
 Use the Geo sites API to manage Geo site endpoints.
 

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using Git submodules with GitLab CI/CD **(FREE ALL)**
+# Using Git submodules with GitLab CI/CD 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to keep
 a Git repository as a subdirectory of another Git repository. You can clone another
@@ -17,7 +21,7 @@ You have multiple options to configure it to work in a GitLab CI/CD job.
 
 ### Using absolute URLs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
 
 For example, your generated `.gitmodules` configuration might look like the following if:
 

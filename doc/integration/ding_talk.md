@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use DingTalk as an OAuth 2.0 authentication provider **(FREE SELF)**
+# Use DingTalk as an OAuth 2.0 authentication provider 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341898) in GitLab 14.5.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/390855) in GitLab 15.10.

@@ -5,7 +5,11 @@ description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API **(FREE ALL)**
+# REST API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The REST APIs have been around for a longer time compared to GraphQL APIs, which
 may make them more familiar to some developers. It is often a good choice for
@@ -865,7 +869,7 @@ API endpoints do not support `text/plain` by default, unless it's explicitly doc
 
 ## Resolve requests detected as spam
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352913) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352913) in GitLab 14.9.
 
 REST API requests can be detected as spam. If a request is detected as spam and:
 

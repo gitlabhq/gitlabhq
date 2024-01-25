@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Trigger pipelines by using the API **(FREE ALL)**
+# Trigger pipelines by using the API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).

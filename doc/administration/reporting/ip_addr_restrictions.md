@@ -4,7 +4,11 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# IP address restrictions **(FREE SELF)**
+# IP address restrictions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 IP address restrictions help prevent malicious users hiding their activities behind multiple IP addresses.
 

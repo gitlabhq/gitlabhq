@@ -119,7 +119,7 @@ The following events are supported for integrations:
 | [Pipeline event](../../user/project/integrations/webhook_events.md#pipeline-events)            |         | `pipeline`           | A pipeline status changes.
 | [Push event](../../user/project/integrations/webhook_events.md#push-events)                    | ✓       | `push`               | A push is made to the repository.
 | [Tag push event](../../user/project/integrations/webhook_events.md#tag-events)                 | ✓       | `tag_push`           | New tags are pushed to the repository.
-| Vulnerability event **(ULTIMATE ALL)**                                                             |         | `vulnerability`      | A new, unique vulnerability is recorded.
+| Vulnerability event                                                             |         | `vulnerability`      | A new, unique vulnerability is recorded. Ultimate only.
 | [Wiki page event](../../user/project/integrations/webhook_events.md#wiki-page-events)          | ✓       | `wiki_page`          | A wiki page is created or updated.
 
 #### Event examples

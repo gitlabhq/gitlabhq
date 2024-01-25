@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using NFS with GitLab **(FREE SELF)**
+# Using NFS with GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons.

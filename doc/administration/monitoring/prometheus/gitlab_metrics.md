@@ -4,7 +4,11 @@ group: Shared responsibility based on functional area
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Prometheus metrics **(FREE SELF)**
+# GitLab Prometheus metrics
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To enable the GitLab Prometheus metrics:
 
@@ -104,8 +108,8 @@ The following metrics are available:
 | `gitlab_transaction_db_<role>_cached_count_total`                | Counter     | 13.1    | Counter for total number of cached SQL calls, grouped by database roles (primary/replica)                             | `controller`, `action`, `endpoint_id`                                    |
 | `gitlab_transaction_db_<role>_wal_count_total`                   | Counter     | 14.0    | Counter for total number of WAL (write ahead log location) queries, grouped by database roles (primary/replica)       | `controller`, `action`, `endpoint_id`                                    |
 | `gitlab_transaction_db_<role>_wal_cached_count_total`            | Counter     | 14.1    | Counter for total number of cached WAL (write ahead log location) queries, grouped by database roles (primary/replica)| `controller`, `action`, `endpoint_id`                                    |
-| `http_elasticsearch_requests_duration_seconds` **(PREMIUM ALL)**     | Histogram   | 13.1    | Elasticsearch requests duration during web transactions                                                               | `controller`, `action`, `endpoint_id`                                    |
-| `http_elasticsearch_requests_total` **(PREMIUM ALL)**                | Counter     | 13.1    | Elasticsearch requests count during web transactions                                                                  | `controller`, `action`, `endpoint_id`                                    |
+| `http_elasticsearch_requests_duration_seconds`   | Histogram   | 13.1    | Elasticsearch requests duration during web transactions. Premium and Ultimate only.                                                               | `controller`, `action`, `endpoint_id`                                    |
+| `http_elasticsearch_requests_total`               | Counter     | 13.1    | Elasticsearch requests count during web transactions. Premium and Ultimate only.                                                                  | `controller`, `action`, `endpoint_id`                                    |
 | `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          |                                                           |
 | `rack_uncaught_errors_total`                                     | Counter     | 9.4     | Rack connections handling uncaught errors count                                                                       |                                                           |
 | `user_session_logins_total`                                      | Counter     | 9.4     | Counter of how many users have logged in since GitLab was started or restarted                                        |                                                           |
@@ -408,7 +412,11 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_design_management_repositories_verification_failed` | Gauge   | 16.1 | Number of design repositories verifications failed on secondary | `url` |
 | `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3 | The number of active runners that can process the CI/CD queue in a project |
 
-## Database load balancing metrics **(PREMIUM SELF)**
+## Database load balancing metrics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following metrics are available:
 
@@ -418,7 +426,11 @@ The following metrics are available:
 | `sidekiq_load_balancing_count`                           | Counter   | 13.11                                                         | Sidekiq jobs using load balancing with data consistency set to :sticky or :delayed | `queue`, `boundary`, `external_dependencies`, `feature_category`, `job_status`, `urgency`, `data_consistency`, `load_balancing_strategy` |
 | `gitlab_transaction_caught_up_replica_pick_count_total`  | Counter   | 14.1                                                          | Number of search attempts for caught up replica                                    | `result`                                                                                                                                 |
 
-## Database partitioning metrics **(PREMIUM SELF)**
+## Database partitioning metrics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following metrics are available:
 

@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Install Vault with a cluster management project **(FREE ALL)**
+# Install Vault with a cluster management project
 
-> [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
 
 [HashiCorp Vault](https://www.vaultproject.io/) is a secrets management solution which
 can be used to safely manage and store passwords, credentials, certificates, and more. A Vault

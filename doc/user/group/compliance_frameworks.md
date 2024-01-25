@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance frameworks **(PREMIUM ALL)**
+# Compliance frameworks
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
@@ -42,7 +46,7 @@ Frameworks cannot be added to projects in personal namespaces.
 
 ### GraphQL API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333249) in GitLab 14.2.
 
 You can use the [GraphQL API](../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework) to add a
 compliance framework to a project.
@@ -52,7 +56,7 @@ has the correct permissions. The GitLab UI presents a read-only view to discoura
 
 ## Default compliance frameworks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
 Group owners can set a default compliance framework. The default framework is applied to all the new and imported
 projects that are created in that group. It does not affect the framework applied to the existing projects. The
@@ -62,7 +66,7 @@ A compliance framework that is set to default has a **default** label.
 
 ### Set and remove as default
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
 
 Group owners can set a compliance framework as default (or remove the setting):
 
@@ -113,7 +117,11 @@ mutation {
 }
 ```
 
-## Compliance pipelines **(ULTIMATE ALL)**
+## Compliance pipelines
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../administration/feature_flags.md).
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.

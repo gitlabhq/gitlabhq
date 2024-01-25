@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Appearance API **(FREE SELF)**
+# Appearance API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16647) in GitLab 12.7.
 
 The appearance API allows you to maintain the appearance of GitLab as if
 you're using the GitLab UI at `/admin/appearance`. The API requires

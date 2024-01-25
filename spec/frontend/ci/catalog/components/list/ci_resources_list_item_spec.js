@@ -18,6 +18,20 @@ describe('CiResourcesListItem', () => {
 
   const router = createRouter();
   const resource = catalogSinglePageResponse.data.ciCatalogResources.nodes[0];
+  const componentList = {
+    components: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Ci::Catalog::Resources::Component/2',
+          name: 'test-component',
+        },
+        {
+          id: 'gid://gitlab/Ci::Catalog::Resources::Component/1',
+          name: 'component_two',
+        },
+      ],
+    },
+  };
   const release = {
     author: { name: 'author', webUrl: '/user/1' },
     releasedAt: Date.now(),
@@ -42,6 +56,7 @@ describe('CiResourcesListItem', () => {
 
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
   const findResourceName = () => wrapper.findByTestId('ci-resource-link');
   const findResourceDescription = () => wrapper.findByText(defaultProps.resource.description);
   const findUserLink = () => wrapper.findByTestId('user-link');
@@ -79,6 +94,35 @@ describe('CiResourcesListItem', () => {
 
     it('renders the resource description', () => {
       expect(findResourceDescription().exists()).toBe(true);
+    });
+  });
+
+  describe('components', () => {
+    describe('when there are no components', () => {
+      beforeEach(() => {
+        createComponent({ props: { resource: { ...resource, latestVersion: null } } });
+      });
+
+      it('does not render the component names', () => {
+        expect(findComponentNames().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are components', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { resource: { ...resource, latestVersion: { ...componentList, ...release } } },
+        });
+      });
+
+      it('renders the component name template', () => {
+        expect(findComponentNames().exists()).toBe(true);
+      });
+
+      it('renders the correct component names', () => {
+        expect(findComponentNames().text()).toContain(componentList.components.nodes[0].name);
+        expect(findComponentNames().text()).toContain(componentList.components.nodes[1].name);
+      });
     });
   });
 

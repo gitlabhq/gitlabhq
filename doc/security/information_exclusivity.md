@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Information exclusivity **(FREE ALL)**
+# Information exclusivity
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Git is a distributed version control system (DVCS). This means that everyone
 who works with the source code has a local copy of the complete repository.

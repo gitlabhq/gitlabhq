@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Admin Area **(FREE SELF)**
+# GitLab Admin Area
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Admin Area provides a web UI to manage and configure features of GitLab
 self-managed instances. If you are an administrator, to access the Admin Area:
@@ -143,7 +147,11 @@ When using authentication providers, administrators can see the identities for a
 This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
 the identities being used for an account.
 
-### User Permission Export **(PREMIUM SELF)**
+### User Permission Export
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
@@ -326,7 +334,7 @@ For each Gitaly server, the following details are listed:
 
 ### Administering runners
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
 
 You can administer all runners in the GitLab instance from the Admin Area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information.
@@ -383,7 +391,7 @@ You can also edit, pause, or remove each runner.
 
 ### Administering Jobs
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
 
 You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.
 
@@ -467,7 +475,11 @@ For details of these log files and their contents, see [Log system](logs/index.m
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 
-### Audit Events **(PREMIUM SELF)**
+### Audit Events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 

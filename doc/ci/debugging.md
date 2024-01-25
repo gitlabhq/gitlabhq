@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Debugging CI/CD pipelines **(FREE ALL)**
+# Debugging CI/CD pipelines 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides several tools to help make it easier to debug your CI/CD configuration.
 

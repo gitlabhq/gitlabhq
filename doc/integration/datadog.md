@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Datadog **(FREE ALL)**
+# Datadog 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270123) in GitLab 14.1
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270123) in GitLab 14.1
 
 The Datadog integration enables you to send CI/CD pipeline and job information to
 [Datadog](https://www.datadoghq.com/). The [Datadog CI Visibility](https://app.datadoghq.com/ci)

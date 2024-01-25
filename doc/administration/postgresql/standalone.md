@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Standalone PostgreSQL for Linux package installations **(FREE SELF)**
+# Standalone PostgreSQL for Linux package installations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you wish to have your database service hosted separately from your GitLab
 application servers, you can do this using the PostgreSQL binaries packaged

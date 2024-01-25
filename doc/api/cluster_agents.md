@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Agents API **(FREE ALL)**
+# Agents API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83270) in GitLab 14.10.
 > - Agent Tokens API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
@@ -240,7 +244,7 @@ curl --request DELETE --header "Private-Token: <your_access_token>" "https://git
 
 ## List tokens for an agent
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
 
 Returns a list of active tokens for an agent.
 
@@ -307,7 +311,7 @@ The `last_used_at` field for a token is only returned when getting a single agen
 
 ## Get a single agent token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
 
 Gets a single agent token.
 
@@ -433,7 +437,7 @@ Example response:
 
 ## Revoke an agent token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347046) in GitLab 15.0.
 
 Revokes an agent token.
 

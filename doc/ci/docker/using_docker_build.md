@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Docker to build Docker images **(FREE ALL)**
+# Use Docker to build Docker images 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use GitLab CI/CD with Docker to create Docker images.
 For example, you can create a Docker image of your application,
@@ -100,7 +104,7 @@ You can use the Docker executor to run jobs in a Docker container.
 
 ##### Docker-in-Docker with TLS enabled in the Docker executor
 
-> Introduced in GitLab Runner 11.11.
+> - Introduced in GitLab Runner 11.11.
 
 The Docker daemon supports connections over TLS. TLS is the default in Docker 19.03.12 and later.
 
@@ -253,7 +257,7 @@ You can use the [Kubernetes executor](https://docs.gitlab.com/runner/executors/k
 
 ##### Docker-in-Docker with TLS enabled in Kubernetes
 
-> [Introduced](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/106) in GitLab Runner Helm Chart 0.23.0.
+> - [Introduced](https://gitlab.com/gitlab-org/charts/gitlab-runner/-/issues/106) in GitLab Runner Helm Chart 0.23.0.
 
 To use Docker-in-Docker with TLS enabled in Kubernetes:
 
@@ -469,7 +473,7 @@ services:
 
 ##### The service in the GitLab Runner configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27173) in GitLab Runner 13.6.
 
 If you are a GitLab Runner administrator, you can specify the `command` to configure the registry mirror
 for the Docker daemon. The `dind` service must be defined for the
@@ -539,7 +543,7 @@ detected by the `dind` service.
 
 ##### The Kubernetes executor in the GitLab Runner configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3223) in GitLab Runner 13.6.
 
 If you are a GitLab Runner administrator, you can use
 the mirror for every `dind` service. Update the

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure an external Sidekiq instance **(FREE SELF)**
+# Configure an external Sidekiq instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can configure an external Sidekiq instance by using the Sidekiq that's bundled in the GitLab package. Sidekiq requires connection to the Redis,
 PostgreSQL, and Gitaly instances.
@@ -246,7 +250,7 @@ To configure the metrics server:
 
 ### Enable HTTPS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364771) in GitLab 15.2.
 
 To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 

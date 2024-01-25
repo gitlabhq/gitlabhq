@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DevOps Research and Assessment (DORA) metrics **(ULTIMATE ALL)**
+# DevOps Research and Assessment (DORA) metrics 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
 > - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
@@ -33,7 +37,7 @@ This enables teams and managers to understand all aspects of productivity, quali
 
 ## Deployment frequency
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
@@ -131,9 +135,14 @@ The first step is to benchmark the quality and stability, between groups and pro
 - Improving the efficacy of code review processes.
 - Adding automated testing.
 
-## DORA custom calculation rules **(ULTIMATE ALL EXPERIMENT)**
+## DORA custom calculation rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.

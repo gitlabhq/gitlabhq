@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!-- Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved) -->
 
-# Using a Geo Site **(PREMIUM SELF)**
+# Using a Geo Site
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 After you set up the [database replication and configure the Geo nodes](../index.md#setup-instructions), use your closest GitLab site as you would do with the primary one.
 

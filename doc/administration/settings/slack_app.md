@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Slack app administration **(FREE SELF)**
+# GitLab for Slack app administration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
 
 NOTE:
 This page contains administrator documentation for the GitLab for Slack app. For user documentation, see [GitLab for Slack app](../../user/project/integrations/gitlab_slack_application.md).

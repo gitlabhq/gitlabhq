@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Auto DevOps **(FREE ALL)**
+# Auto DevOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38366) in GitLab 11.0.
 > - Support for the GitLab agent was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299350) in GitLab 14.5.
@@ -115,7 +119,7 @@ To disable it, follow the same process and clear the
 
 #### At the group level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/52447) in GitLab 11.10.
 
 When you enable Auto DevOps at the group level, the subgroups and
 projects in that group inherit the configuration. You can save time by
@@ -148,7 +152,11 @@ Auto DevOps pipeline for any project that belongs to that group:
 1. Select **Build > Pipelines**.
 1. To trigger the Auto DevOps pipeline, select **Run pipeline**.
 
-#### At the instance level **(FREE SELF)**
+#### At the instance level
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To enable Auto DevOps by default for all projects, you can enable it at the instance level.
 You can still disable Auto DevOps for each group and project

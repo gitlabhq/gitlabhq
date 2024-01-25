@@ -4,7 +4,11 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch **(PREMIUM ALL)**
+# Elasticsearch
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -546,7 +550,7 @@ advanced search, which means adding or changing the way content is indexed.
 
 ### Migration dictionary files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
 
 Every migration has a corresponding dictionary file in the `ee/elastic/docs/` folder with the following information:
 

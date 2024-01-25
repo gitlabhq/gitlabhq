@@ -819,10 +819,6 @@ Each topic title has an anchor link. For example, a topic with the title
 The first topic title on a page (the `h1`) has an anchor link,
 but do not use it. Link to the page instead.
 
-If a topic title has a [product tier badge](#product-tier-badges),
-do not include it in the anchor link. For example, for the topic
-`## This is an example **(FREE ALL)**`, use the anchor `#this-is-an-example`.
-
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.
 
@@ -1642,11 +1638,11 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges provide information about a feature and are displayed next to the topic title.
+Tier badges provide information about a feature and are displayed under the topic title.
 
 #### When to add tier badges
 
-Assign tier badges to:
+Assign tier badges under:
 
 - Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
 - Topic titles that don't apply to the same tier as the H1.
@@ -1663,8 +1659,8 @@ Do not assign tier badges:
 In this case, do any or all of the following:
 
 - Use a `NOTE` in an alert box to describe the tiers.
-- Add tier badges to other topic titles where this information makes more sense.
-- Do not add tier badges to the H1.
+- Add tier badges under other topic titles where this information makes more sense.
+- Do not add tier badges under the H1.
 
 ##### Pages that don't need a tier badge
 
@@ -1677,57 +1673,50 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 
 #### Available product tier badges
 
-Tier badges should include two components, in this order: a subscription tier and an offering.
-These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
+Tier badges are how we refer to the information that's displayed under a topic title.
 
-Subscription tiers:
+Tier badges include the tier, offering, status, and version history.
 
-- `FREE` - Applies to all tiers.
-- `PREMIUM` - Applies to Premium and Ultimate tiers.
-- `ULTIMATE` - Applies to Ultimate tier only.
+The Markdown for tier badges should look like the following:
 
-Offerings:
+```markdown
+# Topic title
 
-- `SELF`
-- `SAAS`
-- `ALL` - Applies to both self-managed and SaaS.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
-NOTE:
-GitLab Dedicated is not currently covered by product tier badges in the documentation.
-For more information, see [issue 417171](https://gitlab.com/gitlab-org/gitlab/-/issues/417171#note_1568753875).
+> - [Introduced](<link-to-issue>) in GitLab 16.3.
+> - Updated in GitLab 16.4.
+```
 
-You can also add a third component for the feature's status:
+For offering, use any combination of these words, in this order, separated by commas:
 
-- `EXPERIMENT`
-- `BETA`
+- SaaS
+- Self-managed (lowercase when not the first item)
 
-For example, `**(FREE ALL EXPERIMENT)**`.
-
-- A tier or status can stand alone.
-- An offering should always have a tier.
-- Do not add more than one offering, tier, or status. Multiples do not render properly in the documentation.
-
-#### Add a tier badge
-
-To add a tier badge to a topic title, add the two relevant components
-after the title text. You should include the subscription tier first, and then the offering.
 For example:
 
-```markdown
-# Topic title **(FREE ALL)**
-```
+- SaaS
+- SaaS, self-managed
+- Self-managed
 
-Optionally, you can add the feature status as the last part of the badge:
+NOTE:
+SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We will update this page when the change occurs.
 
-```markdown
-# Topic title **(FREE ALL EXPERIMENT)**
-```
+For tier, choose one:
 
-Or add the status by itself:
+- Free, Premium, and Ultimate
+- Premium and Ultimate
+- Ultimate
 
-```markdown
-# Topic title **(EXPERIMENT)**
-```
+For status, choose one:
+
+- Beta
+- Experiment
+
+Generally available features should not have a status.
 
 ##### Inline tier badges
 
@@ -2005,7 +1994,11 @@ For an example, see [GitLab 16 changes](../../../update/versions/gitlab_16_chang
 Use the following template to add information to the page.
 
 ```markdown
-# GitLab X changes **(FREE SELF)**
+# GitLab X changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
 
@@ -2029,7 +2022,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - Information specific to self-compiled installations.
 - ...
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
  - Information specific to Geo.
  - ...

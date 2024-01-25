@@ -4,7 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan execution policies **(ULTIMATE ALL)**
+# Scan execution policies 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
@@ -318,7 +322,10 @@ If you want to avoid running duplicate scans, you can either remove the scans fr
 local jobs by setting `SAST_DISABLED: "true"`. Disabling jobs this way does not prevent the security jobs defined by scan execution
 policies from running.
 
-## Experimental features **(EXPERIMENT)**
+## Experimental features
+
+DETAILS:
+**Status:** Experiment
 
 These experimental features have limitations:
 

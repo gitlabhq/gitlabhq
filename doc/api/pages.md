@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pages API **(FREE ALL)**
+# Pages API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Endpoints for managing [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 
@@ -32,7 +36,7 @@ curl --request 'DELETE' --header "PRIVATE-TOKEN: <your_access_token>" "https://g
 
 ## Get pages settings for a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436932) in GitLab 16.8.
 
 Prerequisites:
 

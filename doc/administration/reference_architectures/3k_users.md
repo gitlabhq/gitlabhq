@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 3,000 users **(PREMIUM SELF)**
+# Reference architecture: up to 3,000 users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes the GitLab reference architecture designed for the load of up to 3,000 users
 with notable headroom.
@@ -1709,7 +1713,7 @@ The following IPs will be used as an example:
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
 
-To configure the Sidekiq nodes, one each one:
+To configure the Sidekiq nodes, on each one:
 
 1. SSH in to the Sidekiq server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux

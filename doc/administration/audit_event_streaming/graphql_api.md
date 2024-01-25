@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit event streaming GraphQL API **(ULTIMATE ALL)**
+# Audit event streaming GraphQL API
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.5 [with a flag](../feature_flags.md) named `ff_external_audit_events_namespace`. Disabled by default.
 > - API [enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338939) in GitLab 14.7.
@@ -335,7 +339,7 @@ Event type filters are removed if:
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
 
 Manage Google Cloud Logging destinations for top-level groups.
 
@@ -467,7 +471,11 @@ Streaming configuration is deleted if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-## Instance streaming destinations **(ULTIMATE SELF)**
+## Instance streaming destinations
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
@@ -743,7 +751,7 @@ Event type filters are removed if:
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
 
 Manage Google Cloud Logging destinations for an entire instance.
 

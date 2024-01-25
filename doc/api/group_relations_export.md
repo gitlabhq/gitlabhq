@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group relations export API **(FREE ALL)**
+# Group relations export API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59978) in GitLab 13.12.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59978) in GitLab 13.12.
 
 The group relations export API partially exports a group's structure as separate files for each
 top-level

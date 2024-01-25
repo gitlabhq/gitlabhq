@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Notification settings API **(FREE ALL)**
+# Notification settings API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Change [notification settings](../user/profile/notifications.md) using the REST API.
 
@@ -38,7 +42,7 @@ If the `custom` level is used, specific email events can be controlled. Availabl
 - `success_pipeline`
 - `moved_project`
 - `merge_when_pipeline_succeeds`
-- `new_epic` **(ULTIMATE ALL)**
+- `new_epic` Ultimate only.
 
 ## Global notification settings
 
@@ -94,7 +98,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 | `success_pipeline` | boolean | no | Enable/disable this notification |
 | `moved_project` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30371) in GitLab 13.3) |
 | `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/244840) in GitLab 13.9) |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3) **(ULTIMATE ALL)** |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3). Ultimate only. |
 
 Example response:
 
@@ -166,7 +170,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 | `success_pipeline` | boolean | no | Enable/disable this notification |
 | `moved_project` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30371) in GitLab 13.3) |
 | `merge_when_pipeline_succeeds` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/244840) in GitLab 13.9) |
-| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3) **(ULTIMATE ALL)** |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5863) in GitLab 11.3). Ultimate only. |
 
 Example responses:
 

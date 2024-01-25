@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce container registry storage **(FREE ALL)**
+# Reduce container registry storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Container registries can grow in size over time if you don't manage your registry usage. For example,
 if you add a large number of images or tags:
@@ -15,9 +19,13 @@ if you add a large number of images or tags:
 You should delete unnecessary images and tags and set up a [cleanup policy](#cleanup-policy)
 to automatically manage your container registry usage.
 
-## View container registry usage **(FREE SAAS)**
+## View container registry usage
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
 
 To view the storage usage for the container registry:
 

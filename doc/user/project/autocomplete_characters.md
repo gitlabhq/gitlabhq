@@ -5,9 +5,13 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Autocomplete characters in Markdown fields."
 ---
 
-# Autocomplete characters **(FREE ALL)**
+# Autocomplete characters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36705) in GitLab 13.9: you can search using the full name in user autocomplete.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36705) in GitLab 13.9: you can search using the full name in user autocomplete.
 
 The autocomplete characters provide a quick way of entering field values into
 Markdown fields. When you start typing a word in a Markdown field with one of

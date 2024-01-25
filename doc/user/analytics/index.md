@@ -5,7 +5,11 @@ description: Instance, group, and project analytics.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Analyze GitLab usage **(FREE ALL)**
+# Analyze GitLab usage 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides different types of analytics insights at the instance, group, and project level.
 These insights appear on the left sidebar, under [**Analyze**](../project/settings/project_features_permissions.md#disable-project-analytics).
@@ -17,7 +21,7 @@ so that you can view information across multiple projects and groups in one plac
 
 ## Group-level analytics
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 Use group-level analytics to get insights into your groups':
 

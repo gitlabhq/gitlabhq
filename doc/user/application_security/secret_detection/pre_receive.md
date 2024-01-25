@@ -4,9 +4,12 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pre-receive secret detection **(EXPERIMENT)**
+# Pre-receive secret detection
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 
 NOTE:
 This feature is an [Experiment](../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).

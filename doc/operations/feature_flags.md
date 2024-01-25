@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Feature flags **(FREE ALL)**
+# Feature flags
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) from GitLab Premium to GitLab Free in 13.5.
 
 With feature flags, you can deploy your application's new features to production in smaller batches.
 You can toggle a feature on and off to subsets of users, helping you achieve Continuous Delivery.
@@ -53,7 +57,7 @@ next to any feature flag in the list.
 
 ## Maximum number of feature flags
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254379) in GitLab 13.5.
 
 The maximum number of feature flags per project on self-managed GitLab instances
 is 200. For GitLab SaaS, the maximum number is determined by [tier](https://about.gitlab.com/pricing/):
@@ -94,7 +98,7 @@ Enables the feature for all users. It uses the Standard (`default`) Unleash acti
 
 ### Percent Rollout
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43340) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43340) in GitLab 13.5.
 
 Enables the feature for a percentage of page views, with configurable consistency
 of behavior. This consistency is also known as stickiness. It uses the
@@ -160,7 +164,7 @@ target users. See the [Ruby example](#ruby-application-example) below.
 
 ### User List
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35930) in GitLab 13.1.
 
 Enables the feature for lists of users created [in the feature flags UI](#create-a-user-list), or with the [feature flag user list API](../api/feature_flag_user_lists.md).
 Similar to [User IDs](#user-ids), it uses the Unleash UsersIDs (`userWithId`) activation [strategy](https://docs.getunleash.io/reference/activation-strategies#userids).
@@ -191,7 +195,7 @@ When viewing a list, you can rename it by selecting **Edit** (**{pencil}**).
 
 #### Add users to a user list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
 
 To add users to a user list:
 
@@ -205,7 +209,7 @@ To add users to a user list:
 
 #### Remove users from a user list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13308) in GitLab 13.3.
 
 To remove users from a user list:
 
@@ -214,9 +218,13 @@ To remove users from a user list:
 1. Select **Edit** (**{pencil}**) next to the list you want to change.
 1. Select **Remove** (**{remove}**) next to the ID you want to remove.
 
-## Search for Code References **(PREMIUM ALL)**
+## Search for Code References
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300299) in GitLab 14.4.
 
 To remove the feature flag from the code during cleanup, find any project references to it.
 
@@ -399,7 +407,11 @@ docker run \
 There is a limitation when using the Unleash Proxy where each proxy instance can request flags only for the environment named in `UNLEASH_APP_NAME`. The Proxy sends
 this to GitLab on behalf of the client, which means the client can't override it.
 
-## Feature flag related issues **(PREMIUM ALL)**
+## Feature flag related issues
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36617) in GitLab 13.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/251234) in GitLab 13.5.

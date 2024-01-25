@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Object storage **(FREE SELF)**
+# Object storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab supports using an object storage service for holding numerous types of data.
 It's recommended over NFS and
@@ -45,7 +49,7 @@ Specifically, GitLab has been tested by vendors and customers on a number of obj
 
 ## Configure a single storage connection for all object types (consolidated form)
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
 
 Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
@@ -254,7 +258,7 @@ AWS KMS keys and SSE-C encryption are
 
 #### Server-side encryption headers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
 
 Setting a default encryption on an S3 bucket is the easiest way to
 enable encryption, but you may want to
@@ -328,7 +332,7 @@ gitlab_rails['object_store']['connection'] = {
 
 #### GCS example with ADC
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
 
 Google Cloud Application Default Credentials (ADC) are typically
 used with GitLab to use the default service account. This eliminates the
@@ -355,7 +359,7 @@ If you use ADC, be sure that:
 
 ### Azure Blob storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 Although Azure uses the word `container` to denote a collection of
 blobs, GitLab standardizes on the term `bucket`. Be sure to configure

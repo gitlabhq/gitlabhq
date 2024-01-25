@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Bring a demoted primary site back online **(PREMIUM SELF)**
+# Bring a demoted primary site back online
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 After a failover, it is possible to fail back to the demoted **primary** site to
 restore your original configuration. This process consists of two steps:
@@ -95,7 +99,7 @@ This behavior is useful when:
 
 ### Skipping re-transfer of blobs or files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../feature_flags.md) named `geo_skip_download_if_exists`.

@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Markdown API **(FREE ALL)**
+# Markdown API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Convert Markdown content to HTML.
 
@@ -12,7 +16,7 @@ Available only in APIv4.
 
 ## Required authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `authenticate_markdown_api`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `authenticate_markdown_api`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is enabled and authentication is required.

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Standalone Redis using the Linux package **(FREE SELF)**
+# Standalone Redis using the Linux package
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Linux package can be used to configure a standalone Redis server.
 In this configuration, Redis is not scaled, and represents a single

@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Set and configure Git protocol v2"
 ---
 
-# Configuring Git Protocol v2 **(FREE SELF)**
+# Configuring Git Protocol v2
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
 

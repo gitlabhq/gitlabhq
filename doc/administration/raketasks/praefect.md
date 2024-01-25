@@ -4,9 +4,13 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Praefect Rake tasks **(FREE SELF)**
+# Praefect Rake tasks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28369) in GitLab 12.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28369) in GitLab 12.10.
 
 Rake tasks are available for projects that have been created on Praefect storage. See the
 [Praefect documentation](../gitaly/praefect.md) for information on configuring Praefect.

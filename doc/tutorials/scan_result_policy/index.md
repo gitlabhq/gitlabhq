@@ -4,7 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a scan result policy **(ULTIMATE ALL)**
+# Tutorial: Set up a scan result policy
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial shows you how to create and configure a [scan result policy](../../user/application_security/policies/scan-result-policies.md). These policies can be set to take action based on scan results.
 For example, in this tutorial, you'll set up a policy that requires approval from two specified users if a vulnerability is detected in a merge request.

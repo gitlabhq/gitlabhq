@@ -101,7 +101,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 ## Enable or disable project access token creation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
 
 To enable or disable project access token creation for all projects in a top-level group:
 

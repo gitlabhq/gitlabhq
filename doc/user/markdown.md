@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown (GLFM) **(FREE ALL)**
+# GitLab Flavored Markdown (GLFM)
 
-> The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
@@ -165,7 +169,7 @@ In wikis, you can also add and edit diagrams created with the [diagrams.net edit
 
 ### Mermaid
 
-> Support for Entity Relationship diagrams and mindmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
+> - Support for Entity Relationship diagrams and mindmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#mermaid).
 
@@ -453,7 +457,7 @@ $$
 
 ## Task lists
 
-> Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+> - Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
@@ -616,7 +620,7 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 ### diagrams.net editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
@@ -1265,7 +1269,7 @@ Here's an example audio clip:
 
 ## Inline HTML
 
-> Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
+> - Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
@@ -1863,7 +1867,7 @@ entry and paste the spreadsheet:
 
 ### JSON
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
 
 To render tables with JSON code blocks, use the following syntax:
 

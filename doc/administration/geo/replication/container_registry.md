@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container registry for a secondary site **(PREMIUM SELF)**
+# Container registry for a secondary site
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can set up a container registry on your **secondary** Geo site that mirrors the one on the **primary** Geo site.
 

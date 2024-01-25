@@ -4,9 +4,13 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab container registry **(FREE ALL)**
+# GitLab container registry
 
-> Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
 You can use the integrated container registry to store container images for each GitLab project
 
@@ -125,7 +129,7 @@ The **Deploy > Container Registry** entry is removed from the project's sidebar.
 
 ## Change visibility of the container registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
 
 By default, the container registry is visible to everyone with access to the project.
 You can, however, change the visibility of the container registry for a project.
@@ -168,7 +172,7 @@ this setting. However, disabling the container registry disables all Container R
 
 ## Supported image types
 
-> OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
+> - OCI conformance [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10345) in GitLab 16.6.
 
 The container registry supports the [Docker V2](https://docs.docker.com/registry/spec/manifest-v2-2/)
 and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)

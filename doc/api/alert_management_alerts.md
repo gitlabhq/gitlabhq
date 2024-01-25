@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Alert Management alerts API **(FREE ALL)**
+# Alert Management alerts API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The Alert Management alerts API is limited to metric images. For more API endpoints, see the
 [GraphQL API](graphql/reference/index.md#alertmanagementalert).

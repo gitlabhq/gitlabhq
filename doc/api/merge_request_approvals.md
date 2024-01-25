@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Merge request approvals API **(PREMIUM ALL)**
+# Merge request approvals API 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
 > - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
@@ -15,7 +19,7 @@ in the project. Must be authenticated for all endpoints.
 
 ## Group-level MR approvals **(EXPERIMENT)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
@@ -132,7 +136,7 @@ Supported attributes:
 
 ### Change configuration
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can change approval configuration using the following
 endpoint:
@@ -619,7 +623,7 @@ Supported attributes:
 
 ### Delete project-level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can delete project approval rules using the following endpoint:
 
@@ -640,7 +644,7 @@ Configuration for approvals on a specific merge request. Must be authenticated f
 
 ### Get Configuration
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval status using the
 following endpoint:
@@ -686,7 +690,7 @@ Supported attributes:
 
 ### Get the approval state of merge requests
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval state by using the following endpoint:
 
@@ -839,7 +843,7 @@ Supported attributes:
 
 ### Get a single merge request level rule
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
 
 You can request information about a single merge request approval rule using the following endpoint:
 
@@ -915,7 +919,7 @@ Supported attributes:
 
 ### Create merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can create merge request approval rules using the following endpoint:
 
@@ -1000,7 +1004,7 @@ is used.
 
 ### Update merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can update merge request approval rules using the following endpoint:
 
@@ -1087,7 +1091,7 @@ Supported attributes:
 
 ### Delete merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can delete merge request approval rules using the following endpoint:
 
@@ -1108,7 +1112,7 @@ Supported attributes:
 
 ## Approve merge request
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can approve a merge request using the following
 endpoint:
@@ -1171,7 +1175,7 @@ does not match, the response code is `409`.
 
 ## Unapprove merge request
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you did approve a merge request, you can unapprove it using the following
 endpoint:

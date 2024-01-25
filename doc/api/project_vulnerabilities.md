@@ -4,7 +4,11 @@ group: Threat Insights
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Project Vulnerabilities API **(ULTIMATE ALL)**
+# Project Vulnerabilities API 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10242) in GitLab 12.6.
 > - `last_edited_at` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/268154) in GitLab 16.7.

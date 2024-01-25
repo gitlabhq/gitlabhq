@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit events **(PREMIUM ALL)**
+# Audit events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A security audit is a in-depth analysis and review of your infrastructure, which is used to display
 areas of concern and potentially hazardous practices. To assist with the audit process, GitLab provides
@@ -50,7 +54,11 @@ Group audit events can also be accessed using the [Group Audit Events API](../ap
 
 Project audit events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events). Project audit event queries are limited to a maximum of 30 days.
 
-### Instance audit events **(PREMIUM SELF)**
+### Instance audit events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
@@ -69,7 +77,11 @@ exist for this action. The
 [`group_saml_provider_create` and `group_saml_provider_update` audit event types](audit_event_streaming/audit_event_types.md#compliance-management)
 generate audit events for group-level configuration of SAML.
 
-### Sign-in audit events **(FREE ALL)**
+### Sign-in audit events
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Successful sign-in events are the only audit events available at all tiers. To see successful sign-in events:
 
@@ -137,7 +149,7 @@ When a user is [impersonated](../administration/admin_area.md#user-impersonation
 
 ## Time zones
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
 
 The time zone used for audit events depends on where you view them:
 

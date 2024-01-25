@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD instance configuration **(FREE SELF)**
+# GitLab CI/CD instance configuration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can manage the GitLab CI/CD configuration for their instance.
 
@@ -57,7 +61,11 @@ For Linux package installations:
    sudo gitlab-ctl reconfigure
    ```
 
-## Set the `needs` job limit **(FREE SELF)**
+## Set the `needs` job limit
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The maximum number of jobs that can be defined in `needs` defaults to 50.
 

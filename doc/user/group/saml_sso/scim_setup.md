@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure SCIM for GitLab.com groups **(PREMIUM SAAS)**
+# Configure SCIM for GitLab.com groups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 

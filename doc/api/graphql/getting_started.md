@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Run GraphQL API queries and mutations **(FREE ALL)**
+# Run GraphQL API queries and mutations 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This guide demonstrates basic usage of the GitLab GraphQL API.
 
@@ -63,7 +67,11 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
       # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
 
-### Rails console **(FREE SELF)**
+### Rails console 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GraphQL queries can be run in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session). For example, to search projects:
 

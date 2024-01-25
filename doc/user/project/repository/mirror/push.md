@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Push mirroring **(FREE ALL)**
+# Push mirroring
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in GitLab 13.5: LFS support over HTTPS.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40137) in GitLab 13.5: LFS support over HTTPS.
 
 A _push mirror_ is a downstream repository that [mirrors](index.md) the commits made
 to the upstream repository. Push mirrors passively receive copies of the commits made to the
@@ -55,7 +59,7 @@ You can also create and modify project push mirrors through the
 
 ## Keep divergent refs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208828) in GitLab 13.0.
 
 By default, if any ref (branch or tag) on the remote (downstream) mirror diverges from the
 local repository, the upstream repository overwrites any changes on the remote:

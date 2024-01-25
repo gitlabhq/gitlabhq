@@ -4,7 +4,11 @@ group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Activate GitLab Enterprise Edition (EE) **(PREMIUM SELF)**
+# Activate GitLab Enterprise Edition (EE)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 When you install a new GitLab instance without a license, only Free features
 are enabled. To enable more features in GitLab Enterprise Edition (EE), activate

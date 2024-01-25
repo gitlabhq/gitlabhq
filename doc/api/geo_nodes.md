@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo Nodes API **(PREMIUM SELF)**
+# Geo Nodes API 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 To interact with Geo node endpoints, you must authenticate yourself as an
 administrator.

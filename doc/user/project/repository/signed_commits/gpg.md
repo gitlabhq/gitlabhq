@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sign commits with GPG **(FREE ALL)**
+# Sign commits with GPG
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key.

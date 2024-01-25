@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab container registry administration **(FREE SELF)**
+# GitLab container registry administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 With the GitLab container registry, every project can have its
 own space to store Docker images.
@@ -1069,7 +1073,12 @@ end
 
 You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
 
-## Container registry metadata database **(FREE SELF BETA)**
+## Container registry metadata database
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -1263,7 +1272,10 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
-### Continuous Zero Downtime Garbage Collection **(BETA)**
+### Continuous Zero Downtime Garbage Collection
+
+DETAILS:
+**Status:** Beta
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database (beta)](container_registry_metadata_database.md).

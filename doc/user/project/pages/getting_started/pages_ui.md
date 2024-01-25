@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Create a GitLab Pages deployment for a static site **(FREE ALL)**
+# Create a GitLab Pages deployment for a static site
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you already have a GitLab project that contains your static site or framework,
 you can generate a GitLab Pages website from it.

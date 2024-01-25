@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo for multiple nodes **(PREMIUM SELF)**
+# Geo for multiple nodes
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one

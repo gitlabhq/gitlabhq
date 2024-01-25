@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container registry API **(FREE ALL)**
+# Container registry API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - The ability to authenticate with a CI/CD job token [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12 [with a flag](../administration/feature_flags.md) named `ci_job_token_scope`. Disabled by default.
 > - CI/CD job token authentication [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/300821) in GitLab 16.8. Feature flag `ci_job_token_scope` removed.
@@ -17,7 +21,7 @@ of the project that created the pipeline.
 
 ## Change the visibility of the container registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18792) in GitLab 14.2.
 
 This controls who can view the container registry.
 
@@ -162,7 +166,7 @@ Example response:
 
 ## Get details of a single repository
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209916) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/209916) in GitLab 13.6.
 
 Get details of a registry repository.
 

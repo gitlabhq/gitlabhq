@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline efficiency **(FREE ALL)**
+# Pipeline efficiency 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
 Making pipelines more efficient helps you save developer time, which:

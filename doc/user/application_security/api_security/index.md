@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# API Security **(ULTIMATE ALL)**
+# API Security 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 API Security refers to the measures taken to secure and protect web Application Programming Interfaces (APIs) from unauthorized access, misuse, and attacks.
 APIs are a crucial component of modern application development as they allow applications to interact with each other and exchange data.

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Restrict allowed SSH key technologies and minimum length **(FREE SELF)**
+# Restrict allowed SSH key technologies and minimum length
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
 falls well below recommendations from certain standards groups (such as the US
@@ -47,7 +51,11 @@ By default, the GitLab.com and self-managed settings for the
 - ECDSA_SK SSH keys are allowed (GitLab 14.8 and later).
 - ED25519_SK SSH keys are allowed (GitLab 14.8 and later).
 
-## Block banned or compromised keys **(FREE ALL)**
+## Block banned or compromised keys
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24614) in GitLab 15.1 [with a flag](../administration/feature_flags.md) named `ssh_banned_key`. Enabled by default.
 > - Generally available in GitLab 15.2. [Feature flag `ssh_banned_key`](https://gitlab.com/gitlab-org/gitlab/-/issues/363410) removed.

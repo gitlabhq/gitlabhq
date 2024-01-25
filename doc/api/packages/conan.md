@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Conan API **(FREE ALL)**
+# Conan API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for [Conan Packages](../../user/packages/conan_repository/index.md).
 
@@ -54,7 +58,7 @@ for Conan recipes.
 
 ## Ping
 
-> Introduced in GitLab 12.2.
+> - Introduced in GitLab 12.2.
 
 Ping the GitLab Conan repository to verify availability:
 
@@ -74,7 +78,7 @@ Example response:
 
 ## Search
 
-> Introduced in GitLab 12.4.
+> - Introduced in GitLab 12.4.
 
 Search the instance for Conan packages by name:
 
@@ -108,7 +112,7 @@ Example response:
 
 ## Authenticate
 
-> Introduced in GitLab 12.2.
+> - Introduced in GitLab 12.2.
 
 Returns a JWT to be used for Conan requests in a Bearer header:
 
@@ -134,7 +138,7 @@ eyJhbGciOiJIUzI1NiIiheR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdG9rZW4iOjMyMTQyMzAsqaVzZXJfaWQ
 
 ## Check Credentials
 
-> Introduced in GitLab 12.4.
+> - Introduced in GitLab 12.4.
 
 Checks the validity of Basic Auth credentials or a Conan JWT generated from [`/authenticate`](#authenticate).
 
@@ -154,7 +158,7 @@ ok
 
 ## Recipe Snapshot
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 This returns the snapshot of the recipe files for the specified Conan recipe. The snapshot is a list
 of filenames with their associated md5 hash.
@@ -186,7 +190,7 @@ Example response:
 
 ## Package Snapshot
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 This returns the snapshot of the package files for the specified Conan recipe with the specified
 Conan reference. The snapshot is a list of filenames with their associated md5 hash.
@@ -219,7 +223,7 @@ Example response:
 
 ## Recipe Manifest
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 The manifest is a list of recipe filenames with their associated download URLs.
 
@@ -253,7 +257,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Package Manifest
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 The manifest is a list of package filenames with their associated download URLs.
 
@@ -288,7 +292,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Recipe Download URLs
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 Recipe download URLs return a list of recipe filenames with their associated download URLs.
 This attribute is the same payload as the [recipe manifest](#recipe-manifest) endpoint.
@@ -323,7 +327,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Package Download URLs
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 Package download URLs return a list of package filenames with their associated download URLs.
 This URL is the same payload as the [package manifest](#package-manifest) endpoint.
@@ -359,7 +363,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Recipe Upload URLs
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 Given a list of recipe filenames and file sizes, a list of URLs to upload each file is returned.
 
@@ -405,7 +409,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Package Upload URLs
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 Given a list of package filenames and file sizes, a list of URLs to upload each file is returned.
 
@@ -454,7 +458,7 @@ the project-level route, the returned URLs contain `/projects/:id`.
 
 ## Download a Recipe file
 
-> Introduced in GitLab 12.6.
+> - Introduced in GitLab 12.6.
 
 Download a recipe file to the package registry. You must use a download URL that the
 [recipe download URLs endpoint](#recipe-download-urls)
@@ -487,7 +491,7 @@ This example writes to `conanfile.py` in the current directory.
 
 ## Upload a Recipe file
 
-> Introduced in GitLab 12.6.
+> - Introduced in GitLab 12.6.
 
 Upload a recipe file to the package registry. You must use an upload URL that the
 [recipe upload URLs endpoint](#recipe-upload-urls)
@@ -517,7 +521,7 @@ curl --request PUT \
 
 ## Download a Package file
 
-> Introduced in GitLab 12.6.
+> - Introduced in GitLab 12.6.
 
 Download a package file to the package registry. You must use a download URL that the
 [package download URLs endpoint](#package-download-urls)
@@ -552,7 +556,7 @@ This example writes to `conaninfo.txt` in the current directory.
 
 ## Upload a Package file
 
-> Introduced in GitLab 12.6.
+> - Introduced in GitLab 12.6.
 
 Upload a package file to the package registry. You must use an upload URL that the
 [package upload URLs endpoint](#package-upload-urls)
@@ -584,7 +588,7 @@ curl --request PUT \
 
 ## Delete a Package (delete a Conan recipe)
 
-> Introduced in GitLab 12.5.
+> - Introduced in GitLab 12.5.
 
 Delete the Conan recipe and package files from the registry:
 

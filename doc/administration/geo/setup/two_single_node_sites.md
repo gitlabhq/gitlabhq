@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up Geo for two single-node sites **(PREMIUM SELF)**
+# Set up Geo for two single-node sites
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following guide provides concise instructions on how to deploy GitLab Geo for a two single-node site installation using two Linux package instances with no external services set up.
 

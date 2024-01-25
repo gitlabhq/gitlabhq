@@ -33,6 +33,12 @@ module Gitlab
       def new_blob(blob_data)
         data = blob_data[:data_parts].join
 
+        binary = if Feature.enabled?(:stop_precalling_binary_for_blobs, type: :experiment)
+                   {}
+                 else
+                   { binary: Gitlab::Git::Blob.binary?(data) }
+                 end
+
         Gitlab::Git::Blob.new(
           id: blob_data[:oid],
           mode: blob_data[:mode]&.to_s(8),
@@ -41,7 +47,7 @@ module Gitlab
           size: blob_data[:size],
           commit_id: blob_data[:revision],
           data: data,
-          binary: Gitlab::Git::Blob.binary?(data)
+          **binary
         )
       end
     end

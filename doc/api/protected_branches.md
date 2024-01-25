@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected branches API **(FREE ALL)**
+# Protected branches API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Valid access levels
 
@@ -310,7 +314,11 @@ Example response:
 }
 ```
 
-### Example with user / group level access **(PREMIUM ALL)**
+### Example with user / group level access 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Elements in the `allowed_to_push` / `allowed_to_merge` / `allowed_to_unprotect` array should take the
 form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Each user must have access to the project and each group must [have this project shared](../user/project/members/share_project_with_groups.md). These access levels allow [more granular control over protected branch access](../user/project/protected_branches.md).
@@ -357,9 +365,13 @@ Example response:
 }
 ```
 
-### Example with allow to push and allow to merge access **(PREMIUM ALL)**
+### Example with allow to push and allow to merge access 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Example request:
 
@@ -443,7 +455,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Update a protected branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
 
 Updates a protected branch.
 

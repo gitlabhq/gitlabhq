@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Contributor analytics **(FREE ALL)**
+# Contributor analytics 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Contributor analytics give you an overview of the commits made by projects members to a project over time.
 

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review apps **(FREE ALL)**
+# Review apps 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Review apps are a collaboration tool that provide an environment to showcase product changes.
 
@@ -63,7 +67,7 @@ The process of configuring review apps is as follows:
 
 ### Enable review apps button
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
 
 When configuring review apps for a project, you add a new job to the `.gitlab-ci.yml` file,
 as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
@@ -191,7 +195,11 @@ After you have the route mapping set up, it takes effect in the following locati
 - In the blob file view, by selecting **View** (**{external-link}**) next to the file.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-## Visual Reviews (deprecated) **(PREMIUM ALL)**
+## Visual Reviews (deprecated) 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
@@ -299,7 +307,7 @@ merge request ID before you can provide feedback.
 
 ### Authentication for Visual Reviews
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42750#note_317271120) in GitLab 12.10.
 
 To enable visual reviews for private and internal projects, set the
 [`data-require-auth` variable](#configure-review-apps-for-visual-reviews) to `true`. When enabled,

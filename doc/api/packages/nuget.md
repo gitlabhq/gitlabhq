@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# NuGet API **(FREE ALL)**
+# NuGet API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for [NuGet Packages](../../user/packages/nuget_repository/index.md).
 
@@ -22,7 +26,7 @@ for details on which headers and token types are supported. Undocumented authent
 
 ## Package index
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Returns the index for a given package, which includes a list of available versions:
 
@@ -51,7 +55,7 @@ Example response:
 
 ## Download a package file
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Download a NuGet package file. The [metadata service](#metadata-service) provides this URL.
 
@@ -124,7 +128,7 @@ Upload a NuGet package file:
 
 ## Upload a symbol package file
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Upload a NuGet symbol package file (`.snupkg`):
 
@@ -285,7 +289,7 @@ the group-level route, the returned URLs contain `/groups/:id/-`.
 
 ## Metadata Service
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Returns metadata for a package:
 
@@ -337,7 +341,7 @@ Example response:
 
 ## Version Metadata Service
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Returns metadata for a specific package version:
 
@@ -377,7 +381,7 @@ Example response:
 
 ## Search Service
 
-> Introduced in GitLab 12.8.
+> - Introduced in GitLab 12.8.
 
 Given a query, search for NuGet packages in the repository:
 
@@ -427,7 +431,7 @@ Example response:
 
 ## Delete service
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
 
 Delete a NuGet package:
 
@@ -458,7 +462,7 @@ Possible request responses:
 
 ## Download a debugging symbol file `.pdb`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
 
 Download a debugging symbol file (`.pdb`):
 
@@ -493,7 +497,7 @@ Possible request responses:
 
 ## V2 Feed Metadata Endpoints
 
-> Introduced in GitLab 16.3.
+> - Introduced in GitLab 16.3.
 
 ### $metadata endpoint
 
@@ -546,7 +550,7 @@ Example response:
 
 ### OData package entry endpoints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127667) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127667) in GitLab 16.4.
 
 | Endpoint | Description |
 | -------- | ----------- |

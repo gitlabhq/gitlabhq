@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dependency list **(ULTIMATE ALL)**
+# Dependency list 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - System dependencies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6698) in GitLab 14.6.
 > - Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies`. Disabled by default.
@@ -63,7 +67,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 ## Filter dependency list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.7  [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.7  [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`.

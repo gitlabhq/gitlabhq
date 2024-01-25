@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a single project for issue triage **(FREE ALL)**
+# Tutorial: Set up a single project for issue triage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -79,7 +83,11 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 <!-- Idea for expanding this tutorial:
      Add steps for [creating a wiki page](../../user/project/wiki/index.md#create-a-new-wiki-page). -->
 
-## Create scoped labels **(PREMIUM ALL)**
+## Create scoped labels
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, Self-managed
 
 Next, you'll create labels to add to issues to categorize them.
 

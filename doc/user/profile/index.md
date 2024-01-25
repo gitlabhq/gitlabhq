@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User account **(FREE ALL)**
+# User account
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -120,7 +124,7 @@ user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
 You can add more information to your profile page with a README file. When you populate
 the README file with information, it's included on your profile page.
@@ -185,7 +189,7 @@ To show private contributions:
 
 ## Add your gender pronouns
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
 
 You can add your gender pronouns to your GitLab account to be displayed next to
 your name in your profile.
@@ -199,7 +203,7 @@ To specify your pronouns:
 
 ## Add your name pronunciation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
 
 You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
 your name.
@@ -213,7 +217,7 @@ To add your name pronunciation:
 
 ## Set your current status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -355,9 +359,9 @@ When this feature is being disabled, all current followed/following connections 
 
 ## Advanced code search with zoekt
 
-### Disable searching code with zoekt
+### Disable searching code with Zoekt
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
 
 You can disable searching with Zoekt and use Elasticsearch instead.
 
@@ -407,7 +411,7 @@ GitLab administrators can
 
 ### Stay signed in indefinitely
 
-> Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+> - Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
 
 To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 
@@ -419,7 +423,7 @@ that require sessions to expire periodically for security or compliance purposes
 
 ### Cookies used for sign-in
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
 When you sign in, three cookies are set:
 

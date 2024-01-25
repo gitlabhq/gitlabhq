@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrate GitLab groups and projects by using direct transfer **(FREE ALL)**
+# Migrate GitLab groups and projects by using direct transfer
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
@@ -113,7 +117,7 @@ If you are migrating large projects and encounter problems with timeouts or dura
 
 ## Limits
 
-> Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+> - Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
 
 Hardcoded limits apply on migration by direct transfer.
 
@@ -164,7 +168,7 @@ be changed:
 
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 To migrate groups by direct transfer:
 
@@ -219,7 +223,7 @@ Create the group you want to import to and connect the source GitLab instance:
 
 ## Select the groups and projects to import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
 After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
 importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
@@ -238,7 +242,7 @@ ready for production use.
 
 ## Group import history
 
-> **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+> - **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
 
 You can view all groups migrated by you by direct transfer listed on the group import history page. This list includes:
 
@@ -320,7 +324,10 @@ Some group items are excluded from migration because they either:
 - May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
 - Are not supported: push rules.
 
-## Migrated project items **(BETA)**
+## Migrated project items
+
+DETAILS:
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
@@ -479,7 +486,7 @@ You can also see all migrated entities with any failures related to them using a
 
 ### Stale imports
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
 
 When troubleshooting group migration, an import may not complete because the import workers took
 longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or

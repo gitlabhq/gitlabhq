@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Maven packages in the package registry **(FREE ALL)**
+# Maven packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -603,7 +607,7 @@ To delete older package versions, consider using the Packages API or the UI.
 
 ### Do not allow duplicate Maven packages
 
-> Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 

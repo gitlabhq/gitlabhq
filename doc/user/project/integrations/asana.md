@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Asana **(FREE ALL)**
+# Asana
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The Asana integration adds commit messages as comments to Asana tasks.
 Once enabled, commit messages are checked for Asana task URLs (for example,

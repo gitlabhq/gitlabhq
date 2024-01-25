@@ -4,9 +4,14 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Analytics dashboards **(ULTIMATE ALL EXPERIMENT)**
+# Analytics dashboards
 
-> Introduced in GitLab 15.9 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - Introduced in GitLab 15.9 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`.
@@ -101,7 +106,7 @@ To view a list of dashboards (both built-in and custom) for a project:
 
 ### View the value streams dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `combined_analytics_dashboards` and `project_analytics_dashboard_dynamic_vsd`.
@@ -139,7 +144,7 @@ To view a list of dashboards (both built-in and custom) for a group:
 
 ### View the value streams dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.

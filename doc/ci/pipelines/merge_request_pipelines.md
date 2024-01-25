@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Merge request pipelines **(FREE ALL)**
+# Merge request pipelines 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
 
@@ -175,7 +179,7 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 
 ### Prevent pipelines from fork projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
 
 To prevent users from running new pipelines for fork projects in the parent project
 use [the projects API](../../api/projects.md#edit-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`

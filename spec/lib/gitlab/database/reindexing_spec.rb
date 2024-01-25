@@ -238,6 +238,19 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
   describe '.cleanup_leftovers!' do
     subject(:cleanup_leftovers) { described_class.cleanup_leftovers! }
 
+    let(:expected_queries) do
+      [
+        "SET lock_timeout TO '60000ms'",
+        "DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"foobar_ccnew\"",
+        "RESET idle_in_transaction_session_timeout; RESET lock_timeout",
+        "SET lock_timeout TO '60000ms'",
+        "DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"foobar_ccnew1\"",
+        "RESET idle_in_transaction_session_timeout; RESET lock_timeout"
+      ]
+    end
+
+    let(:actual_queries) { [] }
+
     let(:model) { Gitlab::Database.database_base_models[Gitlab::Database::PRIMARY_DATABASE_NAME] }
     let(:connection) { model.connection }
 
@@ -255,20 +268,15 @@ RSpec.describe Gitlab::Database::Reindexing, feature_category: :database, time_t
     end
 
     it 'drops both leftover indexes' do
-      expect_query("SET lock_timeout TO '60000ms'")
-      expect_query("DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"foobar_ccnew\"")
-      expect_query("RESET idle_in_transaction_session_timeout; RESET lock_timeout")
-      expect_query("SET lock_timeout TO '60000ms'")
-      expect_query("DROP INDEX CONCURRENTLY IF EXISTS \"public\".\"foobar_ccnew1\"")
-      expect_query("RESET idle_in_transaction_session_timeout; RESET lock_timeout")
-
-      cleanup_leftovers
-    end
-
-    def expect_query(sql)
-      expect(connection).to receive(:execute).ordered.with(sql).and_wrap_original do |method, sql|
+      allow(connection).to receive(:execute).and_wrap_original do |method, sql|
+        actual_queries << sql
         method.call(sql.sub(/CONCURRENTLY/, ''))
       end
+
+      cleanup_leftovers
+
+      # Ordering matters here, we're making sure the query order matched what we expect.
+      expect(expected_queries).to eq(actual_queries)
     end
   end
 end

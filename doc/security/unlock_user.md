@@ -4,11 +4,15 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Locked users **(FREE SELF)**
+# Locked users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 ## Self-managed users
 
-> Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
+> - Configurable locked user policy [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27048) in GitLab 16.5.
 
 By default, users are locked after 10 failed sign-in attempts. These users remain locked:
 

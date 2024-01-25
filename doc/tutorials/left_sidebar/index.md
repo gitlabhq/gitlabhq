@@ -4,9 +4,13 @@ group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Use the left sidebar to navigate GitLab **(FREE ALL)**
+# Tutorial: Use the left sidebar to navigate GitLab
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9044) in GitLab 16.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9044) in GitLab 16.0.
 
 Follow this tutorial to learn how to use the new left sidebar to navigate the UI.
 

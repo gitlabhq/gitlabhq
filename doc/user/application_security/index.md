@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Application security **(ULTIMATE ALL)**
+# Application security 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 GitLab can check your application for security vulnerabilities including:
 
@@ -245,7 +249,11 @@ Security scan information appears in multiple locations and formats:
 - Vulnerability report
 - GitLab Workflow extension for VS Code
 
-### Merge request **(FREE ALL)**
+### Merge request 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Output of all enabled application security tools is shown in a merge request widget. You can use
 this information to manage the risk of any issues identified in the source branch.

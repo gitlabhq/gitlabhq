@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import and export API **(FREE ALL)**
+# Project import and export API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the project import and export API to import and export projects using file transfers.
 
@@ -213,7 +217,7 @@ As an administrator, you can modify the maximum import file size. To do so, use 
 
 ## Import a file from a remote object storage **(BETA)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.

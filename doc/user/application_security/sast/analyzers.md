@@ -4,9 +4,13 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAST analyzers **(FREE ALL)**
+# SAST analyzers 
 
-> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 Static Application Security Testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
@@ -64,7 +68,11 @@ content directly. Instead, it enhances the results with additional properties, i
 
 - CWEs.
 - Location tracking fields.
-- A means of identifying false positives or insignificant findings. **(ULTIMATE ALL)**
+- A means of identifying false positives or insignificant findings. 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 ## Transition to Semgrep-based scanning
 

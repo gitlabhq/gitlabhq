@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epics API **(PREMIUM ALL)**
+# Epics API 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.2.
 > - Single-level Epics [were moved](https://gitlab.com/gitlab-org/gitlab/-/issues/37081) to [GitLab Premium](https://about.gitlab.com/pricing/) in 12.8.
@@ -21,7 +25,7 @@ The [epic issues API](epic_issues.md) allows you to interact with issues associa
 
 ## Milestone dates integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448) in GitLab 11.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6448) in GitLab 11.3.
 
 Because start date and due date can be dynamically sourced from related issue milestones,
 additional fields are shown when user has edit permission. These include two boolean

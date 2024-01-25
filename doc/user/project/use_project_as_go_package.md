@@ -4,7 +4,11 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Use a project as a Go package **(FREE ALL)**
+# Use a project as a Go package
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Prerequisites:
 

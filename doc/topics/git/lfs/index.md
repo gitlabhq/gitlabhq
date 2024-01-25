@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Git Large File Storage (LFS) **(FREE ALL)**
+# Git Large File Storage (LFS)
 
 Managing large files such as audio, video and graphics files has always been one
 of the shortcomings of Git. The general recommendation is to not have Git repositories
@@ -18,7 +18,11 @@ In the repository view, files tracked by Git LFS display an **LFS** badge next t
 
 ![Git LFS tracking status](img/lfs_badge_v16_0.png)
 
-## Configure your GitLab server for Git LFS **(FREE SELF)**
+## Configure your GitLab server for Git LFS
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To install Git LFS on your self-managed GitLab server, see
 [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md).

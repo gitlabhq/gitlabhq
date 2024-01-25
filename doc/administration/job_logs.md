@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Job logs **(FREE SELF)**
+# Job logs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Job logs are sent by a runner while it's processing a job. You can see
 logs in job pages, pipelines, email notifications, and so on.

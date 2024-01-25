@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Log system **(FREE SELF)**
+# Log system
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab has an advanced log system where everything is logged, so you can analyze your instance using various system log
 files. The log system is similar to [audit events](../audit_events.md).
@@ -353,7 +357,7 @@ process on Redis or external HTTP, not only the serialization process.
 
 ## `application.log` (deprecated)
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111046) in GitLab 15.10.
 
 This file is located at:
 
@@ -373,7 +377,7 @@ October 07, 2014 11:25: Project "project133" was removed
 
 ## `application_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22812) in GitLab 12.7.
 
 This file is located at:
 
@@ -433,7 +437,7 @@ like this example:
 
 ## `kubernetes.log` (deprecated)
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 This file is located at:
 
@@ -467,7 +471,11 @@ only. For example:
 }
 ```
 
-## `audit_json.log` **(FREE ALL)**
+## `audit_json.log`
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 GitLab Free tracks a small number of different audit events.
@@ -573,7 +581,7 @@ For self-compiled installations, edit the `gitlab.yml` and set the Sidekiq
 
 ### `sidekiq_client.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26586) in GitLab 12.9.
 
 This file is located at:
 
@@ -701,7 +709,7 @@ This file logs the progress of [project imports and migrations](../../user/proje
 
 ## `exporter.log`
 
-> Introduced in GitLab 13.1.
+> - Introduced in GitLab 13.1.
 
 This file is located at:
 
@@ -712,7 +720,7 @@ It logs the progress of the export process.
 
 ## `features_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 13.7.
 
 This file is located at:
 
@@ -737,7 +745,7 @@ are recorded in this file. For example:
 
 ## `ci_resource_groups_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384180) in GitLab 15.9.
 
 This file is located at:
 
@@ -755,7 +763,7 @@ The examples show the `resource_group_id`, `processable_id`, `message`, and `suc
 
 ## `auth.log`
 
-> Introduced in GitLab 12.0.
+> - Introduced in GitLab 12.0.
 
 This file is located at:
 
@@ -793,7 +801,7 @@ This file contains the JSON version of the logs in `auth.log`, for example:
 
 ## `graphql_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/59587) in GitLab 12.0.
 
 This file is located at:
 
@@ -808,14 +816,14 @@ GraphQL queries are recorded in the file. For example:
 
 ## `clickhouse.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
 
 The `clickhouse.log` file logs information related to the
 [ClickHouse database client](../../integration/clickhouse.md) in GitLab.
 
 ## `migrations.log`
 
-> Introduced in GitLab 12.3.
+> - Introduced in GitLab 12.3.
 
 This file is located at:
 
@@ -826,7 +834,7 @@ This file logs the progress of [database migrations](../raketasks/maintenance.md
 
 ## `mail_room_json.log` (default)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19186) in GitLab 12.6.
 
 This file is located at:
 
@@ -838,7 +846,7 @@ Its name and path are configurable, so the name and path may not match the above
 
 ## `web_hooks.log`
 
-> Introduced in GitLab 16.3.
+> - Introduced in GitLab 16.3.
 
 This file is located at:
 
@@ -884,9 +892,13 @@ are generated in a location based on your installation method:
 - `/var/log/gitlab/gitlab-rails/web_exporter.log` on Linux package installations.
 - `/home/git/gitlab/log/web_exporter.log` on self-compiled installations.
 
-## `database_load_balancing.log` **(PREMIUM SELF)**
+## `database_load_balancing.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab [Database Load Balancing](../postgresql/database_load_balancing.md).
 This file is located at:
@@ -894,9 +906,13 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` on Linux package installations.
 - `/home/git/gitlab/log/database_load_balancing.log` on self-compiled installations.
 
-## `zoekt.log` **(PREMIUM SELF)**
+## `zoekt.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110980) in GitLab 15.9.
 
 This file logs information related to the
 [Exact code search](../../user/search/exact_code_search.md) feature which is
@@ -907,9 +923,13 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.
 - `/home/git/gitlab/log/zoekt.log` on self-compiled installations.
 
-## `elasticsearch.log` **(PREMIUM SELF)**
+## `elasticsearch.log`
 
-> Introduced in GitLab 12.6.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - Introduced in GitLab 12.6.
 
 This file logs information related to the Elasticsearch Integration, including
 errors during indexing or searching Elasticsearch. This file is located at:
@@ -936,7 +956,7 @@ Line breaks have been added to the following example line for clarity:
 
 ## `exceptions_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17819) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17819) in GitLab 12.6.
 
 This file logs the information about exceptions being tracked by
 `Gitlab::ErrorTracking`, which provides a standard and consistent way of
@@ -967,7 +987,7 @@ Each line contains JSON that can be ingested by Elasticsearch. For example:
 
 ## `service_measurement.log`
 
-> Introduced in GitLab 13.0.
+> - Introduced in GitLab 13.0.
 
 This file is located at:
 
@@ -983,7 +1003,11 @@ For example:
 { "severity":"INFO", "time":"2020-04-22T16:04:50.691Z","correlation_id":"04f1366e-57a1-45b8-88c1-b00b23dc3616","class":"Projects::ImportExport::ExportService","current_user":"John Doe","project_full_path":"group1/test-export","file_path":"/path/to/archive","gc_stats":{"count":{"before":127,"after":127,"diff":0},"heap_allocated_pages":{"before":10369,"after":10369,"diff":0},"heap_sorted_length":{"before":10369,"after":10369,"diff":0},"heap_allocatable_pages":{"before":0,"after":0,"diff":0},"heap_available_slots":{"before":4226409,"after":4226409,"diff":0},"heap_live_slots":{"before":2542709,"after":2641420,"diff":98711},"heap_free_slots":{"before":1683700,"after":1584989,"diff":-98711},"heap_final_slots":{"before":0,"after":0,"diff":0},"heap_marked_slots":{"before":2542704,"after":2542704,"diff":0},"heap_eden_pages":{"before":10369,"after":10369,"diff":0},"heap_tomb_pages":{"before":0,"after":0,"diff":0},"total_allocated_pages":{"before":10369,"after":10369,"diff":0},"total_freed_pages":{"before":0,"after":0,"diff":0},"total_allocated_objects":{"before":24896308,"after":24995019,"diff":98711},"total_freed_objects":{"before":22353599,"after":22353599,"diff":0},"malloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"malloc_increase_bytes_limit":{"before":25804104,"after":25804104,"diff":0},"minor_gc_count":{"before":94,"after":94,"diff":0},"major_gc_count":{"before":33,"after":33,"diff":0},"remembered_wb_unprotected_objects":{"before":34284,"after":34284,"diff":0},"remembered_wb_unprotected_objects_limit":{"before":68568,"after":68568,"diff":0},"old_objects":{"before":2404725,"after":2404725,"diff":0},"old_objects_limit":{"before":4809450,"after":4809450,"diff":0},"oldmalloc_increase_bytes":{"before":140032,"after":6650240,"diff":6510208},"oldmalloc_increase_bytes_limit":{"before":68537556,"after":68537556,"diff":0}},"time_to_finish":0.12298400001600385,"number_of_sql_calls":70,"memory_usage":"0.0 MiB","label":"process_48616"}
 ```
 
-## `geo.log` **(PREMIUM SELF)**
+## `geo.log`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Geo stores structured log messages in a `geo.log` file. For Linux package installations,
 this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
@@ -1030,9 +1054,13 @@ can be used.
 }
 ```
 
-## `llm.log` **(ULTIMATE SAAS)**
+## `llm.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 
 The `llm.log` file logs information related to
 [AI features](../../user/ai_features.md).
@@ -1170,7 +1198,7 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 ## Backup log
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63832) in GitLab 14.1.
 
 For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
@@ -1178,7 +1206,7 @@ This log is populated when a [GitLab backup is created](../../administration/bac
 
 ## Performance bar stats
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48149) in GitLab 13.7.
 
 This file is located at:
 

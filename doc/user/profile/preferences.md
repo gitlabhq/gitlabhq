@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Profile preferences **(FREE ALL)**
+# Profile preferences
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can update your preferences to change the look and feel of GitLab.
 
@@ -22,7 +26,7 @@ To change the color theme:
 
 ### Dark mode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
 
 Dark mode makes elements on the GitLab UI stand out on a dark background.
 
@@ -32,7 +36,7 @@ Dark mode works only with the **Dark** Syntax highlighting theme. You can report
 
 ## Change the syntax highlighting theme
 
-> Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
+> - Changing the default syntax highlighting theme for authenticated and unauthenticated users [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25129) in GitLab 15.1.
 
 Syntax highlighting is a feature in code editors and IDEs. The highlighter assigns a color to each type of code, such as strings and comments.
 
@@ -252,7 +256,7 @@ After you change your calendar start day, refresh your user profile page.
 
 ### Show exact times instead of relative times
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65570) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65570) in GitLab 14.1.
 
 Customize the format used to display times of activities on your group and project overview pages and user profiles. You can display times in a:
 
@@ -269,7 +273,7 @@ To use exact times on the GitLab UI:
 
 ### Customize time format
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15206) in GitLab 16.6.
 
 You can customize the format used to display times of activities on your group and project overview pages and user
 profiles. You can display times as:
@@ -289,7 +293,7 @@ To customize the time format:
 
 ## User identities in CI job JSON web tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387537) in GitLab 16.0.
 
 CI/CD jobs generate JSON web tokens, which can include a list of your external identities.
 Instead of making separate API calls to get individual accounts, you can find your user identities in a single authentication token.
@@ -299,7 +303,7 @@ To enable including external identities, see [Token payload](../../ci/secrets/id
 
 ## Control follower engagement
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0.
 
 Turn off the ability to follow or be followed by other GitLab users. By default, your user profile, including your name and profile photo, is public in the **Following** tabs of other users. When you deactivate this setting:
 
@@ -318,7 +322,11 @@ To access your **Followers** and **Following** tabs:
 - On the left sidebar, select your avatar > select your name or username.
 - Select **Followers** or **Following**.
 
-## Enable Code Suggestions **(FREE SAAS)**
+## Enable Code Suggestions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. UI user setting removed.

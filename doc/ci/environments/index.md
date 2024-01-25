@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Environments and deployments **(FREE ALL)**
+# Environments and deployments 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Environments describe where code is deployed.
 
@@ -253,7 +257,7 @@ To achieve the same result as renaming an environment:
 
 ## Deployment tier of environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
 Sometimes, instead of using an [industry standard](https://en.wikipedia.org/wiki/Deployment_environment)
 environment name, like `production`, you might want to use a code name, like `customer-portal`.
@@ -682,7 +686,7 @@ To delete an environment:
 
 ### Access an environment for preparation or verification purposes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
@@ -739,9 +743,13 @@ or human error can cause major issues with an environment. Things like:
 You can use [incident management](../../operations/incident_management/index.md)
 to get alerts when there are critical issues that need immediate attention.
 
-#### View the latest alerts for environments **(ULTIMATE ALL)**
+#### View the latest alerts for environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
 If you [set up alerts for Prometheus metrics](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
@@ -755,9 +763,13 @@ longer visible on the environments page.
 If the alert requires a [rollback](#retry-or-roll-back-a-deployment), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
-#### Auto Rollback **(ULTIMATE ALL)**
+#### Auto Rollback
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -1024,7 +1036,7 @@ To ensure the `action: stop` can always run when needed, you can:
 
 ### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error because the dynamically generated parameter can't be used for creating an environment.

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OmniAuth **(FREE SELF)**
+# OmniAuth 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Users can sign in to GitLab by using their credentials from Twitter, GitHub, and other popular services.
 [OmniAuth](https://rubygems.org/gems/omniauth/) is the Rack framework that GitLab uses to provide this authentication.
@@ -165,7 +169,7 @@ your chosen [provider](#supported-providers).
 
 ### Per-provider configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
 
 If `allow_single_sign_on` is set, GitLab uses one of the following fields returned in the OmniAuth `auth_hash` to establish a username in GitLab for the user signing in,
 choosing the first that exists:
@@ -289,7 +293,7 @@ omniauth:
 
 ## Link existing users to OmniAuth users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
 
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
 

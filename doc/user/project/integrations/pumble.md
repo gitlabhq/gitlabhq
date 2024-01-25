@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pumble **(FREE ALL)**
+# Pumble
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93623) in GitLab 15.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93623) in GitLab 15.3.
 
 You can configure GitLab to send notifications to a Pumble channel:
 

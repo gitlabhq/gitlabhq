@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User file uploads **(FREE ALL)**
+# User file uploads
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Users can upload files to:
 
@@ -56,7 +60,7 @@ You cannot select this option for public projects.
 
 ## Delete uploaded files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
 
 You should delete an uploaded file when that file contains sensitive or confidential information. When you have deleted that file, users cannot access the file and the direct URL returns a 404 error.
 

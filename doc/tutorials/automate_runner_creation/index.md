@@ -4,7 +4,11 @@ group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Automate runner creation and registration **(FREE ALL)**
+# Tutorial: Automate runner creation and registration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial describes how to automate runner creation and registration.
 

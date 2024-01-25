@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting GitLab for Jira Cloud app administration **(FREE SELF)**
+# Troubleshooting GitLab for Jira Cloud app administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 When administering the GitLab for Jira Cloud app, you might encounter the following issues.
 

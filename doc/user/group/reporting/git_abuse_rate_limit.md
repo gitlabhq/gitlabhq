@@ -4,9 +4,13 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git abuse rate limit **(ULTIMATE ALL)**
+# Git abuse rate limit
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8066) in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. On GitLab.com, this feature is available.

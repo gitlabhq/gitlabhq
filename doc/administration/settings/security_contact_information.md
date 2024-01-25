@@ -4,9 +4,13 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Provide public security contact information **(FREE SELF)**
+# Provide public security contact information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7.
 
 Organizations can facilitate the responsible disclosure of security issues by
 providing public contact information. GitLab supports using a

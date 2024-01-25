@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PgBouncer exporter **(FREE SELF)**
+# PgBouncer exporter
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [PgBouncer exporter](https://github.com/prometheus-community/pgbouncer_exporter) enables
 you to measure various [PgBouncer](https://www.pgbouncer.org/) metrics.

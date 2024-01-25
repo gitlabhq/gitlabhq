@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Disaster recovery for planned failover **(PREMIUM SELF)**
+# Disaster recovery for planned failover
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Auditor users **(PREMIUM SELF)**
+# Auditor users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Users with auditor access have read-only access to all groups, projects, and other resources except:
 
@@ -62,6 +66,6 @@ If you are signed in with auditor access, you:
 
 ## Maintain auditor users using API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Administrators can use the GitLab API to [create](../api/users.md#user-creation) and [modify](../api/users.md#user-modification) auditor users.

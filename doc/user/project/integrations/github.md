@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitHub **(PREMIUM ALL)**
+# GitHub
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can update GitHub with pipeline status updates from GitLab.
 The GitHub integration can help you if you use GitLab for CI/CD.
@@ -44,7 +48,7 @@ to configure pipelines to run for open pull requests.
 
 ### Static or dynamic status check names
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/9931) in GitLab 12.4 to make static status check names the default behavior for new projects.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/9931) in GitLab 12.4 to make static status check names the default behavior for new projects.
 
 A status check name can be static or dynamic:
 

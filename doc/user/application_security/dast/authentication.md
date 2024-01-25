@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST authentication **(ULTIMATE ALL)**
+# DAST authentication 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 WARNING:
 **DO NOT** use credentials that are valid for production systems, production servers, or any that

@@ -52,13 +52,13 @@ To create a timeline event:
 
 ### Using a quick action
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368721) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368721) in GitLab 15.4.
 
 You can create a timeline event using the `/timeline` [quick action](../../user/project/quick_actions.md).
 
 ### From a comment on the incident
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344058) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344058) in GitLab 15.4.
 
 Prerequisites:
 
@@ -76,16 +76,19 @@ The comment is shown on the incident timeline as a timeline event.
 
 ### When incident severity changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
 
 A new timeline event is created when someone [changes the severity](manage_incidents.md#change-severity)
 of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
-### When labels change **(EXPERIMENT)**
+### When labels change
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365489) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365489) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `incident_timeline_events_from_labels`.
@@ -96,7 +99,7 @@ A new timeline event is created when someone adds or removes [labels](../../user
 
 ## Delete an event
 
-> Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
+> - Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
 
 You can also delete timeline events.
 

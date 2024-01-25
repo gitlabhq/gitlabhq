@@ -4,9 +4,13 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository X-Ray **(PREMIUM ALL)**
+# Repository X-Ray
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
 
 NOTE:
 Starting in February 2024, Code Suggestions will be part of

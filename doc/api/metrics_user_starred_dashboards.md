@@ -4,14 +4,18 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User-starred metrics dashboards API **(FREE ALL)**
+# User-starred metrics dashboards API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The starred dashboard feature makes navigating to frequently-used dashboards easier
 by displaying favorited dashboards at the top of the select list.
 
 ## Add a star to a dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31316) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31316) in GitLab 13.0.
 
 ```plaintext
 POST /projects/:id/metrics/user_starred_dashboards
@@ -42,7 +46,7 @@ Example Response:
 
 ## Remove a star from a dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31892) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31892) in GitLab 13.0.
 
 ```plaintext
 DELETE /projects/:id/metrics/user_starred_dashboards

@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group issue boards API **(FREE ALL)**
+# Group issue boards API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Every API call to [group issue boards](../user/project/issue_board.md#group-issue-boards) must be authenticated.
 
@@ -242,7 +246,11 @@ Example response:
   }
 ```
 
-## Create a group issue board **(PREMIUM ALL)**
+## Create a group issue board 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Creates a group issue board.
 
@@ -281,7 +289,7 @@ Example response:
 
 ## Update a group issue board
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5954) in GitLab 11.1.
 
 Updates a group issue board.
 
@@ -349,7 +357,11 @@ Example response:
   }
 ```
 
-## Delete a group issue board **(PREMIUM ALL)**
+## Delete a group issue board 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Deletes a group issue board.
 

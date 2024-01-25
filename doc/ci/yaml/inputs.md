@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Define inputs for configuration added with `include` **(FREE ALL)**
+# Define inputs for configuration added with `include` 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 > - Made generally available in GitLab 16.6.
@@ -186,7 +190,7 @@ spec:
 
 ## Specify functions to manipulate input values
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
 
 You can specify predefined functions in the interpolation block to manipulate the input value.
 The format supported is the following:
@@ -222,7 +226,7 @@ In this example, assuming the input uses the default value and `$MY_VAR` is an u
 
 #### `expand_vars`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387632) in GitLab 16.5.
 
 Use `expand_vars` to expand [CI/CD variables](../variables/index.md) in the input value.
 
@@ -248,7 +252,7 @@ would expand to `test my value`.
 
 #### `truncate`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.
 
 Use `truncate` to shorten the interpolated value. For example:
 

@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage issues **(FREE ALL)**
+# Manage issues
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 After you create an issue, you can start working with it.
 
@@ -26,7 +30,7 @@ To edit an issue:
 
 ### Remove a task list item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
 
 Prerequisites:
 
@@ -73,7 +77,11 @@ When bulk editing issues in a project, you can edit the following attributes:
 - [Iteration](../../group/iterations/index.md)
 - [Confidentiality](confidential_issues.md)
 
-### Bulk edit issues from a group **(PREMIUM ALL)**
+### Bulk edit issues from a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7249) in GitLab 12.1.
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
@@ -123,11 +131,15 @@ To move an issue:
 1. Search for a project to move the issue to.
 1. Select **Move**.
 
-### Bulk move issues **(FREE SELF)**
+### Bulk move issues
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 #### From the issues list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
 
 You can move multiple issues at the same time when you're in a project.
 You can't move tasks or test cases.
@@ -181,7 +193,7 @@ To do it:
 
 ## Reorder list items in the issue description
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
 
 When you view an issue that has a list in the description, you can also reorder the list items.
 
@@ -316,7 +328,11 @@ closed issues remain as they are.
 Disabling automatic issue closing only applies to issues in the project where the setting was disabled.
 Merge requests and commits in this project can still close another project's issues.
 
-#### Customize the issue closing pattern **(FREE SELF)**
+#### Customize the issue closing pattern
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 
@@ -345,7 +361,7 @@ To change issue type:
 
 ## Delete an issue
 
-> Deleting from the vertical ellipsis menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299933) in GitLab 14.6.
+> - Deleting from the vertical ellipsis menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299933) in GitLab 14.6.
 
 Prerequisites:
 
@@ -365,7 +381,11 @@ Alternatively:
 1. Select **Edit title and description** (**{pencil}**).
 1. Select **Delete issue**.
 
-## Promote an issue to an epic **(PREMIUM ALL)**
+## Promote an issue to an epic
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can promote an issue to an [epic](../../group/epics/index.md) in the immediate parent group.
 
@@ -412,7 +432,11 @@ Alternatively, you can use the `/promote` [quick action](../quick_actions.md#iss
 
 You can use the `/promote_to_incident` [quick action](../quick_actions.md) to promote the issue to an [incident](../../../operations/incident_management/incidents.md).
 
-## Add an issue to an iteration **(PREMIUM ALL)**
+## Add an issue to an iteration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To add an issue to an [iteration](../../group/iterations/index.md):
 
@@ -483,7 +507,7 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 ### Filter issues by ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/39908) in GitLab 12.1.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**.
@@ -512,7 +536,7 @@ enabled a feature flag for [moved actions](../merge_requests/index.md#move-sideb
 
 ## Copy issue email address
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.
 
 You can create a comment in an issue by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -560,7 +584,11 @@ As you type in the title text box of the **New issue** page, GitLab searches tit
 across all issues in the current project. Only issues you have access to are returned.
 Up to five similar issues, sorted by most recently updated, are displayed below the title text box.
 
-## Health status **(ULTIMATE ALL)**
+## Health status
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36427) in GitLab 12.10.
 > - Health status of closed issues [can't be edited](https://gitlab.com/gitlab-org/gitlab/-/issues/220867) in GitLab 13.4 and later.
@@ -601,9 +629,13 @@ until the issue is reopened.
 You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
 [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
 
-## Publish an issue **(ULTIMATE ALL)**
+## Publish an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30906) in GitLab 13.1.
 
 If a status page application is associated with the project, you can use the `/publish`
 [quick action](../quick_actions.md) to publish the issue.

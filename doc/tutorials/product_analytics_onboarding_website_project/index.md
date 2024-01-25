@@ -4,7 +4,12 @@ group: Product Analytics
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Set up product analytics in a GitLab Pages website project **(ULTIMATE ALL EXPERIMENT)**
+# Tutorial: Set up product analytics in a GitLab Pages website project
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
 Understanding how your users engage with your website or application is important for making data-driven decisions.
 By identifying the most and least used features by your users, your team can decide where and how to spend their time effectively.

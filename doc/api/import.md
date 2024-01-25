@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import API **(FREE ALL)**
+# Import API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
@@ -80,7 +84,7 @@ Example response:
 
 ### Import a public project through the API using a group access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
 
 When you import a project from GitHub to GitLab through the API using a group access
 token:
@@ -90,7 +94,7 @@ token:
 
 ### Cancel GitHub project import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
 
 Cancel an in-progress GitHub project import using the API.
 

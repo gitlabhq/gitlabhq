@@ -4,7 +4,11 @@ group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Comments and threads **(FREE ALL)**
+# Comments and threads
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
 > - Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
@@ -52,7 +56,7 @@ in a different color.
 
 ### Mentioning all members
 
-> [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+> - [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
 
 FLAG:
 On self-managed GitLab, by default this flag is not enabled. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md)
@@ -227,7 +231,11 @@ To change the activity sort order:
 1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
    **Newest first** or **Oldest first** (default).
 
-## View description change history **(PREMIUM ALL)**
+## View description change history
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can see changes to the description listed in the history.
 

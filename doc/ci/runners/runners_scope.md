@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage runners **(FREE ALL)**
+# Manage runners 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab Runner has the following types of runners, which are available based on who you want to have access:
 
@@ -265,7 +269,7 @@ The runner authentication token displays in the UI for only a short period of ti
 
 ### Create a group runner with a registration token (deprecated)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
@@ -356,9 +360,13 @@ To delete a single or multiple group runners:
    - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
 1. Select **Permanently delete runner**.
 
-### Clean up stale group runners **(ULTIMATE ALL)**
+### Clean up stale group runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
 Prerequisites:
 
@@ -570,9 +578,13 @@ A runner can have one of the following statuses.
 | `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
 | `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
-## View statistics for runner performance **(ULTIMATE ALL)**
+## View statistics for runner performance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
@@ -590,9 +602,13 @@ To view runner statistics:
 1. Select **CI/CD > Runners**.
 1. Select **View metrics**.
 
-## Determine which runners need to be upgraded **(ULTIMATE ALL)**
+## Determine which runners need to be upgraded
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 
 The version of GitLab Runner used by your runners should be
 [kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).

@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Owners **(PREMIUM ALL)**
+# Code Owners
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the Code Owners feature to define who has expertise for specific parts of your project's codebase.
 Define the owners of files and directories in a repository to:
@@ -353,7 +357,7 @@ section is marked as optional.
 
 ### Require multiple approvals from Code Owners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
 
 You can require multiple approvals for the Code Owners sections in the Approvals area in merge requests.
 Append the section name with a number `n` in brackets, for example, `[2]` or `[3]`.

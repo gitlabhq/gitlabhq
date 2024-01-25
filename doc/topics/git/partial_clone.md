@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Partial clone **(FREE ALL)**
+# Partial clone
 
 As Git repositories grow in size, they can become cumbersome to work with
 because of:
@@ -21,7 +21,7 @@ Git 2.22.0 or later is required.
 
 ## Filter by file size
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
 Storing large binary files in Git is usually discouraged, because every large
 file added is downloaded by everyone who clones or fetches changes
@@ -68,7 +68,7 @@ When changing branches, Git may download more missing files.
 
 ## Filter by object type
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2553) in GitLab 12.10.
 
 For repositories with millions of files and a long history, you can exclude all files and use
 [`git sparse-checkout`](https://git-scm.com/docs/git-sparse-checkout) to reduce the size of

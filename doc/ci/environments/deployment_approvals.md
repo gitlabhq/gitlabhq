@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Require approvals prior to deploying to a Protected Environment
 ---
 
-# Deployment approvals **(PREMIUM ALL)**
+# Deployment approvals 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
@@ -148,7 +152,7 @@ To allow self-approval of a deployment job:
 
 ## Approve or reject a deployment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
 Using the GitLab UI or the API, you can:
 

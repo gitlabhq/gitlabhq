@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo with Object storage **(PREMIUM SELF)**
+# Geo with Object storage
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a flag](../../feature_flags.md) named `geo_object_storage_verification`. Enabled by default.
 

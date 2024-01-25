@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo database replication **(PREMIUM SELF)**
+# Geo database replication
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This document describes the minimal required steps to replicate your primary
 GitLab database to a secondary site's database. You may have to change some

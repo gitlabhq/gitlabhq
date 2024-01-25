@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Geo **(PREMIUM SELF)**
+# Troubleshooting Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Setting up Geo requires careful attention to details, and sometimes it's easy to
 miss a step.

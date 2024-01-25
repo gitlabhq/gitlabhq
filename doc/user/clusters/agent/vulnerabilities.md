@@ -4,7 +4,11 @@ group: Composition analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Operational Container Scanning **(ULTIMATE ALL)**
+# Operational Container Scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
@@ -152,7 +156,7 @@ You must have at least the Developer role.
 
 ## Scanning private images
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
 
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.
 

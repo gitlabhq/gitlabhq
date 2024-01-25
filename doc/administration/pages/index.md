@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages administration **(FREE SELF)**
+# GitLab Pages administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation](../../user/project/pages/index.md) is available.
@@ -93,9 +97,12 @@ Where `example.io` is the domain GitLab Pages is served from,
 `192.0.2.1` is the IPv4 address of your GitLab instance, and `2001:db8::1` is the
 IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 
-#### For namespace in URL path, without wildcard DNS **(EXPERIMENT)**
+#### For namespace in URL path, without wildcard DNS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -184,9 +191,12 @@ The Pages daemon doesn't listen to the outside world.
 
 Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 
-### Pages domain without wildcard DNS **(EXPERIMENT)**
+### Pages domain without wildcard DNS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -270,9 +280,12 @@ Before you reconfigure, remove the `gitlab_pages` section from `/etc/gitlab/gitl
 then run `gitlab-ctl reconfigure`. For more information, read
 [GitLab Pages does not regenerate OAuth](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3947).
 
-### Pages domain with TLS support, without wildcard DNS **(EXPERIMENT)**
+### Pages domain with TLS support, without wildcard DNS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) in GitLab 16.7. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -553,7 +566,7 @@ verification requirement:
 
 ### Let's Encrypt integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
 
 [GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 allows users to add Let's Encrypt SSL certificates for GitLab Pages
@@ -601,7 +614,7 @@ all the App nodes and Sidekiq nodes.
 
 #### Using Pages with reduced authentication scope
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/423) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/423) in GitLab 13.10.
 
 By default, the Pages daemon uses the `api` scope to authenticate. You can configure this. For
 example, this reduces the scope to `read_api` in `/etc/gitlab/gitlab.rb`:
@@ -624,7 +637,7 @@ this:
 
 #### Disable public access to all Pages sites
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32095) in GitLab 12.7.
 
 You can enforce [Access Control](#access-control) for all GitLab Pages websites hosted
 on your GitLab instance. By doing so, only authenticated users have access to them.
@@ -672,7 +685,7 @@ Authority (CA) in the system certificate store.
 
 ### ZIP serving and cache configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/392) in GitLab 13.7.
 
 WARNING:
 These instructions deal with some advanced settings of your GitLab instance. The recommended default values are set inside GitLab Pages. You should
@@ -717,7 +730,7 @@ gitlab_pages['headers'] = ['Strict-Transport-Security: max-age=63072000']
 
 ### Pages project redirects limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/778) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/778) in GitLab 15.2.
 
 GitLab Pages comes with a set of default limits for the [`_redirects` file](../../user/project/pages/redirects.md)
 to minimize the impact on performance. You can configure these limits if you'd like to increase or decrease the limits.
@@ -765,7 +778,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 ## Propagating the correlation ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/438) in GitLab 13.10.
 
 Setting the `propagate_correlation_id` to true allows installations behind a reverse proxy to generate
 and set a correlation ID to requests sent to GitLab Pages. When a reverse proxy sets the header value `X-Request-ID`,
@@ -819,7 +832,11 @@ Follow the steps below to configure the proxy listener of GitLab Pages.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-## Set global maximum size of each GitLab Pages site **(FREE SELF)**
+## Set global maximum size of each GitLab Pages site
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 
@@ -833,7 +850,11 @@ To set the global maximum pages size for a project:
 1. In **Maximum size of pages**, enter a value. The default is `100`.
 1. Select **Save changes**.
 
-## Set maximum size of each GitLab Pages site in a group **(PREMIUM SELF)**
+## Set maximum size of each GitLab Pages site in a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 
@@ -847,7 +868,11 @@ To set the maximum size of each GitLab Pages site in a group, overriding the inh
 1. Enter a value under **Maximum size** in MB.
 1. Select **Save changes**.
 
-## Set maximum size of GitLab Pages site in a project **(PREMIUM SELF)**
+## Set maximum size of GitLab Pages site in a project
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 
@@ -995,7 +1020,7 @@ For more details see this [blog post](https://about.gitlab.com/blog/2020/08/03/h
 
 ### GitLab API cache configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/520) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/520) in GitLab 13.10.
 
 API-based configuration uses a caching mechanism to improve performance and reliability of serving Pages.
 The cache behavior can be modified by changing the cache settings, however, the recommended values are set for you and should only be modified if needed.
@@ -1150,7 +1175,7 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_local
 
 ### Disable Pages local storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/301159) in GitLab 13.11.
 
 If you use [object storage](#object-storage-settings), you can disable local storage to avoid unnecessary disk usage/writes:
 
@@ -1211,7 +1236,7 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable HTTP requests rate limits by source-IP
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/631) in GitLab 14.5.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
@@ -1224,7 +1249,7 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable HTTP requests rate limits by domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/630) in GitLab 14.7.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
@@ -1237,7 +1262,7 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable TLS connections rate limits by source-IP
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 
@@ -1250,7 +1275,7 @@ An IPv6 address receives a large prefix in the 128-bit address space. The prefix
 
 #### Enable TLS connections rate limits by domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/632) in GitLab 14.9.
 
 1. Set rate limits in `/etc/gitlab/gitlab.rb`:
 

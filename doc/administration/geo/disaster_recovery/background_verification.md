@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Automatic background verification **(PREMIUM SELF)**
+# Automatic background verification
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Automatic background verification ensures that the transferred data matches a
 calculated checksum. If the checksum of the data on the **primary** site matches checksum of the

@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Moving GitLab databases to a different PostgreSQL instance **(FREE SELF)**
+# Moving GitLab databases to a different PostgreSQL instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Sometimes it is necessary to move your databases from one PostgreSQL instance to
 another. For example, if you are using AWS Aurora and are preparing to

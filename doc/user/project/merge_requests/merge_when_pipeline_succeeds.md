@@ -4,9 +4,13 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Auto-merge **(FREE ALL)**
+# Auto-merge
 
-> **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
 
 If you review a merge request and it's ready to merge, but the pipeline hasn't
 completed yet, you can set it to auto-merge. You don't
@@ -106,7 +110,7 @@ despite a newer but failed branch pipeline.
 
 ### Allow merge after skipped pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
 
 When the **Pipelines must succeed** checkbox is checked,
 [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent

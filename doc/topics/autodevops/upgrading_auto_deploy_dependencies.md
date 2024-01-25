@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading deployments for newer Auto Deploy dependencies **(FREE ALL)**
+# Upgrading deployments for newer Auto Deploy dependencies
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Auto Deploy](stages.md#auto-deploy) is a feature that deploys your application to a Kubernetes cluster.
 It consists of several dependencies:
@@ -77,7 +81,7 @@ Kubernetes cluster, follow your cloud provider's instructions. Here's
 
 #### Helm v3
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228609) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228609) in GitLab 13.4.
 
 The `auto-deploy-image` uses the Helm binary to manipulate the releases.
 Previously, `auto-deploy-image` used Helm v2, which used Tiller in a cluster.
@@ -125,7 +129,7 @@ with the [v1 auto-deploy-image](#use-a-specific-version-of-auto-deploy-dependenc
 
 #### Traffic routing change for canary deployments and incremental rollouts
 
-> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/109) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/merge_requests/109) in GitLab 13.4.
 
 Auto Deploy supports advanced deployment strategies such as [canary deployments](cicd_variables.md#deploy-policy-for-canary-environments)
 and [incremental rollouts](../../ci/environments/incremental_rollouts.md).

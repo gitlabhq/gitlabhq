@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics **(FREE ALL)**
+# Value stream analytics
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Value stream analytics measures the time it takes to go from an idea to production.
 
@@ -100,7 +104,11 @@ These events play a key role in the duration calculation, which is calculated by
 
 To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
 
-### How value stream analytics aggregates data **(PREMIUM ALL)**
+### How value stream analytics aggregates data
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
@@ -275,7 +283,11 @@ Value stream analytics includes the following lifecycle metrics:
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 
-### DORA metrics **(ULTIMATE ALL)**
+### DORA metrics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
@@ -354,7 +366,11 @@ NOTE:
 The date range selector filters items by the event time. The event time is when the
 selected stage finished for the given item.
 
-## View tasks by type **(PREMIUM ALL)**
+## View tasks by type
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
 
@@ -371,11 +387,15 @@ To view tasks by type:
 1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
    and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
-## Create a value stream **(PREMIUM ALL)**
+## Create a value stream
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ### Create a value stream with GitLab default stages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
 
 When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
 create custom stages in addition to those provided in the default template.
@@ -432,9 +452,13 @@ In the example above, two independent value streams are set up for two teams tha
 
 The first value stream uses standard timestamp-based events for defining the stages. The second value stream uses label events.
 
-## Edit a value stream **(PREMIUM ALL)**
+## Edit a value stream
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
@@ -451,9 +475,13 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
 
-## Delete a value stream **(PREMIUM ALL)**
+## Delete a value stream
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
 
 To delete a custom value stream:
 
@@ -464,7 +492,11 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## View number of days for a cycle to complete **(PREMIUM ALL)**
+## View number of days for a cycle to complete
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.

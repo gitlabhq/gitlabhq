@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Run your CI/CD jobs in Docker containers **(FREE ALL)**
+# Run your CI/CD jobs in Docker containers 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can run your CI/CD jobs in separate, isolated Docker containers.
 
@@ -91,7 +95,7 @@ The image name must be in one of the following formats:
 
 ## Extended Docker configuration options
 
-> Introduced in GitLab and GitLab Runner 9.4.
+> - Introduced in GitLab and GitLab Runner 9.4.
 
 You can use a string or a map for the `image` or `services` entries:
 
@@ -131,7 +135,7 @@ When a CI job runs in a Docker container, the `before_script`, `script`, and `af
 
 ### Override the entrypoint of an image
 
-> Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
+> - Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended configuration options](../docker/using_docker_images.md#extended-docker-configuration-options).
 
 Before explaining the available entrypoint override methods, let's describe
 how the runner starts. It uses a Docker image for the containers used in the
@@ -396,7 +400,7 @@ pulling from Docker Hub fails. Docker daemon tries to use the same credentials f
 
 ### Use Credential Helpers
 
-> Introduced in GitLab Runner 12.0.
+> - Introduced in GitLab Runner 12.0.
 
 As an example, let's assume that you want to use the `<aws_account_id>.dkr.ecr.<region>.amazonaws.com/private/image:latest`
 image. This image is private and requires you to sign in to a private container registry.

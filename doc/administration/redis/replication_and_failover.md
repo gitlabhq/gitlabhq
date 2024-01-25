@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis replication and failover with the Linux package **(PREMIUM SELF)**
+# Redis replication and failover with the Linux package
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This documentation is for the Linux package. To use your own
 non-bundled Redis, see [Redis replication and failover providing your own instance](replication_and_failover_external.md).
@@ -494,7 +498,7 @@ which ideally should not have Redis or Sentinels on it for a HA setup.
 
 ### Step 5. Enable Monitoring
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 If you enable Monitoring, it must be enabled on **all** Redis servers.
 
@@ -781,7 +785,7 @@ You can find the relevant attributes defined in [`gitlab_rails.rb`](https://gitl
 
 ### Control startup behavior
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
 
 To prevent the bundled Redis service from starting at boot or restarting after changing its configuration:
 
@@ -804,7 +808,7 @@ to ensure the node starts and restarts as expected during operation.
 
 ### Control replica configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6646) in GitLab 15.10.
 
 To prevent the `replicaof` line from rendering in the Redis configuration file:
 

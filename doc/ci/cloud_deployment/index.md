@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to AWS from GitLab CI/CD **(FREE ALL)**
+# Deploy to AWS from GitLab CI/CD 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.
@@ -145,7 +149,7 @@ because the override stops working when the name changes.
 
 ## Deploy your application to EC2
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
 
 GitLab provides a template, called `AWS/CF-Provision-and-Deploy-EC2`,
 to assist you in deploying to Amazon EC2.

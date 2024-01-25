@@ -4,9 +4,13 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance center **(ULTIMATE ALL)**
+# Compliance center
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
 
 The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
 
@@ -73,7 +77,7 @@ information, see [Merge request approval rules](../../project/merge_requests/app
 
 ### Export compliance standards adherence report for projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
@@ -120,7 +124,7 @@ When you select a row in the compliance violations report, a drawer appears that
 
 ### View the compliance violations report for a group
 
-> Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
+> - Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
 
 Prerequisites:
 
@@ -355,7 +359,7 @@ To remove a compliance framework from multiple projects in a group:
 
 ### Export a report of compliance frameworks on projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
 
 Export a report of compliance frameworks that are applied to projects in a group. Reports:
 
@@ -377,7 +381,7 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 #### Filter the compliance projects report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
 
 To filter the list of compliance frameworks:
 

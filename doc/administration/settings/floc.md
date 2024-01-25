@@ -4,9 +4,13 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Federated Learning of Cohorts (FLoC) **(FREE SELF)**
+# Federated Learning of Cohorts (FLoC)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933) in GitLab 13.12.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60933) in GitLab 13.12.
 
 Federated Learning of Cohorts (FLoC) is a new feature of the Chrome browser.
 It works by categorizing users into different cohorts, so that

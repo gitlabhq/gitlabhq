@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Go Proxy API **(FREE SELF)**
+# Go Proxy API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the API documentation for [Go Packages](../../user/packages/go_proxy/index.md).
 This API is behind a feature flag that is disabled by default. GitLab administrators with access to
@@ -24,7 +28,7 @@ for details on which headers and token types are supported. Undocumented authent
 
 ## List
 
-> Introduced in GitLab 13.1.
+> - Introduced in GitLab 13.1.
 
 Get all tagged versions for a given Go module:
 
@@ -49,7 +53,7 @@ Example output:
 
 ## Version metadata
 
-> Introduced in GitLab 13.1.
+> - Introduced in GitLab 13.1.
 
 Get all tagged versions for a given Go module:
 
@@ -78,7 +82,7 @@ Example output:
 
 ## Download module file
 
-> Introduced in GitLab 13.1.
+> - Introduced in GitLab 13.1.
 
 Fetch the `.mod` module file:
 
@@ -106,7 +110,7 @@ This writes to `foo.mod` in the current directory.
 
 ## Download module source
 
-> Introduced in GitLab 13.1.
+> - Introduced in GitLab 13.1.
 
 Fetch the `.zip` of the module source:
 

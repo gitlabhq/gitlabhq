@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request commits **(FREE ALL)**
+# Merge request commits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Each merge request has a history of the commits made to the source branch
 after the merge request was created.

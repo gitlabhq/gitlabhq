@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource weight events API **(FREE ALL)**
+# Resource weight events API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32542) in GitLab 13.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32542) in GitLab 13.2.
 
 Resource weight events keep track of what happens to GitLab [issues](../user/project/issues/index.md).
 

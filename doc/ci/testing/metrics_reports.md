@@ -4,9 +4,13 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Metrics Reports **(PREMIUM ALL)**
+# Metrics Reports 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9788) in GitLab 11.10. Requires GitLab Runner 11.10 and above.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9788) in GitLab 11.10. Requires GitLab Runner 11.10 and above.
 
 GitLab provides a lot of great reporting tools for things like [merge requests](../../user/project/merge_requests/index.md) - [Unit test reports](unit_test_reports.md), [code quality](code_quality.md), and performance tests. While JUnit is a great open framework for tests that "pass" or "fail", it is also important to see other types of metrics from a given change.
 

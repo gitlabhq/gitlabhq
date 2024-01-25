@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "GitLab administrator: enable and disable GitLab features deployed behind feature flags"
 ---
 
-# Enable and disable GitLab features deployed behind feature flags **(FREE SELF)**
+# Enable and disable GitLab features deployed behind feature flags
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab adopted [feature flags strategies](../development/feature_flags/index.md)
 to deploy features in an early stage of development so that they can be

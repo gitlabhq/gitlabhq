@@ -4,7 +4,11 @@ group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Set up your organization **(FREE SELF)**
+# Tutorial: Set up your organization
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 In GitLab, you set up and manage your company's GitLab organization by:
 

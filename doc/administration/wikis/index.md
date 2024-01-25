@@ -4,13 +4,17 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Wiki settings **(FREE SELF)**
+# Wiki settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Adjust the wiki settings of your GitLab instance.
 
 ## Wiki page content size limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31176) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31176) in GitLab 13.2.
 
 You can set a maximum content size limit for wiki pages. This limit can prevent
 abuse of the feature. The default value is **52428800 Bytes** (50 MB).
@@ -83,7 +87,7 @@ read the documentation on [reducing repository size](../../user/project/reposito
 
 ## Allow URI includes for AsciiDoc
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348687) in GitLab 16.1.
 
 Include directives import content from separate pages or external URLs,
 and display them as part of the content of the current document. To enable

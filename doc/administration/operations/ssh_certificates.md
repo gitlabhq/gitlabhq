@@ -4,9 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User lookup via OpenSSH's AuthorizedPrincipalsCommand **(FREE SELF)**
+# User lookup via OpenSSH's AuthorizedPrincipalsCommand
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) in GitLab 11.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19911) in GitLab 11.2.
 
 The default SSH authentication for GitLab requires users to upload their SSH
 public keys before they can use the SSH transport.

@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Gitaly **(FREE SELF)**
+# Troubleshooting Gitaly
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Refer to the information below when troubleshooting Gitaly. For information on troubleshooting Gitaly Cluster (Praefect),
 see [Troubleshooting Gitaly Cluster](troubleshooting_gitaly_cluster.md).

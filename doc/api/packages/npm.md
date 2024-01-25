@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# npm API **(FREE ALL)**
+# npm API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for [npm Packages](../../user/packages/npm_registry/index.md).
 
@@ -205,7 +209,7 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### List tags
 
-> Introduced in GitLab 12.7.
+> - Introduced in GitLab 12.7.
 
 Lists the dist-tags for the package.
 
@@ -235,7 +239,7 @@ the instance-level route, the returned URLs contain `/api/v4/packages/npm`.
 
 ### Create or update a tag
 
-> Introduced in GitLab 12.7.
+> - Introduced in GitLab 12.7.
 
 Create or update a dist-tag.
 
@@ -257,7 +261,7 @@ This endpoint responds successfully with `204 No Content`.
 
 ### Delete a tag
 
-> Introduced in GitLab 12.7.
+> - Introduced in GitLab 12.7.
 
 Delete a dist-tag.
 

@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Iterations **(PREMIUM ALL)**
+# Iterations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214713) in GitLab 13.1 [with a flag](../../../administration/feature_flags.md) named `group_iterations`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/221047) in GitLab 13.2.
@@ -41,7 +45,7 @@ configure iteration cadences to automatically roll over incomplete issues to the
 
 ### Create an iteration cadence
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
 
@@ -146,7 +150,7 @@ to satisfy the requirement that there are at least two upcoming iterations sched
 
 ### Delete an iteration cadence
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
 
@@ -163,7 +167,7 @@ To delete an iteration cadence:
 
 ## Create an iteration manually
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 When an iteration cadence has automatic scheduling enabled, iterations are created on schedule.
 If you disable that option, you can create iterations manually.
@@ -185,7 +189,7 @@ To create an iteration:
 
 ## Edit an iteration
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Prerequisites:
 
@@ -238,7 +242,7 @@ To view an iteration report:
 
 ### Iteration burndown and burnup charts
 
-> Scoped burnup and burndown charts in subgroups and projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
+> - Scoped burnup and burndown charts in subgroups and projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
 
 The iteration report includes [burndown and burnup charts](../../project/milestones/burndown_and_burnup_charts.md),
 similar to how they appear when viewing a [milestone](../../project/milestones/index.md):
@@ -248,7 +252,7 @@ similar to how they appear when viewing a [milestone](../../project/milestones/i
 
 #### View iteration charts scoped to subgroups or projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326029) in GitLab 14.9.
 
 View burndown and burnup charts for iterations created for a group in any of its
 subgroups or projects.

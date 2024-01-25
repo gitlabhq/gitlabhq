@@ -5,7 +5,11 @@ description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrade GitLab **(FREE SELF)**
+# Upgrade GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Upgrading GitLab is a relatively straightforward process, but the complexity
 can increase based on the installation method you have used, how old your
@@ -107,10 +111,13 @@ To address the above two scenarios, it is advised to do the following prior to u
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
-## Checking for pending advanced search migrations **(PREMIUM SELF)**
+## Checking for pending advanced search migrations
 
-This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md).
 Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by

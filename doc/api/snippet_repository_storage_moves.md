@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Snippet repository storage moves API **(FREE SELF)**
+# Snippet repository storage moves API 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
 Snippet repositories can be moved between storages. This API can help you when
 [migrating to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster), for
@@ -213,7 +217,7 @@ Example response:
 
 ## Schedule a repository storage move for a snippet
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
 ```plaintext
 POST /snippets/:snippet_id/repository_storage_moves
@@ -262,7 +266,7 @@ Example response:
 
 ## Schedule repository storage moves for all snippets on a storage shard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49228) in GitLab 13.8.
 
 Schedules repository storage moves for each snippet repository stored on the source storage shard.
 This endpoint migrates all snippets at once. For more information, see

@@ -5,7 +5,11 @@ description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GraphQL API **(FREE ALL)**
+# GraphQL API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
@@ -171,7 +175,7 @@ process would pose significant risk.
 
 ### Verify against the future breaking-change schema
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
 
 You can make calls against the GraphQL API as if all deprecated items were already removed.
 This way, you can verify API calls ahead of a [breaking-change release](#deprecation-and-removal-process)

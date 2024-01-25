@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Restore GitLab **(FREE SELF)**
+# Restore GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides a command-line interface to restore your entire installation,
 and is flexible enough to fit your needs.
@@ -330,7 +334,7 @@ The `force=yes` environment variable also disables these prompts.
 
 ### Excluding tasks on restore
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19347) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19347) in GitLab 14.10.
 
 You can exclude specific tasks on restore by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
 
@@ -361,7 +365,7 @@ To exclude specific tasks:
 
 ### Restore specific repository storages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be restored separately
@@ -384,7 +388,7 @@ For example:
 
 ### Restore specific repositories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88094) in GitLab 15.1.
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you

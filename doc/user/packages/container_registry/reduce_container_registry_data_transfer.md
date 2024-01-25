@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce container registry data transfers **(FREE ALL)**
+# Reduce container registry data transfers
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Depending on the frequency with which images or tags are downloaded from the container registry,
 data transfers can exceed the GitLab.com limit. This page offers several recommendations and tips for

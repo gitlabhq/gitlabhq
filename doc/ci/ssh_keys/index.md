@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using SSH keys with GitLab CI/CD **(FREE ALL)**
+# Using SSH keys with GitLab CI/CD 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab currently doesn't have built-in support for managing SSH keys in a build
 environment (where the GitLab Runner runs).

@@ -4,7 +4,11 @@ group: Tenant Scale
 info: 'To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments'
 ---
 
-# Migrate projects **(FREE ALL)**
+# Migrate projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Export a project
 
@@ -86,7 +90,11 @@ Prerequisites:
 1. In the **Unarchive project** section, select **Unarchive project**.
 1. To confirm, select **OK**.
 
-## Restore a project **(PREMIUM ALL)**
+## Restore a project
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Prerequisites:
 

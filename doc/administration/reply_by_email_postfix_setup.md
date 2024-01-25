@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up Postfix for incoming email **(FREE SELF)**
+# Set up Postfix for incoming email
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This document takes you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).

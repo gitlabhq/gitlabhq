@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Fast lookup of authorized SSH keys in the database **(FREE SELF)**
+# Fast lookup of authorized SSH keys in the database
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 This document describes a drop-in replacement for the
@@ -25,7 +29,11 @@ GitLab Shell solves this by providing a way to authorize SSH users via a fast,
 indexed lookup in the GitLab database. This page describes how to enable the fast
 lookup of authorized SSH keys.
 
-## Fast lookup is required for Geo **(PREMIUM ALL)**
+## Fast lookup is required for Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), by default Linux package installations
 manage an `authorized_keys` file that is located in the

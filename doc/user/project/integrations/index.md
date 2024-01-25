@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integrations **(FREE ALL)**
+# Project integrations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).

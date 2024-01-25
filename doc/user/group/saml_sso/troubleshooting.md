@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SAML **(FREE ALL)**
+# Troubleshooting SAML
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page contains possible solutions for problems you might encounter when using:
 
@@ -67,7 +71,11 @@ openssl x509 -in <filename.crt> -noout -fingerprint -sha1
 
 Replace `filename.crt` with the name of the certificate file.
 
-## Searching Rails log for a SAML response **(FREE SELF)**
+## Searching Rails log for a SAML response
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can find the base64-encoded SAML Response in the [`production_json.log`](../../../administration/logs/index.md#production_jsonlog).
 This response is sent from the identity provider, and contains user information that is consumed by GitLab.
@@ -206,7 +214,11 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not only the identity provider.
 
-### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account" **(PREMIUM SAAS)**
+### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account"
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
 
@@ -216,7 +228,11 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 - The account was provisioned by SCIM.
 - They are signing in with username and password for the first time.
 
-### Message: "SAML Name ID and email address do not match your user account" **(PREMIUM SAAS)**
+### Message: "SAML Name ID and email address do not match your user account"
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Users might get an error that states "SAML Name ID and email address do not match your user account. Contact an administrator."
 This means:
@@ -246,7 +262,11 @@ Ensure that the **GitLab single sign-on URL** (for GitLab.com) or the instance U
 
 For GitLab.com, alternatively, when users need to [link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account), provide the **GitLab single sign-on URL** and instruct users not to use the SAML app on first sign in.
 
-### Users receive a 404 **(PREMIUM SAAS)**
+### Users receive a 404
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 If the user receives a `404` after signing in successfully, check if you have IP restrictions configured. IP restriction settings are configured:
 
@@ -297,7 +317,11 @@ If a subset of users are receiving a `404` after signing in to the IdP, first ve
     curl --request PATCH "https://gitlab.example.com/api/scim/v2/groups/test_group/Users/f0b1d561c-21ff-4092-beab-8154b17f82f2" --header "Authorization: Bearer <SCIM_TOKEN>" --header "Content-Type: application/scim+json" --data '{ "Operations": [{"op":"Replace","path":"active","value":"true"}] }'
     ```
 
-### 500 error after login **(FREE SELF)**
+### 500 error after login
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you see a "500 error" in GitLab when you are redirected back from the SAML
 sign-in page, this could indicate that:
@@ -307,7 +331,11 @@ sign-in page, this could indicate that:
 - The certificate set your `gitlab.rb` file for `identity provider_cert_fingerprint` or `identity provider_cert` file is incorrect.
 - Your `gitlab.rb` file is set to enable `identity provider_cert_fingerprint`, and `identity provider_cert` is being provided, or the reverse.
 
-### 422 error after login **(FREE SELF)**
+### 422 error after login
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you see a "422 error" in GitLab when you are redirected from the SAML
 sign-in page, you might have an incorrectly configured Assertion Consumer
@@ -333,7 +361,11 @@ To implement this workaround:
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
 1. Select **Save changes**.
 
-### User is blocked when signing in through SAML **(FREE SELF)**
+### User is blocked when signing in through SAML
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The following are the most likely reasons that a user is blocked when signing in through SAML:
 
@@ -348,7 +380,11 @@ Pay particular attention to the following 403 errors:
 - `app_not_configured`
 - `app_not_configured_for_user`
 
-## Message: "The member's email address is not linked to a SAML account" **(PREMIUM SAAS)**
+## Message: "The member's email address is not linked to a SAML account"
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 This error appears when you try to invite a user to a GitLab.com group (or subgroup or project within a group) that has [SAML SSO enforcement](index.md#sso-enforcement) enabled.
 

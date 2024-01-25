@@ -37,19 +37,24 @@ For example:
 ```markdown
 ## Feature name
 
-> [Introduced](<link-to-issue>) in GitLab 11.3.
+> - [Introduced](<link-to-issue>) in GitLab 11.3.
 
 This feature does something.
 ```
 
-The item text must include these words in order. Capitalization doesn't matter.
+The item text should include these words in order. Capitalization doesn't matter.
 
 - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
 - `GitLab` (or, for external projects, the name of the project)
 
+If you cannot use this format, you can use different language. Try to be
+consistent with other notes on the page, or other notes on the docs site.
+
 If possible, include a link to the related issue, merge request, or epic.
 Do not link to the pricing page. Do not include the subscription tier.
+
+Even if you have only one item, ensure it begins with `> -`.
 
 #### Introducing a new feature
 
@@ -111,7 +116,11 @@ To deprecate a page or topic:
    when it will be removed, and the replacement feature.
 
    ```markdown
-   ## Title (deprecated) **(ULTIMATE SELF)**
+   ## Title (deprecated)
+   
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
@@ -135,7 +144,11 @@ To deprecate a page or topic:
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (deprecated) **(ULTIMATE SELF)**
+   ## Title (deprecated)
+   
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
@@ -170,7 +183,11 @@ To remove a page:
    redirect_to: '../newpath/to/file/index.md'
    ---
 
-   # Title (removed) **(ULTIMATE SELF)**
+   # Title (removed)
+   
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
@@ -195,7 +212,11 @@ To remove a topic:
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (removed) **(ULTIMATE SELF)**
+   ## Title (removed)
+   
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.

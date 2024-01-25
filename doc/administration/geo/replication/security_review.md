@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo security review (Q&A) **(PREMIUM SELF)**
+# Geo security review (Q&A)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following security review of the Geo feature set focuses on security aspects of
 the feature as they apply to customers running their own GitLab instances. The review

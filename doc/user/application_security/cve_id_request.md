@@ -4,9 +4,13 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CVE ID request **(FREE SAAS)**
+# CVE ID request 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
 A [CVE](https://cve.mitre.org/index.html) identifier is assigned to a publicly-disclosed software
 vulnerability. GitLab is a [CVE Numbering Authority](https://about.gitlab.com/security/cve/)

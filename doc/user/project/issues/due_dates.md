@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Due dates **(FREE ALL)**
+# Due dates
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Due dates can be used in [issues](index.md) to keep track of deadlines and make sure features are
 shipped on time. Users need at least the Reporter role

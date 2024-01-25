@@ -108,7 +108,7 @@ Push:
 
 ### Example payloads for Git over SSH events with Deploy Key
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363876) in GitLab 15.3.
 
 Fetch:
 
@@ -275,7 +275,7 @@ Fetch:
 
 ## Audit event streaming on merge request approval actions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271162) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271162) in GitLab 14.9.
 
 Stream audit events that relate to merge approval actions performed in a project.
 
@@ -321,7 +321,7 @@ X-Gitlab-Audit-Event-Type: audit_operation
 
 ## Audit event streaming on merge request create actions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90911) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90911) in GitLab 15.2.
 
 Stream audit events that relate to merge request create actions using the `/logs` endpoint.
 
@@ -370,7 +370,7 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 
 ## Audit event streaming on project fork actions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90916) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90916) in GitLab 15.2.
 
 Stream audit events that relate to project fork actions using the `/logs` endpoint.
 
@@ -419,7 +419,7 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 
 ## Audit event streaming on project group link actions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90955) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90955) in GitLab 15.2.
 
 Stream audit events that relate to project group link creation, updates, and deletion using the `/logs` endpoint.
 
@@ -533,7 +533,7 @@ X-Gitlab-Event-Streaming-Token: <DESTINATION_TOKEN>
 
 ## Audit event streaming on invalid merge request approver state
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374566) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374566) in GitLab 15.5.
 
 Stream audit events that relate to invalid merge request approver states in a project.
 

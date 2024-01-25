@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Scanning **(FREE ALL)**
+# Container Scanning 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86092) the major analyzer version from `4` to `5` in GitLab 15.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86783) from GitLab Ultimate to GitLab Free in 15.0.
@@ -191,7 +195,7 @@ Authenticating to a remote registry is not supported when [FIPS mode](../../../d
 
 #### Dependency list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345434) in GitLab 14.6.
 
 The `CS_DISABLE_DEPENDENCY_LIST` CI/CD variable controls whether the scan creates a
 [Dependency List](../dependency_list/index.md)
@@ -211,7 +215,7 @@ container_scanning:
 
 #### Report language-specific findings
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7277) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7277) in GitLab 14.6.
 
 The `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` CI/CD variable controls whether the scan reports
 findings related to programming languages. The languages supported depend on the
@@ -307,7 +311,7 @@ Support depends on which scanner is used:
 
 #### FIPS-enabled images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5775) in GitLab 14.1.
 
 GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
@@ -333,7 +337,7 @@ the analyzer exits with an error and does not perform the scan.
 
 ### Enable Container Scanning through an automatic merge request
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6334) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6334) in GitLab 14.9.
 
 To enable Container Scanning in a project, create a merge request from the Security Configuration
 page:
@@ -384,7 +388,7 @@ Do not use the `:latest` tag when selecting the scanner image.
 
 ### Setting the default branch image
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338877) in GitLab 14.5.
 
 By default, container scanning assumes that the image naming convention stores any branch-specific
 identifiers in the image tag rather than the image name. When the image name differs between the
@@ -444,7 +448,11 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting **(ULTIMATE ALL)**
+### Vulnerability allowlisting 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -740,7 +748,7 @@ For more information, see [Security scanner integration](../../../development/in
 
 ### CycloneDX Software Bill of Materials
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396381) in GitLab 15.11.
 
 In addition to the [JSON report file](#reports-json-format), the [Container Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning) tool outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM) for the scanned image. This CycloneDX SBOM is named `gl-sbom-report.cdx.json` and is saved in the same directory as the `JSON report file`. This feature is only supported when the `Trivy` analyzer is used.
 
@@ -790,7 +798,11 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation) **(ULTIMATE ALL)**
+## Solutions for vulnerabilities (auto-remediation) 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

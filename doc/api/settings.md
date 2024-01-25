@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Application settings API **(FREE SELF)**
+# Application settings API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 These API calls allow you to read and modify GitLab instance
 [application settings](#list-of-settings-that-can-be-accessed-via-api-calls)

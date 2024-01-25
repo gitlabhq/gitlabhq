@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Jira Cloud app administration **(FREE SELF)**
+# GitLab for Jira Cloud app administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 This page contains administrator documentation for the GitLab for Jira Cloud app. For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
@@ -75,7 +79,7 @@ If necessary:
 
 ## Connect the GitLab for Jira Cloud app
 
-> Introduced in GitLab 15.7.
+> - Introduced in GitLab 15.7.
 
 You can link your self-managed instance after you install the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.

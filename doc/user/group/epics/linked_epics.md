@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linked epics **(ULTIMATE ALL)**
+# Linked epics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353473) in GitLab 14.9 [with a flag](../../../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
 > - [Feature flag `related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089) removed in GitLab 15.0.
@@ -20,7 +24,7 @@ To manage linked epics through our API, see [Linked epics API](../../../api/link
 
 ## Add a linked epic
 
-> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
 Prerequisites:
 
@@ -61,7 +65,7 @@ The linked epics are then displayed on the epic grouped by relationship.
 
 ## Remove a linked epic
 
-> Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
+> - Minimum required role for the group [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/381308) from Reporter to Guest in GitLab 15.8.
 
 Prerequisites:
 

@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Stages of Auto DevOps **(FREE ALL)**
+# Stages of Auto DevOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The following sections describe the stages of [Auto DevOps](index.md).
 Read them carefully to understand how each one works.
@@ -188,7 +192,7 @@ might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) from GitLab Starter to GitLab Free in 13.2.
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/ci-cd/codequality) to run
@@ -227,7 +231,11 @@ warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
 For more information, see [Secret Detection](../../user/application_security/secret_detection/index.md).
 
-## Auto Dependency Scanning **(ULTIMATE ALL)**
+## Auto Dependency Scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 Dependency Scanning runs analysis on the project's dependencies and checks for potential security issues.
 The Auto Dependency Scanning stage is skipped on licenses other than
@@ -289,7 +297,11 @@ deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
 in the first place, and thus not realize that it needs to re-apply the old configuration.
 
-## Auto DAST **(ULTIMATE ALL)**
+## Auto DAST
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 Dynamic Application Security Testing (DAST) uses the popular open source tool
 [OWASP ZAProxy](https://github.com/zaproxy/zaproxy) to analyze the current code
@@ -330,9 +342,13 @@ You can disable DAST:
 - Only on feature branches by setting `REVIEW_DISABLED` variable to
   `"true"`. This also disables the Review App.
 
-## Auto Browser Performance Testing **(PREMIUM ALL)**
+## Auto Browser Performance Testing
 
-> Introduced in GitLab 10.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Introduced in GitLab 10.4.
 
 Auto [Browser Performance Testing](../../ci/testing/browser_performance_testing.md)
 measures the browser performance of a web page with the
@@ -351,9 +367,13 @@ file named `.gitlab-urls.txt` in the root directory, one file per line. For exam
 Any browser performance differences between the source and target branches are also
 [shown in the merge request widget](../../ci/testing/browser_performance_testing.md).
 
-## Auto Load Performance Testing **(PREMIUM ALL)**
+## Auto Load Performance Testing
 
-> Introduced in GitLab 13.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Introduced in GitLab 13.2.
 
 Auto [Load Performance Testing](../../ci/testing/load_performance_testing.md)
 measures the server performance of an application with the
@@ -370,7 +390,7 @@ Any load performance test result differences between the source and target branc
 
 ## Auto Deploy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6, you have the choice to deploy to [Amazon Elastic Compute Cloud (Amazon EC2)](https://aws.amazon.com/ec2/) in addition to a Kubernetes cluster.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216008) in GitLab 13.6, you have the choice to deploy to [Amazon Elastic Compute Cloud (Amazon EC2)](https://aws.amazon.com/ec2/) in addition to a Kubernetes cluster.
 
 Auto Deploy is an optional step for Auto DevOps. If the [requirements](requirements.md) are not met, the job is skipped.
 
@@ -413,7 +433,7 @@ to upgrade your environments before upgrading to GitLab 14.0.
 
 ### GitLab deploy tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19507) in GitLab 11.0.
 
 [GitLab Deploy Tokens](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
 are created for internal and private projects when Auto DevOps is enabled, and the
@@ -472,7 +492,7 @@ deletion).
 
 ### Migrations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955) in GitLab 11.4
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21955) in GitLab 11.4
 
 You can configure database initialization and migrations for PostgreSQL to run
 within the application pod by setting the project CI/CD variables `DB_INITIALIZE` and
@@ -578,7 +598,7 @@ When using Cloud Native Buildpacks, instead of `/bin/herokuish procfile exec`, u
 
 ## Auto Code Intelligence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216438) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216438) in GitLab 13.5.
 
 [GitLab code intelligence](../../user/project/code_intelligence.md) adds
 code navigation features common to interactive development environments (IDE),

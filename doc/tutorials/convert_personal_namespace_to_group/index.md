@@ -4,7 +4,11 @@ group: Tenant Scale
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Convert a personal namespace into a group **(FREE SAAS)**
+# Tutorial: Convert a personal namespace into a group
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 If you've started out on GitLab with a personal [namespace](../../user/namespace/index.md), but now find
 that you've outgrown its capabilities and its limitations hinder the collaboration on your projects,

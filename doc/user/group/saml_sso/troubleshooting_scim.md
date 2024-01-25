@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SCIM **(FREE ALL)**
+# Troubleshooting SCIM
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This section contains possible solutions for problems you might encounter.
 
@@ -99,7 +103,11 @@ When the SCIM app changes:
      - In GitLab self-managed, blocks users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
 
-## SCIM app returns `"User has already been taken","status":409` error **(PREMIUM SAAS)**
+## SCIM app returns `"User has already been taken","status":409` error
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -131,7 +139,11 @@ To resolve this issue, you can do either of the following:
 - Disable the [Restrict group access by domain](../access_and_permissions.md)
   feature by removing all domains.
 
-## Search Rails logs for SCIM requests **(PREMIUM SAAS)**
+## Search Rails logs for SCIM requests
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html#using-kibana). Use the following filters based

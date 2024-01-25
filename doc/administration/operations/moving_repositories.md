@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Moving repositories managed by GitLab **(FREE SELF)**
+# Moving repositories managed by GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can move all repositories managed by GitLab to another file system or another server.
 
@@ -25,7 +29,7 @@ For more information, see:
 - [The API documentation](../../api/snippet_repository_storage_moves.md) details the endpoints for
   querying and scheduling snippet repository moves.
 - [The API documentation](../../api/group_repository_storage_moves.md) details the endpoints for
-  querying and scheduling group repository moves **(PREMIUM SELF)**.
+  querying and scheduling group repository moves.
 - [Migrate to Gitaly Cluster](../gitaly/index.md#migrate-to-gitaly-cluster).
 
 ### Moving Repositories
@@ -64,7 +68,7 @@ To move repositories:
    - [All snippets](#move-all-snippets) or
      [individual snippets](../../api/snippet_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-snippet).
    - [All groups](#move-all-groups) or
-     [individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group). **(PREMIUM SELF)**
+     [individual groups](../../api/group_repository_storage_moves.md#schedule-a-repository-storage-move-for-a-group).
 1. If [Geo](../geo/index.md) is enabled,
    [resync all repositories](../geo/replication/troubleshooting.md#queue-up-all-repositories-for-resync).
 
@@ -134,7 +138,11 @@ To move all snippets by using the API:
 
 1. Repeat for each storage as required.
 
-#### Move all groups **(PREMIUM SELF)**
+#### Move all groups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 To move all groups by using the API:
 

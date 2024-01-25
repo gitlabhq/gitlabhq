@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrate from legacy GitOps to Flux **(FREE ALL)**
+# Migrate from legacy GitOps to Flux
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Most users can migrate from their [legacy agent-based GitOps solution](agent.md)
 to Flux without additional work or downtime. In most cases, Flux can
@@ -117,7 +121,7 @@ For more information about configuring Flux with GitLab, see
 ### `flux bootstrap` doesn't reconcile manifests correctly
 
 The `flux bootstrap` command creates a `kustomizations.kustomize.toolkit.fluxcd.io`
-resource that points to the `manifests` directory. 
+resource that points to the `manifests` directory.
 This resource applies to all the Kubernetes manifests in the directory,
 without requiring a [Kustomization file](https://kubectl.docs.kubernetes.io/references/kustomize/glossary/#kustomization).
 

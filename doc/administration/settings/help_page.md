@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customize the Help and sign-in page messages **(FREE SELF)**
+# Customize the Help and sign-in page messages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 In large organizations, it is useful to have information about who to contact or where
 to go for help. You can customize and display this information on the GitLab `/help` page and on

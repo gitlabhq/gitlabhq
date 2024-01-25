@@ -53,9 +53,14 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 
 The following subsections describe the experimental AI features in more detail.
 
-### Explain code in the Web UI with Code explanation **(ULTIMATE SAAS EXPERIMENT)**
+### Explain code in the Web UI with Code explanation
 
-> Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Experiment
+
+> - Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
 To use this feature:
 
@@ -98,9 +103,14 @@ code in a merge request:
 
 We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
 
-### Summarize issue discussions with Discussion summary **(ULTIMATE SAAS EXPERIMENT)**
+### Summarize issue discussions with Discussion summary
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -121,9 +131,14 @@ Provide feedback on this experimental feature in [issue 407779](https://gitlab.c
 **Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
 language model referenced above.
 
-### Forecast deployment frequency with Value stream forecasting **(ULTIMATE ALL EXPERIMENT)**
+### Forecast deployment frequency with Value stream forecasting
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -146,9 +161,14 @@ For example, if you select a 30-day range, a forecast for the following 15 days 
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-### Root cause analysis **(ULTIMATE SAAS EXPERIMENT)**
+### Root cause analysis
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -160,9 +180,14 @@ When the feature is available, the "Root cause analysis" button will appears on
 a failed CI/CD job. Selecting this button generates an analysis regarding the
 reason for the failure.
 
-### Summarize an issue with Issue description generation **(ULTIMATE SAAS EXPERIMENT)**
+### Summarize an issue with Issue description generation
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -183,7 +208,12 @@ Provide feedback on this experimental feature in [issue 409844](https://gitlab.c
 **Data usage**: When you use this feature, the text you enter is sent to the large
 language model referenced above.
 
-### GitLab Duo Chat **(ULTIMATE SAAS BETA)**
+### GitLab Duo Chat
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Beta
 
 For details about this Beta feature, see [GitLab Duo Chat](gitlab_duo_chat.md).
 

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Maintenance Rake tasks **(FREE SELF)**
+# Maintenance Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for general maintenance.
 
@@ -73,7 +77,11 @@ Gitaly
 - gitaly Git Version:   2.37.1.gl1
 ```
 
-## Show GitLab license information **(PREMIUM SELF)**
+## Show GitLab license information
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab 12.6.
 > - Moved to GitLab Premium in 13.9.
@@ -361,7 +369,10 @@ status in the output of the `sudo gitlab-rake db:migrate:status` command.
    sudo gitlab-ctl restart sidekiq
    ```
 
-## Rebuild database indexes **(EXPERIMENT)**
+## Rebuild database indexes
+
+DETAILS:
+**Status:** Experiment
 
 WARNING:
 This feature is experimental, and isn't enabled by default. Use caution when

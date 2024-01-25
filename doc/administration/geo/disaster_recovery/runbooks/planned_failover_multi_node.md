@@ -8,7 +8,11 @@ WARNING:
 This runbook is an [Experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
 [disaster recovery documentation](../index.md).
 
-# Disaster Recovery (Geo) promotion runbooks **(PREMIUM SELF)**
+# Disaster Recovery (Geo) promotion runbooks
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 ## Geo planned failover for a multi-node configuration
 

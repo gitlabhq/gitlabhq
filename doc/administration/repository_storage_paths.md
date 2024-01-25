@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository storage **(FREE SELF)**
+# Repository storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
 storage is either:

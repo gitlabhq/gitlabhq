@@ -4,9 +4,13 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repositories analytics for groups **(PREMIUM ALL)**
+# Repositories analytics for groups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in GitLab 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in GitLab 13.4.
 
 Repositories analytics for groups provides information about test coverage for all projects in a group. An
 [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/273527) to also extend support for all projects in
@@ -16,7 +20,7 @@ It is similar to [repository analytics for projects](../../analytics/repository_
 
 ## Current group code coverage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263478) in GitLab 13.7.
 
 The **Analyze > Repository analytics** group page displays the overall test coverage of all your projects in your group.
 In the **Overall activity** section, you can see:
@@ -27,13 +31,13 @@ In the **Overall activity** section, you can see:
 
 ## Average group test coverage from the last 30 days
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215140) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215140) in GitLab 13.9.
 
 The **Analyze > Repository analytics** group page displays the average test coverage of all your projects in your group in a graph for the last 30 days.
 
 ## Latest project test coverage list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267624) in GitLab 13.6.
 
 To see the latest code coverage for each project in your group:
 
@@ -46,7 +50,7 @@ You can download code coverage data for specific projects using
 
 ## Download historic test coverage data
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215104) in GitLab 13.4.
 
 You can get a CSV of the code coverage data for all of the projects in your group. This report has a maximum of 1000 records. The code coverage data is from the default branch in each project.
 

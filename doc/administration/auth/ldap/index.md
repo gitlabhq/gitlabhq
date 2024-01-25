@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrate LDAP with GitLab **(FREE SELF)**
+# Integrate LDAP with GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab integrates with [LDAP - Lightweight Directory Access Protocol](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
 to support user authentication.
@@ -441,7 +445,11 @@ You must define the following attributes in an `attributes` hash.
 | `first_name` | LDAP attribute for user first name. Used when the attribute configured for `name` does not exist. | **{dotted-circle}** No | `'givenName'` |
 | `last_name`  | LDAP attribute for user last name. Used when the attribute configured for `name` does not exist. | **{dotted-circle}** No | `'sn'` |
 
-### LDAP sync configuration settings **(PREMIUM SELF)**
+### LDAP sync configuration settings
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 These LDAP sync configuration settings are available:
 
@@ -452,7 +460,11 @@ These LDAP sync configuration settings are available:
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | **{dotted-circle}** No | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | **{dotted-circle}** No | `'sshPublicKey'` or false if not set |
 
-### Use multiple LDAP servers **(PREMIUM SELF)**
+### Use multiple LDAP servers
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 If you have users on multiple LDAP servers, you can configure GitLab to use them. To add additional LDAP servers:
 
@@ -1197,7 +1209,7 @@ You can find more details on the expected behavior of user updates in our [LDAP 
 
 ## Google Secure LDAP
 
-> Introduced in GitLab 11.9.
+> - Introduced in GitLab 11.9.
 
 [Google Cloud Identity](https://cloud.google.com/identity/) provides a Secure
 LDAP service that can be configured with GitLab for authentication and group sync.

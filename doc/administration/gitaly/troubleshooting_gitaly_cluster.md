@@ -4,14 +4,18 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Gitaly Cluster **(FREE SELF)**
+# Troubleshooting Gitaly Cluster
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Refer to the information below when troubleshooting Gitaly Cluster (Praefect). For information on troubleshooting Gitaly,
 see [Troubleshooting Gitaly](troubleshooting.md).
 
 ## Check cluster health
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5688) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5688) in GitLab 14.5.
 
 The `check` Praefect sub-command runs a series of checks to determine the health of the Gitaly Cluster.
 
@@ -74,7 +78,7 @@ If this check fails:
 
 ### Check clock synchronization
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4225) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4225) in GitLab 14.8.
 
 Authentication between Praefect and the Gitaly servers requires the server times to be
 in sync so the token check succeeds.
@@ -145,7 +149,7 @@ To determine the primary node of a repository:
 
 ## View repository metadata
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3481) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3481) in GitLab 14.6.
 
 Gitaly Cluster maintains a [metadata database](index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
 to inspect the metadata for troubleshooting.

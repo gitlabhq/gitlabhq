@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Roll back commits **(FREE ALL)**
+# Roll back commits
 
 In Git, if you make a mistake, you can undo or roll back your changes.
 For more details, see [Undo options](numerous_undo_possibilities_in_git/index.md).

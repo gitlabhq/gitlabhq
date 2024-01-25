@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue weight **(PREMIUM ALL)**
+# Issue weight
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 When you have a lot of issues, it can be hard to get an overview.
 With weighted issues, you can get a better idea of how much time,

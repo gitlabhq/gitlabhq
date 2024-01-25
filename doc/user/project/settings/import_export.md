@@ -4,7 +4,11 @@ group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Migrate projects and groups by using file exports **(FREE ALL)**
+# Migrate projects and groups by using file exports
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
@@ -66,7 +70,7 @@ You can also make sure that all members were exported by checking the `project_m
 
 ### Compatibility
 
-> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389888) in GitLab 15.11.
+> - Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/389888) in GitLab 15.11.
 
 Project file exports are in NDJSON format.
 
@@ -80,7 +84,11 @@ For example:
 | 13.0                | 13.0, 12.10, 12.9          |
 | 13.1                | 13.1, 13.0, 12.10          |
 
-### Configure file exports as an import source **(FREE SELF)**
+### Configure file exports as an import source
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Before you can migrate projects on a self-managed GitLab instance using file exports, GitLab administrators must:
 
@@ -196,7 +204,7 @@ Migrating projects with file exports uses the same export and import mechanisms 
 
 ### Import a project and its data
 
-> Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8. Administrators of self-managed instances can [set maximum import file size](#set-maximum-import-file-size). On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
+> - Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8. Administrators of self-managed instances can [set maximum import file size](#set-maximum-import-file-size). On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
 
 You can import a project and its data.
 
@@ -206,7 +214,7 @@ may be possible for an attacker to steal your sensitive data.
 
 #### Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - You must have [exported the project and its data](#export-a-project-and-its-data).
 - Compare GitLab versions and ensure you are importing to a GitLab version that is the same or later
@@ -240,11 +248,19 @@ Exported items are imported with the following changes:
 
 Deploy keys aren't imported. To use deploy keys, you must enable them in your imported project and update protected branches.
 
-#### Import large projects **(FREE SELF)**
+#### Import large projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you have a larger project, consider [using a Rake task](../../../administration/raketasks/project_import_export.md#import-large-projects).
 
-### Set maximum import file size **(FREE SELF)**
+### Set maximum import file size
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Administrators can set the maximum import file size one of two ways:
 
@@ -303,7 +319,7 @@ Note the following:
 
 ### Compatibility
 
-> Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
+> - Support for JSON-formatted project file exports [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383682) in GitLab 15.8.
 
 Group file exports are in NDJSON format.
 

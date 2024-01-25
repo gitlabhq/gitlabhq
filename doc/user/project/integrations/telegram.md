@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Telegram **(FREE ALL)**
+# Telegram
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122879) in GitLab 16.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122879) in GitLab 16.1.
 
 You can configure GitLab to send notifications to a Telegram chat or channel.
 To set up the Telegram integration, you must:

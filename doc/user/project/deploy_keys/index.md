@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy keys **(FREE ALL)**
+# Deploy keys
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use deploy keys to access repositories that are hosted in GitLab. In most cases, you use deploy keys
 to access a repository from an external host, like a build server or Continuous Integration (CI) server.
@@ -101,7 +105,11 @@ Prerequisites:
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
 name and permissions.
 
-## Create a public deploy key **(FREE SELF)**
+## Create a public deploy key
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 

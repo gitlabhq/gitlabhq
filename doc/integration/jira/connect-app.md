@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Jira Cloud app **(FREE ALL)**
+# GitLab for Jira Cloud app 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
@@ -36,7 +40,11 @@ After you link a group, the following GitLab data is synced to Jira for all proj
   - Deployments
   - Feature flags
 
-## Install the GitLab for Jira Cloud app **(FREE SAAS)**
+## Install the GitLab for Jira Cloud app
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 Prerequisites:
 
@@ -56,9 +64,13 @@ You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-
 For an overview, see
 [Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
-## Configure the GitLab for Jira Cloud app **(FREE SAAS)**
+## Configure the GitLab for Jira Cloud app
 
-> **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
 
 Prerequisites:
 

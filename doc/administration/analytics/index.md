@@ -4,9 +4,13 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Instance-level analytics **(FREE SELF)**
+# Instance-level analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41416) in GitLab 11.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/41416) in GitLab 11.2.
 
 Instance-level analytics provide insights into the feature and data usage of your entire instance.
 

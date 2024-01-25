@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Beyond Identity **(FREE ALL)**
+# Beyond Identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431433) in GitLab 16.9.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431433) in GitLab 16.9.
 
 Configure GitLab to verify GPG keys issued by [Beyond Identity](https://www.beyondidentity.com/)
 added to a user profile.

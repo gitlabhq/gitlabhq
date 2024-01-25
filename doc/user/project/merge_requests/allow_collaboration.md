@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Collaborate on merge requests across forks **(FREE ALL)**
+# Collaborate on merge requests across forks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you open a merge request from your [fork](../repository/forking_workflow.md), you can allow upstream
 members to collaborate with you on your branch.
@@ -19,7 +23,7 @@ This feature is available for merge requests across forked projects that are
 
 ## Allow commits from upstream members
 
-> Enabled by default in [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/23308).
+> - Enabled by default in [GitLab 13.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/23308).
 
 As the author of a merge request, you can allow commit edits from
 upstream members of the project you're contributing to:

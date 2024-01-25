@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Monorepo package management workflows **(FREE ALL)**
+# Monorepo package management workflows
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 One project or Git repository can contain multiple different subprojects or submodules that are all
 packaged and published individually.

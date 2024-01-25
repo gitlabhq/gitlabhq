@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST On Demand Scan **(ULTIMATE ALL)**
+# DAST On Demand Scan 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that a user can, such
@@ -403,7 +407,7 @@ To delete a scanner profile:
 
 ## Auditing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
 and DAST site profiles are included in the [audit log](../../../administration/audit_events.md).

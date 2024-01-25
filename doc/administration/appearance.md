@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Appearance **(FREE SELF)**
+# GitLab Appearance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can update your settings to change the look and feel of your GitLab self-managed instance.
 
@@ -92,7 +96,7 @@ You can add also add a [customized help message](settings/help_page.md) below th
 
 ## Customize the Progressive Web App
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
 
 Customize the icon, display name, short name, and description for your Progessive Web App (PWA). For more information, see [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
 

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD examples **(FREE ALL)**
+# GitLab CI/CD examples 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page contains links to a variety of examples that can help you understand how to
 implement [GitLab CI/CD](../index.md) for your specific use case.
@@ -98,7 +102,11 @@ If a programming language or framework template is not in this list, you can con
 one. To create a template, submit a merge request
 to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-### Adding templates to your GitLab installation **(PREMIUM SELF)**
+### Adding templates to your GitLab installation 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can add custom examples and templates to your self-managed GitLab instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)

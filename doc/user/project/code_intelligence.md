@@ -4,9 +4,13 @@ group: Code Review
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Code Intelligence **(FREE ALL)**
+# Code Intelligence
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
 
 Code Intelligence adds code navigation features common to interactive
 development environments (IDE), including:

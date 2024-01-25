@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Database Load Balancing **(FREE SELF)**
+# Database Load Balancing
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1283) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60894) from GitLab Premium to GitLab Free in 14.0.
@@ -104,7 +108,7 @@ The primary will be used for write queries whether or not it is present in this 
 
 ### Service Discovery
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5883) in GitLab 11.0.
 
 Service discovery allows GitLab to automatically retrieve a list of PostgreSQL
 hosts to use. It periodically
@@ -161,7 +165,7 @@ upper limit on the time it takes to terminate all old database connections.
 
 ### Handling stale reads
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/327902) from GitLab Premium to GitLab Free in 14.0.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/327902) from GitLab Premium to GitLab Free in 14.0.
 
 To prevent reading from an outdated secondary the load balancer checks if it
 is in sync with the primary. If the data is recent enough, the

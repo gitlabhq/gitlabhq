@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choose when to run jobs **(FREE ALL)**
+# Choose when to run jobs 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs should run in that pipeline. You can configure jobs to run depending on
@@ -17,7 +21,7 @@ earlier jobs it depends on finish running.
 
 ## Specify when jobs run with `rules`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
 Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
 
@@ -339,7 +343,7 @@ You can use the `$` character for both variables and paths. For example, if the
 
 ### Reuse rules in different jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
 
 Use [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) to reuse rules in different
 jobs. You can combine `!reference` rules with regular job-defined rules:
@@ -616,7 +620,11 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
-### Protect manual jobs **(PREMIUM ALL)**
+### Protect manual jobs 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only
@@ -655,7 +663,7 @@ by authorized users.
 
 ## Run a job after a delay
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
 
 Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
@@ -726,7 +734,7 @@ Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
 
 You can create a one-dimensional matrix of parallel jobs:
 
@@ -745,7 +753,7 @@ You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix
 
 ### Run a matrix of parallel trigger jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
 
 You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -779,7 +787,7 @@ deploystacks: [vultr, data]
 
 ### Select different runner tags for each parallel matrix job
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
 
 You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
 keyword for dynamic runner selection:
@@ -833,7 +841,7 @@ Quotes around the `dependencies` entry are required.
 
 ## Specify a parallelized job using needs with multiple parallelized jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
 
 You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
 
@@ -1117,7 +1125,7 @@ regex-job2:
 
 ### Join variable expressions together with `&&` or `||`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
 
 You can join multiple expressions using `&&` (and) or `||` (or), for example:
 

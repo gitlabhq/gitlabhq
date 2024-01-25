@@ -4,9 +4,13 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use kaniko to build Docker images **(FREE ALL)**
+# Use kaniko to build Docker images 
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45512) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45512) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build
 container images from a Dockerfile, inside a container or Kubernetes cluster.

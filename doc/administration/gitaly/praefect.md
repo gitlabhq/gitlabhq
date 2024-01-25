@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure Gitaly Cluster **(FREE SELF)**
+# Configure Gitaly Cluster
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Configure Gitaly Cluster using either:
 
@@ -491,7 +495,7 @@ praefect['configuration'] = {
 
 ### Praefect
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
 
 If there are multiple Praefect nodes:
 
@@ -870,7 +874,7 @@ For self-compiled installations:
 
 #### Service discovery
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
 
 Prerequisites:
 
@@ -1526,7 +1530,7 @@ For a replication factor:
 
 ## Repository verification
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
 without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is

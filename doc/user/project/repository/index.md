@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository **(FREE ALL)**
+# Repository
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
 is where you store your code and make changes to it. Your changes are tracked with version control.
@@ -93,7 +97,7 @@ prompted to open Xcode.
 
 ### Clone and open in Visual Studio Code
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220957) in GitLab 13.10.
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
 can also install the [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md) to clone from
@@ -206,7 +210,7 @@ These files can either be plain text or have the extension of a
 
 ### OpenAPI viewer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19515) in GitLab 12.6.
 
 GitLab can render OpenAPI specification files. The file name must include `openapi` or `swagger` and the extension must be `yaml`,
 `yml`, or `json`. The following examples are all correct:
@@ -238,7 +242,7 @@ evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 ## Repository size
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368150) in GitLab 15.3, feature flags `gitaly_revlist_for_repo_size` and `gitaly_catfile_repo_size` for alternative repository size calculations.
 
 FLAG:
 On self-managed GitLab, by default GitLab uses the `du -sk` command to determine the size of a repository. GitLab can use either

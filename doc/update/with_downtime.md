@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multi-node upgrades with downtime **(FREE SELF)**
+# Multi-node upgrades with downtime
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
 there are a number of constraints. In particular, you can upgrade to only one minor release
@@ -164,7 +168,11 @@ PgBouncer are upgraded as part of the application server upgrade.
 
 Upgrade a standalone Redis server by [upgrading the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-## Upgrade Redis HA (using Sentinel) **(PREMIUM SELF)**
+## Upgrade Redis HA (using Sentinel)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Follow [the zero downtime instructions](zero_downtime.md#redis-ha-using-sentinel)
 for upgrading your Redis HA cluster.

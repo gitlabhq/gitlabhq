@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Account and limit settings **(FREE SELF)**
+# Account and limit settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 ## Default projects limit
 
@@ -36,7 +40,7 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/20061) from 10 MB to 100 MB in GitLab 15.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/20061) from 10 MB to 100 MB in GitLab 15.7.
 
 The maximum file size for attachments in GitLab comments and replies is 100 MB.
 To change the maximum attachment size:
@@ -96,7 +100,11 @@ To change the default global prefix:
 You can also configure the prefix by using the
 [settings API](../../api/settings.md).
 
-## Repository size limit **(PREMIUM SELF)**
+## Repository size limit
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Repositories in your GitLab instance can grow quickly, especially if you are
 using LFS. Their size can grow exponentially, rapidly consuming available storage.
@@ -174,7 +182,11 @@ Users can select the **Remember me** checkbox on sign-in, and their session will
 1. Expand **Account and limit**.
 1. Select or clear the **Remember me** checkbox to turn this setting on or off.
 
-### Customize session duration for Git Operations when 2FA is enabled **(PREMIUM SELF)**
+### Customize session duration for Git Operations when 2FA is enabled
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/296669) in GitLab 13.9.
 > - It's deployed behind a feature flag, disabled by default.
@@ -192,7 +204,11 @@ To set a limit on how long these sessions are valid:
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Select **Save changes**.
 
-## Limit the lifetime of SSH keys **(ULTIMATE SELF)**
+## Limit the lifetime of SSH keys
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1007) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `ff_limit_ssh_key_lifetime`. Disabled by default.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/346753) in GitLab 14.6.
@@ -229,9 +245,13 @@ Once a lifetime for SSH keys is set, GitLab:
 NOTE:
 When a user's SSH key becomes invalid they can delete and re-add the same key again.
 
-## Limit the lifetime of access tokens **(ULTIMATE SELF)**
+## Limit the lifetime of access tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 
 Users can optionally specify a maximum lifetime in days for
 access tokens, this includes [personal](../../user/profile/personal_access_tokens.md),
@@ -263,9 +283,13 @@ Once a lifetime for access tokens is set, GitLab:
   allowed lifetime. Three hours is given to allow administrators to change the allowed lifetime,
   or remove it, before revocation takes place.
 
-## Disable user profile name changes **(PREMIUM SELF)**
+## Disable user profile name changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24605) in GitLab 12.7.
 
 To maintain integrity of user details in [Audit Events](../../administration/audit_events.md), GitLab administrators can choose to disable a user's ability to change their profile name.
 
@@ -281,9 +305,12 @@ When this ability is disabled, GitLab administrators can still use the
 [Admin Area](../../administration/admin_area.md#administering-users) or the
 [API](../../api/users.md#user-modification) to update usernames.
 
-## Prevent users from creating organizations **(EXPERIMENT)**
+## Prevent users from creating organizations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com, this feature is not available. This feature is not ready for production use.
@@ -297,7 +324,7 @@ By default, users can create organizations. GitLab administrators can prevent us
 
 ## Prevent new users from creating top-level groups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.
 
 By default, new users can create top-level groups. GitLab administrators can prevent new users from creating top-level groups:
 
@@ -313,7 +340,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 
 ## Set profiles of new users to private by default
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
 
 By default, newly created users have a public profile. GitLab administrators can set new users to have a private profile by default:
 
@@ -322,9 +349,13 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Expand **Account and limit**.
 1. Select the **Make new users' profiles private by default** checkbox.
 
-## Prevent users from deleting their accounts **(PREMIUM SELF)**
+## Prevent users from deleting their accounts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26053) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `deleting_account_disabled_for_users`. Enabled by default.
 
 By default, users can delete their own accounts. GitLab administrators can prevent
 users from deleting their own accounts:

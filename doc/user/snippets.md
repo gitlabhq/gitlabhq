@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Snippets **(FREE ALL)**
+# Snippets
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With GitLab snippets, you can store and share bits of code and text with other users.
 You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
@@ -93,7 +97,7 @@ default visibility:
 
 ## Versioned snippets
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/239) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/239) in GitLab 13.0.
 
 In GitLab 13.0 and later, snippets (both personal and project snippets)
 have version control enabled by default.
@@ -128,7 +132,7 @@ direct or embedded links to the snippet.
 
 ## Add or remove multiple files
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2829) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2829) in GitLab 13.5.
 
 A single snippet can support up to 10 files, which helps keep related files together, such as:
 
@@ -220,7 +224,11 @@ snippet was created using the GitLab web interface the original line ending is W
 With snippets, you engage in a conversation about that piece of code,
 which can encourage user collaboration.
 
-## Mark snippet as spam **(FREE SELF)**
+## Mark snippet as spam
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Administrators on self-managed GitLab instances can mark snippets as spam.
 

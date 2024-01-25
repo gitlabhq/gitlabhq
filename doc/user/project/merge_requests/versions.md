@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request diff versions **(FREE ALL)**
+# Merge request diff versions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you create a merge request, you select two branches to compare. The differences
 between the two branches are shown as a **diff** in the merge request. Each time

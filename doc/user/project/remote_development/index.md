@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Remote development **(FREE ALL)**
+# Remote development
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -33,7 +37,11 @@ With remote development, you can use:
 For a complete IDE experience, connect the Web IDE to a development environment configured to run as a remote host.
 You can create this environment [inside](../../workspace/configuration.md) or [outside](connect_machine.md) of GitLab.
 
-## Workspaces **(PREMIUM ALL)**
+## Workspaces
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A [workspace](../../workspace/index.md) is a virtual sandbox environment for your code in GitLab that includes:
 

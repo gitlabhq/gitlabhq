@@ -4,9 +4,13 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# API Discovery **(ULTIMATE ALL)**
+# API Discovery 
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
 
 API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [DAST API](../../dast_api/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 

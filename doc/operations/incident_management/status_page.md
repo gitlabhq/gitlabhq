@@ -4,9 +4,13 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Status Page **(ULTIMATE ALL)**
+# Status Page
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in GitLab 12.10.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2479) in GitLab 12.10.
 
 With a GitLab Status Page, you can create and deploy a static website to communicate
 efficiently to users during an incident. The Status Page landing page displays an

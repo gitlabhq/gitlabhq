@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 50,000 users **(PREMIUM SELF)**
+# Reference architecture: up to 50,000 users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes the GitLab reference architecture designed for the load of up to 50,000 users
 with notable headroom.

@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Example configuration files **(FREE SELF)**
+# Example configuration files
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Gitaly and Gitaly Cluster are configured by using configuration files. The default location of the configuration files
 depends on the type of installation you have:

@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Build and push container images to the container registry **(FREE ALL)**
+# Build and push container images to the container registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Before you can build and push container images, you must [authenticate](authenticate_with_container_registry.md) with the container registry.
 

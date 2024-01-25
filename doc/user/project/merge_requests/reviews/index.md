@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request reviews **(FREE ALL)**
+# Merge request reviews
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
@@ -21,7 +25,11 @@ review merge requests in Visual Studio Code.
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
-## GitLab Duo Suggested Reviewers **(ULTIMATE SAAS)**
+## GitLab Duo Suggested Reviewers
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
@@ -98,9 +106,13 @@ the merge request, use the `/assign_reviewer @user`
 
 The merge request is added to the user's review requests.
 
-#### From multiple users **(PREMIUM ALL)**
+#### From multiple users
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 To assign multiple reviewers to a merge request, in a text area in
 the merge request, use the `/assign_reviewer @user`
@@ -200,7 +212,11 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 ![New thread](img/mr_review_new_comment_v16_6.png)
 
-### Approval Rule information for Reviewers **(PREMIUM ALL)**
+### Approval Rule information for Reviewers
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
@@ -266,7 +282,11 @@ To update multiple project merge requests at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update all**.
 
-## Bulk edit merge requests at the group level **(PREMIUM ALL)**
+## Bulk edit merge requests at the group level
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Users with at least the Developer role can manage merge requests.
 

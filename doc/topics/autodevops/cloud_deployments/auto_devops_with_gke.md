@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Auto DevOps to deploy an application to Google Kubernetes Engine **(FREE ALL)**
+# Use Auto DevOps to deploy an application to Google Kubernetes Engine
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In this tutorial, we'll help you to get started with [Auto DevOps](../index.md)
 through an example of how to deploy an application to Google Kubernetes Engine (GKE).

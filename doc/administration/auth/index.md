@@ -5,7 +5,11 @@ description: Third-party authentication providers.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab authentication and authorization **(FREE SELF)**
+# GitLab authentication and authorization
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab integrates with a number of [OmniAuth providers](../../integration/omniauth.md#supported-providers),
 and the following external authentication and authorization providers:
@@ -13,8 +17,8 @@ and the following external authentication and authorization providers:
 - [LDAP](ldap/index.md): Includes Active Directory, Apple Open Directory, Open LDAP,
   and 389 Server.
   - [Google Secure LDAP](ldap/google_secure_ldap.md)
-- [SAML for GitLab.com groups](../../user/group/saml_sso/index.md) **(PREMIUM SAAS)**
-- [Smartcard](smartcard.md) **(PREMIUM SELF)**
+- [SAML for GitLab.com groups](../../user/group/saml_sso/index.md)
+- [Smartcard](smartcard.md)
 
 NOTE:
 UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.

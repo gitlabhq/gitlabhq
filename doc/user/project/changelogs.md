@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Changelogs **(FREE ALL)**
+# Changelogs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated
@@ -67,7 +71,7 @@ in the API documentation.
 
 ### From the GitLab CLI
 
-> [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
+> - [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
 
 Prerequisites:
 
@@ -279,7 +283,7 @@ corresponding merge request, no merge request is displayed.
 
 ### Customize the tag format when extracting versions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
 
 GitLab uses a regular expression (using the
 [re2](https://github.com/google/re2/) engine and syntax) to extract a semantic
@@ -327,7 +331,7 @@ an error is produced when generating a changelog.
 
 ## Reverted commit handling
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
 
 To be treated as a revert commit, the commit message must contain the string
 `This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.

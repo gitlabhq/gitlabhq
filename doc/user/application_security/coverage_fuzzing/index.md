@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Coverage-guided fuzz testing **(ULTIMATE ALL)**
+# Coverage-guided fuzz testing 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 Coverage-guided fuzz testing sends random inputs to an instrumented version of your application in
 an effort to cause unexpected behavior. Such behavior indicates a bug that you should address.
@@ -227,7 +231,7 @@ Prerequisites:
 
 ## Coverage-guided fuzz testing report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220062) in GitLab 13.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).

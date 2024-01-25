@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Generic Packages Repository **(FREE ALL)**
+# GitLab Generic Packages Repository
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
 > - [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed in GitLab 14.8.

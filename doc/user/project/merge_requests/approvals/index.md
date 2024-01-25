@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Merge request approvals **(FREE ALL)**
+# Merge request approvals
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can configure your merge requests so that they must be approved before
 they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows
@@ -83,9 +87,13 @@ GitLab allows all users with Developer or greater [permissions](../../../permiss
 to approve merge requests. Approvals in GitLab Free are optional, and don't prevent
 a merge request from merging without approval.
 
-## Required approvals **(PREMIUM ALL)**
+## Required approvals
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Required approvals enforce code reviews by the number and type of users you specify.
 Without the approvals, the work cannot merge. Required approvals enable multiple use cases:

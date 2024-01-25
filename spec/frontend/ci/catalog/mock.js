@@ -1,3 +1,49 @@
+const componentsDetailsMockData = {
+  __typename: 'CiComponentConnection',
+  nodes: [
+    {
+      id: 'gid://gitlab/Ci::Component/1',
+      name: 'Ruby gal',
+      description: 'This is a pretty amazing component that does EVERYTHING ruby.',
+      includePath: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/2',
+      name: 'Javascript madness',
+      description: 'Adds some spice to your life.',
+      includePath: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      inputs: [
+        { name: 'isFun', default: 'true', required: true },
+        { name: 'RandomNumber', default: '10', required: false },
+      ],
+    },
+    {
+      id: 'gid://gitlab/Ci::Component/3',
+      name: 'Go go go',
+      description: 'When you write Go, you gotta go go go.',
+      includePath: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      inputs: [{ name: 'version', default: '1.0.0', required: true }],
+    },
+  ],
+};
+
+const componentsListMockData = {
+  nodes: [
+    {
+      id: 'gid://gitlab/Ci::Catalog::Resources::Component/2',
+      name: 'test-component',
+      __typename: 'CiCatalogResourceComponent',
+    },
+    {
+      id: 'gid://gitlab/Ci::Catalog::Resources::Component/1',
+      name: 'component_two',
+      __typename: 'CiCatalogResourceComponent',
+    },
+  ],
+  __typename: 'CiCatalogResourceComponentConnection',
+};
+
 export const emptyCatalogResponseBody = {
   data: {
     ciCatalogResources: {
@@ -268,7 +314,13 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
-          latestVersion: null,
+          latestVersion: {
+            id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+            components: {
+              ...componentsListMockData,
+            },
+            __typename: 'CiCatalogResourceVersion',
+          },
           webPath: '/frontend-fixtures/project-45',
           __typename: 'CiCatalogResource',
         },
@@ -310,6 +362,7 @@ export const catalogSharedDataMock = {
       latestVersion: {
         __typename: 'Release',
         id: '3',
+        components: componentsListMockData,
         name: '1.0.0',
         path: 'path/to/release',
         releasedAt: Date.now(),
@@ -378,6 +431,9 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       latestVersion: {
         __typename: 'Release',
         id: '3',
+        components: {
+          ...componentsListMockData,
+        },
         name: '1.0.0',
         path: 'path/to/release',
         releasedAt: Date.now(),
@@ -392,36 +448,6 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
 
 export const mockCatalogResourceItem = generateResourcesNodes(1)[0];
 
-const componentsMockData = {
-  __typename: 'CiComponentConnection',
-  nodes: [
-    {
-      id: 'gid://gitlab/Ci::Component/1',
-      name: 'Ruby gal',
-      description: 'This is a pretty amazing component that does EVERYTHING ruby.',
-      includePath: 'gitlab.com/gitlab-org/ruby-gal@~latest',
-      inputs: [{ name: 'version', default: '1.0.0', required: true }],
-    },
-    {
-      id: 'gid://gitlab/Ci::Component/2',
-      name: 'Javascript madness',
-      description: 'Adds some spice to your life.',
-      includePath: 'gitlab.com/gitlab-org/javascript-madness@~latest',
-      inputs: [
-        { name: 'isFun', default: 'true', required: true },
-        { name: 'RandomNumber', default: '10', required: false },
-      ],
-    },
-    {
-      id: 'gid://gitlab/Ci::Component/3',
-      name: 'Go go go',
-      description: 'When you write Go, you gotta go go go.',
-      includePath: 'gitlab.com/gitlab-org/go-go-go@~latest',
-      inputs: [{ name: 'version', default: '1.0.0', required: true }],
-    },
-  ],
-};
-
 export const mockComponents = {
   data: {
     ciCatalogResource: {
@@ -431,7 +457,7 @@ export const mockComponents = {
       latestVersion: {
         id: 'gid://gitlab/Version/1',
         components: {
-          ...componentsMockData,
+          ...componentsDetailsMockData,
         },
       },
     },

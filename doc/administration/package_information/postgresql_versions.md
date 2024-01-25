@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL versions shipped with the Linux package **(FREE SELF)**
+# PostgreSQL versions shipped with the Linux package
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 This table lists only GitLab versions where a significant change happened in the

@@ -4,7 +4,11 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Suggestions on GitLab SaaS **(FREE SAAS)**
+# Code Suggestions on GitLab SaaS
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 > - [Introduced](https://about.gitlab.com/releases/2023/02/22/gitlab-15-9-released/#code-suggestions-available-in-closed-beta) in GitLab 15.9 as [Beta](../../../../policy/experiment-beta-support.md#beta) for early access Ultimate customers on GitLab.com.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/408104) as opt-in with GitLab 15.11 as [Beta](../../../../policy/experiment-beta-support.md#beta).
@@ -50,7 +54,7 @@ To use Code Suggestions:
 1. Describe the requirements in natural language. Code Suggestions generates functions and code snippets based on the context provided. To get the best results from code generation:
    - Be as specific as possible while remaining concise. State the outcome you want to generate (for example, a function) and provide details on what you want to achieve. Add additional information, such as the framework or library you want to use when applicable.
      For example, to create a Python web service with some specific requirements, you might write something similar to the following:
-     
+
      ```plaintext
      # Create a web service using Tornado that allows a user to log in, run a security scan, and review the scan results.
      # Each action (log in, run a scan, and review results) should be its own resource in the web service

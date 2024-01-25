@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Continuous Integration and Deployment Admin Area settings **(FREE SELF)**
+# Continuous Integration and Deployment Admin Area settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [Admin Area](index.md) has the instance settings for Auto DevOps, runners, and
 job artifacts.
@@ -133,7 +137,7 @@ artifacts, as described in the [troubleshooting documentation](../../administrat
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
 
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
@@ -193,7 +197,7 @@ To set all new [CI/CD variables](../../ci/variables/index.md) as
 
 ## Maximum includes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
 
 The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set at the instance level.
 The default is `150`.
@@ -205,7 +209,7 @@ The default is `150`.
 
 ## Default CI/CD configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
 
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
@@ -267,7 +271,11 @@ so you can view job artifact pages directly:
 1. Expand **Continuous Integration and Deployment**.
 1. Deselect **Enable the external redirect page for job artifacts**.
 
-## Required pipeline configuration **(ULTIMATE SELF)**
+## Required pipeline configuration
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
@@ -306,7 +314,11 @@ To select a CI/CD template for the required pipeline configuration:
 
 ## Package registry configuration
 
-### Maven Forwarding **(PREMIUM SELF)**
+### Maven Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
 
@@ -318,7 +330,11 @@ To disable forwarding Maven requests:
 1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
 
-### npm Forwarding **(PREMIUM SELF)**
+### npm Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -330,7 +346,11 @@ To disable it:
 1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
 
-### PyPI Forwarding **(PREMIUM SELF)**
+### PyPI Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
 
@@ -398,7 +418,7 @@ To restrict runner registration by members in a specific group:
 
 ## Disable runner version management
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
 
 By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 

@@ -4,7 +4,12 @@ group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo Chat **(ULTIMATE ALL BETA)**
+# GitLab Duo Chat
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [Experiment](../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
 > - Changed to [Beta](../policy/experiment-beta-support.md#beta) for SaaS in GitLab 16.6.
@@ -51,7 +56,7 @@ GitLab Duo Chat can help in a variety of areas.
 
 ### Ask about GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for SaaS in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for SaaS in GitLab 16.0.
 
 You can ask questions about how GitLab works. Things like:
 
@@ -209,9 +214,13 @@ To delete all previous conversations:
 
 1. In the text box, type `/clean` and select **Send**.
 
-## Use GitLab Duo Chat in the Web IDE **(ULTIMATE EXPERIMENT)**
+## Use GitLab Duo Chat in the Web IDE
 
-> Introduced in GitLab 16.6 as an [EXPERIMENT](../policy/experiment-beta-support.md#experiment)
+DETAILS:
+**Tier:** Ultimate
+**Status:** Experiment
+
+> - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment)
 
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
@@ -233,9 +242,13 @@ If you have selected code in the editor, this selection is sent along with your 
 NOTE:
 GitLab Duo Chat is not available in the Web IDE on self-managed.
 
-## Use GitLab Duo Chat in VS Code **(ULTIMATE EXPERIMENT)**
+## Use GitLab Duo Chat in VS Code
 
-> Introduced in GitLab 16.6 as an [EXPERIMENT](../policy/experiment-beta-support.md#experiment).
+DETAILS:
+**Tier:** Ultimate
+**Status:** Experiment
+
+> - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 

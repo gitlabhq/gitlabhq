@@ -9,7 +9,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The GitLab package registry supports different functionalities for each package type. This support includes publishing
 and pulling packages, request forwarding, managing duplicates, and authentication.
 
-## Publishing packages **(FREE ALL)**
+## Publishing packages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Packages can be published to your project, group, or instance.
 
@@ -30,7 +34,11 @@ Packages can be published to your project, group, or instance.
 | [Go](../go_proxy/index.md)                            | Y       | N     | N        |
 | [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
 
-## Pulling packages **(FREE ALL)**
+## Pulling packages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Packages can be pulled from your project, group, or instance.
 
@@ -51,7 +59,11 @@ Packages can be pulled from your project, group, or instance.
 | [Go](../go_proxy/index.md)                            | Y       | N     | Y        |
 | [Ruby gems](../rubygems_registry/index.md)            | Y       | N     | N        |
 
-## Forwarding requests **(PREMIUM ALL)**
+## Forwarding requests
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Requests for packages not found in your GitLab project are forwarded to the public registry. For example, Maven Central, npmjs, or PyPI.
 
@@ -110,7 +122,11 @@ You can use GitLab pipelines to import packages from other repositories, such as
 | [Go](../go_proxy/index.md)                            | N                   |
 | [Ruby gems](../rubygems_registry/index.md)            | N                   |
 
-## Allow or prevent duplicates **(FREE ALL)**
+## Allow or prevent duplicates
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 By default, the GitLab package registry either allows or prevents duplicates based on the default of that specific package manager format.
 
@@ -131,7 +147,11 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 | [Go](../go_proxy/index.md)                            | N                   |
 | [Ruby gems](../rubygems_registry/index.md)            | Y                   |
 
-## Authentication tokens **(FREE ALL)**
+## Authentication tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab tokens are used to authenticate with the GitLab package registry.
 
@@ -154,7 +174,11 @@ The following tokens are supported:
 | [Go](../go_proxy/index.md)                            | Personal access, job tokens, project access                            |
 | [Ruby gems](../rubygems_registry/index.md)            | Personal access, job tokens, deploy (project or group)                 |
 
-## Authentication protocols **(FREE ALL)**
+## Authentication protocols
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The following authentication protocols are supported:
 
@@ -177,7 +201,11 @@ The following authentication protocols are supported:
 
 1. Basic authentication for Maven packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212854) in GitLab 16.0.
 
-## Supported hash types **(FREE ALL)**
+## Supported hash types
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Hash values are used to ensure you are using the correct package. You can view these values in the user interface or with the [API](../../../api/packages.md).
 

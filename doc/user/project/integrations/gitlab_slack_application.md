@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Slack app **(FREE ALL)**
+# GitLab for Slack app
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358872) for self-managed in GitLab 16.2.
 
 NOTE:
 This page contains user documentation for the GitLab for Slack app. For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md).
@@ -36,7 +40,11 @@ To install the GitLab for Slack app from project integration settings:
 1. Select **Install GitLab for Slack app**.
 1. On the Slack confirmation page, select **Allow**.
 
-### From the Slack App Directory **(FREE SAAS)**
+### From the Slack App Directory
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 On GitLab.com, you can also install the GitLab for Slack app from the
 [Slack App Directory](https://slack-platform.slack.com/apps/A676ADMV5-gitlab).
@@ -118,7 +126,7 @@ To create a project alias for slash commands in the GitLab for Slack app:
 
 ## Slack notifications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381012) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381012) in GitLab 15.9.
 
 You can receive notifications to Slack channels for certain GitLab [events](#notification-events).
 

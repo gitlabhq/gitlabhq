@@ -4,7 +4,11 @@ group: Composition Analysis
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Scan a Docker container for vulnerabilities **(FREE ALL)**
+# Tutorial: Scan a Docker container for vulnerabilities
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use [container scanning](../../user/application_security/container_scanning/index.md) to check for vulnerabilities
 in container images stored in the [container registry](../../user/packages/container_registry/index.md).

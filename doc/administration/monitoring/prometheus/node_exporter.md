@@ -4,7 +4,11 @@ group: Shared responsibility based on functional area
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Node exporter **(FREE SELF)**
+# Node exporter
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [node exporter](https://github.com/prometheus/node_exporter) enables you to measure
 various machine resources such as memory, disk and CPU utilization.

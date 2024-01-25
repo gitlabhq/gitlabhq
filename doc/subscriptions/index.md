@@ -4,7 +4,11 @@ group: Purchase
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Subscribe to GitLab **(PREMIUM ALL)**
+# Subscribe to GitLab
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Choose and manage the subscription that's right for you and your organization.
 

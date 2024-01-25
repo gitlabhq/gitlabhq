@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project and group visibility **(FREE ALL)**
+# Project and group visibility
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Projects and groups in GitLab can be private, internal, or public.
 
@@ -25,7 +29,11 @@ Users with the Guest role cannot clone the project.
 
 Private groups can have only private subgroups.
 
-## Internal projects and groups **(FREE SELF)**
+## Internal projects and groups
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 For internal projects, **any authenticated user**, including users with the Guest role, can:
 
@@ -101,7 +109,11 @@ Prerequisites:
    as the visibility of its parent group.
 1. Select **Save changes**.
 
-## Restrict use of public or internal projects **(FREE SELF)**
+## Restrict use of public or internal projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
 This setting can help prevent users from publicly exposing their repositories by accident.

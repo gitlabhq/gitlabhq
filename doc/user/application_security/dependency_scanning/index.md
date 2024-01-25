@@ -41,7 +41,11 @@ table.no-vertical-table-lines tr {
 }
 </style>
 
-# Dependency Scanning **(ULTIMATE ALL)**
+# Dependency Scanning 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 Dependency Scanning analyzes your application's dependencies for known vulnerabilities. All
 dependencies are scanned, including transitive dependencies, also known as nested dependencies.

@@ -4,7 +4,12 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo API **(PREMIUM SELF)**
+# Geo API
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
 
 The Geo API is used internally by GitLab components to assist in coordinating Geo actions. It is inaccessible to admins or users.
 

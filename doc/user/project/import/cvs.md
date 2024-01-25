@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating from CVS **(FREE ALL)**
+# Migrating from CVS
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [CVS](https://savannah.nongnu.org/projects/cvs) is an old centralized version
 control system similar to [SVN](https://subversion.apache.org/).

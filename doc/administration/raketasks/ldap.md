@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# LDAP Rake tasks **(FREE SELF)**
+# LDAP Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The following are LDAP-related Rake tasks.
 
@@ -34,9 +38,13 @@ limit by passing a number to the check task:
 rake gitlab:ldap:check[50]
 ```
 
-## Run a group sync **(PREMIUM SELF)**
+## Run a group sync
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
 
 The following task runs a [group sync](../auth/ldap/ldap_synchronization.md#group-sync) immediately.
 This is valuable when you'd like to update all configured group memberships against LDAP without

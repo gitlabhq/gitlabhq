@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# System hooks API **(FREE SELF)**
+# System hooks API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 All methods require administrator authorization.
 
@@ -48,7 +52,7 @@ Example response:
 
 ## Get system hook
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81595) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81595) in GitLab 14.9.
 
 Get a system hook by its ID.
 

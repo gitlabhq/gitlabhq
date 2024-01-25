@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository checks **(FREE SELF)**
+# Repository checks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can use [`git fsck`](https://git-scm.com/docs/git-fsck) to verify the integrity of all data
 committed to a repository. GitLab administrators can:

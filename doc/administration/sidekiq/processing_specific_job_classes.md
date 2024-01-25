@@ -312,7 +312,7 @@ query syntax is employed by both [routing rules](#routing-rules) and
 
 ### Available attributes
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1 (`tags`).
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/261) in GitLab 13.1 (`tags`).
 
 Queue matching query works upon the worker attributes, described in
 [Sidekiq style guide](../../development/sidekiq/index.md). We support querying

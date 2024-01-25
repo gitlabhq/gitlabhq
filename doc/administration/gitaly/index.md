@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gitaly and Gitaly Cluster **(FREE SELF)**
+# Gitaly and Gitaly Cluster
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) provides high-level RPC access to Git repositories.
 It is used by GitLab to read and write Git data.
@@ -490,7 +494,7 @@ You can [monitor distribution of reads](monitoring.md#monitor-gitaly-cluster) us
 
 #### Strong consistency
 
-> In GitLab 14.0, strong consistency is the primary replication method.
+> - In GitLab 14.0, strong consistency is the primary replication method.
 
 Gitaly Cluster provides strong consistency by writing changes synchronously to all healthy, up-to-date replicas. If a
 replica is outdated or unhealthy at the time of the transaction, the write is asynchronously replicated to it.

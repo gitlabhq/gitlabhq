@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Unit test reports **(FREE ALL)**
+# Unit test reports 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45318) in GitLab 11.2. Requires GitLab Runner 11.2 and above.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39737) from JUnit test reports to Unit test reports in GitLab 13.4.
@@ -68,7 +72,7 @@ the error output.
 
 #### Copy failed test names
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
 
 You can copy the name and path of failed tests when there are failed tests listed
 in the **Test summary** panel. Use name and path to find and rerun the
@@ -155,7 +159,7 @@ You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#ge
 
 ### Unit test reports parsing errors
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263457) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263457) in GitLab 13.10.
 
 If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](../jobs/index.md#group-jobs-in-a-pipeline), GitLab shows only the first error from the group.
 

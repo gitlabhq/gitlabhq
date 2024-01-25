@@ -4,9 +4,13 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incident management rate limits **(ULTIMATE SELF)**
+# Incident management rate limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17859) in GitLab 12.5.
 
 You can limit the number of inbound alerts for [incidents](../../operations/incident_management/incidents.md)
 that can be created in a period of time. The inbound [incident management](../../operations/incident_management/index.md)

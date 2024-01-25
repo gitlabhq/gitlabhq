@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD job token **(FREE ALL)**
+# GitLab CI/CD job token 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When a pipeline job is about to run, GitLab generates a unique token and injects it as the
 [`CI_JOB_TOKEN` predefined variable](../variables/predefined_variables.md).
@@ -223,7 +227,11 @@ To configure the job token scope:
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
 
-## Download an artifact from a different pipeline **(PREMIUM ALL)**
+## Download an artifact from a different pipeline 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use the CI/CD job token to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
 and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from:

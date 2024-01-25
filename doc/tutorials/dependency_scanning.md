@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up dependency scanning **(ULTIMATE SAAS)**
+# Tutorial: Set up dependency scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 Dependency Scanning can automatically find security vulnerabilities in your software dependencies
 while you're developing and testing your applications. For example, dependency scanning lets you

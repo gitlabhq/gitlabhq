@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Supported Geo data types **(PREMIUM SELF)**
+# Supported Geo data types
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 A Geo data type is a specific class of data that is required by one or more GitLab features to
 store relevant information.
@@ -160,7 +164,7 @@ The replication for some data types is behind a corresponding feature flag:
 > - They're enabled on GitLab.com.
 > - They can't be enabled or disabled per-project.
 > - They are recommended for production use.
-> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types). **(FREE SELF)**
+> - For GitLab self-managed instances, GitLab administrators can opt to [disable them](#enable-or-disable-replication-for-some-data-types).
 
 #### Enable or disable replication (for some data types)
 
@@ -208,7 +212,7 @@ successfully, you must replicate their data using some other means.
 |[Versioned snippets](../../../user/snippets.md#versioned-snippets)                                             | [**Yes** (13.7)](https://gitlab.com/groups/gitlab-org/-/epics/2809)     | [**Yes** (14.2)](https://gitlab.com/groups/gitlab-org/-/epics/2810)        | Not applicable                                                                 | Not applicable                                                             | Verification was implemented behind the feature flag `geo_snippet_repository_verification` in 13.11, and the feature flag was removed in 14.2. |
 |[GitLab Pages](../../pages/index.md)                                                                           | [**Yes** (14.3)](https://gitlab.com/groups/gitlab-org/-/epics/589)      | **Yes** (14.6)                                                             | [**Yes** (15.1)](https://gitlab.com/groups/gitlab-org/-/epics/5551) | [**Yes** (16.4)](object_storage.md) | Behind feature flag `geo_pages_deployment_replication`, enabled by default. Verification was behind the feature flag `geo_pages_deployment_verification`, removed in 14.7. |
 |[Project-level Secure files](../../../ci/secure_files/index.md)     | **Yes** (15.3)    |  **Yes** (15.3)  |   **Yes** (15.3)  |  [**Yes** (16.4)](object_storage.md) | |
-| [Incident Metric Images](../../../operations/incident_management/incidents.md#metrics)                          | **Yes** (15.5)                                                          | **Yes**(15.5)                                                              | **Yes** (15.5)                                                                  | [**Yes** (16.4)](object_storage.md)                                                             | Replication/Verification is handled via the Uploads data type.                                                               | |
+| [Incident Metric Images](../../../operations/incident_management/incidents.md#metrics)                          | **Yes** (15.5)                                                          | **Yes** (15.5)                                                              | **Yes** (15.5)                                                                  | [**Yes** (16.4)](object_storage.md)                                                             | Replication/Verification is handled via the Uploads data type.                                                               | |
 |[Alert Metric Images](../../../operations/incident_management/alerts.md#metrics-tab)                           | **Yes** (15.5)         | **Yes** (15.5)                 | **Yes** (15.5)                                                                  | [**Yes** (16.4)](object_storage.md)                                                              | Replication/Verification is handled via the Uploads data type. |
 |[Server-side Git hooks](../../server_hooks.md)                                                                 | [Not planned](https://gitlab.com/groups/gitlab-org/-/epics/1867)        | No                                                                         | Not applicable                                                                 | Not applicable                                                             | Not planned because of current implementation complexity, low customer interest, and availability of alternatives to hooks. |
 |[Elasticsearch integration](../../../integration/advanced_search/elasticsearch.md)                                             | [Not planned](https://gitlab.com/gitlab-org/gitlab/-/issues/1186)       | No                                                                         | No                                                                  | No                                                              | Not planned because further product discovery is required and Elasticsearch (ES) clusters can be rebuilt. Secondaries use the same ES cluster as the primary. |

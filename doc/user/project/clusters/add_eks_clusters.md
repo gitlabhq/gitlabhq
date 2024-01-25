@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect EKS clusters through cluster certificates (deprecated) **(FREE ALL)**
+# Connect EKS clusters through cluster certificates (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22392) in GitLab 12.5.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -27,7 +31,7 @@ To create a new cluster from GitLab, use [Infrastructure as Code](../../infrastr
 
 ### How to create a new cluster on EKS through cluster certificates (deprecated)
 
-> [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
+> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/327908) in GitLab 14.0.
 
 Prerequisites:
 
@@ -221,7 +225,11 @@ GitLab displays a list of the environments and their deploy status, as well as
 options to browse to the app, view monitoring metrics, and even access a shell
 on the running pod.
 
-## Additional requirements for self-managed instances **(FREE SELF)**
+## Additional requirements for self-managed instances
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you are using a self-managed GitLab instance, you need to configure
 Amazon credentials. GitLab uses these credentials to assume an Amazon IAM role to create your cluster.
@@ -258,7 +266,7 @@ IAM user in the Amazon AWS console, and follow these steps:
 
 #### EKS access key and ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) instance profiles in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291015) instance profiles in GitLab 13.7.
 
 If you're using GitLab 13.7 or later, you can use instance profiles to
 dynamically retrieve temporary credentials from AWS when needed.

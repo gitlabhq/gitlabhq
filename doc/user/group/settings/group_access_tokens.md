@@ -4,7 +4,11 @@ group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Group access tokens **(FREE)**
+# Group access tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With group access tokens, you can use a single token to:
 
@@ -115,7 +119,7 @@ or API. However, administrators can use a workaround:
 
 ## Revoke a group access token using the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
 
 To revoke a group access token:
 

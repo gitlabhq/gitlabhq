@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Branches **(FREE ALL)**
+# Branches
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Branches are versions of a project's working tree. When you create a new
 [project](../../index.md), GitLab creates a [default branch](default.md) (which
@@ -290,7 +294,11 @@ To do this:
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
 
-## Configure workflows for target branches **(PREMIUM ALL)**
+## Configure workflows for target branches
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127115) in GitLab 16.4 [with a flag](../../../../administration/feature_flags.md) named `target_branch_rules_flag`. Enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136431) in GitLab 16.7.

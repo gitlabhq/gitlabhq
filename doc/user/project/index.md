@@ -4,7 +4,11 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Create a project **(FREE ALL)**
+# Create a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can create a project in many ways in GitLab.
 
@@ -62,9 +66,13 @@ A user who creates a project [from a template](#create-a-project-from-a-built-in
 Imported objects are labeled as `By <username> on <timestamp> (imported from GitLab)`.
 For this reason, the creation date of imported objects can be older than the creation date of the user's account. This can lead to objects appearing to have been created by a user before they even had an account.
 
-## Create a project from a custom template **(PREMIUM ALL)**
+## Create a project from a custom template
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
 Custom project templates are available at:
 
@@ -87,9 +95,13 @@ Custom project templates are available at:
      change the **Visibility Level**.
 1. Select **Create project**.
 
-## Create a project from the HIPAA Audit Protocol template **(ULTIMATE ALL)**
+## Create a project from the HIPAA Audit Protocol template
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 
 The HIPAA Audit Protocol template contains issues for audit inquiries in the
 HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
@@ -114,7 +126,7 @@ To create a project from the HIPAA Audit Protocol template:
 
 ## Create a new project with Git push
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
 Use `git push` to push a local project repository to GitLab. After you push a repository,
 GitLab creates your project in your chosen namespace.

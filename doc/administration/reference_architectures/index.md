@@ -5,7 +5,11 @@ description: Recommended deployments at scale.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architectures **(FREE SELF)**
+# Reference architectures
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The GitLab Reference Architectures have been designed and tested by the
 GitLab Quality Engineering and Support teams to provide recommended deployments at scale.

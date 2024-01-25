@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Permissions and roles **(FREE ALL)**
+# Permissions and roles
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you add a user to a project or group, you assign them a role.
 The role determines which actions they can take in GitLab.
@@ -443,7 +447,11 @@ nested groups if you have membership in one of its parents.
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
 
-## Users with Minimal Access **(PREMIUM ALL)**
+## Users with Minimal Access
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
 > - Support for inviting users with Minimal Access role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106438) in GitLab 15.9.

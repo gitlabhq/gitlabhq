@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure Grafana **(FREE SELF)**
+# Configure Grafana
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - Grafana bundled with GitLab was [deprecated](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772) in GitLab 16.0.
 > - Grafana bundled with GitLab was [removed](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772) in GitLab 16.3.
@@ -29,7 +33,7 @@ see the [GitLab Grafana dashboards](https://gitlab.com/gitlab-org/grafana-dashbo
 
 ## Integrate with GitLab UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61005) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/61005) in GitLab 12.1.
 
 After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
@@ -45,7 +49,7 @@ GitLab displays your link in the Admin Area under **Monitoring > Metrics Dashboa
 
 ## Required Scopes
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5822) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5822) in GitLab 13.10.
 
 When setting up Grafana through the process above, no scope shows in the screen in
 the Admin Area under **Applications > GitLab Grafana**. However, the `read_user` scope is

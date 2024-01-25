@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Static Application Security Testing (SAST) **(FREE ALL)**
+# Static Application Security Testing (SAST) 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 The whitepaper ["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
@@ -125,7 +129,11 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-## False positive detection **(ULTIMATE ALL)**
+## False positive detection 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - Introduced for Ruby in GitLab 14.2.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
@@ -140,9 +148,13 @@ False positive detection is available in a subset of the [supported languages](#
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 
-## Advanced vulnerability tracking **(ULTIMATE ALL)**
+## Advanced vulnerability tracking 
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
 
 Source code is volatile; as developers make changes, source code may move within files or between files.
 Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
@@ -189,7 +201,7 @@ The default scanner images are built on a base Alpine image for size and maintai
 
 ### FIPS-enabled images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 GitLab offers an image version, based on the [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image) base image,
 that uses a FIPS 140-validated cryptographic module. To use the FIPS-enabled image, you can either:
@@ -252,7 +264,11 @@ The [SAST report file](#output) is processed by GitLab and the details are shown
 - Merge request changes view
 - Vulnerability report
 
-### Merge request widget **(ULTIMATE ALL)**
+### Merge request widget 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 SAST results display in the merge request widget area if a report from the target
 branch is available for comparison. The merge request widget displays SAST results and resolutions that
@@ -260,7 +276,11 @@ were introduced by the changes made in the merge request.
 
 ![Security Merge request widget](img/sast_mr_widget_v16_7.png)
 
-### Merge request changes view **(ULTIMATE ALL)**
+### Merge request changes view 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
 > - Enabled by default in GitLab 16.8.
@@ -315,7 +335,11 @@ When downloading, you always receive the most recent SAST artifact available.
 You can enable and configure SAST by using the UI, either with the default settings or with customizations.
 The method you can use depends on your GitLab license tier.
 
-#### Configure SAST with customizations **(ULTIMATE ALL)**
+#### Configure SAST with customizations 
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 
@@ -441,7 +465,7 @@ Read more on [how to use private Maven repositories](../index.md#using-private-m
 
 ### Enabling Kubesec analyzer
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12752) in GitLab 12.6.
 
 You need to set `SCAN_KUBERNETES_MANIFESTS` to `"true"` to enable the
 Kubesec analyzer. In `.gitlab-ci.yml`, define:
@@ -626,7 +650,7 @@ flags are added to the scanner's CLI options.
 
 #### Custom CI/CD variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18193) in GitLab 12.5.
 
 In addition to the aforementioned SAST configuration CI/CD variables,
 all [custom variables](../../../ci/variables/index.md#define-a-cicd-variable-in-the-ui) are propagated

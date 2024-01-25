@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Debian API **(FREE SELF)**
+# Debian API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
 > - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
@@ -80,7 +84,7 @@ curl --request PUT \
 
 ## Download a package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a package file.
 
@@ -142,7 +146,7 @@ The examples in this document all use the project-level prefix.
 
 ## Download a distribution Release file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
 Download a Debian distribution file.
 
@@ -170,7 +174,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a signed distribution Release file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
 Download a signed Debian distribution file.
 
@@ -198,7 +202,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a release file signature
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a Debian release file signature.
 
@@ -226,7 +230,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a packages index.
 
@@ -256,7 +260,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a packages index by hash.
 
@@ -287,7 +291,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a Debian Installer packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
 
 Download a Debian Installer packages index.
 
@@ -317,7 +321,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a Debian Installer packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a Debian Installer packages index by hash.
 
@@ -347,7 +351,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a source packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
 
 Download a source packages index.
 
@@ -376,7 +380,7 @@ This writes the downloaded file using the remote file name in the current direct
 
 ## Download a source packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a source packages index by hash.
 

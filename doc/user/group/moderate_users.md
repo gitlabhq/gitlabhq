@@ -4,9 +4,13 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Moderate users  **(ULTIMATE SAAS)**
+# Moderate users 
 
-> [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/modelops/anti-abuse/team-tasks/-/issues/155) in GitLab 15.8.
 
 This is the group-level documentation. For self-managed instances, see the [administration documentation](../../administration/moderate_users.md).
 

@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages access control **(FREE ALL)**
+# GitLab Pages access control
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/index.md#access-control)

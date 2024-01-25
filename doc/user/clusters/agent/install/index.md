@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Installing the agent for Kubernetes **(FREE ALL)**
+# Installing the agent for Kubernetes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/6290) from GitLab Premium to GitLab Free in 14.5.
 > - [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/594) multi-arch images in GitLab 14.8. The first multi-arch release is `v14.8.1`. It supports AMD64 and ARM64 architectures.
@@ -99,7 +103,7 @@ You must register an agent before you can install the agent in your cluster. To 
 
 ### Install the agent in the cluster
 
-> Introduced in GitLab 14.10, GitLab recommends using Helm to install the agent.
+> - Introduced in GitLab 14.10, GitLab recommends using Helm to install the agent.
 
 To connect your cluster to GitLab, install the registered agent
 in your cluster. You can either:
@@ -158,7 +162,7 @@ an [auto-generated self-signed wildcard certificate](https://docs.gitlab.com/cha
 
 ##### Use the agent behind an HTTP proxy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351867) in GitLab 15.0, the GitLab agent Helm chart supports setting environment variables.
 
 To configure an HTTP proxy when using the Helm chart, you can use the environment variables `HTTP_PROXY`, `HTTPS_PROXY`,
 and `NO_PROXY`. Upper and lowercase are both acceptable.
@@ -218,7 +222,7 @@ The following example projects can help you get started with the agent.
 
 ## Updates and version compatibility
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, GitLab warns you on the agent's list page to update the agent version installed on your cluster.
 
 For the best experience, the version of the agent installed in your cluster should match the GitLab major and minor version. The previous and next minor versions are also supported. For example, if your GitLab version is v14.9.4 (major version 14, minor version 9), then versions v14.9.0 and v14.9.1 of the agent are ideal, but any v14.8.x or v14.10.x version of the agent is also supported. See [the release page](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/releases) of the GitLab agent.
 

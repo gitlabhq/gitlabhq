@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Enterprise users **(PREMIUM SAAS)**
+# Enterprise users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Enterprise users have user accounts that are administered by an organization that
 has [verified their email domain](../project/pages/custom_domains_ssl_tls_certification/index.md) and purchased a [GitLab subscription](../../subscriptions/index.md).
@@ -176,7 +180,7 @@ These enterprise user-specific actions are in addition to the standard
 
 ### Disable two-factor authentication
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
 
 Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
 

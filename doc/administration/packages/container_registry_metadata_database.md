@@ -4,9 +4,14 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container registry metadata database **(FREE SELF BETA)**
+# Container registry metadata database
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
 
 WARNING:
 The metadata database is a [beta feature](../../policy/experiment-beta-support.md#beta).

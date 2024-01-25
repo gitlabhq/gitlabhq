@@ -5,7 +5,10 @@ description: IP allowlists, SAML, maintenance.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure GitLab Dedicated **(ULTIMATE)**
+# Configure GitLab Dedicated
+
+DETAILS:
+**Offering:** Dedicated
 
 GitLab Dedicated is a single-tenant SaaS solution, fully managed and hosted by GitLab. For more information about this offering, see the [subscription page](../../subscriptions/gitlab_dedicated/index.md).
 

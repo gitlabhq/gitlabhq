@@ -4,7 +4,11 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Manage projects **(FREE ALL)**
+# Manage projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
@@ -102,7 +106,11 @@ This action deletes the project and all associated resources (such as issues and
 
 You can also [delete projects using the Rails console](#delete-a-project-using-console).
 
-### Delayed project deletion **(PREMIUM ALL)**
+### Delayed project deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
@@ -121,7 +129,11 @@ You can [view projects that are pending deletion](#view-projects-pending-deletio
 and use the Rails console to
 [find projects that are pending deletion](#find-projects-that-are-pending-deletion).
 
-### Delete a project immediately **(PREMIUM ALL)**
+### Delete a project immediately
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
 > - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -144,7 +156,11 @@ To immediately delete a project marked for deletion:
 1. In the **Delete this project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-### View projects pending deletion **(PREMIUM ALL)**
+### View projects pending deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -238,7 +254,7 @@ To rename a repository:
 
 ## Access the project overview page by using the project ID
 
-> Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 To access a project by using the project ID instead of its name,
 go to `https://gitlab.example.com/projects/<id>`.
@@ -272,7 +288,7 @@ For users without permission to view the project's code, the landing page shows:
 
 ## Leave a project
 
-> The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 When you leave a project:
 
@@ -291,7 +307,11 @@ To leave a project:
 1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
 1. Select **Leave project**, then **Leave project** again.
 
-## Add a compliance framework to a project **(PREMIUM)**
+## Add a compliance framework to a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can add compliance frameworks to projects in a group that has a [compliance framework](../group/compliance_frameworks.md).
 
@@ -311,7 +331,11 @@ Prerequisites:
 1. To use LDAP groups to manage access to a project,
    [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
 
-## Project aliases **(PREMIUM SELF)**
+## Project aliases
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab repositories are usually accessed with a namespace and a project name. When migrating
 frequently accessed repositories to GitLab, however, you can use project aliases to access those

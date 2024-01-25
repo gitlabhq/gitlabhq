@@ -4,13 +4,21 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Search API **(FREE ALL)**
+# Search API 
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Feature flag `search_filter_by_confidential` removed](https://gitlab.com/gitlab-org/gitlab/-/issues/244923) in GitLab 13.6.
 
 Every API call to search must be authenticated.
 
-## Additional scopes **(PREMIUM ALL)**
+## Additional scopes 
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Additional scopes are available for the [Advanced Search API](#advanced-search-api)
 and [Group Search API](#group-search-api) if
@@ -269,9 +277,13 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM ALL)**
+### Scope: `wiki_blobs` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -301,9 +313,13 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits **(PREMIUM ALL)**
+### Scope: commits 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -336,9 +352,13 @@ Example response:
 ]
 ```
 
-### Scope: blobs **(PREMIUM ALL)**
+### Scope: blobs 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -377,9 +397,13 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes **(PREMIUM ALL)**
+### Scope: notes 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -660,9 +684,13 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM ALL)**
+### Scope: `wiki_blobs` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -692,9 +720,13 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` **(PREMIUM ALL)**
+### Scope: `commits` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -727,9 +759,13 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` **(PREMIUM ALL)**
+### Scope: `blobs` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -768,9 +804,13 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `notes` **(PREMIUM ALL)**
+### Scope: `notes` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -1019,9 +1059,13 @@ Example response:
 ]
 ```
 
-### Scope: `notes` **(PREMIUM ALL)**
+### Scope: `notes` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/6/search?scope=notes&search=maxime"
@@ -1054,9 +1098,13 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` **(PREMIUM ALL)**
+### Scope: `wiki_blobs` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Filters are available for this scope:
 
@@ -1101,9 +1149,13 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` **(PREMIUM ALL)**
+### Scope: `commits` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 This scope is available only if [Elasticsearch](../integration/advanced_search/elasticsearch.md) is enabled.
 
@@ -1136,9 +1188,13 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` **(PREMIUM ALL)**
+### Scope: `blobs` 
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Filters are available for this scope:
 

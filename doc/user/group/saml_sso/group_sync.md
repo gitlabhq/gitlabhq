@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML Group Sync **(PREMIUM ALL)**
+# SAML Group Sync
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
 WARNING:
 Adding or changing Group Sync configuration can remove users from the mapped GitLab group.
@@ -120,13 +124,13 @@ Users granted:
 
 ### Use the API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
 
 You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.
 
 ## Microsoft Azure Active Directory integration
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10507) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10507) in GitLab 16.3.
 
 NOTE:
 Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
@@ -194,9 +198,13 @@ With this configuration, if a user signs in with SAML and Azure sends a group ov
 GitLab initiates a Group Sync job to call the Microsoft Graph API and retrieve the user's group membership.
 Then the GitLab Group membership is updated according to SAML Group Links.
 
-## Global SAML group memberships lock **(PREMIUM SELF)**
+## Global SAML group memberships lock
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
 
 GitLab administrators can use the global SAML group memberships lock to prevent group members from inviting new members to subgroups that have their membership synchronized with SAML Group Links.
 

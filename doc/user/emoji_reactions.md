@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Emoji reactions **(FREE ALL)**
+# Emoji reactions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 > - Reacting with emoji on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
@@ -75,7 +79,7 @@ For a list of custom emoji available for GitLab.com, see
 
 ### Upload custom emoji to a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128355) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128355) in GitLab 16.5.
 
 Upload your custom emoji to a group to use them in all its subgroups and projects.
 

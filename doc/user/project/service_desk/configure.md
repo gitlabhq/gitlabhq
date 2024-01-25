@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure Service Desk **(FREE ALL)**
+# Configure Service Desk
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 By default, Service Desk is active in new projects.
 If it's not active, you can do it in the project's settings.
@@ -97,9 +101,13 @@ To keep your emails on brand, you can create a custom new note email template. T
    email. Be sure to include the `%{NOTE_TEXT}` in the template to make sure the email recipient can
    read the contents of the comment.
 
-### Instance-level email header, footer, and additional text **(FREE SELF)**
+### Instance-level email header, footer, and additional text
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
 Instance administrators can add a header, footer or additional text to the GitLab instance and apply
 them to all emails sent from GitLab. If you're using a custom `thank_you.md` or `new_note.md`, to include
@@ -157,7 +165,7 @@ To edit the custom email display name:
 
 ## Reopen issues when an external participant comments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8549) in GitLab 16.7
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8549) in GitLab 16.7
 
 You can configure GitLab to reopen closed issues when an external participant adds
 a new comment on an issue by email. This also adds an internal comment that mentions
@@ -179,7 +187,10 @@ To enable this setting:
 1. Select the **Reopen issues on a new note from an external participant** checkbox.
 1. Select **Save changes**.
 
-## Custom email address **(BETA)**
+## Custom email address
+
+DETAILS:
+**Status**: Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329990) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `service_desk_custom_email`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/387003) in GitLab 16.4.
@@ -443,7 +454,11 @@ In GitLab:
   - On GitLab self-managed, use a subdomain or a different domain from another service provider for the
     custom email address or the GitLab instance `incoming_email` or `service_desk_email`.
 
-## Use an additional Service Desk alias email **(FREE SELF)**
+## Use an additional Service Desk alias email
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2201) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284656) in GitLab 13.8.
@@ -527,7 +542,7 @@ The configuration options are the same as for configuring
 
 #### Use encrypted credentials
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
 
 Instead of having the Service Desk email credentials stored in plaintext in the configuration files, you can optionally
 use an encrypted file for the incoming email credentials.

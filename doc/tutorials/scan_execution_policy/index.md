@@ -4,7 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a scan execution policy **(ULTIMATE ALL)**
+# Tutorial: Set up a scan execution policy
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial shows you how to create and apply a
 [scan execution policy](../../user/application_security/policies/scan-execution-policies.md).

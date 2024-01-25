@@ -5,7 +5,11 @@ description: Project visibility, search, badges, layout.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Organize work with projects **(FREE ALL)**
+# Organize work with projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In GitLab, you can create projects to host
 your codebase. You can also use projects to track issues, plan work,
