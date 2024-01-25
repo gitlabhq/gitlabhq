@@ -174,5 +174,21 @@ RSpec.describe MergeRequests::UpdateReviewersService, feature_category: :code_re
         )
       end
     end
+
+    context 'when user has no set_merge_request_metadata permissions' do
+      before do
+        allow(user).to receive(:can?).and_call_original
+
+        allow(user)
+          .to receive(:can?)
+          .with(:set_merge_request_metadata, merge_request)
+          .and_return(false)
+      end
+
+      it 'does not update the MR reviewers' do
+        expect { set_reviewers }
+          .not_to change { merge_request.reload.reviewers.to_a }
+      end
+    end
   end
 end
