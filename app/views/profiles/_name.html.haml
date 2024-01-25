@@ -7,3 +7,4 @@
   = form.text_field :name, class: 'gl-form-input form-control', required: true, title: s_("Profiles|Using emoji in names seems fun, but please try to set a status message instead")
   %small.form-text.text-gl-muted
     = s_("Profiles|Enter your name, so people you know can recognize you.")
+    = safe_format(_("Profiles|No \"&lt;\" or \"&gt;\" characters, please."))

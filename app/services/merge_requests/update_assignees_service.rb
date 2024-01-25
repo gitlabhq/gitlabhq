@@ -7,7 +7,7 @@ module MergeRequests
     # This saves a lot of queries for irrelevant things that cannot possibly
     # change in the execution of this service.
     def execute(merge_request)
-      return merge_request unless current_user&.can?(:update_merge_request, merge_request)
+      return merge_request unless current_user&.can?(:set_merge_request_metadata, merge_request)
 
       old_assignees = merge_request.assignees.to_a
       old_ids = old_assignees.map(&:id)
