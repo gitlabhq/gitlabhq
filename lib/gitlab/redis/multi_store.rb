@@ -306,15 +306,15 @@ module Gitlab
       #
       # Let's define it explicitly instead of propagating it to method_missing
       def close
-        with_borrowed_connection do
-          if same_redis_store?
-            # if same_redis_store?, `use_primary_store_as_default?` returns false
-            # but we should avoid a feature-flag check in `.close` to avoid checking out
-            # an ActiveRecord connection during clean up.
-            secondary_store.close
-          else
-            [primary_store, secondary_store].map(&:close).first
-          end
+        return if primary_store.nil? || secondary_store.nil?
+
+        if same_redis_store?
+          # if same_redis_store?, `use_primary_store_as_default?` returns false
+          # but we should avoid a feature-flag check in `.close` to avoid checking out
+          # an ActiveRecord connection during clean up.
+          secondary_store.close
+        else
+          [primary_store, secondary_store].map(&:close).first
         end
       end
 

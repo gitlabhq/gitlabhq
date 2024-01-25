@@ -50,7 +50,7 @@ You can also configure:
 - Merge request approval rules and settings through the GitLab UI or with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
-Approvals cannot be added after a merge request is merged.
+Approvals cannot be changed after a merge request is merged.
 
 ## Approve a merge request
 

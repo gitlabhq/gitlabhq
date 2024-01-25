@@ -55,20 +55,20 @@ You can't use a job token to push to a repository, but [issue 389060](https://gi
 
 ## GitLab CI/CD job token security
 
-To make sure that this token doesn't leak, GitLab:
+To prevent the CI/CD job token from leaking, GitLab:
 
 - Masks the job token in job logs.
 - Grants permissions to the job token only when the job is running.
 
-To make sure that this token doesn't leak, you should also configure
-your [runners](../runners/index.md) to be secure. Avoid:
+To prevent leaking the deploy token, you should also configure your [runners](../runners/index.md)
+to be secure:
 
-- Using Docker `privileged` mode if the machines are re-used.
-- Using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+- Avoid using Docker `privileged` mode if the machines are re-used.
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
   run on the same machine.
 
-If you have an insecure GitLab Runner configuration, you increase the risk that someone
-tries to steal tokens from other jobs.
+An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other
+jobs.
 
 ## Configure CI/CD job token access
 

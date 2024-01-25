@@ -841,11 +841,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'when gitlab ci file is present' do
-        before do
-          allow_next_instance_of(Repository) do |instance|
-            allow(instance).to receive(:gitlab_ci_yml).and_return(true)
-          end
-        end
+        let_it_be(:project) { create(:project, :small_repo, files: { '.gitlab-ci.yml' => 'test' }) }
 
         it 'does not show migration prompt' do
           expect_not_to_show_prompt(project)

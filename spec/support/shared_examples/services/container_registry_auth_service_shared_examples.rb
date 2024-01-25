@@ -1382,6 +1382,107 @@ RSpec.shared_examples 'a container registry auth service' do
     end
   end
 
+  context 'with container registry protection rules' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:current_project) { create(:project) }
+    let_it_be(:project) { current_project }
+    let_it_be(:current_user) { create(:user) }
+
+    let_it_be(:container_repository_path) { current_project.full_path }
+    let_it_be(:container_repository_path_pattern_no_match) { "#{container_repository_path}_no_match" }
+
+    let_it_be_with_reload(:container_registry_protection_rule) do
+      create(:container_registry_protection_rule, project: current_project,
+        repository_path_pattern: container_repository_path)
+    end
+
+    let_it_be(:project_developer) { create(:user).tap { |u| current_project.add_developer(u) } }
+    let_it_be(:project_maintainer) { create(:user).tap { |u| current_project.add_maintainer(u) } }
+    let_it_be(:project_owner) { current_project.owner }
+
+    let(:current_params) { { scopes: ["repository:#{container_repository_path}:push"] } }
+
+    shared_examples 'a protected container repository' do
+      it_behaves_like 'a forbidden'
+
+      it { is_expected.to include errors: [include(message: 'Pushing to protected repository path forbidden')] }
+    end
+
+    context 'for different repository_path_patterns and current user roles' do
+      # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table layout
+      where(:repository_path_pattern, :push_protected_up_to_access_level, :current_user, :shared_examples_name) do
+        ref(:container_repository_path)                  | :developer  | ref(:project_developer)  | 'a protected container repository'
+        ref(:container_repository_path)                  | :developer  | ref(:project_owner)      | 'a pushable'
+        ref(:container_repository_path)                  | :maintainer | ref(:project_maintainer) | 'a protected container repository'
+        ref(:container_repository_path)                  | :owner      | ref(:project_owner)      | 'a protected container repository'
+        ref(:container_repository_path_pattern_no_match) | :developer  | ref(:project_developer)  | 'a pushable'
+        ref(:container_repository_path_pattern_no_match) | :owner      | ref(:project_owner)      | 'a pushable'
+      end
+      # rubocop:enable Layout/LineLength
+
+      with_them do
+        before do
+          container_registry_protection_rule.update!(
+            repository_path_pattern: repository_path_pattern,
+            push_protected_up_to_access_level: push_protected_up_to_access_level
+          )
+        end
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    context 'with different scopes and actions' do
+      let_it_be(:current_user) { project_maintainer }
+
+      before do
+        container_registry_protection_rule.update!(push_protected_up_to_access_level: :maintainer)
+      end
+
+      where(:current_params_scopes, :shared_examples_name) do
+        lazy { ["repository:#{container_repository_path}:*"] }         | 'a protected container repository'
+        lazy { ["repository:#{container_repository_path}:push"] }      | 'a protected container repository'
+        lazy { ["repository:#{container_repository_path}:push,pull"] } | 'a protected container repository'
+        lazy { ["repository:#{container_repository_path}:pull"] }      | 'a pullable'
+      end
+
+      with_them do
+        let(:current_params) { { scopes: current_params_scopes } }
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    context 'when feature flag :container_registry_protected_containers is disabled' do
+      let_it_be(:current_user) { current_project.owner }
+
+      before do
+        stub_feature_flags(container_registry_protected_containers: false)
+      end
+
+      context 'with matching package protection rule for all roles' do
+        where(:repository_path_pattern, :push_protected_up_to_access_level, :shared_examples_name) do
+          ref(:container_repository_path)                  | :developer | 'a pushable'
+          ref(:container_repository_path)                  | :owner     | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :developer | 'a pushable'
+          ref(:container_repository_path_pattern_no_match) | :owner     | 'a pushable'
+        end
+
+        with_them do
+          before do
+            container_registry_protection_rule.update!(
+              repository_path_pattern: repository_path_pattern,
+              push_protected_up_to_access_level: push_protected_up_to_access_level
+            )
+          end
+
+          it_behaves_like params[:shared_examples_name]
+        end
+      end
+    end
+  end
+
   def decode_user_info_from_payload(payload)
     JWT.decode(payload["user"], nil, false)[0]["user_info"]
   end

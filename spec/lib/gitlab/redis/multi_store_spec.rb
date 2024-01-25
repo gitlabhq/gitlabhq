@@ -777,23 +777,36 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   describe '#close' do
     subject { multi_store.close }
 
-    context 'when using both stores are different' do
+    context 'when connections are borrowed' do
       it 'closes both stores' do
         expect(primary_store).to receive(:close)
         expect(secondary_store).to receive(:close)
 
-        subject
+        multi_store.with_borrowed_connection do
+          subject
+        end
+      end
+
+      context 'when using identical stores' do
+        before do
+          allow(multi_store).to receive(:same_redis_store?).and_return(true)
+        end
+
+        it 'closes secondary store' do
+          expect(secondary_store).to receive(:close)
+          expect(primary_store).not_to receive(:close)
+
+          multi_store.with_borrowed_connection do
+            subject
+          end
+        end
       end
     end
 
-    context 'when using identical stores' do
-      before do
-        allow(multi_store).to receive(:same_redis_store?).and_return(true)
-      end
-
-      it 'closes secondary store' do
-        expect(secondary_store).to receive(:close)
+    context 'without borrowed connections' do
+      it 'directly returns nil' do
         expect(primary_store).not_to receive(:close)
+        expect(secondary_store).not_to receive(:close)
 
         subject
       end

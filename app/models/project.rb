@@ -2371,7 +2371,17 @@ class Project < ApplicationRecord
   end
 
   def has_ci?
-    repository.gitlab_ci_yml || auto_devops_enabled?
+    has_ci_config_file? || auto_devops_enabled?
+  end
+
+  def has_ci_config_file?
+    if ::Feature.enabled?(:ci_refactor_has_ci_config_file, self, type: :gitlab_com_derisk)
+      strong_memoize(:has_ci_config_file) do
+        ci_config_for('HEAD').present?
+      end
+    else
+      repository.gitlab_ci_yml.present?
+    end
   end
 
   def predefined_variables

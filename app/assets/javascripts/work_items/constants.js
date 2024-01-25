@@ -319,3 +319,7 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
 };
+
+export const LINKED_ITEMS_ANCHOR = 'linkeditems';
+export const CHILD_ITEMS_ANCHOR = 'childitems';
+export const TASKS_ANCHOR = 'tasks';

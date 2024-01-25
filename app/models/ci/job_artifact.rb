@@ -14,6 +14,8 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
+    self.primary_key = :id
+
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 
     NON_ERASABLE_FILE_TYPES = %w[trace].freeze

@@ -752,7 +752,7 @@ module ProjectsHelper
     Ability.allowed?(user, :admin_project, project) &&
       project.has_auto_devops_implicitly_enabled? &&
       project.builds_enabled? &&
-      !project.repository.gitlab_ci_yml
+      !project.has_ci_config_file?
   end
 
   def show_visibility_confirm_modal?(project)

@@ -54,6 +54,11 @@ export default {
       required: false,
       default: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -237,6 +242,7 @@ export default {
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
         :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
         @click="$emit('click', $event)"
         @removeChild="$emit('removeChild', childItem)"
       />
@@ -248,6 +254,7 @@ export default {
       :work-item-type="workItemType"
       :children="children"
       :show-labels="showLabels"
+      :work-item-full-path="workItemFullPath"
       @removeChild="removeChild"
       @click="$emit('click', $event)"
     />

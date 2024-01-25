@@ -71,7 +71,7 @@ use in a CI/CD pipeline:
 For example, to use a GitLab token to log in to your GitLab container registry:
 
 ```shell
-docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
 ```
 
 NOTE:
@@ -79,6 +79,20 @@ In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` d
 work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
 `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings > CI/CD > Variables** to the
 name and token of the group deploy token.
+
+### GitLab deploy token security
+
+GitLab deploy tokens are long-lived, making them attractive for attackers.
+
+To prevent leaking the deploy token, you should also configure your
+[runners](../../../ci/runners/index.md) to be secure:
+
+- Avoid using Docker `privileged` mode if the machines are re-used.
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+  run on the same machine.
+
+An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other
+jobs.
 
 ### GitLab public API
 

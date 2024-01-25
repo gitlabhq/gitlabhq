@@ -22,6 +22,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
+  LINKED_ITEMS_ANCHOR,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -325,8 +326,8 @@ export default {
         replace: true,
       });
     },
-    openInModal({ event, modalWorkItem }) {
-      if (!this.workItemsMvc2Enabled) {
+    openInModal({ event, modalWorkItem, context }) {
+      if (!this.workItemsMvc2Enabled || context === LINKED_ITEMS_ANCHOR) {
         return;
       }
 

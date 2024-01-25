@@ -84,6 +84,24 @@ end
 When adding new CI/CD configuration keywords, it is important to use feature flags to control the rollout of the change.
 This allows us to test the change in production without affecting all users. For more information, see the [feature flags documentation](../feature_flags/index.md).
 
+A common place to check for a feature flag is in the `Gitlab::Config::Entry::Node#value` method. For example:
+
+```ruby
+def value
+  {
+    vault: vault_value,
+    file: file_available? ? file_value : nil,
+    token: token
+  }.compact
+end
+
+private
+
+def file_available?
+  ::Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?(:secret_file_available, type: :beta)
+end
+```
+
 ### Feature Flag Actor
 
 In entry classes, we have no access to the current project or user. However, it's discouraged to use feature flags without [an actor](../feature_flags/index.md#feature-actors).

@@ -16253,6 +16253,9 @@ msgstr ""
 msgid "DateRange|%{start_date}–%{end_date}"
 msgstr ""
 
+msgid "Dates"
+msgstr ""
+
 msgid "Day of month"
 msgstr ""
 
@@ -59529,6 +59532,9 @@ msgid "severity|Unknown"
 msgstr ""
 
 msgid "should be a valid NPM package name with optional wildcard characters."
+msgstr ""
+
+msgid "should be a valid container repository path with optional wildcard characters."
 msgstr ""
 
 msgid "should be an array of %{object_name} objects"

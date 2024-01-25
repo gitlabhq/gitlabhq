@@ -285,6 +285,7 @@ export default {
       :work-item-type="workItemType"
       :has-indirect-children="hasIndirectChildren"
       :show-labels="showLabels"
+      :work-item-full-path="fullPath"
       @mouseover="prefetchWorkItem(child)"
       @mouseout="clearPrefetching"
       @removeChild="removeChild"

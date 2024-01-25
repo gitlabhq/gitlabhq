@@ -442,7 +442,29 @@ RSpec.shared_examples 'handling project level terraform module download requests
     end
   end
 
+  it_behaves_like 'accessing a public/internal project with another project\'s job token' do
+    let(:headers) { basic_auth_headers(::Gitlab::Auth::CI_JOB_USER, token) }
+  end
+
   def basic_auth_headers(username = user.username, password = personal_access_token.token)
     { Authorization: "Basic #{Base64.strict_encode64("#{username}:#{password}")}" }
+  end
+end
+
+RSpec.shared_examples 'accessing a public/internal project with another project\'s job token' do |status = :success|
+  let_it_be(:other_project) { create(:project, namespace: group) }
+  let(:token) { job.token }
+  let(:headers) { { 'Authorization' => "Bearer #{token}" } }
+
+  %w[internal public].each do |visibility|
+    context "when the project is #{visibility}" do
+      before do
+        job.update!(project: other_project)
+        group.update!(visibility: visibility)
+        project.update!(visibility: visibility)
+      end
+
+      it_behaves_like 'returning response status', status
+    end
   end
 end

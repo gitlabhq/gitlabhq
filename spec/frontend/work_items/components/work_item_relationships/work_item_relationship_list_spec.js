@@ -7,6 +7,7 @@ import { mockBlockingLinkedItem } from '../../mock_data';
 describe('WorkItemRelationshipList', () => {
   let wrapper;
   const mockLinkedItems = mockBlockingLinkedItem.linkedItems.nodes;
+  const workItemFullPath = 'test-project-path';
 
   const createComponent = ({ linkedItems = [], heading = 'Blocking', canUpdate = true } = {}) => {
     wrapper = shallowMountExtended(WorkItemRelationshipList, {
@@ -14,6 +15,7 @@ describe('WorkItemRelationshipList', () => {
         linkedItems,
         heading,
         canUpdate,
+        workItemFullPath,
       },
     });
   };
@@ -34,7 +36,7 @@ describe('WorkItemRelationshipList', () => {
     expect(findWorkItemLinkChildContents().props()).toMatchObject({
       childItem: mockLinkedItems[0].workItem,
       canUpdate: true,
-      showTaskIcon: true,
+      workItemFullPath,
     });
   });
 });

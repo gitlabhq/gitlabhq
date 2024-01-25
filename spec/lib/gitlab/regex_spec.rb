@@ -158,23 +158,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
   describe '.container_repository_name_regex' do
     subject { described_class.container_repository_name_regex }
 
-    it { is_expected.to match('image') }
-    it { is_expected.to match('my/image') }
-    it { is_expected.to match('my/awesome/image-1') }
-    it { is_expected.to match('my/awesome/image.test') }
-    it { is_expected.to match('my/awesome/image--test') }
-    it { is_expected.to match('my/image__test') }
-    # this example tests for catastrophic backtracking
-    it { is_expected.to match('user1/project/a_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb------------x') }
-    it { is_expected.not_to match('user1/project/a_bbbbb-------------') }
-    it { is_expected.not_to match('my/image-.test') }
-    it { is_expected.not_to match('my/image___test') }
-    it { is_expected.not_to match('my/image_.test') }
-    it { is_expected.not_to match('my/image_-test') }
-    it { is_expected.not_to match('my/image..test') }
-    it { is_expected.not_to match('my/image\ntest') }
-    it { is_expected.not_to match('.my/image') }
-    it { is_expected.not_to match('my/image.') }
+    it_behaves_like 'container repository name regex'
   end
 
   describe '.aws_account_id_regex' do

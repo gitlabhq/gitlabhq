@@ -31,6 +31,7 @@ jest.mock('~/alert');
 describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
+  const workItemFullPath = 'test-project-path';
   let getWorkItemTreeQueryHandler;
   let mutationChangeParentHandler;
 
@@ -67,6 +68,7 @@ describe('WorkItemLinkChild', () => {
         issuableGid,
         childItem,
         workItemType,
+        workItemFullPath,
       },
       mocks: {
         $toast,
@@ -90,8 +92,8 @@ describe('WorkItemLinkChild', () => {
       expect(findWorkItemLinkChildContents().props()).toEqual({
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
-        showTaskIcon: false,
         showLabels: true,
+        workItemFullPath,
       });
     });
   });

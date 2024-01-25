@@ -45,6 +45,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             description
             icon
             webPath
+            verificationLevel
             latestReleasedAt
             starCount
             readmeHtml
@@ -84,6 +85,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         resource1, :name, :description,
         icon: project1.avatar_path,
         webPath: "/#{project1.full_path}",
+        verificationLevel: "UNVERIFIED",
         starCount: project1.star_count,
         readmeHtml: a_string_including('Test</strong>'),
         latestReleasedAt: resource1.latest_released_at

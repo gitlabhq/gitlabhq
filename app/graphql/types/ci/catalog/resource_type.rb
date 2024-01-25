@@ -42,6 +42,10 @@ module Types
           description: 'Latest version of the catalog resource.',
           alpha: { milestone: '16.1' }
 
+        field :verification_level, Types::Ci::Catalog::Resources::Components::VerificationLevelEnum, null: true,
+          description: 'Verification level of the catalog resource.',
+          alpha: { milestone: '16.9' }
+
         field :latest_released_at, Types::TimeType, null: true,
           description: "Release date of the catalog resource's latest version.",
           alpha: { milestone: '16.5' }

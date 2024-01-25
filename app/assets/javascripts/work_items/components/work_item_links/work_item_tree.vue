@@ -10,6 +10,7 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   I18N_WORK_ITEM_SHOW_LABELS,
+  CHILD_ITEMS_ANCHOR,
 } from '../../constants';
 import { findHierarchyWidgetDefinition } from '../../utils';
 import getAllowedWorkItemChildTypes from '../../graphql/work_item_allowed_children.query.graphql';
@@ -75,7 +76,7 @@ export default {
       isShownAddForm: false,
       formType: null,
       childType: null,
-      widgetName: 'tasks',
+      widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
       allowedChildrenTypes: [],
     };

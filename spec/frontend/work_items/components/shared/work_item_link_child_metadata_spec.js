@@ -1,5 +1,3 @@
-import { GlAvatarsInline } from '@gitlab/ui';
-
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import ItemMilestone from '~/issuable/components/issue_milestone.vue';
@@ -8,18 +6,21 @@ import WorkItemLinkChildMetadata from '~/work_items/components/shared/work_item_
 import { workItemObjectiveMetadataWidgets } from '../../mock_data';
 
 describe('WorkItemLinkChildMetadata', () => {
-  const { MILESTONE, ASSIGNEES } = workItemObjectiveMetadataWidgets;
+  const { MILESTONE } = workItemObjectiveMetadataWidgets;
   const mockMilestone = MILESTONE.milestone;
-  const mockAssignees = ASSIGNEES.assignees.nodes;
+
   let wrapper;
 
   const createComponent = ({ metadataWidgets = workItemObjectiveMetadataWidgets } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildMetadata, {
       propsData: {
+        iid: '1',
+        reference: 'test-project-path#1',
         metadataWidgets,
       },
-      slots: {
-        default: `<div data-testid="default-slot">Foo</div>`,
+      scopedSlots: {
+        'left-metadata': `<div data-testid="left-metadata-slot">Foo</div>`,
+        'right-metadata': `<div data-testid="right-metadata-slot">Bar</div>`,
       },
     });
   };
@@ -28,8 +29,9 @@ describe('WorkItemLinkChildMetadata', () => {
     createComponent();
   });
 
-  it('renders default slot contents', () => {
-    expect(wrapper.findByTestId('default-slot').text()).toBe('Foo');
+  it('renders scoped slot contents', () => {
+    expect(wrapper.findByTestId('left-metadata-slot').text()).toBe('Foo');
+    expect(wrapper.findByTestId('right-metadata-slot').text()).toBe('Bar');
   });
 
   it('renders item milestone', () => {
@@ -37,19 +39,5 @@ describe('WorkItemLinkChildMetadata', () => {
 
     expect(milestoneLink.exists()).toBe(true);
     expect(milestoneLink.props('milestone')).toEqual(mockMilestone);
-  });
-
-  it('renders avatars for assignees', () => {
-    const avatars = wrapper.findComponent(GlAvatarsInline);
-
-    expect(avatars.exists()).toBe(true);
-    expect(avatars.props()).toMatchObject({
-      avatars: mockAssignees,
-      collapsed: true,
-      maxVisible: 2,
-      avatarSize: 24,
-      badgeTooltipProp: 'name',
-      badgeSrOnlyText: '',
-    });
   });
 });

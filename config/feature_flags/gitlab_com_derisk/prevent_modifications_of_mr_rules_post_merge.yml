@@ -1,9 +1,0 @@
----
-name: prevent_modifications_of_mr_rules_post_merge
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432961
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138154
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17331
-milestone: '16.8'
-group: group::code review
-type: gitlab_com_derisk
-default_enabled: false

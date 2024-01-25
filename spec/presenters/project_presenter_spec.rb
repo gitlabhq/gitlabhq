@@ -320,7 +320,7 @@ RSpec.describe ProjectPresenter do
 
           context 'and there is a CI/CD file' do
             it 'returns `CI/CD configuration` button' do
-              allow(project.repository).to receive(:gitlab_ci_yml).and_return 'Default content'
+              allow(project).to receive(:has_ci_config_file?).and_return true
 
               expect(presenter.gitlab_ci_anchor_data).to have_attributes(
                 is_link: false,
@@ -587,7 +587,7 @@ RSpec.describe ProjectPresenter do
           project.add_maintainer(user)
 
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
-          allow(project.repository).to receive(:gitlab_ci_yml).and_return(nil)
+          allow(project).to receive(:has_ci_config_file?).and_return(false)
 
           expect(presenter.autodevops_anchor_data).to have_attributes(
             is_link: false,

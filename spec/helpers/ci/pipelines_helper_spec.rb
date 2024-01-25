@@ -138,7 +138,7 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
       sign_in(user)
       project.send(add_role_method, user)
 
-      allow(repository).to receive(:gitlab_ci_yml).and_return(has_gitlab_ci?)
+      allow(project).to receive(:has_ci_config_file?).and_return(has_gitlab_ci?)
       allow(repository).to receive(:jenkinsfile?).and_return(has_jenkinsfile?)
     end
 

@@ -67,6 +67,7 @@ fragment WorkItemWidgets on WorkItemWidget {
         createdAt
         closedAt
         webUrl
+        reference(full: true)
         widgets {
           ... on WorkItemWidgetHierarchy {
             type
@@ -122,6 +123,7 @@ fragment WorkItemWidgets on WorkItemWidget {
           createdAt
           closedAt
           webUrl
+          reference(full: true)
           widgets {
             ...WorkItemMetadataWidgets
           }

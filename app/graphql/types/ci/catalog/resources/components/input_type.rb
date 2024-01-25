@@ -5,7 +5,7 @@ module Types
     module Catalog
       module Resources
         module Components
-          # rubocop: disable Graphql/AuthorizeTypes -- Authorization hanlded by ComponentType -> VersionType
+          # rubocop: disable Graphql/AuthorizeTypes -- Authorization handled by ComponentType -> VersionType
           class InputType < BaseObject
             graphql_name 'CiCatalogResourceComponentInput'
 
@@ -21,9 +21,9 @@ module Types
               description: 'Indicates if an input is required.',
               alpha: { milestone: '16.7' }
           end
+          # rubocop: enable Graphql/AuthorizeTypes
         end
       end
-      # rubocop: enable Graphql/AuthorizeTypes
     end
   end
 end

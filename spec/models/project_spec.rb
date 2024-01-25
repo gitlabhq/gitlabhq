@@ -5275,15 +5275,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#has_ci?' do
     let_it_be(:project, reload: true) { create(:project) }
 
-    let(:repository) { double }
-
-    before do
-      expect(project).to receive(:repository) { repository }
-    end
-
     context 'when has .gitlab-ci.yml' do
       before do
-        expect(repository).to receive(:gitlab_ci_yml) { 'content' }
+        expect(project).to receive(:has_ci_config_file?) { true }
       end
 
       it "CI is available" do
@@ -5293,7 +5287,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     context 'when there is no .gitlab-ci.yml' do
       before do
-        expect(repository).to receive(:gitlab_ci_yml) { nil }
+        expect(project).to receive(:has_ci_config_file?) { false }
       end
 
       it "CI is available" do
@@ -5308,6 +5302,63 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it "CI is not available" do
           expect(project).not_to have_ci
         end
+      end
+    end
+  end
+
+  describe '#has_ci_config_file?' do
+    subject(:has_ci_config_file) { project.has_ci_config_file? }
+
+    # Extract these from `shared_examples` when the FF ci_refactor_has_ci_config_file is removed.
+    shared_examples '#has_ci_config_file?' do
+      context 'when the repository does not exist' do
+        let_it_be(:project) { create(:project) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the repository has a .gitlab-ci.yml file' do
+        let_it_be(:project) { create(:project, :small_repo, files: { '.gitlab-ci.yml' => 'test' }) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when the repository does not have a .gitlab-ci.yml file' do
+        let_it_be(:project) { create(:project, :small_repo, files: { 'README.md' => 'hello' }) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when the FF ci_refactor_has_ci_config_file is enabled' do
+      it_behaves_like '#has_ci_config_file?'
+
+      context 'when the repository has a custom CI config file' do
+        let_it_be(:project) { create(:project, :small_repo, files: { 'my_ci_file.yml' => 'test' }) }
+
+        before do
+          project.ci_config_path = 'my_ci_file.yml'
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when the FF ci_refactor_has_ci_config_file is disabled' do
+      before do
+        stub_feature_flags(ci_refactor_has_ci_config_file: false)
+      end
+
+      it_behaves_like '#has_ci_config_file?'
+
+      context 'when the repository has a custom CI config file' do
+        let_it_be(:project) { create(:project, :small_repo, files: { 'my_ci_file.yml' => 'test' }) }
+
+        before do
+          project.ci_config_path = 'my_ci_file.yml'
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end

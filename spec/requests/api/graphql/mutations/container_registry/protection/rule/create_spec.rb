@@ -95,7 +95,11 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
 
     it {
       subject.tap do
-        expect(mutation_response['errors']).to eq ["Repository path pattern can't be blank"]
+        expect(mutation_response['errors']).to eq [
+          "Repository path pattern can't be blank, " \
+          "Repository path pattern should be a valid container repository path with optional wildcard characters., " \
+          "and Repository path pattern should start with the project's full path"
+        ]
       end
     }
   end

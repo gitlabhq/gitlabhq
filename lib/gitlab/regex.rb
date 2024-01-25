@@ -46,8 +46,10 @@ module Gitlab
     #
     # See https://github.com/docker/distribution/blob/master/reference/regexp.go.
     #
-    def container_repository_name_regex
-      @container_repository_regex ||= %r{\A[a-z0-9]+(([._/]|__|-*)[a-z0-9])*\z}
+    def container_repository_name_regex(other_accepted_chars = nil)
+      strong_memoize_with(:container_repository_name_regex, other_accepted_chars) do
+        %r{\A[a-z0-9]+(([._/]|__|-*)[a-z0-9#{other_accepted_chars}])*\z}
+      end
     end
 
     ##

@@ -674,6 +674,8 @@ class Repository
   end
   cache_method :gitignore
 
+  # Deprecated, use `project.has_ci_config_file?` instead.
+  # Can be removed with the FF `ci_refactor_has_ci_config_file`.
   def gitlab_ci_yml
     file_on_head(:gitlab_ci)
   end

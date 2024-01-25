@@ -7,7 +7,7 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
 
   let(:project) { public_project }
 
-  subject { described_class.new(current_user, project.packages_policy_subject) }
+  subject(:policy) { described_class.new(current_user, project.packages_policy_subject) }
 
   describe 'deploy token access' do
     let!(:project_deploy_token) do
@@ -150,6 +150,36 @@ RSpec.describe Packages::Policies::ProjectPolicy, feature_category: :package_reg
             is_expected.to be_disallowed(:read_package)
           end
         end
+      end
+    end
+
+    context 'when accessing a project from another project with job token' do
+      let_it_be(:other_project) { build_stubbed(:project) }
+      let(:current_user) { guest }
+
+      before do
+        allow(current_user).to receive(:ci_job_token_scope).and_return(Ci::JobToken::Scope.new(other_project))
+        project.project_feature.update!(package_registry_access_level: access_level)
+        stub_application_setting(package_registry_allow_anyone_to_pull_option: false)
+      end
+
+      where(:project, :access_level, :expect_to_be_allowed) do
+        ref(:public_project)   | ProjectFeature::PUBLIC   | true
+        ref(:public_project)   | ProjectFeature::ENABLED  | true
+        ref(:public_project)   | ProjectFeature::PRIVATE  | false
+        ref(:public_project)   | ProjectFeature::DISABLED | false
+        ref(:internal_project) | ProjectFeature::PUBLIC   | true
+        ref(:internal_project) | ProjectFeature::ENABLED  | true
+        ref(:internal_project) | ProjectFeature::PRIVATE  | false
+        ref(:internal_project) | ProjectFeature::DISABLED | false
+        ref(:private_project)  | ProjectFeature::PUBLIC   | false
+        ref(:private_project)  | ProjectFeature::ENABLED  | false
+        ref(:private_project)  | ProjectFeature::PRIVATE  | false
+        ref(:private_project)  | ProjectFeature::DISABLED | false
+      end
+
+      with_them do
+        it { expect(policy.allowed?(:read_package)).to eq(expect_to_be_allowed) }
       end
     end
   end

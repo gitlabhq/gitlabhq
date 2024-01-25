@@ -108,7 +108,7 @@ module Ci
 
     def show_jenkins_ci_prompt(project)
       return false unless can?(current_user, :create_pipeline, project)
-      return false if project.repository.gitlab_ci_yml.present?
+      return false if project.has_ci_config_file?
 
       project.repository.jenkinsfile?
     end
