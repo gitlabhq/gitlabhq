@@ -369,11 +369,7 @@ DETAILS:
 **Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
-[enable the feature flag](../../administration/feature_flags.md) named `support_group_level_merge_checks_setting`. On GitLab.com, this feature is not
-available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
 Group owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
 

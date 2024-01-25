@@ -287,25 +287,25 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
         end
 
+        it 'imports successfully' do
+          expect(project.repository)
+            .to receive(:import_repository)
+                  .and_return(true)
+          expect(subject.execute[:status]).to eq(:success)
+        end
+      end
+
+      context 'when local network requests are disabled' do
+        before do
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+        end
+
         it 'returns an error' do
           expect(project.repository).not_to receive(:import_repository)
           expect(subject.execute).to include(
             status: :error,
             message: end_with('Requests to localhost are not allowed')
           )
-        end
-
-        context 'when environment is development' do
-          before do
-            stub_rails_env('development')
-          end
-
-          it 'imports successfully' do
-            expect(project.repository)
-              .to receive(:import_repository)
-              .and_return(true)
-            expect(subject.execute[:status]).to eq(:success)
-          end
         end
       end
     end

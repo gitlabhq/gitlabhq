@@ -2,11 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Sharing snippets', :reliable, product_group: :source_code,
-      quarantine: {
-        type: :investigating,
-        issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/427992"
-      } do
+    describe 'Sharing snippets', product_group: :source_code do
       let(:snippet) do
         Resource::Snippet.fabricate! do |snippet|
           snippet.title = 'Shared snippet'

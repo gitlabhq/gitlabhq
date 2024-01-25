@@ -13,7 +13,7 @@ module Operations
     validates :project, presence: true
     validates :token, presence: true
 
-    add_authentication_token_field :token, encrypted: :required
+    add_authentication_token_field :token, encrypted: :required  # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439293
 
     attr_accessor :unleash_app_name
 

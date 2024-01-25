@@ -1132,3 +1132,11 @@ Gitlab/LicenseAvailableUsage:
     - 'app/models/application_setting.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'lib/gitlab/current_settings.rb'
+
+Gitlab/TokenWithoutPrefix:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'ee/app/**/*'
+    - 'ee/lib/**/*'

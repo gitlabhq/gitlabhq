@@ -73,9 +73,10 @@ class User < MainClusterwide::ApplicationRecord
   FEED_TOKEN_PREFIX = 'glft-'
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
-  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
+  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
-  add_authentication_token_field :static_object_token, encrypted: :optional
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/439294
+  add_authentication_token_field :static_object_token, encrypted: :optional # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
 
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }

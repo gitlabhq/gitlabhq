@@ -31,7 +31,7 @@ class TmpUser < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
 
   self.table_name = 'users'
 
-  add_authentication_token_field :incoming_email_token,
+  add_authentication_token_field :incoming_email_token, # rubocop:disable Gitlab/TokenWithoutPrefix -- prefix is assigned in token generator
     token_generator: -> { User.generate_incoming_mail_token }
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
 

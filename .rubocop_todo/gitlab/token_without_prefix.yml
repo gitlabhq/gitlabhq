@@ -1,0 +1,5 @@
+---
+Gitlab/TokenWithoutPrefix:
+  Details: grace period
+  Exclude:
+    - 'app/models/application_setting.rb'

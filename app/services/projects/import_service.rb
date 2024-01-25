@@ -183,8 +183,7 @@ module Projects
     end
 
     def allow_local_requests?
-      Rails.env.development? && # There is no known usecase for this in non-development environments
-        Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
+      Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
     end
 
     def dns_rebind_protection?

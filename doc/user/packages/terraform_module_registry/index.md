@@ -27,11 +27,6 @@ To view Terraform modules in your project:
 
 You can search, sort, and filter modules on this page.
 
-For information on how to create and upload a package, view the GitLab
-documentation for your package type:
-
-- [Terraform modules](../terraform_module_registry/index.md)
-
 ## Authenticate to the Terraform Module Registry
 
 To authenticate to the Terraform Module Registry, you need either:

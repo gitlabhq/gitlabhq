@@ -36,10 +36,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
-  add_authentication_token_field :runners_registration_token, encrypted: :required
-  add_authentication_token_field :health_check_access_token
-  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
-  add_authentication_token_field :error_tracking_access_token, encrypted: :required
+  # We won't add a prefix here as this token is deprecated and being
+  # disabled in 17.0
+  # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
+  add_authentication_token_field :runners_registration_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix
+  add_authentication_token_field :health_check_access_token # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
+  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
+  add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
   belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Doorkeeper::Application'

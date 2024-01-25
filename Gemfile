@@ -196,6 +196,9 @@ gem 'google-apis-serviceusage_v1', '~> 0.28.0' # rubocop:todo Gemfile/MissingFea
 gem 'google-apis-sqladmin_v1beta4', '~> 0.41.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'google-apis-androidpublisher_v3', '~> 0.34.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
+gem 'googleauth', '~> 1.8.1', feature_category: :shared
+gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared
+
 # Seed data
 gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
