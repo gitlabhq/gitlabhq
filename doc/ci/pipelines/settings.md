@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customize pipeline configuration 
+# Customize pipeline configuration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -107,7 +107,7 @@ To avoid this scenario:
 
 For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).
 
-## Restrict roles that can cancel pipelines or jobs 
+## Restrict roles that can cancel pipelines or jobs
 
 DETAILS:
 **Tier:** Premium, Ultimate

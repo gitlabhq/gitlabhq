@@ -4,7 +4,7 @@ group: Incubation
 info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# Breach and Attack Simulation 
+# Breach and Attack Simulation
 
 DETAILS:
 **Tier:** Ultimate

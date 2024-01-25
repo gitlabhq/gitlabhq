@@ -4,7 +4,7 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Akismet 
+# Akismet
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -26,7 +26,7 @@ GitLab submits all issues to Akismet.
 Akismet configuration is available to users on self-managed GitLab. Akismet is already enabled on
 GitLab SaaS (GitLab.com), where its configuration and management are handled by GitLab Inc.
 
-## Configure Akismet 
+## Configure Akismet
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -47,7 +47,7 @@ To use Akismet:
 
 ![Screenshot of Akismet settings](img/akismet_settings.png)
 
-## Train the Akismet filter 
+## Train the Akismet filter
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

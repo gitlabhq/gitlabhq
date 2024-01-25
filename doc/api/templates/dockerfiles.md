@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dockerfiles API 
+# Dockerfiles API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -15,7 +15,7 @@ Default templates are defined at
 [`vendor/Dockerfile`](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/vendor/Dockerfile)
 in the GitLab repository.
 
-## Override Dockerfile API templates 
+## Override Dockerfile API templates
 
 DETAILS:
 **Tier:** Premium, Ultimate

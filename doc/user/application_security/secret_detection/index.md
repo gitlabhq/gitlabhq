@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection 
+# Secret Detection
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -326,7 +326,7 @@ pipeline.
 
 To enable full history Secret Detection, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
-## Custom rulesets 
+## Custom rulesets
 
 DETAILS:
 **Tier:** Ultimate
@@ -524,7 +524,7 @@ For more information on the syntax of remote configurations, see the
 [specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
 on the SAST customize rulesets page.
 
-## Running Secret Detection in an offline environment 
+## Running Secret Detection in an offline environment
 
 DETAILS:
 **Tier:** Premium, Ultimate

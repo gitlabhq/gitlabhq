@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code coverage 
+# Code coverage
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -88,7 +88,7 @@ To view a CSV file of the data, select **Download raw data (`.csv`)**.
 
 ![Code coverage graph of a project over time](img/code_coverage_graph_v13_1.png)
 
-### View history of group code coverage 
+### View history of group code coverage
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -103,7 +103,7 @@ To see the all the project's code coverage under a group over time, you can find
 You can use [pipeline badges](../../user/project/badges.md#test-coverage-report-badges) to indicate the pipeline status and
 test coverage of your projects. These badges are determined by the latest successful pipeline.
 
-## Coverage check approval rule 
+## Coverage check approval rule
 
 DETAILS:
 **Tier:** Premium, Ultimate

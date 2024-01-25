@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deployments API 
+# Deployments API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -533,7 +533,7 @@ It supports the same parameters as the [Merge Requests API](merge_requests.md#li
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/42/merge_requests"
 ```
 
-## Approve or reject a blocked deployment 
+## Approve or reject a blocked deployment
 
 DETAILS:
 **Tier:** Premium, Ultimate

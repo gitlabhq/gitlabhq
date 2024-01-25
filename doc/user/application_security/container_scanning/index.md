@@ -4,7 +4,7 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Container Scanning 
+# Container Scanning
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -448,7 +448,7 @@ container_scanning:
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
 
-### Vulnerability allowlisting 
+### Vulnerability allowlisting
 
 DETAILS:
 **Tier:** Ultimate
@@ -798,7 +798,7 @@ Database update information for other analyzers is available in the
 
 After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
-## Solutions for vulnerabilities (auto-remediation) 
+## Solutions for vulnerabilities (auto-remediation)
 
 DETAILS:
 **Tier:** Ultimate

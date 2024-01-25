@@ -7,7 +7,7 @@ description: >-
   GitLab
 ---
 
-# Diffblue Cover 
+# Diffblue Cover
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

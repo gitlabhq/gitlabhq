@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens API 
+# Personal access tokens API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -336,7 +336,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 See the [Users API documentation](users.md#create-a-personal-access-token) for information on creating a personal access token.
 
-## Create a personal access token with limited scopes for the currently authenticated user 
+## Create a personal access token with limited scopes for the currently authenticated user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group issue boards API 
+# Group issue boards API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -246,7 +246,7 @@ Example response:
   }
 ```
 
-## Create a group issue board 
+## Create a group issue board
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -357,7 +357,7 @@ Example response:
   }
 ```
 
-## Delete a group issue board 
+## Delete a group issue board
 
 DETAILS:
 **Tier:** Premium, Ultimate

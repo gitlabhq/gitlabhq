@@ -4,7 +4,7 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Runners API 
+# Runners API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -111,7 +111,7 @@ Example response:
 ]
 ```
 
-## List all runners 
+## List all runners
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

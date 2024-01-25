@@ -4,7 +4,7 @@ group: Technical writing
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with GitLab application security 
+# Get started with GitLab application security
 
 DETAILS:
 **Tier:** Ultimate

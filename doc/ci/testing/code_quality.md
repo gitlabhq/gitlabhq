@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Quality 
+# Code Quality
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -78,7 +78,7 @@ issues are marked by a symbol beside the gutter. Select the symbol to see the li
 
 ![Code Quality Inline Indicator](img/code_quality_inline_indicator_v16_7.png)
 
-### Pipeline details view 
+### Pipeline details view
 
 DETAILS:
 **Tier:** Premium, Ultimate

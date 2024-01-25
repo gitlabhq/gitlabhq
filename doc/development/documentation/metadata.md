@@ -68,7 +68,7 @@ the description is `Users, groups, namespaces, SSH keys.`
 
 For other pages, descriptions are not actively maintained. However, if you want to add one,
 use a short description of what the page is about.
-See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips. 
+See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips.
 
 ## Additional metadata
 

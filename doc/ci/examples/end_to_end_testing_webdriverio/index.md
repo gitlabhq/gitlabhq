@@ -9,7 +9,7 @@ description: 'Confidence checking your entire app every time a new feature is ad
 
 <!-- vale off -->
 
-# End-to-end testing with GitLab CI/CD and WebdriverIO 
+# End-to-end testing with GitLab CI/CD and WebdriverIO
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

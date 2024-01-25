@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAST analyzers 
+# SAST analyzers
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -68,7 +68,7 @@ content directly. Instead, it enhances the results with additional properties, i
 
 - CWEs.
 - Location tracking fields.
-- A means of identifying false positives or insignificant findings. 
+- A means of identifying false positives or insignificant findings.
 
 DETAILS:
 **Tier:** Ultimate

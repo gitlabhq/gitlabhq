@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups API 
+# Groups API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -796,7 +796,7 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   "https://gitlab.example.com/api/v4/groups/4/avatar"
 ```
 
-### Disable the results limit 
+### Disable the results limit
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1123,7 +1123,7 @@ The `prevent_sharing_groups_outside_hierarchy` attribute is present in the respo
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
-### Disable the results limit 
+### Disable the results limit
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1212,7 +1212,7 @@ The response is `202 Accepted` if the user has authorization.
 NOTE:
 A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
 
-## Restore group marked for deletion 
+## Restore group marked for deletion
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1251,7 +1251,7 @@ GET /groups?search=foobar
 ]
 ```
 
-## List provisioned users 
+## List provisioned users
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1414,7 +1414,7 @@ Example response:
 ]
 ```
 
-## Service Accounts 
+## Service Accounts
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1506,7 +1506,7 @@ Example response:
 }
 ```
 
-## Hooks 
+## Hooks
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1642,7 +1642,7 @@ DELETE /groups/:id/hooks/:hook_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
-## Group Audit Events 
+## Group Audit Events
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1650,7 +1650,7 @@ DETAILS:
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
-## Sync group with LDAP 
+## Sync group with LDAP
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1674,7 +1674,7 @@ See the [Group Members](members.md) documentation.
 
 List, add, and delete LDAP group links.
 
-### List LDAP group links 
+### List LDAP group links
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1690,7 +1690,7 @@ GET /groups/:id/ldap_group_links
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
-### Add LDAP group link with CN or filter 
+### Add LDAP group link with CN or filter
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1713,7 +1713,7 @@ POST /groups/:id/ldap_group_links
 NOTE:
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-### Delete LDAP group link 
+### Delete LDAP group link
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1742,7 +1742,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-### Delete LDAP group link with CN or filter 
+### Delete LDAP group link with CN or filter
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1764,7 +1764,7 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-## SAML Group Links 
+## SAML Group Links
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1983,7 +1983,7 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules 
+## Push Rules
 
 DETAILS:
 **Tier:** Premium, Ultimate

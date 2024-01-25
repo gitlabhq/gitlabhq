@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create and run your first GitLab CI/CD pipeline 
+# Tutorial: Create and run your first GitLab CI/CD pipeline
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

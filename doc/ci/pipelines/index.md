@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD pipelines 
+# CI/CD pipelines
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -328,7 +328,7 @@ runners do not use regular runners, they must be [tagged](../yaml/index.md#tags)
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-## Trigger a pipeline when an upstream project is rebuilt 
+## Trigger a pipeline when an upstream project is rebuilt
 
 DETAILS:
 **Tier:** Premium, Ultimate

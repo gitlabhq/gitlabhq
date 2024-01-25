@@ -4,7 +4,7 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
 ---
 
-# Search API 
+# Search API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -14,7 +14,7 @@ DETAILS:
 
 Every API call to search must be authenticated.
 
-## Additional scopes 
+## Additional scopes
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -277,7 +277,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` 
+### Scope: `wiki_blobs`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -313,7 +313,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: commits 
+### Scope: commits
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -352,7 +352,7 @@ Example response:
 ]
 ```
 
-### Scope: blobs 
+### Scope: blobs
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -397,7 +397,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: notes 
+### Scope: notes
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -684,7 +684,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` 
+### Scope: `wiki_blobs`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -720,7 +720,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` 
+### Scope: `commits`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -759,7 +759,7 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` 
+### Scope: `blobs`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -804,7 +804,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `notes` 
+### Scope: `notes`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1059,7 +1059,7 @@ Example response:
 ]
 ```
 
-### Scope: `notes` 
+### Scope: `notes`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1098,7 +1098,7 @@ Example response:
 ]
 ```
 
-### Scope: `wiki_blobs` 
+### Scope: `wiki_blobs`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1149,7 +1149,7 @@ Example response:
 NOTE:
 `filename` is deprecated in favor of `path`. Both return the full path of the file inside the repository, but in the future `filename` is intended to be only the file name and not the full path. For details, see [issue 34521](https://gitlab.com/gitlab-org/gitlab/-/issues/34521).
 
-### Scope: `commits` 
+### Scope: `commits`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -1188,7 +1188,7 @@ Example response:
 ]
 ```
 
-### Scope: `blobs` 
+### Scope: `blobs`
 
 DETAILS:
 **Tier:** Premium, Ultimate

@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Security configuration 
+# Security configuration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -72,7 +72,7 @@ You can configure the following security controls:
 - [Coverage Fuzzing](../coverage_fuzzing/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing).
 
-## Compliance 
+## Compliance
 
 DETAILS:
 **Tier:** Ultimate

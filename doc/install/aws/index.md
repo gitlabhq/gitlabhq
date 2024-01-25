@@ -7,7 +7,7 @@ description: Read through the GitLab installation methods.
 
 {::options parse_block_html="true" /}
 
-# Installing a GitLab POC on Amazon Web Services (AWS) 
+# Installing a GitLab POC on Amazon Web Services (AWS)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

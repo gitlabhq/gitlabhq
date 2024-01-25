@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD artifacts reports types 
+# GitLab CI/CD artifacts reports types
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -108,7 +108,7 @@ GitLab can display the results of one or more reports in:
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
 - The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
 
-## `artifacts:reports:browser_performance` 
+## `artifacts:reports:browser_performance`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -314,7 +314,7 @@ concatenate them into a single file. Use either:
 - A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 - Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
-## `artifacts:reports:load_performance` 
+## `artifacts:reports:load_performance`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -328,7 +328,7 @@ GitLab can display the results of only one report in the merge request
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
-## `artifacts:reports:metrics` 
+## `artifacts:reports:metrics`
 
 DETAILS:
 **Tier:** Premium, Ultimate

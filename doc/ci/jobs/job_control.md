@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choose when to run jobs 
+# Choose when to run jobs
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -620,7 +620,7 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
-### Protect manual jobs 
+### Protect manual jobs
 
 DETAILS:
 **Tier:** Premium, Ultimate

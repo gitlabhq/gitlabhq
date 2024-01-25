@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Policies 
+# Policies
 
 DETAILS:
 **Tier:** Ultimate
@@ -120,7 +120,7 @@ Implementation options for SPPs differ slightly between GitLab SaaS and GitLab s
 main difference is that on GitLab SaaS it's only possible to create subgroups. Ensuring separation
 of duties requires more granular permission configuration.
 
-### Enforce policies across subgroups and projects 
+### Enforce policies across subgroups and projects
 
 DETAILS:
 **Tier:** Ultimate
@@ -163,7 +163,7 @@ The high-level workflow for enforcing policies across multiple subgroups:
    path and the project's name should end with "- security policy project". For details, see
    [Link to a security policy project](#link-to-a-security-policy-project).
 
-### Enforce policies across groups, subgroups, and projects 
+### Enforce policies across groups, subgroups, and projects
 
 DETAILS:
 **Tier:** Ultimate

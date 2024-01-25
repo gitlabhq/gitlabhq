@@ -4,7 +4,7 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource label events API 
+# Resource label events API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -99,7 +99,7 @@ Parameters:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1"
 ```
 
-## Epics 
+## Epics
 
 DETAILS:
 **Tier:** Premium, Ultimate

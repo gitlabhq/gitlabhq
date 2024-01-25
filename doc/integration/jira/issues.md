@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue management 
+# Jira issue management
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -51,7 +51,7 @@ create only a single cross-reference back to that merge request in Jira.
 
 You can [disable comments](#disable-comments-on-jira-issues) on issues.
 
-### Require associated Jira issue for merge requests to be merged 
+### Require associated Jira issue for merge requests to be merged
 
 DETAILS:
 **Tier:** Ultimate

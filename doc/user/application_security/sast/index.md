@@ -4,7 +4,7 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Static Application Security Testing (SAST) 
+# Static Application Security Testing (SAST)
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -129,7 +129,7 @@ The following analyzers have multi-project support:
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-## False positive detection 
+## False positive detection
 
 DETAILS:
 **Tier:** Ultimate
@@ -148,7 +148,7 @@ False positive detection is available in a subset of the [supported languages](#
 
 ![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
 
-## Advanced vulnerability tracking 
+## Advanced vulnerability tracking
 
 DETAILS:
 **Tier:** Ultimate
@@ -264,7 +264,7 @@ The [SAST report file](#output) is processed by GitLab and the details are shown
 - Merge request changes view
 - Vulnerability report
 
-### Merge request widget 
+### Merge request widget
 
 DETAILS:
 **Tier:** Ultimate
@@ -276,7 +276,7 @@ were introduced by the changes made in the merge request.
 
 ![Security Merge request widget](img/sast_mr_widget_v16_7.png)
 
-### Merge request changes view 
+### Merge request changes view
 
 DETAILS:
 **Tier:** Ultimate
@@ -335,7 +335,7 @@ When downloading, you always receive the most recent SAST artifact available.
 You can enable and configure SAST by using the UI, either with the default settings or with customizations.
 The method you can use depends on your GitLab license tier.
 
-#### Configure SAST with customizations 
+#### Configure SAST with customizations
 
 DETAILS:
 **Tier:** Ultimate

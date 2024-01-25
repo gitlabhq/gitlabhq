@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Releases API 
+# Releases API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -604,7 +604,7 @@ Example response:
 }
 ```
 
-### Group milestones 
+### Group milestones
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -617,7 +617,7 @@ array for [Create a release](#create-a-release) and [Update a release](#update-a
 API calls. Only milestones associated with the project's group may be specified, and
 adding milestones for ancestor groups raises an error.
 
-## Collect release evidence 
+## Collect release evidence
 
 DETAILS:
 **Tier:** Premium, Ultimate

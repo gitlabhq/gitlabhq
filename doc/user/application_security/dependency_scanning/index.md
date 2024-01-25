@@ -41,7 +41,7 @@ table.no-vertical-table-lines tr {
 }
 </style>
 
-# Dependency Scanning 
+# Dependency Scanning
 
 DETAILS:
 **Tier:** Ultimate

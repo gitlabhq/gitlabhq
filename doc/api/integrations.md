@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrations API 
+# Integrations API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -700,7 +700,7 @@ Get the external wiki settings for a project.
 GET /projects/:id/integrations/external-wiki
 ```
 
-## GitHub 
+## GitHub
 
 DETAILS:
 **Tier:** Premium, Ultimate

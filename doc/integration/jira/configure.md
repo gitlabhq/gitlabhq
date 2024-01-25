@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira issue integration 
+# Jira issue integration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -83,7 +83,7 @@ To configure your project settings in GitLab:
 Your GitLab project can now interact with all Jira projects in your instance, and the project
 displays a Jira link that opens the Jira project.
 
-## Create a Jira issue for a vulnerability 
+## Create a Jira issue for a vulnerability
 
 DETAILS:
 **Tier:** Ultimate

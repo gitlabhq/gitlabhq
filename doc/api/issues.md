@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issues API 
+# Issues API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2019,7 +2019,7 @@ Example response:
 WARNING:
 The `assignee` column is deprecated. We now show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-## Promote an issue to an epic 
+## Promote an issue to an epic
 
 DETAILS:
 **Tier:** Premium, Ultimate

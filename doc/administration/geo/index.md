@@ -341,7 +341,7 @@ For answers to common questions, see the [Geo FAQ](replication/faq.md).
 
 ## Log files
 
-Geo stores structured log messages in a `geo.log` file. 
+Geo stores structured log messages in a `geo.log` file.
 
 For more information on how to access and consume Geo logs, see the [Geo section in the log system documentation](../logs/index.md#geolog).
 

@@ -4,7 +4,7 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Run GraphQL API queries and mutations 
+# Run GraphQL API queries and mutations
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -67,7 +67,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer $GRAPHQL_T
       # or "{\"query\": \"query {project(fullPath: \\\"<group>/<subgroup>/<project>\\\") {jobs {nodes {id duration}}}}\"}"
 ```
 
-### Rails console 
+### Rails console
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

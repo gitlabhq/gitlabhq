@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review apps 
+# Review apps
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -195,7 +195,7 @@ After you have the route mapping set up, it takes effect in the following locati
 - In the blob file view, by selecting **View** (**{external-link}**) next to the file.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-## Visual Reviews (deprecated) 
+## Visual Reviews (deprecated)
 
 DETAILS:
 **Tier:** Premium, Ultimate

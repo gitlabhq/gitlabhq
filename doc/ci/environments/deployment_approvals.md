@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Require approvals prior to deploying to a Protected Environment
 ---
 
-# Deployment approvals 
+# Deployment approvals
 
 DETAILS:
 **Tier:** Premium, Ultimate

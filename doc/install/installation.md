@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Self-compiled installation 
+# Self-compiled installation
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -696,7 +696,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install GitLab-Elasticsearch-indexer on Enterprise Edition 
+### Install GitLab-Elasticsearch-indexer on Enterprise Edition
 
 DETAILS:
 **Tier:** Premium, Ultimate

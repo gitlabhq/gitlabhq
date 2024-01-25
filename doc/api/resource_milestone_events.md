@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource milestone events API 
+# Resource milestone events API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

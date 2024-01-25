@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected branches API 
+# Protected branches API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -314,7 +314,7 @@ Example response:
 }
 ```
 
-### Example with user / group level access 
+### Example with user / group level access
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -365,7 +365,7 @@ Example response:
 }
 ```
 
-### Example with allow to push and allow to merge access 
+### Example with allow to push and allow to merge access
 
 DETAILS:
 **Tier:** Premium, Ultimate

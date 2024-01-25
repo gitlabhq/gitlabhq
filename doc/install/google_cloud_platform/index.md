@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 ---
 
-# Installing GitLab on Google Cloud Platform 
+# Installing GitLab on Google Cloud Platform
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

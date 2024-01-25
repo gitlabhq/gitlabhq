@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Docker integration 
+# Docker integration
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

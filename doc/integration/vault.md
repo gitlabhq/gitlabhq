@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vault authentication with GitLab OpenID Connect 
+# Vault authentication with GitLab OpenID Connect
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

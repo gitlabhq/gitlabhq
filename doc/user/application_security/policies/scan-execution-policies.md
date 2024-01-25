@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan execution policies 
+# Scan execution policies
 
 DETAILS:
 **Tier:** Ultimate
@@ -336,7 +336,7 @@ These experimental features have limitations:
 To enable these experimental features, a Group owner or administrator must toggle the experimental features by visiting `Settings > General > Permissions and group features`.
 
 ![Enabling experimental security policy features](img/experimental-features-policies.png)
- 
+
 Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
 
 ### Pipeline execution policy action

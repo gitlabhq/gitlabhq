@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value Streams Dashboard 
+# Value Streams Dashboard
 
 DETAILS:
 **Tier:** Ultimate
@@ -99,7 +99,7 @@ panels:
 
 If multiple topics are provided, all topics will need to match for the project to be included in the results.
 
-## Enable or disable overview background aggregation 
+## Enable or disable overview background aggregation
 
 DETAILS:
 **Tier:** Ultimate

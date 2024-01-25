@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs API 
+# Jobs API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -508,7 +508,7 @@ Example of response
 }
 ```
 
-## Get GitLab agent by `CI_JOB_TOKEN` 
+## Get GitLab agent by `CI_JOB_TOKEN`
 
 DETAILS:
 **Tier:** Premium, Ultimate

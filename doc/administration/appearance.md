@@ -54,7 +54,7 @@ To change the favicon:
 Add a small header message, a small footer message, or both, to the interface of your GitLab instance. These messages show on all projects and pages of the instance, such as the sign-in and register pages.
 
 - You can italicize, bold, or add links to your message with Markdown.
-- Markdown lists, images, and quotes are not supported because system messages must be a single line. 
+- Markdown lists, images, and quotes are not supported because system messages must be a single line.
 
 To add a system header, footer message, or both:
 

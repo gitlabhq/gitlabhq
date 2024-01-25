@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs 
+# Jobs
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -455,7 +455,7 @@ The configuration can be added to:
   ]
   ```
 
-### Job using `resource_group` gets stuck 
+### Job using `resource_group` gets stuck
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

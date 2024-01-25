@@ -4,7 +4,7 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan result policies 
+# Scan result policies
 
 DETAILS:
 **Tier:** Ultimate
@@ -435,7 +435,7 @@ scan_result_policy:
 
 ## Troubleshooting
 
-### Merge request rules widget shows a scan result policy is invalid or duplicated 
+### Merge request rules widget shows a scan result policy is invalid or duplicated
 
 DETAILS:
 **Tier:** Ultimate

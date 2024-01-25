@@ -87,7 +87,7 @@ Commands that change data can cause damage if not run correctly or under the rig
 
 When there are five Troubleshooting topics or more on a page, create a separate Troubleshooting page type.
 
-Follow these conventions: 
+Follow these conventions:
 
 - Name the page `Troubleshooting <feature>`.
 - In the left nav, use the word `Troubleshooting` only.

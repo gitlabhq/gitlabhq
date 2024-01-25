@@ -5,7 +5,7 @@ description: Calculations, quotas, purchase information.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compute quota 
+# Compute quota
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -141,7 +141,7 @@ The projects list shows [personal projects](../../user/project/working_with_proj
 with compute usage or shared runners usage in the current month only. The list
 is sorted in descending order of compute usage.
 
-## Purchase additional compute minutes 
+## Purchase additional compute minutes
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -168,7 +168,7 @@ Additional compute minutes bought on a trial subscription are available after th
 You can find pricing for additional compute minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
-### Purchase compute minutes for a group 
+### Purchase compute minutes for a group
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -191,7 +191,7 @@ so be sure to select the correct group.
 After your payment is processed, the additional compute minutes are added to your group
 namespace.
 
-### Purchase compute minutes for a personal namespace 
+### Purchase compute minutes for a personal namespace
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -373,7 +373,7 @@ consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
-## Reset compute usage 
+## Reset compute usage
 
 DETAILS:
 **Tier:** Premium, Ultimate

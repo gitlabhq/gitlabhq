@@ -47,7 +47,7 @@ to AI that you think could benefit from being in this list, add it!
   embeddings are stored in the `vertex_gitlab_docs` database table in the
   `embeddings` database. The embeddings search is done in Postgres using the
   `vector` extension. The vertex embeddings database is updated based on the
-  latest version of GitLab documentation on daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker` as a cronjob. 
+  latest version of GitLab documentation on daily basis by running `Llm::Embedding::GitlabDocumentation::CreateEmptyEmbeddingsRecordsWorker` as a cronjob.
 - **Golden Questions**: a small subset of the types of questions we think a user
   should be able to ask GitLab Duo Chat. Used to generate data for Chat evaluation.
   [Questions for Chat Beta](https://gitlab.com/groups/gitlab-org/-/epics/10550#what-the-user-can-ask).

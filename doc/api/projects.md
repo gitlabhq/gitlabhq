@@ -4,7 +4,7 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Projects API 
+# Projects API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1352,7 +1352,7 @@ target the upstream project by default.
 }
 ```
 
-### Templates for issues and merge requests 
+### Templates for issues and merge requests
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -2530,7 +2530,7 @@ DELETE /projects/:id
 | `full_path`                            | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-single-project). Premium and Ultimate only. |
 | `permanently_remove`                   | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11. Premium and Ultimate only. |
 
-## Restore project marked for deletion 
+## Restore project marked for deletion
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -2913,7 +2913,7 @@ POST /projects/:id/housekeeping
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `task`    | string            | No       | `prune` to trigger manual prune of unreachable objects or `eager` to trigger eager housekeeping. |
 
-## Push rules 
+## Push rules
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -3208,7 +3208,7 @@ Read more in the [Project members](members.md) documentation.
 
 Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
 
-## Get a project's pull mirror details 
+## Get a project's pull mirror details
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -3248,7 +3248,7 @@ Example response:
 }
 ```
 
-## Configure pull mirroring for a project 
+## Configure pull mirroring for a project
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -3306,7 +3306,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
  --data "mirror=false"
 ```
 
-## Start the pull mirroring process for a Project 
+## Start the pull mirroring process for a Project
 
 DETAILS:
 **Tier:** Premium, Ultimate

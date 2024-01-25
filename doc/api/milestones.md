@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project milestones API 
+# Project milestones API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -184,7 +184,7 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 
-## Get all burndown chart events for a single milestone 
+## Get all burndown chart events for a single milestone
 
 DETAILS:
 **Tier:** Premium, Ultimate

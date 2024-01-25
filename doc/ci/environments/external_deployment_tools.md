@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Track deployments of an external deployment tool 
+# Track deployments of an external deployment tool
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

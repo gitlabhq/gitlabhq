@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Users API 
+# Users API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -132,7 +132,7 @@ parameter `without_project_bots=true`.
 GET /users?without_project_bots=true
 ```
 
-### For administrators 
+### For administrators
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -387,7 +387,7 @@ Parameters:
 }
 ```
 
-### For administrators 
+### For administrators
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -531,7 +531,7 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## User creation 
+## User creation
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -599,7 +599,7 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
-## User modification 
+## User modification
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -659,7 +659,7 @@ Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate.
 For example, when renaming the email address to some existing one.
 
-## Delete authentication identity from user 
+## Delete authentication identity from user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -678,7 +678,7 @@ Parameters:
 | `id`       | integer | yes      | ID of a user       |
 | `provider` | string  | yes      | External provider name |
 
-## User deletion 
+## User deletion
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -760,7 +760,7 @@ GET /user
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
-### For administrators 
+### For administrators
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1282,7 +1282,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add SSH key for user 
+## Add SSH key for user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1351,7 +1351,7 @@ Parameters:
 |-----------|---------|----------|-------------|
 | `key_id`  | integer | yes      | SSH key ID  |
 
-## Delete SSH key for given user 
+## Delete SSH key for given user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1551,7 +1551,7 @@ Example response:
   }
 ```
 
-## Add a GPG key for a given user 
+## Add a GPG key for a given user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1602,7 +1602,7 @@ Example response:
 ]
 ```
 
-## Delete a GPG key for a given user 
+## Delete a GPG key for a given user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1655,7 +1655,7 @@ Parameters:
 
 - **none**
 
-## List emails for user 
+## List emails for user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1733,7 +1733,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add email for user 
+## Add email for user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1778,7 +1778,7 @@ Returns:
 - `204 No Content` if the operation was successful.
 - `404` if the resource was not found.
 
-## Delete email for given user 
+## Delete email for given user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1801,7 +1801,7 @@ Parameters:
 | `id`       | integer | yes      | ID of specified user |
 | `email_id` | integer | yes      | Email ID             |
 
-## Block user 
+## Block user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1827,7 +1827,7 @@ Returns:
   - A user that is blocked through LDAP.
   - An internal user.
 
-## Unblock user 
+## Unblock user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1848,7 +1848,7 @@ Parameters:
 Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
-## Deactivate user 
+## Deactivate user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1877,7 +1877,7 @@ Returns:
   - Not [dormant](../administration/moderate_users.md#automatically-deactivate-dormant-users).
   - Internal.
 
-## Activate user 
+## Activate user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1903,7 +1903,7 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
-## Ban user 
+## Ban user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1927,7 +1927,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to ban a user that is not active.
 
-## Unban user 
+## Unban user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -1955,7 +1955,7 @@ Returns:
 
 See the [Events API documentation](events.md#get-user-contribution-events)
 
-## Get all impersonation tokens of a user 
+## Get all impersonation tokens of a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2016,7 +2016,7 @@ Example response:
 ]
 ```
 
-## Approve user 
+## Approve user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2061,7 +2061,7 @@ Example Responses:
 { "message": "The user you are trying to approve is not pending approval" }
 ```
 
-## Reject user 
+## Reject user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2104,7 +2104,7 @@ Example Responses:
 { "message": "User does not have a pending request" }
 ```
 
-## Get an impersonation token of a user 
+## Get an impersonation token of a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2147,7 +2147,7 @@ Example response:
 }
 ```
 
-## Create an impersonation token 
+## Create an impersonation token
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2196,7 +2196,7 @@ Example response:
 }
 ```
 
-## Revoke an impersonation token 
+## Revoke an impersonation token
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2221,7 +2221,7 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
 ```
 
-## Create a personal access token 
+## Create a personal access token
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2269,7 +2269,7 @@ Example response:
 }
 ```
 
-## Create a personal access token with limited scopes for the currently authenticated user 
+## Create a personal access token with limited scopes for the currently authenticated user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2319,7 +2319,7 @@ Example response:
 }
 ```
 
-## Get user activities 
+## Get user activities
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2380,7 +2380,7 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships 
+## User memberships
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2438,7 +2438,7 @@ Example response:
 ]
 ```
 
-## Disable two factor authentication 
+## Disable two factor authentication
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2476,7 +2476,7 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner linked to a user 
+## Create a runner linked to a user
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

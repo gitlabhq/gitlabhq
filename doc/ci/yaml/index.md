@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD YAML syntax reference 
+# CI/CD YAML syntax reference
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -2931,7 +2931,7 @@ In this example:
 
 - You should not combine `needs` with [`dependencies`](#dependencies) in the same job.
 
-#### `needs:project` 
+#### `needs:project`
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -4257,7 +4257,7 @@ job2:
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
-### `secrets` 
+### `secrets`
 
 DETAILS:
 **Tier:** Premium, Ultimate

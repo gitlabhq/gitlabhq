@@ -51,7 +51,7 @@ which are hidden from the user. We then use Git
 alternates to let a collection of project repositories borrow from a
 single pool repository. We call such a collection of project
 repositories a pool. Pools form star-shaped networks of repositories
-that borrow from a single pool, which resemble (but are not 
+that borrow from a single pool, which resemble (but are not
 identical to) the fork networks that get formed when users fork
 projects.
 

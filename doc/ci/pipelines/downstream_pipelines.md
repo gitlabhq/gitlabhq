@@ -4,7 +4,7 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Downstream pipelines 
+# Downstream pipelines
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -393,7 +393,7 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline 
+## Fetch artifacts from an upstream pipeline
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -679,7 +679,7 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-### Pass dotenv variables created in a job 
+### Pass dotenv variables created in a job
 
 DETAILS:
 **Tier:** Premium, Ultimate

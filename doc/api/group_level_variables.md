@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group-level Variables API 
+# Group-level Variables API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -187,7 +187,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/groups/1/variables/VARIABLE_1"
 ```
 
-## The `filter` parameter 
+## The `filter` parameter
 
 DETAILS:
 **Tier:** Premium, Ultimate

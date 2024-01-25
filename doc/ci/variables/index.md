@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD variables 
+# GitLab CI/CD variables
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -184,7 +184,7 @@ The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
 are recursively inherited.
 
-### For an instance 
+### For an instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

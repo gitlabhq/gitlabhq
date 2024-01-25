@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
-# Visual Review discussions API (deprecated) 
+# Visual Review discussions API (deprecated)
 
 DETAILS:
 **Tier:** Premium, Ultimate

@@ -4,7 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy keys API 
+# Deploy keys API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -15,7 +15,7 @@ The deploy keys API can return in responses fingerprints of the public key in th
 - `fingerprint` (MD5 hash). Not available on FIPS-enabled systems.
 - `fingerprint_sha256` (SHA256 hash). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) in GitLab 15.2.
 
-## List all deploy keys 
+## List all deploy keys
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

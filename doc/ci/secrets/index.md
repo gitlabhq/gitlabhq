@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using external secrets in CI 
+# Using external secrets in CI
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -106,7 +106,7 @@ To configure your Vault server:
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
 
-## Use Vault secrets in a CI job 
+## Use Vault secrets in a CI job
 
 DETAILS:
 **Tier:** Premium, Ultimate

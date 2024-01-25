@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Sigstore for keyless signing and verification 
+# Use Sigstore for keyless signing and verification
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

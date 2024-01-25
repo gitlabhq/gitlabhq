@@ -4,7 +4,7 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD examples 
+# GitLab CI/CD examples
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -102,7 +102,7 @@ If a programming language or framework template is not in this list, you can con
 one. To create a template, submit a merge request
 to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-### Adding templates to your GitLab installation 
+### Adding templates to your GitLab installation
 
 DETAILS:
 **Tier:** Premium, Ultimate

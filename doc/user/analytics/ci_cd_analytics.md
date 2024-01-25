@@ -36,7 +36,7 @@ View pipeline duration history:
 
 You can view CI/CD analytics for a group or project.
 
-### For a group 
+### For a group
 
 DETAILS:
 **Tier:** Ultimate
@@ -47,7 +47,7 @@ To view CI/CD analytics:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > CI/CD analytics**.
 
-### For a project 
+### For a project
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -58,7 +58,7 @@ To view CI/CD analytics:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > CI/CD analytics**.
 
-## View DORA deployment frequency chart 
+## View DORA deployment frequency chart
 
 DETAILS:
 **Tier:** Ultimate
@@ -83,7 +83,7 @@ To view the deployment frequency chart:
 
 ![Deployment frequency](img/deployment_frequency_charts_v13_12.png)
 
-## View DORA lead time for changes chart 
+## View DORA lead time for changes chart
 
 DETAILS:
 **Tier:** Ultimate
@@ -109,7 +109,7 @@ To view the lead time for changes chart:
 
 ![Lead time](img/lead_time_chart_v13_11.png)
 
-## View DORA time to restore service chart 
+## View DORA time to restore service chart
 
 DETAILS:
 **Tier:** Ultimate
@@ -129,7 +129,7 @@ To view the time to restore service chart:
 
 ![Lead time](img/time_to_restore_service_charts_v15_1.png)
 
-## View DORA change failure rate chart 
+## View DORA change failure rate chart
 
 DETAILS:
 **Tier:** Ultimate

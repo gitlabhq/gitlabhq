@@ -4,7 +4,7 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD job token 
+# GitLab CI/CD job token
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -227,7 +227,7 @@ To configure the job token scope:
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
 
-## Download an artifact from a different pipeline 
+## Download an artifact from a different pipeline
 
 DETAILS:
 **Tier:** Premium, Ultimate

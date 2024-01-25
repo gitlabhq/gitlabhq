@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Sourcegraph 
+# Sourcegraph
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -31,7 +31,7 @@ NOTE:
 This feature requires user opt-in. After Sourcegraph has been enabled for your GitLab instance,
 you can choose to enable Sourcegraph [through your user preferences](#enable-sourcegraph-in-user-preferences).
 
-## Set up for self-managed GitLab instances 
+## Set up for self-managed GitLab instances
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -40,7 +40,7 @@ DETAILS:
 Before you can enable Sourcegraph code intelligence in GitLab you must:
 configure a Sourcegraph instance with your GitLab instance as an external service.
 
-### Set up a self-managed Sourcegraph instance 
+### Set up a self-managed Sourcegraph instance
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
