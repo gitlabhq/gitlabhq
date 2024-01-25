@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.5.8 (2024-01-24)
+
+### Security (1 change)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@0a831ae0ed0eb32b42ab69652010815e9dffec51) ([merge request](gitlab-org/security/gitlab!3802))
+
 ## 16.5.7 (2024-01-13)
 
 ### Fixed (1 change)
