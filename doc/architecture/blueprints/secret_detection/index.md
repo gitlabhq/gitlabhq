@@ -151,6 +151,7 @@ as self-managed instances.
 ### Decisions
 
 - [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
+- [002: Run scan within subprocess](decisions/002_run_scan_within_subprocess.md)
 
 ## Challenges
 

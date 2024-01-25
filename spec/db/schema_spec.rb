@@ -135,7 +135,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
     ml_candidates: %w[internal_id],
     value_stream_dashboard_counts: %w[namespace_id],
-    zoekt_indices: %w[namespace_id] # needed for cells sharding key
+    zoekt_indices: %w[namespace_id], # needed for cells sharding key
+    zoekt_repositories: %w[namespace_id project_identifier] # needed for cells sharding key
   }.with_indifferent_access.freeze
 
   context 'for table' do

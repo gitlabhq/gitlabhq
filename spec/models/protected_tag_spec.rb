@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ProtectedTag do
+RSpec.describe ProtectedTag, feature_category: :source_code_management do
   describe 'Associations' do
     it { is_expected.to belong_to(:project).touch(true) }
   end

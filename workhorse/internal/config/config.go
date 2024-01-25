@@ -184,7 +184,8 @@ func LoadConfig(data string) (*Config, error) {
 	}
 
 	if cfg.ConfigCommand != "" {
-		output, err := exec.Command(cfg.ConfigCommand).Output()
+		cmd, args := splitCommand(cfg.ConfigCommand)
+		output, err := exec.Command(cmd, args...).Output()
 		if err != nil {
 			var exitErr *exec.ExitError
 			if errors.As(err, &exitErr) {
@@ -284,4 +285,10 @@ func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.
 
 	b := []byte(creds.JSONKeyString)
 	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
+}
+
+func splitCommand(cmd string) (string, []string) {
+	cmdAndArgs := strings.Split(cmd, " ")
+
+	return cmdAndArgs[0], cmdAndArgs[1:]
 }

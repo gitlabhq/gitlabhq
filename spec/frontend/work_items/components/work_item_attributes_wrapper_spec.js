@@ -1,7 +1,8 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
-import WorkItemDueDate from '~/work_items/components/work_item_due_date.vue';
+import WorkItemDueDateInline from '~/work_items/components/work_item_due_date_inline.vue';
+import WorkItemDueDateWithEdit from '~/work_items/components/work_item_due_date_with_edit.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
@@ -22,8 +23,9 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
 
-  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDate);
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssigneesWithEdit);
+  const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDateWithEdit);
+  const findWorkItemDueDateInline = () => wrapper.findComponent(WorkItemDueDateInline);
   const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
   const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
@@ -99,6 +101,26 @@ describe('WorkItemAttributesWrapper component', () => {
         expect(findWorkItemDueDate().exists()).toBe(exists);
       });
     });
+
+    it.each`
+      description                                                     | dueDateWidgetInlinePresent | dueDateWidgetWithEditPresent | workItemsMvc2FlagEnabled
+      ${'renders WorkItemDueDateWithEdit when workItemsMvc2 enabled'} | ${false}                   | ${true}                      | ${true}
+      ${'renders WorkItemDueDateInline when workItemsMvc2 disabled'}  | ${true}                    | ${false}                     | ${false}
+    `(
+      '$description',
+      async ({
+        dueDateWidgetInlinePresent,
+        dueDateWidgetWithEditPresent,
+        workItemsMvc2FlagEnabled,
+      }) => {
+        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+
+        await waitForPromises();
+
+        expect(findWorkItemDueDate().exists()).toBe(dueDateWidgetWithEditPresent);
+        expect(findWorkItemDueDateInline().exists()).toBe(dueDateWidgetInlinePresent);
+      },
+    );
   });
 
   describe('milestone widget', () => {

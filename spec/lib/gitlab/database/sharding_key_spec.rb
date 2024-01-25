@@ -18,7 +18,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_not_null) do
     [
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
-      'labels.group_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+      'zoekt_repositories.project_id' # we have this design as we also keep project_id in project_identifier column.
     ]
   end
 
@@ -29,6 +30,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     [
       'p_catalog_resource_sync_events.project_id',
       'zoekt_indices.namespace_id',
+      'zoekt_repositories.project_identifier',
       'namespace_descendants.namespace_id'
     ]
   end

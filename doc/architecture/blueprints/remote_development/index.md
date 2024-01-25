@@ -168,17 +168,12 @@ title
 end title
 
 node "Kubernetes" {
-  [Ingress Controller] --> [GitLab Workspaces Proxy] : Decrypt Traffic
+  [Ingress Controller] --> [GitLab Workspaces Proxy] : Decrypt traffic
 
-  note right of "Ingress Controller"
+  note left of "Ingress Controller"
     Customers can choose
     an ingress controller
     of their choice
-  end note
-
-  note top of "GitLab Workspaces Proxy"
-    Authenticate and
-    authorize user traffic
   end note
 
   [GitLab Workspaces Proxy] ..> [Workspace n] : Forward traffic\nfor workspace n
@@ -193,30 +188,20 @@ node "Kubernetes" {
 }
 
 node "GitLab" {
-  [Nginx] --> [GitLab Rails] : Forward
+  [Nginx] --> [GitLab Rails] : Forward\ntraffic
   [GitLab Rails] --> [Postgres] : Access database
   [GitLab Rails] --> [Gitaly] : Fetch files
   [KAS] -up-> [GitLab Rails] : Proxy
 }
 
 [Agent] -up-> [KAS] : Initiate reconciliation loop
-"Load Balancer IP" --> [Ingress Controller]
+[L7 Load Balancer] --> [Ingress Controller]
 [Browser] --> [Nginx] : Browse GitLab
-[Browser] -right-> "Domain IP" : Browse workspace URL
-"Domain IP" .right.> "Load Balancer IP"
-[GitLab Workspaces Proxy] ..> [GitLab Rails] : Authenticate and authorize\nthe user accessing the workspace
-
-note top of "Domain IP"
-  For local development, workspace URL
-  is [workspace-name].workspaces.localdev.me
-  which resolves to localhost (127.0.0.1)
-end note
-
-note top of "Load Balancer IP"
-  For local development,
-  it includes all local loopback interfaces
-  for example, 127.0.0.1, 172.16.123.1, 192.168.0.1, etc.
-end note
+[Browser] -right-> [L7 Load Balancer] : Browse workspace URL
+[GitLab Workspaces Proxy] --> [GitLab Rails] : Authenticate and authorize\nthe user accessing the workspace
+[L7 Load Balancer] -right[hidden]-> [L4 Load Balancer]
+[L4 Load Balancer] --> [GitLab Workspaces Proxy] : Forward traffic
+[Terminal] -left-> [L4 Load Balancer] : Connect to workspace SSH URL
 
 @enduml
 ```

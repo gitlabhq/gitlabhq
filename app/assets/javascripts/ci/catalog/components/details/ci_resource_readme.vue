@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.readmeHtml.loading;
+      return this.$apollo?.queries.readmeHtml.loading;
     },
   },
   i18n: {

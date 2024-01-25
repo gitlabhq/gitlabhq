@@ -841,6 +841,7 @@ project:
 - dora_performance_scores
 - xray_reports
 - member_approvals
+- zoekt_repository
 award_emoji:
 - awardable
 - user

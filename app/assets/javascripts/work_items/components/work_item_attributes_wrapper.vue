@@ -14,9 +14,10 @@ import {
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
 } from '../constants';
-import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssigneesInline from './work_item_assignees_inline.vue';
 import WorkItemAssigneesWithEdit from './work_item_assignees_with_edit.vue';
+import WorkItemDueDateInline from './work_item_due_date_inline.vue';
+import WorkItemDueDateWithEdit from './work_item_due_date_with_edit.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
@@ -30,7 +31,8 @@ export default {
     WorkItemMilestoneWithEdit,
     WorkItemAssigneesInline,
     WorkItemAssigneesWithEdit,
-    WorkItemDueDate,
+    WorkItemDueDateInline,
+    WorkItemDueDateWithEdit,
     WorkItemParent,
     WorkItemParentInline,
     WorkItemWeightInline: () =>
@@ -149,15 +151,26 @@ export default {
       :work-item-iid="workItem.iid"
       @error="$emit('error', $event)"
     />
-    <work-item-due-date
-      v-if="workItemDueDate"
-      :can-update="canUpdate"
-      :due-date="workItemDueDate.dueDate"
-      :start-date="workItemDueDate.startDate"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemDueDate">
+      <work-item-due-date-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-type="workItemType"
+        :work-item="workItem"
+        @error="$emit('error', $event)"
+      />
+      <work-item-due-date-inline
+        v-else
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemMilestone">
       <work-item-milestone-with-edit
         v-if="glFeatures.workItemsMvc2"

@@ -420,6 +420,22 @@ func TestLoadConfigCommand(t *testing.T) {
 			},
 		},
 		{
+			desc: "script taking arguments",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo "{\"shutdown_timeout\": \"$1s\"}"`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: fmt.Sprintf("%s 200", cmd),
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = fmt.Sprintf("%s 200", cmd)
+						cfg.ShutdownTimeout = config.TomlDuration{Duration: 200 * time.Second}
+					}),
+				}
+			},
+		},
+		{
 			desc: "generated value",
 			setup: func(t *testing.T) setupData {
 				cmd := writeScript(t, `echo '{"shutdown_timeout": "100s"}'`)

@@ -172,6 +172,10 @@ $work-item-overview-gap-width: 2rem;
       overflow-x: hidden;
     }
   }
+
+  .work-item-date-picker {
+    max-width: 175px;
+  }
 }
 
 .work-item-field-label {
