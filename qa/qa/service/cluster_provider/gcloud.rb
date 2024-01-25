@@ -55,6 +55,7 @@ module QA
               --set config.token=#{agent_token}
               --set config.kasAddress=#{kas_address}
               --set config.kasHeaders="{Cookie: gitlab_canary=#{target_canary?}}"
+              --set replicas=1
           CMD
           shell(cmd_str, mask_secrets: [agent_token])
         end
@@ -85,7 +86,7 @@ module QA
             helm repo update &&
             helm upgrade --install gitlab-workspaces-proxy \
               gitlab-workspaces-proxy/gitlab-workspaces-proxy \
-              --version 0.1.6 \
+              --version 0.1.10 \
               --namespace=gitlab-workspaces \
               --create-namespace \
               --set="auth.client_id=#{Runtime::Env.workspaces_oauth_app_id}" \
@@ -95,14 +96,14 @@ module QA
               --set="auth.signing_key=#{Runtime::Env.workspaces_oauth_signing_key}" \
               --set="ingress.host.workspaceDomain=#{Runtime::Env.workspaces_proxy_domain}" \
               --set="ingress.host.wildcardDomain=*.#{Runtime::Env.workspaces_proxy_domain}" \
-              --set="ingress.tls.workspaceDomainCert=#{Runtime::Env.workspaces_domain_cert}" \
-              --set="ingress.tls.workspaceDomainKey=#{Runtime::Env.workspaces_domain_key}" \
-              --set="ingress.tls.wildcardDomainCert=#{Runtime::Env.workspaces_wildcard_cert}" \
-              --set="ingress.tls.wildcardDomainKey=#{Runtime::Env.workspaces_wildcard_key}" \
+              --set="ingress.tls.workspaceDomainCert=$(echo $WORKSPACES_DOMAIN_CERT)" \
+              --set="ingress.tls.workspaceDomainKey=$(echo $WORKSPACES_DOMAIN_KEY)" \
+              --set="ingress.tls.wildcardDomainCert=$(echo $WORKSPACES_WILDCARD_CERT)" \
+              --set="ingress.tls.wildcardDomainKey=$(echo $WORKSPACES_WILDCARD_KEY)" \
               --set="ingress.className=nginx"
           CMD
 
-          shell(cmd_str, mask_secrets: [Runtime::Env.workspaces_oauth_app_secret, Runtime::Env.workspaces_oauth_signing_key])
+          shell(cmd_str, mask_secrets: [Runtime::Env.workspaces_oauth_app_secret, Runtime::Env.workspaces_oauth_signing_key, Runtime::Env.workspaces_domain_cert, Runtime::Env.workspaces_domain_key, Runtime::Env.workspaces_wildcard_cert, Runtime::Env.workspaces_wildcard_key])
         end
 
         def update_dns(load_balancer_ip)

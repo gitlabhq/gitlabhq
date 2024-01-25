@@ -5,11 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Read through the GitLab installation methods.
 ---
 
-# Install GitLab 
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+# Install GitLab
 
 You can install GitLab on most GNU/Linux distributions, on several
 cloud providers, and in Kubernetes clusters.

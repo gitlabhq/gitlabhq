@@ -30,7 +30,9 @@ module Gitlab
 
         yield
       ensure
-        Shell.execute("git", "checkout", current_branch)
+        # The `current_branch` won't be set in CI due to how the repo is cloned. Therefore we should only checkout
+        # `current_branch` if we actually have one.
+        Shell.execute("git", "checkout", current_branch) if current_branch.present?
         Shell.execute('git', 'stash', 'pop') if stashed
       end
 

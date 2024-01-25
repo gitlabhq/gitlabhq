@@ -1,11 +1,12 @@
-import { GlTable, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlTable, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
-import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
+import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
+import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 
 import { packagesProtectionRuleQueryPayload, packagesProtectionRulesData } from '../mock_data';
@@ -22,6 +23,8 @@ describe('Packages protection rules project settings', () => {
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findTable = () => wrapper.findComponent(GlTable);
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
+  const findAddProtectionRuleButton = () => wrapper.findComponent(GlButton);
   const findTableRows = () => findTable().find('tbody').findAll('tr');
 
   const mountComponent = (mountFn = shallowMount, provide = defaultProvidedValues, config) => {
@@ -92,6 +95,75 @@ describe('Packages protection rules project settings', () => {
       await waitForPromises();
 
       expect(findTable().exists()).toBe(true);
+    });
+  });
+
+  it('does not initially render package protection form', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findAddProtectionRuleButton().exists()).toBe(true);
+    expect(findProtectionRuleForm().exists()).toBe(false);
+  });
+
+  describe('button "add protection rule"', () => {
+    it('button exists', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findAddProtectionRuleButton().exists()).toBe(true);
+    });
+
+    describe('when button is clicked', () => {
+      beforeEach(async () => {
+        createComponent({ mountFn: mount });
+
+        await waitForPromises();
+
+        await findAddProtectionRuleButton().trigger('click');
+      });
+
+      it('renders package protection form', () => {
+        expect(findProtectionRuleForm().exists()).toBe(true);
+      });
+
+      it('disables the button "add protection rule"', () => {
+        expect(findAddProtectionRuleButton().attributes('disabled')).toBeDefined();
+      });
+    });
+  });
+
+  describe('form "add protection rule"', () => {
+    let resolver;
+
+    beforeEach(async () => {
+      resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
+
+      createComponent({ resolver, mountFn: mount });
+
+      await waitForPromises();
+
+      await findAddProtectionRuleButton().trigger('click');
+    });
+
+    it("handles event 'submit'", async () => {
+      await findProtectionRuleForm().vm.$emit('submit');
+
+      expect(resolver).toHaveBeenCalledTimes(2);
+
+      expect(findProtectionRuleForm().exists()).toBe(false);
+      expect(findAddProtectionRuleButton().attributes('disabled')).not.toBeDefined();
+    });
+
+    it("handles event 'cancel'", async () => {
+      await findProtectionRuleForm().vm.$emit('cancel');
+
+      expect(resolver).toHaveBeenCalledTimes(1);
+
+      expect(findProtectionRuleForm().exists()).toBe(false);
+      expect(findAddProtectionRuleButton().attributes()).not.toHaveProperty('disabled');
     });
   });
 });

@@ -7950,6 +7950,9 @@ msgstr ""
 msgid "BillingPlans|Spans the DevOps lifecycle"
 msgstr ""
 
+msgid "BillingPlans|Start a free Duo Pro trial"
+msgstr ""
+
 msgid "BillingPlans|Start a free Ultimate trial"
 msgstr ""
 
@@ -18345,6 +18348,33 @@ msgid "Due to inactivity, the %{project_name} (%{project_link}) project is sched
 msgstr ""
 
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
+msgstr ""
+
+msgid "DuoProTrial|Accelerate coding"
+msgstr ""
+
+msgid "DuoProTrial|Activate my trial"
+msgstr ""
+
+msgid "DuoProTrial|Apply your Duo Pro trial to a new or existing group"
+msgstr ""
+
+msgid "DuoProTrial|Billions of lines of code at your fingertips"
+msgstr ""
+
+msgid "DuoProTrial|Create a group to start your Duo Pro trial"
+msgstr ""
+
+msgid "DuoProTrial|Keep your Source Code protected"
+msgstr ""
+
+msgid "DuoProTrial|Start your free Duo Pro trial"
+msgstr ""
+
+msgid "DuoProTrial|Support in your language of choice"
+msgstr ""
+
+msgid "DuoProTrial|We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "Duplicate page: A page with that title already exists"
@@ -34652,6 +34682,9 @@ msgstr ""
 msgid "PackageRegistry|Add composer registry"
 msgstr ""
 
+msgid "PackageRegistry|Add package protection rule"
+msgstr ""
+
 msgid "PackageRegistry|Additional metadata"
 msgstr ""
 
@@ -34907,6 +34940,9 @@ msgstr ""
 msgid "PackageRegistry|Maven XML"
 msgstr ""
 
+msgid "PackageRegistry|Npm"
+msgstr ""
+
 msgid "PackageRegistry|NuGet"
 msgstr ""
 
@@ -35014,6 +35050,9 @@ msgstr ""
 msgid "PackageRegistry|RubyGems"
 msgstr ""
 
+msgid "PackageRegistry|Rule saved."
+msgstr ""
+
 msgid "PackageRegistry|Show Composer commands"
 msgstr ""
 
@@ -35054,6 +35093,9 @@ msgid "PackageRegistry|Something went wrong while fetching the package history."
 msgstr ""
 
 msgid "PackageRegistry|Something went wrong while fetching the package metadata."
+msgstr ""
+
+msgid "PackageRegistry|Something went wrong while saving the package protection rule."
 msgstr ""
 
 msgid "PackageRegistry|Sorry, your filter produced no results"

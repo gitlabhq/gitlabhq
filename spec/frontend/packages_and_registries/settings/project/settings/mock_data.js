@@ -112,3 +112,25 @@ export const packagesProtectionRuleQueryPayload = ({ override, errors = [] } = {
     },
   },
 });
+
+export const createPackagesProtectionRuleMutationPayload = ({ override, errors = [] } = {}) => ({
+  data: {
+    createPackagesProtectionRule: {
+      packageProtectionRule: {
+        ...packagesProtectionRulesData[0],
+        ...override,
+      },
+      errors,
+    },
+  },
+});
+
+export const createPackagesProtectionRuleMutationInput = {
+  packageNamePattern: `@flight/flight-developer-14-*`,
+  packageType: 'NPM',
+  pushProtectedUpToAccessLevel: 'DEVELOPER',
+};
+
+export const createPackagesProtectionRuleMutationPayloadErrors = [
+  'Package name pattern has already been taken',
+];

@@ -1,7 +1,8 @@
 <script>
-import { GlCard, GlTable, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlCard, GlTable, GlLoadingIcon } from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import { s__ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -9,9 +10,11 @@ const PAGINATION_DEFAULT_PER_PAGE = 10;
 export default {
   components: {
     SettingsBlock,
+    GlButton,
     GlCard,
     GlTable,
     GlLoadingIcon,
+    PackagesProtectionRuleForm,
   },
   inject: ['projectPath'],
   i18n: {
@@ -24,6 +27,7 @@ export default {
     return {
       fetchSettingsError: false,
       packageProtectionRules: [],
+      protectionRuleFormVisibility: false,
     };
   },
   computed: {
@@ -42,6 +46,9 @@ export default {
     },
     isLoadingPackageProtectionRules() {
       return this.$apollo.queries.packageProtectionRules.loading;
+    },
+    isAddProtectionRuleButtonDisabled() {
+      return this.protectionRuleFormVisibility;
     },
   },
   apollo: {
@@ -72,6 +79,18 @@ export default {
       label: s__('PackageRegistry|Push protected up to access level'),
     },
   ],
+  methods: {
+    showProtectionRuleForm() {
+      this.protectionRuleFormVisibility = true;
+    },
+    hideProtectionRuleForm() {
+      this.protectionRuleFormVisibility = false;
+    },
+    refetchProtectionRules() {
+      this.$apollo.queries.packageProtectionRules.refetch();
+      this.hideProtectionRuleForm();
+    },
+  },
 };
 </script>
 
@@ -92,16 +111,30 @@ export default {
         <template #header>
           <div class="gl-new-card-title-wrapper gl-justify-content-space-between">
             <h3 class="gl-new-card-title">{{ $options.i18n.settingBlockTitle }}</h3>
+            <div class="gl-new-card-actions">
+              <gl-button
+                size="small"
+                :disabled="isAddProtectionRuleButtonDisabled"
+                @click="showProtectionRuleForm"
+              >
+                {{ s__('PackageRegistry|Add package protection rule') }}
+              </gl-button>
+            </div>
           </div>
         </template>
 
         <template #default>
+          <packages-protection-rule-form
+            v-if="protectionRuleFormVisibility"
+            @cancel="hideProtectionRuleForm"
+            @submit="refetchProtectionRules"
+          />
+
           <gl-table
             :items="tableItems"
             :fields="$options.fields"
             show-empty
             stacked="md"
-            class="mb-3"
             :busy="isLoadingPackageProtectionRules"
           >
             <template #table-busy>

@@ -7,10 +7,6 @@ description: 'Learn how to install, configure, update, and maintain your GitLab 
 
 # Administer GitLab
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
-
 Learn how to administer a self-managed GitLab instance.
 
 | | | |
