@@ -166,7 +166,7 @@ This technique does not improve the performance of the `COUNT(*)` queries.
 
 ## The `InOperatorOptimization` module
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67352) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67352) in GitLab 14.3.
 
 The `Gitlab::Pagination::Keyset::InOperatorOptimization` module implements utilities for applying a generalized version of
 the efficient `IN` query technique described in the previous section.

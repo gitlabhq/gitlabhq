@@ -72,7 +72,7 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-> The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+> - The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
 
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:

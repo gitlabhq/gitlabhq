@@ -28,7 +28,7 @@ To configure streaming audit events for Git operations, see [Add a new HTTP dest
 
 ### Headers
 
-> `X-Gitlab-Audit-Event-Type` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86881) in GitLab 15.0.
+> - `X-Gitlab-Audit-Event-Type` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86881) in GitLab 15.0.
 
 Headers are formatted as follows:
 

@@ -94,7 +94,7 @@ are cancelled.
 
 ## Enable merge trains
 
-> `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
+> - `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
 
 Prerequisites:
 

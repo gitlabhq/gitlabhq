@@ -111,7 +111,7 @@ In this example:
 
 ## Set input values when using `include`
 
-> `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
+> - `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.
 
 Use [`include:inputs`](index.md#includeinputs) to set the values for the parameters
 when the included configuration is added to the pipeline.

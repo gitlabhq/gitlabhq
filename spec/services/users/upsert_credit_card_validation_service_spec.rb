@@ -16,6 +16,7 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
   let(:expiration_month) { 1 }
   let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
   let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
+  let(:zuora_payment_method_xid) { 'abc123' }
 
   let(:params) do
     {
@@ -25,7 +26,8 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
       credit_card_expiration_month: expiration_month,
       credit_card_holder_name: holder_name,
       credit_card_type: network,
-      credit_card_mask_number: last_digits
+      credit_card_mask_number: last_digits,
+      zuora_payment_method_xid: zuora_payment_method_xid
     }
   end
 
@@ -49,7 +51,8 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
             network_hash: sha256(network.downcase),
             holder_name_hash: sha256(holder_name.downcase),
             last_digits_hash: sha256(last_digits),
-            expiration_date_hash: sha256(expiration_date.to_s)
+            expiration_date_hash: sha256(expiration_date.to_s),
+            zuora_payment_method_xid: 'abc123'
           )
         end
       end
@@ -91,18 +94,22 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
       end
     end
 
-    shared_examples 'returns an error and tracks the exception' do
-      it 'sends an exception to Gitlab::ErrorTracking' do
-        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+    context 'when the zuora_payment_method_xid is missing' do
+      let(:zuora_payment_method_xid) { nil }
 
-        service.execute
-      end
+      it 'successfully validates the credit card' do
+        # verify existing nil payment xid doesn't interfere with new ones for backwards compatibility
+        create(:credit_card_validation, zuora_payment_method_xid: nil)
 
-      it 'returns an error', :aggregate_failures do
         service_result = service.execute
 
-        expect(service_result.status).to eq(:error)
-        expect(service_result.message).to eq(_('Error saving credit card validation record'))
+        expect(service_result).to be_success
+        expect(service_result.message).to eq(_('Credit card validation record saved'))
+
+        user.reload
+
+        expect(user.credit_card_validated_at).to be_present
+        expect(user.credit_card_validation).to have_attributes(zuora_payment_method_xid: nil)
       end
     end
 
@@ -113,15 +120,29 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
     end
 
     context 'when the request is missing the credit_card_validated_at field' do
-      let(:params) { { user_id: user_id } }
+      let(:credit_card_validated_at) { nil }
 
-      it_behaves_like 'returns an error and tracks the exception'
+      it_behaves_like 'returns an error without tracking the exception'
     end
 
     context 'when the request is missing the user_id field' do
-      let(:params) { { credit_card_validated_at: credit_card_validated_at } }
+      let(:user_id) { nil }
 
-      it_behaves_like 'returns an error and tracks the exception'
+      it_behaves_like 'returns an error without tracking the exception'
+    end
+
+    context 'when the validation params are invalid' do
+      let(:last_digits) { '11111111111111111111111111111111111111111111111111' } # more than the 44 char limit
+
+      it_behaves_like 'returns an error without tracking the exception'
+    end
+
+    context 'when a user has already been validated with this Zuora payment method' do
+      before do
+        create(:credit_card_validation, zuora_payment_method_xid: zuora_payment_method_xid)
+      end
+
+      it_behaves_like 'returns an error without tracking the exception'
     end
 
     context 'when there is an unexpected error' do
@@ -129,11 +150,22 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
 
       before do
         allow_next_instance_of(::Users::CreditCardValidation) do |instance|
-          allow(instance).to receive(:save).and_raise(exception)
+          allow(instance).to receive(:save!).and_raise(exception)
         end
       end
 
-      it_behaves_like 'returns an error and tracks the exception'
+      it 'sends an exception to Gitlab::ErrorTracking' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(exception)
+
+        service.execute
+      end
+
+      it 'returns an error', :aggregate_failures do
+        service_result = service.execute
+
+        expect(service_result.status).to eq(:error)
+        expect(service_result.message).to eq(_('Error saving credit card validation record'))
+      end
     end
   end
 end

@@ -106,7 +106,7 @@ Prerequisites:
 
 ### View Usage Quota Reports for a group
 
-> Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+> - Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
 
 Prerequisites:
 
@@ -125,7 +125,7 @@ subgroups, sorted in descending order of compute usage.
 
 ### View Usage Quota reports for a personal namespace
 
-> Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+> - Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 
 Prerequisites:
 

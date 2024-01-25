@@ -36,7 +36,7 @@ GitLab supports automatic response for the following types of secrets:
 
 ## Feature availability
 
-> [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+> - [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
 
 Credentials are only post-processed when Secret Detection finds them:
 

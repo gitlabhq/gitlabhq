@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Worker context
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/9) in GitLab 12.8.
 
 To have some more information about workers in the logs, we add
 [metadata to the jobs in the form of an `ApplicationContext`](../logging.md#logging-context-metadata-through-rails-or-grape-requests).

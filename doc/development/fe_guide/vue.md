@@ -265,7 +265,7 @@ This enables us to integrate Vue components without changing how the form submit
     = form.text_field :email, class: 'form-control gl-form-input', data: { js_name: 'email' }
 ```
 
-> The `js_name` data attribute is used as the key in the resulting JavaScript object.
+The `js_name` data attribute is used as the key in the resulting JavaScript object.
 For example `= form.text_field :email, data: { js_name: 'fooBarBaz' }` would be translated
 to `{ fooBarBaz: { name: 'user[email]', id: 'user_email', value: '' } }`
 
@@ -943,7 +943,7 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 ## Vue 2 -> Vue 3 Migration
 
-> This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+> - This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
 
 We recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:

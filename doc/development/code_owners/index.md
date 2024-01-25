@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Code Owners development guidelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219916) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219916) in GitLab 15.10.
 
 This document was created to help contributors understand the code design of
 [Code Owners](../../user/project/codeowners/index.md). You should read this

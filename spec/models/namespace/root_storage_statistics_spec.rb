@@ -45,6 +45,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         total_snippets_size = project_stat1.snippets_size + project_stat2.snippets_size
         total_pipeline_artifacts_size = project_stat1.pipeline_artifacts_size + project_stat2.pipeline_artifacts_size
         total_uploads_size = project_stat1.uploads_size + project_stat2.uploads_size
+        total_container_registry_size = project_stat1.container_registry_size + project_stat2.container_registry_size
 
         expect(root_storage_statistics.repository_size).to eq(total_repository_size)
         expect(root_storage_statistics.wiki_size).to eq(total_wiki_size)
@@ -55,6 +56,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         expect(root_storage_statistics.snippets_size).to eq(total_snippets_size)
         expect(root_storage_statistics.pipeline_artifacts_size).to eq(total_pipeline_artifacts_size)
         expect(root_storage_statistics.uploads_size).to eq(total_uploads_size)
+        expect(root_storage_statistics.container_registry_size).to eq(total_container_registry_size)
       end
 
       it 'aggregates container_repositories_size and storage_size' do
@@ -66,7 +68,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
 
         total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size + 999
 
-        expect(root_storage_statistics.container_registry_size).to eq(999)
+        expect(root_storage_statistics.container_registry_size).to eq(3699)
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
       end
 
@@ -159,13 +161,13 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         total_pipeline_artifacts_size = project_stat1.pipeline_artifacts_size + project_stat2.pipeline_artifacts_size
         total_uploads_size = project_stat1.uploads_size + project_stat2.uploads_size
         total_wiki_size = project_stat1.wiki_size + project_stat2.wiki_size
+        total_container_registry_size = project_stat1.container_registry_size + project_stat2.container_registry_size
         total_dependency_proxy_size = root_namespace_stat.dependency_proxy_size +
           group1_namespace_stat.dependency_proxy_size + group2_namespace_stat.dependency_proxy_size +
           subgroup1_namespace_stat.dependency_proxy_size
         total_storage_size = project_stat1.reload.storage_size + project_stat2.reload.storage_size +
           root_namespace_stat.storage_size + group1_namespace_stat.storage_size +
           group2_namespace_stat.storage_size + subgroup1_namespace_stat.storage_size
-
         expect(root_storage_statistics.repository_size).to eq(total_repository_size)
         expect(root_storage_statistics.lfs_objects_size).to eq(total_lfs_objects_size)
         expect(root_storage_statistics.build_artifacts_size).to eq(total_build_artifacts_size)
@@ -175,6 +177,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model, feature_category:
         expect(root_storage_statistics.uploads_size).to eq(total_uploads_size)
         expect(root_storage_statistics.dependency_proxy_size).to eq(total_dependency_proxy_size)
         expect(root_storage_statistics.wiki_size).to eq(total_wiki_size)
+        expect(root_storage_statistics.container_registry_size).to eq(total_container_registry_size)
         expect(root_storage_statistics.storage_size).to eq(total_storage_size)
       end
 

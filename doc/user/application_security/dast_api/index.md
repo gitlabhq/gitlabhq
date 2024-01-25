@@ -209,7 +209,7 @@ This example is a minimal configuration for DAST API. From here you can:
 
 ### GraphQL Schema
 
-> Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+> - Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
 
 GraphQL is a query language for your API and an alternative to REST APIs.
 DAST API supports testing GraphQL endpoints multiple ways:

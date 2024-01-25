@@ -30126,10 +30126,10 @@ msgstr ""
 msgid "MemberRole|Failed to create role: %{message}"
 msgstr ""
 
-msgid "MemberRole|Failed to delete the role."
+msgid "MemberRole|Failed to delete role."
 msgstr ""
 
-msgid "MemberRole|Failed to delete the role: %{message}"
+msgid "MemberRole|Failed to delete role. %{message}"
 msgstr ""
 
 msgid "MemberRole|Failed to fetch roles: %{message}"
@@ -30148,6 +30148,9 @@ msgid "MemberRole|No custom roles found"
 msgstr ""
 
 msgid "MemberRole|Permissions"
+msgstr ""
+
+msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
 msgstr ""
 
 msgid "MemberRole|Role name"
@@ -30175,9 +30178,6 @@ msgid "MemberRole|can't be changed"
 msgstr ""
 
 msgid "MemberRole|cannot be changed. Please create a new Member Role instead."
-msgstr ""
-
-msgid "MemberRole|cannot be deleted because it is already assigned to a user. Please disassociate the member role from all users before deletion."
 msgstr ""
 
 msgid "MemberRole|maximum number of Member Roles are already in use by the group hierarchy. Please delete an existing Member Role."
@@ -37828,6 +37828,9 @@ msgstr ""
 msgid "Profiles|Manage two-factor authentication"
 msgstr ""
 
+msgid "Profiles|No \"&lt;\" or \"&gt;\" characters, please."
+msgstr ""
+
 msgid "Profiles|No file chosen."
 msgstr ""
 
@@ -41489,7 +41492,7 @@ msgstr ""
 msgid "Repository usage recalculation started"
 msgstr ""
 
-msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
+msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads} / Containers: %{counter_container_registry_size}"
 msgstr ""
 
 msgid "Request"

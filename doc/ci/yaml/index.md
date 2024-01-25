@@ -86,7 +86,7 @@ or import additional pipeline configuration.
 
 ### `default`
 
-> Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
+> - Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
 
 You can set global defaults for some keywords. Each default keyword is copied to every job
 that doesn't already have it defined. If the job already has a keyword defined, that default
@@ -252,7 +252,7 @@ include: '.gitlab-ci-production.yml'
 
 #### `include:project`
 
-> Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
+> - Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 To include files from another private project on the same GitLab instance,
 use `include:project` and `include:file`.
@@ -2196,7 +2196,7 @@ stop_review_app:
 
 #### `environment:auto_stop_in`
 
-> CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
+> - CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
 
 The `auto_stop_in` keyword specifies the lifetime of the environment. When an environment expires, GitLab
 automatically stops it.

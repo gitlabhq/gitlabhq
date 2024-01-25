@@ -12,7 +12,7 @@ DETAILS:
 
 ## List project repository tags
 
-> `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
+> - `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
 
 Get a list of repository tags from a project, sorted by update date and time in
 descending order.

@@ -87,7 +87,7 @@ export default {
     <h2 class="gl-font-size-h2 gl-my-5">
       {{ s__('Runners|Tags') }}
     </h2>
-    <gl-skeleton-loader v-if="loading" :lines="12" />
+    <gl-skeleton-loader v-if="loading" :lines="16" />
     <template v-else-if="model">
       <gl-form-group :label="__('Tags')" label-for="runner-tags">
         <template #description>
@@ -128,27 +128,17 @@ export default {
     <hr aria-hidden="true" />
 
     <h2 class="gl-font-size-h2 gl-my-5">
-      {{ s__('Runners|Details') }}
+      {{ s__('Runners|Configuration') }}
       {{ __('(optional)') }}
     </h2>
 
-    <gl-skeleton-loader v-if="loading" :lines="15" />
+    <gl-skeleton-loader v-if="loading" :lines="24" />
     <template v-else-if="model">
       <gl-form-group :label="s__('Runners|Runner description')" label-for="runner-description">
         <gl-form-input id="runner-description" v-model="model.description" name="description" />
       </gl-form-group>
       <runner-maintenance-note-field v-model="model.maintenanceNote" class="gl-mt-5" />
-    </template>
 
-    <hr aria-hidden="true" />
-
-    <h2 class="gl-font-size-h2 gl-my-5">
-      {{ s__('Runners|Configuration') }}
-      {{ __('(optional)') }}
-    </h2>
-
-    <gl-skeleton-loader v-if="loading" :lines="15" />
-    <template v-else-if="model">
       <div class="gl-mb-5">
         <gl-form-checkbox v-model="model.paused" name="paused">
           {{ __('Paused') }}

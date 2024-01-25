@@ -282,7 +282,7 @@ The header is deleted if the returned `errors` object is empty.
 
 #### Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
 
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -694,7 +694,7 @@ The header is deleted if the returned `errors` object is empty.
 
 #### Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
+> - Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
 
 When this feature is enabled for an instance, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.

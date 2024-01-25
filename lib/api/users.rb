@@ -1241,6 +1241,8 @@ module API
         requires :credit_card_holder_name, type: String, desc: 'The credit card holder name'
         requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
         requires :credit_card_type, type: String, desc: 'The credit card network name'
+
+        optional :zuora_payment_method_xid, type: String, desc: 'The Zuora payment method ID'
       end
       put ":user_id/credit_card_validation", urgency: :low, feature_category: :purchase do
         authenticated_as_admin!

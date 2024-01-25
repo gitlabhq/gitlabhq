@@ -21,7 +21,7 @@ This functionality is based on the [doorkeeper Ruby gem](https://github.com/door
 
 ## Cross-origin resource sharing
 
-> CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
+> - CORS preflight request support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364680) in GitLab 15.1.
 
 Many `/oauth` endpoints support cross-origin resource sharing (CORS). From GitLab 15.1, the following endpoints also
 support [CORS preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS):

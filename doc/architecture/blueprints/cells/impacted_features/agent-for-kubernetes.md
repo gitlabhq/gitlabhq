@@ -15,7 +15,7 @@ we can document the reasons for not choosing this approach.
 
 # Cells: Agent for Kubernetes
 
-> TL;DR
+TL;DR
 
 ## 1. Definition
 

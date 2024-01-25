@@ -34,7 +34,7 @@ For enabling and viewing metrics from Sidekiq nodes, see [Sidekiq metrics](#side
 
 ## Metrics available
 
-> `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
+> - `caller_id` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392622) from `redis_hit_miss_operations_total` and `redis_cache_generation_duration_seconds` in GitLab 15.11.
 
 The following metrics are available:
 

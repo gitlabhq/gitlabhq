@@ -830,7 +830,7 @@ This example for Linux package installations assumes you're using the following 
 
 ##### Configure Microsoft Graph
 
-> Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true

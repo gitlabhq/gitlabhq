@@ -439,7 +439,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         statistics = json_response.find { |p| p['id'] == project.id }['statistics']
         expect(statistics).to be_present
-        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'pipeline_artifacts_size', 'snippets_size', 'packages_size', 'uploads_size')
+        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'pipeline_artifacts_size', 'snippets_size', 'packages_size', 'uploads_size', 'container_registry_size')
       end
 
       it "does not include license by default" do

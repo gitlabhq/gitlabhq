@@ -314,7 +314,7 @@ trigger_pipeline:
 
 ## View a downstream pipeline
 
-> Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
+> - Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
 
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
 as a list of cards on the right of the graph. From this view, you can:

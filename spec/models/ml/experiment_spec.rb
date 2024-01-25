@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Ml::Experiment, feature_category: :mlops do
   let_it_be(:exp) { create(:ml_experiments) }
   let_it_be(:exp2) { create(:ml_experiments, project: exp.project) }
+  let_it_be(:model_experiment) { create(:ml_models, project: exp.project).default_experiment }
 
   let(:iid) { exp.iid }
   let(:exp_name) { exp.name }
@@ -40,7 +41,7 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
   describe '.by_project' do
     subject { described_class.by_project(exp.project) }
 
-    it { is_expected.to match_array([exp, exp2]) }
+    it { is_expected.to match_array([exp, exp2, model_experiment]) }
   end
 
   describe '.including_project' do
@@ -76,20 +77,6 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
       let(:exp_name) { 'hello' }
 
       it { is_expected.to be_nil }
-    end
-  end
-
-  describe '#by_project_id' do
-    let(:project_id) { exp.project_id }
-
-    subject { described_class.by_project_id(project_id) }
-
-    it { is_expected.to match_array([exp, exp2]) }
-
-    context 'when project does not have experiment' do
-      let(:project_id) { non_existing_record_iid }
-
-      it { is_expected.to be_empty }
     end
   end
 
@@ -164,6 +151,14 @@ RSpec.describe Ml::Experiment, feature_category: :mlops do
 
     with_them do
       it { is_expected.to be(id) }
+    end
+  end
+
+  describe "#exclude_experiments_for_models" do
+    subject { described_class.by_project(exp.project).exclude_experiments_for_models }
+
+    it 'excludes experiments that belongs to a model' do
+      is_expected.to match_array([exp, exp2])
     end
   end
 end

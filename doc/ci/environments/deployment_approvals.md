@@ -45,6 +45,7 @@ To configure deployment approvals for a project:
        - 'echo "Deploying to ${CI_ENVIRONMENT_NAME}"'
      environment:
        name: ${CI_JOB_NAME}
+       action: start
    ```
 
    The job does not need to be manual (`when: manual`).

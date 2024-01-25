@@ -9,7 +9,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** SaaS, self-managed
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3610) in GitLab 16.6 [with a flag](../../../../administration/feature_flags.md) named `packages_dependency_proxy_maven`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
@@ -215,11 +214,9 @@ The dependency proxy must be configured with:
 
 To set those parameters:
 
-1. Use the related [GraphQL mutation](../../../../api/graphql/reference/index.md#mutationupdatedependencyproxypackagessettings).
-
-   A frontend to display and manage these settings is proposed by [issue 410726](https://gitlab.com/gitlab-org/gitlab/-/issues/410726).
-
-1. Complete the configuration for your package format:
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Packages and registries**.
+1. Under **Dependency Proxy**, complete the form for your package format:
 
 ::Tabs
 
@@ -228,26 +225,14 @@ To set those parameters:
 Any Maven package registry can be connected to the dependency proxy. You can
 authorize the connection with the Maven package registry username and password.
 
-To set or update the remote Maven package registry, update the following fields on the settings object:
+To set or update the remote Maven package registry, update the following fields
+in the form:
 
-- `mavenExternalRegistryUrl` - The URL of the remote registry.
-- `mavenExternalRegistryUsername` - Optional. The username to use with the remote registry.
-- `mavenExternalRegistryPassword` - Optional. The password to use with the remote registry.
+- `URL` - The URL of the remote registry.
+- `Username` - Optional. The username to use with the remote registry.
+- `Password` - Optional. The password to use with the remote registry.
 
-Example of the GraphQL mutation:
-
-```graphql
-mutation {
-  updateDependencyProxyPackagesSettings(input: {  projectPath : <project full path>, enabled: true, mavenExternalRegistryUrl: <remote registry url>, mavenExternalRegistryUsername: <username>, mavenExternalRegistryPassword: <password> }) {
-    dependencyProxyPackagesSetting {
-      enabled
-      mavenExternalRegistryUrl
-      mavenExternalRegistryUsername
-    }
-    errors
-  }
-}
-```
+You must either set both the username and password, or leave both fields empty.
 
 ::EndTabs
 

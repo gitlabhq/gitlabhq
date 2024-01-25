@@ -43,6 +43,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
       allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
+      protectable_branches
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -1136,6 +1137,85 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
           'url' => project.safe_import_url,
           'lastError' => 'Some error'
         )
+      end
+    end
+  end
+
+  describe 'protectable_branches' do
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:current_user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            id
+            protectableBranches
+          }
+        }
+      )
+    end
+
+    let(:protectable_branches) do
+      subject.dig('data', 'project', 'protectableBranches')
+    end
+
+    let_it_be(:project) { create(:project, :empty_repo) }
+
+    before_all do
+      project.add_maintainer(current_user)
+    end
+
+    describe 'an empty repository' do
+      before_all do
+        project.repository.branch_names.each do |branch_name|
+          project.repository.delete_branch(branch_name)
+        end
+      end
+
+      it 'returns an empty array' do
+        expect(protectable_branches).to be_empty
+      end
+    end
+
+    describe 'a repository with branches' do
+      let(:branch_names) { %w[master feat/dropdown] }
+
+      before_all do
+        project.add_maintainer(current_user)
+        project.repository.create_file(
+          current_user, 'test.txt', 'content', message: 'init', branch_name: 'master'
+        )
+        project.repository.create_branch('feat/dropdown', 'master')
+      end
+
+      context 'and no protections' do
+        it 'returns all the branch names' do
+          expect(protectable_branches).to match_array(branch_names)
+        end
+      end
+
+      context 'and all branches are protected with specific rules' do
+        before do
+          branch_names.each do |name|
+            create(:protected_branch, project: project, name: name)
+          end
+        end
+
+        it 'returns an empty array' do
+          expect(protectable_branches).to be_empty
+        end
+      end
+
+      context 'and all branches are protected with a wildcard rule' do
+        before do
+          create(:protected_branch, name: '*')
+        end
+
+        it 'returns all the branch names' do
+          expect(protectable_branches).to match_array(branch_names)
+        end
       end
     end
   end

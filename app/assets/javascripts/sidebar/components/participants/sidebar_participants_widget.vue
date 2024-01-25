@@ -1,14 +1,14 @@
 <script>
 import { __ } from '~/locale';
 import { participantsQueries } from '../../queries/constants';
-import Participants from './participants.vue';
+import SidebarParticipants from './sidebar_participants.vue';
 
 export default {
   i18n: {
     fetchingError: __('An error occurred while fetching participants'),
   },
   components: {
-    Participants,
+    SidebarParticipants,
   },
   props: {
     iid: {
@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <participants
+  <sidebar-participants
     :loading="isLoading"
     :participants="participants"
     :number-of-less-participants="8"

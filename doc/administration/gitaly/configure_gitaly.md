@@ -1035,7 +1035,7 @@ the cache hit rate.
 
 ### Observe the cache
 
-> Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
+> - Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
 
 You can observe the cache [using metrics](monitoring.md#pack-objects-cache) and in the following logged information. These logs are part of the gRPC logs and can
 be discovered when a call is executed.

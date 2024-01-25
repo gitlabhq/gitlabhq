@@ -17,7 +17,7 @@ module Ml
       end
 
       def all
-        ::Ml::Experiment.by_project_id(project.id)
+        Projects::Ml::ExperimentFinder.new(@project).execute
       end
 
       def create!(name, tags = nil)

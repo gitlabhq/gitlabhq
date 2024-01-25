@@ -1,11 +1,13 @@
-query getOrganizationGroups {
-  organization @client {
+query getOrganizationGroups($id: OrganizationsOrganizationID!) {
+  organization(id: $id) {
     id
     groups {
       nodes {
         id
         fullName
-        parent
+        parent {
+          id
+        }
         webUrl
         descriptionHtml
         avatarUrl
@@ -13,9 +15,6 @@ query getOrganizationGroups {
         projectsCount
         groupMembersCount
         visibility
-        accessLevel {
-          integerValue
-        }
       }
     }
   }

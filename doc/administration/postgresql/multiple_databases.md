@@ -44,7 +44,7 @@ databases. Some examples:
 
 ## Migrate existing installations using a script
 
-> A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
+> - A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
 
 NOTE:
 If something unexpected happens during the migration, it is safe to start over.

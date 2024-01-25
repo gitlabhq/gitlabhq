@@ -154,7 +154,7 @@ details may have changed, it should still serve as a good introduction.
 
 ## Including LFS blobs in project archives
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15079) in GitLab 13.5.
 
 The following diagram illustrates how GitLab resolves LFS files for project archives:
 

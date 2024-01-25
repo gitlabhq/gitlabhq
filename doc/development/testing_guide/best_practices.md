@@ -94,7 +94,7 @@ This ensures that the application code is eagerly loaded before the test executi
 
 ### Ruby warnings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
 
 We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.4/Warning.html)
 by default when running specs. Making these warnings more visible to developers
@@ -110,7 +110,7 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
 
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
@@ -1290,7 +1290,7 @@ variables example can be used, but avoid this if at all possible.
 
 #### Elasticsearch specs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
 
 Specs that require Elasticsearch must be marked with the `:elastic` trait. This
 creates and deletes indices before and after all examples.

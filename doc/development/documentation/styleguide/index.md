@@ -1304,7 +1304,7 @@ the Markdown rendering engine used for GitLab documentation.
 
 ## GitLab SVG icons
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
 directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
@@ -1362,7 +1362,7 @@ You can link any up-to-date video that's useful to the GitLab user.
 
 ### Embed videos
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
 
 The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.

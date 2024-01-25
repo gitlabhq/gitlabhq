@@ -25,7 +25,7 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
 
-> Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
+> - Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
 
 To add a pipeline schedule:
 

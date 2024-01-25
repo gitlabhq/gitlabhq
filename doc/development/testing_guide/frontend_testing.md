@@ -623,7 +623,7 @@ it('calls setActiveBoardItemMutation on close', async () => {
 
 ### Jest best practices
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34209) in GitLab 13.2.
 
 #### Prefer `toBe` over `toEqual` when comparing primitive values
 

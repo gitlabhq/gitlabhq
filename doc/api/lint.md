@@ -60,7 +60,7 @@ Example responses:
 
 ## Validate a project's CI configuration
 
-> `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
+> - `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
 
 Checks if a project’s `.gitlab-ci.yml` configuration in a given commit
 (by default `HEAD` of the project’s default branch) is valid. This

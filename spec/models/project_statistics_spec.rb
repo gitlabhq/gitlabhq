@@ -37,7 +37,7 @@ RSpec.describe ProjectStatistics do
 
       context 'when storage size components are not updated' do
         it 'does not affect the storage_size total' do
-          statistics.update!(pipeline_artifacts_size: 3, container_registry_size: 50)
+          statistics.update!(pipeline_artifacts_size: 3)
 
           expect(statistics.reload.storage_size).to eq(0)
         end

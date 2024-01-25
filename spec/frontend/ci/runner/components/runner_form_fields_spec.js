@@ -22,7 +22,6 @@ describe('RunnerFormFields', () => {
 
   const expectRendersFields = () => {
     expect(wrapper.text()).toContain(s__('Runners|Tags'));
-    expect(wrapper.text()).toContain(s__('Runners|Details'));
     expect(wrapper.text()).toContain(s__('Runners|Configuration'));
 
     expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(0);
@@ -44,10 +43,9 @@ describe('RunnerFormFields', () => {
 
     it('renders a loading frame', () => {
       expect(wrapper.text()).toContain(s__('Runners|Tags'));
-      expect(wrapper.text()).toContain(s__('Runners|Details'));
       expect(wrapper.text()).toContain(s__('Runners|Configuration'));
 
-      expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(3);
+      expect(wrapper.findAllComponents(GlSkeletonLoader)).toHaveLength(2);
       expect(wrapper.findAll('input')).toHaveLength(0);
     });
 

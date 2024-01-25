@@ -15,7 +15,7 @@ we can document the reasons for not choosing this approach.
 
 # Cells: GitLab Pages
 
-> TL;DR
+TL;DR
 
 ## 1. Definition
 

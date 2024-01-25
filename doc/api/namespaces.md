@@ -22,7 +22,7 @@ You might also want to view documentation for:
 
 ## List namespaces
 
-> `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
+> - `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
 
 Get a list of the namespaces of the authenticated user. If the user is an
 administrator, a list of all namespaces in the GitLab instance is shown.

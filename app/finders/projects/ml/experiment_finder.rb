@@ -22,9 +22,17 @@ module Projects
       def relation
         @experiments = ::Ml::Experiment
             .by_project(project)
+            .exclude_experiments_for_models
             .including_project
 
+        with_candidate_count
         ordered
+      end
+
+      def with_candidate_count
+        return unless params[:with_candidate_count]
+
+        @experiments = experiments.with_candidate_count
       end
 
       def ordered

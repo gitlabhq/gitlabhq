@@ -274,7 +274,7 @@ For details of API fuzzing configuration options, see [Available CI/CD variables
 
 ### GraphQL Schema
 
-> Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
+> - Support for GraphQL Schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352780) in GitLab 15.4.
 
 GraphQL is a query language for your API and an alternative to REST APIs.
 API Fuzzing supports testing GraphQL endpoints multiple ways:

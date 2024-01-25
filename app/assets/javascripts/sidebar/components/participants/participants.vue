@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
-import { GlButton, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-import { __, n__, sprintf } from '~/locale';
+import { GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { __, n__, sprintf } from '~/locale';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
@@ -11,7 +11,6 @@ export default {
   },
   components: {
     GlButton,
-    GlIcon,
     GlLoadingIcon,
     UserAvatarImage,
   },
@@ -86,36 +85,17 @@ export default {
     getParticipantId(participantId) {
       return getIdFromGraphQLId(participantId);
     },
-    onClickCollapsedIcon() {
-      this.$emit('toggleSidebar');
-    },
   },
 };
 </script>
 
 <template>
   <div>
-    <div
-      v-if="showParticipantLabel"
-      v-gl-tooltip.left.viewport
-      :title="participantLabel"
-      class="sidebar-collapsed-icon"
-      @click="onClickCollapsedIcon"
-    >
-      <gl-icon name="users" />
-      <gl-loading-icon v-if="loading" size="sm" />
-      <span v-else class="gl-pt-2 gl-px-3 gl-font-sm">
-        {{ participantCount }}
-      </span>
-    </div>
-    <div
-      v-if="showParticipantLabel"
-      class="title hide-collapsed gl-line-height-20 gl-font-weight-bold gl-mb-0!"
-    >
-      <gl-loading-icon v-if="loading" size="sm" :inline="true" />
+    <div v-if="showParticipantLabel" class="title gl-line-height-20 gl-font-weight-bold gl-mb-0!">
+      <gl-loading-icon v-if="loading" inline />
       {{ participantLabel }}
     </div>
-    <div class="hide-collapsed gl-display-flex gl-flex-wrap gl-mt-2 gl-mb-n3">
+    <div class="gl-display-flex gl-flex-wrap gl-mt-2 gl-mb-n3">
       <div
         v-for="participant in visibleParticipants"
         :key="participant.id"
@@ -138,10 +118,13 @@ export default {
         </a>
       </div>
     </div>
-    <div v-if="hasMoreParticipants" class="hide-collapsed">
-      <gl-button category="tertiary" size="small" @click="toggleMoreParticipants">{{
-        toggleLabel
-      }}</gl-button>
-    </div>
+    <gl-button
+      v-if="hasMoreParticipants"
+      category="tertiary"
+      size="small"
+      @click="toggleMoreParticipants"
+    >
+      {{ toggleLabel }}
+    </gl-button>
   </div>
 </template>

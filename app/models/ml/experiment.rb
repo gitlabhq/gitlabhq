@@ -23,6 +23,7 @@ module Ml
         .select("ml_experiments.*, count(ml_candidates.id) as candidate_count")
         .group(:id)
     }
+    scope :exclude_experiments_for_models, -> { where(model_id: nil) }
 
     has_internal_id :iid, scope: :project
 
@@ -48,10 +49,6 @@ module Ml
 
       def by_project_id_and_name(project_id, name)
         find_by(project_id: project_id, name: name)
-      end
-
-      def by_project_id(project_id)
-        where(project_id: project_id).order(id: :desc)
       end
 
       def package_for_experiment?(package_name)

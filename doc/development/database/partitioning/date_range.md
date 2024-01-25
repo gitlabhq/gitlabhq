@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Date range partitioning
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32240) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32240) in GitLab 13.1.
 
 ## Description
 

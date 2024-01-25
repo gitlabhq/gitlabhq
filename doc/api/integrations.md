@@ -21,7 +21,7 @@ This API requires an access token with the Maintainer or Owner role.
 
 ## List all active integrations
 
-> `vulnerability_events` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831) in GitLab 16.4.
+> - `vulnerability_events` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831) in GitLab 16.4.
 
 Get a list of all active project integrations. The `vulnerability_events` field is only available for GitLab Enterprise Edition.
 
@@ -504,7 +504,7 @@ GET /projects/:id/integrations/diffblue-cover
 
 ### Set up Discord Notifications
 
-> `_channel` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
+> - `_channel` parameters [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125621) in GitLab 16.3.
 
 Set up Discord Notifications for a project.
 

@@ -23,7 +23,7 @@ The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` 
 
 ## List protected branches
 
-> Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+> - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
 
 Gets a list of [protected branches](../user/project/protected_branches.md) from a project
 as they are defined in the UI. If a wildcard is set, it is returned instead of the exact name

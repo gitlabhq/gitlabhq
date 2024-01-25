@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
+> - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. To enable SSH, additional

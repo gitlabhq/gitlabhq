@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Aggregated Value Stream Analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.7.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

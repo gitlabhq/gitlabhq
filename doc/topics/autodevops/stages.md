@@ -97,7 +97,7 @@ Read more about defining volumes in the [`pack build` documentation](https://bui
 
 ### Auto Build using Herokuish (deprecated)
 
-> [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.
+> - [Replaced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63351) with Cloud Native Buildpacks in GitLab 14.0.
 
 WARNING:
 Support for Herokuish was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108234) in GitLab 15.8,

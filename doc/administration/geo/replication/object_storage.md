@@ -39,7 +39,7 @@ See [Object storage replication tests](geo_validation_tests.md#object-storage-re
 
 ## Enabling GitLab-managed object storage replication
 
-> The feature was made [generally available](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
+> - The feature was made [generally available](https://gitlab.com/groups/gitlab-org/-/epics/5551) in GitLab 15.1.
 
 **Secondary** sites can replicate files stored on the **primary** site regardless of
 whether they are stored on the local file system or in object storage.

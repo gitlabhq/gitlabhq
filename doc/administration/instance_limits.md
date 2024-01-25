@@ -372,7 +372,7 @@ header. Such emails don't create comments on issues or merge requests.
 
 ## Amount of data sent from Sentry through Error Tracking
 
-> [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
+> - [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
 
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
@@ -628,7 +628,7 @@ Plan.default.actual_limits.update!(project_ci_variables: 10000)
 
 ### Maximum file size per type of artifact
 
-> `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum

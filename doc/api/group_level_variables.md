@@ -53,7 +53,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Show variable details
 
-> The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
+> - The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
 
 Get the details of a group's specific variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
@@ -125,7 +125,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Update variable
 
-> The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
+> - The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
 
 Update a group's variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.
@@ -167,7 +167,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Remove variable
 
-> The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
+> - The `filter` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340185) in GitLab 16.9.
 
 Remove a group's variable. If there are multiple variables with the same key,
 use `filter` to select the correct `environment_scope`.

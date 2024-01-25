@@ -548,7 +548,7 @@ are no longer concerns.
 
 ### `rspec:undercoverage` job
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74859) in GitLab 14.6.
 
 The `rspec:undercoverage` job runs [`undercover`](https://rubygems.org/gems/undercover)
 to detect, and fail if any changes introduced in the merge request has zero coverage.

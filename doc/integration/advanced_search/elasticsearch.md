@@ -17,7 +17,7 @@ advanced search provides faster search response times and [improved search featu
 
 ### Elasticsearch version requirements
 
-> Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
 Advanced search works with the following versions of Elasticsearch.
 
@@ -69,7 +69,7 @@ The search index updates after you:
 
 ## Upgrade to a new Elasticsearch major version
 
-> Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
 You don't have to change the GitLab configuration when you upgrade Elasticsearch.
 

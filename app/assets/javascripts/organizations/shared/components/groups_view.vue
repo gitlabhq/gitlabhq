@@ -21,6 +21,7 @@ export default {
   },
   components: { GlLoadingIcon, GlEmptyState, GroupsList },
   inject: {
+    organizationGid: {},
     groupsEmptyStateSvgPath: {},
     newGroupPath: {
       default: null,
@@ -40,14 +41,26 @@ export default {
   },
   data() {
     return {
-      groups: [],
+      groups: {},
     };
   },
   apollo: {
     groups: {
       query: groupsQuery,
-      update(data) {
-        return formatGroups(data.organization.groups.nodes);
+      variables() {
+        return {
+          id: this.organizationGid,
+        };
+      },
+      update({
+        organization: {
+          groups: { nodes, pageInfo },
+        },
+      }) {
+        return {
+          nodes: formatGroups(nodes),
+          pageInfo,
+        };
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -55,6 +68,9 @@ export default {
     },
   },
   computed: {
+    nodes() {
+      return this.groups.nodes || [];
+    },
     isLoading() {
       return this.$apollo.queries.groups.loading;
     },
@@ -83,8 +99,8 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <groups-list
-    v-else-if="groups.length"
-    :groups="groups"
+    v-else-if="nodes.length"
+    :groups="nodes"
     show-group-icon
     :list-item-class="listItemClass"
   />

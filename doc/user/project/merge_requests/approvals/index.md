@@ -38,7 +38,7 @@ rules to define what types of users can approve work. Some examples of rules you
 - Users with specific permissions can always approve work.
 - [Code owners](../../codeowners/index.md) can approve work for files they own.
 - Users with specific permissions can approve work,
-  [even if they don't have merge rights](rules.md#merge-request-approval-segregation-of-duties)
+  [even if they don't have merge rights](rules.md#enable-approval-permissions-for-users-with-the-reporter-role)
   to the repository.
 - Users with specific permissions can be allowed or denied the ability
   to [override approval rules on a specific merge request](rules.md#edit-or-override-merge-request-approval-rules).

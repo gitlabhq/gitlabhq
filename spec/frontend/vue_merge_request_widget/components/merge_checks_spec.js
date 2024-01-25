@@ -113,8 +113,8 @@ describe('Merge request merge checks component', () => {
 
   it.each`
     mergeabilityChecks                                                                               | text
-    ${[{ identifier: 'discussions', status: 'failed' }]}                                             | ${'Merge blocked: 1 check failed'}
-    ${[{ identifier: 'discussions', status: 'failed' }, { identifier: 'rebase', status: 'failed' }]} | ${'Merge blocked: 2 checks failed'}
+    ${[{ identifier: 'discussions', status: 'FAILED' }]}                                             | ${'Merge blocked: 1 check failed'}
+    ${[{ identifier: 'discussions', status: 'FAILED' }, { identifier: 'rebase', status: 'FAILED' }]} | ${'Merge blocked: 2 checks failed'}
   `('renders $text for $mergeabilityChecks', async ({ mergeabilityChecks, text }) => {
     mountComponent({ mergeabilityChecks });
 
@@ -125,8 +125,8 @@ describe('Merge request merge checks component', () => {
 
   it.each`
     status      | statusIcon
-    ${'failed'} | ${'failed'}
-    ${'passed'} | ${'success'}
+    ${'FAILED'} | ${'failed'}
+    ${'PASSED'} | ${'success'}
   `('renders $statusIcon for $status result', async ({ status, statusIcon }) => {
     mountComponent({ mergeabilityChecks: [{ status, identifier: 'discussions' }] });
 
@@ -200,5 +200,41 @@ describe('Merge request merge checks component', () => {
     const mergeChecks = wrapper.findAllByTestId('merge-check');
 
     expect(mergeChecks.length).toBe(1);
+  });
+
+  describe('expansion', () => {
+    const findMergeChecks = () => wrapper.findAllByTestId('merge-check');
+
+    beforeEach(async () => {
+      mountComponent({
+        mergeabilityChecks: [
+          { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+          { identifier: 'discussions_not_resolved', status: 'INACTIVE' },
+          { identifier: 'need_rebase', status: 'FAILED' },
+        ],
+      });
+
+      await waitForPromises();
+    });
+
+    it('shows failed checks before user expands section', () => {
+      expect(findMergeChecks().length).toBe(1);
+    });
+
+    it('shows all checks when user expands section', async () => {
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(2);
+    });
+
+    it('hides all checks when user collapses section', async () => {
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(2);
+
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(0);
+    });
   });
 });

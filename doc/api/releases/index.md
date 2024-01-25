@@ -31,7 +31,7 @@ For authentication, the Releases API accepts either:
 
 ## List Releases
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Returns a paginated list of releases, sorted by `released_at`.
 
@@ -259,7 +259,7 @@ Example response:
 
 ## Get a Release by a tag name
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Gets a release for the given tag.
 
@@ -651,7 +651,7 @@ Example response:
 
 ## Update a release
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Updates a release. Developer level access to the project is required to update a release.
 
@@ -760,7 +760,7 @@ Example response:
 
 ## Delete a Release
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72448) to allow for `JOB-TOKEN` in GitLab 14.5.
 
 Deletes a release. Deleting a release doesn't delete the associated tag. Maintainer level access to the project is required to delete a release.
 

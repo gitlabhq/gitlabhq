@@ -139,7 +139,7 @@ Triggering pipelines and fetching Terraform plans is not affected by feature vis
 
 ### Disable the job token scope allowlist
 
-> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
 WARNING:
 It is a security risk to disable the allowlist. A malicious user could try to compromise
@@ -165,7 +165,7 @@ You can also disable the allowlist [with the API](../../api/graphql/reference/in
 
 ### Add a project to the job token scope allowlist
 
-> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
 You can add projects to the allowlist for a project. Projects added to the allowlist
 can make API calls from running pipelines by using the CI/CD job token.
@@ -212,7 +212,7 @@ to make an API request to project `B`, then `B` must be added to the allowlist f
 
 ### Configure the job token scope
 
-> **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
 Prerequisites:
 

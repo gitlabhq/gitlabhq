@@ -28,7 +28,7 @@ When requested across groups or projects, it's expected to be the same as the `f
 
 ## List issues
 
-> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
+> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get all issues the authenticated user has access to. By default it
 returns only issues created by the current user. To get all issues,
@@ -260,7 +260,7 @@ Use `iid` of the `epic` attribute instead.
 
 ## List group issues
 
-> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
+> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a group's issues.
 
@@ -467,7 +467,7 @@ Use `iid` of the `epic` attribute instead.
 
 ## List project issues
 
-> The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
+> - The `due_date` filters `any`, `today`, and `tomorrow` were [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78460) in GitLab 14.8.
 
 Get a list of a project's issues.
 

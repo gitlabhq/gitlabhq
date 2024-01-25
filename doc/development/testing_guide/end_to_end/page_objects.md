@@ -164,14 +164,14 @@ Things to note:
 
 ### `data-testid` vs `data-qa-selector`
 
-> Introduced in GitLab 16.1
+> - Introduced in GitLab 16.1
 
 Any existing `data-qa-selector` class should be considered deprecated
 and we should use the `data-testid` method of definition.
 
 ### Dynamic element selection
 
-> Introduced in GitLab 12.5
+> - Introduced in GitLab 12.5
 
 A common occurrence in automated testing is selecting a single "one-of-many" element.
 In a list of several items, how do you differentiate what you are selecting on?

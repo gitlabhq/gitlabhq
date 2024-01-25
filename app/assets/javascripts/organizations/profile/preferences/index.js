@@ -4,7 +4,6 @@ import createDefaultClient from '~/lib/graphql';
 import { s__ } from '~/locale';
 import OrganizationSelect from '~/vue_shared/components/entity_select/organization_select.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import resolvers from '../../shared/graphql/resolvers';
 
 export const initHomeOrganizationSetting = () => {
   const el = document.getElementById('js-home-organization-setting');
@@ -17,7 +16,7 @@ export const initHomeOrganizationSetting = () => {
   const { initialSelection } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

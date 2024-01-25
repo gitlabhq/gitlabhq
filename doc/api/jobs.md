@@ -12,7 +12,7 @@ DETAILS:
 
 ## List project jobs
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 

@@ -723,7 +723,7 @@ your provider's support.
 
 ### Configure assertions
 
-> Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
+> - Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
 
 NOTE:
 The attributes are case-sensitive.

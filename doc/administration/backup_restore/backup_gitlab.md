@@ -1302,7 +1302,7 @@ There are two ways to fix this:
 
 ###### Environment variable overrides
 
-> Multiple databases support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177) in GitLab 16.5.
+> - Multiple databases support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177) in GitLab 16.5.
 
 By default, GitLab uses the database configuration stored in a
 configuration file (`database.yml`). However, you can override the database settings

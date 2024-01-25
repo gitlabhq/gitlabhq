@@ -16,6 +16,14 @@ RSpec.describe Users::CreditCardValidation, feature_category: :user_profile do
   it { is_expected.to validate_length_of(:expiration_date_hash).is_at_most(44) }
   it { is_expected.to validate_length_of(:network_hash).is_at_most(44) }
 
+  it { is_expected.to validate_length_of(:zuora_payment_method_xid).is_at_most(50) }
+
+  context 'when there is an existing record with this zuora_payment_method_xid' do
+    subject { build(:credit_card_validation, zuora_payment_method_xid: 'abc123') }
+
+    it { is_expected.to validate_uniqueness_of(:zuora_payment_method_xid).allow_nil }
+  end
+
   describe '#similar_records' do
     let_it_be(:credit_card_validation) { create(:credit_card_validation) }
 

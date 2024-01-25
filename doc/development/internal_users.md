@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Internal users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
 
 GitLab uses internal users (sometimes referred to as "bots") to perform
 actions or functions that cannot be attributed to a regular user.

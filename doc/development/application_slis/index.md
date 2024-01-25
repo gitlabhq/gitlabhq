@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Application Service Level Indicators (SLIs)
 
-> [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
+> - [Introduced](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/525) in GitLab 14.4
 
 It is possible to define [Service Level Indicators(SLIs)](https://en.wikipedia.org/wiki/Service_level_indicator)
 directly in the Ruby codebase. This keeps the definition of operations

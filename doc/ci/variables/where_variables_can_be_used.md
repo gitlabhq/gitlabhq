@@ -25,7 +25,7 @@ There are two places defined variables can be used. On the:
 
 ### `.gitlab-ci.yml` file
 
-> Support for `CI_ENVIRONMENT_*` variables except `CI_ENVIRONMENT_SLUG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694) in GitLab 16.4.
+> - Support for `CI_ENVIRONMENT_*` variables except `CI_ENVIRONMENT_SLUG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694) in GitLab 16.4.
 
 | Definition                                                            | Can be expanded? | Expansion place        | Description |
 |:----------------------------------------------------------------------|:-----------------|:-----------------------|:------------|

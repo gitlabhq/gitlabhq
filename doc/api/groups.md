@@ -16,7 +16,7 @@ The fields returned in responses vary based on the [permissions](../user/permiss
 
 ## List groups
 
-> Support for keyset pagination introduced in GitLab 14.3.
+> - Support for keyset pagination introduced in GitLab 14.3.
 
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
@@ -124,7 +124,8 @@ GET /groups?statistics=true
       "pipeline_artifacts_size": 0,
       "packages_size": 0,
       "snippets_size": 50,
-      "uploads_size": 0
+      "uploads_size": 0,
+      "container_registry_size": 0
     },
     "wiki_access_level": "private"
   }
@@ -520,7 +521,7 @@ Example response:
 
 ## Details of a group
 
-> The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
+> - The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
 
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
@@ -988,7 +989,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Update group
 
-> `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+> - `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.

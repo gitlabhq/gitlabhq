@@ -135,7 +135,7 @@ By default, impersonation is enabled. GitLab can be configured to [disable imper
 
 ### User identities
 
-> The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+> - The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
 
 When using authentication providers, administrators can see the identities for a user:
 
@@ -422,7 +422,7 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 ### System Information
 
-> Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
+> - Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
 
 The **System Info** page provides the following statistics:
 

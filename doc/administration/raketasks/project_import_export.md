@@ -16,7 +16,7 @@ You can only import from a [compatible](../../user/project/settings/import_expor
 
 ## Import large projects
 
-> The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
+> - The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
 
 This script was introduced in GitLab 12.6 for importing large GitLab project exports.
 

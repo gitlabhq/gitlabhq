@@ -156,7 +156,7 @@ To list streaming destinations and see the verification tokens:
 
 #### Update event filters
 
-> Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
+> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
 
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -175,7 +175,7 @@ To update a streaming destination's event filters:
 
 #### Update namespace filters
 
-> Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
+> - Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
 
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -249,7 +249,7 @@ To list Google Cloud Logging streaming destinations for a top-level group:
 
 #### Update a Google Cloud Logging destination
 
-> Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
+> - Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
 
 Prerequisites:
 
@@ -490,7 +490,7 @@ To list streaming destinations for an instance and see the verification tokens:
 
 #### Update event filters
 
-> Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
+> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
 
 When this feature is enabled, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -673,7 +673,7 @@ To delete AWS S3 streaming destinations on an instance:
 
 ## Payload schema
 
-> Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
+> - Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
 
 Streamed audit events have a predictable schema in the body of the response.
 

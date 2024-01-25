@@ -33,7 +33,7 @@ For every style added to this section, link the discussion from the section's [v
 
 ### Instance variable access using `attr_reader`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52351) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52351) in GitLab 14.1.
 
 Instance variables can be accessed in a variety of ways in a class:
 

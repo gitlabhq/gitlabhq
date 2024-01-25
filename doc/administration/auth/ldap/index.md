@@ -85,7 +85,7 @@ After configuring LDAP, to test the configuration, use the
 
 ### Basic configuration settings
 
-> The `hosts` configuration setting was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/139) in GitLab 14.7.
+> - The `hosts` configuration setting was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/139) in GitLab 14.7.
 
 The following configuration settings are available:
 

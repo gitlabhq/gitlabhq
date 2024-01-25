@@ -204,7 +204,7 @@ Example response:
 
 ## Update an existing environment
 
-> Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
+> - Parameter `name` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/338897) in GitLab 16.0.
 
 Updates an existing environment's name and/or `external_url`.
 

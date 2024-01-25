@@ -25,7 +25,7 @@ For example:
 ```markdown
 ## Great new feature **(EXPERIMENT)**
 
-> [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
+> - [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.

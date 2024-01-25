@@ -29,7 +29,7 @@ For information on using these endpoints with comments, see [Add reactions to co
 
 ### List an awardable's emoji reactions
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
 Get a list of all emoji reactions for a specified awardable. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -94,7 +94,7 @@ Example response:
 
 ### Get single emoji reaction
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
 Get a single emoji reaction from an issue, snippet, or merge request. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -218,7 +218,7 @@ adapted to comments on merge requests and snippets. Therefore, you have to repla
 
 ### List a comment's emoji reactions
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
 Get all emoji reactions for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.
@@ -266,7 +266,7 @@ Example response:
 
 ### Get an emoji reaction for a comment
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
 Get a single emoji reaction for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.

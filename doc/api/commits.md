@@ -24,7 +24,7 @@ information:
 
 ## List repository commits
 
-> Commits by author [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114417) in GitLab 15.10.
+> - Commits by author [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114417) in GitLab 15.10.
 
 Get a list of repository commits in a project.
 
@@ -313,7 +313,7 @@ Example response:
 
 ## Get the sequence of a commit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438151) in GitLab 16.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438151) in GitLab 16.9.
 
 Get the sequence number of a commit in a project by following the parent links from the given commit.
 

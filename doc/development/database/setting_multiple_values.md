@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Update multiple database objects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32921) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32921) in GitLab 13.5.
 
 You can update multiple database objects with new values for one or more columns.
 One method is to use `Relation#update_all`:

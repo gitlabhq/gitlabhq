@@ -430,7 +430,7 @@ omniauth:
 
 ## Bypass two-factor authentication
 
-> Introduced in GitLab 12.3.
+> - Introduced in GitLab 12.3.
 
 With certain OmniAuth providers, users can sign in without using two-factor authentication (2FA).
 

@@ -2023,6 +2023,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     let(:expiration_month) { 1 }
     let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
     let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
+    let(:zuora_payment_method_xid) { 'abc123' }
 
     let(:path) { "/user/#{user.id}/credit_card_validation" }
     let(:params) do
@@ -2032,7 +2033,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         credit_card_expiration_month: expiration_month,
         credit_card_holder_name: holder_name,
         credit_card_type: network,
-        credit_card_mask_number: last_digits
+        credit_card_mask_number: last_digits,
+        zuora_payment_method_xid: zuora_payment_method_xid
       }
     end
 
@@ -2066,7 +2068,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           network_hash: sha256(network.downcase),
           holder_name_hash: sha256(holder_name.downcase),
           last_digits_hash: sha256(last_digits),
-          expiration_date_hash: sha256(expiration_date.to_s)
+          expiration_date_hash: sha256(expiration_date.to_s),
+          zuora_payment_method_xid: zuora_payment_method_xid
         )
       end
 

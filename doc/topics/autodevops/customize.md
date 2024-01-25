@@ -94,7 +94,7 @@ To use only a single custom buildpack, you should provide the project CI/CD vari
 
 ## Custom Dockerfiles
 
-> `DOCKERFILE_PATH` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2.
+> - `DOCKERFILE_PATH` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35662) in GitLab 13.2.
 
 If you have a Dockerfile in the root of your project repository, Auto
 DevOps builds a Docker image based on the Dockerfile. This can be

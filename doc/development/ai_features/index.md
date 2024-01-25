@@ -189,7 +189,7 @@ View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
 
 ## Test AI features with AI Gateway locally
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) in GitLab 16.8.
 
 In order to develop an AI feature that is compatible with both SaaS and Self-managed GitLab instances,
 the feature must request to the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md) instead of directly requesting to the 3rd party model providers.

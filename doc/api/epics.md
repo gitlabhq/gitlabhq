@@ -54,7 +54,7 @@ When an epic is requested across groups, the `relative` format is expected to be
 
 ## List epics for a group
 
-> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+> - `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Gets all epics of the requested group and its subgroups.
 
@@ -197,7 +197,7 @@ Example response:
 
 ## Single epic
 
-> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+> - `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Gets a single epic
 
@@ -271,7 +271,7 @@ Example response:
 
 ## New epic
 
-> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+> - `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Creates a new epic.
 
@@ -360,7 +360,7 @@ Example response:
 
 ## Update epic
 
-> `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
+> - `parent_iid` and `_links[parent]` in response were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347527) in GitLab 14.6.
 
 Updates an epic.
 

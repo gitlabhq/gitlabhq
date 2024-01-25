@@ -16,7 +16,7 @@ In the Admin Area, a GitLab administrator can view and resolve spam logs.
 
 ## Manage spam logs
 
-> **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
+> - **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
 
 View and resolve spam logs to moderate user activity in your instance.
 

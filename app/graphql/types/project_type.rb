@@ -691,6 +691,17 @@ module Types
       description: 'Project is forked.',
       null: false
 
+    field :protectable_branches,
+      [GraphQL::Types::String],
+      description: 'List of unprotected branches, ignoring any wildcard branch rules',
+      null: true,
+      calls_gitaly: true,
+      alpha: { milestone: '16.9' }
+
+    def protectable_branches
+      ProtectableDropdown.new(project, :branches).protectable_ref_names
+    end
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

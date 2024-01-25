@@ -20,7 +20,7 @@ These access levels are recognized:
 
 ## List protected tags
 
-> Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+> - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
 
 Gets a list of [protected tags](../user/project/protected_tags.md) from a project.
 This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.

@@ -28,7 +28,7 @@ For more information on:
 
 ## Hashed storage
 
-> **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+> - **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
 
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a

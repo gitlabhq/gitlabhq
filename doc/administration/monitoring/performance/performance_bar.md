@@ -21,7 +21,7 @@ For example:
 
 ## Available information
 
-> Rugged calls [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421591) in GitLab 16.6.
+> - Rugged calls [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421591) in GitLab 16.6.
 
 From left to right, the performance bar displays:
 
@@ -97,7 +97,7 @@ For non-administrators to display the performance bar, it must be
 
 ## Request warnings
 
-> [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
+> - [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
 
 Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration

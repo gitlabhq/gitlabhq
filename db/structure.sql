@@ -24920,8 +24920,10 @@ CREATE TABLE user_credit_card_validations (
     holder_name_hash text,
     expiration_date_hash text,
     network_hash text,
+    zuora_payment_method_xid text,
     CONSTRAINT check_7721e1961a CHECK ((char_length(network_hash) <= 44)),
     CONSTRAINT check_83f1e2ace3 CHECK ((char_length(expiration_date_hash) <= 44)),
+    CONSTRAINT check_9a15d14e37 CHECK ((char_length(zuora_payment_method_xid) <= 50)),
     CONSTRAINT check_aca7c2607c CHECK ((char_length(holder_name_hash) <= 44)),
     CONSTRAINT check_f5c35b1a6e CHECK ((char_length(last_digits_hash) <= 44))
 );
@@ -36263,6 +36265,8 @@ CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id O
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
+
+CREATE UNIQUE INDEX unique_index_for_credit_card_validation_payment_method_xid ON user_credit_card_validations USING btree (zuora_payment_method_xid) WHERE (zuora_payment_method_xid IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
 

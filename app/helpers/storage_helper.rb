@@ -18,13 +18,15 @@ module StorageHelper
       counter_lfs_objects: storage_counter(statistics.lfs_objects_size),
       counter_snippets: storage_counter(statistics.snippets_size),
       counter_packages: storage_counter(statistics.packages_size),
-      counter_uploads: storage_counter(statistics.uploads_size)
+      counter_uploads: storage_counter(statistics.uploads_size),
+      counter_container_registry_size: storage_counter(statistics.container_registry_size)
     }
 
     _(
       "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / " \
       "Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / " \
-      "Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
+      "Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads} / " \
+      "Containers: %{counter_container_registry_size}"
     ) % counters
   end
 end

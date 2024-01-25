@@ -122,7 +122,7 @@ Parameters:
 
 ## Delete project milestone
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Only for users with at least the Reporter role in the project.
 
@@ -169,7 +169,7 @@ Parameters:
 
 ## Promote project milestone to a group milestone
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 
 Only for users with at least the Reporter role in the group.
 

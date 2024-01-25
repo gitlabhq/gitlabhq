@@ -10,6 +10,7 @@ RSpec.describe Projects::Ml::ExperimentFinder, feature_category: :mlops do
     create(:ml_experiments, name: "#{experiment1.name}_1", project: project, updated_at: 1.week.ago)
   end
 
+  let_it_be(:model_experiment) { create(:ml_models, project: project) }
   let_it_be(:other_experiment) { create(:ml_experiments) }
   let_it_be(:project_experiments) { [experiment1, experiment2, experiment3] }
 
@@ -28,6 +29,26 @@ RSpec.describe Projects::Ml::ExperimentFinder, feature_category: :mlops do
 
     it 'does not return models belonging to a different project' do
       is_expected.not_to include(other_experiment)
+    end
+
+    it 'does not return an experiment that belongs to a model' do
+      is_expected.not_to include(model_experiment)
+    end
+  end
+
+  describe 'params with_candidate_count' do
+    context 'when with_candidate_count is true' do
+      let(:params) { { with_candidate_count: true } }
+
+      it 'does computes candidate_count' do
+        expect(experiments[0].candidate_count).to eq(0)
+      end
+    end
+
+    context 'when with_candidate_count is false' do
+      it 'does not compute candidate_count' do
+        expect(experiments[0]).not_to respond_to(:candidate_count)
+      end
     end
   end
 

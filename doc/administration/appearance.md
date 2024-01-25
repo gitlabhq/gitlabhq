@@ -49,7 +49,7 @@ To change the favicon:
 
 ## Add system header and footer messages
 
-> **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
+> - **Enable header and footer in emails** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344819) in GitLab 15.9.
 
 Add a small header message, a small footer message, or both, to the interface of your GitLab instance. These messages show on all projects and pages of the instance, such as the sign-in and register pages.
 

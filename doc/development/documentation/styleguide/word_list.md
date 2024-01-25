@@ -728,9 +728,9 @@ of the fields at once. For example:
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
 
-## file name
+## filename
 
-Use two words for **file name**. When using file name as a variable, use `<file_name>`.
+Use one word for **filename**. When using filename as a variable, use `<filename>`.
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 

@@ -15,7 +15,7 @@ The Geo API is used internally by GitLab components to assist in coordinating Ge
 
 ## Fetch pipeline refs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7.
 
 This method returns a list of branches matching `pipeline/refs/X` that exist on the repository for `gl_repository` on the current Geo node. This endpoint is used by runners registered with a secondary Geo instance to check if a repository is up to date.
 

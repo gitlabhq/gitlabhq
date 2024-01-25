@@ -39,7 +39,7 @@ The Value Streams Dashboard panels has a default configuration, but you can also
 
 ### DevSecOps metrics comparison panel
 
-> Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
+> - Contributor count metric [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) in GitLab 16.9.
 
 The DevSecOps metrics comparison displays DORA4, vulnerability, and flow metrics for a group or project in the
 month-to-date, last month, the month before, and the past 180 days.

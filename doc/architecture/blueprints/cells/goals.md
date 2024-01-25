@@ -313,7 +313,7 @@ Additionally Cells may solve some issues with canaries today, for example not ha
 
 ### Cell
 
-> Pod was renamed to Cell in <https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/121163>
+> - Pod was renamed to Cell in <https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/121163>
 
 A Cell is a set of infrastructure components that contains multiple top-level Groups that belong to different Organizations. The components include both data stores (PostgreSQL, Redis, etc.) and stateless services (web, etc.). The infrastructure components provided within a Cell are shared among Organizations and their top-level Groups, but are not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 

@@ -4,7 +4,6 @@ import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import createDefaultClient from '~/lib/graphql';
 import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
-import resolvers from '../shared/graphql/resolvers';
 import App from './components/app.vue';
 
 export const createRouter = () => {
@@ -41,7 +40,7 @@ export const initOrganizationsShow = () => {
   Vue.use(VueRouter);
   const router = createRouter();
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(),
   });
 
   return new Vue({

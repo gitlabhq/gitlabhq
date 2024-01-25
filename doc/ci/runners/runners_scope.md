@@ -292,7 +292,7 @@ how to [register a runner](https://docs.gitlab.com/runner/register/#register-wit
 
 ### View group runners
 
-> Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
+> - Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
 
 Prerequisites:
 
@@ -339,7 +339,7 @@ instance. If you pause a group runner that is used by multiple projects, the run
 
 ### Delete a group runner
 
-> Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
+> - Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
 
 Prerequisites:
 

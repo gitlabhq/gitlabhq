@@ -250,7 +250,7 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 ## Feature flag definition and validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
 
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
@@ -538,7 +538,7 @@ to selectively enable or disable feature flags in GitLab-provided environments, 
 
 #### Current request actor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
 
 It is not recommended to use percentage of time rollout, as each call may return
 inconsistent results.

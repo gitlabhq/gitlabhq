@@ -21,7 +21,7 @@ To see DevOps Reports:
 
 ## DevOps Score
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
 
 NOTE:
 To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.

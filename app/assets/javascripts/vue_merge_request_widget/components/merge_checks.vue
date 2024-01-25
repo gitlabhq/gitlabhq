@@ -70,6 +70,7 @@ export default {
   data() {
     return {
       collapsed: true,
+      collapsedCount: 0,
       state: {},
     };
   },
@@ -105,19 +106,39 @@ export default {
       const order = ['FAILED', 'SUCCESS'];
 
       return [...this.checks]
-        .filter((s) => s.status !== 'INACTIVE' && FAILURE_REASONS[s.identifier.toLowerCase()])
+        .filter((s) => {
+          if (this.isStatusInactive(s) || !this.hasMessage(s)) return false;
+          if (this.collapsedCount > 0 && this.collapsed) return false;
+
+          return this.collapsed ? this.isStatusFailed(s) : true;
+        })
         .sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
     },
     failedChecks() {
-      return this.checks.filter((c) => c.status.toLowerCase() === 'failed');
+      return this.checks.filter((c) => this.isStatusFailed(c));
+    },
+    showChecks() {
+      if (this.collapsed && this.collapsedCount > 0) return false;
+
+      return this.failedChecks.length > 0 || !this.collapsed;
     },
   },
   methods: {
     toggleCollapsed() {
       this.collapsed = !this.collapsed;
+      this.collapsedCount += 1;
     },
     checkComponent(check) {
       return COMPONENTS[check.identifier.toLowerCase()] || COMPONENTS.default;
+    },
+    hasMessage(check) {
+      return Boolean(FAILURE_REASONS[check.identifier.toLowerCase()]);
+    },
+    isStatusInactive(check) {
+      return check.status === 'INACTIVE';
+    },
+    isStatusFailed(check) {
+      return check.status === 'FAILED';
     },
   },
 };
@@ -146,7 +167,7 @@ export default {
       </template>
     </state-container>
     <div
-      v-if="!collapsed"
+      v-if="showChecks"
       class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-relative gl-bg-gray-10"
       data-testid="merge-checks-full"
     >

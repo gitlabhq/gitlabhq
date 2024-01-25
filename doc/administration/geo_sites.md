@@ -61,7 +61,7 @@ you can decrease them.
 
 ## Set up the internal URLs
 
-> Setting up internal URLs in secondary sites was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77179) in GitLab 14.7.
+> - Setting up internal URLs in secondary sites was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77179) in GitLab 14.7.
 
 You can set up a different URL for synchronization between the primary and secondary site.
 

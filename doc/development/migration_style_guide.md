@@ -434,7 +434,7 @@ To update a migration timestamp:
 
 ## Migration helpers and versioning
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
 
 Various helper methods are available for many common patterns in database migrations. Those
 helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
@@ -893,7 +893,7 @@ You can read more about adding [foreign key constraints to an existing column](d
 
 ## `NOT NULL` constraints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
 
 See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md) for more information.
 
@@ -1109,7 +1109,7 @@ end
 
 ## Dropping a sequence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
 
 Dropping a sequence is uncommon, but you can use the `drop_sequence` method provided by the database team.
 
@@ -1147,7 +1147,7 @@ Adding sequence to these columns is **only allowed** in the down method (restore
 
 ## Truncate a table
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
 
 Truncating a table is uncommon, but you can use the `truncate_tables!` method provided by the database team.
 
@@ -1161,7 +1161,7 @@ Under the hood, it works like this:
 
 ## Swapping primary key
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
 
 Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
 
@@ -1217,7 +1217,7 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Strings and the Text data type
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
 
 See the [text data type](database/strings_and_the_text_data_type.md) style guide for more information.
 
@@ -1333,7 +1333,7 @@ You can now use `restricted_visibility_levels` as an ActiveRecord attribute:
 
 ## Encrypted attributes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
 
 Do not store `attr_encrypted` attributes as `:text` in the database; use
 `:binary` instead. This uses the `bytea` type in PostgreSQL and makes storage more

@@ -347,7 +347,7 @@ Example of response
 
 ## Create a new pipeline
 
-> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 
 ```plaintext
 POST /projects/:id/pipeline
@@ -398,7 +398,7 @@ Example of response
 
 ## Retry jobs in a pipeline
 
-> `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
+> - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 
 ```plaintext
 POST /projects/:id/pipelines/:pipeline_id/retry

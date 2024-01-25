@@ -22,6 +22,8 @@ module Users
       greater_than_or_equal_to: 0, less_than_or_equal_to: 9999
     }
 
+    validates :zuora_payment_method_xid, length: { maximum: 50 }, uniqueness: true, allow_nil: true
+
     validates :last_digits_hash, length: { maximum: 44 }
     validates :holder_name_hash, length: { maximum: 44 }
     validates :expiration_date_hash, length: { maximum: 44 }

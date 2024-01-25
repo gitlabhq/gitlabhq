@@ -513,7 +513,7 @@ and as follows.
 
 ### `sidekiq.log`
 
-> The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
+> - The default log format for Helm chart installations [changed from `text` to `json`](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/3169) in GitLab 16.0 and later.
 
 This file is located at:
 

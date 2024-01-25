@@ -47,13 +47,13 @@ required attributes first in the table.
 ````markdown
 ## API name
 
-> Version history note.
+> - Version history note.
 
 One or two sentence description of what endpoint does.
 
 ### Method title
 
-> Version history note.
+> - Version history note.
 
 Description of the method.
 
@@ -106,7 +106,7 @@ for the section. For example:
 ```markdown
 ### Edit a widget
 
-> `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
+> - `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
 If the API or attribute is deployed behind a feature flag,

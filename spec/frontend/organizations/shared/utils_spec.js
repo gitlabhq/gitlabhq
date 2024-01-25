@@ -23,16 +23,17 @@ describe('formatProjects', () => {
 
 describe('formatGroups', () => {
   it('correctly formats the groups', () => {
-    const [firstMockGroup] = organizationGroups.nodes;
-    const formattedGroups = formatGroups(organizationGroups.nodes);
+    const [firstMockGroup] = organizationGroups;
+    const formattedGroups = formatGroups(organizationGroups);
     const [firstFormattedGroup] = formattedGroups;
 
     expect(firstFormattedGroup).toMatchObject({
       id: getIdFromGraphQLId(firstMockGroup.id),
+      parent: null,
       editPath: `${firstFormattedGroup.webUrl}/-/edit`,
       availableActions: [ACTION_EDIT, ACTION_DELETE],
     });
-    expect(formattedGroups.length).toBe(organizationGroups.nodes.length);
+    expect(formattedGroups.length).toBe(organizationGroups.length);
   });
 });
 

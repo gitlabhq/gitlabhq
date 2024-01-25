@@ -39,6 +39,7 @@ module API
           expose :packages_size
           expose :snippets_size
           expose :uploads_size
+          expose :container_registry_size
         end
       end
     end

@@ -168,7 +168,7 @@ This data can only be read and decrypted with a valid secrets file.
 
 ### Site profile validation
 
-> Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
+> - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
 must be validated before an active scan can run against it. Each of the site validation methods are

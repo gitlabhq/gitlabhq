@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.1 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Optimize garbage collection process](gitlab-org/security/gitlab@1d5a7bc23d5678a2d3c059cbced7d33f5e1e68c4)
+
+### Changed (1 change)
+
+- [Migrate {hll_counters}_i_code_review_create_mr from hll to int](gitlab-org/security/gitlab@357bfe13fc9ab986bba65eb2b06413baed1357f1)
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@4f2cc52e8695d219bc9e5c73ada1cf92b1b7a398) ([merge request](gitlab-org/security/gitlab!3817))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@d3b7615e4b0e5aa8007a8d00944bbd98a98c5f84) ([merge request](gitlab-org/security/gitlab!3822))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@2f5cccd35e5e0e5e1786d9d10cfacf890704d1ad) ([merge request](gitlab-org/security/gitlab!3818))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@7a315ac79ece40726fa28d0821c872f0343346b8) ([merge request](gitlab-org/security/gitlab!3819))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@bf0c84e848ef955443e3998b937aabaf66cdb5ed) ([merge request](gitlab-org/security/gitlab!3820))
+
 ## 16.8.0 (2024-01-17)
 
 ### Added (113 changes)
@@ -485,6 +503,20 @@ entry.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.4 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Bring legacy verification behavior back for repositories](gitlab-org/security/gitlab@0f3c5e6c2867cb9ea5ca40cf6a0f1526d6018ad1) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@ae7844052f79e4fa987818bf642313fb6e47388f) ([merge request](gitlab-org/security/gitlab!3800))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@9abe7c6ca865c4884ad25db17c02ee7feb5c6c91) ([merge request](gitlab-org/security/gitlab!3803))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@58ab3f89b3298a248640bddbf94a5c3fdf27a867) ([merge request](gitlab-org/security/gitlab!3785))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@ced4fa77abf8a05cbc015b6128220d783d11c3a2) ([merge request](gitlab-org/security/gitlab!3788))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@d374f84266d2ca14a79a3924f458e244b50191e4) ([merge request](gitlab-org/security/gitlab!3792))
 
 ## 16.7.3 (2024-01-13)
 
@@ -1412,6 +1444,20 @@ entry.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.6 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Bring legacy verification behavior back for repositories](gitlab-org/security/gitlab@36bcdbdd83f726f9e4b89352d5c2c5d3d6a0aed8) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@d99a6dd3b4db37b4de1e3064059d769233c71ebd) ([merge request](gitlab-org/security/gitlab!3801))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@0c6e04dd2ad28ea1630e11903b74d74c177fc128) ([merge request](gitlab-org/security/gitlab!3804))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@13d91b4e6248be0f326d0e476e2291360be7a1eb) ([merge request](gitlab-org/security/gitlab!3786))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@fa1f908f65d7e2de0f5a5d99d4641e13bad92b10) ([merge request](gitlab-org/security/gitlab!3789))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@632f6852c312f29984fb1eebb5fc7e9d1a6de1ae) ([merge request](gitlab-org/security/gitlab!3793))
+
 ## 16.6.5 (2024-01-13)
 
 No changes.
@@ -2014,6 +2060,12 @@ No changes.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.8 (2024-01-24)
+
+### Security (1 change)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@0a831ae0ed0eb32b42ab69652010815e9dffec51) ([merge request](gitlab-org/security/gitlab!3802))
 
 ## 16.5.7 (2024-01-13)
 

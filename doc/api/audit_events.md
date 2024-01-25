@@ -170,7 +170,7 @@ Example response:
 
 ## Group Audit Events
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 Use this API to retrieve group audit events.
 
@@ -184,7 +184,7 @@ pagination is recommended when requesting consecutive pages of results.
 
 ### Retrieve all group audit events
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333968) in GitLab 15.2.
 
 ```plaintext
 GET /groups/:id/audit_events
@@ -296,7 +296,7 @@ A user with a Developer role is limited to project audit events based on their i
 
 ### Retrieve all project audit events
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367528) in GitLab 15.10.
 
 ```plaintext
 GET /projects/:id/audit_events

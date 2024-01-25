@@ -122,7 +122,7 @@ Example response:
 
 ### Within a group
 
-> [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
+> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336912) the `tags` and `tag_count` attributes in GitLab 15.0.
 
 Get a list of registry repositories in a group.
 
@@ -439,7 +439,7 @@ $ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
 
 ### Delete image tags by reference
 
-> Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
+> - Endpoint `v2/<name>/manifests/<tag>` [introduced](https://gitlab.com/gitlab-org/container-registry/-/issues/1091) and endpoint `v2/<name>/tags/reference/<tag>` [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1094) in GitLab 16.4.
 
 <!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
 

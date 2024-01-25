@@ -649,7 +649,7 @@ you can pull from the container registry, but you cannot push.
 
 #### Moving to Azure Object Storage
 
-> The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
+> - The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
 
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
 Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
