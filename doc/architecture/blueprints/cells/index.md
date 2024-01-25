@@ -20,7 +20,13 @@ For more information about Cells, see also:
 
 ## Cells Iterations
 
-See Cell 1.0, Cell 1.5, and Cell 2.0.
+- The [Cells 1.0](iterations/cells-1.0.md) target is to deliver a solution
+  for new enterprise customers using the SaaS GitLab.com offering.
+- The [Cells 1.5](iterations/cells-1.5.md) target is to deliver a migration solution
+  for existing enterprise customers using the SaaS GitLab.com offering, built on top of architecture
+  of Cells 1.0.
+- The [Cells 2.0](iterations/cells-2.0.md) target is to support a public and open source contribution
+  model in a cellular architecture.
 
 ## Goals
 
@@ -424,7 +430,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 
 ## Decision log
 
-- 2022-03-15: Google Cloud as the cloud service. For details, see [issue 396641](https://gitlab.com/gitlab-org/gitlab/-/issues/396641#note_1314932272).
+- [ADR-001: Routing Technology using Cloudflare Workers](decisions/001_routing_technology.md)
 
 ## Links
 

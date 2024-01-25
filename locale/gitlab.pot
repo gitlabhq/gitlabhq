@@ -51798,9 +51798,6 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-msgid "Total Score"
-msgstr ""
-
 msgid "Total cores (CPUs)"
 msgstr ""
 
@@ -57906,16 +57903,10 @@ msgstr ""
 msgid "ciReport|Browser performance test metrics results are being parsed"
 msgstr ""
 
-msgid "ciReport|Browser performance test metrics: "
-msgstr ""
-
 msgid "ciReport|Browser performance test metrics: %{strong_start}%{changesFound}%{strong_end} change"
 msgid_plural "ciReport|Browser performance test metrics: %{strong_start}%{changesFound}%{strong_end} changes"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "ciReport|Browser performance test metrics: No changes"
-msgstr ""
 
 msgid "ciReport|Checks"
 msgstr ""

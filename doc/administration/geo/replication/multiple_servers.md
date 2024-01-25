@@ -135,11 +135,10 @@ recommended.
 
 ### Step 2: Configure the Geo tracking database on the Geo **secondary** site
 
-If you want to run the Geo tracking database in a multi-node PostgreSQL cluster,
-then follow [Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database).
+The Geo tracking database cannot be run in a multi-node PostgreSQL cluster,
+see [Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database).
 
-If you want to run the Geo tracking database on a single node, then follow
-the instructions below.
+You can run the Geo tracking database on a single node as follows:
 
 1. Generate an MD5 hash of the desired password for the database user that the
    GitLab application uses to access the tracking database:

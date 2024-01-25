@@ -32,9 +32,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Feature flags
 
-Apply the following two feature flags to any AI feature work:
+Apply the following feature flags to any AI feature work:
 
-- A general flag (`ai_global_switch`) that applies to all AI features.
+- A general flag (`ai_duo_chat_switch`) that applies to all GitLab Duo Chat features.
+- A general flag (`ai_global_switch`) that applies to all other AI features.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
@@ -62,6 +63,7 @@ RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
 1. Enable the required general feature flags:
 
    ```ruby
+   Feature.enable(:ai_duo_chat_switch, type: :ops)
    Feature.enable(:ai_global_switch, type: :ops)
    ```
 
@@ -220,15 +222,11 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
       ```
 
       Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.
-   1. Enable the following feature flags via `gdk rails console`:
+   1. Enable all AI feature flags:
 
-      ```ruby
-      # NOTE: This feature flag name might be changed. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140352.
-      ::Feature.enable(:ai_global_switch)
-
-      # This is to request to AI Gateway instead of built-in Anthropic client. See https://gitlab.com/gitlab-org/gitlab/-/issues/433213 for more info.
-      ::Feature.enable(:gitlab_duo_chat_requests_to_ai_gateway)
-      ```
+     ```shell
+     rake gitlab:duo:enable_feature_flags
+     ```
 
    1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
 
@@ -462,7 +460,8 @@ end
 
 We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
-1. General AI feature flag (`ai_global_switch`) is enabled
+1. For GitLab Duo Chat feature, `ai_duo_chat_switch` is enabled
+1. For other general AI features, `ai_global_switch` is enabled
 1. Feature specific feature flag is enabled
 1. The namespace has the required license for the feature
 1. User is a member of the group/project

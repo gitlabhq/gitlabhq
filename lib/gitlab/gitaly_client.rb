@@ -170,10 +170,10 @@ module Gitlab
                 { 'service': 'grpc.health.v1.Health', 'method': 'Check' }
               ],
               'retryPolicy': {
-                'maxAttempts': 3, # Initial request, plus up to two retries.
-                'initialBackoff': '0.25s',
-                'maxBackoff': '1s',
-                'backoffMultiplier': 2, # Minimum retry duration is 750ms.
+                'maxAttempts': 4, # Initial request, plus up to three retries.
+                'initialBackoff': '0.4s',
+                'maxBackoff': '1.4s',
+                'backoffMultiplier': 2, # Maximum retry duration is 2400ms.
                 'retryableStatusCodes': ['UNAVAILABLE']
               }
             }

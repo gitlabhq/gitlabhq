@@ -20,7 +20,7 @@ module Gitlab
               IF NEW."id" IS NOT NULL THEN
                 RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
               END IF;
-              NEW."id" := nextval('#{existing_sequence(table_name)}'::regclass);
+              NEW."id" := nextval(\'#{existing_sequence(table_name)}\'::regclass);
               RETURN NEW;
             SQL
           end
@@ -31,7 +31,7 @@ module Gitlab
         private
 
         def existing_sequence(table_name)
-          Gitlab::Database::PostgresSequence.by_table_name(table_name).first
+          Gitlab::Database::PostgresSequence.by_table_name(table_name).first.seq_name
         end
       end
     end

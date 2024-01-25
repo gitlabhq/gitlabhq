@@ -46,15 +46,7 @@ module Gitlab
 
         Shell.execute("git", "checkout", "-b", branch_name)
         Shell.execute("git", "add", *change.changed_files)
-
-        commit_message = <<~MSG
-        #{change.title}
-
-        #{change.description}
-        MSG
-
-        Shell.execute("git", "commit", "-m", commit_message)
-
+        Shell.execute("git", "commit", "-m", change.commit_message)
       ensure
         Shell.execute("git", "checkout", current_branch)
       end

@@ -10,6 +10,7 @@ info: >-
 
 DETAILS:
 **Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6
 

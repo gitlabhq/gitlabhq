@@ -30,6 +30,8 @@ For example:
     If it is required to make the service multi-cloud it might be required to deploy it to the CDN provider.
     Then the service needs to be written using a technology compatible with the CDN provider.
 
+    [ADR 001](decisions/001_routing_technology.md)
+
 1. **Cell discovery.**
 
     The routing service needs to be able to discover and monitor the health of all Cells.
@@ -763,10 +765,6 @@ sequenceDiagram
   it is expected that multi-layer cache should provide a very high cache-hit-ratio,
   due to low cardinality of sharding key. The sharding key would effectively be mapped
   into resource (organization, group, or project), and there's a finite amount of those.
-
-## Technology
-
-TBD
 
 ## Alternatives
 

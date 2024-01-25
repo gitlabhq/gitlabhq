@@ -347,6 +347,7 @@ class EnsureIdUniquenessForPCiBuilds < Gitlab::Database::Migration[2.1]
       DROP FUNCTION IF EXISTS #{FUNCTION_NAME} CASCADE;
     SQL
   end
+end
 ```
 
 ### Step 9 - Analyze the partitioned table and create new partitions

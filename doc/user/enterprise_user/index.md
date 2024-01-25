@@ -204,10 +204,18 @@ For more information, see how to [configure enterprise user settings from the SA
 
 A top-level group Owner can [set up verified domains to bypass confirmation emails](../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
-### Get users' email addresses through the API
+### Get users' email addresses
 
-A top-level group Owner can use the [group and project members API](../../api/members.md) to access
-users' information. For enterprise users of the group this information includes users' email addresses.
+A top-level group Owner can use the UI to access enterprise users' email addresses:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Manage > Members**.
+1. In the group or project members page, hover over the enterprise user's name to
+   see their email address.
+
+A group Owner can also use the [group and project members API](../../api/members.md)
+to access users' information. For enterprise users of the group, this information
+includes users' email addresses.
 
 ### Remove enterprise management features from an account
 
