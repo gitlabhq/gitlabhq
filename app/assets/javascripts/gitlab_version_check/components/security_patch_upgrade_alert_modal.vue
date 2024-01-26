@@ -23,6 +23,9 @@ export default {
     modalBodyStableVersions: s__(
       'VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}.',
     ),
+    additionalAvailablePatch: s__(
+      'VersionCheck|Additionally, there is an available stable patch for your current GitLab minor version: %{latestStableVersionOfMinor}',
+    ),
     modalDetails: s__('VersionCheck|%{details}'),
     learnMore: s__('VersionCheck|Learn more about this critical security release.'),
     primaryButtonText: s__('VersionCheck|Upgrade now'),
@@ -53,6 +56,11 @@ export default {
       required: false,
       default: () => [],
     },
+    latestStableVersionOfMinor: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -75,6 +83,12 @@ export default {
     },
     latestStableVersionsStrings() {
       return this.latestStableVersions?.length > 0 ? this.latestStableVersions.join(', ') : '';
+    },
+    showLatestStableVersionOfMinor() {
+      return (
+        this.latestStableVersionOfMinor &&
+        !this.latestStableVersionsStrings.includes(this.latestStableVersionOfMinor)
+      );
     },
   },
   created() {
@@ -136,6 +150,13 @@ export default {
             <span class="gl-font-weight-bold">{{ latestStableVersionsStrings }}</span>
           </template>
         </gl-sprintf>
+        <div v-if="showLatestStableVersionOfMinor" class="gl-mt-6">
+          <gl-sprintf :message="$options.i18n.additionalAvailablePatch">
+            <template #latestStableVersionOfMinor>
+              <span class="gl-font-weight-bold">{{ latestStableVersionOfMinor }}</span>
+            </template>
+          </gl-sprintf>
+        </div>
       </div>
       <div v-if="details" data-testid="alert-modal-details" class="gl-mb-6">
         {{ modalDetails }}

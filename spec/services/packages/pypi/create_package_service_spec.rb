@@ -113,8 +113,8 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
     context 'with an invalid metadata' do
       let(:requires_python) { 'x' * 256 }
 
-      it 'raises an error' do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      it_behaves_like 'returning an error service response', /Pypi package metadata invalid/ do
+        it { is_expected.to have_attributes(reason: :invalid_parameter) }
       end
     end
 
@@ -122,8 +122,13 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       let(:package) { created_package }
     end
 
-    it_behaves_like 'assigns build to package'
-    it_behaves_like 'assigns status to package'
+    it_behaves_like 'assigns build to package' do
+      let(:subject) { super().payload.fetch(:package) }
+    end
+
+    it_behaves_like 'assigns status to package' do
+      let(:subject) { super().payload.fetch(:package) }
+    end
 
     context 'with an existing package' do
       before do
@@ -137,11 +142,14 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           params[:md5_digest] = md5
         end
 
-        it 'throws an error' do
+        it_behaves_like 'returning an error service response', /File name has already been taken/ do
+          it { is_expected.to have_attributes(reason: :invalid_parameter) }
+        end
+
+        it 'does not create a pypi package' do
           expect { subject }
             .to change { Packages::Package.pypi.count }.by(0)
             .and change { Packages::PackageFile.count }.by(0)
-            .and raise_error(/File name has already been taken/)
         end
 
         context 'with a pending_destruction package' do

@@ -17303,10 +17303,16 @@ msgstr ""
 msgid "Deployment|Created"
 msgstr ""
 
+msgid "Deployment|Deployment #%{iid}"
+msgstr ""
+
 msgid "Deployment|Deployment ID"
 msgstr ""
 
 msgid "Deployment|Failed"
+msgstr ""
+
+msgid "Deployment|Finished %{timeago} by %{username}"
 msgstr ""
 
 msgid "Deployment|Flux sync failed"
@@ -17339,10 +17345,16 @@ msgstr ""
 msgid "Deployment|Skipped"
 msgstr ""
 
+msgid "Deployment|Started %{timeago} by %{username}"
+msgstr ""
+
 msgid "Deployment|Success"
 msgstr ""
 
 msgid "Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}"
+msgstr ""
+
+msgid "Deployment|There was an issue fetching the deployment, please try again later."
 msgstr ""
 
 msgid "Deployment|Triggerer"
@@ -54180,6 +54192,9 @@ msgid "Version %{versionNumber} (latest)"
 msgstr ""
 
 msgid "VersionCheck|%{details}"
+msgstr ""
+
+msgid "VersionCheck|Additionally, there is an available stable patch for your current GitLab minor version: %{latestStableVersionOfMinor}"
 msgstr ""
 
 msgid "VersionCheck|Important notice - Critical security release"

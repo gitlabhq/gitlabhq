@@ -29,22 +29,22 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
       allow(definition2).to receive(:events).and_return(events2)
     end
 
-    describe ".unique_property" do
+    describe ".unique_properties" do
       context 'when event has valid unique value with a period', :aggregate_failures do
         let(:events1) { { 'event1' => :'user.id' } }
         let(:events2) { { 'event2' => :'project.id' } }
 
         it 'is returned' do
-          expect(described_class.unique_property('event1')).to eq(:user)
-          expect(described_class.unique_property('event2')).to eq(:project)
+          expect(described_class.unique_properties('event1')).to eq([:user])
+          expect(described_class.unique_properties('event2')).to eq([:project])
         end
       end
 
-      context 'when event has no periods in unique property', :aggregate_failures do
-        let(:events1) { { 'event1' => :plan_id } }
+      context 'when event has no periods in unique property' do
+        let(:events1) { { 'event1' => :user_id } }
 
         it 'fails' do
-          expect { described_class.unique_property('event1') }
+          expect { described_class.unique_properties('event1') }
             .to raise_error(described_class::InvalidMetricConfiguration, /Invalid unique value/)
         end
       end
@@ -53,29 +53,39 @@ RSpec.describe Gitlab::InternalEvents::EventDefinitions, feature_category: :prod
         let(:events1) { { 'event1' => :'project.namespace.id' } }
 
         it 'fails' do
-          expect { described_class.unique_property('event1') }
+          expect { described_class.unique_properties('event1') }
             .to raise_error(described_class::InvalidMetricConfiguration, /Invalid unique value/)
         end
       end
 
       context 'when event does not have unique property' do
-        it 'returns nil' do
-          expect(described_class.unique_property('event1')).to be_nil
+        it 'returns an empty array' do
+          expect(described_class.unique_properties('event1')).to eq([])
+        end
+      end
+
+      context 'when an event has multiple unique properties' do
+        let(:events1) { { 'event1' => :'user.id' } }
+        let(:events2) { { 'event1' => :'project.id' } }
+
+        it "returns all the properties" do
+          expect(described_class.unique_properties('event1')).to match_array([:user, :project])
+        end
+      end
+
+      context 'when an event has nil property' do
+        let(:events1) { { 'event1' => :'user.id' } }
+        let(:events2) { { 'event1' => nil } }
+
+        it "ignores the nil property" do
+          expect(described_class.unique_properties('event1')).to eq([:user])
         end
       end
     end
 
     describe ".load_configurations" do
-      context 'when unique property for event is ambiguous' do
-        let(:events1) { { 'event1' => :user_id } }
-        let(:events2) { { 'event1' => :project_id } }
-
-        it 'logs error when loading' do
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-            .with(described_class::InvalidMetricConfiguration)
-
-          described_class.load_configurations
-        end
+      it 'raises no errors' do
+        described_class.load_configurations
       end
     end
 

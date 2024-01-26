@@ -13,7 +13,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(redis).to receive(:incr)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)
-    allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property).and_return(unique_property)
+    allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties).and_return(unique_properties)
     allow(fake_snowplow).to receive(:event)
   end
 
@@ -29,9 +29,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  def expect_redis_hll_tracking
+  def expect_redis_hll_tracking(value_override = nil, property_name_override = nil)
+    expected_value = value_override || unique_value
+    expected_property_name = property_name_override || property_name
+
     expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event)
-      .with(event_name, values: unique_value)
+      .with(event_name, values: expected_value, property_name: expected_property_name)
   end
 
   def expect_redis_tracking
@@ -93,8 +96,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let(:fake_snowplow) { instance_double(Gitlab::Tracking::Destinations::Snowplow) }
   let(:event_name) { 'g_edit_by_web_ide' }
   let(:category) { 'InternalEventTracking' }
-  let(:unique_property) { :user }
+  let(:unique_properties) { [:user] }
   let(:unique_value) { user.id }
+  let(:property_name) { :user }
   let(:redis_arguments) { [event_name, Date.today.strftime('%G-%V')] }
 
   context 'when only user is passed' do
@@ -123,8 +127,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   end
 
   context 'when namespace is not passed' do
-    let(:unique_property) { :namespace }
+    let(:unique_properties) { [:namespace] }
     let(:unique_value) { project.namespace.id }
+    let(:property_name) { :namespace }
 
     it 'uses id from projects namespace' do
       described_class.track_event(event_name, user: user, project: project)
@@ -209,9 +214,17 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       .with(message: /should be triggered with a named parameter/)
   end
 
+  it 'logs warning on nil property', :aggregate_failures do
+    expect { described_class.track_event(event_name, user: nil) }.not_to raise_error
+
+    expect_redis_tracking
+    expect(Gitlab::AppJsonLogger).to have_received(:warn)
+      .with(message: /should be triggered with a named parameter/)
+  end
+
   context 'when unique property is missing' do
     before do
-      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property)
+      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties)
         .and_raise(Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration)
     end
 
@@ -226,12 +239,13 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   context 'when unique key is defined' do
     let(:event_name) { 'p_ci_templates_terraform_base_latest' }
     let(:unique_value) { project.id }
+    let(:property_names) { [:project] }
     let(:property_name) { :project }
 
     before do
-      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property)
+      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties)
         .with(event_name)
-        .and_return(property_name)
+        .and_return(property_names)
     end
 
     it 'is used when logging to RedisHLL', :aggregate_failures do
@@ -243,11 +257,71 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
 
     context 'when property is missing' do
+      let(:unique_value) { project.id }
+      let(:property_names) { [:project] }
+      let(:property_name) { :project }
+
       it 'logs error' do
         expect { described_class.track_event(event_name, merge_request_id: 1) }.not_to raise_error
 
         expect(Gitlab::AppJsonLogger).to have_received(:warn)
           .with(message: /should be triggered with a named parameter/)
+      end
+    end
+
+    context 'when there are multiple unique keys' do
+      let(:property_names) { [:project, :user] }
+
+      context "with the property_name tracking feature flag enabled" do
+        before do
+          stub_feature_flags(redis_hll_property_name_tracking: true)
+        end
+
+        it 'all of them are used when logging to RedisHLL', :aggregate_failures do
+          described_class.track_event(event_name, user: user, project: project)
+
+          expect_redis_tracking
+          expect_redis_hll_tracking(user.id, :user)
+          expect_redis_hll_tracking(project.id, :project)
+          expect_snowplow_tracking
+        end
+      end
+
+      context "with the property_name tracking feature flag disabled" do
+        context "with multiple property_names defined" do
+          it 'logs an error', :aggregate_failures do
+            described_class.track_event(event_name, user: user, project: project)
+
+            expect(Gitlab::ErrorTracking).to have_received(:track_and_raise_for_dev_exception).with(
+              Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration, anything
+            )
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
+          end
+        end
+
+        context "with single property_names defined" do
+          let(:property_names) { [:project] }
+
+          it 'logs to RedisHLL only once' do
+            described_class.track_event(event_name, user: user, project: project)
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
+          end
+        end
+
+        context "when event_name is user_visited_dashboard" do
+          let(:event_name) { 'user_visited_dashboard' }
+
+          it 'logs to RedisHLL only once with user_id' do
+            # make it defined also on FOSS tests
+            allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with(event_name).and_return(true)
+
+            described_class.track_event(event_name, user: user, project: project)
+
+            expect(Gitlab::UsageDataCounters::HLLRedisCounter).to have_received(:track_event).once
+              .with(event_name, values: user.id, property_name: :user)
+          end
+        end
       end
     end
 
@@ -266,9 +340,9 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     let(:event_name) { 'p_ci_templates_terraform_base_latest' }
 
     before do
-      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_property)
+      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:unique_properties)
         .with(event_name)
-        .and_return(nil)
+        .and_return([])
     end
 
     it 'logs to Redis and Snowplow but not RedisHLL', :aggregate_failures do

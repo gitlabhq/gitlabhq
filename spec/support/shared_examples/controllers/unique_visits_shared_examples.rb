@@ -10,7 +10,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
 
     ids.each do |id|
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, values: anything)
+      .to receive(:track_event).with(id, hash_including(values: anything))
     end
 
     # allow other method calls in addition to the expected one
@@ -24,7 +24,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
 
     ids.each do |id|
       expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, values: anything)
+      .to receive(:track_event).with(id, hash_including(values: anything))
     end
 
     # allow other method calls in addition to the expected one

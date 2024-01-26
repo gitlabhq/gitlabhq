@@ -7,7 +7,6 @@ module Projects
       before_action :check_oauth_state, only: :slack_auth
       before_action :authorize_admin_project!
       before_action :slack_integration, only: [:edit, :update]
-      before_action :service, only: [:destroy, :edit, :update]
 
       layout 'project_settings'
 
@@ -64,10 +63,6 @@ module Projects
 
       def slack_integration
         @slack_integration ||= project.gitlab_slack_application_integration.slack_integration
-      end
-
-      def service
-        @service = project.gitlab_slack_application_integration
       end
 
       def slack_integration_params

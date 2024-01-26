@@ -58,7 +58,6 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/workers/geo/registry_sync_worker_spec.rb'
     - 'ee/spec/workers/project_cache_worker_spec.rb'
     - 'ee/spec/workers/repository_import_worker_spec.rb'
-    - 'ee/spec/workers/security/auto_fix_worker_spec.rb'
     - 'ee/spec/workers/vulnerability_exports/export_deletion_worker_spec.rb'
     - 'spec/controllers/admin/sessions_controller_spec.rb'
     - 'spec/controllers/application_controller_spec.rb'

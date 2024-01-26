@@ -63,6 +63,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
+
 Administrators can enforce 2FA for administrator users in a self-managed instance.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.

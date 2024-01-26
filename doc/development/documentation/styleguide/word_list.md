@@ -816,6 +816,13 @@ the following are the names of GitLab Duo features:
 
 After the first use, use the feature name without **GitLab Duo**.
 
+## GitLab Duo Pro
+
+Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless approved by legal.
+
+You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
+and should leave it off when you can.
+
 ## GitLab Flavored Markdown
 
 When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).

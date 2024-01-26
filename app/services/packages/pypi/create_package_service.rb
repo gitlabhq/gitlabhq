@@ -28,8 +28,10 @@ module Packages
 
           ::Packages::CreatePackageFileService.new(created_package, file_params).execute
 
-          created_package
+          ServiceResponse.success(payload: { package: created_package })
         end
+      rescue ActiveRecord::RecordInvalid => e
+        ServiceResponse.error(message: e.message, reason: :invalid_parameter)
       end
 
       private

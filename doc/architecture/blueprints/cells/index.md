@@ -194,13 +194,7 @@ See [Cells: Routing Service](routing-service.md).
 
 ### 4. Cell deployment
 
-We will run many Cells.
-To manage them easier, we need to have consistent deployment procedures for Cells, including a way to deploy, manage, migrate, and monitor.
-
-We are very likely to use tooling made for [GitLab Dedicated](https://about.gitlab.com/dedicated/) with its control planes.
-
-1. **Extend GitLab Dedicated to support GCP.**
-1. TBD
+See [Cell: Application deployment](application-deployment.md).
 
 ### 5. Migration
 

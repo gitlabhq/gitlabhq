@@ -8,6 +8,8 @@ The DEI.md file was originally created in the CHAOSS project. This comment provi
 Please use the DEI.md Guide at https://github.com/badging/ProjectBadging/blob/main/Guide.DEI.md when creating your DEI.md file
 -->
 
+![CHAOSS DEI Bronze Badge](https://images.ctfassets.net/xz1dnu24egyd/5qxlqiIMLUYwuinHpFm67P/edc10e44c37235cef20c0f910a947669/dei-bronze-badge.svg)
+
 ## GitLab
 
 The scope of this DEI.md file is intended to cover the entire organization of GitLab. Any specific differences for a particular GitLab project may be noted within this document.

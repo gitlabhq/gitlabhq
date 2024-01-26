@@ -36,7 +36,11 @@ const mountSecurityPatchUpgradeAlertModal = (el) => {
   const { currentVersion, version } = el.dataset;
 
   try {
-    const { details, latestStableVersions } = convertObjectPropsToCamelCase(JSON.parse(version));
+    const {
+      details,
+      latestStableVersions,
+      latestStableVersionOfMinor,
+    } = convertObjectPropsToCamelCase(JSON.parse(version));
 
     return new Vue({
       el,
@@ -46,6 +50,7 @@ const mountSecurityPatchUpgradeAlertModal = (el) => {
             currentVersion,
             details,
             latestStableVersions,
+            latestStableVersionOfMinor,
           },
         });
       },

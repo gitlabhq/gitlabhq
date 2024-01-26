@@ -33,7 +33,7 @@ export default (
       type: 'string',
       param: '',
       symbol: '',
-      icon: 'admin',
+      icon: 'pencil-square',
       tag: __('Yes or No'),
       lowercaseValueOnSubmit: true,
       capitalizeTokenValue: true,
@@ -198,7 +198,7 @@ export default (
       type: 'string',
       param: '',
       symbol: '',
-      icon: 'cloud-gear',
+      icon: 'environment',
       tag: 'environment',
     };
 

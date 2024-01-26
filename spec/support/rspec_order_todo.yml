@@ -3040,7 +3040,6 @@
 - './ee/spec/workers/requirements_management/process_requirements_reports_worker_spec.rb'
 - './ee/spec/workers/sbom/ingest_reports_worker_spec.rb'
 - './ee/spec/workers/scan_security_report_secrets_worker_spec.rb'
-- './ee/spec/workers/security/auto_fix_worker_spec.rb'
 - './ee/spec/workers/security/create_orchestration_policy_worker_spec.rb'
 - './ee/spec/workers/security/orchestration_policy_rule_schedule_namespace_worker_spec.rb'
 - './ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb'

@@ -1,0 +1,45 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/environments/graphql/fragments/deployment_job.fragment.graphql"
+#import "ee_else_ce/deployments/graphql/fragments/approval_summary.fragment.graphql"
+
+query fetchDeployment($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    deployment(iid: $iid) {
+      id
+      ...ApprovalSummary
+      status
+      ref
+      tag
+      job {
+        ...DeploymentJob
+        deploymentPipeline: pipeline {
+          id
+          jobs(whenExecuted: ["manual"], retried: false) {
+            nodes {
+              ...DeploymentJob
+              scheduledAt
+            }
+          }
+        }
+      }
+      commit {
+        id
+        shortId
+        message
+        webUrl
+        authorGravatar
+        authorName
+        authorEmail
+        author {
+          ...User
+        }
+      }
+      triggerer {
+        ...User
+      }
+      createdAt
+      finishedAt
+    }
+  }
+}

@@ -154,7 +154,7 @@ REST endpoint to create a runner:
 1. Save the returned `token` value in a secure location or your secrets management
    solution. The `token` value is returned only once in the API response.
 
-## With the `gitlab_user_runner` Terraform resource
+### With the `gitlab_user_runner` Terraform resource
 
 To create the runner configuration with Terraform, use the
 [`gitlab_user_runner` Terraform resource](https://gitlab.com/gitlab-org/terraform-provider-gitlab/-/blob/main/docs/resources/user_runner.md?ref_type=heads)
