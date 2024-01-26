@@ -4024,9 +4024,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'for missing repository' do
-      before do
-        allow(repository).to receive(:exists?).and_return(false)
-      end
+      let(:project) { build_stubbed(:project) }
 
       it { is_expected.to be_nil }
     end

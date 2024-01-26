@@ -1,7 +1,8 @@
-import { GlButton, GlTable, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
@@ -21,17 +22,16 @@ describe('Packages protection rules project settings', () => {
     projectPath: 'path',
   };
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
-  const findTable = () => wrapper.findComponent(GlTable);
+  const findTable = () => extendedWrapper(wrapper.findByRole('table', /protected packages/i));
+  const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
+  const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
-  const findAddProtectionRuleButton = () => wrapper.findComponent(GlButton);
-  const findTableRows = () => findTable().find('tbody').findAll('tr');
+  const findAddProtectionRuleButton = () =>
+    wrapper.findByRole('button', { name: /add package protection rule/i });
 
   const mountComponent = (mountFn = shallowMount, provide = defaultProvidedValues, config) => {
     wrapper = mountFn(PackagesProtectionRules, {
-      stubs: {
-        SettingsBlock,
-      },
       provide,
       ...config,
     });
@@ -52,7 +52,7 @@ describe('Packages protection rules project settings', () => {
   };
 
   it('renders the setting block with table', async () => {
-    createComponent();
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
@@ -62,21 +62,21 @@ describe('Packages protection rules project settings', () => {
 
   describe('table package protection rules', () => {
     it('renders table with packages protection rules', async () => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
 
       await waitForPromises();
 
       expect(findTable().exists()).toBe(true);
 
       packagesProtectionRulesData.forEach((protectionRule, i) => {
-        expect(findTableRows().at(i).text()).toContain(protectionRule.packageNamePattern);
-        expect(findTableRows().at(i).text()).toContain(protectionRule.packageType);
-        expect(findTableRows().at(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
+        expect(findTableRow(i).text()).toContain(protectionRule.packageNamePattern);
+        expect(findTableRow(i).text()).toContain(protectionRule.packageType);
+        expect(findTableRow(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
       });
     });
 
     it('displays table in busy state and shows loading icon inside table', async () => {
-      createComponent({ mountFn: mount });
+      createComponent({ mountFn: mountExtended });
 
       expect(findTableLoadingIcon().exists()).toBe(true);
       expect(findTableLoadingIcon().attributes('aria-label')).toBe('Loading');
@@ -88,37 +88,29 @@ describe('Packages protection rules project settings', () => {
       expect(findTableLoadingIcon().exists()).toBe(false);
       expect(findTable().attributes('aria-busy')).toBe('false');
     });
-
-    it('renders table', async () => {
-      createComponent();
-
-      await waitForPromises();
-
-      expect(findTable().exists()).toBe(true);
-    });
   });
 
   it('does not initially render package protection form', async () => {
-    createComponent();
+    createComponent({ mountFn: mountExtended });
 
     await waitForPromises();
 
-    expect(findAddProtectionRuleButton().exists()).toBe(true);
+    expect(findAddProtectionRuleButton().isVisible()).toBe(true);
     expect(findProtectionRuleForm().exists()).toBe(false);
   });
 
-  describe('button "add protection rule"', () => {
+  describe('button "Add protection rule"', () => {
     it('button exists', async () => {
-      createComponent();
+      createComponent({ mountFn: mountExtended });
 
       await waitForPromises();
 
-      expect(findAddProtectionRuleButton().exists()).toBe(true);
+      expect(findAddProtectionRuleButton().isVisible()).toBe(true);
     });
 
     describe('when button is clicked', () => {
       beforeEach(async () => {
-        createComponent({ mountFn: mount });
+        createComponent({ mountFn: mountExtended });
 
         await waitForPromises();
 
@@ -126,7 +118,7 @@ describe('Packages protection rules project settings', () => {
       });
 
       it('renders package protection form', () => {
-        expect(findProtectionRuleForm().exists()).toBe(true);
+        expect(findProtectionRuleForm().isVisible()).toBe(true);
       });
 
       it('disables the button "add protection rule"', () => {
@@ -141,14 +133,14 @@ describe('Packages protection rules project settings', () => {
     beforeEach(async () => {
       resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
 
-      createComponent({ resolver, mountFn: mount });
+      createComponent({ resolver, mountFn: mountExtended });
 
       await waitForPromises();
 
       await findAddProtectionRuleButton().trigger('click');
     });
 
-    it("handles event 'submit'", async () => {
+    it('handles event "submit"', async () => {
       await findProtectionRuleForm().vm.$emit('submit');
 
       expect(resolver).toHaveBeenCalledTimes(2);
@@ -157,7 +149,7 @@ describe('Packages protection rules project settings', () => {
       expect(findAddProtectionRuleButton().attributes('disabled')).not.toBeDefined();
     });
 
-    it("handles event 'cancel'", async () => {
+    it('handles event "cancel"', async () => {
       await findProtectionRuleForm().vm.$emit('cancel');
 
       expect(resolver).toHaveBeenCalledTimes(1);

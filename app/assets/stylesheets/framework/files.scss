@@ -413,6 +413,7 @@ span.idiff {
 }
 
 .version-link {
+  display: inline-block;
   align-self: center;
   margin-top: $gl-spacing-scale-2;
   width: $gl-spacing-scale-5;

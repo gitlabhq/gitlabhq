@@ -706,6 +706,9 @@ Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] 
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class'] = 'Ci::Catalog::Resources::ProcessSyncEventsWorker'
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker'] ||= {}
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['job_class'] = 'Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

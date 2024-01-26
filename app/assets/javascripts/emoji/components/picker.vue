@@ -145,7 +145,7 @@ export default {
         <gl-button
           v-gl-tooltip
           :title="$options.i18n.addReaction"
-          :class="toggleClass"
+          :class="[toggleClass, { 'is-active': isVisible }]"
           class="gl-relative gl-h-full"
           data-testid="add-reaction-button"
         >
@@ -154,10 +154,16 @@ export default {
               <gl-icon class="award-control-icon-neutral gl-button-icon" name="slight-smile" />
             </span>
             <span class="reaction-control-icon reaction-control-icon-positive">
-              <gl-icon class="award-control-icon-positive gl-button-icon" name="smiley" />
+              <gl-icon
+                class="award-control-icon-positive gl-button-icon gl-left-3!"
+                name="smiley"
+              />
             </span>
             <span class="reaction-control-icon reaction-control-icon-super-positive">
-              <gl-icon class="award-control-icon-super-positive gl-button-icon" name="smile" />
+              <gl-icon
+                class="award-control-icon-super-positive gl-button-icon gl-left-3!"
+                name="smile"
+              />
             </span>
           </slot>
         </gl-button>

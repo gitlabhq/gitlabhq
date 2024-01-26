@@ -574,6 +574,14 @@ test causing the failure:
 
 If these commands return `undercover: ✅ No coverage is missing in latest changes` then you can apply `pipeline:skip-undercoverage` to bypass pipeline failures.
 
+### `pajamas_adoption` job
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
+
+The `pajamas_adoption` job runs the [Pajamas Adoption Scanner](https://gitlab-org.gitlab.io/frontend/pajamas-adoption-scanner/) in merge requests to prevent regressions in the adoption of the [Pajamas Design System](https://design.gitlab.com/).
+
+The job fails if the scanner detects regressions caused by a merge request. If the regressions cannot be fixed in the merge request, add the `pipeline:skip-pajamas-adoption` label to the merge request, then retry the job.
+
 ## Test suite parallelization
 
 Our current RSpec tests parallelization setup is as follows:

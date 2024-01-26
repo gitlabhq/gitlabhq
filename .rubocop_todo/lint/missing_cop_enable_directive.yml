@@ -59,7 +59,6 @@ Lint/MissingCopEnableDirective:
     - 'app/services/projects/container_repository/third_party/delete_tags_service.rb'
     - 'app/services/search/global_service.rb'
     - 'danger/feature_flag/Dangerfile'
-    - 'danger/pajamas/Dangerfile'
     - 'ee/app/controllers/ee/admin/dashboard_controller.rb'
     - 'ee/app/controllers/ee/admin/groups_controller.rb'
     - 'ee/app/controllers/ee/admin/users_controller.rb'

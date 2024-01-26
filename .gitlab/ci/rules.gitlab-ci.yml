@@ -2727,7 +2727,8 @@
     - <<: *if-merge-request
       changes:
         - '{,ee/}app/**/*.{js,vue,rb,haml}'
-    - <<: *if-default-refs
+    - <<: *if-default-branch-refs
+      allow_failure: true
 
 ################
 # Review rules #

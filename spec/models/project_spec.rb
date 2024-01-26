@@ -3032,8 +3032,53 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           expect(project.project_repository).to have_attributes(
             disk_path: project.disk_path,
-            shard_name: project.repository_storage
+            shard_name: project.repository_storage,
+            object_format: 'sha1'
           )
+        end
+
+        context 'when repository is missing' do
+          let(:project) { create(:project) }
+
+          it 'sets a default sha1 object format' do
+            project.track_project_repository
+
+            expect(project.project_repository).to have_attributes(
+              disk_path: project.disk_path,
+              shard_name: project.repository_storage,
+              object_format: 'sha1'
+            )
+          end
+        end
+
+        context 'when repository has sha256 object format' do
+          let(:project) { create(:project, :empty_repo, object_format: 'sha256') }
+
+          it 'tracks a correct object format' do
+            project.track_project_repository
+
+            expect(project.project_repository).to have_attributes(
+              disk_path: project.disk_path,
+              shard_name: project.repository_storage,
+              object_format: 'sha256'
+            )
+          end
+
+          context 'when feature flag "store_object_format" is disabled' do
+            before do
+              stub_feature_flags(store_object_format: false)
+            end
+
+            it 'tracks a SHA1 object format' do
+              project.track_project_repository
+
+              expect(project.project_repository).to have_attributes(
+                disk_path: project.disk_path,
+                shard_name: project.repository_storage,
+                object_format: 'sha1'
+              )
+            end
+          end
         end
       end
 
@@ -3048,12 +3093,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         it 'updates the project storage location' do
           allow(project).to receive(:disk_path).and_return('fancy/new/path')
           allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository
 
           expect(project.project_repository).to have_attributes(
             disk_path: 'fancy/new/path',
-            shard_name: 'foo'
+            shard_name: 'foo',
+            object_format: 'sha1'
           )
         end
 
@@ -3062,6 +3109,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
           allow(project).to receive(:disk_path).and_return('fancy/new/path')
           allow(project).to receive(:repository_storage).and_return('foo')
+          allow(project.repository).to receive(:object_format).and_return('sha1')
 
           project.track_project_repository
 
@@ -3071,13 +3119,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
 
     context 'with projects on legacy storage' do
-      let(:project) { create(:project, :legacy_storage) }
+      let_it_be_with_reload(:project) { create(:project, :empty_repo, :legacy_storage) }
 
       it_behaves_like 'tracks storage location'
     end
 
     context 'with projects on hashed storage' do
-      let(:project) { create(:project) }
+      let_it_be_with_reload(:project) { create(:project, :empty_repo) }
 
       it_behaves_like 'tracks storage location'
     end

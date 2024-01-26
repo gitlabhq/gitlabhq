@@ -161,6 +161,8 @@ class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
     add_concurrent_index(TABLE_NAME, [:id, :partition_id], unique: true, name: NEW_INDEX_NAME)
 
     unswap_primary_key(TABLE_NAME, PRIMARY_KEY, OLD_INDEX_NAME)
+
+    # We need to add back referenced FKs if any, eg: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113725/diffs
   end
 end
 ```

@@ -1,0 +1,9 @@
+---
+name: store_object_format
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419887
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139108
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434364
+milestone: '16.9'
+type: gitlab_com_derisk
+group: group::source code
+default_enabled: false

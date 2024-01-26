@@ -8,3 +8,5 @@ description: Group-level settings for the dependency proxy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10676
 milestone: '11.11'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

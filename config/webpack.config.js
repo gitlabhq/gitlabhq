@@ -555,14 +555,6 @@ module.exports = {
           minChunks: 2,
           reuseExistingChunk: true,
         },
-        security_reports: {
-          priority: 13,
-          name: 'security_reports',
-          chunks: 'initial',
-          test: /[\\/](vue_shared[\\/](security_reports|license_compliance)|security_dashboard)[\\/]/,
-          minChunks: 2,
-          reuseExistingChunk: true,
-        },
         vendors: {
           priority: 10,
           chunks: 'async',

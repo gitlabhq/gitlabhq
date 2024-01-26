@@ -14,5 +14,9 @@ FactoryBot.define do
         record.reload.update!(outdated_at: nil)
       end
     end
+
+    trait :outdated do
+      outdated_at { Time.current }
+    end
   end
 end

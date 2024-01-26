@@ -668,7 +668,6 @@ Layout/LineLength:
     - 'danger/ci_config/Dangerfile'
     - 'danger/documentation/Dangerfile'
     - 'danger/feature_flag/Dangerfile'
-    - 'danger/pajamas/Dangerfile'
     - 'danger/roulette/Dangerfile'
     - 'danger/vue_shared_documentation/Dangerfile'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'

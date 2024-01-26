@@ -112,21 +112,21 @@ export default {
         </div>
         <div
           class="committer gl-flex-basis-full"
-          :class="truncateAuthorName ? 'gl-display-inline-flex' : ''"
+          :class="{ 'gl-display-inline-flex': truncateAuthorName }"
           data-testid="committer"
         >
           <gl-link
             v-if="commit.author"
             :href="commit.author.webPath"
             class="commit-author-link js-user-link"
-            :class="truncateAuthorName ? 'gl-display-inline-block gl-text-truncate' : ''"
+            :class="{ 'gl-display-inline-block gl-text-truncate': truncateAuthorName }"
           >
             {{ commit.author.name }}</gl-link
           >
           <template v-else>
             {{ commit.authorName }}
           </template>
-          {{ $options.i18n.authored }}&nbsp;
+          {{ $options.i18n.authored }}
           <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
         </div>
         <pre

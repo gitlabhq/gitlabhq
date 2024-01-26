@@ -135,6 +135,8 @@ export default {
             :fields="$options.fields"
             show-empty
             stacked="md"
+            class="mb-3"
+            :aria-label="$options.i18n.settingBlockTitle"
             :busy="isLoadingPackageProtectionRules"
           >
             <template #table-busy>

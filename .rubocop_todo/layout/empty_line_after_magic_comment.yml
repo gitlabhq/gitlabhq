@@ -126,7 +126,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'config/routes/merge_requests.rb'
     - 'danger/ce_ee_vue_templates/Dangerfile'
     - 'danger/feature_flag/Dangerfile'
-    - 'danger/pajamas/Dangerfile'
     - 'ee/app/controllers/concerns/epics_actions.rb'
     - 'ee/app/controllers/concerns/saml_authorization.rb'
     - 'ee/app/controllers/ee/projects/analytics/cycle_analytics/stages_controller.rb'

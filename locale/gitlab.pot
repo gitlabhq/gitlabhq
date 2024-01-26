@@ -5584,9 +5584,6 @@ msgstr ""
 msgid "Analytics|Browser Family"
 msgstr ""
 
-msgid "Analytics|By GitLab"
-msgstr ""
-
 msgid "Analytics|Cancel"
 msgstr ""
 
@@ -5615,6 +5612,9 @@ msgid "Analytics|Create your dashboard"
 msgstr ""
 
 msgid "Analytics|Create your visualization"
+msgstr ""
+
+msgid "Analytics|Created by GitLab"
 msgstr ""
 
 msgid "Analytics|Custom dashboards"

@@ -642,6 +642,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:namespaces_process_outdated_namespace_descendants_cron
+  :worker_name: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
+  :feature_category: :groups_and_projects
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:namespaces_prune_aggregation_schedules
   :worker_name: Namespaces::PruneAggregationSchedulesWorker
   :feature_category: :source_code_management

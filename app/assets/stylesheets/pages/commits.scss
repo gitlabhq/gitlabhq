@@ -137,8 +137,12 @@
       color: $gl-text-color;
     }
 
+    &.gl-display-inline-flex {
+      gap: 0.5ch;
+    }
+
     .commit-author-link.gl-text-truncate {
-      max-width: 20ch;
+      max-width: 19ch;
     }
   }
 }
