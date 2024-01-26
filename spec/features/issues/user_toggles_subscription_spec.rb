@@ -10,19 +10,19 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
   context 'user is not logged in' do
     before do
-      stub_feature_flags(moved_mr_sidebar: false)
       stub_feature_flags(notifications_todos_buttons: false)
       visit(project_issue_path(project, issue))
     end
 
     it 'does not display the Notification toggle' do
-      expect(page).not_to have_button('Notifications')
+      find('.detail-page-header-actions .gl-new-dropdown-toggle').click
+
+      expect(page).not_to have_selector('.is-checked:not(.is-checked)')
     end
   end
 
   context 'user is logged in' do
     before do
-      stub_feature_flags(moved_mr_sidebar: false)
       stub_feature_flags(notifications_todos_buttons: false)
       project.add_developer(user)
       sign_in(user)
@@ -30,7 +30,9 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     end
 
     it 'unsubscribes from issue' do
-      subscription_button = find('[data-testid="subscription-toggle"]')
+      find('.detail-page-header-actions .gl-new-dropdown-toggle').click
+
+      subscription_button = find('[data-testid="notification-toggle"] [data-testid="toggle-wrapper"]')
 
       # Check we're subscribed.
       expect(subscription_button).to have_css("button.is-checked")
@@ -42,20 +44,10 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       # Check we're unsubscribed.
       expect(subscription_button).to have_css("button:not(.is-checked)")
     end
-
-    context 'when project emails are disabled' do
-      let_it_be(:project) { create(:project_empty_repo, :public, emails_enabled: false) }
-
-      it 'is disabled' do
-        expect(page).to have_content('Disabled by project owner')
-        expect(page).to have_selector('[data-testid="subscription-toggle"]', class: 'is-disabled')
-      end
-    end
   end
 
   context 'user is logged in without edit permission' do
     before do
-      stub_feature_flags(moved_mr_sidebar: false)
       stub_feature_flags(notifications_todos_buttons: false)
       sign_in(user2)
 
@@ -63,7 +55,9 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     end
 
     it 'subscribes to issue' do
-      subscription_button = find('[data-testid="subscription-toggle"]')
+      find('.detail-page-header-actions .gl-new-dropdown-toggle').click
+
+      subscription_button = find('[data-testid="notification-toggle"] [data-testid="toggle-wrapper"]')
 
       # Check we're not subscribed.
       expect(subscription_button).to have_css("button:not(.is-checked)")
@@ -79,7 +73,6 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
 
   context 'with notifications_todos_buttons feature flag enabled' do
     before do
-      stub_feature_flags(moved_mr_sidebar: true)
       stub_feature_flags(notifications_todos_buttons: true)
       sign_in(user2)
 

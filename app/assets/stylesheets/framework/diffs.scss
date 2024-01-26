@@ -35,15 +35,11 @@ $diff-file-header: 41px;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
       position: sticky;
-      top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
+      top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       z-index: 120;
 
-      &.is-sidebar-moved {
-        top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
-
-        + .diff-content .md-header-preview {
-          top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header} - #{$gl-border-size-1});
-        }
+      +.diff-content .md-header-preview {
+        top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header} - #{$gl-border-size-1});
       }
 
       &::before {

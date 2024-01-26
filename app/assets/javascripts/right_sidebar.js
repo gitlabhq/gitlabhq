@@ -20,6 +20,8 @@ const updateSidebarClasses = (layoutPage, rightSidebar) => {
 function Sidebar() {
   this.sidebar = $('aside');
 
+  this.isMR = /projects:merge_requests:/.test(document.body.dataset.page);
+
   this.removeListeners();
   this.addEventListeners();
 }
@@ -52,14 +54,12 @@ Sidebar.prototype.addEventListeners = function () {
 
   $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
 
-  if (window.gon?.features?.movedMrSidebar) {
-    const layoutPage = document.querySelector('.layout-page');
-    const rightSidebar = document.querySelector('.js-right-sidebar');
+  const layoutPage = document.querySelector('.layout-page');
+  const rightSidebar = document.querySelector('.js-right-sidebar');
 
-    if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
-      updateSidebarClasses(layoutPage, rightSidebar);
-      window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
-    }
+  if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
+    updateSidebarClasses(layoutPage, rightSidebar);
+    window.addEventListener('resize', () => updateSidebarClasses(layoutPage, rightSidebar));
   }
 };
 
@@ -79,7 +79,10 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     $('aside.right-sidebar')
       .removeClass('right-sidebar-expanded')
       .addClass('right-sidebar-collapsed');
-    $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+
+    if (!this.isMR) {
+      $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+    }
   } else {
     $toggleContainer.data('is-expanded', true);
     $expandIcon.addClass('hidden');
@@ -87,7 +90,10 @@ Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
     $('aside.right-sidebar')
       .removeClass('right-sidebar-collapsed')
       .addClass('right-sidebar-expanded');
-    $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+
+    if (!this.isMR) {
+      $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+    }
   }
 
   $toggleButtons.attr('data-original-title', tooltipLabel);

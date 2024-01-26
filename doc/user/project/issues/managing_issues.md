@@ -530,10 +530,6 @@ You can now paste the reference into another description or comment.
 
 Read more about issue references in [GitLab-Flavored Markdown](../../markdown.md#gitlab-specific-references).
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action on the right sidebar, your project or instance might have
-enabled a feature flag for [moved actions](../merge_requests/index.md#move-sidebar-actions).
-
 ## Copy issue email address
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18816) in GitLab 13.8.

@@ -136,5 +136,27 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
         expect(expired_group_owner.reload).to be_present
       end
     end
+
+    context 'when service raises an error' do
+      let_it_be(:expired_project_member) { create(:project_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
+
+      let(:logger_double) { instance_double('Gitlab::Logger') }
+      let(:test_err) { StandardError.new('test error') }
+
+      before do
+        allow_next_instance_of(Members::DestroyService) do |service|
+          allow(service).to receive(:execute).and_raise(test_err)
+        end
+        allow(worker).to receive(:logger).and_return(logger_double)
+        travel_to(3.days.from_now)
+      end
+
+      it 'logs errors to logger and error tracking' do
+        expect(logger_double).to receive(:error).with(a_string_matching(/cannot be removed/))
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(test_err)
+
+        worker.perform
+      end
+    end
   end
 end

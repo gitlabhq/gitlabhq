@@ -2,7 +2,7 @@
 - can_reopen_merge_request = can?(current_user, :reopen_merge_request, @merge_request)
 - are_close_and_open_buttons_hidden = merge_request_button_hidden?(@merge_request, true) && merge_request_button_hidden?(@merge_request, false)
 - hide_gutter_toggle = local_assigns.fetch(:hide_gutter_toggle, false)
-- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-updated_header", moved_mr_sidebar_enabled?, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled]
+- cache_key = [@project, @merge_request, can_update_merge_request, can_reopen_merge_request, are_close_and_open_buttons_hidden, current_user&.preferred_language, "1.1-updated_header", true, hide_gutter_toggle, fluid_layout, Gitlab::CurrentSettings.gitpod_enabled, current_user&.gitpod_enabled]
 
 = cache(cache_key, expires_in: 1.day) do
   - if @merge_request.closed_or_merged_without_fork?
@@ -12,15 +12,14 @@
       - c.with_body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if moved_mr_sidebar_enabled? && !fluid_layout}" }
+  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-md-display-flex! #{'is-merge-request' if !fluid_layout}" }
     .detail-page-header-body
       %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block.gl-flex-grow-1{ data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
         %div
-          - display_class = moved_mr_sidebar_enabled? ? 'gl-md-display-none!' : 'gl-sm-display-none!'
-          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle #{display_class}" })
+          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle gl-md-display-none!" })
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request

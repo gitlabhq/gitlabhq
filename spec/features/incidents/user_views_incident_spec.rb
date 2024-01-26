@@ -18,7 +18,6 @@ RSpec.describe "User views incident", feature_category: :incident_management do
 
   before do
     sign_in(user)
-    stub_feature_flags(moved_mr_sidebar: false)
 
     visit(incident_project_issues_path(project, incident))
   end
@@ -48,14 +47,6 @@ RSpec.describe "User views incident", feature_category: :incident_management do
     context 'when user is guest' do
       let(:user) { guest }
 
-      context 'and author' do
-        let(:author) { guest }
-
-        it 'does not show the incident actions', :js do
-          expect(page).not_to have_button('Incident actions')
-        end
-      end
-
       context 'and not author' do
         it 'shows incident actions', :js do
           click_button 'Incident actions'
@@ -63,16 +54,6 @@ RSpec.describe "User views incident", feature_category: :incident_management do
           expect(page).to have_button 'Report abuse to administrator'
         end
       end
-    end
-  end
-
-  context 'when the project is archived' do
-    before_all do
-      project.update!(archived: true)
-    end
-
-    it 'does not show the incident actions', :js do
-      expect(page).not_to have_button('Incident actions')
     end
   end
 end

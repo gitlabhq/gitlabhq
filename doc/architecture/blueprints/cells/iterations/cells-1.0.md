@@ -452,7 +452,7 @@ $$;
 
 1. Is Container Registry cluster-wide or cell-local?
 
-   The Container Registry can be run Cell-local, and if we follow the secret-based routing, it can follow the same model for filtering. 
+   The Container Registry can be run Cell-local, and if we follow the secret-based routing, it can follow the same model for filtering.
 We would have to ensure that the JWT token signed by GitLab is in a form that can be statically routed by the routing layer.
 
 1. Are GitLab Pages cluster-wide or Cell-local?
@@ -572,13 +572,13 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
 
 1. How would we synchronize `users` across Cells?
 
-   We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define 
-   if this would be better to do via an `API` that is part of Rails, or using the Dedicated service. 
-   However, using Rails would likely be the simplest and most reliable solution, because the 
+   We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define
+   if this would be better to do via an `API` that is part of Rails, or using the Dedicated service.
+   However, using Rails would likely be the simplest and most reliable solution, because the
    application knows the expected data structure.
 
    Following the above proposal we would expose `users` and likely all adjacent tables using `API`:
-   `/api/v4/internal/cells/users/:id`. The API would serialize the `users` table into a `protobuf` 
+   `/api/v4/internal/cells/users/:id`. The API would serialize the `users` table into a `protobuf`
    data model.
    This information would be fetched by another Cell that would synchronize user entries.
 

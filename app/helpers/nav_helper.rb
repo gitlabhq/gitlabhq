@@ -23,13 +23,13 @@ module NavHelper
   end
 
   def page_gutter_class
-    moved_sidebar_enabled = current_controller?('merge_requests') && moved_mr_sidebar_enabled?
+    merge_request_sidebar = current_controller?('merge_requests')
 
     if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'
-        ["page-gutter", ('right-sidebar-collapsed' unless moved_sidebar_enabled).to_s]
+        ["page-gutter", ('right-sidebar-collapsed' unless merge_request_sidebar).to_s]
       else
-        ["page-gutter", ('right-sidebar-expanded' unless moved_sidebar_enabled).to_s]
+        ["page-gutter", ('right-sidebar-expanded' unless merge_request_sidebar).to_s]
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]

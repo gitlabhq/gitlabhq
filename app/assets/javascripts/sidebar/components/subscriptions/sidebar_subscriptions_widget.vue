@@ -13,8 +13,8 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
-import { Tracking } from '../../constants';
 import { subscribedQueries } from '../../queries/constants';
+import { Tracking } from '../../constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 
 const ICON_ON = 'notifications';
@@ -50,6 +50,11 @@ export default {
     issuableType: {
       required: true,
       type: String,
+    },
+    showInDropdown: {
+      required: false,
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -95,9 +100,6 @@ export default {
     },
   },
   computed: {
-    isMovedMrSidebar() {
-      return this.glFeatures.movedMrSidebar;
-    },
     isIssuable() {
       return this.issuableType === TYPE_ISSUE;
     },
@@ -131,7 +133,7 @@ export default {
       return this.emailsDisabled || !this.isLoggedIn;
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+      return this.glFeatures.notificationsTodosButtons;
     },
     isMergeRequest() {
       return this.issuableType === 'merge_request';
@@ -161,9 +163,7 @@ export default {
               });
             }
 
-            if (this.isMovedMrSidebar) {
-              toast(subscribed ? __('Notifications turned on.') : __('Notifications turned off.'));
-            }
+            toast(subscribed ? __('Notifications turned on.') : __('Notifications turned off.'));
           },
         )
         .catch(() => {
@@ -201,7 +201,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown-item
-    v-if="isMovedMrSidebar && !isNotificationsTodosButtons"
+    v-if="showInDropdown && !isNotificationsTodosButtons"
     data-testid="notification-toggle"
     @action="toggleSubscribed"
   >

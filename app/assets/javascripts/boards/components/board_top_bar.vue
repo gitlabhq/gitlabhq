@@ -78,18 +78,6 @@ export default {
     },
   },
   computed: {
-    hasScope() {
-      if (this.board.labels?.length > 0) {
-        return true;
-      }
-      let hasScope = false;
-      ['assignee', 'iterationCadence', 'iteration', 'milestone', 'weight'].forEach((attr) => {
-        if (this.board[attr] !== null && this.board[attr] !== undefined) {
-          hasScope = true;
-        }
-      });
-      return hasScope;
-    },
     isLoading() {
       return this.$apollo.queries.board.loading;
     },
@@ -132,7 +120,7 @@ export default {
           :is-swimlanes-on="isSwimlanesOn"
           @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
         />
-        <config-toggle :board-has-scope="hasScope" />
+        <config-toggle />
         <board-add-new-column-trigger
           v-if="canAdminList"
           :is-new-list-showing="addColumnFormVisible"

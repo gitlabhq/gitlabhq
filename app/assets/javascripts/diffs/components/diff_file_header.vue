@@ -286,7 +286,6 @@ export default {
     ref="header"
     :class="{
       'gl-z-dropdown-menu!': idState.moreActionsShown,
-      'is-sidebar-moved': glFeatures.movedMrSidebar,
     }"
     class="js-file-title file-title file-title-flex-parent gl-border"
     data-testid="file-title-container"

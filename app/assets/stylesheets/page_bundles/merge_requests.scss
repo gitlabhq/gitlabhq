@@ -257,17 +257,13 @@ $tabs-holder-z-index: 250;
   $diff-file-header-top: 11px;
 
   position: sticky;
-  top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   // height calc is fully delegated to the tree_list_height.vue component
   height: 100%;
   min-height: 300px;
 
   .drag-handle {
     bottom: 16px;
-  }
-
-  &.is-sidebar-moved {
-    top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   }
 }
 

@@ -13,7 +13,6 @@ describe('MR More actions sidebar', () => {
   const findReportAbuseOption = () => wrapper.find('[data-testid="report-abuse-option"]');
 
   const createComponent = ({
-    movedMrSidebarFlag = false,
     isCurrentUser = true,
     isLoggedIn = true,
     open = false,
@@ -29,30 +28,21 @@ describe('MR More actions sidebar', () => {
         open,
         canUpdateMergeRequest,
       },
-      provide: {
-        glFeatures: { movedMrSidebar: movedMrSidebarFlag },
-      },
     });
   };
 
   describe('Notifications toggle', () => {
     it.each`
-      movedMrSidebarFlag | isLoggedIn | showNotificationToggle
-      ${false}           | ${false}   | ${false}
-      ${false}           | ${true}    | ${false}
-      ${true}            | ${false}   | ${false}
-      ${true}            | ${true}    | ${true}
-    `(
-      "when the movedMrSidebar flag is '$movedMrSidebarFlag' and is isLoggedIn as '$isLoggedIn'",
-      ({ movedMrSidebarFlag, isLoggedIn, showNotificationToggle }) => {
-        createComponent({
-          isLoggedIn,
-          movedMrSidebarFlag,
-        });
+      isLoggedIn | showNotificationToggle
+      ${false}   | ${false}
+      ${true}    | ${true}
+    `("when is isLoggedIn as '$isLoggedIn'", ({ isLoggedIn, showNotificationToggle }) => {
+      createComponent({
+        isLoggedIn,
+      });
 
-        expect(findNotificationToggle().exists()).toBe(showNotificationToggle);
-      },
-    );
+      expect(findNotificationToggle().exists()).toBe(showNotificationToggle);
+    });
   });
 
   describe('Edit/Draft/Reopen MR', () => {
@@ -108,14 +98,8 @@ describe('MR More actions sidebar', () => {
   });
 
   describe('Copy reference', () => {
-    it('should not be visible by default', () => {
+    it('should be visible', () => {
       createComponent();
-
-      expect(findCopyReferenceButton().exists()).toBe(false);
-    });
-
-    it('should be visible when the movedMrSidebarFlag is on', () => {
-      createComponent({ movedMrSidebarFlag: true });
 
       expect(findCopyReferenceButton().exists()).toBe(true);
     });

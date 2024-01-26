@@ -68,8 +68,8 @@ a license, add the license in the **Admin Area** in the web user interface.
 If you use a license file or key to activate your instance in an offline environment, you must submit your license
 usage data monthly.
 To submit the data, [export your license usage](../subscriptions/self_managed/index.md#export-your-license-usage)
-and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. You must not open the license
-usage file before you send it. Otherwise, the file's content could be manipulated by the used program (for example,
+and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. **You must not open the license
+usage file before you send it**. Otherwise, the file's content could be manipulated by the used program (for example,
 timestamps could be converted to another format) and cause failures when the file is being processed.
 
 If you don't submit your data each month after your subscription start date, an email is sent to the address

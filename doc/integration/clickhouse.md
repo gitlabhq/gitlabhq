@@ -4,7 +4,10 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# ClickHouse integration guidelines **(EXPERIMENT)**
+# ClickHouse integration guidelines
+
+DETAILS:
+**Status:** Experiment
 
 This feature is an [Experiment](../policy/experiment-beta-support.md).
 

@@ -17,7 +17,10 @@ Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
 in the project. Must be authenticated for all endpoints.
 
-## Group-level MR approvals **(EXPERIMENT)**
+## Group-level MR approvals
+
+DETAILS:
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md).
 

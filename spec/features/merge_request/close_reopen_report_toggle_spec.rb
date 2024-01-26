@@ -15,7 +15,6 @@ RSpec.describe 'Issuables Close/Reopen/Report toggle', feature_category: :code_r
     before do
       project.add_maintainer(user)
       login_as user
-      stub_feature_flags(moved_mr_sidebar: false)
     end
 
     context 'when user has permission to update', :js do

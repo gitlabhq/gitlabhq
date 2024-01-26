@@ -1,6 +1,7 @@
 <script>
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   destroyUserCountsManager,
   createUserCountsManager,
@@ -73,6 +74,7 @@ export default {
       mrMenuShown: false,
       searchTooltip: this.$options.i18n.searchKbdHelp,
       userCounts,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -153,7 +155,7 @@ export default {
         data-testid="stop-impersonation-btn"
       />
     </div>
-    <organization-switcher v-if="glFeatures.uiForOrganizations" />
+    <organization-switcher v-if="glFeatures.uiForOrganizations && isLoggedIn" />
     <div
       v-if="sidebarData.is_logged_in"
       class="gl-display-flex gl-justify-content-space-between gl-gap-2"

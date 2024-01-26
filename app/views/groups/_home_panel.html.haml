@@ -10,7 +10,7 @@
         = @group.name
         %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
           = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
-        = render_if_exists 'shared/tier_badge', source: @group, namespace_to_track: @group
+        = render_if_exists 'shared/tier_badge', source: @group
 
     - if current_user
       .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }

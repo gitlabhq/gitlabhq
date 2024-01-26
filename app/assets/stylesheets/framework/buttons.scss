@@ -191,16 +191,6 @@
     color: $gray-700;
   }
 
-  &.dot-highlight::after {
-    content: '';
-    background-color: $blue-500;
-    width: $gl-padding * 0.5;
-    height: $gl-padding * 0.5;
-    display: inline-block;
-    border-radius: 50%;
-    margin-left: 3px;
-  }
-
   svg {
     height: 15px;
     width: 15px;

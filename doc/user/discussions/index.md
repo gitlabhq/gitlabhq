@@ -173,9 +173,6 @@ A system note is added to the page details.
 
 If an issue or merge request is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action on the right sidebar, your project or instance might have [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions) enabled.
-
 ## Add an internal note
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207473) in GitLab 13.9 [with a flag](../../administration/feature_flags.md) named `confidential_notes`. Disabled by default.
@@ -184,13 +181,14 @@ If you don't see this action on the right sidebar, your project or instance migh
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
 > - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363045) permissions in GitLab 15.6 to at least the Reporter role. In GitLab 15.5 and earlier, issue or epic authors and assignees could also read and create internal notes.
+> - Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
 
-You can add an internal note **to an issue or an epic**. It's then visible only to project members who have at least the Reporter role.
+When you add an internal note to a _public_ issue, epic, or merge request, only project members
+with least the Reporter role can view the note. Internal notes cannot be converted to regular comments,
+and all replies to internal notes are also internal. Internal notes are shown in a different
+color than public comments, and display an **Internal note** badge:
 
-Keep in mind:
-
-- Replies to internal notes are also internal.
-- You cannot turn an internal note into a regular comment.
+![Internal notes](img/add_internal_note_v16_9.png)
 
 Prerequisites:
 
@@ -198,13 +196,12 @@ Prerequisites:
 
 To add an internal note:
 
-1. On the issue or epic, in the **Comment** text box, type a comment.
+1. On the issue, epic, or merge request, in the **Comment** text box, type a comment.
 1. Below the comment, select the **Make this an internal note** checkbox.
 1. Select **Add internal note**.
 
-![Internal notes](img/add_internal_note_v16_6.png)
-
-You can also mark an [issue as confidential](../project/issues/confidential_issues.md).
+You can also mark an entire [issue as confidential](../project/issues/confidential_issues.md),
+or create [confidential merge requests](../project/merge_requests/confidential.md).
 
 ## Show only comments
 

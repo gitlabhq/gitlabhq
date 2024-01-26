@@ -103,7 +103,7 @@ export default {
       return isLoggedIn();
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+      return this.glFeatures.notificationsTodosButtons;
     },
     isForked() {
       return this.projectPath !== this.sourceProjectPath;

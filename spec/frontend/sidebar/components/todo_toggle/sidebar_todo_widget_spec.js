@@ -132,10 +132,10 @@ describe('Sidebar Todo Widget', () => {
       expect(findTodoButton().attributes('loading')).toBe('true');
     });
 
-    it('is not in the loading state if notificationsTodosButtons and movedMrSidebar feature flags are enabled', () => {
+    it('is not in the loading state if notificationsTodosButtons feature flag is enabled', () => {
       createComponent({
         provide: {
-          glFeatures: { notificationsTodosButtons: true, movedMrSidebar: true },
+          glFeatures: { notificationsTodosButtons: true },
         },
       });
 

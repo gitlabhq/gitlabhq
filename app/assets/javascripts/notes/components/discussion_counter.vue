@@ -72,7 +72,7 @@ export default {
       return options;
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+      return this.glFeatures.notificationsTodosButtons;
     },
   },
   methods: {

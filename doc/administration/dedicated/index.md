@@ -39,7 +39,7 @@ provide the following information to your account team:
   GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/).
 
 If you've been granted access to Switchboard, you will receive an email invitation with temporary
-credentials to sign in. 
+credentials to sign in.
 
 The credentials for Switchboard are separate from any other GitLab credentials you may already have
 to sign in to a GitLab self-managed or GitLab.com instance.

@@ -13,8 +13,6 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   end
 
   before do
-    stub_feature_flags(moved_mr_sidebar: false)
-
     project.add_maintainer(user)
 
     sign_in(user)
@@ -180,7 +178,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(button_text: 'Add comment now', resolve: true)
 
-      page.within '.discussions-counter' do
+      page.within(first('.discussions-counter')) do
         expect(page).to have_content('All threads resolved')
       end
     end
@@ -197,7 +195,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       wait_for_requests
 
-      page.within '.discussions-counter' do
+      page.within(first('.discussions-counter')) do
         expect(page).to have_content('All threads resolved')
       end
     end
@@ -220,7 +218,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(button_text: 'Add comment now', unresolve: true)
 
-      page.within '.discussions-counter' do
+      page.within(first('.discussions-counter')) do
         expect(page).to have_content('1 unresolved thread')
       end
     end
@@ -240,7 +238,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       wait_for_requests
 
-      page.within '.discussions-counter' do
+      page.within(first('.discussions-counter')) do
         expect(page).to have_content('1 unresolved thread')
       end
     end

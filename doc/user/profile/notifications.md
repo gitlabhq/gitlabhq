@@ -217,10 +217,6 @@ When you **turn off** notifications, you stop receiving notifications for update
 Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
 Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 
-<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
-If you don't see this action on the right sidebar, your project or instance might have
-enabled a feature flag for [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions).
-
 ### Notification events on issues, merge requests, and epics
 
 The following table presents the events that generate notifications for issues, merge requests, and

@@ -172,10 +172,6 @@ module MergeRequestsHelper
     end
   end
 
-  def moved_mr_sidebar_enabled?
-    Feature.enabled?(:moved_mr_sidebar, @project)
-  end
-
   def notifications_todos_buttons_enabled?
     Feature.enabled?(:notifications_todos_buttons, current_user)
   end

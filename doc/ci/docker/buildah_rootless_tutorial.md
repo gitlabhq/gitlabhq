@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Use Buildah in a rootless container with GitLab Runner Operator on OpenShift **(FREE)**
+# Tutorial: Use Buildah in a rootless container with GitLab Runner Operator on OpenShift
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial teaches you how to successfully build images using the `buildah` tool,
 with GitLab Runner deployed using [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator)

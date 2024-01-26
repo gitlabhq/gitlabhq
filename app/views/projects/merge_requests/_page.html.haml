@@ -1,6 +1,4 @@
 - @gfm_form = true
-- unless moved_mr_sidebar_enabled?
-  - @content_class = "merge-request-container#{' limit-container-width' unless fluid_layout}"
 - add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", _("Merge requests")
@@ -22,13 +20,12 @@
 
 .merge-request{ data: { mr_action: mr_action, url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version, diffs_batch_cache_key: @diffs_batch_cache_key } }
   = render "projects/merge_requests/mr_title"
-  - if moved_mr_sidebar_enabled?
-    #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
+  #js-merge-sticky-header{ data: { data: sticky_header_data.to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
-    .merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'} #{'gl-static' if moved_mr_sidebar_enabled?}" }
-      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if Feature.enabled?(:moved_mr_sidebar, @project) && !fluid_layout}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0{ class: "#{'gl-w-full gl-lg-w-auto!' if Feature.enabled?(:moved_mr_sidebar, @project)}" }
+    .gl-static.merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
+      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if !fluid_layout}" }
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-lg-w-auto
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -49,22 +46,21 @@
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm, class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
-          - if moved_mr_sidebar_enabled?
-            - if !!@issuable_sidebar.dig(:current_user, :id)
-              .gl-display-flex.gl-gap-3
-                .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
-                - if notifications_todos_buttons_enabled?
-                  .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
+          - if !!@issuable_sidebar.dig(:current_user, :id)
+            .gl-display-flex.gl-gap-3
+              .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
+              - if notifications_todos_buttons_enabled?
+                .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
 
-            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
-              = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
-                button_options: { class: 'js-sidebar-toggle' }) do
-                = _('Expand')
+          .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
+            = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
+              button_options: { class: 'js-sidebar-toggle' }) do
+              = _('Expand')
     .tab-content#diff-notes-app
       #js-diff-file-finder
         #js-code-navigation
       = render "projects/merge_requests/tabs/pane", id: "notes", class: "notes voting_notes" do
-        %div{ class: "#{'merge-request-overview' if moved_mr_sidebar_enabled?}" }
+        .merge-request-overview
           %section
             = render_if_exists "projects/merge_requests/diff_summary"
             .issuable-discussion.js-vue-notes-event
@@ -90,8 +86,7 @@
                 report_abuse_path: add_category_abuse_reports_path,
                 new_comment_template_path: profile_comment_templates_path,
                 new_custom_emoji_path: new_custom_emoji_path(@project.group) } }
-          - if moved_mr_sidebar_enabled?
-            = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
+          = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
       = render "projects/merge_requests/tabs/pane", name: "commits", id: "commits", class: "commits" do
         -# This tab is always loaded via AJAX
@@ -104,9 +99,6 @@
     .mr-loading-status
       .loading.hide
         = gl_loading_icon(size: 'lg')
-
-- unless moved_mr_sidebar_enabled?
-  = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @merge_request.assignees, reviewers: @merge_request.reviewers, source_branch: @merge_request.source_branch
 
 - if @merge_request.can_be_reverted?(current_user)
   = render "projects/commit/change", type: 'revert', commit: @merge_request.commit_to_revert

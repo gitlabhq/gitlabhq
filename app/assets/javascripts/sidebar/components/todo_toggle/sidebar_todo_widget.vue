@@ -85,7 +85,7 @@ export default {
   },
   computed: {
     isMergeRequest() {
-      return this.glFeatures.movedMrSidebar && this.issuableType === TYPE_MERGE_REQUEST;
+      return this.issuableType === TYPE_MERGE_REQUEST;
     },
     todoIdQuery() {
       return todoQueries[this.issuableType].query;
@@ -115,7 +115,7 @@ export default {
       return todoLabel(this.hasTodo);
     },
     isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons && this.glFeatures.movedMrSidebar;
+      return this.glFeatures.notificationsTodosButtons;
     },
   },
   methods: {

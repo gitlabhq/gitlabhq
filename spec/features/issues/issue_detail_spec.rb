@@ -98,7 +98,6 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
       project.add_developer(user_to_be_deleted)
 
       sign_in(user_to_be_deleted)
-      stub_feature_flags(moved_mr_sidebar: false)
       visit project_issue_path(project, issue)
       wait_for_requests
 

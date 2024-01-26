@@ -111,9 +111,6 @@ export default {
       update(data) {
         return data.workspace?.issuable?.reference || '';
       },
-      skip() {
-        return !this.isMrSidebarMoved;
-      },
       error(error) {
         createAlert({ message: this.$options.i18n.referenceFetchError });
         Sentry.captureException(error);
@@ -176,14 +173,11 @@ export default {
         issueType: this.issueTypeText,
       });
     },
-    isMrSidebarMoved() {
-      return this.glFeatures.movedMrSidebar;
-    },
     showLockIssueOption() {
-      return this.isMrSidebarMoved && this.issueType === TYPE_ISSUE && this.isUserSignedIn;
+      return this.issueType === TYPE_ISSUE && this.isUserSignedIn;
     },
     showMovedSidebarOptions() {
-      return this.isMrSidebarMoved && this.isUserSignedIn;
+      return this.isUserSignedIn;
     },
     newIssueItem() {
       return {
@@ -356,24 +350,22 @@ export default {
         <gl-disclosure-dropdown-item v-if="canPromoteToEpic" @action="promoteToEpic">
           <template #list-item>{{ __('Promote to epic') }}</template>
         </gl-disclosure-dropdown-item>
-        <template v-if="isMrSidebarMoved">
-          <gl-disclosure-dropdown-item
-            :data-clipboard-text="issuableReference"
-            class="js-copy-reference"
-            data-testid="copy-reference"
-            @action="copyReference"
-            ><template #list-item>{{
-              $options.i18n.copyReferenceText
-            }}</template></gl-disclosure-dropdown-item
-          >
-          <gl-disclosure-dropdown-item
-            v-if="issuableEmailAddress && showMovedSidebarOptions"
-            :data-clipboard-text="issuableEmailAddress"
-            data-testid="copy-email"
-            @action="copyEmailAddress"
-            >{{ copyMailAddressText }}</gl-disclosure-dropdown-item
-          >
-        </template>
+        <gl-disclosure-dropdown-item
+          :data-clipboard-text="issuableReference"
+          class="js-copy-reference"
+          data-testid="copy-reference"
+          @action="copyReference"
+          ><template #list-item>{{
+            $options.i18n.copyReferenceText
+          }}</template></gl-disclosure-dropdown-item
+        >
+        <gl-disclosure-dropdown-item
+          v-if="issuableEmailAddress && showMovedSidebarOptions"
+          :data-clipboard-text="issuableEmailAddress"
+          data-testid="copy-email"
+          @action="copyEmailAddress"
+          >{{ copyMailAddressText }}</gl-disclosure-dropdown-item
+        >
         <gl-disclosure-dropdown-item
           v-if="canReportSpam"
           :item="submitSpamItem"
@@ -458,24 +450,22 @@ export default {
       <template v-if="showLockIssueOption">
         <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
       </template>
-      <template v-if="isMrSidebarMoved">
-        <gl-disclosure-dropdown-item
-          :data-clipboard-text="issuableReference"
-          class="js-copy-reference"
-          data-testid="copy-reference"
-          @action="copyReference"
-          ><template #list-item>{{
-            $options.i18n.copyReferenceText
-          }}</template></gl-disclosure-dropdown-item
-        >
-        <gl-disclosure-dropdown-item
-          v-if="issuableEmailAddress && showMovedSidebarOptions"
-          :data-clipboard-text="issuableEmailAddress"
-          data-testid="copy-email"
-          @action="copyEmailAddress"
-          ><template #list-item>{{ copyMailAddressText }}</template></gl-disclosure-dropdown-item
-        >
-      </template>
+      <gl-disclosure-dropdown-item
+        :data-clipboard-text="issuableReference"
+        class="js-copy-reference"
+        data-testid="copy-reference"
+        @action="copyReference"
+        ><template #list-item>{{
+          $options.i18n.copyReferenceText
+        }}</template></gl-disclosure-dropdown-item
+      >
+      <gl-disclosure-dropdown-item
+        v-if="issuableEmailAddress && showMovedSidebarOptions"
+        :data-clipboard-text="issuableEmailAddress"
+        data-testid="copy-email"
+        @action="copyEmailAddress"
+        ><template #list-item>{{ copyMailAddressText }}</template></gl-disclosure-dropdown-item
+      >
       <gl-dropdown-divider v-if="canDestroyIssue || canReportSpam || !isIssueAuthor" />
       <gl-disclosure-dropdown-item
         v-if="canReportSpam"

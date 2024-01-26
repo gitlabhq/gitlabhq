@@ -296,6 +296,7 @@ export default {
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :issuable-type="issuableType"
+          :show-in-dropdown="false"
           data-testid="sidebar-notifications"
         />
       </template>
