@@ -151,7 +151,7 @@ module API
     end
 
     rescue_from Grape::Exceptions::Base do |e|
-      error! e.message, e.status, e.headers
+      error!(e.message, e.status, e.headers || {})
     end
 
     rescue_from MovedPermanentlyError do |e|

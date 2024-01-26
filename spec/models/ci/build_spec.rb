@@ -89,6 +89,47 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_build, pipeline: pipeline)
       end
     end
+
+    context 'when running after_commit callbacks' do
+      context 'without user present' do
+        it 'tracks creation event' do
+          build = FactoryBot.build(:ci_build)
+
+          expect(Gitlab::InternalEvents).to receive(:track_event).with(
+            'create_ci_build',
+            project: build.project
+          )
+
+          build.save!
+        end
+      end
+
+      context 'with user present' do
+        it 'tracks creation event' do
+          build = FactoryBot.build(:ci_build, user: create(:user))
+
+          expect(Gitlab::InternalEvents).to receive(:track_event).with(
+            'create_ci_build',
+            project: build.project,
+            user: build.user
+          )
+
+          build.save!
+        end
+      end
+
+      context 'with FF track_ci_build_created_internal_event disabled' do
+        before do
+          stub_feature_flags(track_ci_build_created_internal_event: false)
+        end
+
+        it 'does not track creation event' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+          create(:ci_build)
+        end
+      end
+    end
   end
 
   describe 'status' do
@@ -5615,6 +5656,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'on create' do
         let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
 
+        before do
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
+        end
+
         it 'tracks RedisHLL event with user_id' do
           expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
             .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
@@ -5664,6 +5709,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'on create' do
         it 'does not track RedisHLL event' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+            .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
 
           ci_build.save!
         end

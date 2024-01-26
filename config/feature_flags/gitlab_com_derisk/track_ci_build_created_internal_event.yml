@@ -1,0 +1,9 @@
+---
+name: track_ci_build_created_internal_event
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429063
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141421
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17409
+milestone: '16.9'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

@@ -4,7 +4,7 @@ RSpec.describe QA::Page::Element do
   describe '#selector_css' do
     it 'transforms element name into QA-specific clickable css selector' do
       expect(described_class.new(:sign_in_button).selector_css)
-        .to eq('[data-testid="sign_in_button"],[data-qa-selector="sign_in_button"]')
+        .to eq('[data-testid="sign_in_button"]')
     end
   end
 
@@ -94,11 +94,11 @@ RSpec.describe QA::Page::Element do
     end
   end
 
-  describe 'data-qa selectors' do
+  describe 'data-testid selectors' do
     subject { described_class.new(:my_element) }
 
-    it 'properly translates to a data-qa-selector' do
-      expect(subject.selector_css).to include(%q([data-qa-selector="my_element"]))
+    it 'does not translate to a deprecated qa selector' do
+      expect(subject.selector_css).not_to include(%q([data-qa-selector="my_element"]))
     end
 
     it 'properly translates to a data-testid' do
@@ -112,8 +112,6 @@ RSpec.describe QA::Page::Element do
       it 'matches on additional data-qa properties translating snake_case to kebab-case' do
         expect(element.selector_css)
           .to include('[data-testid="my_element"][data-qa-index="3"][data-qa-another-match="something"]')
-        expect(element.selector_css)
-          .to include('[data-qa-selector="my_element"][data-qa-index="3"][data-qa-another-match="something"]')
       end
 
       it 'doesnt conflict with element requirement' do

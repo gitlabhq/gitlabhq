@@ -100,6 +100,11 @@ Specific information applies to Linux package installations:
   | 16.6                    |  All                    | None     |
   | 16.7                    |  All                    | None     |
 
+## 16.8.0
+
+- Redis 6.2 or later is now required by Sidekiq. For installations that use an external Redis service, you should upgrade your Redis service to 6.2 - 7.x
+before upgrading to GitLab 16.8.
+
 ## 16.6.0
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.

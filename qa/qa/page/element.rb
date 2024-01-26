@@ -23,10 +23,7 @@ module QA
       end
 
       def selector_css
-        [
-          %([data-testid="#{name}"]#{additional_selectors}),
-          %([data-qa-selector="#{name}"]#{additional_selectors})
-        ].join(',')
+        %([data-testid="#{name}"]#{additional_selectors})
       end
 
       def matches?(line)

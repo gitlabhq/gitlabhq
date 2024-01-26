@@ -24497,14 +24497,14 @@ CREATE SEQUENCE system_access_microsoft_graph_access_tokens_id_seq
 ALTER SEQUENCE system_access_microsoft_graph_access_tokens_id_seq OWNED BY system_access_microsoft_graph_access_tokens.id;
 
 CREATE TABLE system_note_metadata (
-    id integer NOT NULL,
+    id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     commit_count integer,
     action character varying,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     description_version_id bigint,
     note_id bigint NOT NULL,
-    id_convert_to_bigint bigint DEFAULT 0 NOT NULL
+    id bigint NOT NULL
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq
@@ -35566,8 +35566,6 @@ CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON syst
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
 
-CREATE UNIQUE INDEX index_system_note_metadata_pkey_on_id_convert_to_bigint ON system_note_metadata USING btree (id_convert_to_bigint);
-
 CREATE INDEX index_taggings_on_tag_id ON taggings USING btree (tag_id);
 
 CREATE INDEX index_taggings_on_taggable_id_and_taggable_type_and_context ON taggings USING btree (taggable_id, taggable_type, context);
@@ -41165,9 +41163,6 @@ ALTER TABLE ONLY integrations
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_source_project FOREIGN KEY (source_project_id) REFERENCES projects(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY resource_link_events
-    ADD CONSTRAINT fk_system_note_metadata_id_convert_to_bigint FOREIGN KEY (system_note_metadata_id) REFERENCES system_note_metadata(id_convert_to_bigint) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY timelogs
     ADD CONSTRAINT fk_timelogs_issues_issue_id FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

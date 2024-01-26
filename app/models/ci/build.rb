@@ -221,6 +221,7 @@ module Ci
     end
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
+    after_commit :track_ci_build_created_event, on: :create
 
     class << self
       # This is needed for url_for to work,
@@ -1242,6 +1243,16 @@ module Ci
           event: 'i_ci_secrets_management_id_tokens_build_created'
         ).to_context]
       )
+    end
+
+    def track_ci_build_created_event
+      return unless Feature.enabled?(:track_ci_build_created_internal_event, project, type: :gitlab_com_derisk)
+
+      if user
+        Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
+      else
+        Gitlab::InternalEvents.track_event('create_ci_build', project: project)
+      end
     end
 
     def partition_id_prefix_in_16_bit_encode
