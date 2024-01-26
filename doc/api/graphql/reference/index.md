@@ -31729,6 +31729,7 @@ State of a Sentry error.
 | <a id="servicetypeexternal_wiki_service"></a>`EXTERNAL_WIKI_SERVICE` | ExternalWikiService type. |
 | <a id="servicetypegithub_service"></a>`GITHUB_SERVICE` | GithubService type. |
 | <a id="servicetypegitlab_slack_application_service"></a>`GITLAB_SLACK_APPLICATION_SERVICE` | GitlabSlackApplicationService type. |
+| <a id="servicetypegit_guardian_service"></a>`GIT_GUARDIAN_SERVICE` | GitGuardianService type. |
 | <a id="servicetypegoogle_play_service"></a>`GOOGLE_PLAY_SERVICE` | GooglePlayService type. |
 | <a id="servicetypehangouts_chat_service"></a>`HANGOUTS_CHAT_SERVICE` | HangoutsChatService type. |
 | <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | HarborService type. |

@@ -17,15 +17,32 @@ module Organizations
 
     scope :owners, -> { where(access_level: Gitlab::Access::OWNER) }
 
-    def self.create_default_organization_record_for(user_id, access_level)
+    def self.create_default_organization_record_for(user_id, user_is_admin:)
       Organizations::OrganizationUser.upsert(
         {
           organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID,
           user_id: user_id,
-          access_level: access_level
+          access_level: default_organization_access_level(user_is_admin: user_is_admin)
         },
         unique_by: [:organization_id, :user_id]
       )
+    end
+
+    def self.update_default_organization_record_for(user_id, user_is_admin:)
+      find_or_initialize_by(
+        user_id: user_id, organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID
+      ).tap do |record|
+        record.access_level = default_organization_access_level(user_is_admin: user_is_admin)
+        record.save
+      end
+    end
+
+    def self.default_organization_access_level(user_is_admin: false)
+      if user_is_admin
+        :owner
+      else
+        :default
+      end
     end
   end
 end

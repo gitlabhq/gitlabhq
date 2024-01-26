@@ -110,6 +110,10 @@ module API
             end
           end
           put "#{path}/#{slug}" do
+            if slug == "git-guardian" && Feature.disabled?(:git_guardian_integration, type: :wip)
+              render_api_error!('GitGuardian feature is disabled', 400)
+            end
+
             integration = user_project.find_or_initialize_integration(slug.underscore)
             params = declared_params(include_missing: false).merge(active: true)
 
@@ -143,6 +147,10 @@ module API
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
         end
         delete "#{path}/:slug" do
+          if params[:slug] == "git-guardian" && Feature.disabled?(:git_guardian_integration, type: :wip)
+            render_api_error!('GitGuardian feature is disabled', 400)
+          end
+
           integration = user_project.find_or_initialize_integration(params[:slug].underscore)
 
           destroy_conditionally!(integration) do

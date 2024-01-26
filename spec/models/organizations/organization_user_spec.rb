@@ -48,10 +48,12 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
   describe '.create_default_organization_record_for' do
     let_it_be(:default_organization) { create(:organization, :default) }
     let_it_be(:user) { create(:user, :without_default_org) }
-    let(:access_level) { :default }
+    let(:user_is_admin) { false }
     let(:user_id) { user.id }
 
-    subject(:create_entry) { described_class.create_default_organization_record_for(user_id, access_level) }
+    subject(:create_entry) do
+      described_class.create_default_organization_record_for(user_id, user_is_admin: user_is_admin)
+    end
 
     context 'when creating as as default user' do
       it 'creates record with correct attributes' do
@@ -61,7 +63,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
 
     context 'when creating as an owner' do
-      let(:access_level) { :owner }
+      let(:user_is_admin) { true }
 
       it 'creates record with correct attributes' do
         expect { create_entry }.to change { described_class.count }.by(1)
@@ -77,7 +79,7 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       end
 
       context 'when access_level changes' do
-        let(:access_level) { :owner }
+        let(:user_is_admin) { true }
 
         it 'changes access_level on the existing record' do
           expect(default_organization.owner?(user)).to be(false)
@@ -89,20 +91,74 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       end
     end
 
-    context 'when creating with invalid access_level' do
-      let(:access_level) { :foo }
-
-      it 'raises and error' do
-        expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
-      end
-    end
-
     context 'when creating with invalid user_id' do
       let(:user_id) { nil }
 
       it 'raises and error' do
         expect { create_entry }.to raise_error(ActiveRecord::NotNullViolation)
       end
+    end
+  end
+
+  describe '.update_default_organization_record_for' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+    let_it_be(:user) { create(:user, :without_default_org) }
+    let_it_be(:user_id) { user.id }
+    let(:user_is_admin) { false }
+
+    subject(:update_default_organization_record) do
+      described_class.update_default_organization_record_for(user_id, user_is_admin: user_is_admin)
+    end
+
+    context 'when record does not exist yet' do
+      it 'creates record with correct attributes' do
+        expect { update_default_organization_record }.to change { described_class.count }.by(1)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+
+    context 'when entry already exists' do
+      let_it_be(:organization_user) { create(:organization_user, user: user, organization: default_organization) }
+
+      it 'does not create or update existing record' do
+        expect { update_default_organization_record }.not_to change { described_class.count }
+      end
+
+      context 'when access_level changes' do
+        let(:user_is_admin) { true }
+
+        it 'changes access_level on the existing record' do
+          expect(default_organization.owner?(user)).to be(false)
+
+          expect { update_default_organization_record }.not_to change { described_class.count }
+
+          expect(default_organization.owner?(user)).to be(true)
+        end
+      end
+    end
+
+    context 'when creating with invalid user_id' do
+      let(:user_id) { nil }
+
+      it 'does not add a new record' do
+        expect { update_default_organization_record }.not_to change { described_class.count }
+      end
+    end
+  end
+
+  describe '.default_organization_access_level' do
+    let(:user_is_admin) { true }
+
+    subject { described_class.default_organization_access_level(user_is_admin: user_is_admin) }
+
+    context 'when user is admin' do
+      it { is_expected.to eq(:owner) }
+    end
+
+    context 'when user is not admin' do
+      let(:user_is_admin) { false }
+
+      it { is_expected.to eq(:default) }
     end
   end
 end

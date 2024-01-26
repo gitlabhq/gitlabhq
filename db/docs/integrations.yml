@@ -27,6 +27,7 @@ classes:
 - Integrations::EmailsOnPush
 - Integrations::Ewm
 - Integrations::ExternalWiki
+- Integrations::GitGuardian
 - Integrations::Github
 - Integrations::GitlabSlackApplication
 - Integrations::GooglePlay

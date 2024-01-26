@@ -24,13 +24,7 @@ FactoryBot.define do
     end
 
     trait :without_default_org do
-      after(:build) do
-        User.skip_callback(:commit, :after, :create_default_organization_user)
-      end
-
-      after(:create) do
-        User.set_callback(:commit, :after, :create_default_organization_user)
-      end
+      before(:create) { |user| user.define_singleton_method(:create_default_organization_user) { nil } }
     end
 
     trait :with_namespace do

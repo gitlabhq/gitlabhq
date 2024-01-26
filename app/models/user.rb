@@ -375,6 +375,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   after_create_commit :create_default_organization_user
+  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
@@ -2608,20 +2609,19 @@ class User < MainClusterwide::ApplicationRecord
   def create_default_organization_user
     return unless Feature.enabled?(:update_default_organization_users, self, type: :gitlab_com_derisk)
 
-    organization_access_level = if admin?
-                                  :owner
-                                else
-                                  :default
-                                end
-
-    Organizations::OrganizationUser
-      .create_default_organization_record_for(id, organization_access_level)
+    Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
   end
 
-  # method overriden in EE
+  def update_default_organization_user
+    return unless Feature.enabled?(:update_default_organization_users, self, type: :gitlab_com_derisk)
+
+    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
+  end
+
+  # method overridden in EE
   def audit_lock_access(reason: nil); end
 
-  # method overriden in EE
+  # method overridden in EE
   def audit_unlock_access(author: self); end
 end
 

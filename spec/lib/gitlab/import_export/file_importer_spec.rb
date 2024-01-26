@@ -193,32 +193,14 @@ RSpec.describe Gitlab::ImportExport::FileImporter, feature_category: :importers 
       Zlib::GzipWriter.open(filepath) do |gz|
         gz.write('Hello World!')
       end
+      stub_application_setting(max_decompressed_archive_size: 0.000001)
     end
 
-    context 'when validate_import_decompressed_archive_size feature flag is enabled' do
-      before do
-        stub_feature_flags(validate_import_decompressed_archive_size: true)
-        stub_application_setting(max_decompressed_archive_size: 0.000001)
-      end
+    it 'returns false and sets an error on shared' do
+      result = subject.import
 
-      it 'returns false and sets an error on shared' do
-        result = subject.import
-
-        expect(result).to eq(false)
-        expect(shared.errors.join).to eq('Decompressed archive size validation failed.')
-      end
-    end
-
-    context 'when validate_import_decompressed_archive_size feature flag is disabled' do
-      before do
-        stub_feature_flags(validate_import_decompressed_archive_size: false)
-      end
-
-      it 'skips validation' do
-        expect(subject).not_to receive(:validate_decompressed_archive_size)
-
-        subject.import
-      end
+      expect(result).to eq(false)
+      expect(shared.errors.join).to eq('Decompressed archive size validation failed.')
     end
   end
 

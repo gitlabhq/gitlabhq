@@ -30,30 +30,12 @@ RSpec.describe BulkImports::FileDecompressionService, feature_category: :importe
       expect(File.open(ndjson_filepath, &:readline)).to include('title', 'description')
     end
 
-    context 'when validate_import_decompressed_archive_size feature flag is enabled' do
-      before do
-        stub_feature_flags(validate_import_decompressed_archive_size: true)
+    it 'performs decompressed file size validation' do
+      expect_next_instance_of(Gitlab::ImportExport::DecompressedArchiveSizeValidator) do |validator|
+        expect(validator).to receive(:valid?).and_return(true)
       end
 
-      it 'performs decompressed file size validation' do
-        expect_next_instance_of(Gitlab::ImportExport::DecompressedArchiveSizeValidator) do |validator|
-          expect(validator).to receive(:valid?).and_return(true)
-        end
-
-        subject.execute
-      end
-    end
-
-    context 'when validate_import_decompressed_archive_size feature flag is disabled' do
-      before do
-        stub_feature_flags(validate_import_decompressed_archive_size: false)
-      end
-
-      it 'does not perform decompressed file size validation' do
-        expect(Gitlab::ImportExport::DecompressedArchiveSizeValidator).not_to receive(:new)
-
-        subject.execute
-      end
+      subject.execute
     end
 
     context 'when dir is not in tmpdir' do

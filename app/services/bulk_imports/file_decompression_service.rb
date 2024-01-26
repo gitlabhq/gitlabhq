@@ -21,7 +21,7 @@ module BulkImports
     def execute
       validate_tmpdir
       validate_filepath
-      validate_decompressed_file_size if Feature.enabled?(:validate_import_decompressed_archive_size)
+      validate_decompressed_file_size
       validate_symlink(filepath)
 
       decompress_file
