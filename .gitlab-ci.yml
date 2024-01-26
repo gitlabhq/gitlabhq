@@ -218,7 +218,6 @@ variables:
   BUNDLER_CHECKSUM_VERIFICATION_OPT_IN: "1"
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
-  FF_USE_FASTZIP: "true"
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
@@ -230,11 +229,6 @@ variables:
   REVIEW_APPS_DOMAIN: "gitlab-review.app"
   REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
   REVIEW_APPS_GCP_REGION: "us-central1"
-
-  CACHE_ASSETS_AS_PACKAGE: "true"
-  REUSE_FRONTEND_FIXTURES_ENABLED: "true"
-  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
-  SIMPLECOV: "true"
 
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
@@ -249,6 +243,15 @@ variables:
   # Workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/390313. This can be dropped whenever
   # https://github.com/ruby/ruby/pull/7663 lands in the Ruby interpreter.
   NOKOGIRI_LIBXML_MEMORY_MANAGEMENT: default
+
+  # CI jobs behavior can be changed by changing the value of these variables in the project's CI/CD variables
+  AVERAGE_KNAPSACK_REPORT: "true"
+  ENABLE_DEPSASTER: "true"
+  ENABLE_DEPSCORE: "true"
+  CACHE_ASSETS_AS_PACKAGE: "true"
+  REUSE_FRONTEND_FIXTURES_ENABLED: "true"
+  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
+  SIMPLECOV: "true"
 
 include:
   - local: .gitlab/ci/_skip.yml

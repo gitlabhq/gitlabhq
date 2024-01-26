@@ -155,9 +155,17 @@ describe('ml/model_registry/apps/index_ml_models', () => {
     });
 
     describe('shows models', () => {
+      let resolver;
+
       beforeEach(async () => {
-        createWrapper();
+        resolver = jest.fn().mockResolvedValue(modelsQuery());
+        createWrapper({ resolver });
+
         await waitForPromises();
+      });
+
+      it('calls query only once on setup', () => {
+        expect(resolver).toHaveBeenCalledTimes(1);
       });
 
       it('passes items to list', () => {

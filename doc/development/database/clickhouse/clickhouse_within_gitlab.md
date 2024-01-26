@@ -205,6 +205,46 @@ end
 NOTE:
 It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
 
+## Iterating over tables
+
+You can use the `ClickHouse::Iterator` class for batching over large volumes of data in ClickHouse. The iterator works a bit differently than existing tooling for the PostgreSQL database (see [iterating tables in batches docs](../iterating_tables_in_batches.md)), as the tool does not rely on database indexes and uses fixed size numeric ranges.
+
+Requirements:
+
+- Single integer column.
+- No huge gaps between the column values, the ideal columns would be auto-incrementing PostgreSQL primary keys.
+- Duplicated values are not a problem if the data duplication is minimal.
+
+Usage:
+
+```ruby
+connection = ClickHouse::Connection.new(:main)
+builder = ClickHouse::QueryBuilder.new('events')
+
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
+iterator.each_batch(column: :id, of: 100_000) do |scope|
+  records = connection.select(scope.to_sql)
+end
+```
+
+In case you want to iterate over specific rows, you could add filters to the query builder object. Be advised that efficient filtering and iteration might require a different database table schema optimized for the use case. When introducing such iteration, always ensure that the database queries are not scanning the whole database table.
+
+```ruby
+connection = ClickHouse::Connection.new(:main)
+builder = ClickHouse::QueryBuilder.new('events')
+
+# filtering by target type and stringified traversal ids/path
+builder = builder.where(target_type: 'Issue')
+builder = builder.where(path: '96/97/') # points to a specific project
+
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
+iterator.each_batch(column: :id, of: 10) do |scope, min, max|
+  puts "processing range: #{min} - #{max}"
+  puts scope.to_sql
+  records = connection.select(scope.to_sql)
+end
+```
+
 ## Implementing Sidekiq workers
 
 Sidekiq workers leveraging ClickHouse databases should include the `ClickHouseWorker` module.

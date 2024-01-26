@@ -45,6 +45,16 @@ export default {
       required: false,
       default: false,
     },
+    codequalityData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    sastData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   idState() {
     return {
@@ -54,13 +64,7 @@ export default {
   },
   computed: {
     ...mapGetters('diffs', ['commitId', 'fileLineCoverage']),
-    ...mapState('diffs', [
-      'codequalityDiff',
-      'sastDiff',
-      'highlightedRow',
-      'coverageLoaded',
-      'selectedCommentPosition',
-    ]),
+    ...mapState('diffs', ['highlightedRow', 'coverageLoaded', 'selectedCommentPosition']),
     ...mapState({
       selectedCommentPosition: ({ notes }) => notes.selectedCommentPosition,
       selectedCommentPositionHover: ({ notes }) => notes.selectedCommentPositionHover,
@@ -76,8 +80,8 @@ export default {
     },
     hasInlineFindingsChanges() {
       return (
-        this.codequalityDiff?.files?.[this.diffFile.file_path]?.length > 0 ||
-        this.sastDiff?.added?.length > 0
+        this.codequalityData?.files?.[this.diffFile.file_path]?.length > 0 ||
+        this.sastData?.added?.length > 0
       );
     },
   },

@@ -33,7 +33,9 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
   end
 
-  it_behaves_like 'edits content using the content editor'
+  context 'with content editor', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439368' do
+    it_behaves_like 'edits content using the content editor'
+  end
 
   it 'replys to a new comment' do
     page.within('.js-main-target-form') do

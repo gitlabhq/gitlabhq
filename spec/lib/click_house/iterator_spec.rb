@@ -29,6 +29,19 @@ RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database d
     expect(collect_ids_with_batch_size(15)).to match_array(expected_values)
   end
 
+  it 'yields the boundary values' do
+    min_values = []
+    max_values = []
+
+    iterator.each_batch(column: :author_id, of: 2) do |_scope, min, max|
+      min_values << min
+      max_values << max
+    end
+
+    expect(min_values).to eq([1, 3, 5, 7, 9])
+    expect(max_values).to eq([2, 4, 6, 8, 10])
+  end
+
   context 'when min value is given' do
     let(:iterator) { described_class.new(query_builder: query_builder, connection: connection, min_value: 5) }
 

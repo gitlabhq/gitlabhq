@@ -320,6 +320,9 @@ RSpec.describe Projects::UpdateRepositoryStorageService, feature_category: :sour
 
             it 'raises an error and removes the new object pool repository' do
               expect(object_pool_repository_double).to receive(:remove)
+              expect_next_instance_of(PoolRepository) do |instance|
+                expect(instance).to receive(:destroy!).and_call_original
+              end
 
               original_count = PoolRepository.count
 

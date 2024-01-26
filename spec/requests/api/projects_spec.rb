@@ -4161,6 +4161,28 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
+      it 'updates public_builds (deprecated)' do
+        project3.update!({ public_builds: false })
+        project_param = { public_builds: 'true' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['public_jobs']).to be_truthy
+      end
+
+      it 'updates public_jobs' do
+        project3.update!({ public_builds: false })
+        project_param = { public_jobs: 'true' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['public_jobs']).to be_truthy
+      end
+
       context 'with changes to the avatar' do
         let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
         let_it_be(:alternate_avatar_file) { fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png') }

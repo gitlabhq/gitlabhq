@@ -1569,7 +1569,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `packages_enabled`                                                | boolean | No                             | Enable or disable packages repository feature. |
 | `pages_access_level`                                              | string  | No                             | One of `disabled`, `private`, `enabled`, or `public`. |
 | `printing_merge_request_link_enabled`                             | boolean | No                             | Show link to create/view merge request when pushing from the command line. |
-| `public_builds`                                                   | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
+| `public_builds`                                                   | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
+| `public_jobs`                                                     | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                                | boolean | No                             | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                         | string  | No                             | One of `disabled`, `private`, or `enabled`. |
@@ -1661,7 +1662,8 @@ POST /projects/user/:user_id
 | `pages_access_level`                                              | string  | No       | One of `disabled`, `private`, `enabled`, or `public`. |
 | `path`                                                            | string  | No       | Custom repository name for new project. By default generated based on name. |
 | `printing_merge_request_link_enabled`                             | boolean | No       | Show link to create/view merge request when pushing from the command line. |
-| `public_builds`                                                   | boolean | No       | If `true`, jobs can be viewed by non-project-members. |
+| `public_builds`                                                   | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
+| `public_jobs`                                                     | boolean | No       | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                                | boolean | No       | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                         | string  | No       | One of `disabled`, `private`, or `enabled`. |
@@ -1773,7 +1775,8 @@ Supported attributes:
 | `path`                                                            | string            | No       | Custom repository name for the project. By default generated based on name. |
 | `prevent_merge_without_jira_issue`                                | boolean           | No       | Set whether merge requests require an associated issue from Jira. Premium and Ultimate only. |
 | `printing_merge_request_link_enabled`                             | boolean           | No       | Show link to create/view merge request when pushing from the command line. |
-| `public_builds`                                                   | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
+| `public_builds`                                                   | boolean           | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
+| `public_jobs`                                                     | boolean           | No       | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `environments_access_level`                                       | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `feature_flags_access_level`                                      | string            | No       | One of `disabled`, `private`, or `enabled`. |

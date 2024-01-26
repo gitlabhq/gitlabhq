@@ -90,6 +90,16 @@ export default {
       required: false,
       default: true,
     },
+    codequalityData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    sastData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   idState() {
     return {
@@ -104,12 +114,7 @@ export default {
     genericError: SOMETHING_WENT_WRONG,
   },
   computed: {
-    ...mapState('diffs', [
-      'currentDiffFileId',
-      'codequalityDiff',
-      'conflictResolutionPath',
-      'canMerge',
-    ]),
+    ...mapState('diffs', ['currentDiffFileId', 'conflictResolutionPath', 'canMerge']),
     ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
     ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'pinnedFile']),
     isPinnedFile() {
@@ -553,6 +558,8 @@ export default {
           <diff-content
             v-if="showContent"
             :class="hasBodyClasses.content"
+            :codequality-data="codequalityData"
+            :sast-data="sastData"
             :diff-file="file"
             :help-page-path="helpPagePath"
             @load-file="requestDiff"

@@ -158,6 +158,8 @@ export default {
       activeProject: undefined,
       hasScannerError: false,
       pinnedFileStatus: '',
+      codequalityData: {},
+      sastData: {},
     };
   },
   apollo: {
@@ -192,14 +194,11 @@ export default {
         }
 
         if (codequalityReportsComparer?.report?.newErrors) {
-          this.$store.commit(
-            'diffs/SET_CODEQUALITY_DATA',
-            sortFindingsByFile(codequalityReportsComparer.report.newErrors),
-          );
+          this.codequalityData = sortFindingsByFile(codequalityReportsComparer.report.newErrors);
         }
 
         if (sastReport?.report) {
-          this.$store.commit('diffs/SET_SAST_DATA', sastReport.report);
+          this.sastData = sastReport.report;
         }
       },
       error() {
@@ -759,6 +758,8 @@ export default {
                 >
                   <diff-file
                     :file="item"
+                    :codequality-data="codequalityData"
+                    :sast-data="sastData"
                     :reviewed="fileReviews[item.id]"
                     :is-first-file="index === 0"
                     :is-last-file="index === diffFilesLength - 1"
@@ -778,6 +779,8 @@ export default {
                 v-for="(file, index) in diffs"
                 :key="file.new_path"
                 :file="file"
+                :codequality-data="codequalityData"
+                :sast-data="sastData"
                 :reviewed="fileReviews[file.id]"
                 :is-first-file="index === 0"
                 :is-last-file="index === diffFilesLength - 1"

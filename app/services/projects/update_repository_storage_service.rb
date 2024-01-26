@@ -49,8 +49,14 @@ module Projects
         pool_repository: pool_repository
       )
 
-      Repositories::ReplicateService.new(pool_repository.object_pool.repository)
-        .execute(target_pool_repository.object_pool.repository, :object_pool)
+      begin
+        Repositories::ReplicateService.new(pool_repository.object_pool.repository)
+          .execute(target_pool_repository.object_pool.repository, :object_pool)
+      rescue StandardError => e
+        target_pool_repository.destroy!
+
+        raise e
+      end
     end
 
     def remove_old_paths

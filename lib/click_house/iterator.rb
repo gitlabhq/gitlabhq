@@ -44,9 +44,10 @@ module ClickHouse
       loop do
         break if min > max
 
+        upper_bound = (min + of) - 1
         yield query_builder
           .where(table[column].gteq(min))
-          .where(table[column].lt(min + of))
+          .where(table[column].lteq(upper_bound)), min, upper_bound
 
         min += of
       end

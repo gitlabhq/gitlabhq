@@ -6,7 +6,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import EmptyState from '../components/empty_state.vue';
 import * as i18n from '../translations';
-import { BASE_SORT_FIELDS, GRAPHQL_PAGE_SIZE, MODEL_ENTITIES } from '../constants';
+import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
 import ModelRow from '../components/model_row.vue';
 import ActionsDropdown from '../components/actions_dropdown.vue';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
@@ -62,12 +62,17 @@ export default {
       error(error) {
         this.handleError(error);
       },
+      skip() {
+        return this.skipQueries;
+      },
     },
   },
   data() {
     return {
       models: [],
       errorMessage: undefined,
+      skipQueries: true,
+      queryVariables: {},
     };
   },
   computed: {
@@ -83,31 +88,21 @@ export default {
     isLoading() {
       return this.$apollo.queries.models.loading;
     },
-    queryVariables() {
-      return {
-        fullPath: this.projectPath,
-        first: GRAPHQL_PAGE_SIZE,
-      };
-    },
   },
   methods: {
     fetchPage(variables) {
-      const vars = {
-        ...this.queryVariables,
+      this.queryVariables = {
+        fullPath: this.projectPath,
         ...variables,
         name: variables.name,
         orderBy: variables.orderBy?.toUpperCase() || 'CREATED_AT',
         sort: variables.sort?.toUpperCase() || 'DESC',
       };
 
-      this.$apollo.queries.models
-        .fetchMore({
-          variables: vars,
-          updateQuery: (previousResult, { fetchMoreResult }) => {
-            return fetchMoreResult;
-          },
-        })
-        .catch(this.handleError);
+      this.errorMessage = null;
+      this.skipQueries = false;
+
+      this.$apollo.queries.models.fetchMore({});
     },
     handleError(error) {
       this.errorMessage = makeLoadModelErrorMessage(error.message);
