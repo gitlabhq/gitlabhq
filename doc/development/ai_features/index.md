@@ -306,7 +306,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 ### Use Customer Dot as OIDC provider in AI Gateway
 
 1. AI Gateway:
-   1. Ensure `AIGW_CUSTOMER_PORTAL_BASE_URL` in the `.env` file points to your Customer Dot URL.
+   1. Ensure `AIGW_CUSTOMER_PORTAL_URL` in the `.env` file points to your Customer Dot URL.
    1. Restart
 
 ## Experimental REST API

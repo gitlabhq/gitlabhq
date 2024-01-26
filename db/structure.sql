@@ -23571,7 +23571,6 @@ CREATE TABLE sbom_occurrences (
     component_name text,
     input_file_path text,
     licenses jsonb DEFAULT '[]'::jsonb,
-    vulnerabilities jsonb DEFAULT '[]'::jsonb,
     highest_severity smallint,
     vulnerability_count integer DEFAULT 0 NOT NULL,
     source_package_id bigint,

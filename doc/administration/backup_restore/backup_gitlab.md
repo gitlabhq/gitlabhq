@@ -448,7 +448,7 @@ Depending on your installation type, slightly different components can be skippe
 
 ::Tabs
 
-:::Tab Title Linux package (Omnibus) / Docker / Self-compiled
+:::TabTitle Linux package (Omnibus) / Docker / Self-compiled
 
 <!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/31c3df7ebb65768208772da3e20d32688a6c90ef/lib/backup/manager.rb#L126 -->
 

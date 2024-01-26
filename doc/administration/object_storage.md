@@ -440,7 +440,7 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 NOTE:
 Connections to HCP may return an error stating `SigntureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
 
-[HCP](https://knowledge.hitachivantara.com/Documents/Storage/HCP_for_Cloud_Scale/1.0.0/Adminstering_HCP_for_cloud_scale/Getting_started/02_Support_for_Amazon_S3_API) provides an S3-compatible API. Use the following configuration example:
+[HCP](https://docs.hitachivantara.com/r/en-us/content-platform-for-cloud-scale/2.6.x/mk-hcpcs008/getting-started/introducing-hcp-for-cloud-scale/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
