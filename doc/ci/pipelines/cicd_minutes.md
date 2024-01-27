@@ -258,7 +258,7 @@ The cost factors on self-managed instances are:
 #### Cost factor for community contributions to GitLab projects
 
 Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
-maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
+maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://handbook.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
 is reduced by the compute minutes used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 

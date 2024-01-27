@@ -61,4 +61,4 @@ version from being used:
    [`RuboCop::Cop::Migration::VersionedMigrationClass`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/cop/migration/versioned_migration_class.rb)
    and [its owned tests](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/rubocop/cop/migration/versioned_migration_class_spec.rb).
 1. Communicate this change on our Slack `#backend` and `#database` channels and
-   [Engineering Week-in-Review document](https://about.gitlab.com/handbook/engineering/#communication).
+   [Engineering Week-in-Review document](https://handbook.gitlab.com/handbook/engineering/engineering-comms/#keeping-yourself-informed).

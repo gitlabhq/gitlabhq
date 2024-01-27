@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # Processes for GitLab Shell
@@ -37,7 +37,7 @@ Rails application:
 GitLab Shell is included in the packages we create for GitLab. Each version of
 GitLab specifies the version of GitLab Shell it uses in the `GITLAB_SHELL_VERSION`
 file. Because of this specification, security fixes in GitLab Shell are tightly coupled to the
-[GitLab security release](https://about.gitlab.com/handbook/engineering/workflow/#security-issues) workflow.
+[GitLab security release](https://handbook.gitlab.com/handbook/engineering/workflow/#security-issues) workflow.
 
 For a security fix in GitLab Shell, two sets of merge requests are required:
 

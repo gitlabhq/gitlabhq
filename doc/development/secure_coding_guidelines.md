@@ -1399,7 +1399,7 @@ prevent_from_serialization(*strategy.token_fields) if respond_to?(:prevent_from_
 ## Artificial Intelligence (AI) features
 
 When planning and developing new AI experiments or features, we recommend creating an
-[Application Security Review](https://about.gitlab.com/handbook/engineering/security/security-engineering-and-research/application-security/appsec-reviews.html) issue.
+[Application Security Review](https://handbook.gitlab.com/handbook/security/product-security/application-security/appsec-reviews/) issue.
 
 There are a number of risks to be mindful of:
 

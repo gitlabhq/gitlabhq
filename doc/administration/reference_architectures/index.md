@@ -451,7 +451,7 @@ For deploying GitLab over multiple data centers or regions we offer [GitLab Geo]
 
 ## Validation and test results
 
-The [Quality Engineering team](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/)
+The [Quality Engineering team](https://handbook.gitlab.com/handbook/engineering/quality/)
 does regular smoke and performance tests for the reference architectures to ensure they
 remain compliant.
 
@@ -461,7 +461,7 @@ The Quality Department has a focus on measuring and improving the performance
 of GitLab, as well as creating and validating reference architectures that
 self-managed customers can rely on as performant configurations.
 
-For more information, see our [handbook page](https://about.gitlab.com/handbook/engineering/quality/performance-and-scalability/).
+For more information, see our [handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/performance-and-scalability/).
 
 ### How we perform the tests
 

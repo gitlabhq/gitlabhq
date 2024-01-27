@@ -1430,6 +1430,7 @@ Alert boxes are generated when one of these words is followed by a line break:
 - `WARNING:`
 - `INFO:` (Marketing only)
 - `DISCLAIMER:`
+- `DETAILS:`
 
 For example:
 
@@ -1537,6 +1538,10 @@ you don't need to supply your username and password each time.
 
 Use to describe future functionality only.
 For more information, see [Legal disclaimer for future features](../versions.md#legal-disclaimer-for-future-features).
+
+### Details
+
+`DETAILS:` alert boxes are used for [tier badges](#product-tier-badges).
 
 ## Blockquotes
 
@@ -1735,8 +1740,8 @@ For more examples, see the [REST API style guide](../restful_api_styleguide.md).
 
 ##### Administrator documentation tier badges
 
-Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
-administrator documentation often includes sections that mention:
+Topics that are only for instance administrators should have the `Self-managed` tier.
+Instance administrator documentation often includes sections that mention:
 
 - Changing the `gitlab.rb` or `gitlab.yml` files.
 - Accessing the rails console or running Rake tasks.

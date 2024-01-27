@@ -32,14 +32,14 @@ To create a feature proposal, open an issue in the issue tracker using the
 In order to help track feature proposals, we use the
 [`~"type::feature"`](https://gitlab.com/gitlab-org/gitlab/-/issues?label_name=type::feature) label.
 Users that are not members of the project cannot add labels via the UI.
-Instead, use [reactive label commands](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#reactive-label-and-unlabel-commands).
+Instead, use [reactive label commands](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#reactive-workflow-automation).
 
 Keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
 For changes to the user interface (UI), follow our [design and UI guidelines](design.md),
 and include a visual example (screenshot, wireframe, or mockup). Such issues should
-be given the `~UX"` label (using the [reactive label commands](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#reactive-label-and-unlabel-commands)) for the Product Design team to provide input and guidance.
+be given the `~UX"` label (using the [reactive label commands](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#reactive-workflow-automation)) for the Product Design team to provide input and guidance.
 
 ## Finding issues to work on
 
@@ -72,7 +72,7 @@ the community for help.
 
 ## Issue triaging
 
-Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/quality/issue-triage/).
+Our issue triage policies are [described in our handbook](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/).
 You are very welcome to help the GitLab team triage issues.
 
 The most important thing is making sure valid issues receive feedback from the
@@ -82,7 +82,7 @@ on those issues. Select someone with relevant experience from the
 If there is nobody mentioned with that expertise, look in the commit history for
 the affected files to find someone.
 
-We also have triage automation in place, described [in our handbook](https://about.gitlab.com/handbook/engineering/quality/triage-operations/).
+We also have triage automation in place, described [in our handbook](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).
 
 For information about which labels to apply to issues, see [Labels](../labels/index.md).
 

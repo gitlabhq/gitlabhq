@@ -12,7 +12,7 @@ which itself includes files under
 [`.gitlab/ci/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/.gitlab/ci)
 for easier maintenance.
 
-We're striving to [dogfood](https://about.gitlab.com/handbook/engineering/development/principles/#dogfooding)
+We're striving to [dogfood](https://handbook.gitlab.com/handbook/engineering/development/principles/#dogfooding)
 GitLab [CI/CD features and best-practices](../../ci/index.md)
 as much as possible.
 
@@ -230,7 +230,7 @@ There was a proposal from a contributor, but the approach is not without some do
 
 ### Broken Master Fixes
 
-When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
+When you need to [fix a broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
 
 Note that the merge request also needs to have the `master:broken` or `master:foss-broken` label set.
 

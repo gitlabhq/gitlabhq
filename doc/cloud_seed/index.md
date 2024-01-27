@@ -14,7 +14,7 @@ DETAILS:
 > - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100545) in GitLab 15.5.
 
 Cloud Seed is an open-source program led
-by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/) in collaboration with
+by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/) in collaboration with
 [Google Cloud](https://cloud.google.com/).
 
 Cloud Seed combines Heroku-like ease-of-use with hyper-cloud flexibility. We do this by using OAuth 2 to provision

@@ -129,7 +129,7 @@ For example, this `setConfig` suppresses a challenge:
 ## Additional resources
 
 <!-- markdownlint-disable MD044 -->
-The [Anti-abuse team](https://about.gitlab.com/handbook/engineering/development/data-science/anti-abuse/#team-members) owns the ArkoseLabs Protect feature. You can join our ArkoseLabs/GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
+The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/anti-abuse/#team-members) owns the ArkoseLabs Protect feature. You can join our ArkoseLabs/GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
 <!-- markdownlint-enable MD044 -->
 
 ArkoseLabs also maintains the following resources:

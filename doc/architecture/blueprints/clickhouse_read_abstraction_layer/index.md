@@ -143,7 +143,7 @@ In this section authors provide an overview of existing 3rd party open-source so
 
 ##### 1. License (MUST HAVE)
 
-1. Solutions must be open source under an [acceptable license](https://about.gitlab.com/handbook/engineering/open-source/#acceptable-licenses).
+1. Solutions must be open source under an [acceptable license](https://handbook.gitlab.com/handbook/engineering/open-source/#acceptable-licenses).
 
 ##### 2. Support for different data stores (MUST HAVE)
 

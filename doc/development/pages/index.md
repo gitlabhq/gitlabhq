@@ -275,7 +275,7 @@ and deep understanding of our coding standards.
 
 ### Expectations
 
-The process to [become a maintainer at GitLab is defined in the handbook](https://about.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer),
+The process to [become a maintainer at GitLab is defined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer),
 and it is the baseline for this process. One thing that is expected is a high number of reviews, however;
 the rate of change of the GitLab Pages compared to the GitLab Rails project is too little.
 
@@ -304,7 +304,7 @@ a performance improvement, a new feature, or a significant refactoring.
 Prior to becoming a maintainer, you should first become a reviewer of the project. This should include changes
 to any part of the codebase including the documentation.
 
-To become a reviewer follow the steps [outlined in the handbook](https://about.gitlab.com/handbook/engineering/workflow/code-review/#reviewer).
+To become a reviewer follow the steps [outlined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#reviewer).
 There is no set timeline of how long you should be a reviewer before becoming a maintainer, but you should
 gain enough experience in the areas mentioned in the [expectations section](#expectations) of this document.
 

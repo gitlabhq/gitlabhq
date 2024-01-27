@@ -412,5 +412,5 @@ Request For Comments.
 - 2022-06-07: Working Group members [started submitting technical proposals](https://gitlab.com/gitlab-org/gitlab/-/issues/364524) for the next rate limiting architecture.
 - 2022-06-15: We started [scoring proposals](https://docs.google.com/spreadsheets/d/1DFHU1kSdTnpydwM5P2RK8NhVBNWgEHvzT72eOhB8F9E) submitted by Working Group members.
 - 2022-07-06: A fourth, [consolidated proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/364524#note_1017640650), has been submitted.
-- 2022-07-12: Started working on the design document following [Architecture Evolution Workflow](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
+- 2022-07-12: Started working on the design document following [Architecture Evolution Workflow](https://handbook.gitlab.com/handbook/engineering/architecture/workflow/).
 - 2022-09-08: The initial version of the blueprint has been merged.

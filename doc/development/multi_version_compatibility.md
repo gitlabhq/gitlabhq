@@ -54,7 +54,7 @@ familiarizing yourself with:
 
 - [Update instructions](../update/index.md)
 - [Reference architectures](../administration/reference_architectures/index.md)
-- [GitLab.com's architecture](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
+- [GitLab.com's architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/)
 - [GitLab.com's upgrade pipeline](https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/gitlab-com-deployer.md#upgrade-pipeline-default)
 
 To illustrate how these problems arise, take a look at this example:
@@ -93,7 +93,7 @@ These users accept some downtime during the update. Unfortunately we can't ignor
 
 ## What kind of components can GitLab be broken down into?
 
-The [50,000 reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://about.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://about.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/), plus there is a ["canary" stage which receives updates first](https://about.gitlab.com/handbook/engineering/#sts=Canary%20Testing).
+The [50,000 reference architecture](../administration/reference_architectures/50k_users.md) runs GitLab on 48+ nodes. GitLab.com is [bigger than that](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/), plus a portion of the [infrastructure runs on Kubernetes](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/kubernetes/gitlab-com/), plus there is a ["canary" stage which receives updates first](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage/).
 
 But the problem isn't just that there are many nodes. The bigger problem is that a deployment can be divided into different contexts. And GitLab.com is not the only one that does this. Some possible divisions:
 

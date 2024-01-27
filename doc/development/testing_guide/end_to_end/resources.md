@@ -492,7 +492,7 @@ end
 
 We have a mechanism to [collect](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resource_data_processor.rb#L32)
 all resources created during test executions, and another to [handle](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L44)
-these resources. On [dotcom environments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/#environments), after a test suite finishes in the [QA pipelines](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#scheduled-qa-test-pipelines), resources from all passing test are
+these resources. On [dotcom environments](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/#environments), after a test suite finishes in the [QA pipelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#qa-test-pipelines), resources from all passing test are
 automatically deleted in the same pipeline run. Resources from all failed tests are reserved for investigation,
 and won't be deleted until the following Saturday by a scheduled pipeline. When introducing new resources,
 also make sure to add any resource that cannot be deleted to the [IGNORED_RESOURCES](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L29)

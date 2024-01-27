@@ -42,7 +42,7 @@ to your profile YAML file:
 1. Create the merge request
    [using the "Database reviewer" template](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Database%20reviewer.md).
 1. Assign to a database maintainer or the
-   [Database Team's Engineering Manager](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/).
+   [Database Team's Engineering Manager](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/).
 
 After the `team.yml` update is merged, the [Reviewer roulette](../code_review.md#reviewer-roulette)
 may recommend you as a database reviewer.
@@ -82,14 +82,14 @@ topics and use cases. The most frequently required during database reviewing are
 ## How to apply to become a database maintainer
 
 Database maintainership uses the same process as other projects for identifying maintainers.
-[Follow the general process documented here](https://about.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
+[Follow the general process documented here](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
 
-For database specific requirements, see [`Project maintainer process for gitlab-database`](https://about.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
+For database specific requirements, see [`Project maintainer process for gitlab-database`](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-database)
 
 ## What to do if you feel overwhelmed
 
 Similar to all types of reviews, [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization).
-Database reviewers are expected to [review assigned merge requests in a timely manner](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-turnaround-time)
+Database reviewers are expected to [review assigned merge requests in a timely manner](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#review-turnaround-time)
 or let the author know as soon as possible and help them find another reviewer or maintainer.
 
 We are doing reviews to help the rest of the GitLab team and, at the same time, get exposed

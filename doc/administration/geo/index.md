@@ -121,7 +121,7 @@ The following are required to run Geo:
   The following operating systems are known to ship with a current version of OpenSSH:
   - [CentOS](https://www.centos.org) 7.4 or later
   - [Ubuntu](https://ubuntu.com) 16.04 or later
-- [Supported PostgreSQL versions](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/postgresql-upgrade-cadence.html) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
+- [Supported PostgreSQL versions](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/postgresql-upgrade-cadence/) for your GitLab releases with [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication).
 
 NOTE:
 [PostgreSQL Logical replication](https://www.postgresql.org/docs/current/logical-replication.html) is not supported.

@@ -75,7 +75,7 @@ problems, such as outages.**
 ## Risk of a broken default branch
 
 Feature flags must be used in the MR that introduces them. Not doing so causes a
-[broken default branch](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+[broken default branch](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the default branch.
 
 ## Types of feature flags
@@ -347,7 +347,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 WARNING:
 Feature flags **must** be used in the MR that introduces them. Not doing so causes a
-[broken master](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+[broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
 
 ## List all the feature flags

@@ -121,7 +121,7 @@ For end-to-end production and staging tests to function properly, GitLab [allows
 ## Additional resources
 
 <!-- markdownlint-disable MD044 -->
-The [Anti-abuse team](https://about.gitlab.com/handbook/engineering/development/data-science/anti-abuse/#team-members) owns identity verification. You can join our channel on Slack: [#g_anti-abuse](https://gitlab.slack.com/archives/C03EH5HCLPR).
+The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/anti-abuse/#team-members) owns identity verification. You can join our channel on Slack: [#g_anti-abuse](https://gitlab.slack.com/archives/C03EH5HCLPR).
 <!-- markdownlint-enable MD044 -->
 
 For help with Telesign:

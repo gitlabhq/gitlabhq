@@ -13,7 +13,7 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
 
 - General:
   - [Solving performance issues](#workflow)
-  - [Handbook performance page](https://about.gitlab.com/handbook/engineering/performance/)
+  - [Handbook performance page](https://handbook.gitlab.com/handbook/engineering/performance/)
   - [Merge request performance guidelines](merge_request_concepts/performance.md)
 - Backend:
   - [Tooling](#tooling)
@@ -33,7 +33,7 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
   - [Review apps performance metrics](../development/testing_guide/review_apps.md#performance-metrics)
 - Monitoring & Overview:
   - [GitLab performance monitoring](../administration/monitoring/performance/index.md)
-  - [Development department performance indicators](https://about.gitlab.com/handbook/engineering/development/performance-indicators/)
+  - [Development department performance indicators](https://handbook.gitlab.com/handbook/engineering/development/performance-indicators/)
   - [Service measurement](../development/service_measurement.md)
 - Self-managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
@@ -78,7 +78,7 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
 
-GitLab team members can use [GitLab.com's performance monitoring systems](https://about.gitlab.com/handbook/engineering/monitoring/) located at
+GitLab team members can use [GitLab.com's performance monitoring systems](https://handbook.gitlab.com/handbook/engineering/monitoring/) located at
 [`dashboards.gitlab.net`](https://dashboards.gitlab.net), this requires you to sign in using your
 `@gitlab.com` email address. Non-GitLab team-members are advised to set up their
 own Prometheus and Grafana stack.

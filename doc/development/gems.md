@@ -271,8 +271,8 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
 1. Visit `https://rubygems.org/gems/<gem-name>` and verify that the gem was published
    successfully and `gitlab_rubygems` is also an owner.
 1. Create a project in the [`gitlab-org/ruby/gems` group](https://gitlab.com/gitlab-org/ruby/gems/) (or in a subgroup of it):
-    1. Follow the [instructions for new projects](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
-    1. Follow the instructions for setting up a [CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
+    1. Follow the [instructions for new projects](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#creating-a-new-project).
+    1. Follow the instructions for setting up a [CI/CD configuration](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration).
     1. Use the [`gem-release` CI component](https://gitlab.com/gitlab-org/components/gem-release)
        to release and publish new gem versions by adding the following to their `.gitlab-ci.yml`:
 
@@ -298,7 +298,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
     1. To ease the release process, you could also create a `.gitlab/merge_request_templates/Release.md` MR template with the same content
       as [in the `gitlab-styles` gem](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/raw/master/.gitlab/merge_request_templates/Release.md)
       (make sure to replace `gitlab-styles` with the actual gem name).
-    1. Follow the instructions for [publishing a project](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#publishing-a-project).
+    1. Follow the instructions for [publishing a project](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#publishing-a-project).
 
 Notes: In some cases we may want to move a gem to its own namespace. Some
 examples might be that it will naturally have more than one project

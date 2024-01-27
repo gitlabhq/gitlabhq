@@ -12,7 +12,7 @@ For further reference, check PostgreSQL documentation about [transactions](https
 
 ## Database decomposition and sharding
 
-The [Pods group](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/tenant-scale/) plans
+The [Pods group](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/tenant-scale/) plans
 to split the main GitLab database and move some of the database tables to other database servers.
 
 We start decomposing the `ci_*`-related database tables first. To maintain the current application

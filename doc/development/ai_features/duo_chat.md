@@ -218,5 +218,5 @@ GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
 Because GitLab Duo Chat is currently only available to members of groups in the
 Ultimate tier, Staging Ref may be an easier place to test changes as a GitLab
 team member because
-[you can make yourself an instance Admin in Staging Ref](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
+[you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.

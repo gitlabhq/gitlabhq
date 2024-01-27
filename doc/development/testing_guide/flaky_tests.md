@@ -157,7 +157,7 @@ usually a good idea.
 
 When we have a flaky test in `master`:
 
-1. Create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
+1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
 1. Quarantine the test after the first failure.
    If the test cannot be fixed in a timely fashion, there is an impact on the
    productivity of all the developers, so it should be quarantined.

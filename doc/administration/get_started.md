@@ -163,7 +163,7 @@ Backups of GitLab databases and file systems are taken every 24 hours, and are k
   - Labels
   - Additional items
 
-For more information about GitLab SaaS backups, see our [Backup FAQ page](https://about.gitlab.com/handbook/engineering/infrastructure/faq/#gitlabcom-backups).
+For more information about GitLab SaaS backups, see our [Backup FAQ page](https://handbook.gitlab.com/handbook/engineering/infrastructure/faq/#gitlabcom-backups).
 
 ### Alternative backup strategies
 

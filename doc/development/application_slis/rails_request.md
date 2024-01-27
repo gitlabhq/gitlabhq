@@ -127,7 +127,7 @@ a case-by-case basis. Take the following into account:
    the incoming slow requests alongside the regular traffic.
 
 When lowering the urgency for an existing endpoint, involve a
-[Scalability team member](https://about.gitlab.com/handbook/engineering/infrastructure/team/scalability/#team-members)
+[Scalability team member](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/scalability/)
 in the review. We can use request rates and durations available in the
 logs to come up with a recommendation. You can pick a threshold
 using the same process as for

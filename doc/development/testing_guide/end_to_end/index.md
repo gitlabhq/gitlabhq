@@ -140,7 +140,7 @@ The [existing scenarios](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/doc
 that run in the downstream `gitlab-qa-mirror` pipeline include many tests, but there are times when you might want to run a
 test or a group of tests that are different than the groups in any of the existing scenarios.
 
-For example, when we [dequarantine](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/debugging-qa-test-failures/#dequarantining-tests)
+For example, when we [dequarantine](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#dequarantining-tests)
 a flaky test we first want to make sure that it's no longer flaky.
 We can do that by running `_ee:quarantine` manual job.
 When selecting the name (not the play icon) of manual job,

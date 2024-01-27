@@ -80,7 +80,7 @@ flowchart TB
 
 ## Maintenance
 
-The [Vulnerability Research](https://about.gitlab.com/handbook/engineering/development/sec/secure/vulnerability-research/) team is responsible for the maintenance and regular updates of the GitLab Advisory Database and the GitLab Advisory Database (Open Source Edition).
+The [Vulnerability Research](https://handbook.gitlab.com/handbook/engineering/development/sec/secure/vulnerability-research/) team is responsible for the maintenance and regular updates of the GitLab Advisory Database and the GitLab Advisory Database (Open Source Edition).
 
 Community contributions are accessible in [advisories-community](https://gitlab.com/gitlab-org/advisories-community) via the `community-sync` flag.
 

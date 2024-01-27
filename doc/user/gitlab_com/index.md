@@ -95,7 +95,7 @@ settings.
 
 ## Backups
 
-[See our backup strategy](https://about.gitlab.com/handbook/engineering/infrastructure/production/#backups).
+[See our backup strategy](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/#backups).
 
 To back up an entire project on GitLab.com, you can export it either:
 

@@ -98,7 +98,7 @@ changes ahead of time.
 
 GitLab team members should announce the intent in relevant Slack channels (`#backend` and `#development` at minimum)
 and Engineering Week In Review (EWIR). Include a link to the upgrade epic in your
-[communication](https://about.gitlab.com/handbook/engineering/#communication).
+[communication](https://handbook.gitlab.com/handbook/engineering/engineering-comms/#keeping-yourself-informed).
 
 ### Add new Ruby to CI/CD and development environments
 
@@ -122,7 +122,7 @@ There are two places that require changes:
    users will benefit from this. Other users will have to install it manually
    ([example](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/2136).)
 
-For larger version upgrades, consider working with [Quality Engineering](https://about.gitlab.com/handbook/engineering/quality/)
+For larger version upgrades, consider working with [Quality Engineering](https://handbook.gitlab.com/handbook/engineering/quality/)
 to identify and set up a test plan.
 
 ### Update third-party gems
@@ -159,7 +159,7 @@ To assess which of these repositories are critical to be updated alongside the m
 - The Ruby version scope.
 - The role that the service or library plays in the overall functioning of GitLab.
 
-Refer to the [list of GitLab projects](https://about.gitlab.com/handbook/engineering/projects/) for a complete
+Refer to the [list of GitLab projects](https://handbook.gitlab.com/handbook/engineering/projects/) for a complete
 account of which repositories could be affected.
 For smaller version upgrades, it can be acceptable to delay updating libraries that are non-essential or where
 we are certain that the main application test suite would catch regressions under a new Ruby version.
@@ -190,7 +190,7 @@ via `gdk update`.
 
 This pause is a good time to assess the risk of this upgrade for GitLab SaaS.
 For Ruby upgrades that are high risk, such as major version upgrades, it is recommended to
-coordinate the changes with the infrastructure team through a [change management request](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/).
+coordinate the changes with the infrastructure team through a [change management request](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/).
 Create this issue early to give everyone enough time to schedule and prepare changes.
 
 ### Make it the default Ruby
@@ -277,4 +277,4 @@ During the upgrade process, consider the following recommendations:
 - **Give yourself enough time to fix problems ahead of a milestone release.** GitLab moves fast.
   As a Ruby upgrade requires many MRs to be sent and reviewed, make sure all changes are merged at least a week
   before release day. This gives us extra time to act if something breaks. If in doubt, it is better to
-  postpone the upgrade to the following month, as we [prioritize availability over velocity](https://about.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).
+  postpone the upgrade to the following month, as we [prioritize availability over velocity](https://handbook.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).

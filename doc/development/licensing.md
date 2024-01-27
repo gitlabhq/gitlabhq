@@ -77,4 +77,4 @@ Those projects are set to use a test license encryption key by default.
 
 ## Additional information
 
-See the [Open Source](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries) page for more information on licensing.
+See the [Open Source](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software) page for more information on licensing.

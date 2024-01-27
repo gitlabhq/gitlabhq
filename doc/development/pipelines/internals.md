@@ -183,7 +183,7 @@ that are scoped to a single [configuration keyword](../../ci/yaml/index.md#job-k
 | `.use-pg15-ee` | Same as `.use-pg15` but also use an `elasticsearch` service (see [`.gitlab/ci/global.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for the specific version of the service). |
 | `.use-kaniko` | Allows a job to use the `kaniko` tool to build Docker images. |
 | `.as-if-foss` | Simulate the FOSS project by setting the `FOSS_ONLY='1'` CI/CD variable. |
-| `.use-docker-in-docker` | Allows a job to use Docker in Docker. For more details, see the [handbook about CI/CD configuration](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration). |
+| `.use-docker-in-docker` | Allows a job to use Docker in Docker. For more details, see the [handbook about CI/CD configuration](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration). |
 
 ## `rules`, `if:` conditions and `changes:` patterns
 
@@ -458,5 +458,5 @@ have both `gitlab-org` and `gitlab-org-docker` tags. For forks of
 `gitlab-org` projects, jobs will get stuck if both tags are supplied because
 no matching runners are available.
 
-See [the GitLab Repositories handbook page](https://about.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration)
+See [the GitLab Repositories handbook page](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration)
 for more information.

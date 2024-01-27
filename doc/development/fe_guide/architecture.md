@@ -24,7 +24,7 @@ This structure allows the group to think through a proposed change, gather feedb
 
 ### Design Documents
 
-When the work ahead may affect more than a single group, stage or potentially an entire department (for example, all of the Frontend team) then it is likely that there is need for a [Design Document](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
+When the work ahead may affect more than a single group, stage or potentially an entire department (for example, all of the Frontend team) then it is likely that there is need for a [Design Document](https://handbook.gitlab.com/handbook/engineering/architecture/workflow/).
 
 This is well documented in the handbook, but to touch on it shortly, it is **the best way** to propose large changes and gather the required feedback and support to move forward. These documents are version controlled, keep evolving with time and are a great way to share a complex understanding across the entire organization. They also require a coach, which is a great way to involve someone with a lot of experience with larger changes. This process is shared across all engineering departments and is owned by the CTO.
 
@@ -63,7 +63,7 @@ Instead, consider starting a Design Document that explains the problem and try t
 
 ## Widget Architecture
 
-The [Plan stage](https://about.gitlab.com/handbook/engineering/development/dev/plan-project-management/)
+The [Plan stage](https://handbook.gitlab.com/handbook/engineering/development/dev/plan-project-management/)
 is refactoring the right sidebar to consist of **widgets**. They have a specific architecture to be
 reusable and to expose an interface that can be used by external Vue applications on the page.
 Learn more about the [widget architecture](widgets.md).

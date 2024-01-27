@@ -48,7 +48,7 @@ Engineering:
 - We need to use `CODEOWNERS` file feature for several domains but
   [these rules are complex](https://gitlab.com/gitlab-org/gitlab/-/blob/409228f064a950af8ff2cecdd138fc9da41c8e63/.gitlab/CODEOWNERS#L1396-1457).
 - It is difficult for engineers to build a mental map of the application due to its size.
-  Even apparently isolated changes can have [far-reaching repercussions](https://about.gitlab.com/handbook/engineering/development/#reducing-the-impact-of-far-reaching-work)
+  Even apparently isolated changes can have [far-reaching repercussions](https://handbook.gitlab.com/handbook/engineering/core-development/#reducing-the-impact-of-far-reaching-work)
   on other parts of the monolith.
 - Attrition/retention of engineering talent. It is fatiguing and demoralizing for
   engineers to constantly deal with the obstacles to productivity.

@@ -69,9 +69,9 @@ For this tutorial, suppose you've decided on the following:
 
 For inspiration, see how we define these at GitLab:
 
-- [Types and subtypes](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification)
-- [Priority](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority)
-- [Severity](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity)
+- [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
+- [Priority](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority)
+- [Severity](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity)
 
 ## Document your criteria
 
@@ -236,5 +236,5 @@ Next, you can:
 
   ![Example triage report heatmap](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://about.gitlab.com/handbook/engineering/quality/issue-triage/)
-and [Triage Operations](https://about.gitlab.com/handbook/engineering/quality/triage-operations/).
+To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/)
+and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

@@ -28,7 +28,7 @@ On every pipeline in the `qa` stage (which comes after the `review` stage), the 
 `qa` stage consists of following jobs:
 
 - `review-qa-smoke`: small and fast subset of tests to validate core functionality of GitLab.
-- `review-qa-blocking`: subset of tests identified as [reliable](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/reliable-tests/). These tests are
+- `review-qa-blocking`: subset of tests identified as [reliable](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/reliable-tests/). These tests are
   considered stable and are not allowed to fail.
 - `review-qa-non-blocking`: rest of the e2e tests that can be triggered manually.
 
@@ -43,7 +43,7 @@ Errors can be found in the `gitlab-review-apps` Sentry project and [filterable b
 
 ### Bypass failed review app deployment to merge a broken `master` fix
 
-Maintainers can elect to use the [process for merging during broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#instructions-for-the-maintainer) if a customer-critical merge request is blocked by pipelines failing due to review app deployment failures.
+Maintainers can elect to use the [process for merging during broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#instructions-for-the-maintainer) if a customer-critical merge request is blocked by pipelines failing due to review app deployment failures.
 
 ## Performance Metrics
 

@@ -186,7 +186,7 @@ for details.
 
 ## Confirming that end-to-end tests pass with a feature flag enabled
 
-End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning/). The relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
+End-to-end tests should pass with a feature flag enabled before it is enabled on Staging or on GitLab.com. Tests that need to be updated should be identified as part of [quad-planning](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/quad-planning/). The relevant [counterpart Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) is responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through quad-planning and a required test update is not made, test failures could block deployment.
 
 ### Automatic test execution when a feature flag definition changes
 
@@ -202,7 +202,7 @@ There are two ways to confirm that end-to-end tests pass:
 
 If enabling the feature flag results in E2E test failures, you can browse the artifacts in the failed pipeline to see screenshots of the failed tests. After which, you can either:
 
-- Identify tests that need to be updated and contact the relevant [counterpart Software Engineer in Test](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors) responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through [quad-planning](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning/) and a required test update is not made, test failures could block deployment.
+- Identify tests that need to be updated and contact the relevant [counterpart Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) responsible for updating the tests or assisting another engineer to do so. However, if a change does not go through [quad-planning](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/quad-planning/) and a required test update is not made, test failures could block deployment.
 - Run the failed tests [locally](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#run-the-end-to-end-tests-in-a-local-development-environment)
   with the [feature flag enabled](https://gitlab.com/gitlab-org/gitlab/-/tree/master/qa#running-tests-with-a-feature-flag-enabled-or-disabled).
   This option requires considerable amount of setup, but you'll be able to see what the browser is doing as it's running the failed
@@ -219,4 +219,4 @@ pass on the default branch. The end-to-end tests run on the default branch every
 If the relevant tests do not enable the feature flag themselves, you can check if the tests will need to be updated by opening
 a draft merge request that enables the flag by default via a [feature flag definition file](../../feature_flags/index.md#feature-flag-definition-and-validation).
 That will [automatically execute the end-to-end test suite](#automatic-test-execution-when-a-feature-flag-definition-changes).
-The merge request can be closed once the tests pass. If you need assistance to update the tests, contact the relevant [stable counterpart in the Quality department](https://about.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.
+The merge request can be closed once the tests pass. If you need assistance to update the tests, contact the relevant [stable counterpart in the Quality department](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors), or any Software Engineer in Test if there is no stable counterpart for your group.

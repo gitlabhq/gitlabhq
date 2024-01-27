@@ -1,7 +1,7 @@
 ---
 stage: Govern
 group: Threat Insights
-info: BEFORE MAKING CHANGES TO THIS FILE, PLEASE REACH OUT TO THE THREAT INSIGHTS ENGINEERING TEAM, @gitlab-org/govern/threat-insights.  To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: BEFORE MAKING CHANGES TO THIS FILE, PLEASE REACH OUT TO THE THREAT INSIGHTS ENGINEERING TEAM, @gitlab-org/govern/threat-insights.  To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # GitLab CycloneDX property taxonomy

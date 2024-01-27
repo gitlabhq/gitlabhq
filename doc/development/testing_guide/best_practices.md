@@ -20,7 +20,7 @@ a level that is difficult to manage.
 Test heuristics can help solve this problem. They concisely address many of the common ways bugs
 manifest themselves in our code. When designing our tests, take time to review known test heuristics to inform
 our test design. We can find some helpful heuristics documented in the Handbook in the
-[Test Engineering](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/#test-heuristics) section.
+[Test Engineering](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/#test-heuristics) section.
 
 ## RSpec
 
@@ -542,9 +542,9 @@ results are available, and not just the first failure.
 
 #### In case you're stuck
 
-We have a `backend_testing_performance` [domain expertise](https://about.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
+We have a `backend_testing_performance` [domain expertise](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
 
-To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://about.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
+To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://handbook.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
 
 ### Feature category metadata
 
