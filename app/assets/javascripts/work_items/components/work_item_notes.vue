@@ -84,6 +84,11 @@ export default {
       type: String,
       required: true,
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isWorkItemConfidential: {
       type: Boolean,
       required: false,
@@ -139,6 +144,7 @@ export default {
         isNewDiscussion: true,
         markdownPreviewPath: this.markdownPreviewPath,
         autocompleteDataSources: this.autocompleteDataSources,
+        isDiscussionLocked: this.isDiscussionLocked,
         isWorkItemConfidential: this.isWorkItemConfidential,
       };
     },
@@ -383,6 +389,7 @@ export default {
                 :markdown-preview-path="markdownPreviewPath"
                 :assignees="assignees"
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
+                :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="isWorkItemConfidential"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @reportAbuse="reportAbuse(true, $event)"

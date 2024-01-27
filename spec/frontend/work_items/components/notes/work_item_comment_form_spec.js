@@ -8,6 +8,7 @@ import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
 import { STATE_OPEN } from '~/work_items/constants';
 import * as confirmViaGlModal from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
@@ -32,6 +33,7 @@ describe('Work item comment form component', () => {
 
   const mockAutosaveKey = 'test-auto-save-key';
 
+  const findCommentFieldLayout = () => wrapper.findComponent(CommentFieldLayout);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
   const findConfirmButton = () => wrapper.find('[data-testid="confirm-button"]');
@@ -82,6 +84,21 @@ describe('Work item comment form component', () => {
       id: 'work-item-add-or-edit-comment',
       name: 'work-item-add-or-edit-comment',
       placeholder: 'Write a comment or drag your files here…',
+    });
+  });
+
+  it('passes correct props to CommentFieldLayout component', () => {
+    createComponent();
+
+    expect(findCommentFieldLayout().props()).toMatchObject({
+      withAlertContainer: false,
+      noteableData: {
+        confidential: false,
+        confidential_issues_docs_path: '/help/user/tasks.html#confidential-tasks',
+        discussion_locked: false,
+        locked_discussion_docs_path: '/help/user/tasks.html#locked-tasks',
+      },
+      noteableType: 'Task',
     });
   });
 

@@ -86,6 +86,7 @@ fragment WorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetNotes {
     type
+    discussionLocked
   }
   ... on WorkItemWidgetNotifications {
     type
@@ -102,7 +103,6 @@ fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetAwardEmoji {
     type
   }
-
   ... on WorkItemWidgetLinkedItems {
     type
     linkedItems {

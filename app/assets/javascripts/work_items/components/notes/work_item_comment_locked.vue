@@ -2,6 +2,7 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { issuableTypeText } from '~/issues/constants';
 import { WORK_ITEM_TYPE_VALUE_TASK } from '~/work_items/constants';
 
 export default {
@@ -35,34 +36,33 @@ export default {
       return this.workItemType.replace(/_/g, ' ');
     },
     lockedIssueWarning() {
-      return sprintf(
-        __('This %{issuableDisplayName} is locked. Only project members can comment.'),
-        { issuableDisplayName: this.issuableDisplayName },
-      );
+      return sprintf(__('The discussion in this %{noteableTypeText} is locked.'), {
+        noteableTypeText: this.noteableTypeText,
+      });
+    },
+    noteableTypeText() {
+      return issuableTypeText[this.workItemType];
     },
   },
 };
 </script>
 
 <template>
-  <div class="disabled-comment gl-text-center gl-relative gl-mt-3">
-    <span
-      class="issuable-note-warning gl-display-inline-block gl-w-full gl-px-5 gl-py-4 gl-rounded-base"
-    >
-      <gl-icon name="lock" class="gl-mr-2" />
-      <template v-if="isProjectArchived">
-        {{ $options.constantOptions.projectArchivedWarning }}
-        <gl-link :href="$options.constantOptions.archivedProjectDocsPath" class="learn-more">
-          {{ __('Learn more') }}
-        </gl-link>
-      </template>
+  <div class="issuable-note-warning gl-relative gl-py-4 gl-rounded-base">
+    <gl-icon name="lock" class="gl-mr-2" />
+    <template v-if="isProjectArchived">
+      {{ $options.constantOptions.projectArchivedWarning }}
+      <gl-link :href="$options.constantOptions.archivedProjectDocsPath" class="learn-more">
+        {{ __('Learn more.') }}
+      </gl-link>
+    </template>
 
-      <template v-else>
-        {{ lockedIssueWarning }}
-        <gl-link :href="$options.constantOptions.lockedIssueDocsPath" class="learn-more">
-          {{ __('Learn more') }}
-        </gl-link>
-      </template>
-    </span>
+    <template v-else>
+      {{ lockedIssueWarning }}
+      {{ __('Only project members can comment.') }}
+      <gl-link :href="$options.constantOptions.lockedIssueDocsPath" class="learn-more">
+        {{ __('Learn more.') }}
+      </gl-link>
+    </template>
   </div>
 </template>

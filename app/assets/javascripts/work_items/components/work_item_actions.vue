@@ -3,6 +3,7 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlDropdownDivider,
+  GlLoadingIcon,
   GlModal,
   GlModalDirective,
   GlToggle,
@@ -12,6 +13,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 
@@ -32,7 +34,9 @@ import {
   I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL,
   I18N_WORK_ITEM_ERROR_COPY_REFERENCE,
   I18N_WORK_ITEM_ERROR_COPY_EMAIL,
+  TEST_ID_LOCK_ACTION,
 } from '../constants';
+import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
@@ -53,6 +57,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlDropdownDivider,
+    GlLoadingIcon,
     GlModal,
     GlToggle,
     WorkItemStateToggle,
@@ -60,7 +65,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [Tracking.mixin({ label: 'actions_menu' })],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin({ label: 'actions_menu' })],
   isLoggedIn: isLoggedIn(),
   notificationsToggleFormTestId: TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
   confidentialityTestId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
@@ -68,6 +73,7 @@ export default {
   copyCreateNoteEmailTestId: TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
   deleteActionTestId: TEST_ID_DELETE_ACTION,
   promoteActionTestId: TEST_ID_PROMOTE_ACTION,
+  lockDiscussionTestId: TEST_ID_LOCK_ACTION,
   stateToggleTestId: TEST_ID_TOGGLE_ACTION,
   inject: ['isGroup'],
   props: {
@@ -109,6 +115,11 @@ export default {
       required: false,
       default: false,
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isParentConfidential: {
       type: Boolean,
       required: false,
@@ -134,6 +145,11 @@ export default {
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      isLockDiscussionUpdating: false,
+    };
   },
   apollo: {
     workItemTypes: {
@@ -168,6 +184,9 @@ export default {
         ),
       };
     },
+    canLockWorkItem() {
+      return this.canUpdate && this.glFeatures.workItemsMvc;
+    },
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;
     },
@@ -175,6 +194,9 @@ export default {
       return this.isConfidential
         ? this.$options.i18n.disableConfidentiality
         : this.$options.i18n.enableConfidentiality;
+    },
+    lockDiscussionText() {
+      return this.isDiscussionLocked ? __('Unlock discussion') : __('Lock discussion');
     },
     objectiveWorkItemTypeId() {
       return this.workItemTypes.find((type) => type.name === WORK_ITEM_TYPE_VALUE_OBJECTIVE).id;
@@ -237,6 +259,37 @@ export default {
     },
     closeDropdown() {
       this.$refs.workItemsMoreActions.close();
+    },
+    toggleDiscussionLock() {
+      this.isLockDiscussionUpdating = true;
+
+      this.$apollo
+        .mutate({
+          mutation: updateWorkItemMutation,
+          variables: {
+            input: {
+              id: this.workItemId,
+              notesWidget: {
+                discussionLocked: !this.isDiscussionLocked,
+              },
+            },
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = data.workItemUpdate;
+          if (errors?.length) {
+            throw new Error(errors);
+          }
+
+          toast(this.isDiscussionLocked ? __('Discussion locked.') : __('Discussion unlocked.'));
+        })
+        .catch((error) => {
+          this.$emit('error', error.message);
+          Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.isLockDiscussionUpdating = false;
+        });
     },
     async promoteToObjective() {
       try {
@@ -308,6 +361,17 @@ export default {
         @action="promoteToObjective"
       >
         <template #list-item>{{ __('Promote to objective') }}</template>
+      </gl-disclosure-dropdown-item>
+
+      <gl-disclosure-dropdown-item
+        v-if="canLockWorkItem"
+        :data-testid="$options.lockDiscussionTestId"
+        @action="toggleDiscussionLock"
+      >
+        <template #list-item>
+          <gl-loading-icon v-if="isLockDiscussionUpdating" class="gl-mr-1" inline />
+          {{ lockDiscussionText }}
+        </template>
       </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-item

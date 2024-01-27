@@ -634,6 +634,7 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   confidential = false,
+  discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
   linkedItemsWidgetPresent = true,
@@ -779,6 +780,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetNotes',
               type: 'NOTES',
+              discussionLocked,
               discussions: {
                 pageInfo: {
                   hasNextPage: true,
@@ -828,6 +830,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetNotes',
               type: 'NOTES',
+              discussionLocked,
             }
           : { type: 'MOCK TYPE' },
         notificationsWidgetPresent

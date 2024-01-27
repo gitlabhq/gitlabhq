@@ -1,16 +1,19 @@
 <script>
 import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
+import { isNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
 import WorkItemTypeIcon from './work_item_type_icon.vue';
 
 export default {
   components: {
+    LockedBadge,
     GlAvatarLink,
     GlSprintf,
     TimeAgoTooltip,
@@ -58,6 +61,9 @@ export default {
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
     },
+    isDiscussionLocked() {
+      return this.workItem?.widgets?.find(isNotesWidget)?.discussionLocked;
+    },
     isWorkItemConfidential() {
       return this.workItem?.confidential;
     },
@@ -88,13 +94,18 @@ export default {
 <template>
   <div class="gl-mb-3 gl-text-gray-700 gl-mt-3">
     <work-item-state-badge v-if="workItemState" :work-item-state="workItemState" />
-    <gl-loading-icon v-if="updateInProgress" :inline="true" class="gl-mr-3" />
+    <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
       v-if="isWorkItemConfidential"
-      class="gl-vertical-align-middle gl-display-inline-flex! gl-mr-2"
+      class="gl-vertical-align-middle gl-display-inline-flex!"
       :issuable-type="workItemType"
       :workspace-type="$options.WORKSPACE_PROJECT"
       hide-text-in-small-screens
+    />
+    <locked-badge
+      v-if="isDiscussionLocked"
+      class="gl-vertical-align-middle"
+      :issuable-type="workItemType"
     />
     <work-item-type-icon
       class="gl-vertical-align-middle"

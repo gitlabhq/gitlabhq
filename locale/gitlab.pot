@@ -50237,9 +50237,6 @@ msgstr ""
 msgid "Third Party Advisory Link"
 msgstr ""
 
-msgid "This %{issuableDisplayName} is locked. Only project members can comment."
-msgstr ""
-
 msgid "This %{issuableType} is confidential and should only be visible to team members with at least Reporter access."
 msgstr ""
 

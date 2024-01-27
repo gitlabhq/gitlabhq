@@ -1,12 +1,15 @@
 <script>
 import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import { isNotesWidget } from '../utils';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemTodos from './work_item_todos.vue';
 
 export default {
   components: {
+    LockedBadge,
     GlIntersectionObserver,
     GlLoadingIcon,
     WorkItemActions,
@@ -63,6 +66,9 @@ export default {
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
+    isDiscussionLocked() {
+      return this.workItem.widgets?.find(isNotesWidget)?.discussionLocked;
+    },
     workItemType() {
       return this.workItem.workItemType?.name;
     },
@@ -100,6 +106,7 @@ export default {
             :issuable-type="workItemType"
             :workspace-type="$options.WORKSPACE_PROJECT"
           />
+          <locked-badge v-if="isDiscussionLocked" :issuable-type="workItemType" />
           <work-item-todos
             v-if="showWorkItemCurrentUserTodos"
             :work-item-id="workItem.id"

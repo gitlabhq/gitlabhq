@@ -483,6 +483,31 @@ system note in the OKR's comments, for example:
 > - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
 > - **{eye}** Jo Garcia made the issue visible to everyone just now
 
+## Lock discussion
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+You can prevent public comments in an OKR.
+When you do, only project members can add and edit comments.
+
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+To lock an OKR:
+
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Lock discussion**.
+
+A system note is added to the page details.
+
+If an OKR is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
+
 ## Two-column layout
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.

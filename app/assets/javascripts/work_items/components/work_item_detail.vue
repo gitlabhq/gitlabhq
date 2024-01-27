@@ -175,6 +175,9 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
+    isDiscussionLocked() {
+      return this.workItemNotes?.discussionLocked;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -492,6 +495,7 @@ export default {
               :can-delete="canDelete"
               :can-update="canUpdate"
               :is-confidential="workItem.confidential"
+              :is-discussion-locked="isDiscussionLocked"
               :is-parent-confidential="parentWorkItemConfidentiality"
               :work-item-reference="workItem.reference"
               :work-item-create-note-email="workItem.createNoteEmail"
@@ -625,6 +629,7 @@ export default {
               :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
               :can-set-work-item-metadata="canAssignUnassignUser"
               :report-abuse-path="reportAbusePath"
+              :is-discussion-locked="isDiscussionLocked"
               :is-work-item-confidential="workItem.confidential"
               class="gl-pt-5"
               :use-h2="!isModal"

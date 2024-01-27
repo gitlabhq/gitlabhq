@@ -4,6 +4,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemCreatedUpdated from '~/work_items/components/work_item_created_updated.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -28,6 +29,7 @@ describe('WorkItemCreatedUpdated component', () => {
   const findCreatedAtText = () => findCreatedAt().text().replace(/\s+/g, ' ');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
+  const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   const createComponent = async ({
@@ -35,14 +37,21 @@ describe('WorkItemCreatedUpdated component', () => {
     author = null,
     updatedAt,
     confidential = false,
+    discussionLocked = false,
     updateInProgress = false,
     isGroup = false,
   } = {}) => {
-    const workItemQueryResponse = workItemByIidResponseFactory({ author, updatedAt, confidential });
+    const workItemQueryResponse = workItemByIidResponseFactory({
+      author,
+      updatedAt,
+      confidential,
+      discussionLocked,
+    });
     const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
       author,
       updatedAt,
       confidential,
+      discussionLocked,
     });
 
     successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
@@ -156,7 +165,7 @@ describe('WorkItemCreatedUpdated component', () => {
       expect(findConfidentialityBadge().exists()).toBe(true);
     });
 
-    it('does not render badge when the work item is confidential', async () => {
+    it('does not render badge when the work item is not confidential', async () => {
       await createComponent({ confidential: false });
 
       expect(findConfidentialityBadge().exists()).toBe(false);
@@ -166,6 +175,20 @@ describe('WorkItemCreatedUpdated component', () => {
       await createComponent({ updateInProgress: true });
 
       expect(findLoadingIcon().exists()).toBe(true);
+    });
+  });
+
+  describe('locked badge', () => {
+    it('renders when the work item is locked', async () => {
+      await createComponent({ discussionLocked: true });
+
+      expect(findLockedBadge().exists()).toBe(true);
+    });
+
+    it('does not render when the work item is not locked', async () => {
+      await createComponent({ discussionLocked: false });
+
+      expect(findLockedBadge().exists()).toBe(false);
     });
   });
 });
