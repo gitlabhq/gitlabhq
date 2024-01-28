@@ -5605,7 +5605,13 @@ msgstr ""
 msgid "Analytics|Continue editing"
 msgstr ""
 
+msgid "Analytics|Count of page views grouped weekly"
+msgstr ""
+
 msgid "Analytics|Create dashboard %{dashboardSlug}"
+msgstr ""
+
+msgid "Analytics|Create with GitLab Duo"
 msgstr ""
 
 msgid "Analytics|Create your dashboard"
@@ -5690,6 +5696,9 @@ msgid "Analytics|Exclude anonymous users"
 msgstr ""
 
 msgid "Analytics|Failed to fetch data"
+msgstr ""
+
+msgid "Analytics|Generate visualization"
 msgstr ""
 
 msgid "Analytics|Host"
