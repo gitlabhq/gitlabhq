@@ -1,14 +1,16 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { sortNameAlphabetically } from '~/work_items/utils';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
+import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
@@ -33,6 +35,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
   const findAssignSelfButton = () => wrapper.findByTestId('assign-self');
   const findSidebarDropdownWidget = () =>
     wrapper.findComponent(WorkItemSidebarDropdownWidgetWithEdit);
+  const findAssigneeList = () => wrapper.findComponent(UncollapsedAssigneeList);
 
   const successSearchQueryHandler = jest
     .fn()
@@ -59,6 +62,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
   };
 
   const createComponent = ({
+    mountFn = shallowMountExtended,
     assignees = mockAssignees,
     searchQueryHandler = successSearchQueryHandler,
     currentUserQueryHandler = successCurrentUserQueryHandler,
@@ -73,7 +77,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
       [updateWorkItemMutation, successUpdateWorkItemMutationHandler],
     ]);
 
-    wrapper = shallowMountExtended(WorkItemAssignees, {
+    wrapper = mountFn(WorkItemAssignees, {
       provide: {
         isGroup: false,
       },
@@ -243,6 +247,19 @@ describe('WorkItemAssigneesWithEdit component', () => {
         label: 'item_assignees',
         property: 'type_Task',
       });
+    });
+  });
+
+  describe('sorting', () => {
+    it('always sorts assignees based on alphabetical order on the frontend', async () => {
+      createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+
+      expect(findAssigneeList().exists()).toBe(true);
+      expect(findAssigneeList().props('users')).toHaveLength(mockAssignees.length);
+      expect(findAssigneeList().props('users')).toStrictEqual(
+        mockAssignees.sort(sortNameAlphabetically),
+      );
     });
   });
 

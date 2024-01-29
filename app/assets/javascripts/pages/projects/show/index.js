@@ -3,7 +3,7 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
 import leaveByUrl from '~/namespaces/leave_by_url';
 import initVueNotificationsDropdown from '~/notifications';
-import { initStarButton } from '~/projects/project_star_button';
+import initVueStarCount from '~/stars';
 import initTerraformNotification from '~/projects/terraform_notification';
 import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
@@ -37,6 +37,7 @@ if (document.querySelector('.project-show-activity')) {
 }
 
 initVueNotificationsDropdown();
+initVueStarCount();
 
 addShortcutsExtension(ShortcutsNavigation);
 
@@ -45,7 +46,6 @@ initClustersDeprecationAlert();
 initTerraformNotification();
 
 initReadMore();
-initStarButton();
 initAmbiguousRefModal();
 
 if (document.querySelector('.js-autodevops-banner')) {

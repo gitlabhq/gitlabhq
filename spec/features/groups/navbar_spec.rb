@@ -15,6 +15,7 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
   before do
     create_package_nav(_('Operate'))
     insert_after_nav_item(_('Analyze'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
+    insert_infrastructure_registry_nav(_('Kubernetes'))
 
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
@@ -85,7 +86,7 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
     before do
       group.update!(harbor_integration: harbor_integration)
 
-      insert_harbor_registry_nav(_('Kubernetes'))
+      insert_harbor_registry_nav(_('Terraform modules'))
 
       visit group_path(group)
     end

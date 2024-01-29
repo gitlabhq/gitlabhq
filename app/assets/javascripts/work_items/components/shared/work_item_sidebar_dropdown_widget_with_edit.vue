@@ -93,6 +93,7 @@ export default {
     return {
       isEditing: false,
       localSelectedItem: this.itemValue,
+      isDirty: false,
     };
   },
   computed: {
@@ -111,6 +112,7 @@ export default {
       handler(newVal) {
         if (!this.isEditing) {
           this.localSelectedItem = newVal;
+          this.isDirty = false;
         }
       },
     },
@@ -127,6 +129,7 @@ export default {
       if (!this.multiSelect) {
         this.$emit('updateValue', item);
       } else {
+        this.isDirty = true;
         this.$emit('updateSelected', this.localSelectedItem);
       }
     },
@@ -135,7 +138,7 @@ export default {
     },
     onListboxHide() {
       this.isEditing = false;
-      if (this.multiSelect) {
+      if (this.multiSelect && this.isDirty) {
         this.$emit('updateValue', this.localSelectedItem);
       }
     },

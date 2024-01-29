@@ -24,10 +24,6 @@ export default {
     InfrastructureSearch,
   },
   inject: {
-    emptyPageTitle: {
-      from: 'emptyPageTitle',
-      default: s__('PackageRegistry|There are no packages yet'),
-    },
     noResultsText: {
       from: 'noResultsText',
       default: s__(
@@ -40,6 +36,7 @@ export default {
       emptyListIllustration: (state) => state.config.emptyListIllustration,
       emptyListHelpUrl: (state) => state.config.emptyListHelpUrl,
       filter: (state) => state.filter,
+      isGroupPage: (state) => state.config.isGroupPage,
       selectedType: (state) => state.selectedType,
       packageHelpUrl: (state) => state.config.packageHelpUrl,
       packagesCount: (state) => state.pagination?.total,
@@ -49,7 +46,11 @@ export default {
         this.filter.filter((f) => f.type !== FILTERED_SEARCH_TERM || f.value?.data).length === 0
       );
     },
-
+    emptyPageTitle() {
+      return this.isGroupPage
+        ? s__('InfrastructureRegistry|You have no Terraform modules in your group')
+        : s__('InfrastructureRegistry|You have no Terraform modules in your project');
+    },
     emptyStateTitle() {
       return this.emptySearch
         ? this.emptyPageTitle

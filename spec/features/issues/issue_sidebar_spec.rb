@@ -96,8 +96,8 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
       end
 
       context 'for sidebar', :js do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         it 'changes size when the screen size is smaller' do
-          sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
           # Resize the window
           resize_screen_sm
           # Make sure the sidebar is collapsed
@@ -111,6 +111,14 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
           # Restore the window size as it was including the sidebar
           restore_window_size
           open_issue_sidebar
+        end
+
+        it 'passes axe automated accessibility testing', :js do
+          resize_screen_sm
+          open_issue_sidebar
+          refresh
+          find(sidebar_selector)
+          expect(page).to be_axe_clean.within(sidebar_selector)
         end
       end
 

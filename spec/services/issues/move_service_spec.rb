@@ -15,8 +15,16 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
   let_it_be(:old_project) { create(:project, namespace: sub_group_1) }
   let_it_be(:new_project) { create(:project, namespace: sub_group_2) }
 
-  let(:old_issue) do
-    create(:issue, title: title, description: description, project: old_project, author: author, created_at: 1.day.ago, updated_at: 1.day.ago)
+  let_it_be_with_reload(:old_issue) do
+    create(
+      :issue,
+      title: title,
+      description: description,
+      project: old_project,
+      author: author,
+      created_at: 1.day.ago,
+      updated_at: 1.day.ago
+    )
   end
 
   subject(:move_service) do
@@ -118,6 +126,36 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
         it 'preserves create time' do
           expect(old_issue.created_at).to eq new_issue.created_at
+        end
+      end
+
+      context 'issue with children' do
+        let_it_be(:task1) { create(:issue, :task, project: old_issue.project) }
+        let_it_be(:task2) { create(:issue, :task, project: old_issue.project) }
+
+        before_all do
+          create(:parent_link, work_item_parent_id: old_issue.id, work_item_id: task1.id)
+          create(:parent_link, work_item_parent_id: old_issue.id, work_item_id: task2.id)
+        end
+
+        it "moves the issue and each of it's children", :aggregate_failures do
+          expect { move_service.execute(old_issue, new_project) }.to change { Issue.count }.by(3)
+          expect(new_project.issues.count).to eq(3)
+          expect(new_project.issues.pluck(:title)).to match_array(
+            [old_issue, task1, task2].map(&:title)
+          )
+        end
+
+        context 'when move_issue_children feature flag is disabled' do
+          before do
+            stub_feature_flags(move_issue_children: false)
+          end
+
+          it "does not move the issue's children", :aggregate_failures do
+            expect { move_service.execute(old_issue, new_project) }.to change { Issue.count }.by(1)
+            expect(new_project.issues.count).to eq(1)
+            expect(new_project.issues.pluck(:title)).to contain_exactly(old_issue.title)
+          end
         end
       end
 
@@ -470,7 +508,7 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
     include_context 'user can move issue'
 
-    context 'when issue is from service desk' do
+    context 'when issue is from service desk', :aggregate_failures do
       before do
         allow(old_issue).to receive(:from_service_desk?).and_return(true)
       end
@@ -491,6 +529,30 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
           move_service.execute(old_issue, new_project)
           other_issue_notification.reload
         end.not_to change { other_issue_notification.noteable_id }
+      end
+
+      context 'when the issue has children' do
+        let(:task) { create(:issue, :task, project: old_issue.project, author: Users::Internal.support_bot) }
+        let!(:task_notification) { create(:sent_notification, project: old_issue.project, noteable: task) }
+
+        before do
+          create(:parent_link, work_item_parent_id: old_issue.id, work_item_id: task.id)
+        end
+
+        it 'updates moved issue sent notifications' do
+          new_issue = move_service.execute(old_issue, new_project)
+          new_task = Issue.where(work_item_type: WorkItems::Type.default_by_type(:task)).last
+
+          old_issue_notification_1.reload
+          old_issue_notification_2.reload
+          task_notification.reload
+          expect(old_issue_notification_1.project_id).to eq(new_issue.project_id)
+          expect(old_issue_notification_1.noteable_id).to eq(new_issue.id)
+          expect(old_issue_notification_2.project_id).to eq(new_issue.project_id)
+          expect(old_issue_notification_2.noteable_id).to eq(new_issue.id)
+          expect(task_notification.project_id).to eq(new_issue.project_id)
+          expect(task_notification.noteable_id).to eq(new_task.id)
+        end
       end
     end
 

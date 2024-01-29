@@ -25932,6 +25932,9 @@ msgstr ""
 msgid "InfrastructureRegistry|To authorize access to the Terraform registry:"
 msgstr ""
 
+msgid "InfrastructureRegistry|You have no Terraform modules in your group"
+msgstr ""
+
 msgid "InfrastructureRegistry|You have no Terraform modules in your project"
 msgstr ""
 
@@ -38302,6 +38305,9 @@ msgstr ""
 msgid "ProjectOverview|Star"
 msgstr ""
 
+msgid "ProjectOverview|Star toggle failed. Try again later."
+msgstr ""
+
 msgid "ProjectOverview|Starrer"
 msgstr ""
 
@@ -47507,12 +47513,6 @@ msgstr[1] ""
 msgid "Star labels to start sorting by priority."
 msgstr ""
 
-msgid "Star toggle failed. Try again later."
-msgstr ""
-
-msgid "StarProject|Star"
-msgstr ""
-
 msgid "Starred Projects"
 msgstr ""
 
@@ -52683,9 +52683,6 @@ msgid "Unselect all"
 msgstr ""
 
 msgid "Unselected"
-msgstr ""
-
-msgid "Unstar"
 msgstr ""
 
 msgid "Unstarted"

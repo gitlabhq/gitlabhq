@@ -18,8 +18,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   let(:allowed_to_be_missing_not_null) do
     [
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
-      'labels.group_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
-      'zoekt_repositories.project_id' # we have this design as we also keep project_id in project_identifier column.
+      'labels.group_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
     ]
   end
 
@@ -78,7 +77,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
         if allowed_to_be_missing_not_null.include?("#{table_name}.#{column_name}")
           expect(not_nullable || has_null_check_constraint).to eq(false),
-            "You must remove `#{table_name}.#{column_name}` from allowed_to_be_missing_not_null" \
+            "You must remove `#{table_name}.#{column_name}` from allowed_to_be_missing_not_null " \
             "since it now has a valid constraint."
         else
           expect(not_nullable || has_null_check_constraint).to eq(true),
@@ -95,6 +94,30 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       expect(tables_missing_sharding_key(starting_from_milestone: starting_from_milestone)).to include(exempted_table),
         "`#{exempted_table}` is not missing a `sharding_key`. " \
         "You must remove this table from the `allowed_to_be_missing_sharding_key` list."
+    end
+  end
+
+  it 'only allows `allowed_to_be_missing_not_null` to include sharding keys',
+    :aggregate_failures do
+    allowed_to_be_missing_not_null.each do |exemption|
+      table, column = exemption.split('.')
+      entry = ::Gitlab::Database::Dictionary.entry(table)
+
+      expect(entry&.sharding_key&.keys).to include(column),
+        "`#{exemption}` is not a `sharding_key`. " \
+        "You must remove this entry from the `allowed_to_be_missing_not_null` list."
+    end
+  end
+
+  it 'only allows `allowed_to_be_missing_foreign_key` to include sharding keys',
+    :aggregate_failures do
+    allowed_to_be_missing_foreign_key.each do |exemption|
+      table, column = exemption.split('.')
+      entry = ::Gitlab::Database::Dictionary.entry(table)
+
+      expect(entry&.sharding_key&.keys).to include(column),
+        "`#{exemption}` is not a `sharding_key`. " \
+        "You must remove this entry from the `allowed_to_be_missing_foreign_key` list."
     end
   end
 

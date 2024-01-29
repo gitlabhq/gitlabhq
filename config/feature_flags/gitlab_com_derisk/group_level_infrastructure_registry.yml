@@ -1,0 +1,9 @@
+---
+name: group_level_infrastructure_registry
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/352041
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17430
+milestone: '16.9'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

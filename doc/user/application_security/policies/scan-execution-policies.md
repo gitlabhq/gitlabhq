@@ -333,13 +333,21 @@ These experimental features have limitations:
    without a `.gitlab-ci.yml` is not supported.
 1. The pipeline execution action cannot be used with a scheduled trigger type.
 
-To enable these experimental features, a Group owner or administrator must toggle the experimental features by visiting `Settings > General > Permissions and group features`.
-
-![Enabling experimental security policy features](img/experimental-features-policies.png)
-
-Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
+Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
 
 ### Pipeline execution policy action
+
+Prerequisites:
+
+- To enable the pipeline execution policy action feature, a Group owner or administrator must enable
+  the experimental feature:
+
+  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. Select **Settings > General**.
+  1. Expand **Permissions and group features**.
+  1. Select the **Run customized CI YAML as security policy actions** checkbox.
+  1. Optional. Select **Enforce for all subgroups**.
 
 The pipeline execution policy action introduces a new scan action type into
 scan execution policies for creating and enforcing custom CI in your target
@@ -402,6 +410,17 @@ scan_execution_policy:
 In this example a `test job` is injected into the `test` stage of the pipeline, printing `Hello World`.
 
 ### Security policy scopes
+
+Prerequisites:
+
+- To enable the pipeline execution policy action feature, a group owner or administrator must enable
+  the experimental feature:
+
+  1. On the left sidebar, select **Search or go to** and find your group.
+  1. Select **Settings > General**.
+  1. Expand **Permissions and group features**.
+  1. Select the **Security Policy Scopes** checkbox.
+  1. Optional. Select **Enforce for all subgroups**.
 
 Security policy enforcement depends first on establishing a link between the group, subgroup, or
 project on which you want to enforce policies, and the security policy project that contains the

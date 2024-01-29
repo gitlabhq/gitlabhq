@@ -69,3 +69,7 @@ export const isReference = (input) => {
 
   return /^([\w-]+(?:\/[\w-]+)*)?[#&](\d+)$/.test(input);
 };
+
+export const sortNameAlphabetically = (a, b) => {
+  return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+};

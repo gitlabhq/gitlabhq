@@ -1,6 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { unionBy } from 'lodash';
+import { sortNameAlphabetically } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import groupUsersSearchQuery from '~/graphql_shared/queries/group_users_search.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
@@ -142,7 +143,11 @@ export default {
       return unionBy(this.assignees, this.searchUsers, 'id');
     },
     localAssignees() {
-      return this.filteredAssignees.filter(({ id }) => this.localAssigneeIds.includes(id)) || [];
+      return (
+        this.filteredAssignees
+          .filter(({ id }) => this.localAssigneeIds.includes(id))
+          .sort(sortNameAlphabetically) || []
+      );
     },
   },
   watch: {
@@ -190,6 +195,8 @@ export default {
         this.throwUpdateError();
       } finally {
         this.updateInProgress = false;
+        this.searchKey = '';
+        this.searchStarted = false;
       }
     },
     setLocalAssigneeIdsOnEvent(assignees) {

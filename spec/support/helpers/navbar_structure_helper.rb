@@ -92,9 +92,9 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_infrastructure_registry_nav
+  def insert_infrastructure_registry_nav(within)
     insert_after_sub_nav_item(
-      s_('Terraform|Terraform states'),
+      within,
       within: _('Operate'),
       new_sub_nav_item_name: _('Terraform modules')
     )

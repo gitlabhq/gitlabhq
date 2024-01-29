@@ -368,13 +368,21 @@ DETAILS:
 
 ### Security policy scopes
 
-To enable these experimental features, a Group owner or administrator must toggle the experimental features by visiting `Settings > General > Permissions and group features`.
+Prerequisites:
 
-![Enabling experimental security policy features](img/experimental-features-policies.png)
+- To enable these experimental features, a group owner or administrator must enable the experimental
+  features:
+  1. On the left sidebar, select **Search or go to** and find your group.
+  1. Select **Settings > General**.
+  1. Expand **Permissions and group features**.
+  1. Select the **Security Policy Scopes** checkbox.
+  1. Optional. Select **Enforce for all subgroups**.
 
-Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
+Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
 
-Security policy enforcement depends first on establishing a link between the group, subgroup, or project on which you want to enforce policies, and the security policy project that contains the
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
 policies. For example, if you are linking policies to a group, a group owner must create the link to
 the security policy project. Then, all policies in the security policy project are inherited by all
 projects in the group.
