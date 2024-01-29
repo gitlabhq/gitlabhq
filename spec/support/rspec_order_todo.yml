@@ -9393,7 +9393,7 @@
 - './spec/workers/bulk_imports/export_request_worker_spec.rb'
 - './spec/workers/bulk_imports/pipeline_worker_spec.rb'
 - './spec/workers/bulk_imports/relation_export_worker_spec.rb'
-- './spec/workers/bulk_imports/stuck_import_worker_spec.rb'
+- './spec/workers/bulk_imports/stale_import_worker_spec.rb'
 - './spec/workers/bulk_import_worker_spec.rb'
 - './spec/workers/chat_notification_worker_spec.rb'
 - './spec/workers/ci/archive_traces_cron_worker_spec.rb'

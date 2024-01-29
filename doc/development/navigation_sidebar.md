@@ -19,7 +19,8 @@ To enable the new navigation sidebar, select your avatar, then turn on the **New
 
 ## Adding items to the sidebar
 
-Before adding an item to the sidebar, ensure you follow [this process](https://about.gitlab.com/handbook/product/ux/navigation/#how-to-propose-a-change-that-impacts-navigation).
+Before adding an item to the sidebar, ensure you review and follow the
+processes outlined in the [handbook page for navigation](https://handbook.gitlab.com/handbook/product/ux/navigation/).
 
 ## Adding page-specific Vue content
 

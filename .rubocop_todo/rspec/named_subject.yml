@@ -3606,7 +3606,7 @@ RSpec/NamedSubject:
     - 'spec/workers/auto_merge_process_worker_spec.rb'
     - 'spec/workers/bulk_imports/entity_worker_spec.rb'
     - 'spec/workers/bulk_imports/finish_batched_pipeline_worker_spec.rb'
-    - 'spec/workers/bulk_imports/stuck_import_worker_spec.rb'
+    - 'spec/workers/bulk_imports/stale_import_worker_spec.rb'
     - 'spec/workers/ci/archive_trace_worker_spec.rb'
     - 'spec/workers/ci/archive_traces_cron_worker_spec.rb'
     - 'spec/workers/ci/build_finished_worker_spec.rb'

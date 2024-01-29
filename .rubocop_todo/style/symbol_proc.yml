@@ -50,7 +50,7 @@ Style/SymbolProc:
     - 'app/services/packages/debian/generate_distribution_service.rb'
     - 'app/services/resource_events/synthetic_label_notes_builder_service.rb'
     - 'app/services/two_factor/destroy_service.rb'
-    - 'app/workers/bulk_imports/stuck_import_worker.rb'
+    - 'app/workers/bulk_imports/stale_import_worker.rb'
     - 'app/workers/ci/build_trace_chunk_flush_worker.rb'
     - 'app/workers/gitlab/import/stuck_import_job.rb'
     - 'app/workers/merge_requests/update_head_pipeline_worker.rb'

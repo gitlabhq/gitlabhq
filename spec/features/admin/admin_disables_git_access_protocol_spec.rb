@@ -25,9 +25,9 @@ RSpec.describe 'Admin disables Git access protocol', :js, feature_category: :sou
 
       expect(page).to have_content("git clone #{project.ssh_url_to_repo}")
 
-      find('.clone-dropdown-btn').click
+      find('[data-testid="code-dropdown"] button').click
 
-      within('.git-clone-holder') do
+      within_testid('code-dropdown') do
         expect(page).to have_content('Clone with SSH')
         expect(page).not_to have_content('Clone with HTTP')
       end
@@ -55,11 +55,12 @@ RSpec.describe 'Admin disables Git access protocol', :js, feature_category: :sou
 
     it 'shows only HTTP url' do
       visit_project
-      find('.clone-dropdown-btn').click
+
+      find('[data-testid="code-dropdown"] button').click
 
       expect(page).to have_content("git clone #{project.http_url_to_repo}")
 
-      within('.git-clone-holder') do
+      within_testid('code-dropdown') do
         expect(page).to have_content('Clone with HTTP')
         expect(page).not_to have_content('Clone with SSH')
       end
@@ -91,9 +92,9 @@ RSpec.describe 'Admin disables Git access protocol', :js, feature_category: :sou
 
       expect(page).to have_content("git clone #{project.ssh_url_to_repo}")
 
-      find('.clone-dropdown-btn').click
+      find('[data-testid="code-dropdown"] button').click
 
-      within('.git-clone-holder') do
+      within_testid('code-dropdown') do
         expect(page).to have_content('Clone with SSH')
         expect(page).to have_content('Clone with HTTP')
       end

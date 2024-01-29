@@ -7,6 +7,63 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store, feature_category: 
 
   subject { described_class.new(user) }
 
+  describe '#initialize' do
+    context 'with user' do
+      around do |example|
+        Gitlab::Session.with_session(nil) do
+          example.run
+        end
+      end
+
+      it 'has no session' do
+        subject
+        expect(Gitlab::Session.current).to be_nil
+      end
+    end
+
+    context 'with user and session' do
+      include_context 'custom session'
+      let(:session) { { 'key' => "value" } }
+
+      it 'has a session' do
+        described_class.new(user, session)
+        expect(Gitlab::Session.current).to eq(session)
+      end
+    end
+  end
+
+  describe '#current_session_data' do
+    context 'without session' do
+      around do |example|
+        Gitlab::Session.with_session(nil) do
+          example.run
+        end
+      end
+
+      it 'new session is created' do
+        expect(Gitlab::Session.current).to be_nil
+        expect(Gitlab::NamespacedSessionStore).to receive(:new).with(described_class::SESSION_STORE_KEY)
+
+        subject.current_session_data
+      end
+    end
+
+    context 'with session' do
+      include_context 'custom session'
+      let(:session) { { 'key' => "value" } }
+
+      it 'session is still the same' do
+        expect(Gitlab::Session.current).to eq(session)
+        subject = described_class.new(user, session)
+
+        expect(Gitlab::NamespacedSessionStore).to receive(:new).with(described_class::SESSION_STORE_KEY, session)
+
+        subject.current_session_data
+        expect(Gitlab::Session.current).to eq(session)
+      end
+    end
+  end
+
   context 'when session is available' do
     include_context 'custom session'
 

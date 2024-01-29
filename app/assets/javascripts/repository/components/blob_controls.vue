@@ -1,12 +1,19 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import getRefMixin from '~/repository/mixins/get_ref';
 import initSourcegraph from '~/sourcegraph';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
+import {
+  keysFor,
+  GO_TO_PROJECT_FIND_FILE,
+  PROJECT_FILES_GO_TO_PERMALINK,
+} from '~/behaviors/shortcuts/keybindings';
+import { sanitize } from '~/lib/dompurify';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
 
@@ -16,11 +23,15 @@ export default {
     blame: __('Blame'),
     history: __('History'),
     permalink: __('Permalink'),
+    permalinkTooltip: __('Go to permalink'),
     errorMessage: __('An error occurred while loading the blob controls.'),
   },
   buttonClassList: 'gl-sm-w-auto gl-w-full gl-sm-mt-0 gl-mt-3',
   components: {
     GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [getRefMixin],
   apollo: {
@@ -86,6 +97,26 @@ export default {
     showBlameButton() {
       return !this.blobInfo.storedExternally && this.blobInfo.externalStorage !== 'lfs';
     },
+    findFileShortcutKey() {
+      return keysFor(GO_TO_PROJECT_FIND_FILE)[0];
+    },
+    findFileTooltip() {
+      const { description } = GO_TO_PROJECT_FIND_FILE;
+      const key = this.findFileShortcutKey;
+      return shouldDisableShortcuts()
+        ? null
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    permalinkShortcutKey() {
+      return keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0];
+    },
+    permalinkTooltip() {
+      const description = this.$options.i18n.permalinkTooltip;
+      const key = this.permalinkShortcutKey;
+      return shouldDisableShortcuts()
+        ? null
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
   },
   watch: {
     showBlobControls(shouldShow) {
@@ -125,7 +156,13 @@ export default {
 
 <template>
   <div v-if="showBlobControls" class="gl-display-flex gl-gap-3 gl-align-items-baseline">
-    <gl-button data-testid="find" :href="blobInfo.findFilePath" :class="$options.buttonClassList">
+    <gl-button
+      v-gl-tooltip.html="findFileTooltip"
+      :aria-keyshortcuts="findFileShortcutKey"
+      data-testid="find"
+      :href="blobInfo.findFilePath"
+      :class="$options.buttonClassList"
+    >
       {{ $options.i18n.findFile }}
     </gl-button>
     <gl-button
@@ -143,6 +180,8 @@ export default {
     </gl-button>
 
     <gl-button
+      v-gl-tooltip.html="permalinkTooltip"
+      :aria-keyshortcuts="permalinkShortcutKey"
       data-testid="permalink"
       :href="blobInfo.permalinkPath"
       :class="$options.buttonClassList"

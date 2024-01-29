@@ -5,166 +5,138 @@ require 'spec_helper'
 RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_and_projects do
   include GraphqlHelpers
 
-  let(:current_user) { create(:user) }
-  let(:include_subgroups) { true }
-  let(:not_aimed_for_deletion) { false }
-  let(:sort) { nil }
-  let(:search) { nil }
-  let(:ids) { nil }
-  let(:args) do
+  let_it_be(:current_user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let(:ctx) { { current_user: current_user } }
+  let(:args) { default_args }
+  let(:default_args) do
     {
-      include_subgroups: include_subgroups,
-      not_aimed_for_deletion: not_aimed_for_deletion,
-      sort: sort,
-      search: search,
-      ids: ids
+      include_subgroups: false,
+      include_archived: true,
+      not_aimed_for_deletion: false,
+      search: nil,
+      sort: nil,
+      ids: nil,
+      with_issues_enabled: nil,
+      with_merge_requests_enabled: nil
     }
   end
 
-  context "with a group" do
-    let(:group) { create(:group) }
-    let(:namespace) { group }
-    let(:project1) { create(:project, namespace: namespace) }
-    let(:project2) { create(:project, :archived, namespace: namespace) }
-    let(:project3) { create(:project, namespace: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
-    let(:nested_group) { create(:group, parent: group) }
-    let(:nested_project) { create(:project, group: nested_group) }
-    let(:nested_project2) { create(:project, group: nested_group, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
+  describe '#resolve' do
+    subject { resolve(described_class, obj: namespace, args: args, ctx: ctx, arg_style: :internal) }
 
-    before do
-      project1.add_developer(current_user)
-      project2.add_developer(current_user)
-      project3.add_developer(current_user)
-      nested_project.add_developer(current_user)
-      nested_project2.add_developer(current_user)
+    let_it_be(:user_namespaced_projects) { create_list(:project, 3, namespace: current_user.namespace) }
+    let_it_be(:group_namespaced_projects) do
+      [
+        create(:project, name: 'Project', path: 'project', namespace: group),
+        create(:project, :archived, name: 'Test Project', path: 'test-project', namespace: group),
+        create(:project, name: 'Test', path: 'test', namespace: group, marked_for_deletion_at: 1.day.ago, pending_delete: true)
+      ]
     end
 
-    describe '#resolve' do
-      it 'finds all projects' do
-        expect(resolve_projects).to contain_exactly(project1, project2, project3)
-      end
-
-      it 'finds all projects including the subgroups' do
-        expect(resolve_projects(args)).to contain_exactly(project1, project2, project3, nested_project, nested_project2)
-      end
-
-      it 'finds all projects not aimed for deletion' do
-        arg = { not_aimed_for_deletion: true }
-
-        expect(resolve_projects(arg)).to contain_exactly(project1, project2)
-      end
-
-      it 'can filter out archived projects' do
-        arg = { include_archived: false }
-
-        expect(resolve_projects(arg)).to contain_exactly(project1, project3)
-      end
-
-      it 'finds all projects not aimed for deletion including the subgroups' do
-        args[:not_aimed_for_deletion] = true
-
-        expect(resolve_projects(args)).to contain_exactly(project1, project2, nested_project)
-      end
-
-      context 'with an user namespace' do
-        let(:namespace) { current_user.namespace }
-
-        it 'finds all projects' do
-          expect(resolve_projects).to contain_exactly(project1, project2, project3)
-        end
-
-        it 'finds all projects including the subgroups' do
-          expect(resolve_projects(args)).to contain_exactly(project1, project2, project3)
-        end
+    let_it_be(:nested_group_projects) do
+      create(:group, parent: group).then do |nested_group|
+        [
+          create(:project, group: nested_group),
+          create(:project, group: nested_group, marked_for_deletion_at: 1.day.ago, pending_delete: true)
+        ]
       end
     end
 
-    context 'search and similarity sorting' do
-      let(:project_1) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
-      let(:project_2) { create(:project, name: 'Test Project', path: 'test-project', namespace: namespace) }
-      let(:project_3) { create(:project, name: 'Test', path: 'test', namespace: namespace) }
+    before_all do
+      group_namespaced_projects.each { |p| p.add_developer(current_user) }
+      nested_group_projects.each { |p| p.add_developer(current_user) }
+    end
 
-      let(:sort) { :similarity }
-      let(:search) { 'test' }
+    context "with a group" do
+      let(:namespace) { group }
+      let(:expected_projects) { group_namespaced_projects }
 
-      before do
-        project_1.add_developer(current_user)
-        project_2.add_developer(current_user)
-        project_3.add_developer(current_user)
+      it { is_expected.to contain_exactly(*expected_projects) }
+
+      context 'when include_subgroups is true' do
+        let(:args) { default_args.merge(include_subgroups: true) }
+        let(:expected_projects) { group_namespaced_projects + nested_group_projects }
+
+        it { is_expected.to contain_exactly(*expected_projects) }
       end
 
-      it 'returns projects ordered by similarity to the search input' do
-        projects = resolve_projects(args)
+      context 'when not_aimed_for_deletion is true' do
+        let(:args) { default_args.merge(not_aimed_for_deletion: true, include_subgroups: true) }
+        let(:expected_projects) { group_namespaced_projects.first(2) << nested_group_projects.first }
 
-        project_names = projects.map { |proj| proj['name'] }
-        expect(project_names.first).to eq('Test')
-        expect(project_names.second).to eq('Test Project')
+        it { is_expected.to contain_exactly(*expected_projects) }
       end
 
-      it 'filters out result that do not match the search input' do
-        projects = resolve_projects(args)
+      context 'when include_archived is false' do
+        let(:args) { default_args.merge(include_archived: false) }
+        let(:expected_projects) { group_namespaced_projects - [group_namespaced_projects.second] }
 
-        project_names = projects.map { |proj| proj['name'] }
-        expect(project_names).not_to include('Project')
+        it { is_expected.to contain_exactly(*expected_projects) }
       end
 
-      context 'when `search` parameter is not given' do
-        let(:search) { nil }
+      context 'search and similarity sorting' do
+        let(:project_names) { subject.map { |project| project['name'] } }
 
-        it 'returns projects not ordered by similarity' do
-          projects = resolve_projects(args)
+        let(:args) { default_args.merge(sort: :similarity, search: 'test') }
 
-          project_names = projects.map { |proj| proj['name'] }
-          expect(project_names.first).not_to eq('Test')
+        it 'returns projects ordered by similarity to the search input' do
+          expect(project_names.first).to eq('Test')
+          expect(project_names.second).to eq('Test Project')
+        end
+
+        it 'filters out result that do not match the search input' do
+          expect(project_names).not_to include('Project')
+        end
+
+        context 'when `search` parameter is not given' do
+          let(:args) { default_args.merge(sort: :similarity, search: nil) }
+
+          it 'returns projects not ordered by similarity' do
+            expect(project_names.first).not_to eq('Test')
+          end
+        end
+
+        context 'when only search term is given' do
+          let(:args) { default_args.merge(sort: nil, search: 'test') }
+
+          it 'filters out result that do not match the search input, but does not sort them' do
+            expect(project_names).to contain_exactly('Test', 'Test Project')
+          end
         end
       end
 
-      context 'when only search term is given' do
-        let(:sort) { nil }
-        let(:search) { 'test' }
+      context 'ids filtering' do
+        let(:args) { default_args.merge(include_subgroups: false) }
 
-        it 'filters out result that do not match the search input, but does not sort them' do
-          projects = resolve_projects(args)
+        context 'when ids is provided' do
+          let(:args) { super().merge(ids: [group_namespaced_projects.last.to_global_id.to_s]) }
 
-          project_names = projects.map { |proj| proj['name'] }
-          expect(project_names).to contain_exactly('Test', 'Test Project')
+          it { is_expected.to contain_exactly(group_namespaced_projects.last) }
+        end
+
+        context 'when ids is nil' do
+          let(:args) { super().merge(ids: nil) }
+
+          it { is_expected.to contain_exactly(*group_namespaced_projects) }
         end
       end
     end
 
-    context 'ids filtering' do
-      subject(:projects) { resolve_projects(args) }
+    context 'with an user namespace' do
+      let(:namespace) { current_user.namespace }
 
-      let(:include_subgroups) { false }
-      let!(:project_4) { create(:project, name: 'Project', path: 'project', namespace: namespace) }
+      it { is_expected.to contain_exactly(*user_namespaced_projects) }
+    end
 
-      context 'when ids is provided' do
-        let(:ids) { [project_4.to_global_id.to_s] }
-
-        it 'returns matching project' do
-          expect(projects).to contain_exactly(project_4)
+    context "when passing a non existent, batch loaded namespace" do
+      let(:namespace) do
+        BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
+          loader.call("non-existent-path", nil)
         end
       end
 
-      context 'when ids is nil' do
-        let(:ids) { nil }
-
-        it 'returns all projects' do
-          expect(projects).to contain_exactly(project1, project2, project3, project_4)
-        end
-      end
-    end
-  end
-
-  context "when passing a non existent, batch loaded namespace" do
-    let(:namespace) do
-      BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
-        loader.call("non-existent-path", nil)
-      end
-    end
-
-    it "returns nil without breaking" do
-      expect(resolve_projects).to be_empty
+      it { is_expected.to be_empty }
     end
   end
 
@@ -173,9 +145,5 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
 
     expect(field.complexity.call({}, {}, 1)).to eq 24
     expect(field.complexity.call({}, { include_subgroups: true }, 1)).to eq 24
-  end
-
-  def resolve_projects(args = { include_subgroups: false, sort: nil, search: nil, ids: nil }, context = { current_user: current_user })
-    resolve(described_class, obj: namespace, args: args, ctx: context, arg_style: :internal)
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::StuckImportWorker, feature_category: :importers do
+RSpec.describe BulkImports::StaleImportWorker, feature_category: :importers do
   let_it_be(:created_bulk_import) { create(:bulk_import, :created) }
   let_it_be(:started_bulk_import) { create(:bulk_import, :started) }
   let_it_be(:stale_created_bulk_import) do

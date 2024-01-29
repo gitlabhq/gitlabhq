@@ -5,7 +5,6 @@ module QA
     module Project
       class Show < Page::Base
         include Layout::Flash
-        include Page::Component::ClonePanel
         include Page::Component::Breadcrumbs
         include Page::File::Shared::CommitMessage
         include Page::Component::Dropdown

@@ -228,6 +228,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:bulk_imports_stale_import
+  :worker_name: BulkImports::StaleImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:bulk_imports_stuck_import
   :worker_name: BulkImports::StuckImportWorker
   :feature_category: :importers

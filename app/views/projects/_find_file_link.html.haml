@@ -1,2 +1,9 @@
-= link_button_to project_find_file_path(@project, @ref, ref_type: @ref_type), class: 'shortcuts-find-file', rel: 'nofollow' do
-  = _('Find file')
+- find_file_description = _('Go to find file')
+- find_file_shortcut = 't'
+- find_file_title = "#{find_file_description} <kbd class='flat ml-1' aria-hidden=true>#{find_file_shortcut}</kbd>"
+= link_button_to _('Find file'), project_find_file_path(@project, @ref, ref_type: @ref_type),
+  'aria-keyshortcuts': find_file_shortcut,
+  class: 'has-tooltip shortcuts-find-file',
+  'data-html': true,
+  title: find_file_title,
+  rel: 'nofollow'

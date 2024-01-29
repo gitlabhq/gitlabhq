@@ -18,7 +18,7 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/bulk_imports/export_request_worker.rb'
     - 'app/workers/bulk_imports/pipeline_worker.rb'
     - 'app/workers/bulk_imports/relation_export_worker.rb'
-    - 'app/workers/bulk_imports/stuck_import_worker.rb'
+    - 'app/workers/bulk_imports/stale_import_worker.rb'
     - 'app/workers/chaos/cpu_spin_worker.rb'
     - 'app/workers/chaos/db_spin_worker.rb'
     - 'app/workers/chaos/kill_worker.rb'

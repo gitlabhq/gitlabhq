@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import waitForPromises from 'helpers/wait_for_promises';
@@ -412,8 +413,10 @@ describe('DiffFile', () => {
       });
 
       it('should show the generated file warning with expansion button', () => {
-        expect(findDiffContentArea(wrapper).html()).toContain(
-          'Generated files are collapsed by default. This behavior can be overriden via .gitattributes file if required.',
+        const messageComponent = findDiffContentArea(wrapper).findComponent(GlSprintf);
+
+        expect(messageComponent.attributes('message')).toBe(
+          'Generated files are collapsed by default. To change this behavior, edit the %{tagStart}.gitattributes%{tagEnd} file. %{linkStart}Learn more.%{linkEnd}',
         );
         expect(findToggleButton(wrapper).exists()).toBe(true);
       });
