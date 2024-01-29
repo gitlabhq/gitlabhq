@@ -50,7 +50,7 @@ The Web IDE opens new and modified files in separate tabs and displays changes s
 To reduce load time, only 10 files with the most lines changed are opened automatically.
 
 On the left **Explorer** sidebar, any new or modified file is indicated
-by the merge request icon (**{merge-request}**) next to the file name.
+by the merge request icon (**{merge-request}**) next to the filename.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
 ## Open a file
@@ -58,7 +58,7 @@ To view changes to a file, right-click the file and select **Compare with merge 
 To open a file by name in the Web IDE:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
-1. In the search box, enter the file name.
+1. In the search box, enter the filename.
 
 ## Search open files
 

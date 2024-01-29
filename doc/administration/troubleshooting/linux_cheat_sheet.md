@@ -82,7 +82,7 @@ env
 
 ## Searching
 
-### File names
+### Filenames
 
 ```shell
 # search for a file in a filesystem
@@ -271,7 +271,7 @@ PID 16815
 
   Slowest file open times for PID 16815:
 
-    dur (ms)       timestamp            error         file name
+    dur (ms)       timestamp            error         filename
   ----------    ---------------    ---------------    ---------
        0.045    22:46:16.771318           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
        0.043    22:46:26.877954           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml

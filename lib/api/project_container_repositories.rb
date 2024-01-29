@@ -211,7 +211,7 @@ module API
       end
 
       def validate_tag!
-        not_found!('Tag') unless tag.valid?
+        not_found!('Tag') unless tag&.valid?
       end
     end
   end

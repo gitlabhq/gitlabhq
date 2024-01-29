@@ -101,7 +101,7 @@ are pulled out as [batched background migrations](../database/batched_background
 They should define a `feature_category`, like this:
 
 ```ruby
-# File name: lib/gitlab/background_migration/my_background_migration_job.rb
+# Filename: lib/gitlab/background_migration/my_background_migration_job.rb
 
 class MyBackgroundMigrationJob < BatchedMigrationJob
   feature_category :gitaly

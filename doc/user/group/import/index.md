@@ -63,7 +63,7 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 
 ## Known issues
 
-- Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a file name longer than 255 characters are not migrated.
+- Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
 - In GitLab 16.1 and earlier, you should **not** use direct transfer with
   [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).

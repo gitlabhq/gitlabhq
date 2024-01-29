@@ -32,7 +32,7 @@ To https://gitlab.com/group/my-project.git
 error: failed to push some refs to 'https://gitlab.com/group/my-project.git'
 ```
 
-The error lists the unique IDs for files rather than their filename. To look up the file name from the unique identify, run the following command:
+The error lists the unique IDs for files rather than their filename. To look up the filename from the unique identify, run the following command:
 
 ```shell
 tree -r | grep <id>

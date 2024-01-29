@@ -127,7 +127,7 @@ then process the merge request according to your standard workflow.
 
 The following data is shared with third-party AI APIs:
 
-- Vulnerability title (which might contain the file name, depending on which scanner is used).
+- Vulnerability title (which might contain the filename, depending on which scanner is used).
 - Vulnerability identifiers.
 - Code block.
 - File name.

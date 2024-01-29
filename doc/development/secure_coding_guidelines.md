@@ -882,13 +882,13 @@ In 2018, the security company Snyk [released a blog post](https://security.snyk.
 
 A Zip Slip vulnerability happens when an application extracts an archive without validating and sanitizing the filenames inside the archive for directory traversal sequences that change the file location when the file is extracted.
 
-Example malicious file names:
+Example malicious filenames:
 
 - `../../etc/passwd`
 - `../../root/.ssh/authorized_keys`
 - `../../etc/gitlab/gitlab.rb`
 
-If a vulnerable application extracts an archive file with any of these file names, the attacker can overwrite these files with arbitrary content.
+If a vulnerable application extracts an archive file with any of these filenames, the attacker can overwrite these files with arbitrary content.
 
 ### Insecure archive extraction examples
 
@@ -910,7 +910,7 @@ tar_extract.rewind
 tar_extract.each do |entry|
   next unless entry.file? # Only process files in this example for simplicity.
 
-  destination = "/tmp/extracted/#{entry.full_name}" # Oops! We blindly use the entry file name for the destination.
+  destination = "/tmp/extracted/#{entry.full_name}" # Oops! We blindly use the entry filename for the destination.
   File.open(destination, "wb") do |out|
     out.write(entry.read)
   end
@@ -941,7 +941,7 @@ func unzip(src, dest string) error {
     }
     defer rc.Close()
 
-    path := filepath.Join(dest, f.Name) // Oops! We blindly use the entry file name for the destination.
+    path := filepath.Join(dest, f.Name) // Oops! We blindly use the entry filename for the destination.
     os.MkdirAll(filepath.Dir(path), f.Mode())
     f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
     if err != nil {

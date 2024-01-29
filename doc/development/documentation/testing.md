@@ -64,8 +64,8 @@ The job fails if any of these tests fail:
 - `CHANGELOG.md` must not contain duplicate versions.
 - No files in the `doc/` directory may be executable.
 - Use `index.md` instead of `README.md`.
-- Directories and file names must use underscores instead of dashes.
-- Directories and file names must be in lower case.
+- Directories and filenames must use underscores instead of dashes.
+- Directories and filenames must be in lower case.
 
 #### Run lint checks locally
 
@@ -625,7 +625,7 @@ You can disable a specific Vale linting rule or all Vale linting rules for any p
 document:
 
 - To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
-  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the file name of a test in the
+  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename of a test in the
   [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
   directory.
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a

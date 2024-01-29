@@ -153,8 +153,8 @@ Use these rules to prevent unintended consequences.
 Use these rules to validate files contained in the commit.
 
 - **Prevent pushing secret files**: Files must not contain [secrets](#prevent-pushing-secrets-to-the-repository).
-- **Prohibited file names**: Files that do not exist in the repository
-  must not match the regular expression. To allow all file names, leave empty. See [common examples](#prohibit-files-by-name).
+- **Prohibited filenames**: Files that do not exist in the repository
+  must not match the regular expression. To allow all filenames, leave empty. See [common examples](#prohibit-files-by-name).
 - **Maximum file size**: Added or updated files must not exceed this
   file size (in MB). To allow files of any size, set to `0`. Files tracked by Git LFS are exempted.
 
@@ -239,10 +239,10 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
 
 In Git, filenames include both the file's name, and all directories preceding the name.
 When you `git push`, each filename in the push is compared to the regular expression
-in **Prohibited file names**.
+in **Prohibited filenames**.
 
-The regular expression in your **Prohibited file names** push rule can contain multiple,
-independent matches to exclude. You can match file names broadly to any location in
+The regular expression in your **Prohibited filenames** push rule can contain multiple,
+independent matches to exclude. You can match filenames broadly to any location in
 your repository, or restrict only in certain locations. Filename matches can also
 be partial, and exclude file types by extension.
 

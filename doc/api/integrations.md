@@ -98,7 +98,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `app_store_issuer_id` | string | true | Apple App Store Connect issuer ID. |
 | `app_store_key_id` | string | true | Apple App Store Connect key ID. |
-| `app_store_private_key_file_name` | string | true | Apple App Store Connect private key file name. |
+| `app_store_private_key_file_name` | string | true | Apple App Store Connect private key filename. |
 | `app_store_private_key` | string | true | Apple App Store Connect private key. |
 | `app_store_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
 

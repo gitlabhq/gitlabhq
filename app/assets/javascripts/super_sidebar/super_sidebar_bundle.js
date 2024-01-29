@@ -29,6 +29,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       percentageComplete,
       planName,
       plansHref,
+      trialDiscoverPagePath,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_widget_data_attrs);
 
     const {
@@ -61,6 +62,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trackAction,
       trackLabel,
       trialEndDate: new Date(trialEndDate),
+      trialDiscoverPagePath,
       user: { namespaceId, userName, firstName, lastName, companyName, glmContent },
     };
   }

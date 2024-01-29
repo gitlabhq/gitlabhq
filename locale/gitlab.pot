@@ -52089,6 +52089,15 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "TrialDiscoverPage|Access advanced features, build more efficiently, strengthen security and compliance."
+msgstr ""
+
+msgid "TrialDiscoverPage|Discover"
+msgstr ""
+
+msgid "TrialDiscoverPage|Discover Premium & Ultimate"
+msgstr ""
+
 msgid "TrialRegistration|Start GitLab Ultimate free trial"
 msgstr ""
 
@@ -52111,6 +52120,9 @@ msgid "Trials|Day %{daysUsed}/%{duration}"
 msgstr ""
 
 msgid "Trials|Don't lose out on additional GitLab features"
+msgstr ""
+
+msgid "Trials|Learn about features"
 msgstr ""
 
 msgid "Trials|Looking to do more with GitLab?"

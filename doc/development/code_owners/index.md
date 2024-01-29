@@ -62,7 +62,7 @@ These checks are executed after those listed in `#validations_for_path`, which e
 The check order is as follows in `EE` (only LFS exists as a non-EE feature):
 
 - Path Locks
-- File Names
+- Filenames
   - Blocks files containing secrets for example `id_rsa`
   - Blocks files matching the `PushRule#file_name_regex`
 - LFS File Locks

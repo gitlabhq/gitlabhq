@@ -19,17 +19,6 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
       expect(described_class.new('foo', {}).render_engine).to eq engine
     end
 
-    context 'when :markdown_rust feature flag is turned off' do
-      it 'defaults to the RUBY_ENGINE' do
-        stub_feature_flags(markdown_rust: false)
-
-        ruby_engine = Banzai::Filter::MarkdownFilter::RUBY_ENGINE.to_s.classify
-        engine = "Banzai::Filter::MarkdownEngines::#{ruby_engine}".constantize
-
-        expect(described_class.new('foo', {}).render_engine).to eq engine
-      end
-    end
-
     it 'raise error for unrecognized engines' do
       expect { described_class.new('foo', { markdown_engine: :foo_bar }).render_engine }.to raise_error(NameError)
     end

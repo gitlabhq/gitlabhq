@@ -204,7 +204,7 @@ Alternatively:
 
 ### Duplicate sprockets files
 
-The compiled asset files have unique file names in each release. The sprockets files
+The compiled asset files have unique filenames in each release. The sprockets files
 provide a mapping from the filenames in the application code to the unique filenames.
 
 ```plaintext

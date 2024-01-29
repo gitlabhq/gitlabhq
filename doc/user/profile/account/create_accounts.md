@@ -84,6 +84,7 @@ To create a user through the Rails console:
 
    ```ruby
    u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+   u.assign_personal_namespace
    u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user receives confirmation e-mail
    u.save!
    ```

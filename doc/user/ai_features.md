@@ -261,8 +261,8 @@ GitLab Duo AI features are powered by a generative AI models. The processing of 
 
 The below reflects the current retention periods of GitLab AI model [Sub-Processors](https://about.gitlab.com/privacy/subprocessors/#third-party-sub-processors):
 
-- Anthropic retains input and output data for 30 days.
-- Google discards input and output data immediately after the output is provided. Google currently does not store data for abuse monitoring.
+- Anthropic discards model input and output data immediately after the output is provided. Anthropic currently does not store data for abuse monitoring. Model input and output is not used to train models.
+- Google discards model input and output data immediately after the output is provided. Google currently does not store data for abuse monitoring. Model input and output is not used to train models.
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 

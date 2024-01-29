@@ -83,7 +83,7 @@ end
 ```
 
 In some cases, you must require multiple migration files to use them in your specs. Here, there's no
-pattern between your spec file and the other migration file. You can provide the migration file name like so:
+pattern between your spec file and the other migration file. You can provide the migration filename like so:
 
 ```ruby
 # frozen_string_literal: true

@@ -145,6 +145,49 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       end
     end
 
+    describe 'valid?' do
+      shared_examples 'checking for the manifest' do
+        context 'when manifest is present' do
+          before do
+            allow(tag).to receive(:manifest).and_return('manifest')
+          end
+
+          it 'returns true' do
+            expect(tag.valid?).to eq(true)
+          end
+        end
+
+        context 'when manifest is not present' do
+          it 'returns false' do
+            expect(tag.valid?).to eq(false)
+          end
+        end
+      end
+
+      before do
+        allow(tag).to receive(:manifest)
+      end
+
+      context 'when tag is instantiated with from_api: true' do
+        let(:tag) { described_class.new(repository, 'tag', from_api: true) }
+
+        it 'returns true' do
+          expect(tag.valid?).to eq(true)
+          expect(tag).not_to have_received(:manifest)
+        end
+      end
+
+      context 'when tag is instantiated with from_api: false' do
+        let(:tag) { described_class.new(repository, 'tag', from_api: false) }
+
+        it_behaves_like 'checking for the manifest'
+      end
+
+      context 'when tag is not instantiated from_api' do
+        it_behaves_like 'checking for the manifest'
+      end
+    end
+
     context 'schema v1' do
       before do
         stub_request(:get, 'http://registry.gitlab/v2/group/test/manifests/tag')

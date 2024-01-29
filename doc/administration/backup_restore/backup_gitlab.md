@@ -319,14 +319,14 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
-#### Backup file name
+#### Backup filename
 
 WARNING:
-If you use a custom backup file name, you can't
+If you use a custom backup filename, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
-Backup files are created with file names according to [specific defaults](index.md#backup-id). However, you can
-override the `<backup-id>` portion of the file name by setting the `BACKUP`
+Backup files are created with filenames according to [specific defaults](index.md#backup-id). However, you can
+override the `<backup-id>` portion of the filename by setting the `BACKUP`
 environment variable. For example:
 
 ```shell
@@ -350,7 +350,7 @@ Caveats:
 
 - The compression command is used in a pipeline, so your custom command must output to `stdout`.
 - If you specify a command that is not packaged with GitLab, then you must install it yourself.
-- The resultant file names will still end in `.gz`.
+- The resultant filenames will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
 - [Do not place environment variables after the backup command](https://gitlab.com/gitlab-org/gitlab/-/issues/433227). For example, `gitlab-backup create COMPRESS_CMD="pigz -c --best"` doesn't work as intended.
 
@@ -432,7 +432,7 @@ DECOMPRESS_CMD="zstd --decompress --stdout" sudo gitlab-backup restore
 
 To ensure the generated archive is transferable by rsync, you can set the `GZIP_RSYNCABLE=yes`
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
-combination with setting [the Backup file name option](#backup-file-name).
+combination with setting [the Backup filename option](#backup-filename).
 
 The `--rsyncable` option in `gzip` isn't guaranteed to be available
 on all distributions. To verify that it's available in your distribution, run
@@ -628,8 +628,8 @@ to create an incremental backup from:
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<backup-id>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the file name by setting the
-  [`BACKUP` environment variable](#backup-file-name).
+  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
+  [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
@@ -1222,7 +1222,7 @@ When troubleshooting backup problems, however, replace `CRON=1` with `--trace` t
 #### Limit backup lifetime for local files (prune old backups)
 
 WARNING:
-The process described in this section doesn't work if you used a [custom file name](#backup-file-name)
+The process described in this section doesn't work if you used a [custom filename](#backup-filename)
 for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set a limited lifetime

@@ -20,7 +20,7 @@ class CreateCiUsedMinutes < ClickHouse::Migration
 
   def down
     execute <<~SQL
-      DROP TABLE ci_used_minutes
+      DROP TABLE IF EXISTS ci_used_minutes
     SQL
   end
 end

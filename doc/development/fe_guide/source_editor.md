@@ -92,7 +92,7 @@ with additional functions on the instance level:
 1. Update syntax highlighting if the filename changes.
 
    ```javascript
-   // fileNameEl here is the HTML input element that contains the file name
+   // fileNameEl here is the HTML input element that contains the filename
    fileNameEl.addEventListener('change', () => {
      this.editor.updateModelLanguage(fileNameEl.value);
    });

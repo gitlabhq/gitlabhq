@@ -9,9 +9,10 @@ module ContainerRegistry
 
     delegate :registry, :client, to: :repository
 
-    def initialize(repository, name)
+    def initialize(repository, name, from_api: false)
       @repository = repository
       @name = name
+      @from_api = from_api
     end
 
     def referrers=(refs)
@@ -29,7 +30,7 @@ module ContainerRegistry
     end
 
     def valid?
-      manifest.present?
+      from_api? || manifest.present?
     end
 
     def latest?
@@ -153,6 +154,10 @@ module ContainerRegistry
     end
 
     private
+
+    def from_api?
+      @from_api
+    end
 
     def parse_iso8601_string(string_value)
       DateTime.iso8601(string_value)

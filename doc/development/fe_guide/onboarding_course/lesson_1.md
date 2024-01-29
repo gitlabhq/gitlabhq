@@ -141,7 +141,7 @@ If you already know the file you are going to work on and now you want to find w
 1. You can also examine the file path (or folder structure) to gain insights into where the file might be rendered.
    A lot of routing in GitLab is very similar to the folder structure.
 1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to navigate to the feature page.
-1. Follow the component hierarchy, do a global search for the file name to identify the parent component that renders the component.
+1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.
    Most MR’s have a "How to validate" section that you can follow, if the MR doesn't have one, look for the previous change and until you find one that have validation steps.

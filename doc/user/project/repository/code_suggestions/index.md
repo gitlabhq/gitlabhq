@@ -134,7 +134,7 @@ For self-managed instances that have enabled Code Suggestions and SaaS accounts,
 
 ### Inference window context
 
-Code Suggestions inferences against the currently opened file, the content before and after the cursor, the file name, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ### Training data
 

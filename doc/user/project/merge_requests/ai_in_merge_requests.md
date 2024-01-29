@@ -97,7 +97,7 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The file name
+- The filename
 
 <!--- start_remove The following content will be removed on remove_date: '2024-04-12' -->
 

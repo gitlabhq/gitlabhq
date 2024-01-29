@@ -76,7 +76,7 @@ To close the preview panel, select the **Write** tab.
 ### Link to specific lines
 
 To link to single or multiple lines in the Web Editor, add hash
-information to the file name segment of the URL. For example:
+information to the filename segment of the URL. For example:
 
 - `MY_FILE.js#L3` highlights line 3 in `MY_FILE.js`.
 - `MY_FILE.js#L3-10` highlights lines 3 to 10 in `MY_FILE.js`.

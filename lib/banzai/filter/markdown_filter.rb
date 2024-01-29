@@ -32,9 +32,7 @@ module Banzai
       end
 
       def default_engine
-        return RUST_ENGINE if Feature.enabled?(:markdown_rust, context[:project])
-
-        RUBY_ENGINE
+        RUST_ENGINE
       end
 
       class << self

@@ -666,7 +666,7 @@ export default {
 }
 ```
 
-#### Prefix function and file names with `use`
+#### Prefix function and filenames with `use`
 
 Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly (`useBreakpoints`, `useGeolocation` etc). The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
 

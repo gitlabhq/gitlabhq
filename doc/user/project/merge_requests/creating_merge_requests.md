@@ -238,7 +238,7 @@ A merge request is created.
 Add commits to a merge request by adding patches as attachments to the email.
 
 - The combined size of the patches must be 2 MB or less.
-- To be considered a patch, the attachment's file name must end in `.patch`.
+- To be considered a patch, the attachment's filename must end in `.patch`.
 - Patches are processed in order by name.
 - If the source branch from the subject does not exist, it is
   created from the repository's `HEAD`, or the default target branch.

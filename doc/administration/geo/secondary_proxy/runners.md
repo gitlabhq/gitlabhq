@@ -11,11 +11,11 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Disabled by default.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Enabled by default in 16.9
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. On GitLab.com, this feature is not available.  
+On self-managed GitLab, by default this feature is enabled.
+To disable it, an administrator can [disable the feature flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. On GitLab.com, this feature is not available.
 
 With [Geo proxying for secondary sites](index.md), it is possible to register a `gitlab-runner` with a secondary site. This offloads load from the primary instance.
 

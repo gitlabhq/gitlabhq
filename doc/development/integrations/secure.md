@@ -346,7 +346,7 @@ end
 require 'json'
 require 'pathname'
 
-raise 'Usage: ruby script.rb <security schema file name> <report file name>' unless ARGV.size == 2
+raise 'Usage: ruby script.rb <security schema filename> <report filename>' unless ARGV.size == 2
 
 schema = JSONSchemer.schema(Pathname.new(ARGV[0]))
 report = JSON.parse(File.open(ARGV[1]).read)
@@ -358,7 +358,7 @@ puts(schema_validation_errors)
    example, you can find version `15.0.6` of the `container_scanning` report schema at
    `https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/raw/v15.0.6/dist/container-scanning-report-format.json?inline=false`.
 1. Save the Ruby script above in a file, for example, `validate.rb`.
-1. Run the script, passing the schema and report file names as arguments in order. For example:
+1. Run the script, passing the schema and report filenames as arguments in order. For example:
    1. Using your local Ruby interpreter: `ruby validate.rb container-scanning-format_15-0-6.json gl-container-scanning-report.json`.
    1. Using Docker: `docker run -it --rm -v $(pwd):/ci ruby:3 ruby /ci/validate.rb /ci/container-scanning-format_15-0-6.json  /ci/gl-container-scanning-report.json`
 1. Validation errors are shown on the screen. You must resolve these errors before GitLab can ingest your report.

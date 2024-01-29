@@ -10,7 +10,7 @@ This is a tailored extension of the Best Practices [found in the testing guide](
 
 ## Class and module naming
 
-The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and module autoloading. The default Zeitwerk [inflector](https://github.com/fxn/zeitwerk#zeitwerkinflector) converts snake_cased file names to PascalCased module or class names. It is advised to stick to this pattern to avoid manual maintenance of inflections.
+The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and module autoloading. The default Zeitwerk [inflector](https://github.com/fxn/zeitwerk#zeitwerkinflector) converts snake_cased filenames to PascalCased module or class names. It is advised to stick to this pattern to avoid manual maintenance of inflections.
 
 In case custom inflection logic is needed, custom inflectors are added in the [qa.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa.rb) file in the `loader.inflector.inflect` method invocation.
 

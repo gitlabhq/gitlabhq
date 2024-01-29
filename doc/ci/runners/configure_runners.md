@@ -929,9 +929,9 @@ job1:
 ```
 
 The metadata renders in a plain text `.json` file stored with the artifact. The
-file name is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
+filename is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
 [name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name)
-defined in the `.gitlab-ci.yml` file. If the name is not defined, the default file name is
+defined in the `.gitlab-ci.yml` file. If the name is not defined, the default filename is
 `artifacts-metadata.json`.
 
 ### Provenance metadata format
@@ -946,7 +946,7 @@ The following fields are populated by default:
 | Field  | Value  |
 | ------ | ------ |
 | `_type` | `https://in-toto.io/Statement/v0.1` |
-| `subject.name` | The file name of the artifact. |
+| `subject.name` | The filename of the artifact. |
 | `subject.digest.sha256` | The artifact's `sha256` checksum. |
 | `predicateType` | `https://slsa.dev/provenance/v0.2` |
 | `predicate.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example v15.0.0 |

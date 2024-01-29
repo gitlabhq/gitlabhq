@@ -1420,7 +1420,7 @@ working_directory = os.environ.get( 'CI_PROJECT_DIR')
 overrides_file_name = os.environ.get('FUZZAPI_OVERRIDES_FILE', 'api-fuzzing-overrides.json')
 overrides_file_path = os.path.join(working_directory, overrides_file_name)
 
-# [2] File name should match the pattern: gl-*.log
+# [2] Filename should match the pattern: gl-*.log
 log_file_path = os.path.join(working_directory, 'gl-user-overrides.log')
 
 # Set up logger

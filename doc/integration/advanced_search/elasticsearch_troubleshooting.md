@@ -483,7 +483,7 @@ Improvements to the `code_analyzer` pattern and filters are being discussed in [
 
 ## Some binary files may not be searchable by name
 
-In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
+In GitLab 13.9, a change was made where [binary filenames are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
 
 ## How does advanced search handle private projects?
 

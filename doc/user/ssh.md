@@ -137,7 +137,7 @@ If you do not have an existing SSH key pair, generate a new one:
    Enter file in which to save the key (/home/user/.ssh/id_ed25519):
    ```
 
-1. Accept the suggested file name and directory, unless you are generating a [deploy key](project/deploy_keys/index.md)
+1. Accept the suggested filename and directory, unless you are generating a [deploy key](project/deploy_keys/index.md)
    or want to save in a specific directory where you store other keys.
 
    You can also dedicate the SSH key pair to a [specific host](#configure-ssh-to-point-to-a-different-directory).
@@ -258,7 +258,7 @@ To generate ED25519_SK or ECDSA_SK SSH keys, you must use OpenSSH 8.2 or later:
 
 1. Touch the button on the hardware security key.
 
-1. Accept the suggested file name and directory:
+1. Accept the suggested filename and directory:
 
    ```plaintext
    Enter file in which to save the key (/home/user/.ssh/id_ed25519_sk):
@@ -329,7 +329,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    cat ~/.ssh/id_ed25519.pub | clip
    ```
 
-   Replace `id_ed25519.pub` with your file name. For example, use `id_rsa.pub` for RSA.
+   Replace `id_ed25519.pub` with your filename. For example, use `id_rsa.pub` for RSA.
 
 1. Sign in to GitLab.
 1. On the left sidebar, select your avatar.
