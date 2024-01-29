@@ -26,8 +26,8 @@ RSpec.describe SwapColumnsForSystemNoteMetadataId, feature_category: :team_plann
 
             primary_key_naming_check = query_constraint_by_name(:system_note_metadata, pk_name).first
             foreign_key_naming_check = query_constraint_by_name(:resource_link_events, fk_name).first
-            expect(primary_key_naming_check).to match("bool" => true)
-            expect(foreign_key_naming_check).to match("bool" => true)
+            expect(primary_key_naming_check).to match("constraint_exists" => true)
+            expect(foreign_key_naming_check).to match("constraint_exists" => true)
             expect(table.columns.find { |c| c.name == 'id' }.sql_type).to eq('integer')
             expect(table.columns.find { |c| c.name == 'id_convert_to_bigint' }.sql_type).to eq('bigint')
           }
@@ -37,8 +37,8 @@ RSpec.describe SwapColumnsForSystemNoteMetadataId, feature_category: :team_plann
 
             primary_key_naming_check = query_constraint_by_name(:system_note_metadata, pk_name).first
             foreign_key_naming_check = query_constraint_by_name(:resource_link_events, fk_name).first
-            expect(primary_key_naming_check).to match("bool" => true)
-            expect(foreign_key_naming_check).to match("bool" => true)
+            expect(primary_key_naming_check).to match("constraint_exists" => true)
+            expect(foreign_key_naming_check).to match("constraint_exists" => true)
             expect(table.columns.find { |c| c.name == 'id' }.sql_type).to eq('bigint')
             expect(table.columns.find { |c| c.name == 'id_convert_to_bigint' }.sql_type).to eq('integer')
           }
@@ -48,7 +48,7 @@ RSpec.describe SwapColumnsForSystemNoteMetadataId, feature_category: :team_plann
 
     def query_constraint_by_name(table_name, conname)
       described_class.new.connection.execute <<~SQL
-        SELECT true FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid
+        SELECT true as constraint_exists FROM pg_constraint c JOIN pg_class t ON t.oid = c.conrelid
         WHERE t.relname = \'#{table_name}\' AND c.conname = \'#{conname}\';
       SQL
     end
