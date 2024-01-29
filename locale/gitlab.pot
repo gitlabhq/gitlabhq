@@ -56931,9 +56931,6 @@ msgstr ""
 msgid "Your GPG keys"
 msgstr ""
 
-msgid "Your GitHub access token does not have the correct scope to import collaborators."
-msgstr ""
-
 msgid "Your GitLab account has been locked due to an excessive number of unsuccessful sign in attempts. You can wait for your account to automatically unlock in %{duration} or you can click the link below to unlock now."
 msgstr ""
 
