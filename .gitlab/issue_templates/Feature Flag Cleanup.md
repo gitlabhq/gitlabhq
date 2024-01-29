@@ -46,4 +46,9 @@ Are there any other stages or teams involved that need to be kept in the loop?
 - [ ] Close this rollout issue.
 
 
-/label ~"feature flag" ~"type::maintenance" ~"maintenance::removal"
+/label ~"feature flag"
+<!-- Uncomment the appropriate type label
+/label ~"type::feature" ~"feature::addition"
+/label ~"type::maintenance"
+/label ~"type::bug"
+-->

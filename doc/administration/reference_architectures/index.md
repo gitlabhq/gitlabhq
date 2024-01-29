@@ -363,7 +363,7 @@ Additionally, the following cloud provider services are recommended for use as p
     <td>Redis</td>
     <td>🟢 &nbsp; <a href="https://cloud.google.com/memorystore" target="_blank" rel="noopener noreferrer">Memorystore</a></td>
     <td>🟢 &nbsp; <a href="https://aws.amazon.com/elasticache/" target="_blank" rel="noopener noreferrer">ElastiCache</a></td>
-    <td>🟢 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium)</a></td>
+    <td>🟡 &nbsp; <a href="https://azure.microsoft.com/en-gb/products/cache" target="_blank" rel="noopener noreferrer">Azure Cache for Redis (Premium).</a> From GitLab 16.8, GitLab requires Redis 6.2 or higher, which is not supported by Azure Cache for Redis.</td>
     <td></td>
   </tr>
 </tbody>

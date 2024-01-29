@@ -143,5 +143,10 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 
 /label <group-label>
 /label ~"feature flag" ~C4
+<!-- Uncomment the appropriate type label
+/label ~"type::feature" ~"feature::addition"
+/label ~"type::maintenance"
+/label ~"type::bug"
+-->
 /assign @<gitlab-username-of-dri>
 /due in 2 weeks
