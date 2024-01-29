@@ -33,6 +33,7 @@ module Organizations
     delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
     accepts_nested_attributes_for :organization_detail
+    accepts_nested_attributes_for :organization_users
 
     def self.default_organization
       find_by(id: DEFAULT_ORGANIZATION_ID)

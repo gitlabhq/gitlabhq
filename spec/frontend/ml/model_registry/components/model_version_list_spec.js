@@ -9,12 +9,11 @@ import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
 import ModelVersionRow from '~/ml/model_registry/components/model_version_row.vue';
 import getModelVersionsQuery from '~/ml/model_registry/graphql/queries/get_model_versions.query.graphql';
 import EmptyState from '~/ml/model_registry/components/empty_state.vue';
-import { GRAPHQL_PAGE_SIZE, MODEL_ENTITIES } from '~/ml/model_registry/constants';
+import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import {
   emptyModelVersionsQuery,
   modelVersionsQuery,
   graphqlModelVersions,
-  graphqlPageInfo,
 } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -79,9 +78,17 @@ describe('ModelVersionList', () => {
   });
 
   describe('when list is loaded with data', () => {
+    let resolver;
+
     beforeEach(async () => {
-      mountComponent();
+      resolver = jest.fn().mockResolvedValue(modelVersionsQuery());
+      mountComponent({ resolver });
+
       await waitForPromises();
+    });
+
+    it('calls query only once on setup', () => {
+      expect(resolver).toHaveBeenCalledTimes(1);
     });
 
     it('Passes items to list', () => {
@@ -115,13 +122,22 @@ describe('ModelVersionList', () => {
       findSearchableList().vm.$emit('fetch-page', {
         after: 'eyJpZCI6IjIifQ',
         first: 30,
-        id: 'gid://gitlab/Ml::Model/2',
+        name: '1.0.0',
+        orderBy: 'version',
+        sort: 'asc',
       });
 
       await waitForPromises();
 
       expect(resolver).toHaveBeenLastCalledWith(
-        expect.objectContaining({ after: graphqlPageInfo.endCursor, first: GRAPHQL_PAGE_SIZE }),
+        expect.objectContaining({
+          id: 'gid://gitlab/Ml::Model/2',
+          after: 'eyJpZCI6IjIifQ',
+          first: 30,
+          version: '1.0.0',
+          orderBy: 'VERSION',
+          sort: 'ASC',
+        }),
       );
     });
   });

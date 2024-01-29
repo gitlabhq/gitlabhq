@@ -2,10 +2,7 @@
 
 module Gitlab
   module Redis
-    class SharedState < ::Gitlab::Redis::MultiStoreWrapper
-      def self.multistore
-        MultiStore.new(ClusterSharedState.pool, pool, store_name)
-      end
+    class SharedState < ::Gitlab::Redis::Wrapper
     end
   end
 end

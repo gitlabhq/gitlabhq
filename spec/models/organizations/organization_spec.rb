@@ -67,6 +67,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
 
   describe 'nested attributes' do
     it { is_expected.to accept_nested_attributes_for(:organization_detail) }
+    it { is_expected.to accept_nested_attributes_for(:organization_users) }
   end
 
   context 'when using scopes' do

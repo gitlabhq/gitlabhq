@@ -757,11 +757,11 @@ See our [Redis guidelines](redis.md) for more information about how GitLab uses 
 
 #### Registry
 
-- [Project page](https://github.com/docker/distribution/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/container-registry)
 - Configuration:
-  - [Omnibus](../update/upgrading_from_source.md#10-install-libraries-migrations-etc)
+  - [Omnibus](../administration/packages/container_registry.md)
   - [Charts](https://docs.gitlab.com/charts/charts/registry/)
-  - [Source](../administration/packages/container_registry.md#enable-the-container-registry)
+  - [Source](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/configuration.md?ref_type=heads)
   - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/registry.md)
 - Layer: Core Service (Processor)
 - GitLab.com: [GitLab container registry](../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd)

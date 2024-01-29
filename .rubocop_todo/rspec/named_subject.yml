@@ -2654,7 +2654,6 @@ RSpec/NamedSubject:
     - 'spec/models/concerns/resolvable_note_spec.rb'
     - 'spec/models/concerns/runners_token_prefixable_spec.rb'
     - 'spec/models/concerns/spammable_spec.rb'
-    - 'spec/models/concerns/stepable_spec.rb'
     - 'spec/models/concerns/subquery_spec.rb'
     - 'spec/models/concerns/token_authenticatable_spec.rb'
     - 'spec/models/concerns/token_authenticatable_strategies/encrypted_spec.rb'

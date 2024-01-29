@@ -2770,6 +2770,42 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         expect(updates).to eq(set_parent: parent)
       end
     end
+
+    context '/remove_parent command' do
+      let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
+
+      let(:content) { "/remove_parent" }
+
+      context 'when a parent is not present' do
+        it 'is empty' do
+          _, explanations = service.explain(content, work_item)
+
+          expect(explanations).to eq([])
+        end
+      end
+
+      context 'when a parent is present' do
+        let_it_be(:parent) { create(:work_item, :issue, project: project) }
+
+        before do
+          create(:parent_link, work_item_parent: parent, work_item: work_item)
+        end
+
+        it 'returns correct explanation' do
+          _, explanations = service.explain(content, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this work item's parent.")
+        end
+
+        it 'returns success message' do
+          _, updates, message = service.execute(content, work_item)
+
+          expect(updates).to eq(remove_parent: true)
+          expect(message).to eq('Work item parent removed successfully')
+        end
+      end
+    end
   end
 
   describe '#explain' do

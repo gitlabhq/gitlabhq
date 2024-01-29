@@ -79,16 +79,14 @@ module API
 
                 project_or_group_without_auth
 
-                # upcase the age part of the signature in case we received it in lowercase:
-                # https://github.com/dotnet/symstore/blob/main/docs/specs/SSQP_Key_Conventions.md#key-formatting-basic-rules
-                signature = declared_params[:signature].sub(/.{8}\z/, &:upcase)
                 checksums = headers['Symbolchecksum'].scan(SHA256_REGEX).flatten
 
                 symbol = ::Packages::Nuget::Symbol
-                  .with_signature(signature)
-                  .with_file_name(declared_params[:file_name])
-                  .with_file_sha256(checksums)
-                  .first
+                  .find_by_signature_and_file_and_checksum(
+                    declared_params[:signature],
+                    declared_params[:file_name],
+                    checksums
+                  )
 
                 not_found!('Symbol') unless symbol
 

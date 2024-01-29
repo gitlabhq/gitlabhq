@@ -309,7 +309,7 @@ module Gitlab
           cache_identity = Gitlab::Redis::Cache.with(&:inspect) # rubocop:disable CodeReuse/ActiveRecord -- This is not AR
 
           Gitlab::Redis::SharedState.with do |redis|
-            yield redis unless cache_identity == redis.default_store.inspect
+            yield redis unless cache_identity == redis.inspect
           end
 
           block_result

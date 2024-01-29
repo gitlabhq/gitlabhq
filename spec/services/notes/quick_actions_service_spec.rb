@@ -426,6 +426,28 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       end
     end
 
+    describe '/remove_parent' do
+      let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/remove_parent" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      before do
+        create(:parent_link, work_item_parent: parent, work_item: noteable)
+      end
+
+      it 'leaves the note empty' do
+        expect(execute(note)).to be_empty
+      end
+
+      it 'removes work item parent' do
+        execute(note)
+
+        expect(noteable.valid?).to be_truthy
+        expect(noteable.work_item_parent).to eq(nil)
+      end
+    end
+
     describe '/promote_to' do
       shared_examples 'promotes work item' do |from:, to:|
         it 'leaves the note empty' do

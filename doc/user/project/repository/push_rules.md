@@ -301,7 +301,7 @@ In GitLab 13.10, if a project has the **Reject unsigned commits** push rule, the
 create commits through the GitLab Web IDE.
 
 To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
-must disable the feature flag `reject_unsigned_commits_by_gitlab`. [with a flag](../../../administration/feature_flags.md)
+must disable the feature flag `reject_unsigned_commits_by_gitlab` [with a flag](../../../administration/feature_flags.md).
 
 ```ruby
 Feature.disable(:reject_unsigned_commits_by_gitlab)

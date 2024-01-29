@@ -329,6 +329,12 @@ For a safer development environment, you can use the [GitLab Development Kit (GD
 
 You can [review recently triggered webhook payloads](#troubleshooting) in GitLab settings. For each webhook event, a detail page exists with information about the data GitLab sends and receives from the webhook endpoint.
 
+## Related topics
+
+- [Project hooks API](../../../api/projects.md#hooks)
+- [Group hooks API](../../../api/groups.md#hooks)
+- [System hooks API](../../../api/system_hooks.md)
+
 ## Troubleshooting
 
 > - **Recent events** for group webhooks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325642) in GitLab 15.3.

@@ -47,7 +47,7 @@ The following Rake tasks are available for use with GitLab:
 | [Uploads sanitize](../administration/raketasks/uploads/sanitize.md) | Remove EXIF data from images uploaded to earlier versions of GitLab. |
 | [Service Data](../development/internal_analytics/service_ping/troubleshooting.md#generate-service-ping) | Generate and troubleshoot [Service Ping](../development/internal_analytics/service_ping/index.md). |
 | [User management](user_management.md)                 | Perform user management tasks. |
-| [Webhooks administration](web_hooks.md)               | Maintain project webhooks. |
+| [Webhook administration](web_hooks.md)               | Maintain project webhooks. |
 | [X.509 signatures](x509_signatures.md)                | Update X.509 commit signatures, which can be useful if the certificate store changed. |
 
 To list all available Rake tasks:

@@ -2939,6 +2939,11 @@
     - <<: *if-default-refs
       changes: *code-patterns
 
+.preflight:rules:ruby_syntax:
+  rules:
+    - <<: *if-default-refs
+      changes: *backend-patterns
+
 .preflight:rules:no-ee-check:
   rules:
     - <<: *if-not-foss

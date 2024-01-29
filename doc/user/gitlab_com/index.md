@@ -363,6 +363,7 @@ after the limits change in January, 2021:
 | **GitLab Pages** TLS connections (for a given **GitLab Pages domain**)     |                               | **400** requests per **10 seconds**  |
 | **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute           |
 | **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour           |
+| **[Pull mirroring](../project/repository/mirror/pull.md)** intervals       | **5** minutes                 | **5** minutes |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

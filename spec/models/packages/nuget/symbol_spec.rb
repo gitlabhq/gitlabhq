@@ -52,8 +52,16 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       let_it_be(:signature) { 'signature' }
       let_it_be(:symbol) { create(:nuget_symbol, signature: signature) }
 
-      it 'returns symbols with the given signature' do
-        expect(with_signature).to eq([symbol])
+      shared_examples 'returns symbols with the given signature' do
+        it { is_expected.to contain_exactly(symbol) }
+      end
+
+      it_behaves_like 'returns symbols with the given signature'
+
+      context 'when signature is in uppercase' do
+        subject(:with_signature) { described_class.with_signature(signature.upcase) }
+
+        it_behaves_like 'returns symbols with the given signature'
       end
     end
 
@@ -63,12 +71,22 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       let_it_be(:file_name) { 'file_name' }
       let_it_be(:symbol) { create(:nuget_symbol) }
 
+      shared_examples 'returns symbols with the given file_name' do
+        it 'returns symbols with the given file_name' do
+          expect(with_file_name).to contain_exactly(symbol)
+        end
+      end
+
       before do
         symbol.update_column(:file, file_name)
       end
 
-      it 'returns symbols with the given file_name' do
-        expect(with_file_name).to eq([symbol])
+      it_behaves_like 'returns symbols with the given file_name'
+
+      context 'when file_name is in uppercase' do
+        subject(:with_file_name) { described_class.with_file_name(file_name.upcase) }
+
+        it_behaves_like 'returns symbols with the given file_name'
       end
     end
 
@@ -81,6 +99,22 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
       it 'returns symbols with the given checksums' do
         expect(with_file_sha256).to eq([symbol])
       end
+    end
+
+    describe '.find_by_signature_and_file_and_checksum' do
+      subject { described_class.find_by_signature_and_file_and_checksum(signature, file_name, checksum) }
+
+      let_it_be(:signature) { 'signature' }
+      let_it_be(:file_name) { 'file.pdb' }
+      let_it_be(:checksum) { OpenSSL::Digest.hexdigest('SHA256', 'checksums') }
+      let_it_be(:symbol) { create(:nuget_symbol, signature: signature, file_sha256: checksum) }
+      let_it_be(:another_symbol) { create(:nuget_symbol) }
+
+      before do
+        symbol.update_column(:file, file_name)
+      end
+
+      it { is_expected.to eq(symbol) }
     end
   end
 

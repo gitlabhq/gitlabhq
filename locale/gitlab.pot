@@ -5806,9 +5806,6 @@ msgstr ""
 msgid "Analytics|Updating visualization %{visualizationName}"
 msgstr ""
 
-msgid "Analytics|Usage overview for %{namespaceName} group"
-msgstr ""
-
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
 msgstr ""
 
@@ -31394,6 +31391,9 @@ msgstr ""
 msgid "MlExperimentTracking|No name"
 msgstr ""
 
+msgid "MlExperimentTracking|Version"
+msgstr ""
+
 msgid "MlModelRegistry|%d model"
 msgid_plural "MlModelRegistry|%d models"
 msgstr[0] ""
@@ -40787,6 +40787,9 @@ msgstr ""
 msgid "Remove %{displayReference}"
 msgstr ""
 
+msgid "Remove %{parent_ref} as this work item's parent."
+msgstr ""
+
 msgid "Remove %{ruleName}"
 msgstr ""
 
@@ -40950,6 +40953,9 @@ msgid "Remove user from project"
 msgstr ""
 
 msgid "Remove weight"
+msgstr ""
+
+msgid "Remove work item parent"
 msgstr ""
 
 msgid "Removed"
@@ -45098,7 +45104,7 @@ msgstr ""
 msgid "SecurityReports|Report has expired"
 msgstr ""
 
-msgid "SecurityReports|Results show vulnerabilities introduced by the merge request, in addition to existing vulnerabilities from the latest successful pipeline in your project's default branch."
+msgid "SecurityReports|Results show vulnerability findings from the latest successful %{helpPageLinkStart}pipeline%{helpPageLinkEnd}."
 msgstr ""
 
 msgid "SecurityReports|Scan details"
@@ -55758,6 +55764,9 @@ msgstr ""
 msgid "Work in progress limit"
 msgstr ""
 
+msgid "Work item parent removed successfully"
+msgstr ""
+
 msgid "Work item parent set successfully"
 msgstr ""
 
@@ -58157,6 +58166,9 @@ msgid "ciReport|Used by %{packagesString}"
 msgid_plural "ciReport|Used by %{packagesString}, and %{lastPackage}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "ciReport|View all pipeline findings"
+msgstr ""
 
 msgid "ciReport|View full report"
 msgstr ""

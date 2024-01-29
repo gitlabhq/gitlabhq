@@ -53,6 +53,18 @@ rails-production-server-boot-puma-cng:
     - retry_times_sleep 10 5 "curl http://127.0.0.1:8080"
     - kill $(jobs -p)
 
+ruby_syntax:
+  extends:
+    - .preflight-job-base
+  before_script:
+    - source scripts/utils.sh
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  parallel:
+    matrix:
+      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+  script:
+    - run_timed_command "fail_on_warnings scripts/lint/check_ruby_syntax.rb"
+
 no-ee-check:
   extends:
     - .preflight-job-base
