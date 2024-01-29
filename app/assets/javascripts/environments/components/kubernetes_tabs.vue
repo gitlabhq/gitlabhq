@@ -8,7 +8,6 @@ import {
 import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
 import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
 import { SERVICES_LIMIT_PER_PAGE } from '../constants';
-import KubernetesSummary from './kubernetes_summary.vue';
 
 const tableHeadingClasses = 'gl-bg-gray-50! gl-font-weight-bold gl-white-space-nowrap';
 
@@ -20,7 +19,6 @@ export default {
     GlTable,
     GlPagination,
     GlLoadingIcon,
-    KubernetesSummary,
   },
   apollo: {
     k8sServices: {
@@ -110,14 +108,6 @@ export default {
 </script>
 <template>
   <gl-tabs>
-    <kubernetes-summary
-      :namespace="namespace"
-      :configuration="configuration"
-      @loading="$emit('loading', $event)"
-      @update-failed-state="$emit('update-failed-state', $event)"
-      @cluster-error="$emit('cluster-error', $event)"
-    />
-
     <gl-tab>
       <template #title>
         {{ $options.i18n.servicesTitle }}

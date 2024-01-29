@@ -49,9 +49,9 @@ GitLab Duo Code Suggestions are available:
 Code Suggestions is available and free to use until February 15, 2024:
 
 - Before February 15, 2024, usage of Code Suggestions is governed by the
-  [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+  [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 - On February 15, 2024, Code Suggestions becomes a paid add-on and will be governed by our
-  [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
+  [AI Functionality Terms](https://handbook.gitlab.com/handbook/legal/ai-functionality-terms/).
 
 ## Supported languages
 

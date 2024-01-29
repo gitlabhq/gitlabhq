@@ -32,7 +32,7 @@ In GitLab 16.3 and later, to participate in the free trial of Code Suggestions o
 - Be a Premium or Ultimate customer.
 - Have activated cloud licensing.
 
-Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+Usage of Code Suggestions is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](index.md#code-suggestions-data-usage).
 
 ## Enable Code Suggestions on self-managed GitLab
@@ -42,7 +42,7 @@ Learn about [data usage when using Code Suggestions](index.md#code-suggestions-d
 
 When you enable Code Suggestions for your self-managed instance, you:
 
-- Agree to the [GitLab testing agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- Agree to the [GitLab testing agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 - Acknowledge that GitLab sends data from the instance, including personal data, to GitLab.com infrastructure.
 
 How you enable Code Suggestions for your instance differs depending on your

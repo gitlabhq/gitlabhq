@@ -168,7 +168,7 @@ have the [experiment and beta features setting](group/manage.md#enable-experimen
 ### For self-managed users
 
 NOTE:
-Usage of GitLab Duo Chat is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+Usage of GitLab Duo Chat is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 Prerequisites:

@@ -186,7 +186,8 @@ export default {
   <gl-form
     ref="integrationForm"
     method="post"
-    class="gl-mt-6 gl-mb-3 gl-show-field-errors integration-settings-form"
+    class="gl-mt-6 gl-mb-3 gl-show-field-errors"
+    data-testid="integration-settings-form"
     :action="propsSource.formPath"
     :novalidate="!integrationActive"
   >

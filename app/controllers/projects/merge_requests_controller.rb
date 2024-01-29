@@ -451,7 +451,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-    if params[:pin] && Feature.enabled?(:pinned_file)
+    if params[:pin] && Feature.enabled?(:pinned_file, @project)
       @pinned_file_url = diff_by_file_hash_namespace_project_merge_request_path(
         format: 'json',
         id: merge_request.iid,

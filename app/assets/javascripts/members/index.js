@@ -27,6 +27,7 @@ export const initMembersApp = (el, options) => {
     exportCsvPath,
     groupName,
     groupPath,
+    manageMemberRolesPath,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -73,6 +74,7 @@ export const initMembersApp = (el, options) => {
       canFilterByEnterprise,
       canExportMembers,
       exportCsvPath,
+      manageMemberRolesPath,
       group: {
         name: groupName,
         path: groupPath,

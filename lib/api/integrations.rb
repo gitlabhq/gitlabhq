@@ -115,6 +115,7 @@ module API
             end
 
             integration = user_project.find_or_initialize_integration(slug.underscore)
+
             params = declared_params(include_missing: false).merge(active: true)
 
             if integration.is_a?(::Integrations::GitlabSlackApplication)
@@ -125,7 +126,7 @@ module API
               params.delete(:active)
             end
 
-            if integration.update(params)
+            if integration&.update(params)
               present integration, with: Entities::ProjectIntegration
             else
               render_api_error!('400 Bad Request', 400)
@@ -152,6 +153,8 @@ module API
           end
 
           integration = user_project.find_or_initialize_integration(params[:slug].underscore)
+
+          not_found!('Integration') unless integration&.persisted?
 
           destroy_conditionally!(integration) do
             attrs = integration_attributes(integration).index_with do |attr|

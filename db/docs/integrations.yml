@@ -30,6 +30,7 @@ classes:
 - Integrations::GitGuardian
 - Integrations::Github
 - Integrations::GitlabSlackApplication
+- Integrations::GoogleCloudPlatform::ArtifactRegistry
 - Integrations::GooglePlay
 - Integrations::HangoutsChat
 - Integrations::Harbor

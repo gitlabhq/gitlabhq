@@ -7,7 +7,6 @@ import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
-import KubernetesSummary from '~/environments/components/kubernetes_summary.vue';
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 import { mockKasTunnelUrl } from './mock_data';
 import { k8sServicesMock } from './graphql/mock_data';
@@ -30,7 +29,6 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
   const findTab = () => wrapper.findComponent(GlTab);
   const findTable = () => wrapper.findComponent(GlTable);
   const findPagination = () => wrapper.findComponent(GlPagination);
-  const findKubernetesSummary = () => wrapper.findComponent(KubernetesSummary);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -61,12 +59,6 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       createWrapper();
 
       expect(findTabs().exists()).toBe(true);
-    });
-
-    it('renders summary tab', () => {
-      createWrapper();
-
-      expect(findKubernetesSummary().props()).toEqual({ namespace, configuration });
     });
 
     it('renders services tab', () => {
@@ -163,26 +155,6 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       await waitForPromises();
 
       expect(wrapper.emitted('cluster-error')).toEqual([[error.message]]);
-    });
-  });
-
-  describe('summary tab', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('emits loading event when gets it from the component', () => {
-      findKubernetesSummary().vm.$emit('loading', true);
-      expect(wrapper.emitted('loading')[0]).toEqual([true]);
-
-      findKubernetesSummary().vm.$emit('loading', false);
-      expect(wrapper.emitted('loading')[1]).toEqual([false]);
-    });
-
-    it('emits a state update event when gets it from the component', () => {
-      const eventData = { summary: true };
-      findKubernetesSummary().vm.$emit('update-failed-state', eventData);
-      expect(wrapper.emitted('update-failed-state')).toEqual([[eventData]]);
     });
   });
 });

@@ -19439,16 +19439,7 @@ msgstr ""
 msgid "Environment|Cluster agent not found."
 msgstr ""
 
-msgid "Environment|CronJobs"
-msgstr ""
-
-msgid "Environment|DaemonSets"
-msgstr ""
-
 msgid "Environment|Deployment tier"
-msgstr ""
-
-msgid "Environment|Deployments"
 msgstr ""
 
 msgid "Environment|Environment status"
@@ -19461,9 +19452,6 @@ msgid "Environment|Forbidden to access the cluster agent from this environment."
 msgstr ""
 
 msgid "Environment|Healthy"
-msgstr ""
-
-msgid "Environment|Jobs"
 msgstr ""
 
 msgid "Environment|Kubernetes overview"
@@ -19481,19 +19469,10 @@ msgstr ""
 msgid "Environment|Reconciling"
 msgstr ""
 
-msgid "Environment|ReplicaSets"
-msgstr ""
-
 msgid "Environment|Services"
 msgstr ""
 
 msgid "Environment|Stalled"
-msgstr ""
-
-msgid "Environment|StatefulSets"
-msgstr ""
-
-msgid "Environment|Summary"
 msgstr ""
 
 msgid "Environment|Sync status"
@@ -23152,6 +23131,48 @@ msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Repository name"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud Artifact Registry"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|ID of the Google Cloud project."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Location of Artifact Registry repository"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Location of Artifact Registry repository."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Project number of the Workload Identity Pool."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Repository of Artifact Registry"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Repository of Artifact Registry."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Workload Identity Pool ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Workload Identity Pool project number"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Workload Identity Pool provider ID"
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -30168,6 +30189,9 @@ msgstr ""
 msgid "MemberRole|Incident manager"
 msgstr ""
 
+msgid "MemberRole|Manage roles"
+msgstr ""
+
 msgid "MemberRole|Name"
 msgstr ""
 
@@ -30373,7 +30397,7 @@ msgstr ""
 msgid "Members|Remove group"
 msgstr ""
 
-msgid "Members|Revert to LDAP group sync settings"
+msgid "Members|Revert to LDAP synced settings"
 msgstr ""
 
 msgid "Members|Reverted to LDAP group sync settings."
@@ -59863,9 +59887,6 @@ msgid "wiki page"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
-msgstr ""
-
-msgid "with Admin Mode"
 msgstr ""
 
 msgid "with expiry changing from %{old_expiry} to %{new_expiry}"

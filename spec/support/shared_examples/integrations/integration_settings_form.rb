@@ -14,7 +14,7 @@ RSpec.shared_examples 'integration settings form' do
       integrations.each do |integration|
         navigate_to_integration(integration)
 
-        page.within('form.integration-settings-form') do
+        within_testid 'integration-settings-form' do
           expect(page).to have_field('Active', type: 'checkbox', wait: 0),
             "#{integration.title} active field not present"
 

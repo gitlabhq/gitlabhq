@@ -12,7 +12,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 
 NOTE:
-This feature is an [Experiment](../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+This feature is an [Experiment](../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 Pre-receive secret detection scans the contents of committed files when they are pushed to a remote repository to prevent the accidental exposure of secrets like keys or API tokens to your repositories. If any secrets are detected, the push is blocked, ensuring that the secrets do not reach your instance.
 

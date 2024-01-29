@@ -1,8 +1,0 @@
----
-name: increase_jira_import_issues_timeout
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135050
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/429293
-milestone: '16.6'
-type: development
-group: group::project management
-default_enabled: true

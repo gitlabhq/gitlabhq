@@ -832,6 +832,48 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
+## Google Cloud Artifact Registry **(SAAS BETA)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `gcp_artifact_registry`. Disabled by default.
+
+FLAG:
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+### Set up Google Cloud Artifact Registry
+
+Set up the Google Cloud Artifact Registry integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/google-cloud-platform-artifact-registry
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `workload_identity_pool_project_number` | string | true | Project number of the Workload Identity Pool. |
+| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
+| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
+| `artifact_registry_project_id` | string | true | ID of the Google Cloud project. |
+| `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
+| `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
+
+### Disable Google Cloud Artifact Registry
+
+Disable the Google Cloud Artifact Registry integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/google-cloud-platform-artifact-registry
+```
+
+### Get Google Cloud Artifact Registry settings
+
+Get the Google Cloud Artifact Registry integration settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/google-cloud-platform-artifact-registry
+```
+
 ## Google Play
 
 ### Set up Google Play

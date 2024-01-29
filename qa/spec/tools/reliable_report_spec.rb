@@ -409,6 +409,52 @@ describe QA::Tools::ReliableReport do
     end
   end
 
+  describe "#issue_for_most_failures" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    let(:failure_message_1) { "This is a failure exception 1" }
+    let(:failure_message_2) { "This is a failure exception 2" }
+    let(:job_url) { "https://example.com/job/url" }
+    let(:failure_issue_url_1) { "https://example.com/failure/issue_1" }
+    let(:failure_issue_url_2) { "https://example.com/failure/issue_2" }
+
+    let(:records) do
+      [
+        instance_double("InfluxDB2::FluxRecord", values: values_1),
+        instance_double("InfluxDB2::FluxRecord", values: values_2),
+        instance_double("InfluxDB2::FluxRecord", values: values_2)
+      ]
+    end
+
+    let(:values_1) do
+      {
+        "failure_exception" => failure_message_1,
+        "failure_issue" => failure_issue_url_1,
+        "job_url" => job_url
+      }
+    end
+
+    let(:values_2) do
+      {
+        "failure_exception" => failure_message_2,
+        "failure_issue" => failure_issue_url_2,
+        "job_url" => job_url
+      }
+    end
+
+    let(:values_3) do
+      {
+        "failure_exception" => failure_message_2,
+        "failure_issue" => failure_issue_url_2,
+        "job_url" => job_url
+      }
+    end
+
+    it 'returns the failure issue with most failures' do
+      expect(reliable_report.send(:issue_for_most_failures, records)).to eq(failure_issue_url_2)
+    end
+  end
+
   describe "#exceptions_and_related_urls" do
     subject(:reliable_report) { described_class.new(14) }
 

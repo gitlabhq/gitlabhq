@@ -453,7 +453,7 @@ module QA
           r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
         end
 
-        failure_issue = exceptions_and_related_urls(records).values.last
+        failure_issue = issue_for_most_failures(failed_records)
         last_record = records.last.values
         name = last_record["name"]
         file = last_record["file_path"].split("/").last
@@ -508,13 +508,14 @@ module QA
           link = BLOB_MASTER + FEATURES_DIR + last_record["file_path"]
           stage = last_record["stage"] || "unknown"
           product_group = last_record["product_group"] || "unknown"
-          failure_issue = exceptions_and_related_urls(records).values.last
 
           runs = records.count
 
           failed_records = records.select do |r|
             r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
           end
+
+          failure_issue = issue_for_most_failures(failed_records)
 
           failed_run_type = failed_records.map { |record| record.values['run_type'] }.uniq
 
@@ -548,6 +549,19 @@ module QA
         records_with_exception.to_h do |r|
           [r.values["failure_exception"], r.values["failure_issue"] || r.values["job_url"]]
         end
+      end
+
+      # Return the failure that has the most occurrence
+      #
+      # @param [Array<InfluxDB2::FluxRecord>] records
+      # @return [String] the failure with most occurrence
+      def issue_for_most_failures(records)
+        return '' if records.empty?
+
+        issues = records.filter_map { |r| r.values["failure_issue"] }
+        return '' if issues.empty?
+
+        issues.tally.max_by { |_, count| count }&.first
       end
 
       # Check if failure is allowed

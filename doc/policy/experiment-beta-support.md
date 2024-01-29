@@ -38,8 +38,8 @@ Experimental features are:
 - Data loss may occur.
 - Documentation may not exist or just be in a blog format.
 - Offer a way to opt-in with minimal friction. For example, needing to flip a feature flag is too much friction, but a group or project-level setting in the UI is not.
-- Link out to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
-- Documentation reflects that the feature is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+- Link out to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
+- Documentation reflects that the feature is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 - [UI reflects experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
 - Feedback issue to engage with team.
 - UX not finalized, might be just quick action access.

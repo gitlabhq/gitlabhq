@@ -45,6 +45,8 @@ export default {
     GlSprintf,
     GlButton,
     ContentTransition,
+    ManageRolesDropdownFooter: () =>
+      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
   },
   mixins: [Tracking.mixin()],
   inheritAttrs: false,
@@ -332,7 +334,11 @@ export default {
             :items="accessLevelOptions.formatted"
             :loading="isLoadingRoles"
             block
-          />
+          >
+            <template #footer>
+              <manage-roles-dropdown-footer />
+            </template>
+          </gl-collapsible-listbox>
         </gl-form-group>
 
         <gl-form-group

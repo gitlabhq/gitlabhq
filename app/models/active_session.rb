@@ -27,7 +27,7 @@ class ActiveSession
 
   attr_accessor :ip_address, :browser, :os,
     :device_name, :device_type,
-    :is_impersonated, :session_id, :session_private_id, :admin_mode
+    :is_impersonated, :session_id, :session_private_id
 
   attr_reader :created_at, :updated_at
 
@@ -80,8 +80,7 @@ class ActiveSession
         created_at: user.current_sign_in_at || timestamp,
         updated_at: timestamp,
         session_private_id: session_private_id,
-        is_impersonated: request.session[:impersonator_id].present?,
-        admin_mode: Gitlab::Auth::CurrentUserMode.new(user, request.session).admin_mode?
+        is_impersonated: request.session[:impersonator_id].present?
       )
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do

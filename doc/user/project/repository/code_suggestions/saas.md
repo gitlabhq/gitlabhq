@@ -24,7 +24,7 @@ available to Premium and Ultimate users for purchase now.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-Usage of GitLab Duo Code Suggestions is governed by the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+Usage of GitLab Duo Code Suggestions is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using Code Suggestions](index.md#code-suggestions-data-usage).
 
 ## Enable Code Suggestions

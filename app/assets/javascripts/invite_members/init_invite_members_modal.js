@@ -28,6 +28,7 @@ export default (function initInviteMembersModal() {
           newUsersUrl: el.dataset.newUsersUrl,
           isCurrentUserAdmin: parseBoolean(el.dataset.isCurrentUserAdmin),
           isEmailSignupEnabled: parseBoolean(el.dataset.isSignupEnabled),
+          manageMemberRolesPath: el.dataset.manageMemberRolesPath,
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

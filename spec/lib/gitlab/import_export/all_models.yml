@@ -568,6 +568,7 @@ project:
 - incident_hooks_integrations
 - vulnerability_hooks_integrations
 - apple_app_store_integration
+- google_cloud_platform_artifact_registry_integration
 - campfire_integration
 - confluence_integration
 - datadog_integration

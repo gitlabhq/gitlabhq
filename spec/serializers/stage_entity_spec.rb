@@ -96,5 +96,35 @@ RSpec.describe StageEntity, feature_category: :continuous_integration do
         expect(subject[:status][:action]).to be_present
       end
     end
+
+    context 'when details: true' do
+      def serialize(stage)
+        described_class.new(stage, request: request, details: true).as_json
+      end
+
+      it 'avoids N+1 queries on latest_statuses', :use_sql_query_cache, :request_store do
+        pipeline = create(:ci_pipeline)
+        stage = create(:ci_stage, pipeline: pipeline, status: :success)
+
+        serialize(stage) # Warm up O(1) queries
+
+        # Prepare control
+        create(:ci_build, :tags, ci_stage: stage, pipeline: pipeline)
+        create(:ci_bridge, ci_stage: stage, pipeline: pipeline)
+        create(:generic_commit_status, ci_stage: stage, pipeline: pipeline)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          serialize(stage)
+        end
+
+        # Prepare sample using a generous number to counteract any caches from
+        # the control
+        create_list(:ci_build, 10, :tags, ci_stage: stage, pipeline: pipeline)
+        create_list(:ci_bridge, 10, ci_stage: stage, pipeline: pipeline)
+        create_list(:generic_commit_status, 10, ci_stage: stage, pipeline: pipeline)
+
+        expect { serialize(stage) }.not_to exceed_query_limit(control)
+      end
+    end
   end
 end

@@ -52,7 +52,7 @@ More detailed information on how the gem and its commands work is available in t
 
 We sometimes need to use third-party software whose license is not part of the Blue Oak Council
 license list, or is marked as Lead-rated in the list. In this case, the use-case needs to be
-legal-approved before the software can be installed. More on this can be [found in the Handbook](https://about.gitlab.com/handbook/legal/product/#using-open-source-software).
+legal-approved before the software can be installed. More on this can be [found in the Handbook](https://handbook.gitlab.com/handbook/legal/product/#using-open-source-software).
 
 To get legal approval, follow these steps:
 

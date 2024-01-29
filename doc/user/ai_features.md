@@ -44,7 +44,7 @@ Some features are still in development. View details about [support for each sta
     (besides Code Suggestions) require that this setting is enabled at the group
     level.
   - Their usage is subject to the
-    [Testing Terms of Use](https://about.gitlab.com/handbook/legal/testing-agreement/).
+    [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - Experiment and Beta features are disabled by default.
   - This setting is available to Ultimate groups on SaaS and can be set by a user
     who has the Owner role in the group.

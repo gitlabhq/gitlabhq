@@ -210,6 +210,7 @@
 - ee/spec/requests/api/graphql/project/requirements_management/requirements_spec.rb
 - ee/spec/requests/api/graphql/work_item_spec.rb
 - ee/spec/requests/api/groups_spec.rb
+- ee/spec/requests/api/integrations_spec.rb
 - ee/spec/requests/api/internal/ai/x_ray/scan_spec.rb
 - ee/spec/requests/api/internal/base_spec.rb
 - ee/spec/requests/api/issues_spec.rb

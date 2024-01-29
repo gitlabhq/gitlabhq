@@ -16,6 +16,8 @@ export default {
     LdapDropdownFooter: () =>
       import('ee_component/members/components/action_dropdowns/ldap_dropdown_footer.vue'),
     CustomPermissions: () => import('ee_component/members/components/table/custom_permissions.vue'),
+    ManageRolesDropdownFooter: () =>
+      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
   },
   inject: ['namespace', 'group'],
   props: {
@@ -120,6 +122,7 @@ export default {
           v-if="permissions.canOverride && member.isOverridden"
           :member-id="member.id"
         />
+        <manage-roles-dropdown-footer />
       </template>
     </gl-collapsible-listbox>
 

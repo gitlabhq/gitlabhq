@@ -167,12 +167,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('sets `clusterHealthStatus` as success after state update if there are no failures', async () => {
-      findKubernetesTabs().vm.$emit('update-failed-state', { summary: true });
       findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
-      await nextTick();
-      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
-
-      findKubernetesTabs().vm.$emit('update-failed-state', { summary: false });
       await nextTick();
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
 

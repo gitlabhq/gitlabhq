@@ -59,137 +59,15 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       integration = params[:integration]
 
       describe "PUT /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context 'with integration'
-
-        it "updates #{integration} settings and returns the correct fields" do
-          supported_attrs = attributes_for(integration_factory).without(:active, :type)
-
-          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: supported_attrs
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['slug']).to eq(dashed_integration)
-
-          current_integration = project.integrations.first
-          expect(current_integration).to have_attributes(supported_attrs)
-          assert_correct_response_fields(json_response['properties'].keys, current_integration)
-
-          # Flip all booleans and verify that we can set these too
-          flipped_attrs = supported_attrs.transform_values do |value|
-            [true, false].include?(value) ? !value : value
-          end
-
-          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: flipped_attrs
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(project.integrations.first).to have_attributes(flipped_attrs)
-        end
-
-        it "returns if required fields missing" do
-          required_attributes = integration_attrs_list.select do |attr|
-            integration_klass.validators_on(attr).any? do |v|
-              v.instance_of?(ActiveRecord::Validations::PresenceValidator) &&
-                # exclude presence validators with conditional since those are not really required
-                ![:if, :unless].any? { |cond| v.options.include?(cond) }
-            end
-          end
-
-          integration_attrs = attributes_for(integration_factory).without(:active, :type)
-
-          if required_attributes.empty?
-            expected_code = :ok
-          else
-            integration_attrs.delete(required_attributes.sample)
-            expected_code = :bad_request
-          end
-
-          put api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user), params: integration_attrs
-
-          expect(response).to have_gitlab_http_status(expected_code)
-        end
+        it_behaves_like 'set up an integration', endpoint: endpoint, integration: integration
       end
 
       describe "DELETE /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context 'with integration'
-
-        before do
-          create(integration_factory, project: project)
-        end
-
-        it "deletes #{integration}" do
-          delete api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-          expect(response).to have_gitlab_http_status(:no_content)
-          project.send(integration_method).reload
-          expect(project.send(integration_method).activated?).to be_falsey
-        end
+        it_behaves_like 'disable an integration', endpoint: endpoint, integration: integration
       end
 
       describe "GET /projects/:id/#{endpoint}/#{integration.dasherize}" do
-        include_context 'with integration'
-
-        let!(:initialized_integration) { create(integration_factory, project: project) }
-
-        let_it_be(:project2) do
-          create(:project, creator_id: user.id, namespace: user.namespace)
-        end
-
-        def deactive_integration!
-          return initialized_integration.update!(active: false) unless initialized_integration.is_a?(::Integrations::Prometheus)
-
-          # Integrations::Prometheus sets `#active` itself within a `before_save`:
-          initialized_integration.manual_configuration = false
-          initialized_integration.save!
-        end
-
-        it 'returns authentication error when unauthenticated' do
-          get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}")
-          expect(response).to have_gitlab_http_status(:unauthorized)
-        end
-
-        it "returns all properties of active integration #{integration}, except password fields" do
-          get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-          expect(initialized_integration).to be_active
-          expect(response).to have_gitlab_http_status(:ok)
-
-          assert_correct_response_fields(json_response['properties'].keys, integration_instance)
-        end
-
-        it "returns all properties of inactive integration #{integration}, except password fields" do
-          deactive_integration!
-
-          get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-          expect(initialized_integration).not_to be_active
-          expect(response).to have_gitlab_http_status(:ok)
-
-          assert_correct_response_fields(json_response['properties'].keys, integration_instance)
-        end
-
-        it "returns not found if integration does not exist" do
-          get api("/projects/#{project2.id}/#{endpoint}/#{dashed_integration}", user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Integration Not Found')
-        end
-
-        it "returns not found if integration exists but is in `Project#disabled_integrations`" do
-          expect_next_found_instance_of(Project) do |project|
-            expect(project).to receive(:disabled_integrations).at_least(:once).and_return([integration])
-          end
-
-          get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-          expect(json_response['message']).to eq('404 Integration Not Found')
-        end
-
-        it "returns error when authenticated but not a project owner" do
-          project.add_developer(user2)
-          get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user2)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+        it_behaves_like 'get an integration settings', endpoint: endpoint, integration: integration
       end
     end
 

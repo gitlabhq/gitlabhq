@@ -19,7 +19,7 @@ On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
 Usage of ActivityPub in GitLab is governed by the
-[GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+[GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 The goal of those documents is to provide an implementation path for adding
 Fediverse capabilities to GitLab.
