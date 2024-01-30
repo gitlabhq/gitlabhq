@@ -24,6 +24,7 @@ RSpec.shared_examples 'internal event tracking' do
     project = try(:project)
     user = try(:user)
     namespace = try(:namespace) || project&.namespace
+    category = try(:category) || 'InternalEventTracking'
 
     expect(Gitlab::Tracking::StandardContext)
       .to have_received(:new)
@@ -41,7 +42,7 @@ RSpec.shared_examples 'internal event tracking' do
 
     expect(fake_tracker).to have_received(:event)
       .with(
-        'InternalEventTracking',
+        category.to_s,
         event,
         context: [
           an_instance_of(SnowplowTracker::SelfDescribingJson),

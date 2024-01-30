@@ -34,8 +34,7 @@ class ProjectStatistics < ApplicationRecord
     :build_artifacts_size,
     :packages_size,
     :snippets_size,
-    :uploads_size,
-    :container_registry_size
+    :uploads_size
   ].freeze
 
   scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
@@ -146,9 +145,9 @@ class ProjectStatistics < ApplicationRecord
     bulk_increment_counter(key, increments)
   end
 
-  # Build artifacts & packages & container registry are not included in the project export
+  # Build artifacts & packages are not included in the project export
   def export_size
-    storage_size - build_artifacts_size - packages_size - container_registry_size
+    storage_size - build_artifacts_size - packages_size
   end
 
   private

@@ -261,7 +261,7 @@ export default {
     },
     headerWrapperClass() {
       return {
-        'flex-wrap': this.parentWorkItem,
+        'gl-flex-wrap': this.parentWorkItem,
         'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
       };
     },

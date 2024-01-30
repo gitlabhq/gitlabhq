@@ -39,6 +39,16 @@ ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_job_token_group_scope_links:
+  - table: users
+    column: added_by_id
+    on_delete: async_nullify
+  - table: namespaces
+    column: target_group_id
+    on_delete: async_delete
+  - table: projects
+    column: source_project_id
+    on_delete: async_delete
 ci_job_token_project_scope_links:
   - table: users
     column: added_by_id

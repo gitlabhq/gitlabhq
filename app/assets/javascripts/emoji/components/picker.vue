@@ -4,8 +4,6 @@ import {
   GlButton,
   GlIcon,
   GlDisclosureDropdown,
-  GlDisclosureDropdownGroup,
-  GlDisclosureDropdownItem,
   GlSearchBoxByType,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -23,8 +21,6 @@ export default {
     GlButton,
     GlIcon,
     GlDisclosureDropdown,
-    GlDisclosureDropdownGroup,
-    GlDisclosureDropdownItem,
     GlSearchBoxByType,
     VirtualList,
     Category,
@@ -128,6 +124,7 @@ export default {
   },
   i18n: {
     addReaction: __('Add reaction'),
+    createEmoji: __('Create new emoji'),
   },
 };
 </script>
@@ -146,7 +143,7 @@ export default {
           v-gl-tooltip
           :title="$options.i18n.addReaction"
           :class="[toggleClass, { 'is-active': isVisible }]"
-          class="gl-relative gl-h-full"
+          class="gl-relative gl-h-full add-reaction-button btn-icon"
           data-testid="add-reaction-button"
         >
           <slot name="button-content">
@@ -219,9 +216,21 @@ export default {
         </template>
       </emoji-list>
 
-      <gl-disclosure-dropdown-group v-if="newCustomEmojiPath" bordered class="gl-mt-0!">
-        <gl-disclosure-dropdown-item :item="newCustomEmoji" />
-      </gl-disclosure-dropdown-group>
+      <template v-if="newCustomEmojiPath" #footer>
+        <div
+          class="gl-border-t-solid gl-border-t-1 gl-border-t-gray-200 gl-display-flex gl-flex-direction-column gl-p-2! gl-pt-0!"
+        >
+          <gl-button
+            :href="newCustomEmojiPath"
+            category="tertiary"
+            block
+            data-testid="create-new-emoji"
+            class="gl-justify-content-start! gl-mt-2!"
+          >
+            {{ $options.i18n.createEmoji }}
+          </gl-button>
+        </div>
+      </template>
     </gl-disclosure-dropdown>
   </div>
 </template>

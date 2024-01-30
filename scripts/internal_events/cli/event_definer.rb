@@ -144,7 +144,7 @@ module InternalEventsCli
 
         #{divider}
 
-          Want to have data reported in Snowplow/Sisense/ServicePing? Add a new metric for your event!
+          Want to have data reported in Snowflake/Tableau/ServicePing? Add a new metric for your event!
 
       TEXT
     end

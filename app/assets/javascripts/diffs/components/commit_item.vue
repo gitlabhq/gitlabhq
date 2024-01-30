@@ -94,7 +94,7 @@ export default {
       class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
     >
       <div
-        class="commit-actions flex-row d-none d-sm-flex align-items-center flex-wrap justify-content-end"
+        class="commit-actions flex-row d-none d-sm-flex align-items-center gl-flex-wrap justify-content-end"
       >
         <div
           v-if="commit.signature_html"

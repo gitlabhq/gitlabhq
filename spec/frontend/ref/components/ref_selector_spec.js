@@ -33,7 +33,13 @@ Vue.use(Vuex);
 describe('Ref selector component', () => {
   const branchRefTypeMock = { name: 'refs/heads/test_branch' };
   const tagRefTypeMock = { name: 'refs/tags/test_tag' };
-  const fixtures = { branches: [branchRefTypeMock, tagRefTypeMock, ...branches], tags, commit };
+  const protectedBranchMock = { name: 'protected_mock_branch', protected: true };
+  const protectedTagMock = { name: 'protected_tag_mock', protected: true };
+  const fixtures = {
+    branches: [branchRefTypeMock, tagRefTypeMock, protectedBranchMock, ...branches],
+    tags: [protectedTagMock, ...tags],
+    commit,
+  };
 
   const projectId = '8';
   const totalBranchesCount = 123;
@@ -349,6 +355,16 @@ describe('Ref selector component', () => {
             `${defaultBranch.name} default`,
           );
         });
+
+        it('renders the protected branch as a selectable item with a "protected" badge', () => {
+          const dropdownItems = findBranchDropdownItems();
+          const protectedBranch = fixtures.branches.find((b) => b.protected);
+          const protectedBranchIndex = fixtures.branches.indexOf(protectedBranch);
+
+          expect(trimText(dropdownItems.at(protectedBranchIndex).text())).toBe(
+            `${protectedBranch.name} protected`,
+          );
+        });
       });
 
       describe('when the branches search returns no results', () => {
@@ -406,6 +422,16 @@ describe('Ref selector component', () => {
 
         it("does not render an error message in the tags section's body", () => {
           expect(findErrorListWrapper().exists()).toBe(false);
+        });
+
+        it('renders the protected tag as a selectable item with a "protected" badge', () => {
+          const dropdownItems = findBranchDropdownItems();
+          const protectedTag = fixtures.tags.find((b) => b.protected);
+          const protectedTagIndex = fixtures.tags.indexOf(protectedTag) + fixtures.branches.length;
+
+          expect(trimText(dropdownItems.at(protectedTagIndex).text())).toBe(
+            `${protectedTag.name} protected`,
+          );
         });
       });
 

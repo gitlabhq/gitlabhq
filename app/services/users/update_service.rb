@@ -88,10 +88,14 @@ module Users
     end
 
     def discard_synced_attributes
-      if (metadata = @user.user_synced_attributes_metadata)
-        read_only = metadata.read_only_attributes
+      params.reject! { |key, _| synced_attributes.include?(key.to_sym) }
+    end
 
-        params.reject! { |key, _| read_only.include?(key.to_sym) }
+    def synced_attributes
+      if (metadata = @user.user_synced_attributes_metadata)
+        metadata.read_only_attributes
+      else
+        []
       end
     end
 

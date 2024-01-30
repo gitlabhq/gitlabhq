@@ -238,3 +238,14 @@ The analysis can contain any of the attributes defined in the latest [iglu schem
   - "time_since_first_question"
 
 [Dashboards](https://handbook.gitlab.com/handbook/engineering/development/data-science/duo-chat/#-dashboards-internal-only) can be created to visualize the collected data.
+
+## How `access_duo_chat` policy works
+
+In the table below I present what requirements must be fulfilled so the `access_duo_chat` policy would return `true` in different
+contexts.
+
+|                                                                      | on SaaS                                                                                                                                                                  | on Self-managed                                                                                                                                                                      |
+|----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| for user (`user.can?(:access_duo_chat)`)                             | User need to belong to at least one group on Ultimate tier and with `experiment_and_beta_features` group setting switched on                                             | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on                                                         |
+| for user in group context (`user.can?(:access_duo_chat, group)`)     | User need to be a member of that group, root ancestor group of this group needs to be on Ultimate tier and with `experiment_and_beta_features` group setting switched on | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on, user needs to have at least _read_ permission to group |
+| for user in project context (`user.can?(:access_duo_chat, project)`) | User need to be a member of that project, project needs to have root ancestor group on Ultimate tier and with `experiment_and_beta_features` group setting switched on   | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on, user needs to have at least _read_ permission to project |

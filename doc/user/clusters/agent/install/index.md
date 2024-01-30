@@ -125,7 +125,19 @@ To install the agent on your cluster using Helm:
 
 1. [Install Helm](https://helm.sh/docs/intro/install/).
 1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
-1. Run the command you copied when you [registered your agent with GitLab](#register-the-agent-with-gitlab).
+1. Run the command you copied when you [registered your agent with GitLab](#register-the-agent-with-gitlab). The command should look like:
+
+   ```shell
+   helm repo add gitlab https://charts.gitlab.io
+   helm repo update
+   helm upgrade --install test gitlab/gitlab-agent \
+       --namespace gitlab-agent-test \
+       --create-namespace \
+       --set image.tag=<current agentk version> \
+       --set config.token=<your_token> \
+       --set config.kasAddress=<address_to_GitLab_KAS_instance>
+   ```
+
 1. Optional. [Customize the Helm installation](#customize-the-helm-installation).
    If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab Agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
 

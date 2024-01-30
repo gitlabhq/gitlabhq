@@ -354,6 +354,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:click_house_audit_events_sync
+  :worker_name: ClickHouse::AuditEventsSyncWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:click_house_event_authors_consistency_cron
   :worker_name: ClickHouse::EventAuthorsConsistencyCronWorker
   :feature_category: :value_stream_management
@@ -2842,6 +2851,15 @@
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :build_artifacts
   :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: click_house_audit_event_partition_sync
+  :worker_name: ClickHouse::AuditEventPartitionSyncWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1

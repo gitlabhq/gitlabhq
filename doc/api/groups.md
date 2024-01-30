@@ -124,8 +124,7 @@ GET /groups?statistics=true
       "pipeline_artifacts_size": 0,
       "packages_size": 0,
       "snippets_size": 50,
-      "uploads_size": 0,
-      "container_registry_size": 0
+      "uploads_size": 0
     },
     "wiki_access_level": "private"
   }

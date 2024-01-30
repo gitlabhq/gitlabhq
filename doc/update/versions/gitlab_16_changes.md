@@ -64,6 +64,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
 
+## 16.8.0
+
+- Redis 6.2 or later is now required by Sidekiq. For installations that use an external Redis service, you should upgrade your Redis service to 6.2 - 7.x
+before upgrading to GitLab 16.8.
+
 ## 16.7.0
 
 - GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
@@ -99,11 +104,6 @@ Specific information applies to Linux package installations:
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
-
-## 16.8.0
-
-- Redis 6.2 or later is now required by Sidekiq. For installations that use an external Redis service, you should upgrade your Redis service to 6.2 - 7.x
-before upgrading to GitLab 16.8.
 
 ## 16.6.0
 

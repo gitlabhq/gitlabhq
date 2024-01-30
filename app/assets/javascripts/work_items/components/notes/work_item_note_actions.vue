@@ -201,7 +201,7 @@ export default {
     </user-access-role-badge>
     <emoji-picker
       v-if="showAwardEmoji"
-      toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
+      toggle-class="add-reaction-button btn-default-tertiary"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"
     />

@@ -101,7 +101,7 @@ export default {
 </script>
 <template>
   <li
-    class="gl-display-flex gl-display-flex-wrap gl-align-items-center gl-border-b-1 gl-border-gray-100 gl-border-b-solid gl-text-gray-500 gl-py-3"
+    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-border-b-1 gl-border-gray-100 gl-border-b-solid gl-text-gray-500 gl-py-3"
     data-testid="catalog-resource-item"
   >
     <gl-avatar

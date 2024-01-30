@@ -4,6 +4,7 @@ function convertToListBoxItems(items) {
   return items.map((item) => ({
     text: item.name,
     value: item.value || item.name,
+    protected: item.protected,
     default: item.default,
   }));
 }

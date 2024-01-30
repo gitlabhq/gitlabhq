@@ -908,10 +908,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.note-action-button {
-  @include emoji-menu-toggle-button;
-}
-
 .discussion-toggle-button {
   padding: 0 $gl-padding-8 0 0;
   background-color: transparent;

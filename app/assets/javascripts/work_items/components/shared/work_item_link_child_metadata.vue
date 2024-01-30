@@ -37,7 +37,7 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-justify-content-space-between">
-    <div class="gl-display-flex gl-flex-wrap gl-gap-2">
+    <div class="gl-display-flex gl-flex-wrap gl-gap-2 gl-align-items-center">
       <span class="gl-text-secondary gl-font-sm">{{ reference }}</span>
       <item-milestone
         v-if="milestone"

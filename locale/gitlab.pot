@@ -5544,6 +5544,9 @@ msgstr ""
 msgid "Analytics settings"
 msgstr ""
 
+msgid "Analytics| Last updated: %{recordedAt}"
+msgstr ""
+
 msgid "Analytics|A dashboard with that name already exists."
 msgstr ""
 
@@ -5791,6 +5794,9 @@ msgid "Analytics|Something went wrong."
 msgstr ""
 
 msgid "Analytics|Start by choosing a metric"
+msgstr ""
+
+msgid "Analytics|Statistics on top-level namespace usage. Usage data is a cumulative count, and updated monthly."
 msgstr ""
 
 msgid "Analytics|Tables"
@@ -41572,7 +41578,7 @@ msgstr ""
 msgid "Repository usage recalculation started"
 msgstr ""
 
-msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads} / Containers: %{counter_container_registry_size}"
+msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
 msgstr ""
 
 msgid "Request"
@@ -42240,6 +42246,9 @@ msgstr ""
 msgid "Runners|Containers"
 msgstr ""
 
+msgid "Runners|Continue to runner details"
+msgstr ""
+
 msgid "Runners|Copy and paste the following command into your command line to register the runner."
 msgstr ""
 
@@ -42371,6 +42380,12 @@ msgstr ""
 msgid "Runners|Google Cloud connection"
 msgstr ""
 
+msgid "Runners|Google Cloud project ID"
+msgstr ""
+
+msgid "Runners|Google Cloud workload identity federation must be set up for secure access without accounts or keys."
+msgstr ""
+
 msgid "Runners|Group"
 msgstr ""
 
@@ -42381,6 +42396,9 @@ msgid "Runners|How do runners pick up jobs?"
 msgstr ""
 
 msgid "Runners|IP Address"
+msgstr ""
+
+msgid "Runners|Identity provider audience"
 msgstr ""
 
 msgid "Runners|Idle"
@@ -42547,6 +42565,12 @@ msgid "Runners|Platform"
 msgstr ""
 
 msgid "Runners|Project"
+msgstr ""
+
+msgid "Runners|Project for runner"
+msgstr ""
+
+msgid "Runners|Project for the new runner."
 msgstr ""
 
 msgid "Runners|Project runners"
@@ -42738,6 +42762,15 @@ msgstr ""
 msgid "Runners|Separate multiple tags with a comma. For example, %{example}."
 msgstr ""
 
+msgid "Runners|Set up google cloud project"
+msgstr ""
+
+msgid "Runners|Set up workload identity federation"
+msgstr ""
+
+msgid "Runners|Set up your Google Cloud project to use the runner. To improve security, use a dedicated Google Cloud project for CI/CD, separate from resources and identity management projects."
+msgstr ""
+
 msgid "Runners|Shared runners are disabled in the group settings."
 msgstr ""
 
@@ -42804,6 +42837,9 @@ msgstr ""
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
+msgid "Runners|The full resource name of the workload identity provider in Google Cloud."
+msgstr ""
+
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
 msgstr ""
 
@@ -42825,6 +42861,9 @@ msgid "Runners|There are no runners running jobs right now. Active runners will 
 msgstr ""
 
 msgid "Runners|These runners are assigned to this project."
+msgstr ""
+
+msgid "Runners|These workload identity federation settings are also used by the Google Artifact Registry integration."
 msgstr ""
 
 msgid "Runners|This group currently has 1 stale runner."
@@ -42940,10 +42979,16 @@ msgstr ""
 msgid "Runners|Wait time to pick a job"
 msgstr ""
 
+msgid "Runners|Where’s my identity provider audience?"
+msgstr ""
+
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
+msgstr ""
+
+msgid "Runners|Workload identity federation"
 msgstr ""
 
 msgid "Runners|Yes, disable shared runners"
@@ -59478,6 +59523,9 @@ msgid "project namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "projects"
+msgstr ""
+
+msgid "protected"
 msgstr ""
 
 msgid "random"

@@ -17,3 +17,5 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   namespace_id: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142829
+removed_in_milestone: '16.9'

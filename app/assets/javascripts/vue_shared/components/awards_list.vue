@@ -191,7 +191,6 @@ export default {
     </gl-button>
     <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
-        :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
         :right="false"
         data-testid="emoji-picker"
         @click="handleAward"

@@ -305,7 +305,7 @@ export default {
         <slot name="resolve-discussion"></slot>
         <emoji-picker
           v-if="canAwardEmoji"
-          toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
+          toggle-class="add-reaction-button btn-default-tertiary"
           :right="false"
           data-testid="note-emoji-button"
           @click="handleAwardEmoji"

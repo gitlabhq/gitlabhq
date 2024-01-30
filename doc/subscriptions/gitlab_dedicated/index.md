@@ -104,6 +104,25 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 #### GitLab Runners
 
+##### Hosted by GitLab (Beta)
+
+On 2024-01-31, GitLab released Hosted runners in closed [Beta](../../policy/experiment-beta-support.md#beta).
+
+Hosted runners for GitLab Dedicated allow you to scale CI/CD workloads with no maintenance overhead.
+
+The beta release of Hosted Runners provides the following features:
+
+1. Linux-based runners at the instance level
+1. Complete isolation from other tenants, following the same principles as GitLab Dedicated
+1. Auto-scaling
+1. Fully managed by GitLab
+
+Additional features will be included based on customer demand leading up to limited and general availability.
+
+Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed Beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
+
+##### Bring Your Own
+
 With GitLab Dedicated, you must [install the GitLab Runner application](https://docs.gitlab.com/runner/install/index.html) on infrastructure that you own or manage. If hosting GitLab Runners on AWS, you can avoid having requests from the Runner fleet route through the public internet by setting up a secure connection from the Runner VPC to the GitLab Dedicated endpoint via AWS Private Link. Learn more about [networking options](#secure-networking).
 
 #### Migration
@@ -128,7 +147,6 @@ The following GitLab application features are not available:
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk
-- GitLab-managed runners (hosted runners)
 - GitLab AI capabilities (Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information)
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)

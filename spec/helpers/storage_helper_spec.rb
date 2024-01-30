@@ -37,15 +37,14 @@ RSpec.describe StorageHelper, feature_category: :consumables_cost_management do
           pipeline_artifacts_size: 11.megabytes,
           snippets_size: 40.megabytes,
           packages_size: 12.megabytes,
-          uploads_size: 15.megabytes,
-          container_registry_size: 3.gigabytes
+          uploads_size: 15.megabytes
         )
       )
     end
 
     let(:message) do
       'Repository: 10 KiB / Wikis: 10 B / Build Artifacts: 30 MiB / Pipeline Artifacts: 11 MiB / ' \
-        'LFS: 20 GiB / Snippets: 40 MiB / Packages: 12 MiB / Uploads: 15 MiB / Containers: 3 GiB'
+        'LFS: 20 GiB / Snippets: 40 MiB / Packages: 12 MiB / Uploads: 15 MiB'
     end
 
     it 'works on ProjectStatistics' do

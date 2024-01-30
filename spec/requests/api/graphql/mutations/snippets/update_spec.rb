@@ -18,6 +18,7 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
   let(:updated_file) { 'CHANGELOG' }
   let(:deleted_file) { 'README' }
   let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
+  let(:category) { ::Mutations::Snippets::Update }
   let(:mutation_vars) do
     {
       id: snippet_gid,

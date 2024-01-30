@@ -5,11 +5,19 @@ describe('autocompleteDataSources', () => {
     gon.relative_url_root = '/foobar';
   });
 
-  it('returns corrrect data sources', () => {
-    expect(autocompleteDataSources('project/group', '2')).toMatchObject({
+  it('returns correct data sources', () => {
+    expect(autocompleteDataSources({ fullPath: 'project/group', iid: '2' })).toMatchObject({
       commands: '/foobar/project/group/-/autocomplete_sources/commands?type=WorkItem&type_id=2',
       labels: '/foobar/project/group/-/autocomplete_sources/labels?type=WorkItem&type_id=2',
       members: '/foobar/project/group/-/autocomplete_sources/members?type=WorkItem&type_id=2',
+    });
+  });
+
+  it('returns correct data sources when group context', () => {
+    expect(autocompleteDataSources({ fullPath: 'group', isGroup: true, iid: '2' })).toMatchObject({
+      commands: '/foobar/groups/group/-/autocomplete_sources/commands?type=WorkItem&type_id=2',
+      labels: '/foobar/groups/group/-/autocomplete_sources/labels?type=WorkItem&type_id=2',
+      members: '/foobar/groups/group/-/autocomplete_sources/members?type=WorkItem&type_id=2',
     });
   });
 });

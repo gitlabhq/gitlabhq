@@ -16,7 +16,7 @@ RSpec.describe "Admin > Admin sees project statistics", feature_category: :group
     let(:project) { create(:project, :repository) }
 
     it "shows project statistics" do
-      expect(page).to have_content("Storage: 0 B (Repository: 0 B / Wikis: 0 B / Build Artifacts: 0 B / Pipeline Artifacts: 0 B / LFS: 0 B / Snippets: 0 B / Packages: 0 B / Uploads: 0 B / Containers: 0 B)")
+      expect(page).to have_content("Storage: 0 B (Repository: 0 B / Wikis: 0 B / Build Artifacts: 0 B / Pipeline Artifacts: 0 B / LFS: 0 B / Snippets: 0 B / Packages: 0 B / Uploads: 0 B)")
     end
   end
 

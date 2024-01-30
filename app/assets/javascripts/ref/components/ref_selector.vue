@@ -286,6 +286,9 @@ export default {
         <gl-badge v-if="item.default" size="sm" variant="info">{{
           i18n.defaultLabelText
         }}</gl-badge>
+        <gl-badge v-if="item.protected" size="sm" variant="neutral">{{
+          i18n.protectedLabelText
+        }}</gl-badge>
       </template>
       <template #footer>
         <slot name="footer" v-bind="footerSlotProps"></slot>

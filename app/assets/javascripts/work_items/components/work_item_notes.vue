@@ -132,7 +132,8 @@ export default {
       return markdownPreviewPath(this.fullPath, this.workItemIid);
     },
     autocompleteDataSources() {
-      return autocompleteDataSources(this.fullPath, this.workItemIid);
+      const { fullPath, isGroup, workItemIid: iid } = this;
+      return autocompleteDataSources({ fullPath, isGroup, iid });
     },
     workItemCommentFormProps() {
       return {

@@ -244,7 +244,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       it "includes statistics if requested", :aggregate_failures do
         stat_keys = %w[storage_size repository_size wiki_size
           lfs_objects_size job_artifacts_size pipeline_artifacts_size
-          packages_size snippets_size uploads_size container_registry_size]
+          packages_size snippets_size uploads_size]
 
         get api("/groups", admin, admin_mode: true), params: { statistics: true }
 
