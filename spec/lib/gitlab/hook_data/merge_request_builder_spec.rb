@@ -12,7 +12,6 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
 
     it 'includes safe attribute' do
       expected_safe_attribute_keys = %i[
-        approval_rules
         assignee_id
         author_id
         blocking_discussions_resolved
@@ -64,7 +63,6 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
 
     it 'includes additional attrs' do
       expected_additional_attributes = %w[
-        approval_rules
         description
         url
         last_commit
@@ -81,7 +79,6 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         labels
         state
         blocking_discussions_resolved
-        target_branch
         first_contribution
         detailed_merge_status
       ].freeze

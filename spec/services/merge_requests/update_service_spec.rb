@@ -290,12 +290,10 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             @merge_request,
             'update',
             old_associations: {
-              approval_rules: [],
               labels: [],
               mentioned_users: [user2],
               assignees: [user3],
               reviewers: [],
-              target_branch: "master",
               milestone: nil,
               total_time_spent: 0,
               time_change: 0,

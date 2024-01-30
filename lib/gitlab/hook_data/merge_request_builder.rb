@@ -5,7 +5,6 @@ module Gitlab
     class MergeRequestBuilder < BaseBuilder
       def self.safe_hook_attributes
         %i[
-          approval_rules
           assignee_id
           author_id
           blocking_discussions_resolved
@@ -48,37 +47,34 @@ module Gitlab
       end
 
       alias_method :merge_request, :object
-      # rubocop:disable Metrics/AbcSize -- Values are needed!?
+
       def build
         attrs = {
-          approval_rules: merge_request.approval_rules.map(&:hook_attrs),
-          assignee_id: merge_request.assignee_ids.first, # This key is deprecated
-          assignee_ids: merge_request.assignee_ids,
-          blocking_discussions_resolved: merge_request.mergeable_discussions_state?,
           description: absolute_image_urls(merge_request.description),
-          detailed_merge_status: detailed_merge_status,
+          url: Gitlab::UrlBuilder.build(merge_request),
+          source: merge_request.source_project.try(:hook_attrs),
+          target: merge_request.target_project.hook_attrs,
+          last_commit: merge_request.diff_head_commit&.hook_attrs,
+          work_in_progress: merge_request.draft?,
           draft: merge_request.draft?,
-          first_contribution: merge_request.first_contribution?,
+          total_time_spent: merge_request.total_time_spent,
+          time_change: merge_request.time_change,
+          human_total_time_spent: merge_request.human_total_time_spent,
           human_time_change: merge_request.human_time_change,
           human_time_estimate: merge_request.human_time_estimate,
-          human_total_time_spent: merge_request.human_total_time_spent,
-          labels: merge_request.labels_hook_attrs,
-          last_commit: merge_request.diff_head_commit&.hook_attrs,
+          assignee_ids: merge_request.assignee_ids,
+          assignee_id: merge_request.assignee_ids.first, # This key is deprecated
           reviewer_ids: merge_request.reviewer_ids,
-          source: merge_request.source_project.try(:hook_attrs),
+          labels: merge_request.labels_hook_attrs,
           state: merge_request.state,
-          target: merge_request.target_project.hook_attrs,
-          target_branch: merge_request.target_branch,
-          time_change: merge_request.time_change,
-          total_time_spent: merge_request.total_time_spent,
-          url: Gitlab::UrlBuilder.build(merge_request),
-          work_in_progress: merge_request.draft?
+          blocking_discussions_resolved: merge_request.mergeable_discussions_state?,
+          first_contribution: merge_request.first_contribution?,
+          detailed_merge_status: detailed_merge_status
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
           .merge!(attrs)
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
 

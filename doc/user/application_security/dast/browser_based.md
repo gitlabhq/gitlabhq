@@ -4,7 +4,7 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST browser-based analyzer 
+# DAST browser-based analyzer
 
 DETAILS:
 **Tier:** Ultimate
@@ -105,10 +105,8 @@ To run a DAST scan:
 
 ### Create a DAST CI/CD job
 
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in
-    GitLab 14.0.
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in
-    GitLab 15.0.
+> - This template was [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
+> - This template was [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
 
 To add DAST scanning to your application, use the DAST job defined
 in the GitLab DAST CI/CD template file. Updates to the template are provided with GitLab

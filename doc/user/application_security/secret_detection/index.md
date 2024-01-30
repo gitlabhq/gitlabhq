@@ -609,8 +609,7 @@ variable, or as a CI/CD variable.
 ## Warnings for potential leaks in text content
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
-> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146)
-in GitLab 16.1. GitLab self-managed only.
+> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146) in GitLab 16.1. GitLab self-managed only.
 
 When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
 For example, you might paste in the details of an API request or an environment variable that contains an authentication token.

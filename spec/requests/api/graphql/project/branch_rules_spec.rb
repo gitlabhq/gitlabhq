@@ -124,6 +124,7 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
 
       it 'includes all fields', :use_sql_query_cache, :aggregate_failures do
         expect(branch_rule_a_data).to include(
+          'id' => branch_rule_a.to_global_id.to_s,
           'name' => branch_name_a,
           'isDefault' => be_boolean,
           'isProtected' => true,
@@ -137,6 +138,7 @@ RSpec.describe 'getting list of branch rules for a project', feature_category: :
           branch_name.starts_with?('diff-')
         end
         expect(branch_rule_b_data).to include(
+          'id' => branch_rule_b.to_global_id.to_s,
           'name' => branch_name_b,
           'isDefault' => be_boolean,
           'isProtected' => true,

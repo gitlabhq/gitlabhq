@@ -1499,6 +1499,12 @@ ee/lib/ee/api/entities/project.rb
 /gems/gitlab-housekeeper/
 /keeps/
 
+^[Storage Statistics] gitlab-org/fulfillment/utilization/be
+/app/models/namespace/root_storage_statistics.rb
+/ee/app/models/ee/namespace/root_storage_statistics.rb
+/app/models/project_statistics.rb
+/ee/app/models/ee/project_statistics.rb
+
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
 [JH Frontend] @jihulab/maintainers/frontend

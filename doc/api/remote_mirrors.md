@@ -97,6 +97,7 @@ Learn how to [configure a pull mirror](projects.md#configure-pull-mirroring-for-
 > - Field `mirror_branch_regex` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 15.8 [with a flag](../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
+
 Push mirroring is disabled by default. To enable it, include the optional parameter
 `enabled` when you create the mirror:
 

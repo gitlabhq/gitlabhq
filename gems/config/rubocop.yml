@@ -21,8 +21,8 @@ inherit_mode:
     - AllowedPatterns
 
 AllCops:
-  # Target the current Ruby version. For example, "3.0" or "3.1".
-  TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
+  # The oldest supported Ruby version.
+  TargetRubyVersion: 3.0
   SuggestExtensions: false
   NewCops: disable
 

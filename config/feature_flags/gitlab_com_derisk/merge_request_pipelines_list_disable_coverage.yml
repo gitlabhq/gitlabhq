@@ -1,0 +1,9 @@
+---
+name: merge_request_pipelines_list_disable_coverage
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142934
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17481
+milestone: '16.9'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

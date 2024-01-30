@@ -15573,6 +15573,7 @@ Branch rules configured for a rule target.
 | <a id="branchrulebranchprotection"></a>`branchProtection` | [`BranchProtection`](#branchprotection) | Branch protections configured for this branch rule. |
 | <a id="branchrulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the branch rule was created. |
 | <a id="branchruleexternalstatuschecks"></a>`externalStatusChecks` | [`ExternalStatusCheckConnection`](#externalstatuscheckconnection) | External status checks configured for this branch rule. (see [Connections](#connections)) |
+| <a id="branchruleid"></a>`id` | [`ProjectsBranchRuleID`](#projectsbranchruleid) | ID of the branch rule. |
 | <a id="branchruleisdefault"></a>`isDefault` | [`Boolean!`](#boolean) | Check if this branch rule protects the project's default branch. |
 | <a id="branchruleisprotected"></a>`isProtected` | [`Boolean!`](#boolean) | Check if this branch rule protects access for the branch. |
 | <a id="branchrulematchingbranchescount"></a>`matchingBranchesCount` | [`Int!`](#int) | Number of existing branches that match this branch rule. |
@@ -33124,6 +33125,12 @@ An example `ProjectID` is: `"gid://gitlab/Project/1"`.
 A `ProjectImportStateID` is a global ID. It is encoded as a string.
 
 An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
+
+### `ProjectsBranchRuleID`
+
+A `ProjectsBranchRuleID` is a global ID. It is encoded as a string.
+
+An example `ProjectsBranchRuleID` is: `"gid://gitlab/Projects::BranchRule/1"`.
 
 ### `ProtectedBranchID`
 

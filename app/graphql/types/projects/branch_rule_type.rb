@@ -9,6 +9,9 @@ module Types
 
       alias_method :branch_rule, :object
 
+      field :id, ::Types::GlobalIDType[::Projects::BranchRule],
+            description: 'ID of the branch rule.'
+
       field :name,
             type: GraphQL::Types::String,
             null: false,

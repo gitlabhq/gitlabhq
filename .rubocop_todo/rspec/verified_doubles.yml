@@ -818,6 +818,7 @@ RSpec/VerifiedDoubles:
     - 'spec/serializers/test_reports_comparer_serializer_spec.rb'
     - 'spec/serializers/test_suite_entity_spec.rb'
     - 'spec/serializers/trigger_variable_entity_spec.rb'
+    - 'spec/serializers/triggered_pipeline_entity_spec.rb'
     - 'spec/services/access_token_validation_service_spec.rb'
     - 'spec/services/authorized_project_update/find_records_due_for_refresh_service_spec.rb'
     - 'spec/services/award_emojis/toggle_service_spec.rb'

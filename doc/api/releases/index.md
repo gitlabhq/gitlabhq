@@ -11,10 +11,8 @@ DETAILS:
 **Offering:** SaaS, self-managed
 
 > - Release Evidences were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.5.
-> - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447).
-    You might also pass the `include_html_description` query string as a parameter.
-> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
-    For more information, see [Release permissions](../../user/project/releases/index.md#release-permissions).
+> - `description_html` became an opt-in field [with GitLab 13.12 for performance reasons](https://gitlab.com/gitlab-org/gitlab/-/issues/299447). You might also pass the `include_html_description` query string as a parameter.
+> - [The permission model for create, update and delete actions was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1. For more information, see [Release permissions](../../user/project/releases/index.md#release-permissions).
 
 Use this API to manipulate [release entries](../../user/project/releases/index.md).
 

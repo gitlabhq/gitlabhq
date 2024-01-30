@@ -46,6 +46,7 @@ Example response:
 ### Create Error Tracking settings
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
+
 The API allows you to create Error Tracking settings for a project. Only for users with Maintainer role for
 the project.
 

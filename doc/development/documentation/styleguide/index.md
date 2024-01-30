@@ -1409,15 +1409,16 @@ This is how it renders on the GitLab documentation site:
   <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-> Notes:
->
-> - The `figure` tag is required for semantic SEO and the `video-container`
-class is necessary to make sure the video is responsive and displays on
-different mobile devices.
-> - The `<div class="video-fallback">` is a fallback necessary for
-`/help`, because the GitLab Markdown processor doesn't support iframes. It's
-hidden on the documentation site, but is displayed by `/help`.
-> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
+With this formatting:
+
+- The `figure` tag is required for semantic SEO and the `video-container`
+  class is necessary to make sure the video is responsive and displays on
+  different mobile devices.
+- The `<div class="video-fallback">` is a fallback necessary for
+  `/help`, because the GitLab Markdown processor doesn't support iframes. It's
+  hidden on the documentation site, but is displayed by `/help`.
+- The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode)
+  of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
 
 ## Alert boxes
 
