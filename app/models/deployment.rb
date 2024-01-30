@@ -52,6 +52,7 @@ class Deployment < ApplicationRecord
   scope :for_projects, -> (projects) { where(project: projects) }
 
   scope :visible, -> { where(status: VISIBLE_STATUSES) }
+  scope :finished, -> { where(status: FINISHED_STATUSES) }
   scope :stoppable, -> { where.not(on_stop: nil).where.not(deployable_id: nil).success }
   scope :active, -> { where(status: %i[created running]) }
   scope :upcoming, -> { where(status: %i[blocked running]) }
@@ -182,31 +183,19 @@ class Deployment < ApplicationRecord
   # A pipeline contains
   #   - deploy job A => production environment
   #   - deploy job B => production environment
-  # In this case, `last_deployment_group` returns both deployments.
-  #
-  # NOTE: Preload environment.last_deployment and pipeline.latest_successful_jobs prior to avoid N+1.
+  # In this case, `last_deployment_group_for_environment` returns both deployments.
   def self.last_deployment_group_for_environment(env)
-    return self.none unless env.last_deployment_pipeline&.latest_successful_jobs&.present?
+    batch_load_deployments_for_environment(env, associated_jobs: :latest_successful_jobs)
+  end
 
-    BatchLoader.for(env).batch(default_value: self.none) do |environments, loader|
-      latest_successful_job_ids = []
-      environments_hash = {}
-
-      environments.each do |environment|
-        environments_hash[environment.id] = environment
-
-        # Refer comment note above, if not preloaded this can lead to N+1.
-        latest_successful_job_ids << environment.last_deployment_pipeline.latest_successful_jobs.map(&:id)
-      end
-
-      Deployment
-        .where(deployable_type: 'CommitStatus', deployable_id: latest_successful_job_ids.flatten)
-        .preload(last_deployment_group_associations)
-        .group_by { |deployment| deployment.environment_id }
-        .each do |env_id, deployment_group|
-          loader.call(environments_hash[env_id], deployment_group)
-        end
-    end
+  # This method returns the *finished deployments* of the *last finished pipeline* for a given environment
+  # e.g., a finished pipeline contains
+  #   - deploy job A (environment: production, status: success)
+  #   - deploy job B (environment: production, status: failed)
+  #   - deploy job C (environment: production, status: canceled)
+  # In the above case, `last_finished_deployment_group_for_environment` returns all deployments
+  def self.last_finished_deployment_group_for_environment(env)
+    batch_load_deployments_for_environment(env, associated_jobs: :latest_finished_jobs)
   end
 
   def self.find_successful_deployment!(iid)
@@ -481,6 +470,48 @@ class Deployment < ApplicationRecord
     perform_params[:status_changed_at] = perform_params[:status_changed_at].to_s
     perform_params.stringify_keys!
   end
+
+  # this method batch loads a collection of deployments given:
+  #   - an `environment`
+  #   - the environment's `associated_jobs`: jobs within a specific scope, e.g.: `latest_successful_jobs`
+  #     the `associated_jobs` must be a defined method in the environment model
+  #
+  # this is used by `last_deployment_group_for_environment` and `last_finished_deployment_group_for_environment`,
+  #   both methods implement similar batch loading logic, extracted into the below method
+  #   preloading the environment's `associated_jobs` avoids N+1 queries.
+  # the `associated_jobs` is a symbol which corresponds to a collection of jobs associated to an Environment record,
+  #   i.e.: `Environment#latest_successful_jobs` and `Environment#latest_finished_jobs`
+  #   the method will be called on an environment object using `public_send`
+  #
+  # TODO: inline this method to the last_finished_deployment_group_for_environment
+  #       when environment_stop_actions_include_all_finished_deployments FF is removed
+  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+  def self.batch_load_deployments_for_environment(env, associated_jobs:)
+    # TODO: replace public_send when inlining method https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+    return self.none unless env.public_send(associated_jobs).present? # rubocop: disable GitlabSecurity/PublicSend -- see comment above for justification
+
+    BatchLoader.for(env).batch(key: associated_jobs, default_value: self.none) do |environments, loader|
+      job_ids = []
+      environments_hash = {}
+
+      environments.each do |environment|
+        environments_hash[environment.id] = environment
+
+        # refer comment note above, if not preloaded this can lead to N+1.
+        # TODO: replace public_send when inlining method https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+        job_ids << environment.public_send(associated_jobs).map(&:id) # rubocop: disable GitlabSecurity/PublicSend -- see comment above for justification
+      end
+
+      Deployment
+        .where(deployable_type: 'CommitStatus', deployable_id: job_ids.flatten)
+        .preload(last_deployment_group_associations)
+        .group_by { |deployment| deployment.environment_id }
+        .each do |env_id, deployment_group|
+          loader.call(environments_hash[env_id], deployment_group)
+        end
+    end
+  end
+  private_class_method :batch_load_deployments_for_environment
 
   def self.last_deployment_group_associations
     {

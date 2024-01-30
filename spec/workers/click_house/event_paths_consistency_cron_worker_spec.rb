@@ -117,7 +117,7 @@ RSpec.describe ClickHouse::EventPathsConsistencyCronWorker, feature_category: :v
       it 'returns over_time status' do
         stub_const("#{ClickHouse::Concerns::ConsistencyWorker}::POSTGRESQL_BATCH_SIZE", 1)
 
-        allow_next_instance_of(Analytics::CycleAnalytics::RuntimeLimiter) do |runtime_limiter|
+        allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |runtime_limiter|
           allow(runtime_limiter).to receive(:over_time?).and_return(false, true)
         end
 

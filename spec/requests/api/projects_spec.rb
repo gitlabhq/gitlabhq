@@ -2679,6 +2679,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
+        expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
       end
@@ -2792,6 +2793,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
         expect(json_response['keep_latest_artifact']).to be_present
+        expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
       end
 
       it 'returns a group link with expiration date' do

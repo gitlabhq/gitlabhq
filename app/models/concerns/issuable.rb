@@ -512,46 +512,45 @@ module Issuable
     false
   end
 
+  # rubocop:disable Metrics/AbcSize -- Thats the best we can do for now
+  # rubocop:disable Metrics/PerceivedComplexity -- same as above
+  # Related issue: https://gitlab.com/gitlab-org/gitlab/-/issues/437679
   def hook_association_changes(old_associations)
     changes = {}
 
-    old_labels = old_associations.fetch(:labels, labels)
-    old_assignees = old_associations.fetch(:assignees, assignees)
-    old_severity = old_associations.fetch(:severity, severity)
-
-    if old_labels != labels
-      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
+    if is_a?(MergeRequest) && old_approval_rules(old_associations) != approval_rules.map(&:hook_attrs)
+      changes[:approval_rules] = [old_approval_rules(old_associations), approval_rules.map(&:hook_attrs)]
     end
 
-    if old_assignees != assignees
-      changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+    if old_assignees(old_associations) != assignees
+      changes[:assignees] = [old_assignees(old_associations).map(&:hook_attrs), assignees.map(&:hook_attrs)]
     end
 
-    if supports_severity? && old_severity != severity
-      changes[:severity] = [old_severity, severity]
+    if old_labels(old_associations) != labels
+      changes[:labels] = [old_labels(old_associations).map(&:hook_attrs), labels.map(&:hook_attrs)]
     end
 
-    if supports_escalation? && escalation_status
-      current_escalation_status = escalation_status.status_name
-      old_escalation_status = old_associations.fetch(:escalation_status, current_escalation_status)
-
-      if old_escalation_status != current_escalation_status
-        changes[:escalation_status] = [old_escalation_status, current_escalation_status]
-      end
+    if supports_severity? && old_severity(old_associations) != severity
+      changes[:severity] = [old_severity(old_associations), severity]
     end
 
-    if self.respond_to?(:total_time_spent)
-      old_total_time_spent = old_associations.fetch(:total_time_spent, total_time_spent)
-      old_time_change = old_associations.fetch(:time_change, time_change)
+    if is_a?(MergeRequest) && old_target_branch(old_associations) != target_branch
+      changes[:target_branch] = [old_target_branch(old_associations), target_branch]
+    end
 
-      if old_total_time_spent != total_time_spent
-        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
-        changes[:time_change] = [old_time_change, time_change]
-      end
+    if supports_escalation? && escalation_status && old_escalation_status(old_associations) != escalation_status.status_name
+      changes[:escalation_status] = [old_escalation_status(old_associations), escalation_status.status_name]
+    end
+
+    if self.respond_to?(:total_time_spent) && old_total_time_spent(old_associations) != total_time_spent
+      changes[:total_time_spent] = [old_total_time_spent(old_associations), total_time_spent]
+      changes[:time_change] = [old_time_change(old_associations), time_change]
     end
 
     changes
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def hook_reviewer_changes(old_associations)
     changes = {}
@@ -678,6 +677,38 @@ module Issuable
 
   def supports_health_status?
     false
+  end
+
+  def old_approval_rules(assoc)
+    @_old_approval_rules ||= assoc.fetch(:approval_rules, approval_rules)
+  end
+
+  def old_assignees(assoc)
+    @_old_assignees ||= assoc.fetch(:assignees, assignees)
+  end
+
+  def old_labels(assoc)
+    @_old_labels ||= assoc.fetch(:labels, labels)
+  end
+
+  def old_severity(assoc)
+    @_old_severity ||= assoc.fetch(:severity, severity)
+  end
+
+  def old_target_branch(assoc)
+    @_old_target_branch ||= assoc.fetch(:target_branch, target_branch)
+  end
+
+  def old_escalation_status(assoc)
+    @_old_escalation_status ||= assoc.fetch(:escalation_status, escalation_status.status_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
+  end
+
+  def old_total_time_spent(assoc)
+    @_old_total_time_spent ||= assoc.fetch(:total_time_spent, total_time_spent) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
+  end
+
+  def old_time_change(assoc)
+    @_old_time_change ||= assoc.fetch(:time_change, time_change) # rubocop:disable Gitlab/ModuleWithInstanceVariables -- This is only used here
   end
 end
 

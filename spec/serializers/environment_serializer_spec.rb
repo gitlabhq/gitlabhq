@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentSerializer do
+RSpec.describe EnvironmentSerializer, feature_category: :continuous_delivery do
   include CreateEnvironmentsHelpers
 
   let_it_be(:user) { create(:user) }
@@ -19,6 +19,14 @@ RSpec.describe EnvironmentSerializer do
   end
 
   it_behaves_like 'avoid N+1 on environments serialization'
+
+  context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
+    before do
+      stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
+    end
+
+    it_behaves_like 'avoid N+1 on environments serialization'
+  end
 
   context 'when there is a collection of objects provided' do
     let(:resource) { project.environments }
@@ -226,6 +234,10 @@ RSpec.describe EnvironmentSerializer do
 
     it 'uses the custom preloader service' do
       expect_next_instance_of(Preloaders::Environments::DeploymentPreloader) do |preloader|
+        expect(preloader).to receive(:execute_with_union).with(:last_finished_deployment, hash_including(:deployable)).and_call_original
+      end
+
+      expect_next_instance_of(Preloaders::Environments::DeploymentPreloader) do |preloader|
         expect(preloader).to receive(:execute_with_union).with(:last_deployment, hash_including(:deployable)).and_call_original
       end
 
@@ -256,6 +268,37 @@ RSpec.describe EnvironmentSerializer do
 
       expect(response_json.last[:last_deployment][:id]).to eq(last_deployment.id)
       expect(response_json.last[:upcoming_deployment][:id]).to eq(upcoming_deployment.id)
+    end
+
+    describe 'batch loading environment deployment groups' do
+      let(:environments) { Environment.all.to_a }
+
+      before do
+        environments.each do |env|
+          allow(env).to receive(:last_finished_deployment_group).and_call_original
+          allow(env).to receive(:last_deployment_group).and_call_original
+        end
+
+        allow(resource).to receive(:to_a).and_return(environments)
+      end
+
+      it "batch loads each environment's last_finished_deployment_group" do
+        expect(environments).to all(receive(:last_finished_deployment_group))
+
+        json
+      end
+
+      context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
+        before do
+          stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
+        end
+
+        it "batch loads each environment's last_deployment_group" do
+          expect(environments).to all(receive(:last_deployment_group))
+
+          json
+        end
+      end
     end
   end
 

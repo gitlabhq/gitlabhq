@@ -270,6 +270,13 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
   }
 
+  .timeline-entry-inner > li.is-editing {
+    .note-actions,
+    .note-text {
+      display: none;
+    }
+  }
+
   > li {
     display: block;
     position: relative;

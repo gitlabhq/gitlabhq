@@ -208,6 +208,7 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'lib/api/entities/project_integration.rb' | [:import_integrate_be, :backend]
       'lib/gitlab/hook_data/note_builder.rb' | [:import_integrate_be, :backend]
       'lib/gitlab/data_builder/note.rb' | [:import_integrate_be, :backend]
+      'lib/gitlab/slash_commands/run.rb' | [:import_integrate_be, :backend]
       'lib/gitlab/web_hooks/recursion_detection.rb' | [:import_integrate_be, :backend]
       'ee/lib/ee/gitlab/integrations/sti_type.rb' | [:import_integrate_be, :backend]
       'ee/lib/ee/api/helpers/integrations_helpers.rb' | [:import_integrate_be, :backend]

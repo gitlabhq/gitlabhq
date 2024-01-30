@@ -332,6 +332,7 @@ ci_pipelines:
 - daily_build_group_report_results
 - latest_builds
 - latest_successful_jobs
+- latest_finished_jobs
 - daily_report_results
 - latest_builds_report_results
 - messages

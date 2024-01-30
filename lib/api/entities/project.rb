@@ -160,6 +160,7 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
+      expose :warn_about_potentially_unwanted_characters, documentation: { type: 'boolean' }
 
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
 

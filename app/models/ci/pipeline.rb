@@ -101,6 +101,7 @@ module Ci
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
     has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 

@@ -264,8 +264,8 @@ following sections for information on solving:
 ### Large number of references
 
 [References in Git](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
-are branch and tag names that point to a particular commit. You can use the `git
-for-each-ref` command to list all references present in a repository. A large
+are branch and tag names that point to a particular commit. You can use the `git for-each-ref`
+command to list all references present in a repository. A large
 number of references in a repository can have detrimental impact on the command's
 performance. To understand why, we need to understand how Git stores references
 and uses them.

@@ -1,7 +1,14 @@
-query getOrganizationGroups($id: OrganizationsOrganizationID!) {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+query getOrganizationGroups(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
   organization(id: $id) {
     id
-    groups {
+    groups(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         id
         fullName
@@ -15,6 +22,9 @@ query getOrganizationGroups($id: OrganizationsOrganizationID!) {
         projectsCount
         groupMembersCount
         visibility
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

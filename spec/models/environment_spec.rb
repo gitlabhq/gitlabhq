@@ -974,39 +974,85 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
   end
 
   describe '#stop_actions' do
-    subject { environment.stop_actions }
+    subject do
+      # since we are toggling the jobs being fetched according to the
+      # `environment_stop_actions_include_all_finished_deployments` FF
+      # and the `stop_actions` method is strong_memoized, we need to reload
+      # the environment every time we fetch stop_actions
+      # TODO: switch to a simple `environment.stop_actions` when FF is removed
+      #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+      reloaded_environment = described_class.find(environment.id)
+      reloaded_environment.stop_actions
+    end
 
     context 'when there are no deployments and builds' do
-      it 'returns empty array' do
-        is_expected.to match_array([])
-      end
+      it { is_expected.to match_array([]) }
     end
 
     context 'when there are multiple deployments with actions' do
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:ci_build_a) { create(:ci_build, :success, project: project, pipeline: pipeline) }
-      let(:ci_build_b) { create(:ci_build, :success, project: project, pipeline: pipeline) }
-      let!(:ci_build_c) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_a') }
-      let!(:ci_build_d) { create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'close_app_b') }
+      def create_deployment_with_stop_action(status, pipeline, stop_action_name)
+        build = create(:ci_build, status, project: project, pipeline: pipeline)
+        stop_action = create(:ci_build, :manual, project: project, pipeline: pipeline, name: stop_action_name)
+        create(:deployment, status, project: project, environment: environment, deployable: build, on_stop: stop_action_name)
 
-      let!(:deployment_a) do
-        create(:deployment,
-          :success, project: project, environment: environment, deployable: ci_build_a, on_stop: 'close_app_a')
+        stop_action
       end
 
-      let!(:deployment_b) do
-        create(:deployment,
-          :success, project: project, environment: environment, deployable: ci_build_b, on_stop: 'close_app_b')
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:environment) { create(:environment, project: project) }
+
+      let_it_be(:successful_pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:successful_pipeline_stop) { create_deployment_with_stop_action(:success, successful_pipeline, 'successful_pipeline_stop') }
+
+      let_it_be(:finished_pipeline) { create(:ci_pipeline, :failed, project: project) }
+      let_it_be(:finished_pipeline_stop_a) { create_deployment_with_stop_action(:failed, finished_pipeline, 'finished_pipeline_stop_a') }
+      let_it_be(:finished_pipeline_stop_b) { create_deployment_with_stop_action(:canceled, finished_pipeline, 'finished_pipeline_stop_b') }
+
+      before_all do
+        # create the running pipeline and associated records
+        # this is created to show that stop jobs of the latest pipeline are not picked up if the pipeline is still running
+        running_pipeline = create(:ci_pipeline, :running, project: project)
+        create(:ci_build, :manual, project: project, pipeline: running_pipeline, name: 'running_pipeline_stop')
+        create_deployment_with_stop_action(:created, running_pipeline, 'running_pipeline_stop')
       end
 
-      before do
-        # Create failed deployment without stop_action.
-        build = create(:ci_build, :failed, project: project, pipeline: pipeline)
-        create(:deployment, :failed, project: project, environment: environment, deployable: build)
+      it 'returns the stop actions of the finished deployments in the last finished pipeline' do
+        expect(subject).to contain_exactly(
+          finished_pipeline_stop_a,
+          finished_pipeline_stop_b
+        )
       end
 
-      it 'returns only the stop actions' do
-        expect(subject.pluck(:id)).to contain_exactly(ci_build_c.id, ci_build_d.id)
+      context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
+        before do
+          stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
+        end
+
+        it 'returns the stop actions of the last successful pipeline' do
+          expect(subject).to contain_exactly(successful_pipeline_stop)
+        end
+      end
+
+      context 'when the last finished pipeline has a successful deployment' do
+        let_it_be(:finished_pipeline_stop_c) { create_deployment_with_stop_action(:success, finished_pipeline, 'finished_pipeline_stop_c') }
+
+        it 'returns the stop actions of the finished deployments in the last finished pipeline' do
+          expect(subject).to contain_exactly(
+            finished_pipeline_stop_a,
+            finished_pipeline_stop_b,
+            finished_pipeline_stop_c
+          )
+        end
+
+        context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
+          before do
+            stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
+          end
+
+          it 'returns the stop actions of the successful deployment in the last finished pipeline' do
+            expect(subject).to contain_exactly(finished_pipeline_stop_c)
+          end
+        end
       end
     end
   end
@@ -1043,6 +1089,14 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
       it 'returns the successful deployment jobs for the last deployment pipeline' do
         expect(subject.pluck(:id)).to contain_exactly(deployment_a.id, deployment_b.id)
       end
+    end
+  end
+
+  describe '#last_finished_deployment_group' do
+    it 'delegates to Deployment' do
+      expect(Deployment).to receive(:last_finished_deployment_group_for_environment).with(environment)
+
+      environment.last_finished_deployment_group
     end
   end
 
@@ -1231,6 +1285,28 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     end
   end
 
+  describe '#latest_successful_jobs' do
+    subject { environment.latest_successful_jobs }
+
+    let(:pipeline_a) { create(:ci_pipeline, project: project) }
+    let(:pipeline_b) { create(:ci_pipeline, project: project) }
+    let(:ci_build_a_1) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+    let(:ci_build_a_2) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+    let(:ci_build_a_3) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+    let(:ci_build_b_1) { create(:ci_build, :failed, project: project, pipeline: pipeline_b) }
+
+    before do
+      create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a_1)
+      create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a_2)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a_3)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_b_1)
+    end
+
+    it 'fetches the latest successful jobs through the last pipeline with a successful deployment' do
+      is_expected.to contain_exactly(ci_build_a_1, ci_build_a_2)
+    end
+  end
+
   describe '#last_visible_deployment' do
     subject { environment.last_visible_deployment }
 
@@ -1299,6 +1375,91 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     it 'fetches the pipeline through the last visible deployment' do
       is_expected.to eq(pipeline)
+    end
+  end
+
+  describe '#last_finished_deployment' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { environment.last_finished_deployment }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    where(:finished_status) { [:success, :failed, :canceled] }
+
+    with_them do
+      let!(:finished_deployment) do
+        create(:deployment, finished_status, environment: environment)
+      end
+
+      context 'when latest deployment is not finished' do
+        let!(:latest_deployment) { create(:deployment, :running, environment: environment) }
+
+        it 'returns the previous finished deployment' do
+          is_expected.to eq(finished_deployment)
+        end
+      end
+
+      context 'when latest deployment is finished' do
+        it 'returns the finished deployment' do
+          is_expected.to eq(finished_deployment)
+        end
+      end
+    end
+  end
+
+  describe '#last_finished_deployable' do
+    subject { environment.last_finished_deployable }
+
+    let!(:deployment) do
+      create(:deployment, :canceled, project: project, environment: environment, deployable: deployable)
+    end
+
+    let!(:deployable) { create(:ci_build, :canceled, project: project) }
+
+    it 'fetches the deployable through the last finished deployment' do
+      is_expected.to eq(deployable)
+    end
+  end
+
+  describe '#last_finished_pipeline' do
+    subject { environment.last_finished_pipeline }
+
+    let!(:deployment) do
+      create(:deployment, :canceled, project: project, environment: environment, deployable: deployable)
+    end
+
+    let!(:deployable) { create(:ci_build, :canceled, project: project, pipeline: pipeline) }
+    let!(:pipeline) { create(:ci_pipeline, :canceled, project: project) }
+
+    it 'fetches the pipeline through the last finished deployment' do
+      is_expected.to eq(pipeline)
+    end
+  end
+
+  describe '#latest_finished_jobs' do
+    subject { environment.latest_finished_jobs }
+
+    let(:pipeline_a) { create(:ci_pipeline, project: project) }
+    let(:pipeline_b) { create(:ci_pipeline, project: project) }
+    let(:ci_build_a_1) { create(:ci_build, :success, project: project, pipeline: pipeline_a) }
+    let(:ci_build_a_2) { create(:ci_build, :failed, project: project, pipeline: pipeline_a) }
+    let(:ci_build_a_3) { create(:ci_build, :canceled, project: project, pipeline: pipeline_a) }
+    let(:ci_build_a_4) { create(:ci_build, :running, project: project, pipeline: pipeline_a) }
+    let(:ci_build_b_1) { create(:ci_build, :running, project: project, pipeline: pipeline_b) }
+
+    before do
+      create(:deployment, :success, project: project, environment: environment, deployable: ci_build_a_1)
+      create(:deployment, :failed, project: project, environment: environment, deployable: ci_build_a_2)
+      create(:deployment, :canceled, project: project, environment: environment, deployable: ci_build_a_3)
+      create(:deployment, :running, project: project, environment: environment, deployable: ci_build_a_4)
+      create(:deployment, :running, project: project, environment: environment, deployable: ci_build_b_1)
+    end
+
+    it 'fetches the latest finished jobs through the last pipeline with a finished deployment' do
+      is_expected.to contain_exactly(ci_build_a_1, ci_build_a_2, ci_build_a_3)
     end
   end
 

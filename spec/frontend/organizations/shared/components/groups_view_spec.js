@@ -1,15 +1,21 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { formatGroups } from '~/organizations/shared/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { createAlert } from '~/alert';
+import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { organizationGroups as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
+import {
+  organizationGroups as nodes,
+  pageInfo,
+  pageInfoEmpty,
+  pageInfoOnePage,
+} from '~/organizations/mock_data';
 
 jest.mock('~/alert');
 
@@ -55,6 +61,8 @@ describe('GroupsView', () => {
       },
     });
   };
+
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
   afterEach(() => {
     mockApollo = null;
@@ -127,6 +135,139 @@ describe('GroupsView', () => {
           groups: formatGroups(nodes),
           showGroupIcon: true,
           listItemClass: defaultPropsData.listItemClass,
+        });
+      });
+    });
+
+    describe('when there is one page of groups', () => {
+      beforeEach(async () => {
+        createComponent({
+          handler: jest.fn().mockResolvedValue({
+            data: {
+              organization: {
+                id: defaultProvide.organizationGid,
+                groups: {
+                  nodes,
+                  pageInfo: pageInfoOnePage,
+                },
+              },
+            },
+          }),
+        });
+        await waitForPromises();
+      });
+
+      it('does not render pagination', () => {
+        expect(findPagination().exists()).toBe(false);
+      });
+    });
+
+    describe('when there is a next page of groups', () => {
+      const mockEndCursor = 'mockEndCursor';
+      const handler = jest.fn().mockResolvedValue({
+        data: {
+          organization: {
+            id: defaultProvide.organizationGid,
+            groups: {
+              nodes,
+              pageInfo: {
+                ...pageInfo,
+                hasNextPage: true,
+                hasPreviousPage: false,
+              },
+            },
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        createComponent({ handler });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      describe('when next button is clicked', () => {
+        beforeEach(async () => {
+          findPagination().vm.$emit('next', mockEndCursor);
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler).toHaveBeenCalledWith({
+            after: mockEndCursor,
+            before: null,
+            first: DEFAULT_PER_PAGE,
+            id: defaultProvide.organizationGid,
+            last: null,
+          });
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: mockEndCursor,
+              startCursor: null,
+              hasPreviousPage: false,
+            },
+          ]);
+        });
+      });
+    });
+
+    describe('when there is a previous page of groups', () => {
+      const mockStartCursor = 'mockStartCursor';
+      const handler = jest.fn().mockResolvedValue({
+        data: {
+          organization: {
+            id: defaultProvide.organizationGid,
+            groups: {
+              nodes,
+              pageInfo: {
+                ...pageInfo,
+                hasNextPage: false,
+                hasPreviousPage: true,
+              },
+            },
+          },
+        },
+      });
+
+      beforeEach(async () => {
+        createComponent({ handler });
+        await waitForPromises();
+      });
+
+      it('renders pagination', () => {
+        expect(findPagination().exists()).toBe(true);
+      });
+
+      describe('when previous button is clicked', () => {
+        beforeEach(async () => {
+          findPagination().vm.$emit('prev', mockStartCursor);
+          await waitForPromises();
+        });
+
+        it('calls query with correct variables', () => {
+          expect(handler).toHaveBeenCalledWith({
+            after: null,
+            before: mockStartCursor,
+            first: null,
+            id: defaultProvide.organizationGid,
+            last: DEFAULT_PER_PAGE,
+          });
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: null,
+              startCursor: mockStartCursor,
+              hasPreviousPage: true,
+            },
+          ]);
         });
       });
     });

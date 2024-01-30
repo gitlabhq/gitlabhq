@@ -70,7 +70,7 @@ module ClickHouse
       end
 
       def runtime_limiter
-        @runtime_limiter ||= Analytics::CycleAnalytics::RuntimeLimiter.new(MAX_RUNTIME)
+        @runtime_limiter ||= Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
       end
 
       def iterator

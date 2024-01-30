@@ -274,6 +274,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "requirements_access_level": "enabled",
     "security_and_compliance_enabled": false,
     "compliance_frameworks": [],
+    "warn_about_potentially_unwanted_characters": true,
     "permissions": {
       "project_access": null,
       "group_access": null
@@ -1265,6 +1266,7 @@ GET /projects/:id
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
+  "warn_about_potentially_unwanted_characters": true,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -1590,6 +1592,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `topics`                                                          | array   | No                             | The list of topics for a project; put array of topics, that should be finally assigned to a project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `use_custom_template`                                             | boolean | No                             | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                                      | string  | No                             | See [project visibility level](#project-visibility-level). |
+| `warn_about_potentially_unwanted_characters`                      | boolean | No                             | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_access_level`                                               | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                                    | boolean | No                             | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
@@ -1684,6 +1687,7 @@ POST /projects/user/:user_id
 | `topics`                                                          | array   | No       | The list of topics for the project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `use_custom_template`                                             | boolean | No       | Use either custom [instance](../administration/custom_project_templates.md) or [group](../user/group/custom_project_templates.md) (with `group_with_project_templates_id`) project template. Premium and Ultimate only. |
 | `visibility`                                                      | string  | No       | See [project visibility level](#project-visibility-level). |
+| `warn_about_potentially_unwanted_characters`                      | boolean | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_access_level`                                               | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                                    | boolean | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
@@ -1804,6 +1808,7 @@ Supported attributes:
 | `tag_list`                                                        | array             | No       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0)_ The list of tags for a project; put array of tags, that should be finally assigned to a project. Use `topics` instead. |
 | `topics`                                                          | array             | No       | The list of topics for the project. This replaces any existing topics that are already added to the project. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328226) in GitLab 14.0.)_ |
 | `visibility`                                                      | string            | No       | See [project visibility level](#project-visibility-level). |
+| `warn_about_potentially_unwanted_characters`                      | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_access_level`                                               | string            | No       | One of `disabled`, `private`, or `enabled`. |
 | `wiki_enabled`                                                    | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
 
@@ -3198,7 +3203,8 @@ Example response:
   "autoclose_referenced_issues": true,
   "approvals_before_merge": 0, // Deprecated. Use merge request approvals API instead.
   "mirror": false,
-  "compliance_frameworks": []
+  "compliance_frameworks": [],
+  "warn_about_potentially_unwanted_characters": true
 }
 ```
 

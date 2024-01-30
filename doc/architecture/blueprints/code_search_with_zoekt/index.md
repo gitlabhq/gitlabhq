@@ -327,8 +327,8 @@ Possible jobs indexer can receive:
 #### Replication and service discovery using Consul
 
 If we plan to replicate at the Zoekt node level as described above we need to
-change our data model to use a one-to-many relationship from `zoekt_shards ->
-namespaces`. This means making the `namespace_id` column unique in
+change our data model to use a one-to-many relationship from `zoekt_shards -> namespaces`.
+This means making the `namespace_id` column unique in
 `zoekt_indexed_namespaces`. Then we need to implement a service discovery
 approach where the `index_url` always points at a primary Zoekt node and the
 `search_url` is a DNS record with N replicas and the primary. We then choose

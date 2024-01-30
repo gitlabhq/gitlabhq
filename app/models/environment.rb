@@ -31,6 +31,7 @@ class Environment < ApplicationRecord
 
   # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
   has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_finished_deployment, -> { finished.ordered }, class_name: 'Deployment', inverse_of: :environment
   has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
   has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
 
@@ -267,8 +268,28 @@ class Environment < ApplicationRecord
     last_deployment&.deployable
   end
 
+  # TODO: remove this method when environment_stop_actions_include_all_finished_deployments FF is removed
+  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
   def last_deployment_pipeline
     last_deployable&.pipeline
+  end
+
+  # TODO: remove this method when environment_stop_actions_include_all_finished_deployments FF is removed
+  #       - https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+  def latest_successful_jobs
+    last_deployment_pipeline&.latest_successful_jobs
+  end
+
+  def last_finished_deployable
+    last_finished_deployment&.deployable
+  end
+
+  def last_finished_pipeline
+    last_finished_deployable&.pipeline
+  end
+
+  def latest_finished_jobs
+    last_finished_pipeline&.latest_finished_jobs
   end
 
   # This method returns the deployment records of the last deployment pipeline, that successfully executed to this environment.
@@ -382,9 +403,16 @@ class Environment < ApplicationRecord
   end
 
   def stop_actions
-    strong_memoize(:stop_actions) do
-      last_deployment_group.map(&:stop_action).compact
+    if Feature.enabled?(:environment_stop_actions_include_all_finished_deployments, project, type: :gitlab_com_derisk)
+      return last_finished_deployment_group.map(&:stop_action).compact
     end
+
+    last_deployment_group.map(&:stop_action).compact
+  end
+  strong_memoize_attr :stop_actions
+
+  def last_finished_deployment_group
+    Deployment.last_finished_deployment_group_for_environment(self)
   end
 
   def last_deployment_group

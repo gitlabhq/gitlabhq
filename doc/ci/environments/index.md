@@ -400,9 +400,6 @@ from source files to public pages in the environment set for Review Apps.
 Stopping an environment means its deployments are not accessible on the target server. You must stop
 an environment before it can be deleted.
 
-If the environment has an [`on_stop` action](../yaml/index.md#environmenton_stop) defined, it's
-executed to stop the environment.
-
 #### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.
@@ -474,12 +471,28 @@ stop_review:
 
 #### Run a pipeline job when environment is stopped
 
-You can specify a job to run when an environment is stopped.
+> Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `environment_stop_actions_include_all_finished_deployments`.
+On GitLab.com, this feature is not available.
+
+You can define a stop job for the environment with an [`on_stop` action](../yaml/index.md#environmenton_stop) in the environment's deploy job.
+
+If `environment_stop_actions_include_all_finished_deployments` is disabled:
+
+- The stop jobs of successful deployments in the latest successful pipeline are run when an environment is stopped.
+
+If `environment_stop_actions_include_all_finished_deployments` is enabled:
+
+- The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped.
+
+  A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
 
 Prerequisites:
 
-- Both jobs must have the same rules or only/except configuration.
-- The `stop_review_app` job **must** have the following keywords defined:
+- Both the deploy and stop jobs must have the same rules or only/except configuration.
+- The stop job must have the following keywords defined:
   - `when`, defined at either:
     - [The job level](../yaml/index.md#when).
     - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
@@ -487,9 +500,6 @@ Prerequisites:
       even if the job doesn't run.
   - `environment:name`
   - `environment:action`
-
-In your `.gitlab-ci.yml` file, specify in the [`on_stop`](../yaml/index.md#environmenton_stop)
-keyword the name of the job that stops the environment.
 
 In the following example:
 

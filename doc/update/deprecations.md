@@ -584,6 +584,21 @@ The ability for Developers to change the status of vulnerabilities is now deprec
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate custom role creation for group owners
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439284).
+</div>
+
+In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
+Group Owners will be able to assign custom roles at the group level.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate field `hasSolutions` from GraphQL VulnerabilityType
 
 <div class="deprecation-notes">

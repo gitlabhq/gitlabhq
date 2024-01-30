@@ -124,6 +124,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe '#latest_finished_jobs' do
+      it 'has a one to many relationship with its latest finished jobs' do
+        _old_build = create(:ci_build, :retried, pipeline: pipeline)
+        _expired_build = create(:ci_build, :expired, pipeline: pipeline)
+
+        failed_job = create(:ci_build, :failed, pipeline: pipeline)
+        successful_job = create(:ci_build, :success, pipeline: pipeline)
+        canceled_job = create(:ci_build, :canceled, pipeline: pipeline)
+
+        expect(pipeline.latest_finished_jobs).to contain_exactly(failed_job, successful_job, canceled_job)
+      end
+    end
+
     describe '#downloadable_artifacts' do
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }

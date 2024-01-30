@@ -16,7 +16,7 @@ module Namespaces
     idempotent!
 
     def perform
-      runtime_limiter = Analytics::CycleAnalytics::RuntimeLimiter.new(45.seconds)
+      runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(45.seconds)
 
       processed_namespaces = 0
       loop do

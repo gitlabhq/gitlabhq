@@ -627,6 +627,26 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
       end
     end
 
+    describe 'finished' do
+      subject { described_class.finished }
+
+      before do
+        # unfinished deployments
+        create(:deployment, status: :running)
+        create(:deployment, status: :blocked)
+        create(:deployment, status: :skipped)
+      end
+
+      # finished deployments
+      let!(:successful_deployment) { create(:deployment, status: :success) }
+      let!(:failed_deployment) { create(:deployment, status: :failed) }
+      let!(:canceled_deployment) { create(:deployment, status: :canceled) }
+
+      it 'retrieves the finished deployments' do
+        is_expected.to contain_exactly(successful_deployment, failed_deployment, canceled_deployment)
+      end
+    end
+
     describe 'upcoming' do
       subject { described_class.upcoming }
 
@@ -821,6 +841,232 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
       it_behaves_like 'find last deployment group for environment' do
         let(:factory_type) { :ci_bridge }
+      end
+    end
+
+    describe 'last_finished_deployment_group_for_environment' do
+      let_it_be(:project) { create(:project, :repository) }
+      let!(:environment) { create(:environment, project: project) }
+
+      subject { described_class.last_finished_deployment_group_for_environment(environment) }
+
+      context 'when there are no deployments and jobs' do
+        it { is_expected.to eq(described_class.none) }
+      end
+
+      shared_examples_for 'find last finished deployment for environment' do
+        context 'when there are no finished jobs' do
+          before do
+            pipeline = create(:ci_pipeline, project: project)
+            job = create(processable_type, :created, project: project, pipeline: pipeline)
+            create(:deployment, :created, environment: environment, project: project, deployable: job)
+          end
+
+          it { is_expected.to eq(described_class.none) }
+        end
+
+        context 'when there are deployments for multiple pipelines' do
+          let(:pipeline_a) { create(:ci_pipeline, project: project) }
+          let(:pipeline_b) { create(:ci_pipeline, project: project) }
+
+          # finished deployments for pipeline_a
+          let!(:deployment_a_success) do
+            job = create(processable_type, :success, project: project, pipeline: pipeline_a)
+            create(:deployment, :success, project: project, environment: environment, deployable: job)
+          end
+
+          let!(:deployment_a_failed) do
+            job = create(processable_type, :failed, project: project, pipeline: pipeline_a)
+            create(:deployment, :failed, project: project, environment: environment, deployable: job)
+          end
+
+          let!(:deployment_a_canceled) do
+            job = create(processable_type, :canceled, project: project, pipeline: pipeline_a)
+            create(:deployment, :canceled, project: project, environment: environment, deployable: job)
+          end
+
+          before do
+            # running deployment for pipeline_a
+            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline_a)
+            create(:deployment, :running, project: project, environment: environment, deployable: job_a_running)
+
+            # running deployment for pipeline_b
+            job_b_running = create(processable_type, :running, project: project, pipeline: pipeline_b)
+            create(:deployment, :running, project: project, environment: environment, deployable: job_b_running)
+          end
+
+          it 'returns the finished deployments for the last finished pipeline' do
+            expect(subject.pluck(:id)).to contain_exactly(
+              deployment_a_success.id, deployment_a_failed.id, deployment_a_canceled.id)
+          end
+        end
+
+        context 'when last finished deployment is a retried job' do
+          before do
+            pipeline = create(:ci_pipeline, project: project)
+            job = create(processable_type, :success, project: project,
+              pipeline: pipeline, environment: environment.name)
+            create(:deployment, :success, project: project, environment: environment, deployable: job)
+
+            # retry job
+            job.update!(retried: true)
+
+            # new successful job after retry.
+            create(
+              processable_type,
+              status: :success,
+              finished_at: Time.current,
+              project: project,
+              pipeline: pipeline,
+              environment: environment.name
+            )
+          end
+
+          it { is_expected.not_to be_nil }
+        end
+
+        context 'when there are many environments' do
+          def subject_method(env)
+            described_class.last_finished_deployment_group_for_environment(env)
+          end
+
+          let_it_be(:environment) { create(:environment, project: project) }
+          let_it_be(:environment_2) { create(:environment, project: project) }
+
+          let_it_be(:pipeline_a) { create(:ci_pipeline, project: project) }
+          let_it_be(:pipeline_b) { create(:ci_pipeline, project: project) }
+          let_it_be(:pipeline_c) { create(:ci_pipeline, project: project) }
+          let_it_be(:pipeline_d) { create(:ci_pipeline, project: project) }
+
+          # stop jobs in pipeline_a
+          let_it_be(:stop_job_a_success) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_success')
+          end
+
+          let_it_be(:stop_job_a_failed) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_failed')
+          end
+
+          let_it_be(:stop_job_a_canceled) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_a, name: 'stop_a_canceled')
+          end
+
+          # stop jobs in pipeline_c
+          let_it_be(:stop_job_c_success) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_c_success')
+          end
+
+          let_it_be(:stop_job_c_failed) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_c_failed')
+          end
+
+          let_it_be(:stop_job_c_canceled) do
+            create(:ci_build, :manual, project: project, pipeline: pipeline_c, name: 'stop_c_canceled')
+          end
+
+          # finished deployments for 'environment' from pipeline_a
+          let_it_be(:deployment_a_success) do
+            job = create(processable_type, :success, project: project, pipeline: pipeline_a)
+            create(:deployment, :success, project: project, environment: environment,
+              deployable: job, on_stop: 'stop_a_success')
+          end
+
+          let_it_be(:deployment_a_failed) do
+            job = create(processable_type, :failed, project: project, pipeline: pipeline_a)
+            create(:deployment, :failed, project: project, environment: environment,
+              deployable: job, on_stop: 'stop_a_failed')
+          end
+
+          let_it_be(:deployment_a_canceled) do
+            job = create(processable_type, :canceled, project: project, pipeline: pipeline_a)
+            create(:deployment, :canceled, project: project, environment: environment,
+              deployable: job, on_stop: 'stop_a_canceled')
+          end
+
+          # finished deployments for 'environment_2' from pipeline_c
+          let_it_be(:deployment_c_success) do
+            job = create(processable_type, :success, project: project, pipeline: pipeline_c)
+            create(:deployment, :success, project: project, environment: environment_2,
+              deployable: job, on_stop: 'stop_c_success')
+          end
+
+          let_it_be(:deployment_c_failed) do
+            job = create(processable_type, :failed, project: project, pipeline: pipeline_c)
+            create(:deployment, :failed, project: project, environment: environment_2,
+              deployable: job, on_stop: 'stop_c_failed')
+          end
+
+          let_it_be(:deployment_c_canceled) do
+            job = create(processable_type, :canceled, project: project, pipeline: pipeline_c)
+            create(:deployment, :canceled, project: project, environment: environment_2,
+              deployable: job, on_stop: 'stop_c_canceled')
+          end
+
+          before_all do
+            # running deployments
+            job_a_running = create(processable_type, :running, project: project, pipeline: pipeline_a)
+            create(:deployment, :running, project: project, environment: environment, deployable: job_a_running)
+
+            job_b_running = create(processable_type, :running, project: project, pipeline: pipeline_b)
+            create(:deployment, :running, project: project, environment: environment, deployable: job_b_running)
+
+            job_c_running = create(processable_type, :running, project: project, pipeline: pipeline_c)
+            create(:deployment, :running, project: project, environment: environment_2, deployable: job_c_running)
+
+            job_d_running = create(processable_type, :running, project: project, pipeline: pipeline_d)
+            create(:deployment, :running, project: project, environment: environment_2, deployable: job_d_running)
+          end
+
+          it 'batch loads for environments' do
+            # Loads Batch loader
+            subject_method(environment)
+            subject_method(environment_2)
+
+            expect(subject_method(environment).pluck(:id))
+              .to contain_exactly(deployment_a_success.id, deployment_a_failed.id, deployment_a_canceled.id)
+
+            expect { subject_method(environment_2).pluck(:id) }.not_to exceed_query_limit(0)
+
+            expect(subject_method(environment_2).pluck(:id))
+              .to contain_exactly(deployment_c_success.id, deployment_c_failed.id, deployment_c_canceled.id)
+
+            expect(subject_method(environment).map(&:stop_action).compact)
+              .to contain_exactly(stop_job_a_success, stop_job_a_failed, stop_job_a_canceled)
+
+            expect { subject_method(environment_2).map(&:stop_action) }
+              .not_to exceed_query_limit(0)
+
+            expect(subject_method(environment_2).map(&:stop_action).compact)
+              .to contain_exactly(stop_job_c_success, stop_job_c_failed, stop_job_c_canceled)
+          end
+
+          # last_deployment_group_for_environment and last_finished_deployment_group_for_environment
+          # use BatchLoader.for(environment), with different batch key. This test makes sure that
+          # the different methods are returning different results.
+          context 'when last_deployment_group_for_environment is also called' do
+            def last_deployment_group(env)
+              described_class.last_deployment_group_for_environment(env)
+            end
+
+            it 'returns different results' do
+              successful_deployment_group_for_env_1 = last_deployment_group(environment)
+              expect(successful_deployment_group_for_env_1.pluck(:id)).to contain_exactly(deployment_a_success.id)
+              expect(successful_deployment_group_for_env_1).not_to eq(subject_method(environment))
+
+              successful_deployment_group_for_env_2 = last_deployment_group(environment_2)
+              expect(successful_deployment_group_for_env_2.pluck(:id)).to contain_exactly(deployment_c_success.id)
+              expect(successful_deployment_group_for_env_2).not_to eq(subject_method(environment_2))
+            end
+          end
+        end
+      end
+
+      it_behaves_like 'find last finished deployment for environment' do
+        let_it_be(:processable_type) { :ci_build }
+      end
+
+      it_behaves_like 'find last finished deployment for environment' do
+        let_it_be(:processable_type) { :ci_bridge }
       end
     end
   end

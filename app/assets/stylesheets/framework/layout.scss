@@ -5,10 +5,6 @@ html {
 }
 
 body {
-  &.navless {
-    background-color: $white !important;
-  }
-
   &.board-card-content {
     background-color: $gray-darker;
 

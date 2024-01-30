@@ -376,6 +376,58 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
         end
       end
     end
+
+    describe 'stop actions' do
+      using RSpec::Parameterized::TableSyntax
+
+      let_it_be(:project) { create(:project, :repository) }
+
+      let(:warning_message) { 'no “stop environment action” being defined' }
+
+      where(:status, :warning_present_if_ff_disabled) do
+        :success  | false
+        :failed   | true
+        :canceled | true
+      end
+
+      with_them do
+        before do
+          pipeline = create(:ci_pipeline, status, project: project)
+          build = create(:ci_build, status, pipeline: pipeline)
+          create(:ci_build, :manual, project: project, pipeline: pipeline, name: 'stop_action')
+          create(:deployment, status, environment: environment, deployable: build, sha: project.commit.id, on_stop: 'stop_action')
+        end
+
+        context 'when :environment_stop_actions_include_all_finished_deployments FF is enabled' do
+          before do
+            visit_environments(project)
+          end
+
+          it 'shows a stop action dialog without a warning message' do
+            click_button(_('Stop'))
+
+            within('.modal-body') do
+              expect(page).not_to have_content(warning_message)
+            end
+          end
+        end
+
+        context 'when :environment_stop_actions_include_all_finished_deployments FF is disabled' do
+          before do
+            stub_feature_flags(environment_stop_actions_include_all_finished_deployments: false)
+            visit_environments(project)
+          end
+
+          it 'shows a stop action dialog with the correct message' do
+            click_button(_('Stop'))
+
+            within('.modal-body') do
+              expect(page.has_content?(warning_message)).to eq warning_present_if_ff_disabled
+            end
+          end
+        end
+      end
+    end
   end
 
   it 'does have a new environment button' do

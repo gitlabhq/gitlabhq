@@ -1,0 +1,9 @@
+---
+name: environment_stop_actions_include_all_finished_deployments
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435128
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141216
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435132
+milestone: '16.9'
+type: gitlab_com_derisk
+group: group::environments
+default_enabled: false

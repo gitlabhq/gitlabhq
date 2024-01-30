@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Analytics
-  module CycleAnalytics
+module Gitlab
+  module Metrics
     class RuntimeLimiter
       delegate :monotonic_time, to: :'Gitlab::Metrics::System'
 

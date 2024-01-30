@@ -6591,6 +6591,25 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
+### `Mutation.refreshStandardsAdherenceChecks`
+
+Input type: `RefreshStandardsAdherenceChecksInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshstandardsadherencechecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshstandardsadherencechecksgrouppath"></a>`groupPath` | [`ID!`](#id) | Group path. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshstandardsadherencechecksadherencechecksstatus"></a>`adherenceChecksStatus` | [`StandardsAdherenceChecksStatus`](#standardsadherencechecksstatus) | Progress of standards adherence checks. |
+| <a id="mutationrefreshstandardsadherencechecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshstandardsadherencecheckserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.releaseAssetLinkCreate`
 
 Input type: `ReleaseAssetLinkCreateInput`
@@ -27421,6 +27440,18 @@ SSH signature for a signed commit.
 | <a id="sshsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
 | <a id="sshsignatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
 | <a id="sshsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
+
+### `StandardsAdherenceChecksStatus`
+
+Progress of standards adherence checks.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="standardsadherencechecksstatuscheckscompleted"></a>`checksCompleted` | [`Int!`](#int) | Number of adherence checks successfully completed. |
+| <a id="standardsadherencechecksstatusstartedat"></a>`startedAt` | [`Time!`](#time) | UTC timestamp when the adherence checks scan was started. |
+| <a id="standardsadherencechecksstatustotalchecks"></a>`totalChecks` | [`Int!`](#int) | Total number of adherence checks. (Adherence checks multiplied by the number of projects in the group). |
 
 ### `StatusAction`
 

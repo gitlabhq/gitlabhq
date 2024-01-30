@@ -59,7 +59,7 @@ async function fetchTrace(tracingUrl, traceId) {
 /**
  * Filters (and operators) allowed by tracing query API
  */
-const SUPPORTED_FILTERS = {
+const SUPPORTED_TRACING_FILTERS = {
   durationMs: ['>', '<'],
   operation: ['=', '!='],
   service: ['=', '!='],
@@ -73,7 +73,7 @@ const SUPPORTED_FILTERS = {
 /**
  * Mapping of filter name to query param
  */
-const FILTER_TO_QUERY_PARAM = {
+const TRACING_FILTER_TO_QUERY_PARAM = {
   durationMs: 'duration_nano',
   operation: 'operation',
   service: 'service_name',
@@ -87,19 +87,22 @@ const FILTER_OPERATORS_PREFIX = {
   '!=': 'not',
   '>': 'gt',
   '<': 'lt',
+  '!~': 'not_like',
+  '=~': 'like',
 };
 
 /**
- * Builds the query param name for the given filter and operator
+ * Return the query parameter name, given an operator and param key
  *
- * @param {String} filterName - The filter name
+ * e.g
+ *    if paramKey is 'foo' and operator is "=", param name is 'foo'
+ *    if paramKey is 'foo' and operator is "!=", param name is 'not[foo]'
+ *
+ * @param {String} paramKey - The parameter name
  * @param {String} operator - The operator
  * @returns String | undefined - Query param name
  */
-function getFilterParamName(filterName, operator) {
-  const paramKey = FILTER_TO_QUERY_PARAM[filterName];
-  if (!paramKey) return undefined;
-
+function getFilterParamName(paramKey, operator) {
   if (operator === '=') {
     return paramKey;
   }
@@ -110,6 +113,20 @@ function getFilterParamName(filterName, operator) {
   }
 
   return undefined;
+}
+
+/**
+ * Builds the tracing query param name for the given filter and operator
+ *
+ * @param {String} filterName - The filter name
+ * @param {String} operator - The operator
+ * @returns String | undefined - Query param name
+ */
+function getTracingFilterParamName(filterName, operator) {
+  const paramKey = TRACING_FILTER_TO_QUERY_PARAM[filterName];
+  if (!paramKey) return undefined;
+
+  return getFilterParamName(paramKey, operator);
 }
 
 /**
@@ -164,13 +181,13 @@ function handlePeriodFilter(rawValue, filterName, filterParams) {
  * @param {Object} filterObj : An Object representing filters
  * @returns URLSearchParams
  */
-function filterObjToQueryParams(filterObj) {
+function tracingFilterObjToQueryParams(filterObj) {
   const filterParams = new URLSearchParams();
 
-  Object.keys(SUPPORTED_FILTERS).forEach((filterName) => {
+  Object.keys(SUPPORTED_TRACING_FILTERS).forEach((filterName) => {
     const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
     const validFilters = filterValues.filter((f) =>
-      SUPPORTED_FILTERS[filterName].includes(f.operator),
+      SUPPORTED_TRACING_FILTERS[filterName].includes(f.operator),
     );
     validFilters.forEach(({ operator, value: rawValue }) => {
       if (filterName === 'attribute') {
@@ -178,7 +195,7 @@ function filterObjToQueryParams(filterObj) {
       } else if (filterName === 'period') {
         handlePeriodFilter(rawValue, filterName, filterParams);
       } else {
-        const paramName = getFilterParamName(filterName, operator);
+        const paramName = getTracingFilterParamName(filterName, operator);
         let value = rawValue;
         if (filterName === 'durationMs') {
           // converting durationMs to duration_nano
@@ -209,7 +226,7 @@ function filterObjToQueryParams(filterObj) {
  * @returns Array<Trace> : A list of traces
  */
 async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sortBy } = {}) {
-  const params = filterObjToQueryParams(filters);
+  const params = tracingFilterObjToQueryParams(filters);
   if (pageToken) {
     params.append('page_token', pageToken);
   }
@@ -236,7 +253,7 @@ async function fetchTraces(tracingUrl, { filters = {}, pageToken, pageSize, sort
 }
 
 async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {} } = {}) {
-  const params = filterObjToQueryParams(filters);
+  const params = tracingFilterObjToQueryParams(filters);
 
   try {
     const { data } = await axios.get(tracingAnalyticsUrl, {
@@ -318,7 +335,52 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
   }
 }
 
-async function fetchMetric(searchUrl, name, type) {
+const SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS = ['=', '!=', '=~', '!~'];
+
+function addMetricsDimensionFilterToQueryParams(dimensionFilter, params) {
+  if (!dimensionFilter || !params) return;
+
+  Object.entries(dimensionFilter).forEach(([filterName, values]) => {
+    const filterValues = Array.isArray(values) ? values : [];
+    const validFilters = filterValues.filter((f) =>
+      SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS.includes(f.operator),
+    );
+    validFilters.forEach(({ operator, value }) => {
+      const paramName = getFilterParamName(filterName, operator);
+      if (paramName && value) {
+        params.append(paramName, value);
+      }
+    });
+  });
+}
+
+function addMetricsDateRangeFilterToQueryParams(dateRangeFilter, params) {
+  if (!dateRangeFilter || !params) return;
+
+  const { value, endDate, startDate } = dateRangeFilter;
+  if (value === 'custom') {
+    if (isValidDate(startDate) && isValidDate(endDate)) {
+      params.append('start_time', startDate.toISOString());
+      params.append('end_time', endDate.toISOString());
+    }
+  } else if (typeof value === 'string') {
+    params.append('period', value);
+  }
+}
+
+function addGroupByFilterToQueryParams(groupByFilter, params) {
+  if (!groupByFilter || !params) return;
+
+  const { func, dimensions } = groupByFilter;
+  if (func) {
+    params.append('groupby_fn', func);
+  }
+  if (Array.isArray(dimensions) && dimensions.length > 0) {
+    params.append('groupby_attrs', dimensions.join(','));
+  }
+}
+
+async function fetchMetric(searchUrl, name, type, options = {}) {
   try {
     if (!name) {
       throw new Error('fetchMetric() - metric name is required.');
@@ -332,10 +394,25 @@ async function fetchMetric(searchUrl, name, type) {
       mtype: type,
     });
 
+    const { dimensions, dateRange, groupBy } = options.filters ?? {};
+
+    if (dimensions) {
+      addMetricsDimensionFilterToQueryParams(dimensions, params);
+    }
+
+    if (dateRange) {
+      addMetricsDateRangeFilterToQueryParams(dateRange, params);
+    }
+
+    if (groupBy) {
+      addGroupByFilterToQueryParams(groupBy, params);
+    }
+
     const { data } = await axios.get(searchUrl, {
       params,
       withCredentials: true,
     });
+
     if (!Array.isArray(data.results)) {
       throw new Error('metrics are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
     }
@@ -438,7 +515,8 @@ export function buildClient(config) {
     fetchServices: () => fetchServices(servicesUrl),
     fetchOperations: (serviceName) => fetchOperations(operationsUrl, serviceName),
     fetchMetrics: (options) => fetchMetrics(metricsUrl, options),
-    fetchMetric: (metricName, metricType) => fetchMetric(metricsSearchUrl, metricName, metricType),
+    fetchMetric: (metricName, metricType, options) =>
+      fetchMetric(metricsSearchUrl, metricName, metricType, options),
     fetchMetricSearchMetadata: (metricName, metricType) =>
       fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
   };

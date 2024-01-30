@@ -33,7 +33,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
 
     context 'when time limit is reached' do
       it 'stops the processing' do
-        allow_next_instance_of(Analytics::CycleAnalytics::RuntimeLimiter) do |runtime_limiter|
+        allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |runtime_limiter|
           allow(runtime_limiter).to receive(:over_time?).and_return(true) # stop after the 1st record
         end
 

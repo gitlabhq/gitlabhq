@@ -15,11 +15,14 @@ module Security
 
       def execute
         if project.repository.empty? && !(@params && @params[:initialize_with_sast])
-          docs_link = ActionController::Base.helpers.link_to _('add at least one file to the repository'),
-                              Rails.application.routes.url_helpers.help_page_url('user/project/repository/index.md',
-                                                                                anchor: 'add-files-to-a-repository'),
-                              target: '_blank',
-                              rel: 'noopener noreferrer'
+          docs_link = ActionController::Base.helpers.link_to(
+            _('add at least one file to the repository'),
+            Rails.application.routes.url_helpers.help_page_url(
+              'user/project/repository/index.md', anchor: 'add-files-to-a-repository'
+            ),
+            target: '_blank',
+            rel: 'noopener noreferrer'
+          )
 
           return ServiceResponse.error(
             message: _(format('You must %s before using Security features.', docs_link)).html_safe

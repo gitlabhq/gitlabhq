@@ -29,6 +29,12 @@ Users with the Guest role cannot clone the project.
 
 Private groups can have only private subgroups.
 
+NOTE:
+When you [share a private group with another group](group/manage.md#share-a-group-with-another-group),
+users who don't have access to the private group can view a list of users who have access to the inviting group
+through the endpoint `https://gitlab.com/groups/<inviting-group-name>/-/autocomplete_sources/members`.
+However, the name and path of the private group are masked, and the users' membership source is not displayed.
+
 ## Internal projects and groups
 
 DETAILS:

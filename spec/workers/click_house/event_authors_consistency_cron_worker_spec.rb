@@ -90,7 +90,7 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
         stub_const("#{ClickHouse::Concerns::ConsistencyWorker}::POSTGRESQL_BATCH_SIZE", 1)
 
         # stop at the third author_id
-        allow_next_instance_of(Analytics::CycleAnalytics::RuntimeLimiter) do |runtime_limiter|
+        allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |runtime_limiter|
           allow(runtime_limiter).to receive(:over_time?).and_return(false, false, true)
         end
         expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { status: :over_time, modifications: 1 })

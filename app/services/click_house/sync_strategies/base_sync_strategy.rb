@@ -48,7 +48,7 @@ module ClickHouse
         @context ||= ClickHouse::RecordSyncContext.new(
           last_record_id: ClickHouse::SyncCursor.cursor_for(model_class.table_name),
           max_records_per_batch: INSERT_BATCH_SIZE,
-          runtime_limiter: Analytics::CycleAnalytics::RuntimeLimiter.new(MAX_RUNTIME)
+          runtime_limiter: Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
         )
       end
 

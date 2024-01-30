@@ -48,7 +48,7 @@ module Tooling
           ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
           ((ee|jh)/)?app/services/(.+/)?jira.+ |
           ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |
-          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data|web_hooks)/.+ |
+          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data|web_hooks|slash_commands)/.+ |
           ((ee|jh)/)?lib/(.+/)?.*integration.+ |
           ((ee|jh)/)?lib/(.+/)?api/v3/github\.rb |
           ((ee|jh)/)?lib/(.+/)?api/github/entities\.rb

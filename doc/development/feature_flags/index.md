@@ -202,12 +202,12 @@ instance/group/project/user setting.
 
 #### Constraints
 
-- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
-  possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
-  reason on specific on-premise installations)
-- Maximum Lifespan: Unlimited
+- `default_enabled`: Should be set to `false` in most cases, and only enabled to resolve temporary scalability
+  issues or help debug production issues.
+- Maximum Lifespan: 12 months
 - Documentation: This type of feature flag **must** be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page
+  [All feature flags in GitLab](../../user/feature_flags.md) page as well as be associated with an operational
+  runbook describing the circumstances when it can be used.
 - Rollout issue: Likely no need for a rollout issues, as it is hard to predict when they are enabled or disabled
 
 #### Usage

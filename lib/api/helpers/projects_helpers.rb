@@ -81,6 +81,7 @@ module API
         optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
       end
 
       params :optional_project_params_ee do
@@ -201,6 +202,7 @@ module API
           :monitor_access_level,
           :model_experiments_access_level,
           :model_registry_access_level,
+          :warn_about_potentially_unwanted_characters,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

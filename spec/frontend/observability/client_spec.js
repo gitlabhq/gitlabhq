@@ -780,6 +780,191 @@ describe('buildClient', () => {
       expect(result).toEqual(data.results);
     });
 
+    describe('query filter params', () => {
+      beforeEach(() => {
+        axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+      });
+
+      describe('dimension filter', () => {
+        it('converts filter to proper query params', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dimensions: {
+                attr_1: [
+                  { operator: '=', value: 'foo' },
+                  { operator: '!=', value: 'bar' },
+                ],
+                attr_2: [
+                  { operator: '=~', value: 'foo' },
+                  { operator: '!~', value: 'bar' },
+                ],
+              },
+            },
+          });
+          expect(getQueryParam()).toBe(
+            'mname=name&mtype=type' +
+              '&attr_1=foo&not[attr_1]=bar' +
+              '&like[attr_2]=foo&not_like[attr_2]=bar',
+          );
+        });
+
+        it('handles repeated params', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dimensions: {
+                attr_1: [
+                  { operator: '=', value: 'v1' },
+                  { operator: '=', value: 'v2' },
+                ],
+              },
+            },
+          });
+          expect(getQueryParam()).toContain('attr_1=v1&attr_1=v2');
+        });
+
+        it('ignores empty filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { dimensions: [] },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined dimension filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { dimensions: undefined },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores non-array filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dimensions: {
+                attr_1: { operator: '=', value: 'foo' },
+              },
+            },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores unsupported operators', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dimensions: {
+                attr_1: [
+                  { operator: '*', value: 'foo' },
+                  { operator: '>', value: 'foo' },
+                  { operator: '<', value: 'foo' },
+                ],
+              },
+            },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: undefined,
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores null filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: null,
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+      });
+
+      describe('date range filter', () => {
+        it('handle predefined date range value', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { dateRange: { value: '5m' } },
+          });
+          expect(getQueryParam()).toContain(`period=5m`);
+        });
+
+        it('handle custom date range value', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dateRange: {
+                endDate: new Date('2020-07-06'),
+                startDate: new Date('2020-07-05'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+          );
+        });
+      });
+
+      it('ignores empty filter', async () => {
+        await client.fetchMetric('name', 'type', {
+          filters: { dateRange: {} },
+        });
+        expect(getQueryParam()).toBe('mname=name&mtype=type');
+      });
+
+      it('ignores undefined filter', async () => {
+        await client.fetchMetric('name', 'type', {
+          filters: { dateRange: undefined },
+        });
+        expect(getQueryParam()).toBe('mname=name&mtype=type');
+      });
+
+      describe('group by filter', () => {
+        it('handle group by func', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { func: 'sum' } },
+          });
+          expect(getQueryParam()).toContain(`groupby_fn=sum`);
+        });
+
+        it('handle group by dimension', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { dimensions: ['attr_1'] } },
+          });
+          expect(getQueryParam()).toContain(`groupby_attrs=attr_1`);
+        });
+
+        it('handle group by multiple dimensions', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { dimensions: ['attr_1', 'attr_2'] } },
+          });
+          expect(getQueryParam()).toContain(`groupby_attrs=attr_1,attr_2`);
+        });
+        it('ignores empty filter', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: {} },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores empty list', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { dimensions: [] } },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined filter', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: undefined },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+      });
+    });
+
     it('rejects if results is missing from the response', async () => {
       axiosMock.onGet(metricsSearchUrl).reply(200, {});
       const e = 'metrics are missing/invalid in the response';

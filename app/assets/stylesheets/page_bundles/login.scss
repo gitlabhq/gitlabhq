@@ -30,6 +30,12 @@
         border-bottom: 1px solid $gray-100;
         background-color: transparent;
       }
+
+      .nav-link.active {
+        .gl-dark & {
+          background-color: var(--gray-100);
+        }
+      }
     }
 
     display: flex;

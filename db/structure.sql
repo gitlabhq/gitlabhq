@@ -30357,6 +30357,9 @@ ALTER TABLE ONLY project_wiki_repositories
 ALTER TABLE ONLY projects
     ADD CONSTRAINT projects_pkey PRIMARY KEY (id);
 
+ALTER TABLE projects
+    ADD CONSTRAINT projects_star_count_positive CHECK ((star_count >= 0)) NOT VALID;
+
 ALTER TABLE ONLY projects_sync_events
     ADD CONSTRAINT projects_sync_events_pkey PRIMARY KEY (id);
 

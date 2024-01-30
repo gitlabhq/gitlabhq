@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Jwt do
+RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
   let(:namespace) { build_stubbed(:namespace) }
   let(:project) { build_stubbed(:project, namespace: namespace) }
   let(:user) { build_stubbed(:user) }

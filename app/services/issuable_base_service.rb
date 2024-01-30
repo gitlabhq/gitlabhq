@@ -541,6 +541,8 @@ class IssuableBaseService < ::BaseContainerService
     associations[:description] = issuable.description
     associations[:reviewers] = issuable.reviewers.to_a if issuable.allows_reviewers?
     associations[:severity] = issuable.severity if issuable.supports_severity?
+    associations[:target_branch] = issuable.target_branch if issuable.is_a?(MergeRequest)
+    associations[:approval_rules] = issuable.approval_rules.map(&:hook_attrs) if issuable.is_a?(MergeRequest)
 
     if issuable.supports_escalation? && issuable.escalation_status
       associations[:escalation_status] = issuable.escalation_status.status_name

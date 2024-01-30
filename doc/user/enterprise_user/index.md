@@ -18,7 +18,7 @@ next to their names on the [Members list](../group/index.md#filter-and-sort-memb
 
 ## Automatic claims of enterprise users
 
-A user is automatically claimed as an enterprise user of a group when **all** of the following conditions are met:
+A user is automatically claimed as an enterprise user of a group when **both** of the following conditions are met:
 
 1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
 1. The user account meets at least **one** of the following conditions:
@@ -195,7 +195,7 @@ To disable 2FA:
 
 A SAML identity administrator can configure the SAML response to set:
 
-- Whether enterprise users can create groups.
+- Whether enterprise users can create new top-level groups.
 - The maximum number of personal projects enterprise users can create.
 
 For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/index.md#configure-enterprise-user-settings-from-saml-response).
@@ -219,7 +219,7 @@ includes users' email addresses.
 
 ### Remove enterprise management features from an account
 
-Changing an enterprise user's primary email to any email with a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
+Changing an enterprise user's primary email to an email from a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
 
 ## Troubleshooting
 

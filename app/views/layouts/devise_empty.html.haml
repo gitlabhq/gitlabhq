@@ -5,7 +5,7 @@
 !!! 5
 %html.html-devise-layout{ class: page_classes, lang: I18n.locale }
   = render "layouts/head"
-  %body.gl-h-full.login-page.navless{ class: "#{system_message_class} #{client_class_list}" }
+  %body.gl-h-full.login-page{ class: "#{system_message_class} #{client_class_list}" }
     = header_message
     = render "layouts/init_client_detection_flags"
     = render "layouts/header/empty"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Analytics::CycleAnalytics::RuntimeLimiter, feature_category: :value_stream_management do
+RSpec.describe Gitlab::Metrics::RuntimeLimiter, feature_category: :value_stream_management do
   let(:max_runtime) { 321 }
   let(:runtime_limiter) { described_class.new(max_runtime) }
 
