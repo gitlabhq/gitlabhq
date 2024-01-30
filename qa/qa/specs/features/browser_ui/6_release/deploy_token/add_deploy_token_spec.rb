@@ -10,11 +10,10 @@ module QA
         deploy_token_name = 'deploy token name'
         one_week_from_now = Date.today + 7
 
-        deploy_token = Resource::ProjectDeployToken.fabricate_via_api! do |resource|
-          resource.name = deploy_token_name
-          resource.expires_at = one_week_from_now
-          resource.scopes = %w[read_repository]
-        end
+        deploy_token = create(:project_deploy_token,
+          name: deploy_token_name,
+          expires_at: one_week_from_now,
+          scopes: %w[read_repository])
 
         expect(deploy_token.username.length).to be > 0
         expect(deploy_token.token.length).to be > 0

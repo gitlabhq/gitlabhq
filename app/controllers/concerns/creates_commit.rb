@@ -138,7 +138,8 @@ module CreatesCommit
     # Even if the field is set, if we're checking the same branch
     # as the target branch in the same project,
     # we don't want to create a merge request.
-    params[:create_merge_request].present? &&
+    # FIXME: We should use either 1 or true, not both.
+    ActiveModel::Type::Boolean.new.cast(params[:create_merge_request]) &&
       (@different_project || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 

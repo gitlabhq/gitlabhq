@@ -135,8 +135,6 @@ sbom_component_versions:
   index_sbom_component_versions_on_component_id_and_version:
     - index_sbom_component_versions_on_component_id
 sbom_occurrences:
-  index_sbom_occurrences_for_input_file_path_search:
-    - index_sbom_occurrences_on_project_id_component_id
   index_sbom_occurrences_on_project_id_and_component_id_and_id:
     - index_sbom_occurrences_on_project_id_component_id
 search_namespace_index_assignments:

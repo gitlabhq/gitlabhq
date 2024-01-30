@@ -17,8 +17,21 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
+      *tables_with_alternative_not_null_constraint,
       'labels.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
       'labels.group_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/434356
+    ]
+  end
+
+  # The following tables have multiple sharding keys and a check constraint that
+  # correctly ensures at least one of the keys must be set, however the constraint
+  # definition is written in a way that is difficult to verify using these specs.
+  # For example:
+  #   `CONSTRAINT example_constraint CHECK (((project_id IS NULL) <> (namespace_id IS NULL)))`
+  let(:tables_with_alternative_not_null_constraint) do
+    [
+      'security_orchestration_policy_configurations.project_id',
+      'security_orchestration_policy_configurations.namespace_id'
     ]
   end
 

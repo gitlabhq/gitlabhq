@@ -65,6 +65,9 @@ module Gitlab
           bulk_import: { threshold: 6, interval: 1.minute },
           projects_api_rate_limit_unauthenticated: {
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
+          },
+          downstream_pipeline_trigger: {
+            threshold: -> { ::Ci::TriggerDownstreamPipelineService::DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA }, interval: 1.minute
           }
         }.freeze
       end

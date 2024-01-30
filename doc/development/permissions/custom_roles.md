@@ -191,6 +191,7 @@ security dashboard.
 | `group_ability` | yes | Boolean value to indicate whether this ability is checked on group level. |
 | `project_ability` | yes | Boolean value to whether this ability is checked on project level. |
 | `requirements` | no | The list of custom permissions this ability is dependent on. For instance `admin_vulnerability` is dependent on `read_vulnerability`. If none, then enter `[]`  |
+| `available_from_access_level` | no | The access level from which this ability is available, if applicable. See the section on [understanding logic for individual abilities](#understanding-logic-for-individual-abilities) for help on determining the base access level for an ability. |
 
 #### Step 2: Create a migration file
 
@@ -258,7 +259,7 @@ end
 
   before do
     stub_licensed_features(custom_roles: true)
-    
+
     sign_in(user)
   end
 
@@ -292,7 +293,7 @@ end
     include GraphqlHelpers
 
     describe '#show' do
-      let(:mutation) { graphql_mutation(:my_mutation) } 
+      let(:mutation) { graphql_mutation(:my_mutation) }
 
       it_behaves_like 'a working graphql query'
     end

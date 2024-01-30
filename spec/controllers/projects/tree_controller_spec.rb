@@ -294,6 +294,8 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
   end
 
   describe '#create_dir' do
+    let(:create_merge_request) { nil }
+
     render_views
 
     before do
@@ -303,18 +305,57 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
         id: 'master',
         dir_name: path,
         branch_name: branch_name,
-        commit_message: 'Test commit message'
+        commit_message: 'Test commit message',
+        create_merge_request: create_merge_request
       }
     end
 
     context 'successful creation' do
       let(:path) { 'files/new_dir' }
-      let(:branch_name) { 'master-test' }
+      let(:branch_name) { "main-test-#{SecureRandom.hex}" }
 
-      it 'redirects to the new directory' do
-        expect(subject)
-            .to redirect_to("/#{project.full_path}/-/tree/#{branch_name}/#{path}")
-        expect(flash[:notice]).to eq('The directory has been successfully created.')
+      context 'when not creating a new MR' do
+        let(:create_merge_request) { 'false' }
+
+        it 'redirects to the new directory' do
+          expect(subject)
+              .to redirect_to("/#{project.full_path}/-/tree/#{branch_name}/#{path}")
+          expect(flash[:notice]).to eq('The directory has been successfully created.')
+        end
+      end
+
+      context 'when creating a new MR' do
+        shared_examples 'a new MR from branch redirection' do
+          it 'redirects to the new MR page' do
+            expect(subject)
+                .to redirect_to("/#{project.full_path}/-/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}&merge_request%5Btarget_branch%5D=master&merge_request%5Btarget_project_id%5D=#{project.id}")
+            expect(flash[:notice]).to eq('The directory has been successfully created. You can now submit a merge request to get this change into the original branch.')
+          end
+        end
+
+        context "and the passed create_merge_request value is true" do
+          it_behaves_like 'a new MR from branch redirection' do
+            let(:create_merge_request) { true }
+          end
+        end
+
+        context "and the passed create_merge_request value is 'true'" do
+          it_behaves_like 'a new MR from branch redirection' do
+            let(:create_merge_request) { 'true' }
+          end
+        end
+
+        context "and the passed create_merge_request value is '1'" do
+          it_behaves_like 'a new MR from branch redirection' do
+            let(:create_merge_request) { '1' }
+          end
+        end
+
+        context "and the passed create_merge_request value is 1" do
+          it_behaves_like 'a new MR from branch redirection' do
+            let(:create_merge_request) { 1 }
+          end
+        end
       end
     end
 

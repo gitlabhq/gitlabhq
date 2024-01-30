@@ -14,15 +14,14 @@ module QA
       let(:package_type) { 'maven' }
 
       let(:group_deploy_token) do
-        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'maven-group-deploy-token'
-          deploy_token.group = package_project.group
-          deploy_token.scopes = %w[
+        create(:group_deploy_token,
+          name: 'maven-group-deploy-token',
+          group: package_project.group,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
-          ]
-        end
+          ])
       end
 
       context 'via maven' do

@@ -5,6 +5,7 @@ module Gitlab
     module Status
       module Build
         class Failed < Status::Extended
+          # rubocop: disable Layout/LineLength -- Long error messages
           REASONS = {
             unknown_failure: 'unknown failure',
             script_failure: 'script failure',
@@ -41,8 +42,10 @@ module Gitlab
             environment_creation_failure: 'environment creation failure',
             deployment_rejected: 'deployment rejected',
             ip_restriction_failure: 'IP address restriction failure',
-            failed_outdated_deployment_job: 'failed outdated deployment job'
+            failed_outdated_deployment_job: 'failed outdated deployment job',
+            reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
           }.freeze
+          # rubocop: enable Layout/LineLength
 
           private_constant :REASONS
 
