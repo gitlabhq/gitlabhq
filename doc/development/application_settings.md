@@ -14,7 +14,7 @@ Application settings are stored in the `application_settings` table. Each settin
 ## Add a new application setting
 
 First of all, you have to decide if it is necessary to add an application setting.
-Consider our [configuration principles](https://about.gitlab.com/handbook/product/product-principles/#configuration-principles) when adding a new setting.
+Consider our [configuration principles](https://handbook.gitlab.com/handbook/product/product-principles/#configuration-principles) when adding a new setting.
 
 To add a new setting, you have to:
 

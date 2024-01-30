@@ -130,4 +130,4 @@ For supported browsers, see our [requirements](../../install/requirements.md#sup
 
 Use [BrowserStack](https://www.browserstack.com/) to test with our supported browsers.
 Sign in to BrowserStack with the credentials saved in the **Engineering** vault of the GitLab
-[shared 1Password account](https://about.gitlab.com/handbook/security/#1password-guide).
+[shared 1Password account](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams).

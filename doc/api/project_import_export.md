@@ -270,7 +270,7 @@ The `Content-Type` header must be `application/gzip`.
 
 ## Import a file from AWS S3
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.10.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
 

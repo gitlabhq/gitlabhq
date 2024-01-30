@@ -94,7 +94,7 @@ For these reasons, do not add AI-generated content to the documentation.
 
 ## Related topics
 
-- [Reviews and levels of edit](https://about.gitlab.com/handbook/product/ux/technical-writing/#reviews)
+- [Reviews and levels of edit](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#reviews)
 - [Technical writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 - The [Style Guide](styleguide/index.md)
 - The [Word list](styleguide/word_list.md)

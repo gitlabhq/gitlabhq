@@ -55,7 +55,7 @@ easier will be identifying and separating bounded context.
 ### 1. What makes a bounded context?
 
 From the research in [Proposal: split GitLab monolith into components](https://gitlab.com/gitlab-org/gitlab/-/issues/365293)
-it seems that following [product categories](https://about.gitlab.com/handbook/product/categories/#hierarchy), as a guideline,
+it seems that following [product categories](https://handbook.gitlab.com/handbook/product/categories/#hierarchy), as a guideline,
 would be much better than translating organization structure into folder structure (for example, `app/modules/verify/pipeline-execution/...`).
 
 However, this guideline alone is not sufficient and we need a more specific strategy:

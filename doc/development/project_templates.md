@@ -13,7 +13,7 @@ If you'd like to contribute a new built-in project template to be distributed wi
 1. Create a new public project with the project content you'd like to contribute in a namespace of your choosing. You can view a working example [here](https://gitlab.com/gitlab-org/project-templates/dotnetcore).
    - Projects should be as simple as possible and free of any unnecessary assets or dependencies.
 1. When the project is ready for review, create a new issue in [GitLab](https://gitlab.com/gitlab-org/gitlab/issues) with a link to your project.
-   - In your issue, `@` mention the relevant Backend Engineering Manager and Product Manager for the [Create:Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group).
+   - In your issue, `@` mention the relevant Backend Engineering Manager and Product Manager for the [Create:Source Code group](https://handbook.gitlab.com/handbook/product/categories/#source-code-group).
 
 To make the project template available when creating a new project, the vendoring process will have to be completed:
 

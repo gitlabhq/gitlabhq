@@ -669,9 +669,8 @@ Specific information applies to Linux package installations:
   Prior to upgrading, administrators of Linux package installations must ensure the installation is using
   [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
-- Grafana that was bundled with GitLab is deprecated and is no longer supported. It is
-  [removed](../../administration/monitoring/performance/grafana_configuration.md#grafana-bundled-with-gitlab-removed) in
-  GitLab 16.3.
+- Grafana that was bundled with GitLab is deprecated and is no longer supported.
+  It is removed in GitLab 16.3.
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
   Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of

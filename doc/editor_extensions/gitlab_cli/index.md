@@ -66,6 +66,15 @@ glab mr merge
 - [`glab user`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/user)
 - [`glab variable`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/variable)
 
+## GitLab Duo commands
+
+The GitLab CLI also provides support for GitLab Duo AI/ML powered features. These include:
+
+- [`glab ask`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ask)
+
+Use `glab ask` to ask questions about `git` commands. It can help you remember a
+command you forgot, or provide suggestions on how to run commands to perform other tasks.
+
 ## Install the CLI
 
 Installation instructions are available in the GLab

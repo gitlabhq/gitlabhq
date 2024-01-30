@@ -54,7 +54,7 @@ The GitLab handbook documents [when something is a bug](https://about.gitlab.com
 
 ## Stage labels
 
-Stage labels specify which [stage](https://about.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
+Stage labels specify which [stage](https://handbook.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
 
 ### Naming and color convention
 
@@ -98,7 +98,7 @@ The current group labels can be found by [searching the labels list for `group::
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels)
 and thus are mutually exclusive.
 
-You can find the groups listed in the [Product Stages, Groups, and Categories](https://about.gitlab.com/handbook/product/categories/) page.
+You can find the groups listed in the [Product Stages, Groups, and Categories](https://handbook.gitlab.com/handbook/product/categories/) page.
 
 We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
@@ -106,7 +106,7 @@ As a team needs some way to collect the work their members are planning to be as
 ## Category labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
 > Categories are high-level capabilities that may be a standalone product at
@@ -138,7 +138,7 @@ in <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml
 ## Feature labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
 > Features: Small, discrete functionalities, for example Issue weights. Some common

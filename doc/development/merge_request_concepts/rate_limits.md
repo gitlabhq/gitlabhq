@@ -24,5 +24,5 @@ Limits are applicable for:
 ## Additional reading
 
 - Existing [GitLab application limits](../../administration/instance_limits.md)
-- Product processes: [introducing application limits](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits)
+- Product processes: [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits)
 - Development docs: [guide for adding application limits](../application_limits.md)

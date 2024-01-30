@@ -1260,11 +1260,7 @@ module Ci
     end
 
     def prefix_and_partition_for_token
-      if Feature.enabled?(:prefix_ci_build_tokens, project, type: :beta)
-        TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
-      else
-        partition_id_prefix_in_16_bit_encode
-      end
+      TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
     end
   end
 end

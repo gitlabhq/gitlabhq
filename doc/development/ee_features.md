@@ -22,7 +22,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
-In general, features should be provided for [both SaaS and self-managed deployments](https://about.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+In general, features should be provided for [both SaaS and self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
 However, there are cases when a feature should only be available on SaaS and this guide will help show how that is
 accomplished.
 
@@ -61,7 +61,7 @@ Each SaaS feature is defined in a separate YAML file consisting of a number of f
 | `name`              | yes      | Name of the SaaS feature.                                                                                    |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the SaaS feature.                                               |
 | `milestone`         | no       | Milestone in which the SaaS feature was created.                                                             |
-| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+| `group`             | no       | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 
 #### Create a new SaaS feature file definition
 

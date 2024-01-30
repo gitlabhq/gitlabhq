@@ -459,7 +459,7 @@ To add a metric definition for a new template:
    - `introduced_by_url:`: The URL of the MR adding the template.
    - `data_source:`: Set to `redis_hll`.
    - `description`: Add a short description of what this metric counts, for example: `Count of pipelines using the latest Auto Deploy template`
-   - `product_*`: Set to [section, stage, group, and feature category](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+   - `product_*`: Set to [section, stage, group, and feature category](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
      as per the [metrics dictionary guide](../internal_analytics/metrics/metrics_dictionary.md#metrics-definition-and-validation).
      If you are unsure what to use for these keywords, you can ask for help in the merge request.
    - Add the following to the end of each file:

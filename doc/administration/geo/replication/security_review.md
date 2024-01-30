@@ -40,7 +40,7 @@ from [owasp.org](https://owasp.org/).
   private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** site if desired.
-- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/security/data-classification-standard.html).
+- See also: [GitLab data classification policy](https://handbook.gitlab.com/handbook/security/data-classification-standard/).
 
 ### What data backup and retention requirements have been defined for the application?
 

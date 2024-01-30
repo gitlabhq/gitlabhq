@@ -25,7 +25,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To populate the metadata, include this information:
 
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+- `stage`: The [Stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
   that the majority of the page's content belongs to.
 - `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
   that the majority of the page's content belongs to.

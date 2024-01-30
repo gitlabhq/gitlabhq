@@ -83,7 +83,7 @@ WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of
 ORDER BY ping_created_at DESC
 ```
 
-For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
 
 ### Querying events
 
@@ -100,7 +100,7 @@ AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for e
 GROUP BY 1 ORDER BY 1 desc
 ```
 
-For a list of other event tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models-2).
+For a list of other event tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models-2).
 
 ## Data flow
 

@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Product Qualified Lead (PQL) development guidelines
 
-The Product Qualified Lead (PQL) funnel connects our users with our team members. Read more about [PQL product principles](https://about.gitlab.com/handbook/product/product-principles/#product-qualified-leads-pqls).
+The Product Qualified Lead (PQL) funnel connects our users with our team members. Read more about [PQL product principles](https://handbook.gitlab.com/handbook/product/product-principles/#product-qualified-leads-pqls).
 
 A hand-raise PQL is a user who requests to speak to sales from within the product.
 

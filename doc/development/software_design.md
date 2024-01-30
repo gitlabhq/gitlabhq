@@ -94,7 +94,7 @@ for example `Project::CreateService` or `Groups::TransferService`.
 For controllers we allow `app/controllers/projects` and `app/controllers/groups` to be exceptions.
 We use this convention to indicate the scope of a given web endpoint.
 
-Do not use the [stage or group name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+Do not use the [stage or group name](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
 because a feature category could be reassigned to a different group in the future.
 
 ```ruby
@@ -262,12 +262,12 @@ user_score.telesign
 user_score.arkose_global
 ```
 
-See a real example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117853#note_1423070054).  
+See a real example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117853#note_1423070054).
 
 ### Example: Use Dependency Inversion to extract a domain concept
 
 ```ruby
-## 
+##
 # BAD: methods related to integrations defined in Project.
 class Project
   has_many :integrations

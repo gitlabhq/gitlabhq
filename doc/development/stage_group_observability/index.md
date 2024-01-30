@@ -11,7 +11,7 @@ understand the state of each component, with context, to support
 performance tuning and debugging. To run a SaaS platform at scale, a
 rich and detailed observability platform is needed.
 
-To make information available to [stage groups](https://about.gitlab.com/handbook/product/categories/#hierarchy),
+To make information available to [stage groups](https://handbook.gitlab.com/handbook/product/categories/#hierarchy),
 we are aggregating metrics by feature category and then show
 this information on [dashboards](dashboards/index.md) tailored to the groups. Only metrics
 for the features built by the group are visible on their

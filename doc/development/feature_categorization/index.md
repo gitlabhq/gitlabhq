@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Each Sidekiq worker, Batched Background migrations, controller action, [test example](../testing_guide/best_practices.md#feature-category-metadata) or API endpoint
 must declare a `feature_category` attribute. This attribute maps each
-of these to a [feature category](https://about.gitlab.com/handbook/product/categories/). This
+of these to a [feature category](https://handbook.gitlab.com/handbook/product/categories/). This
 is done for error budgeting, alert routing, and team attribution.
 
 The list of feature categories can be found in the file `config/feature_categories.yml`.

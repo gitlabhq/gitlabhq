@@ -14,7 +14,7 @@ module Packages
         length: { maximum: 255 }
       validates :package_name_pattern,
         format: {
-          with: Gitlab::Regex.protection_rules_npm_package_name_pattern_regex,
+          with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_npm_package_name_pattern_regex,
           message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
         },
         if: :npm?

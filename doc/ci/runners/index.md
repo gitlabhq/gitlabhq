@@ -54,7 +54,7 @@ GitLab SaaS runners on Linux and Windows run on Google Compute Platform.
 The [Google Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
 provides an overview of how Google designs security into its technical infrastructure.
 The GitLab [Trust Center](https://about.gitlab.com/security/) and
-[GitLab Security Compliance Controls](https://about.staging.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/sec-controls.html)
+[GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/)
 pages provide an overview of the security and compliance controls that govern the GitLab SaaS runners.
 
 The following section provides an overview of the additional built-in layers that harden the security of the GitLab Runner SaaS CI build environment.

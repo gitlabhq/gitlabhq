@@ -15,7 +15,7 @@ For details about the terms used on this page, see [the terminology](../../updat
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
 
-Deprecations should be announced [no later than the third milestone preceding intended removal](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+Deprecations should be announced [no later than the third milestone preceding intended removal](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
 
 Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see

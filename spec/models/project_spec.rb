@@ -3404,28 +3404,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#uses_default_ci_config?' do
-    let(:project) { build(:project) }
-
-    it 'has a custom ci config path' do
-      project.ci_config_path = 'something_custom'
-
-      expect(project.uses_default_ci_config?).to be_falsey
-    end
-
-    it 'has a blank ci config path' do
-      project.ci_config_path = ''
-
-      expect(project.uses_default_ci_config?).to be_truthy
-    end
-
-    it 'does not have a custom ci config path' do
-      project.ci_config_path = nil
-
-      expect(project.uses_default_ci_config?).to be_truthy
-    end
-  end
-
   describe '#latest_successful_build_for_ref' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:pipeline) { create_pipeline(project) }

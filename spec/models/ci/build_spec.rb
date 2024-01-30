@@ -5780,46 +5780,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     # 100.to_s(16) -> 64
     let(:ci_build) { described_class.new(partition_id: 100) }
 
-    shared_examples 'partition prefix' do
-      it 'is prefixed with partition_id' do
-        ci_build.ensure_token
-        expect(ci_build.token).to match(/^64_[\w-]{20}$/)
-      end
-    end
-
-    shared_examples 'static and partition prefixes' do
-      it 'is prefixed with static string and partition id' do
-        ci_build.ensure_token
-        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
-      end
-    end
-
-    it_behaves_like 'static and partition prefixes'
-
-    context 'when feature flag is globally disabled' do
-      before do
-        stub_feature_flags(prefix_ci_build_tokens: false)
-      end
-
-      it_behaves_like 'partition prefix'
-
-      context 'when enabled for a different project' do
-        let_it_be(:project) { create(:project) }
-
-        before do
-          stub_feature_flags(prefix_ci_build_tokens: project)
-        end
-
-        it_behaves_like 'partition prefix'
-      end
-
-      context 'when enabled for the project' do
-        before do
-          stub_feature_flags(prefix_ci_build_tokens: ci_build.project)
-        end
-
-        it_behaves_like 'static and partition prefixes'
-      end
+    it 'is prefixed with static string and partition id' do
+      ci_build.ensure_token
+      expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
     end
   end
 end

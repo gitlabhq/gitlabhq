@@ -6,19 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Code Suggestions
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
-
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
 > - [Introduced support for Code Generation](https://gitlab.com/gitlab-org/gitlab/-/issues/415583) in GitLab 16.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.7.
-
-NOTE:
-Starting in February 2024, Code Suggestions will be part of
-[GitLab Duo Pro](https://about.gitlab.com/gitlab-duo/),
-available to Premium and Ultimate users for purchase now.
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
@@ -30,6 +21,20 @@ With [GitLab Duo Code Suggestions](https://about.gitlab.com/solutions/code-sugge
   appropriate code, based on the context of your comment and the rest of your code.
   - Algorithms or large code blocks may take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
+
+## Code Suggestions access
+
+Code Suggestions availability is changing.
+
+Free Open Access subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)
+is available through February 14, 2024:
+
+- For SaaS, on all subscription tiers (Free, Premium, and Ultimate).
+- For self-managed, on Premium and Ultimate tiers.
+
+Code Suggestions will be part of [GitLab Duo Pro](https://about.gitlab.com/gitlab-duo/) starting February 15, 2024:
+
+- GitLab Duo Pro is available for both SaaS and self-managed, on Premium and Ultimate tiers.
 
 ## Start using Code Suggestions
 

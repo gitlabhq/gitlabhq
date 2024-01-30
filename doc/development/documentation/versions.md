@@ -117,7 +117,7 @@ To deprecate a page or topic:
 
    ```markdown
    ## Title (deprecated)
-   
+
    DETAILS:
    **Tier:** Premium, Ultimate
    **Offering:** SaaS, self-managed
@@ -145,7 +145,7 @@ To deprecate a page or topic:
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
    ## Title (deprecated)
-   
+
    DETAILS:
    **Tier:** Premium, Ultimate
    **Offering:** SaaS, self-managed
@@ -184,7 +184,7 @@ To remove a page:
    ---
 
    # Title (removed)
-   
+
    DETAILS:
    **Tier:** Premium, Ultimate
    **Offering:** SaaS, self-managed
@@ -197,7 +197,7 @@ To remove a page:
 1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ### Remove a topic
 
@@ -213,7 +213,7 @@ To remove a topic:
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
    ## Title (removed)
-   
+
    DETAILS:
    **Tier:** Premium, Ultimate
    **Offering:** SaaS, self-managed
@@ -226,7 +226,7 @@ To remove a topic:
    ```
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ## Which versions are removed
 

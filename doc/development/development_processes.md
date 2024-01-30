@@ -61,7 +61,7 @@ In these cases, use the following workflow:
    - [Backend](https://handbook.gitlab.com/handbook/engineering/)
    - [Database](https://handbook.gitlab.com/handbook/engineering/development/database/)
    - [User Experience (UX)](https://about.gitlab.com/handbook/product/ux/)
-   - [Security](https://about.gitlab.com/handbook/security/)
+   - [Security](https://handbook.gitlab.com/handbook/security/)
    - [Quality](https://handbook.gitlab.com/handbook/engineering/quality/)
      - [Engineering Productivity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/)
    - [Infrastructure](https://handbook.gitlab.com/handbook/engineering/infrastructure/)

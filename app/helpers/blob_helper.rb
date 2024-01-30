@@ -301,9 +301,8 @@ module BlobHelper
   end
 
   def show_suggest_pipeline_creation_celebration?
-    Gitlab::FileDetector.type_of(@blob.path) == :gitlab_ci &&
+    @project.ci_config_path_or_default == @blob.path &&
       @blob.auxiliary_viewer&.valid?(project: @project, sha: @commit.sha, user: current_user) &&
-      @project.uses_default_ci_config? &&
       cookies[suggest_pipeline_commit_cookie_name].present?
   end
 

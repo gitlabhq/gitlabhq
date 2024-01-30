@@ -40,7 +40,7 @@ implementing separate gems in a single repository. The [Rails Engines](https://g
 allowed us to well describe the individual components with its dependencies and run an application
 consisting of many Rails Engines.
 
-The blueprint aims to retain all key aspects of GitLab success: single and monolithic codebase (with a [single data-store](https://about.gitlab.com/handbook/product/single-application/#single-data-store)),
+The blueprint aims to retain all key aspects of GitLab success: single and monolithic codebase (with a [single data-store](https://handbook.gitlab.com/handbook/product/single-application/#single-data-store)),
 but allows us to better model application and make our codebase more composable.
 
 ## Challenges of the Monolith (a current state)

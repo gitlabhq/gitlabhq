@@ -82,7 +82,7 @@ This grants you the following permissions for:
 ### Log into my review app
 
 For GitLab Team Members only. If you want to sign in to the review app, review
-the GitLab handbook information for the [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
+the GitLab handbook information for the [shared 1Password account](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams).
 
 - The default username is `root`.
 - The password can be found in the 1Password login item named `GitLab EE Review App`.

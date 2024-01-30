@@ -1294,8 +1294,8 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/security/security-engineering/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-standards).
-- To store and/or share credentials between teams, refer to [1Password for Teams](https://about.gitlab.com/handbook/security/#1password-for-teams) and follow [the 1Password Guidelines](https://about.gitlab.com/handbook/security/#1password-guidelines).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](hhttps://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
+- To store and/or share credentials between teams, refer to [1Password for Teams](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams) and follow [the 1Password Guidelines](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 
 ### In transit
@@ -1304,7 +1304,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Avoid including credentials as part of an HTTP response unless it is absolutely necessary as part of the workflow. For example, generating a PAT for users.
 - Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
 
-In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
+In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://handbook.gitlab.com/handbook/security/security-operations/sirt/).
 
 ### Token prefixes
 
@@ -1329,7 +1329,7 @@ Add the new prefix to:
 Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
 and used later. Use a binary column to store `attr_encrypted` attributes in the database,
 and then set both `encode` and `encode_iv` to `false`. For recommended algorithms, see
-the [GitLab Cryptography Standard](https://about.gitlab.com/handbook/security/cryptographic-standard.html#algorithmic-standards).
+the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards).
 
 ```ruby
 module AlertManagement
@@ -1412,7 +1412,7 @@ There are a number of risks to be mindful of:
 - Rendering unsanitized responses
   - Assume all responses could be malicious. See also: [XSS guidelines](#xss-guidelines)
 - Training our own models
-  - Be familiar with the GitLab [AI strategy and legal restrictions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard.html)
+  - Be familiar with the GitLab [AI strategy and legal restrictions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)
   - Understand that the data you train on may be malicious ("tainted models")
 - Insecure design
   - How is the user or system authenticated and authorized to API / model endpoints?
@@ -1527,11 +1527,11 @@ Also see this [real-life usage](https://gitlab.com/gitlab-org/gitlab/-/blob/bdba
 
 ## Who to contact if you have questions
 
-For general guidance, contact the [Application Security](https://about.gitlab.com/handbook/security/security-engineering/application-security/) team.
+For general guidance, contact the [Application Security](https://handbook.gitlab.com/handbook/security/product-security/application-security/) team.
 
 ## Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))
-- [Security logging overview](https://about.gitlab.com/handbook/security/security-engineering/security-logging/)
+- [Security logging overview](https://handbook.gitlab.com/handbook/security/product-security/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)

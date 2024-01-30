@@ -24,11 +24,11 @@ Blueprints:
 
 This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 
-For an [overview of the feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, see the [feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) handbook page.
+For an [overview of the feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, see the [feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) handbook page.
 
 ## When to use feature flags
 
-Moved to the ["When to use feature flags"](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
+Moved to the ["When to use feature flags"](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
 
 ## Feature flags in GitLab development
 
@@ -161,7 +161,7 @@ push_frontend_feature_flag(:my_wip_flag, project, type: :wip)
 ### `beta` type
 
 We might
-[not be confident we'll be able to scale, support, and maintain a feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
+[not be confident we'll be able to scale, support, and maintain a feature](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
 in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
 There are also scenarios where a feature is not complete enough to be considered an MVC.
 Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.
@@ -275,7 +275,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | yes      | The URL to the merge request that introduced the feature flag. |
 | `milestone`         | yes      | Milestone in which the feature flag was created. |
-| `group`             | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+| `group`             | yes      | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `log_state_changes` | no       | Used to log the state of the feature flag                      |
