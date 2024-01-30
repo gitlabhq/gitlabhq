@@ -19,7 +19,6 @@
 #     label_name: string
 #     sort: string
 #     my_reaction_emoji: string
-#     public_only: boolean
 #     due_date: date or '0', '', 'overdue', 'week', or 'month'
 #     created_after: datetime
 #     created_before: datetime
@@ -31,60 +30,19 @@
 class IssuesFinder < IssuableFinder
   extend ::Gitlab::Utils::Override
 
-  CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
-
   def self.scalar_params
     @scalar_params ||= super + [:due_date]
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def klass
-    model_class.includes(:author)
+    Issue
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def params_class
     self.class.const_get(:Params, false)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def with_confidentiality_access_check
-    return model_class.all if params.user_can_see_all_issuables?
-
-    # Only admins can see hidden issues, so for non-admins, we filter out any hidden issues
-    issues = model_class.without_hidden
-
-    return issues.all if params.user_can_see_all_confidential_issues?
-
-    # If already filtering by assignee we can skip confidentiality since a user
-    # can always see confidential issues assigned to them. This is just an
-    # optimization since a very common usecase of this Finder is to load the
-    # count of issues assigned to the user for the header bar.
-    return issues.all if current_user && assignee_filter.includes_user?(current_user)
-
-    return issues.public_only if params.user_cannot_see_confidential_issues?
-
-    issues.where('
-      issues.confidential = FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)
-          OR EXISTS (:authorizations)))',
-      user_id: current_user.id,
-      authorizations: current_user.authorizations_for_projects(min_access_level: CONFIDENTIAL_ACCESS_LEVEL, related_project_column: "issues.project_id"))
-    .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   private
-
-  def init_collection
-    if params.public_only?
-      model_class.public_only
-    else
-      with_confidentiality_access_check
-    end
-  end
 
   def filter_items(items)
     issues = super
@@ -135,9 +93,12 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_confidential(items)
-    return items if params[:confidential].nil?
-
-    params[:confidential] ? items.confidential_only : items.public_only
+    Issues::ConfidentialityFilter.new(
+      current_user: current_user,
+      params: original_params,
+      parent: params.parent,
+      assignee_filter: assignee_filter
+    ).filter(items)
   end
 
   def by_due_date(items)
@@ -167,7 +128,7 @@ class IssuesFinder < IssuableFinder
   def by_issue_types(items)
     issue_type_params = Array(params[:issue_types]).map(&:to_s)
     return items if issue_type_params.blank?
-    return model_class.none unless (WorkItems::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
+    return klass.none unless (WorkItems::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
 
     items.with_issue_type(params[:issue_types])
   end
@@ -177,10 +138,6 @@ class IssuesFinder < IssuableFinder
     return items if issue_type_params.blank?
 
     items.without_issue_type(issue_type_params)
-  end
-
-  def model_class
-    Issue
   end
 
   def include_namespace_level_work_items?

@@ -7,11 +7,20 @@ export const FORM_FIELD_PATH = 'path';
 export const FORM_FIELD_DESCRIPTION = 'description';
 export const FORM_FIELD_AVATAR = 'avatar';
 
+export const MAX_DESCRIPTION_COUNT = 1024;
+
 export const FORM_FIELD_PATH_VALIDATORS = [
   formValidators.required(s__('Organization|Organization URL is required.')),
   formValidators.factory(
     s__('Organization|Organization URL is too short (minimum is 2 characters).'),
     (val) => val.length >= 2,
+  ),
+];
+
+export const FORM_FIELD_DESCRIPTION_VALIDATORS = [
+  formValidators.factory(
+    s__('Organization|Organization description is too long (maximum is 1024 characters).'),
+    (val) => val.length <= MAX_DESCRIPTION_COUNT,
   ),
 ];
 

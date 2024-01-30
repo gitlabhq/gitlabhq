@@ -68,14 +68,9 @@ Lead time for changes is the amount of time it takes a code change to get into p
 For software leaders, lead time for changes reflects the efficiency of CI/CD pipelines and visualizes how quickly work is delivered to customers.
 Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
 
-In GitLab, lead time for changes is measured by the `Median time it takes for a merge request to get merged into production (from master)`.
-
-By default, lead time for changes measures only one-branch operations with multiple deployment jobs (for example, jobs moving from development to staging to production jobs on the main branch).
-When a merge request gets merged in staging and then merge to production, GitLab processes them as two deployed merge requests, not one.
-
 ### How lead time for changes is calculated
 
-GitLab calculates lead time for changes based on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+GitLab calculates lead time for changes based on the number of seconds to successfully deliver a commit into production: from merge request merge time (when the merge button is clicked) to code successfully running in production, without adding the `coding_time` to the calculation. Data is aggregated right after the deployment is finished, with a slight delay.
 
 By default, lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 

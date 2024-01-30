@@ -110,6 +110,21 @@ describe('User Popovers', () => {
 
         expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
       });
+
+      it('for non-link elements', () => {
+        const div = document.createElement('div');
+        div.classList.add('js-user-popover');
+        div.dataset.user = '1';
+        document.body.appendChild(div);
+
+        jest.runOnlyPendingTimers();
+
+        expect(findPopovers().length).toBe(linksWithUsers.length);
+
+        triggerEvent('mouseover', div);
+
+        expect(findPopovers().length).toBe(linksWithUsers.length + 1);
+      });
     });
 
     it('does not initialize the popovers for group references', () => {

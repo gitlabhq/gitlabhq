@@ -99,7 +99,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     end
   end
 
-  describe '#sequential_import', :clean_gitlab_redis_cache do
+  describe '#sequential_import', :clean_gitlab_redis_shared_state do
     let(:parallel) { false }
 
     before do
@@ -131,9 +131,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:branches).and_return(branches)
       allow(client)
         .to receive(:branch_protection)
@@ -157,7 +156,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter, featur
     end
   end
 
-  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:branch_struct) { Struct.new(:protection, :name, :url, keyword_init: true) }
     let(:protection_struct) { Struct.new(:enabled, keyword_init: true) }
     let(:protected_branch) { branch_struct.new(name: 'main', protection: protection_struct.new(enabled: true)) }

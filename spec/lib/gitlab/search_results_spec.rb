@@ -142,7 +142,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
         it 'runs single SQL query to get the limited amount of issues' do
           create(:issue, project: project, title: 'foo2')
 
-          expect(results).to receive(:issues).with(public_only: true).and_call_original
+          expect(results).to receive(:issues).with(confidential: false).and_call_original
           expect(results).not_to receive(:issues).with(no_args)
 
           expect(results.limited_issues_count).to eq(1)
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::SearchResults, feature_category: :global_search do
     context "when count_limit is higher than total amount" do
       describe '#limited_issues_count' do
         it 'runs multiple queries to get the limited amount of issues' do
-          expect(results).to receive(:issues).with(public_only: true).and_call_original
+          expect(results).to receive(:issues).with(confidential: false).and_call_original
           expect(results).to receive(:issues).with(no_args).and_call_original
 
           expect(results.limited_issues_count).to eq(1)

@@ -265,6 +265,9 @@ export default {
         'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
       };
     },
+    shouldShowEditButton() {
+      return this.workItemsMvc2Enabled && !this.editMode && this.canUpdate;
+    },
   },
   mounted() {
     if (this.modalWorkItemIid) {
@@ -471,7 +474,7 @@ export default {
             class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
           >
             <gl-button
-              v-if="workItemsMvc2Enabled && !editMode"
+              v-if="shouldShowEditButton"
               category="secondary"
               data-testid="work-item-edit-form-button"
               @click="enableEditMode"

@@ -382,9 +382,6 @@ WARNING:
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or
 the workload drops under the limit.
 
-FLAG:
-The feature is currently behind a default-disabled feature flag `sidekiq_concurrency_limit_middleware`.
-
 You should use a lambda to define the limit. If it returns `nil`, `0`, or a negative value, the limit won't be applied.
 
 ```ruby

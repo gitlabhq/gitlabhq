@@ -130,7 +130,7 @@ module QA
           shell <<~CMD.tr("\n", ' ')
             curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 &&
             chmod 700 get_helm.sh &&
-            DESIRED_VERSION=v3.7.0 ./get_helm.sh
+            DESIRED_VERSION=v3.11.0 ./get_helm.sh
           CMD
         end
 

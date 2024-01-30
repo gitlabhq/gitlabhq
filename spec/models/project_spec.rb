@@ -2112,6 +2112,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(projects).to eq([project3, project1, project2])
     end
+
+    it 'reorders the input relation by path asc' do
+      projects = described_class.sort_by_attribute(:path_asc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:path))
+    end
+
+    it 'reorders the input relation by path desc' do
+      projects = described_class.sort_by_attribute(:path_desc)
+
+      expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
+    end
   end
 
   describe '.with_shared_runners_enabled' do

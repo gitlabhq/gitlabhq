@@ -100,12 +100,11 @@ RSpec.describe API::Entities::ProjectImportStatus, :aggregate_failures, feature_
       end
     end
 
-    context 'when importing from github', :clean_gitlab_redis_cache do
+    context 'when importing from github', :clean_gitlab_redis_shared_state do
       let(:project) { create(:project, :import_failed, import_type: 'github') }
       let(:entity) { described_class.new(project) }
 
       before do
-        allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
         ::Gitlab::GithubImport::ObjectCounter.increment(project, :issues, :fetched, value: 10)
         ::Gitlab::GithubImport::ObjectCounter.increment(project, :issues, :imported, value: 8)
       end

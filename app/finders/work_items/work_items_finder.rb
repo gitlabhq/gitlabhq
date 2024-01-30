@@ -6,6 +6,10 @@
 # WorkItems instead of Issues
 module WorkItems
   class WorkItemsFinder < IssuesFinder
+    def klass
+      WorkItem
+    end
+
     def params_class
       ::IssuesFinder::Params
     end
@@ -34,10 +38,6 @@ module WorkItems
       "WorkItems::Widgets::Filters::#{widget_class.name.demodulize.camelize}".constantize
     rescue NameError
       nil
-    end
-
-    def model_class
-      WorkItem
     end
   end
 end

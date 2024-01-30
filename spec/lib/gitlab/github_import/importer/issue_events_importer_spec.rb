@@ -73,11 +73,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
-    before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
-    end
-
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     it 'imports each note in parallel' do
       allow(importer).to receive(:each_object_to_import).and_yield(issue_event)
 

@@ -20,7 +20,10 @@ RSpec.describe Groups::OpenIssuesCountService, :use_clean_rails_memory_store_cac
     it 'uses the IssuesFinder to scope issues' do
       expect(IssuesFinder)
         .to receive(:new)
-        .with(user, group_id: group.id, state: 'opened', non_archived: true, include_subgroups: true, public_only: true)
+        .with(
+          user,
+          group_id: group.id, state: 'opened', non_archived: true, include_subgroups: true, confidential: false
+        )
 
       subject.count
     end

@@ -634,6 +634,8 @@ class Project < ApplicationRecord
   scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
+  scope :sorted_by_path_asc, -> { reorder(self.arel_table['path'].asc) }
+  scope :sorted_by_path_desc, -> { reorder(self.arel_table['path'].desc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
@@ -956,6 +958,10 @@ class Project < ApplicationRecord
         sorted_by_updated_desc
       when 'latest_activity_asc'
         sorted_by_updated_asc
+      when 'path_asc'
+        sorted_by_path_asc
+      when 'path_desc'
+        sorted_by_path_desc
       when 'stars_desc'
         sorted_by_stars_desc
       when 'stars_asc'

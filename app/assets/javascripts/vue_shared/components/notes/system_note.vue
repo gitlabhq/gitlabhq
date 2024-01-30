@@ -35,6 +35,7 @@ const ICON_COLORS = {
   'merge-request-close': 'gl-bg-red-100 gl-text-red-700',
   merge: 'gl-bg-blue-100 gl-text-blue-700',
   'issue-close': 'gl-bg-blue-100 gl-text-blue-700',
+  issues: 'gl-bg-green-100 gl-text-green-700',
 };
 
 export default {
@@ -99,6 +100,18 @@ export default {
     iconBgClass() {
       return ICON_COLORS[this.note.system_note_icon_name] || 'gl-bg-gray-50 gl-text-gray-600';
     },
+    systemNoteIconName() {
+      let icon = this.note.system_note_icon_name;
+      if (this.note.system_note_icon_name === 'issues') {
+        // eslint-disable-next-line @gitlab/require-i18n-strings
+        if (this.note.noteable_type === 'Issue') {
+          icon = 'issue-open-m';
+        } else if (this.note.noteable_type === 'MergeRequest') {
+          icon = 'merge-request-open';
+        }
+      }
+      return icon;
+    },
   },
   mounted() {
     renderGFM(this.$refs['gfm-content']);
@@ -142,7 +155,7 @@ export default {
     >
       <gl-icon
         v-if="isAllowedIcon"
-        :name="note.system_note_icon_name"
+        :name="systemNoteIconName"
         :size="12"
         data-testid="timeline-icon"
       />

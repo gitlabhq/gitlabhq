@@ -104,7 +104,7 @@ export default {
     <template #title>{{ $options.i18n.settingsBlock.title }}</template>
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>
-      <form-errors-alert v-model="errors" />
+      <form-errors-alert v-model="errors" :scroll-on-error="true" />
       <new-edit-form
         :loading="loading"
         :initial-form-values="organization"

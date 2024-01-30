@@ -51,14 +51,15 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       expect(page).to have_content('Password')
     end
 
-    describe 'view extra user information' do
-      it 'shows the user popover on hover', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/11290' do
-        expect(page).not_to have_selector('#__BV_popover_1__')
+    it 'shows the user popover on hover', :js do
+      expect(has_testid?('user-popover', count: 0)).to eq(true)
 
-        first_user_link = page.first('.js-user-link')
-        first_user_link.hover
+      find_link(user.email).hover
 
-        expect(page).to have_selector('#__BV_popover_1__')
+      within_testid('user-popover') do
+        expect(page).to have_content user.name
+        expect(page).to have_content user.username
+        expect(page).to have_button 'Follow'
       end
     end
 
@@ -378,7 +379,9 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
         wait_for_requests
 
-        expect(find_by_testid("user-group-count-#{current_user.id}").text).to eq("2")
+        within_testid("user-group-count-#{current_user.id}") do
+          expect(page).to have_content('2')
+        end
       end
     end
 

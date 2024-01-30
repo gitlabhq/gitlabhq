@@ -72,9 +72,8 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'direct')
         .and_return([github_collaborator])
       allow(client).to receive(:collaborators).with(project.import_source, affiliation: 'outside')
@@ -110,7 +109,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorsImporter, feature_ca
     end
   end
 
-  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:github_collaborator_2) { { id: 100501, login: 'alice', role_name: 'owner' } }
     let(:github_collaborator_3) { { id: 100502, login: 'tom', role_name: 'guest' } }
 

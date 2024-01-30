@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
   it { expect(subject.object_type).to eq(:note) }
   it { expect(subject.id_for_already_imported_cache({ id: 1 })).to eq(1) }
 
-  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:issue) do
       create(
         :issue,
@@ -27,10 +27,6 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueNotesImporter 
 
     let(:note) { { id: 1 } }
     let(:page) { double(objects: [note], number: 1) }
-
-    before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
-    end
 
     it 'fetches data' do
       expect(client)

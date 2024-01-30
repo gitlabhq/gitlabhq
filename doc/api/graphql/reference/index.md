@@ -23569,7 +23569,6 @@ Active period time range for on-call rotation.
 | <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. **Status**: Experiment. Name of the organization. |
 | <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. **Status**: Experiment. Users with access to the organization. |
 | <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. **Status**: Experiment. Path of the organization. |
-| <a id="organizationprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Introduced** in 16.8. **Status**: Experiment. Projects within this organization that the user has access to. |
 | <a id="organizationweburl"></a>`webUrl` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.6. **Status**: Experiment. Web URL of the organization. |
 
 #### Fields with arguments
@@ -23594,6 +23593,26 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="organizationgroupssearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.4. **Status**: Experiment. Search query for group name or full path. |
 | <a id="organizationgroupssort"></a>`sort` **{warning-solid}** | [`OrganizationGroupSort`](#organizationgroupsort) | **Introduced** in 16.4. **Status**: Experiment. Criteria to sort organization groups by. |
+
+##### `Organization.projects`
+
+Projects within this organization that the user has access to.
+
+NOTE:
+**Introduced** in 16.8.
+**Status**: Experiment.
+
+Returns [`ProjectConnection!`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="organizationprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.9. **Status**: Experiment. Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 
 ### `OrganizationStateCounts`
 
