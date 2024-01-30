@@ -20,7 +20,6 @@ module Keeps
   #
   # ```
   # bundle exec gitlab-housekeeper -d \
-  #   -r keeps/overdue_finalize_background_migration.rb \
   #   -k Keeps::OverdueFinalizeBackgroundMigration
   # ```
   class OverdueFinalizeBackgroundMigration < ::Gitlab::Housekeeper::Keep

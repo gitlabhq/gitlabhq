@@ -45,7 +45,7 @@ heading to toggle the list of the milestone bars.
 > - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 
 NOTE:
-Filtering roadmaps by milestone might not be available to you. Be sure to review this section's version history for details.
+Filtering roadmaps by milestone might not be available to you. Be sure to review this section's history for details.
 
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.

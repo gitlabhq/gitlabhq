@@ -220,3 +220,21 @@ Ultimate tier, Staging Ref may be an easier place to test changes as a GitLab
 team member because
 [you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
+
+## Product Analysis
+
+To better understand how the feature is used, each production user input message is analyzed using LLM and Ruby,
+and the analysis is tracked as a Snowplow event.
+
+The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
+
+- All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
+- The following are yet to be implemented:
+  - "is_proper_sentence"
+  - "asked_on_the_same_page"
+- The following are deprecated:
+  - "number_of_questions_in_history"
+  - "length_of_questions_in_history"
+  - "time_since_first_question"
+
+[Dashboards](https://handbook.gitlab.com/handbook/engineering/development/data-science/duo-chat/#-dashboards-internal-only) can be created to visualize the collected data.

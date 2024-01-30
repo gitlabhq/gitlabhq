@@ -22,8 +22,7 @@ func TestSingleBackend(t *testing.T) {
 	defer cableBackendServer.Close()
 
 	config := newUpstreamWithCableConfig(cableBackendServer.URL, "")
-	workhorse := startWorkhorseServerWithConfig(config)
-	defer workhorse.Close()
+	workhorse := startWorkhorseServerWithConfig(t, config)
 
 	cableURL := websocketURL(workhorse.URL, cablePath)
 
@@ -49,8 +48,7 @@ func TestSeparateCableBackend(t *testing.T) {
 	defer cableBackendServer.Close()
 
 	config := newUpstreamWithCableConfig(authBackendServer.URL, cableBackendServer.URL)
-	workhorse := startWorkhorseServerWithConfig(config)
-	defer workhorse.Close()
+	workhorse := startWorkhorseServerWithConfig(t, config)
 
 	cableURL := websocketURL(workhorse.URL, cablePath)
 

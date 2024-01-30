@@ -63,7 +63,7 @@ DETAILS:
 
 - Review the available [audit events](../administration/audit_events.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
-- Focus on CI-related [audit events](../administration/audit_event_streaming/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
+- Focus on CI-related [audit events](../administration/audit_event_types.md#continuous-integration) to identify any modifications to CI/CD variables.
 - Review [job logs](../administration/job_logs.md) for any pipelines ran by an adversary
 
 ### Suspected compromised user account
@@ -177,7 +177,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Review [system access audit events](../administration/audit_event_streaming/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
+Review [system access audit events](../administration/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
 ### Misconfigured project or group settings
 
@@ -208,7 +208,7 @@ DETAILS:
 **Offering:** Self-managed
 
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
-- Look for specific audit events of [compliance management](../administration/audit_event_streaming/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_streaming/audit_event_types.md#groups-and-projects).
+- Look for specific audit events of [compliance management](../administration/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_types.md#groups-and-projects).
 
 ### Engaging GitLab for assistance with a security incident
 

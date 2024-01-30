@@ -11,11 +11,11 @@ require 'digest'
 module Gitlab
   module Housekeeper
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, require: [], keeps: nil)
+      def initialize(max_mrs: 1, dry_run: false, keeps: nil)
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
-        require_keeps(require)
+        require_keeps
 
         @keeps = if keeps
                    keeps.map { |k| k.is_a?(String) ? k.constantize : k }
@@ -64,9 +64,9 @@ module Gitlab
         @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger)
       end
 
-      def require_keeps(files)
-        files.each do |r|
-          require(Pathname(r).expand_path.to_s)
+      def require_keeps
+        Dir.glob("keeps/*.rb").each do |f|
+          require(Pathname(f).expand_path.to_s)
         end
       end
 

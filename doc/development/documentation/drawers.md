@@ -53,7 +53,7 @@ To create this content:
 - To link from the drawer to other content, use absolute URLs.
 - Do not include:
   - Tier badges
-  - Version history text
+  - History text
   - Alert boxes
   - Images
   - SVG icons

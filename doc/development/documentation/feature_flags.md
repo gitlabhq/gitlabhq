@@ -38,15 +38,15 @@ even when the feature is not fully functional or otherwise documented.
 
 When you document feature flags, you must:
 
-- [Add version history text](#add-version-history-text).
+- [Add history text](#add-history-text).
 - [Add a note at the start of the topic](#use-a-note-to-describe-the-state-of-the-feature-flag).
 
-## Add version history text
+## Add history text
 
 When the state of a flag changes (for example, disabled by default to enabled by default), add the change to the
-[version history](versions.md#add-a-version-history-item).
+[history](versions.md#add-a-history-item).
 
-Possible version history entries are:
+Possible history entries are:
 
 ```markdown
 > - [Introduced](issue-link) in GitLab X.X [with a flag](../../administration/feature_flags.md) named `flag_name`. Disabled by default.
@@ -58,7 +58,7 @@ Possible version history entries are:
 
 ## Use a note to describe the state of the feature flag
 
-Information about feature flags should be in a `FLAG` note at the start of the topic (just below the version history).
+Information about feature flags should be in a `FLAG` note at the start of the topic (just below the history).
 
 The note has three parts, and follows this structure:
 
@@ -117,7 +117,7 @@ an administrator can [enable the feature flag](../administration/feature_flags.m
 The feature is not ready for production use.
 ```
 
-When the feature is enabled in production, you can update the version history:
+When the feature is enabled in production, you can update the history:
 
 ```markdown
 > - Introduced in GitLab 13.7 [with a flag](../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
@@ -137,9 +137,9 @@ And, when the feature is done and fully available to all users:
 > - [Generally available](issue-link) in GitLab 14.0. Feature flag `forti_token_cloud` removed.
 ```
 
-## Simplify long version history
+## Simplify long history
 
-The version history can get long, but you can sometimes simplify or remove entries.
+The history can get long, but you can sometimes simplify or remove entries.
 
 Combine entries if they happened in the same release:
 

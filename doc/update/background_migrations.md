@@ -118,7 +118,7 @@ advanced users who understand the risks of doing so.
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to each feature's version history for more details.
+Refer to each feature's history for more details.
 
 To pause an ongoing batched background migration,
 [disable the batched background migrations feature](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
@@ -175,7 +175,7 @@ Use the following database queries to see the state of the current batched backg
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+Refer to this feature's history for more details.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `optimize_batched_migrations`.
@@ -191,7 +191,7 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+Refer to this feature's history for more details.
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 

@@ -105,7 +105,7 @@ module Gitlab
   module ImportExport
     extend self
 
-    # For every version update, the version history in import_export.md has to be kept up to date.
+    # For every version update, the history in import_export.md has to be kept up to date.
     VERSION = '0.2.4'
 ```
 

@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func startWorkhorseServerWithLongPolling(authBackend string, pollingDuration time.Duration) *httptest.Server {
+func startWorkhorseServerWithLongPolling(t *testing.T, authBackend string, pollingDuration time.Duration) *httptest.Server {
 	uc := newUpstreamConfig(authBackend)
 	uc.APICILongPollingDuration = pollingDuration
-	return startWorkhorseServerWithConfig(uc)
+	return startWorkhorseServerWithConfig(t, uc)
 }
 
 type requestJobFunction func(url string, body io.Reader) (*http.Response, error)
@@ -24,8 +24,7 @@ func requestJobV4(url string, body io.Reader) (*http.Response, error) {
 }
 
 func testJobsLongPolling(t *testing.T, pollingDuration time.Duration, requestJob requestJobFunction) *http.Response {
-	ws := startWorkhorseServerWithLongPolling("http://localhost/", pollingDuration)
-	defer ws.Close()
+	ws := startWorkhorseServerWithLongPolling(t, "http://localhost/", pollingDuration)
 
 	resp, err := requestJob(ws.URL, nil)
 	require.NoError(t, err)

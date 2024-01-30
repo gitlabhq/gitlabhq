@@ -75,12 +75,16 @@ end
 You can dry-run this locally with the following command:
 
 ```
-bundle exec gitlab-housekeeper -r keeps/pretty_useless_keep.rb -k Keeps::PrettyUselessKeep -d -m 3
+bundle exec gitlab-housekeeper -k Keeps::PrettyUselessKeep -d -m 3
 ```
 
 The `-d` just prints the contents of the merge request. Removing this will
 actually create merge requests and requires setting a few environment
 variables described below.
+
+Note: By default all `.rb` files in the `./keeps/` directory (not recursively)
+will be loaded by the `gitlab-housekeeper` command. So it is assumed you place
+the keeps in there.
 
 ## Running
 
@@ -110,5 +114,5 @@ a mistake. The alternative of using your own API token with it's permissions to
    ```
 1. Run it:
    ```
-   bundle exec gitlab-housekeeper -d -m3 -r keeps/overdue_finalize_background_migration.rb -k Keeps::OverdueFinalizeBackgroundMigration
+   bundle exec gitlab-housekeeper -d -m3 -k Keeps::OverdueFinalizeBackgroundMigration
    ```

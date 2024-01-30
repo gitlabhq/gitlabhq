@@ -16,8 +16,8 @@ RSpec.describe 'gitlab:audit_event_types rake tasks', :silence_stdout, feature_c
       compile_docs_task = instance_double(Tasks::Gitlab::AuditEventTypes::CompileDocsTask)
 
       expect(Tasks::Gitlab::AuditEventTypes::CompileDocsTask).to receive(:new).with(
-        Rails.root.join("doc/administration/audit_event_streaming"),
-        Rails.root.join("doc/administration/audit_event_streaming/audit_event_types.md"),
+        Rails.root.join("doc/administration"),
+        Rails.root.join("doc/administration/audit_event_types.md"),
         Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb")).and_return(compile_docs_task)
 
       expect(compile_docs_task).to receive(:run)
@@ -31,8 +31,8 @@ RSpec.describe 'gitlab:audit_event_types rake tasks', :silence_stdout, feature_c
       check_docs_task = instance_double(Tasks::Gitlab::AuditEventTypes::CheckDocsTask)
 
       expect(Tasks::Gitlab::AuditEventTypes::CheckDocsTask).to receive(:new).with(
-        Rails.root.join("doc/administration/audit_event_streaming"),
-        Rails.root.join("doc/administration/audit_event_streaming/audit_event_types.md"),
+        Rails.root.join("doc/administration"),
+        Rails.root.join("doc/administration/audit_event_types.md"),
         Rails.root.join("tooling/audit_events/docs/templates/audit_event_types.md.erb")).and_return(check_docs_task)
 
       expect(check_docs_task).to receive(:run)

@@ -16,10 +16,6 @@ OptionParser.new do |opts|
     options[:dry_run] = true
   end
 
-  opts.on('-r lib/foo.rb lib/bar.rb', '--require lib/foo.rb lib/bar.rb', Array, 'Require keeps specified') do |r|
-    options[:require] = r
-  end
-
   opts.on('-k OverdueFinalizeBackgroundMigration,AnotherKeep', '--keeps OverdueFinalizeBackgroundMigration,AnotherKeep', Array, 'Require keeps specified') do |k|
     options[:keeps] = k
   end

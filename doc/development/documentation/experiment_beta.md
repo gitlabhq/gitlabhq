@@ -13,7 +13,7 @@ When you document a feature in one of these three statuses:
 
 - Add the tier badge after the page or topic title.
 - Do not include `(Experiment)` or `(Beta)` in the left nav.
-- Ensure the version history lists the feature's status.
+- Ensure the history lists the feature's status.
 
 These features are usually behind a feature flag, which follow [these documentation guidelines](feature_flags.md).
 
@@ -49,4 +49,4 @@ When the feature is ready for production, remove:
   description.
 - The feature flag information if available.
 
-Ensure the version history is up-to-date by adding a note about the production release.
+Ensure the history is up-to-date by adding a note about the production release.

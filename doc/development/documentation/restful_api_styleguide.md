@@ -47,13 +47,13 @@ required attributes first in the table.
 ````markdown
 ## API name
 
-> - Version history note.
+> - History note.
 
 One or two sentence description of what endpoint does.
 
 ### Method title
 
-> - Version history note.
+> - History note.
 
 Description of the method.
 
@@ -95,12 +95,12 @@ Example response:
 ```
 ````
 
-## Version history
+## History
 
-Add [version history](versions.md#documenting-version-specific-features)
+Add [history](versions.md#documenting-version-specific-features)
 to describe new or updated API calls.
 
-To add version history for an individual attribute, include it in the version history
+To add history for an individual attribute, include it in the history
 for the section. For example:
 
 ```markdown
@@ -110,7 +110,7 @@ for the section. For example:
 ```
 
 If the API or attribute is deployed behind a feature flag,
-[include the feature flag information](feature_flags.md) in the version history.
+[include the feature flag information](feature_flags.md) in the history.
 
 ## Deprecations
 
@@ -119,7 +119,7 @@ To document the deprecation of an API endpoint, follow the steps to
 
 To deprecate an attribute:
 
-1. Add a version history note.
+1. Add a history note.
 
    ```markdown
    > - `widget_name` [deprecated](<link-to-issue>) in GitLab 14.7.

@@ -24,14 +24,14 @@ To view versions that are not available on `docs.gitlab.com`:
 
 ## Documenting version-specific features
 
-When a feature is added or updated, you can include its version information
-either as a **Version history** list item or as an inline text reference.
+When a feature is added or updated, update the documentation with
+a **History** list item or as an inline text reference.
 
-You do not need to add version information on the pages in the `/development` directory.
+You do not need to add historical information on the pages in the `/development` directory.
 
-### Add a **Version history** item
+### Add a **History** item
 
-If all content in a topic is related, add a version history item after the topic title.
+If all content in a topic is related, add a history item after the topic title.
 For example:
 
 ```markdown
@@ -89,9 +89,9 @@ If the feature status changes, use `changed`:
 When features are introduced behind feature flags, you must add details about the feature flag to the documentation.
 For more information, see [Document features deployed behind feature flags](feature_flags.md).
 
-### Inline version text
+### Inline history text
 
-If you're adding content to an existing topic, you can add version information
+If you're adding content to an existing topic, you can add historical information
 inline with the existing text. If possible, include a link to the related issue,
 merge request, or epic. For example:
 
@@ -166,7 +166,7 @@ The title and a removed indicator remains until three months after the removal.
 
 To remove a page:
 
-1. Leave the page title. Remove all other content, including the version history items and the word `WARNING:`.
+1. Leave the page title. Remove all other content, including the history items and the word `WARNING:`.
 1. After the title, change `(deprecated)` to `(removed)`.
 1. Update the YAML metadata:
    - For `remove_date`, set the value to a date three months after
@@ -204,7 +204,7 @@ This content is removed from the documentation as part of the Technical Writing 
 To remove a topic:
 
 1. Leave the title and the details of the deprecation and removal. Remove all other content,
-   including the version history items and the word `WARNING:`.
+   including the history items and the word `WARNING:`.
 1. Add `(removed)` after the title.
 1. Add the following HTML comments above and below the topic.
    For `remove_date`, set a date three months after the release where it was removed.
@@ -236,9 +236,9 @@ GitLab 16.0, 15.0, and 14.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 
-If you see version history items or inline text that refers to unsupported versions, you can remove it.
+If you see history items or inline text that refers to unsupported versions, you can remove it.
 
-In the version history, remove information about [features behind feature flags](feature_flags.md)
+In the history, remove information about [features behind feature flags](feature_flags.md)
 only if all events related to the feature flag happened in unsupported versions.
 If the flag hasn't been removed, readers should know when it was introduced.
 

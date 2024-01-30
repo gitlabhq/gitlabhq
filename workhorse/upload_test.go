@@ -37,8 +37,7 @@ func testArtifactsUpload(t *testing.T, uploadArtifacts uploadArtifactsFunction) 
 	ts := signedUploadTestServer(t, nil, nil)
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resp, resource, err := uploadArtifacts(ws.URL, contentType, reqBody)
 	require.NoError(t, err)
@@ -236,8 +235,7 @@ func TestAcceleratedUpload(t *testing.T) {
 					})
 
 				defer ts.Close()
-				ws := startWorkhorseServer(ts.URL)
-				defer ws.Close()
+				ws := startWorkhorseServer(t, ts.URL)
 
 				reqBody, contentType, err := multipartBodyWithFile()
 				require.NoError(t, err)
@@ -301,8 +299,7 @@ func TestUnacceleratedUploads(t *testing.T) {
 			ts := unacceleratedUploadTestServer(t)
 
 			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			reqBody, contentType, err := multipartBodyWithFile()
 			require.NoError(t, err)
@@ -354,8 +351,7 @@ func TestBlockingRewrittenFieldsHeader(t *testing.T) {
 				require.NotEqual(t, canary, r.Header.Get(upload.RewrittenFieldsHeader), "Found canary %q in header", canary)
 			})
 			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			req, err := http.NewRequest("POST", ws.URL+"/something", tc.body)
 			require.NoError(t, err)
@@ -412,8 +408,7 @@ func TestLfsUpload(t *testing.T) {
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	req, err := http.NewRequest("PUT", ws.URL+resource, strings.NewReader(reqBody))
 	require.NoError(t, err)
@@ -447,8 +442,7 @@ func TestLfsUploadRouting(t *testing.T) {
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
 		method      string
@@ -546,8 +540,7 @@ func testPackageFileUpload(t *testing.T, method string, resource string) {
 	ts := packageUploadTestServer(t, method, resource, reqBody, rspBody)
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	req, err := http.NewRequest(method, ws.URL+resource, strings.NewReader(reqBody))
 	require.NoError(t, err)

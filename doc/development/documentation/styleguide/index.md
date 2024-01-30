@@ -1680,7 +1680,7 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 
 Tier badges are how we refer to the information that's displayed under a topic title.
 
-Tier badges include the tier, offering, status, and version history.
+Tier badges include the tier, offering, status, and history.
 
 The Markdown for tier badges should look like the following:
 

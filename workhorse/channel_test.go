@@ -128,26 +128,28 @@ func TestChannelProxyForwardsXForwardedForFromClient(t *testing.T) {
 }
 
 func wireupChannel(t *testing.T, channelPath string, modifier func(*api.Response), subprotocols ...string) (chan connWithReq, string, func()) {
-	serverConns, remote := startWebsocketServer(subprotocols...)
+	serverConns, remote := startWebsocketServer(t, subprotocols...)
 	authResponse := channelOkBody(remote, nil, subprotocols...)
 	if modifier != nil {
 		modifier(authResponse)
 	}
 	upstream := testAuthServer(t, nil, nil, 200, authResponse)
-	workhorse := startWorkhorseServer(upstream.URL)
+	workhorse := startWorkhorseServer(t, upstream.URL)
 
 	return serverConns, websocketURL(workhorse.URL, channelPath), func() {
-		workhorse.Close()
 		upstream.Close()
-		remote.Close()
 	}
 }
 
-func startWebsocketServer(subprotocols ...string) (chan connWithReq, *httptest.Server) {
+func startWebsocketServer(t *testing.T, subprotocols ...string) (chan connWithReq, *httptest.Server) {
 	upgrader := &websocket.Upgrader{Subprotocols: subprotocols}
 
 	connCh := make(chan connWithReq, 1)
 	server := httptest.NewTLSServer(webSocketHandler(upgrader, connCh))
+
+	t.Cleanup(func() {
+		server.Close()
+	})
 
 	return connCh, server
 }

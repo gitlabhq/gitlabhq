@@ -78,6 +78,25 @@ If you have questions or need assistance upgrading from GitLab Community Edition
 
 ## Troubleshooting
 
+## `An error occurred while adding your subscription`
+
+This might occur when you activate your subscription. You can use Chrome developer tools to find more information about the type of error.
+
+1. To open your browser developer tools, right-click in a page in your browser and select **Inspect**.
+1. In your browser developer tools, select the **Network** tab.
+1. In GitLab, retry the activation code.
+1. In the browser developer tools, in the **Network** tab, select the **graphql** entry.
+1. Select the **Response** tab.
+
+There should be an error similar to the following that you can use to determine the issue:
+
+```plaintext
+[{"data":{"gitlabSubscriptionActivate":{"errors":["<error> returned=1 errno=0 state=error: <error>"],"license":null,"__typename":"GitlabSubscriptionActivatePayload"}}}]
+```
+
+- If `only get, head, options, and trace methods are allowed in silent mode` is in the GraphQL **Response**, your instance has [Silence mode enabled](../administration/silent_mode/index.md) and should be disabled.
+- If you are unable to determine the issue, please contact [GitLab Support](https://about.gitlab.com/support/portal/) and provide the GraphQL response in your description of the issue.
+
 ### Cannot activate instance due to connectivity error
 
 This error occurs when you use an activation code to activate your instance, but your instance is unable to connect to the GitLab servers.
