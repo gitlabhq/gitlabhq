@@ -81,6 +81,8 @@
     align-items: center;
     padding: 4px;
     margin-left: -4px;
+    height: 32px;
+    width: auto;
     border-radius: $border-radius-default;
 
     &:hover,
@@ -96,6 +98,11 @@
     &:active {
       background-color: $brand-gray-03;
     }
+  }
+
+  img {
+    height: 100%;
+    width: auto;
   }
 }
 

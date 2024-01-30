@@ -134,6 +134,80 @@ example.com;gitlab.example.com
 example.com:8080
 ```
 
+## Configure webhooks to support mutual TLS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27450) in GitLab 16.9.
+
+You can configure webhooks to support mutual TLS by configuring a client
+certificate in PEM format. This certificate is set globally and
+presented to the server during a TLS handshake. The certificate can also
+be protected with a PEM passphrase.
+
+To configure the certificate, follow the instructions:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['http_client']['tls_client_cert_file'] = '<PATH TO CLIENT PEM FILE>'
+   gitlab_rails['http_client']['tls_client_cert_password'] = '<OPTIONAL PASSWORD>'
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       image: 'gitlab/gitlab-ee:latest'
+       restart: always
+       hostname: 'gitlab.example.com'
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+            gitlab_rails['http_client']['tls_client_cert_file'] = '<PATH TO CLIENT PEM FILE>'
+            gitlab_rails['http_client']['tls_client_cert_password'] = '<OPTIONAL PASSWORD>'
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     http_client:
+       tls_client_cert_file: '<PATH TO CLIENT PEM FILE>'
+       tls_client_cert_password: '<OPTIONAL PASSWORD>'
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
 ## Troubleshooting
 
 When filtering outbound requests, you might encounter the following issues.

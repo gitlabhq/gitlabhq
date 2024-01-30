@@ -11,47 +11,31 @@ link: https://about.gitlab.com/handbook/communication/#top-misused-terms
 level: error
 ignorecase: true
 swap:
-  codequality: code quality
-  Customer [Pp]ortal: Customers Portal
-  disallow: prevent
-  '(?<!GitLab )Duo': GitLab Duo
-  frontmatter: front matter
-  GitLabber: GitLab team member
-  GitLabbers: GitLab team members
-  GitLab-shell: GitLab Shell
-  gitlab omnibus: Linux package
-  param: parameter
-  params: parameters
-  pg: PostgreSQL
-  'postgres$': PostgreSQL
-  golang: Go
-  raketask: Rake task
-  raketasks: Rake tasks
-  rspec: RSpec
-  GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
-  styleguide: style guide
-  to login: to log in
-  can login: can log in
-  to log-in: to log in
-  can log-in: can log in
-  to signin: to sign in
-  can signin: can sign in
-  to sign-in: to sign in
-  can sign-in: can sign in
-  x509: X.509
-  yml: YAML
   admin user: administrator
   admin users: administrators
   administrator permission: administrator access
   administrator permissions: administrator access
   administrator role: administrator access
-  the administrator access level: administrator access
+  at least the Owner role: the Owner role
+  can login: can log in
+  can log-in: can log in
+  can signin: can sign in
+  can sign-in: can sign in
+  codequality: code quality
+  Customer [Pp]ortal: Customers Portal
   developer access: the Developer role
   developer permission: the Developer role
   developer permissions: the Developer role
+  disallow: prevent
+  '(?<!GitLab )Duo': GitLab Duo
+  frontmatter: front matter
+  GitLab self hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLab self-hosted: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  GitLabber: GitLab team member
+  GitLabbers: GitLab team members
+  GitLab-shell: GitLab Shell
+  gitlab omnibus: Linux package
+  golang: Go
   guest access: the Guest role
   guest permission: the Guest role
   guest permissions: the Guest role
@@ -61,7 +45,23 @@ swap:
   owner access: the Owner role
   owner permission: the Owner role
   owner permissions: the Owner role
+  param: parameter
+  params: parameters
+  pg: PostgreSQL
+  'postgres$': PostgreSQL
+  raketask: Rake task
+  raketasks: Rake tasks
+  rspec: RSpec
   reporter access: the Reporter role
   reporter permission: the Reporter role
   reporter permissions: the Reporter role
-  at least the Owner role: the Owner role
+  self hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  self-hosted GitLab: GitLab self-managed # https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#gitlab-self-managed
+  styleguide: style guide
+  the administrator access level: administrator access
+  to login: to log in
+  to log-in: to log in
+  to signin: to sign in
+  to sign-in: to sign in
+  x509: X.509
+  yml: YAML
