@@ -351,7 +351,7 @@ def replenish_table_seq(table, lower_limit, count)
   return if max_id - last_id > lower_limit
 
   new_start, new_limit = post("/api/v4/internal/cells/database/claim", { table: table, count: count })
-  execute("ALTER SEQUENCE START ? MAXVALUE ?", new_start, new_limit)
+  execute("ALTER SEQUENCE RESTART ? MAXVALUE ?", new_start, new_limit)
 end
 ```
 

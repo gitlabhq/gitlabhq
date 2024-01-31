@@ -43,7 +43,7 @@ We use the following terminology to describe the Service Ping components:
 
 ## Service Ping request flow
 
-The following example shows a basic request/response flow between a GitLab instance, the Versions Application, the License Application, Salesforce, the GitLab S3 Bucket, the GitLab Snowflake Data Warehouse, and Sisense:
+The following example shows a basic request/response flow between a GitLab instance, the Versions Application, the License Application, Salesforce, the GitLab S3 Bucket, the GitLab Snowflake Data Warehouse, and Tableau:
 
 ```mermaid
 sequenceDiagram
@@ -53,7 +53,7 @@ sequenceDiagram
     participant Salesforce
     participant S3 Bucket
     participant Snowflake DW
-    participant Sisense Dashboards
+    participant Tableau Dashboards
     GitLab Instance->>Versions Application: Send Service Ping
     loop Process usage data
         Versions Application->>Versions Application: Parse usage data
@@ -70,7 +70,7 @@ sequenceDiagram
     Versions Application->>S3 Bucket: Export Versions database
     S3 Bucket->>Snowflake DW: Import data
     Snowflake DW->>Snowflake DW: Transform data using dbt
-    Snowflake DW->>Sisense Dashboards: Data available for querying
+    Snowflake DW->>Tableau Dashboards: Data available for querying
     Versions Application->>GitLab Instance: DevOps Score (Conversational Development Index)
 ```
 

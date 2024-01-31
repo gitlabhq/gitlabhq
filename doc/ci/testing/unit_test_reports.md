@@ -43,7 +43,7 @@ Consider the following workflow:
 
 ## How it works
 
-First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format)
+First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format)
 as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
 comparing the head and base branch's JUnit report format XML files, where:
 

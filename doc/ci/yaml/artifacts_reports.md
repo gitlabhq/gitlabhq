@@ -283,7 +283,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
 
 ## `artifacts:reports:junit`
 
-The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format).
+The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format).
 The collected Unit test reports upload to GitLab as an artifact. Although JUnit was originally developed in Java, there
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 

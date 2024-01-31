@@ -136,7 +136,8 @@ The GitLab Support team can then look up why this is failing in the GitLab.com s
 NOTE:
 These steps can only be completed by GitLab Support.
 
-In Kibana, the logs should be filtered for `json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
+[In Kibana](https://log.gprd.gitlab.net/app/r/s/0FdPP), the logs should be filtered for
+`json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
 If you have been provided the `X-Request-Id` value, you can use that against `json.correlation_id` to narrow down the results.
 
 Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
@@ -146,12 +147,17 @@ For the first log:
 - `json.status` is `422`.
 - `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
-For the second log:
+For the second log, you might have one of the following scenarios:
 
-- `json.message` is `Proxy lifecycle event received error response` or similar.
-- `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
-- If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
+- Scenario 1:
+  - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
+  - `json.message` is `Proxy lifecycle event received error response` or similar.
+  - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
+  - If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
   `https://gitlab.com`.
+- Scenario 2:
+  - `json.exception.class` and `json.exception.message` are present.
+  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
 
 ## Error when connecting the app
 

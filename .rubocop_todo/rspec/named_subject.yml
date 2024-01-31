@@ -500,7 +500,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/search/aggregation_parser_spec.rb'
     - 'ee/spec/lib/gitlab/search/aggregation_spec.rb'
     - 'ee/spec/lib/gitlab/search/client_spec.rb'
-    - 'ee/spec/lib/gitlab/search/zoekt/client_spec.rb'
     - 'ee/spec/lib/gitlab/search_context/builder_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/generator_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/sitemap_file_spec.rb'

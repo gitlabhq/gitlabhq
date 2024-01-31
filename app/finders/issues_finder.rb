@@ -67,6 +67,13 @@ class IssuesFinder < IssuableFinder
     super.with_projects_matching_search_data
   end
 
+  override :use_full_text_search?
+  def use_full_text_search?
+    return false if include_namespace_level_work_items?
+
+    super
+  end
+
   override :by_parent
   def by_parent(items)
     return super unless include_namespace_level_work_items?

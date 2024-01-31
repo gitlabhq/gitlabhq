@@ -2,7 +2,7 @@ import { isValidDate } from '~/lib/utils/datetime_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
-import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS } from './constants';
+import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS, CUSTOM_DATE_RANGE_OPTION } from './constants';
 
 function reportErrorAndThrow(e) {
   logError(e);
@@ -358,7 +358,7 @@ function addMetricsDateRangeFilterToQueryParams(dateRangeFilter, params) {
   if (!dateRangeFilter || !params) return;
 
   const { value, endDate, startDate } = dateRangeFilter;
-  if (value === 'custom') {
+  if (value === CUSTOM_DATE_RANGE_OPTION) {
     if (isValidDate(startDate) && isValidDate(endDate)) {
       params.append('start_time', startDate.toISOString());
       params.append('end_time', endDate.toISOString());

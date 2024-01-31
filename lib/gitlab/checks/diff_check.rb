@@ -18,7 +18,7 @@ module Gitlab
         return unless should_run_validations?
         return if commits.empty?
 
-        paths = project.repository.find_changed_paths(treeish_objects, merge_commit_diff_mode: :all_parents)
+        paths = project.repository.find_changed_paths(commits, merge_commit_diff_mode: :all_parents)
         paths.each do |path|
           validate_path(path)
         end
@@ -27,28 +27,6 @@ module Gitlab
       end
 
       private
-
-      def treeish_objects
-        objects = commits
-
-        return objects unless project.repository.empty?
-
-        # It's a special case for the push to the empty repository
-        #
-        # Git doesn't display a diff of the initial commit of the repository
-        # if we just provide a commit sha.
-        #
-        # To fix that we can use TreeRequest to check the difference
-        # between empty tree sha and the tree sha of the initial commit
-        #
-        # `commits` are sorted in reverse order, the initial commit is the last one.
-        init_commit = objects.last
-
-        diff_tree = Gitlab::Git::DiffTree.from_commit(init_commit)
-        return [diff_tree] + objects if diff_tree
-
-        objects
-      end
 
       def validate_lfs_file_locks?
         strong_memoize(:validate_lfs_file_locks) do

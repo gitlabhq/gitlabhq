@@ -162,7 +162,3 @@ To use a metric definition to manage [performance indicator](https://handbook.gi
 [Metrics Dictionary is a separate application](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/metric-dictionary).
 
 All metrics available in Service Ping are in the [Metrics Dictionary](https://metrics.gitlab.com/).
-
-### Copy query to clipboard
-
-To check if a metric has data in Sisense, use the copy query to clipboard feature. This copies a query that's ready to use in Sisense. The query gets the last five service ping data for GitLab.com for a given metric. For information about how to check if a Service Ping metric has data in Sisense, see this [demo](https://www.youtube.com/watch?v=n4o65ivta48).
