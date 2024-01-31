@@ -21,9 +21,9 @@ module SimpleCovEnv
   def configure_job
     SimpleCov.configure do
       if ENV['CI_JOB_NAME']
-        job_name = Gitlab::Utils.slugify(ENV['CI_JOB_NAME'])
-        coverage_dir "coverage/#{job_name}"
-        command_name job_name
+        coverage_name = Gitlab::Utils.slugify("#{ENV['CI_JOB_NAME']}-#{ENV['CI_PROJECT_ID']}")
+        coverage_dir "coverage/#{coverage_name}"
+        command_name coverage_name
       end
 
       if ENV['CI']

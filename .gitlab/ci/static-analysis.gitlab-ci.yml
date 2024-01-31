@@ -34,12 +34,6 @@ static-analysis:
     - yarn_install_script
     - fail_on_warnings scripts/static-analysis
 
-static-analysis as-if-foss:
-  extends:
-    - static-analysis
-    - .static-analysis:rules:static-analysis-as-if-foss
-    - .as-if-foss
-
 static-verification-with-database:
   extends:
     - .static-analysis-base
@@ -69,13 +63,6 @@ generate-apollo-graphql-schema:
     paths:
       - "${GRAPHQL_SCHEMA_APOLLO_FILE}"
 
-generate-apollo-graphql-schema as-if-foss:
-  extends:
-    - generate-apollo-graphql-schema
-    - .frontend:rules:eslint-as-if-foss
-    - .as-if-foss
-  needs: ['graphql-schema-dump as-if-foss']
-
 eslint:
   extends:
     - .static-analysis-base
@@ -87,13 +74,6 @@ eslint:
   script:
     - yarn_install_script
     - run_timed_command "yarn run lint:eslint:all"
-
-eslint as-if-foss:
-  extends:
-    - eslint
-    - .frontend:rules:eslint-as-if-foss
-    - .as-if-foss
-  needs: ['generate-apollo-graphql-schema as-if-foss']
 
 haml-lint:
   extends:

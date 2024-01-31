@@ -21,10 +21,25 @@ export default {
       required: false,
       default: () => ({}),
     },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    currentRef: {
+      type: String,
+      required: false,
+      default: '',
+    },
     content: {
       type: String,
       default: '',
       required: false,
+    },
+    showBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     isRawContent: {
       type: Boolean,
@@ -44,6 +59,11 @@ export default {
     activeViewer: {
       type: Object,
       required: true,
+    },
+    isBlameLinkHidden: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     hideLineNumbers: {
       type: Boolean,
@@ -65,6 +85,14 @@ export default {
     },
     viewerError() {
       return this.activeViewer.renderError;
+    },
+    lineNumbers() {
+      // rawTextBlob is used for source code files and content for snippets
+      return (
+        (this?.blob?.rawTextBlob?.split('\n')?.length || 1) - 1 ||
+        this?.content?.split('\n')?.length ||
+        0
+      );
     },
     isContentLoaded() {
       return this.activeViewer.type === RICH_BLOB_VIEWER
@@ -93,10 +121,17 @@ export default {
         v-else
         ref="contentViewer"
         :content="content"
+        :current-ref="currentRef"
+        :project-path="projectPath"
+        :blob-path="blob.path || ''"
         :rich-viewer="richViewer"
         :is-raw-content="isRawContent"
+        :show-blame="showBlame"
         :file-name="blob.name"
+        :blame-path="blob.blamePath"
         :type="activeViewer.fileType"
+        :line-numbers="lineNumbers"
+        :is-blame-link-hidden="isBlameLinkHidden"
         :hide-line-numbers="hideLineNumbers"
         data-testid="blob-viewer-file-content"
         @richContentLoaded="richContentLoaded = true"

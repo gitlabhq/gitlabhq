@@ -286,36 +286,47 @@ If you want to force a Review App to be deployed regardless of your changes, you
 
 Consult the [Review Apps](../testing_guide/review_apps.md) dedicated page for more information.
 
-### As-if-FOSS jobs
+### As-if-FOSS jobs and cross project downstream pipeline
 
-The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if the jobs would run in the context
-of `gitlab-org/gitlab-foss`. These jobs are only created in the following cases:
+To ensure the relevant changes are working properly in the FOSS project,
+under some conditions we also run:
+
+- `* as-if-foss` jobs in the same pipeline
+- Cross project downstream FOSS pipeline
+
+The `* as-if-foss` jobs run the GitLab test suite "as if FOSS", meaning as if
+the jobs would run in the context of `gitlab-org/gitlab-foss`. On the other
+hand, cross project downstream FOSS pipeline actually runs inside the FOSS
+project, which should be even closer to an actual FOSS environment.
+
+We run them in the following cases:
 
 - when the `pipeline:run-as-if-foss` label is set on the merge request
 - when the merge request is created in the `gitlab-org/security/gitlab` project
-- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
+- when CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
 
-The `* as-if-foss` jobs are run in addition to the regular EE-context jobs. They have the `FOSS_ONLY='1'` variable
-set and get the `ee/` folder removed before the tests start running.
+The `* as-if-foss` jobs are run in addition to the regular EE-context jobs.
+They have the `FOSS_ONLY='1'` variable set and get the `ee/` folder removed
+before the tests start running.
 
-The intent is to ensure that a change doesn't introduce a failure after `gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
+Cross project downstream FOSS pipeline simulates merging the merge request
+into the default branch in the FOSS project instead, which removes a list of
+files. The list can be found in
+[`.gitlab/ci/as-if-foss.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/215d1e27d74cbebaa787d35bf7dcabc5c34ebf86/.gitlab/ci/as-if-foss.gitlab-ci.yml#L22-30)
+and in
+[`merge-train/bin/merge-train`](https://gitlab.com/gitlab-org/merge-train/-/blob/041d942ae1b5615703b7a786982340b61620e7c5/bin/merge-train#L228-239).
 
-#### As-if-FOSS cross project downstream pipeline
+The intent is to ensure that a change doesn't introduce a failure after
+`gitlab-org/gitlab` is synced to `gitlab-org/gitlab-foss`.
 
-As an alternative to the `* as-if-foss` jobs, we can also run a cross project
-FOSS pipeline exactly in the `gitlab-org/gitlab-foss` project. We trigger it
-in the following cases:
-
-- when the `pipeline:run-as-if-foss-cross-project` label is set on the merge request
-
-This is still working-in-progress to replace the `* as-if-foss` jobs. The
-goal is to simplify pipeline rules and make it more clear about the intention.
-
-##### Tokens set in the project variables
+#### Tokens set in the project variables
 
 - `AS_IF_FOSS_TOKEN`: This is a [GitLab FOSS](https://gitlab.com/gitlab-org/gitlab-foss)
   project token with `developer` role and `write_repository` permission,
   to push generated `as-if-foss/*` branch.
+  - Note that the same name for the security project should use another token
+    from the security FOSS project, so that we never push security changes to
+    a public project.
 
 ### As-if-JH cross project downstream pipeline
 

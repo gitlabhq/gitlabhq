@@ -48,12 +48,6 @@ qa:internal:
   script:
     - bundle exec rspec -O .rspec_internal
 
-qa:internal-as-if-foss:
-  extends:
-    - qa:internal
-    - .qa:rules:internal-as-if-foss
-    - .as-if-foss
-
 cache-qa-gems:
   extends:
     - .qa-job-base

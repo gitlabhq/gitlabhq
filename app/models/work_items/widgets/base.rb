@@ -15,16 +15,8 @@ module WorkItems
         []
       end
 
-      def self.sync_params
-        []
-      end
-
       def self.process_quick_action_param(param_name, value)
         { param_name => value }
-      end
-
-      def self.process_sync_params(params)
-        params
       end
 
       def self.callback_class

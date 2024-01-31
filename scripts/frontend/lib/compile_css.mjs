@@ -1,18 +1,16 @@
-#!/usr/bin/env node
-
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { argv } from 'node:process';
+import { env } from 'node:process';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
-import IS_EE from '../../config/helpers/is_ee_env.js';
-import IS_JH from '../../config/helpers/is_jh_env.js';
+import IS_EE from '../../../config/helpers/is_ee_env.js';
+import IS_JH from '../../../config/helpers/is_jh_env.js';
 /* eslint-enable import/extensions */
 
 // Note, in node > 21.2 we could replace the below with import.meta.dirname
-const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../');
+const ROOT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../');
 const OUTPUT_PATH = path.join(ROOT_PATH, 'app/assets/builds/');
 
 const BASE_PATH = 'app/assets/stylesheets';
@@ -166,14 +164,7 @@ function resolveCompilationTargets() {
   return Object.fromEntries([...result.entries()].map((entry) => entry.reverse()));
 }
 
-function writeContentToFile(content, srcFile, outputFile) {
-  if (!existsSync(path.dirname(outputFile))) {
-    mkdirSync(path.dirname(outputFile), { recursive: true });
-  }
-  writeFileSync(outputFile, content.css);
-}
-
-async function compileAllStyles() {
+export async function compileAllStyles({ shouldWatch = false }) {
   const reverseDependencies = {};
 
   const compilationTargets = resolveCompilationTargets();
@@ -184,38 +175,81 @@ async function compileAllStyles() {
   };
 
   let fileWatcher = null;
-  if (argv?.includes('--watch')) {
+  if (shouldWatch) {
     const { watch } = await import('chokidar');
     fileWatcher = watch([]);
   }
 
-  function compileSCSSFile(source, dest) {
+  async function compileSCSSFile(source, dest) {
     console.log(`\tcompiling source ${source} to ${dest}`);
     const content = compile(source, sassCompilerOptions);
     if (fileWatcher) {
       for (const dependency of content.loadedUrls) {
         if (dependency.protocol === 'file:') {
-          reverseDependencies[dependency.pathname] ||= new Set();
-          reverseDependencies[dependency.pathname].add(source);
-          fileWatcher.add(dependency.pathname);
+          const dependencyPath = fileURLToPath(dependency);
+          reverseDependencies[dependencyPath] ||= new Set();
+          reverseDependencies[dependencyPath].add(source);
+          fileWatcher.add(dependencyPath);
         }
       }
     }
-    writeContentToFile(content, source, dest);
+    // Create target folder if it doesn't exist
+    await mkdir(path.dirname(dest), { recursive: true });
+    return writeFile(dest, content.css, 'utf-8');
   }
 
   if (fileWatcher) {
-    fileWatcher.on('change', (changedFile) => {
+    fileWatcher.on('change', async (changedFile) => {
       console.warn(`${changedFile} changed, recompiling`);
+      const recompile = [];
       for (const source of reverseDependencies[changedFile]) {
-        compileSCSSFile(source, compilationTargets[source]);
+        recompile.push(compileSCSSFile(source, compilationTargets[source]));
       }
+      await Promise.all(recompile);
     });
   }
 
-  for (const [source, dest] of Object.entries(compilationTargets)) {
-    compileSCSSFile(source, dest);
-  }
+  const initialCompile = Object.entries(compilationTargets).map(([source, dest]) =>
+    compileSCSSFile(source, dest),
+  );
+
+  await Promise.all(initialCompile);
+
+  return fileWatcher;
 }
 
-await compileAllStyles();
+function shouldUseNewPipeline() {
+  return /^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`);
+}
+
+export function viteCSSCompilerPlugin() {
+  if (!shouldUseNewPipeline()) {
+    return null;
+  }
+  let fileWatcher = null;
+  return {
+    name: 'gitlab-css-compiler',
+    async configureServer() {
+      fileWatcher = await compileAllStyles({ shouldWatch: true });
+    },
+    buildEnd() {
+      return fileWatcher?.close();
+    },
+  };
+}
+
+export function simplePluginForNodemon({ shouldWatch = true }) {
+  if (!shouldUseNewPipeline()) {
+    return null;
+  }
+  let fileWatcher = null;
+  return {
+    async start() {
+      await fileWatcher?.close();
+      fileWatcher = await compileAllStyles({ shouldWatch });
+    },
+    stop() {
+      return fileWatcher?.close();
+    },
+  };
+}

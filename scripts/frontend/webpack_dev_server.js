@@ -47,6 +47,8 @@ else {
   });
 }
 
+let plugin = false;
+
 // print useful messages for nodemon events
 nodemon
   .on('start', () => {
@@ -56,11 +58,20 @@ nodemon
       console.log('The JavaScript assets are recompiled only if they change');
       console.log('If you change them often, you might want to unset DEV_SERVER_STATIC');
     }
+    /* eslint-disable import/extensions, promise/catch-or-return */
+    import('./lib/compile_css.mjs').then(({ simplePluginForNodemon }) => {
+      plugin = simplePluginForNodemon({ shouldWatch: !STATIC_MODE });
+      return plugin?.start();
+    });
+    /* eslint-enable import/extensions, promise/catch-or-return */
   })
   .on('quit', () => {
+    console.log('Shutting down CSS compilation process');
+    plugin?.stop();
     console.log('Shutting down webpack process');
     process.exit();
   })
   .on('restart', (files) => {
     console.log('Restarting webpack process due to: ', files);
+    plugin?.start();
   });

@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:guest) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :repository, group: group) }
+  let_it_be(:guest) { create(:user).tap { |u| group.add_guest(u) } }
+  let_it_be(:owner) { create(:user).tap { |u| group.add_owner(u) } }
   let_it_be(:work_item, refind: true) { create(:work_item, project: project, author: guest) }
 
   let(:user) { guest }
 
   before_all do
-    project.add_guest(guest)
     # note necessary to test note removal as part of work item deletion
     create(:note, project: project, noteable: work_item)
   end
@@ -20,6 +21,23 @@ RSpec.describe WorkItems::DeleteService, feature_category: :team_planning do
 
     context 'when user can delete the work item' do
       it { is_expected.to be_success }
+
+      context 'when work item exists at the group level' do
+        let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+        context 'when the user is owner of the group' do
+          let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+          let(:user) { owner }
+
+          it { is_expected.to be_success }
+        end
+
+        context 'when the user is a guest of the group but author of the work item' do
+          let_it_be(:work_item) { create(:work_item, :group_level, namespace: group, author: guest) }
+
+          it { is_expected.to be_success }
+        end
+      end
 
       # currently we don't expect destroy to fail. Mocking here for coverage and keeping
       # the service's return type consistent

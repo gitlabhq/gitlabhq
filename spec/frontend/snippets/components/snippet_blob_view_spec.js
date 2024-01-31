@@ -107,6 +107,11 @@ describe('Blob Embeddable', () => {
       expect(findBlobContent().exists()).toBe(true);
     });
 
+    it('passes `isBlameLinkHidden = true` to blob content component', () => {
+      createComponent();
+      expect(findBlobContent().props('isBlameLinkHidden')).toEqual(true);
+    });
+
     it('sets simple viewer correctly', async () => {
       createComponent();
       await waitForPromises();

@@ -85,9 +85,3 @@ qa:selectors:
     - .qa:rules:selectors
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
-
-qa:selectors-as-if-foss:
-  extends:
-    - qa:selectors
-    - .qa:rules:selectors-as-if-foss
-    - .as-if-foss

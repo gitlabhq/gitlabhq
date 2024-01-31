@@ -358,6 +358,26 @@ rspec:artifact-collector unit:
     - job: rspec unit clickhouse  # 1 job
       optional: true
 
+rspec:artifact-collector as-if-foss:
+  extends:
+    - .artifact-collector
+    - .as-if-foss:rules:start-as-if-foss
+  needs:
+    # We need to wait for `start-as-if-foss` because cross project needs
+    # will not wait, and it'll simply look at the latest pipeline regardless
+    # status. This means we need to wait for the whole FOSS pipeline before
+    # trying to fetch the artifacts from there, ensuring they're available.
+    - job: start-as-if-foss
+    - project: gitlab-org/gitlab-foss
+      ref: as-if-foss/${CI_COMMIT_REF_NAME}
+      job: rspec:artifact-collector unit
+    - project: gitlab-org/gitlab-foss
+      ref: as-if-foss/${CI_COMMIT_REF_NAME}
+      job: rspec:artifact-collector system
+    - project: gitlab-org/gitlab-foss
+      ref: as-if-foss/${CI_COMMIT_REF_NAME}
+      job: rspec:artifact-collector remainder
+
 rspec:artifact-collector system:
   extends:
     - .artifact-collector
@@ -379,35 +399,6 @@ rspec:artifact-collector remainder:
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
     - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
-
-rspec:artifact-collector as-if-foss unit:
-  extends:
-    - .artifact-collector
-    - .rails:rules:as-if-foss-unit
-  needs:
-    - rspec unit pg14-as-if-foss  # 32 jobs
-
-rspec:artifact-collector as-if-foss system:
-  extends:
-    - .artifact-collector
-    - .rails:rules:as-if-foss-system
-  needs:
-    - rspec system pg14-as-if-foss  # 32 jobs
-
-rspec:artifact-collector as-if-foss remainder:
-  extends:
-    - .artifact-collector
-  needs:
-    - job: rspec integration pg14-as-if-foss  # 16 jobs
-      optional: true
-    - job: rspec migration pg14-as-if-foss  # 15 jobs
-      optional: true
-    - job: rspec background_migration pg14-as-if-foss  # 5 jobs
-      optional: true
-  rules:
-    - !reference ['.rails:rules:as-if-foss-integration', rules]
-    - !reference ['.rails:rules:as-if-foss-migration', rules]
-    - !reference ['.rails:rules:as-if-foss-background-migration', rules]
 
 rspec:artifact-collector unit single-redis:
   extends:
@@ -494,11 +485,7 @@ rspec:coverage:
     - job: rspec:artifact-collector remainder single-redis
       optional: true
     # as-if-foss jobs
-    - job: rspec:artifact-collector as-if-foss unit
-      optional: true
-    - job: rspec:artifact-collector as-if-foss system
-      optional: true
-    - job: rspec:artifact-collector as-if-foss remainder
+    - job: rspec:artifact-collector as-if-foss
       optional: true
     # EE jobs
     - job: rspec:artifact-collector ee single-redis
@@ -655,131 +642,6 @@ rspec-ee:predictive:trigger:
     include:
       - artifact: "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml"
         job: rspec-predictive:pipeline-generate
-
-rspec migration pg14-as-if-foss:
-  extends:
-    - .rspec-base-pg14-as-if-foss
-    - .rspec-base-migration
-    - .rspec-migration-parallel
-    - .rails:rules:as-if-foss-migration
-
-rspec background_migration pg14-as-if-foss:
-  extends:
-    - .rspec-base-pg14-as-if-foss
-    - .rspec-base-migration
-    - .rspec-background-migration-parallel
-    - .rails:rules:as-if-foss-background-migration
-
-rspec migration pg14-as-if-foss single-db:
-  extends:
-    - rspec migration pg14-as-if-foss
-    - .single-db-rspec
-    - .rspec-migration-parallel
-    - .rails:rules:single-db-as-if-foss
-
-rspec background_migration pg14-as-if-foss single-db:
-  extends:
-    - rspec background_migration pg14-as-if-foss
-    - .single-db-rspec
-    - .rails:rules:single-db-as-if-foss
-
-rspec migration pg14-as-if-foss single-db-ci-connection:
-  extends:
-    - rspec migration pg14-as-if-foss
-    - .single-db-ci-connection-rspec
-    - .rspec-migration-parallel
-    - .rails:rules:single-db-ci-connection-as-if-foss
-
-rspec background_migration pg14-as-if-foss single-db-ci-connection:
-  extends:
-    - rspec background_migration pg14-as-if-foss
-    - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection-as-if-foss
-
-rspec migration pg14-as-if-foss clusterwide-db:
-  extends:
-    - rspec migration pg14-as-if-foss
-    - .clusterwide-db
-    - .rspec-migration-parallel
-    - .rails:rules:clusterwide-db
-
-rspec background_migration pg14-as-if-foss clusterwide-db:
-  extends:
-    - rspec background_migration pg14-as-if-foss
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
-rspec unit pg14-as-if-foss:
-  extends:
-    - .rspec-base-pg14-as-if-foss
-    - .rails:rules:as-if-foss-unit
-    - .rspec-unit-parallel
-
-rspec unit pg14-as-if-foss single-db:
-  extends:
-    - rspec unit pg14-as-if-foss
-    - .single-db-rspec
-    - .rails:rules:single-db-as-if-foss
-
-rspec unit pg14-as-if-foss single-db-ci-connection:
-  extends:
-    - rspec unit pg14-as-if-foss
-    - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection-as-if-foss
-
-rspec unit pg14-as-if-foss clusterwide-db:
-  extends:
-    - rspec unit pg14-as-if-foss
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
-rspec integration pg14-as-if-foss:
-  extends:
-    - .rspec-base-pg14-as-if-foss
-    - .rails:rules:as-if-foss-integration
-    - .rspec-integration-parallel
-
-rspec integration pg14-as-if-foss single-db:
-  extends:
-    - rspec integration pg14-as-if-foss
-    - .single-db-rspec
-    - .rails:rules:single-db-as-if-foss
-
-rspec integration pg14-as-if-foss single-db-ci-connection:
-  extends:
-    - rspec integration pg14-as-if-foss
-    - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection-as-if-foss
-
-rspec integration pg14-as-if-foss clusterwide-db:
-  extends:
-    - rspec integration pg14-as-if-foss
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
-
-rspec system pg14-as-if-foss:
-  extends:
-    - .rspec-base-pg14-as-if-foss
-    - .rails:rules:as-if-foss-system
-    - .rspec-system-parallel
-
-rspec system pg14-as-if-foss single-db:
-  extends:
-    - rspec system pg14-as-if-foss
-    - .single-db-rspec
-    - .rails:rules:single-db-as-if-foss
-
-rspec system pg14-as-if-foss single-db-ci-connection:
-  extends:
-    - rspec system pg14-as-if-foss
-    - .single-db-ci-connection-rspec
-    - .rails:rules:single-db-ci-connection-as-if-foss
-
-rspec system pg14-as-if-foss clusterwide-db:
-  extends:
-    - rspec system pg14-as-if-foss
-    - .clusterwide-db
-    - .rails:rules:clusterwide-db
 
 .rspec-ee-base-gitlab-duo:
   extends:

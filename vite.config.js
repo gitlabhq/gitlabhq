@@ -14,6 +14,9 @@ import {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
 } from './config/webpack.constants';
+/* eslint-disable import/extensions */
+import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
+/* eslint-enable import/extensions */
 
 let viteGDKConfig;
 try {
@@ -104,6 +107,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    viteCSSCompilerPlugin(),
     viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({

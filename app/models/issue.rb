@@ -232,7 +232,7 @@ class Issue < ApplicationRecord
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
-  after_save :ensure_metrics!, unless: :importing?
+  after_save :ensure_metrics!, unless: :skip_metrics?
   after_commit :expire_etag_cache, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
 
@@ -739,6 +739,10 @@ class Issue < ApplicationRecord
   override :gfm_reference
   def gfm_reference(from = nil)
     "#{work_item_type_with_default.name.underscore} #{to_reference(from)}"
+  end
+
+  def skip_metrics?
+    importing?
   end
 
   private

@@ -2,51 +2,39 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import DesignOverlay from '~/design_management/components/design_overlay.vue';
 import DesignPresentation from '~/design_management/components/design_presentation.vue';
+import DesignImage from '~/design_management/components/image.vue';
 
-const mockOverlayData = {
-  overlayDimensions: {
-    width: 100,
-    height: 100,
-  },
-  overlayPosition: {
-    top: '0',
-    left: '0',
-  },
+const mockOverlayDimensions = {
+  width: 100,
+  height: 100,
 };
 
 describe('Design management design presentation component', () => {
   let wrapper;
 
-  function createComponent(
-    {
-      image,
-      imageName,
-      discussions = [],
-      isAnnotating = false,
-      resolvedDiscussionsExpanded = false,
-    } = {},
-    data = {},
-    stubs = {},
-  ) {
+  const findDesignImage = () => wrapper.findComponent(DesignImage);
+  const findDesignOverlay = () => wrapper.findComponent(DesignOverlay);
+  const findOverlayCommentButton = () => wrapper.find('[data-testid="design-image-button"]');
+
+  function createComponent(props = {}, initialOverlayDimensions = mockOverlayDimensions, options) {
     wrapper = shallowMount(DesignPresentation, {
       propsData: {
-        image,
-        imageName,
-        discussions,
-        isAnnotating,
-        resolvedDiscussionsExpanded,
+        image: 'test.jpg',
+        imageName: 'test',
+        resolvedDiscussionsExpanded: false,
+        discussions: [],
         isLoading: false,
+        ...props,
       },
-      stubs,
+      ...options,
     });
 
-    // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-    // eslint-disable-next-line no-restricted-syntax
-    wrapper.setData(data);
+    if (initialOverlayDimensions) {
+      findDesignImage().vm.$emit('resize', initialOverlayDimensions);
+    }
+
     wrapper.element.scrollTo = jest.fn();
   }
-
-  const findOverlayCommentButton = () => wrapper.find('[data-testid="design-image-button"]');
 
   /**
    * Spy on $refs and mock given values
@@ -114,141 +102,131 @@ describe('Design management design presentation component', () => {
   });
 
   it('renders image and overlay when image provided', async () => {
-    createComponent(
-      {
-        image: 'test.jpg',
-        imageName: 'test',
-      },
-      mockOverlayData,
-    );
+    createComponent({
+      image: 'test.jpg',
+      imageName: 'test',
+    });
 
     await nextTick();
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('renders empty state when no image provided', async () => {
-    createComponent();
+    createComponent(
+      {
+        image: '',
+        imageName: '',
+      },
+      null,
+    );
 
     await nextTick();
     expect(wrapper.element).toMatchSnapshot();
   });
 
   it('openCommentForm event emits correct data', async () => {
-    createComponent(
-      {
-        image: 'test.jpg',
-        imageName: 'test',
-      },
-      mockOverlayData,
-    );
+    createComponent({
+      image: 'test.jpg',
+      imageName: 'test',
+    });
 
     wrapper.vm.openCommentForm({ x: 1, y: 1 });
 
     await nextTick();
     expect(wrapper.emitted('openCommentForm')).toEqual([
-      [{ ...mockOverlayData.overlayDimensions, x: 1, y: 1 }],
+      [{ ...mockOverlayDimensions, x: 1, y: 1 }],
     ]);
   });
 
   describe('currentCommentForm', () => {
     it('is null when isAnnotating is false', async () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        mockOverlayData,
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
 
       await nextTick();
-      expect(wrapper.vm.currentCommentForm).toBeNull();
+      expect(findDesignOverlay().props('currentCommentForm')).toBeNull();
       expect(wrapper.element).toMatchSnapshot();
     });
 
     it('is null when isAnnotating is true but annotation position is falsey', async () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-          isAnnotating: true,
-        },
-        mockOverlayData,
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+        isAnnotating: true,
+      });
 
       await nextTick();
-      expect(wrapper.vm.currentCommentForm).toBeNull();
+      expect(findDesignOverlay().props('currentCommentForm')).toBeNull();
       expect(wrapper.element).toMatchSnapshot();
     });
 
     it('is equal to current annotation position when isAnnotating is true', async () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-          isAnnotating: true,
-        },
-        {
-          ...mockOverlayData,
-          currentAnnotationPosition: {
-            x: 1,
-            y: 1,
-            width: 100,
-            height: 100,
-          },
-        },
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+        isAnnotating: true,
+      });
 
       await nextTick();
-      expect(wrapper.vm.currentCommentForm).toEqual({
+      findDesignOverlay().vm.$emit('openCommentForm', {
+        x: 1,
+        y: 1,
+      });
+
+      await nextTick();
+      expect(findDesignOverlay().props('currentCommentForm')).toEqual({
         x: 1,
         y: 1,
         width: 100,
         height: 100,
       });
+
       expect(wrapper.element).toMatchSnapshot();
     });
   });
 
   describe('setOverlayPosition', () => {
     beforeEach(() => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        mockOverlayData,
-      );
-    });
-
-    it('sets overlay position correctly when overlay is smaller than viewport', () => {
-      jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetWidth', 'get').mockReturnValue(200);
-      jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetHeight', 'get').mockReturnValue(200);
-
-      wrapper.vm.setOverlayPosition();
-      expect(wrapper.vm.overlayPosition).toEqual({
-        left: `calc(50% - ${mockOverlayData.overlayDimensions.width / 2}px)`,
-        top: `calc(50% - ${mockOverlayData.overlayDimensions.height / 2}px)`,
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
       });
     });
 
-    it('sets overlay position correctly when overlay width is larger than viewports', () => {
+    it('sets overlay position correctly when overlay is smaller than viewport', async () => {
+      jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetWidth', 'get').mockReturnValue(200);
+      jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetHeight', 'get').mockReturnValue(200);
+      wrapper.vm.setOverlayPosition();
+
+      await nextTick();
+      expect(findDesignOverlay().props('position')).toEqual({
+        left: `calc(50% - ${mockOverlayDimensions.width / 2}px)`,
+        top: `calc(50% - ${mockOverlayDimensions.height / 2}px)`,
+      });
+    });
+
+    it('sets overlay position correctly when overlay width is larger than viewports', async () => {
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetWidth', 'get').mockReturnValue(50);
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetHeight', 'get').mockReturnValue(200);
-
       wrapper.vm.setOverlayPosition();
-      expect(wrapper.vm.overlayPosition).toEqual({
-        left: '0',
-        top: `calc(50% - ${mockOverlayData.overlayDimensions.height / 2}px)`,
+
+      await nextTick();
+      expect(findDesignOverlay().props('position')).toEqual({
+        left: `0`,
+        top: `calc(50% - ${mockOverlayDimensions.height / 2}px)`,
       });
     });
 
-    it('sets overlay position correctly when overlay height is larger than viewports', () => {
+    it('sets overlay position correctly when overlay height is larger than viewports', async () => {
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetWidth', 'get').mockReturnValue(200);
       jest.spyOn(wrapper.vm.$refs.presentationViewport, 'offsetHeight', 'get').mockReturnValue(50);
-
       wrapper.vm.setOverlayPosition();
-      expect(wrapper.vm.overlayPosition).toEqual({
-        left: `calc(50% - ${mockOverlayData.overlayDimensions.width / 2}px)`,
+
+      await nextTick();
+      expect(findDesignOverlay().props('position')).toEqual({
+        left: `calc(50% - ${mockOverlayDimensions.width / 2}px)`,
         top: '0',
       });
     });
@@ -256,13 +234,10 @@ describe('Design management design presentation component', () => {
 
   describe('getViewportCenter', () => {
     beforeEach(() => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        mockOverlayData,
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
     });
 
     it('calculate center correctly with no scroll', () => {
@@ -313,22 +288,21 @@ describe('Design management design presentation component', () => {
 
   describe('scaleZoomFocalPoint', () => {
     it('scales focal point correctly when zooming in', () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        {
-          ...mockOverlayData,
-          zoomFocalPoint: {
-            x: 5,
-            y: 5,
-            width: 50,
-            height: 50,
-          },
-        },
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({
+        zoomFocalPoint: {
+          x: 5,
+          y: 5,
+          width: 50,
+          height: 50,
+        },
+      });
       wrapper.vm.scaleZoomFocalPoint();
       expect(wrapper.vm.zoomFocalPoint).toEqual({
         x: 10,
@@ -339,22 +313,21 @@ describe('Design management design presentation component', () => {
     });
 
     it('scales focal point correctly when zooming out', () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        {
-          ...mockOverlayData,
-          zoomFocalPoint: {
-            x: 10,
-            y: 10,
-            width: 200,
-            height: 200,
-          },
-        },
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
 
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({
+        zoomFocalPoint: {
+          x: 10,
+          y: 10,
+          width: 200,
+          height: 200,
+        },
+      });
       wrapper.vm.scaleZoomFocalPoint();
       expect(wrapper.vm.zoomFocalPoint).toEqual({
         x: 5,
@@ -367,13 +340,10 @@ describe('Design management design presentation component', () => {
 
   describe('onImageResize', () => {
     beforeEach(async () => {
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        mockOverlayData,
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
 
       jest.spyOn(wrapper.vm, 'shiftZoomFocalPoint');
       jest.spyOn(wrapper.vm, 'scaleZoomFocalPoint');
@@ -402,7 +372,13 @@ describe('Design management design presentation component', () => {
       ${'height overflows'}           | ${100} | ${101}
       ${'width and height overflows'} | ${200} | ${200}
     `('sets lastDragPosition when design $scenario', ({ width, height }) => {
-      createComponent();
+      createComponent(
+        {
+          image: '',
+          imageName: '',
+        },
+        null,
+      );
       mockRefDimensions(
         wrapper.vm.$refs.presentationViewport,
         { width: 100, height: 100 },
@@ -410,7 +386,7 @@ describe('Design management design presentation component', () => {
       );
 
       const newLastDragPosition = { x: 2, y: 2 };
-      wrapper.vm.onPresentationMousedown({
+      wrapper.trigger('mousedown', {
         clientX: newLastDragPosition.x,
         clientY: newLastDragPosition.y,
       });
@@ -421,7 +397,18 @@ describe('Design management design presentation component', () => {
     it('does not set lastDragPosition if design does not overflow', () => {
       const lastDragPosition = { x: 1, y: 1 };
 
-      createComponent({}, { lastDragPosition });
+      createComponent(
+        {
+          image: '',
+          imageName: '',
+        },
+        null,
+      );
+
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({ lastDragPosition });
+
       mockRefDimensions(
         wrapper.vm.$refs.presentationViewport,
         { width: 100, height: 100 },
@@ -440,16 +427,21 @@ describe('Design management design presentation component', () => {
       coordinates               | overlayDimensions                | position
       ${{ x: 100, y: 100 }}     | ${{ width: 50, height: 50 }}     | ${{ x: 100, y: 100, width: 50, height: 50 }}
       ${{ x: 100.2, y: 100.5 }} | ${{ width: 50.6, height: 50.0 }} | ${{ x: 100, y: 101, width: 51, height: 50 }}
-    `('returns correct annotation position', ({ coordinates, overlayDimensions, position }) => {
-      createComponent(undefined, {
-        overlayDimensions: {
-          width: overlayDimensions.width,
-          height: overlayDimensions.height,
-        },
-      });
+    `(
+      'returns correct annotation position',
+      async ({ coordinates, overlayDimensions, position }) => {
+        createComponent(
+          {
+            image: 'test.jpg',
+            imageName: 'test',
+          },
+          overlayDimensions,
+        );
 
-      expect(wrapper.vm.getAnnotationPositon(coordinates)).toStrictEqual(position);
-    });
+        await nextTick();
+        expect(wrapper.vm.getAnnotationPositon(coordinates)).toStrictEqual(position);
+      },
+    );
   });
 
   describe('when design is overflowing', () => {
@@ -459,9 +451,9 @@ describe('Design management design presentation component', () => {
           image: 'test.jpg',
           imageName: 'test',
         },
-        mockOverlayData,
+        mockOverlayDimensions,
         {
-          'design-overlay': DesignOverlay,
+          stubs: { DesignOverlay },
         },
       );
 
@@ -534,19 +526,14 @@ describe('Design management design presentation component', () => {
   describe('when user is not logged in', () => {
     beforeEach(() => {
       window.gon = { current_user_id: null };
-      createComponent(
-        {
-          image: 'test.jpg',
-          imageName: 'test',
-        },
-        mockOverlayData,
-      );
+      createComponent({
+        image: 'test.jpg',
+        imageName: 'test',
+      });
     });
 
     it('disables commenting from design overlay', () => {
-      expect(wrapper.findComponent(DesignOverlay).props()).toMatchObject({
-        disableCommenting: true,
-      });
+      expect(findDesignOverlay().props('disableCommenting')).toEqual(true);
     });
   });
 });

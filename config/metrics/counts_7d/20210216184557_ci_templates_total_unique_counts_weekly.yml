@@ -183,6 +183,8 @@ options:
   - p_ci_templates_terraform_module
   - p_ci_templates_pages_zola
   - p_ci_templates_diffblue_cover
+  - p_ci_templates_opentofu_base_latest
+  - p_ci_templates_opentofu_latest
 distribution:
 - ce
 - ee

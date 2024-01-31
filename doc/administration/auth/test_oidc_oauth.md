@@ -18,18 +18,19 @@ To test OIDC/OAuth in GitLab, you must:
 
 ## Prerequisites
 
-Before you can test OIDC/OAuth on GitLab, you'll need the following:
+Before you can test OIDC/OAuth on GitLab, you must:
 
-- Publicly accessible GitLab instance
-- A client application that you want to use to test OIDC/OAuth
-- A user account on the GitLab instance that you can use to log in and test OIDC/OAuth
+- Have a publicly accessible GitLab self-managed instance.
+- Be an administrator for that instance.
+- Have a client application that you want to use to test OIDC/OAuth.
 
 ## Enable OIDC/OAuth in GitLab
 
 First, you must create OIDC/OAuth application on your GitLab instance. To do this:
 
-1. Sign in to GitLab as an administrator.
-1. Select **Profile > Preferences > Applications**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Applications**.
+1. Select **Add new application**.
 1. Fill in the details for your client application, including the name, redirect URI, and allowed scopes.
 1. Make sure the `openid` scope is enabled.
 1. Select **Save application** to create the new OAuth application.

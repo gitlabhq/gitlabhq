@@ -1,4 +1,5 @@
-const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500', 'gl-pt-3!'];
+const BLAME_INFO_CLASSLIST = ['gl-border-t', 'gl-border-gray-500'];
+const PADDING_TOP_SMALL = 'gl-pt-3!';
 const PADDING_BOTTOM_LARGE = 'gl-pb-6!';
 const PADDING_BOTTOM_SMALL = 'gl-pb-3!';
 const VIEWER_SELECTOR = '.file-holder .blob-viewer';
@@ -36,8 +37,13 @@ export const toggleBlameClasses = (blameData, isVisible) => {
     const lineNumberSpanEl = findLineNumberElement(lineno + span - 1)?.parentElement;
     const lineContentSpanEl = findLineContentElement(lineno + span - 1);
 
-    lineNumberEl?.classList[method](...BLAME_INFO_CLASSLIST);
-    lineContentEl?.classList[method](...BLAME_INFO_CLASSLIST);
+    lineNumberEl?.classList[method](PADDING_TOP_SMALL);
+    lineContentEl?.classList[method](PADDING_TOP_SMALL);
+
+    if (lineno !== 1) {
+      lineNumberEl?.classList[method](...BLAME_INFO_CLASSLIST);
+      lineContentEl?.classList[method](...BLAME_INFO_CLASSLIST);
+    }
 
     if (span === 1) {
       lineNumberSpanEl?.classList[method](PADDING_BOTTOM_LARGE);

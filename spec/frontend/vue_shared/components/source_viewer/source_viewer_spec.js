@@ -105,7 +105,6 @@ describe('Source Viewer component', () => {
         jest.spyOn(utils, 'toggleBlameClasses');
         createComponent();
         await triggerChunkAppear();
-
         expect(utils.toggleBlameClasses).toHaveBeenCalledWith(blameInfo, true);
       });
     });

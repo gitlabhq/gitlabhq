@@ -266,7 +266,7 @@ describe('Blob content viewer component', () => {
 
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0].url).toBe(legacyViewerUrl);
-        expect(findBlobHeader().props('showBlameToggle')).toEqual(false);
+        expect(findBlobHeader().props('showBlameToggle')).toEqual(true);
       });
 
       it('loads a legacy viewer when a viewer component is not available', async () => {

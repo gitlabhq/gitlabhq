@@ -324,9 +324,7 @@ class IssuableBaseService < ::BaseContainerService
     if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
 
-      if issuable.description_changed?
-        issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
-      end
+      assign_last_edited(issuable)
 
       before_update(issuable)
 
@@ -511,6 +509,12 @@ class IssuableBaseService < ::BaseContainerService
       params[:assignee_ids] = assignee_ids
       issuable.touch
     end
+  end
+
+  def assign_last_edited(issuable)
+    return unless issuable.description_changed?
+
+    issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
   end
 
   # Arrays of ids are used, but we should really use sets of ids, so

@@ -100,6 +100,7 @@ export default {
       @viewer-changed="switchViewer"
     />
     <blob-content
+      is-blame-link-hidden
       :loading="isContentLoading"
       :content="blobContent"
       :active-viewer="viewer"

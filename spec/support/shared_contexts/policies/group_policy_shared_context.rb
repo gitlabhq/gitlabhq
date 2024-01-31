@@ -77,6 +77,7 @@ RSpec.shared_context 'GroupPolicy context' do
       register_group_runners
       read_billing
       edit_billing
+      destroy_issue
       admin_member_access_request
       update_git_access_protocol
     ]

@@ -38,6 +38,9 @@
 .if-merge-request: &if-merge-request
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
 
+.if-not-merge-request: &if-not-merge-request
+  if: '$CI_MERGE_REQUEST_EVENT_TYPE == null'
+
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
 # if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
@@ -67,9 +70,6 @@
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
-
-.if-merge-request-labels-as-if-foss-cross-project: &if-merge-request-labels-as-if-foss-cross-project
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss-cross-project/'
 
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
@@ -1352,22 +1352,6 @@
     - <<: *if-merge-request
       changes: *code-backstage-patterns
 
-.frontend:rules:jest:as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-all-jest
-    - <<: *if-merge-request
-      changes: *frontend-dependency-patterns
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
-    - <<: *if-merge-request
-      changes: *frontend-patterns-for-as-if-foss
-
 .frontend:rules:jest:predictive:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
@@ -1380,15 +1364,6 @@
       changes: *frontend-dependency-patterns
       when: never
     - <<: *if-fork-merge-request
-      when: never
-    - <<: *if-merge-request
-      changes: *frontend-patterns-for-as-if-foss
-
-.frontend:rules:eslint-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
@@ -1503,20 +1478,6 @@
     - if: '$ENABLE_QA_SELECTORS == "true"'
     - <<: *if-default-refs
       changes: *code-qa-patterns
-
-.qa:rules:selectors-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request
-      changes: *frontend-qa-patterns
-    - <<: *if-merge-request-labels-as-if-foss
-    - <<: *if-merge-request-labels-run-all-rspec
-
-.qa:rules:internal-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-default-refs
-      changes: *qa-patterns
 
 .qa:rules:determine-e2e-tests:
   rules:
@@ -1950,6 +1911,7 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_SINGLE_REDIS == "true"'
     - <<: *if-merge-request
       changes: *redis-patterns
     - <<: *if-default-branch-schedule-nightly
@@ -1965,6 +1927,7 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_SINGLE_DB == "true"'
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -1975,11 +1938,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:single-db", "rules"]
-
-.rails:rules:single-db-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db", "rules"]
 
 .rails:rules:db:check-migrations-single-db:
@@ -1997,6 +1955,7 @@
     - <<: *if-merge-request-labels-run-single-db
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION == "true"'
     - <<: *if-merge-request
       changes: *db-patterns
     - <<: *if-merge-request
@@ -2007,11 +1966,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [".rails:rules:single-db-ci-connection", "rules"]
-
-.rails:rules:single-db-ci-connection-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
     - !reference [".rails:rules:single-db-ci-connection", "rules"]
 
 .rails:rules:db:check-migrations-single-db-ci-connection:
@@ -2047,6 +2001,8 @@
 
 .rails:rules:praefect-with-db:
   rules:
+    - if: '$ENABLE_RSPEC_PRAEFECT == "true"'
+      allow_failure: true
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
       allow_failure: true
 
@@ -2264,64 +2220,6 @@
       when: manual
       allow_failure: true
 
-.rails:rules:as-if-foss-migration:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-labels-run-all-rspec
-    - <<: *if-merge-request
-      changes: *core-backend-patterns
-    # When DB schema changes, many migrations spec may be affected. However, the test mapping from Crystalball does not map db change to a specific migration spec well.
-    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68840.
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *db-patterns
-    - <<: *if-automated-merge-request
-      changes: *db-patterns
-    - <<: *if-security-merge-request
-      changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
-
-.rails:rules:as-if-foss-background-migration:
-  rules:
-    - !reference [".rails:rules:as-if-foss-migration", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *backend-patterns
-
-.rails:rules:as-if-foss-unit:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-fork-merge-request
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *backend-patterns
-
-.rails:rules:as-if-foss-integration:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-fork-merge-request
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *backend-patterns
-
-.rails:rules:as-if-foss-system:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-fork-merge-request
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".rails:rules:system-default-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *code-backstage-patterns
-
 .rails:rules:ee-and-foss-db-library-code:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
@@ -2519,18 +2417,6 @@
       changes: *static-analysis-patterns
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-
-.static-analysis:rules:static-analysis-as-if-foss:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss
-      changes: *code-backstage-qa-patterns
-    - <<: *if-security-merge-request
-      changes: *code-backstage-qa-patterns
-    - <<: *if-merge-request
-      changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
-    - <<: *if-merge-request
-      changes: *static-analysis-patterns
 
 .static-analysis:rules:trigger-depsaster:
   rules:
@@ -3018,28 +2904,249 @@
 ####################
 # as-if-foss rules #
 ####################
+
+# This is a very big rules set because it's the union of all as-if-foss jobs.
+# We want to start this for any FOSS jobs we want to run. For example:
+# (This is not an exhaustive list and can be outdated!)
+# .build-images:rules:build-qa-image-merge-requests
+# .build-images:rules:build-assets-image
+# .frontend:rules:compile-production-assets
+# .frontend:rules:default-frontend-jobs-as-if-foss
+# .rails:rules:single-db
+# .rails:rules:single-db-ci-connection
+# .rails:rules:single-redis
+# .rails:rules:ee-and-foss-default-rules
+# .rails:rules:system-default-rules
 .as-if-foss:rules:start-as-if-foss:
   rules:
     - if: '$AS_IF_FOSS_TOKEN == null'
       when: never
+    - <<: *if-not-merge-request  # This is only designed to run in a merge request
+      when: never
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss-cross-project
+    - <<: *if-merge-request-labels-as-if-foss
+    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-run-clusterwide-db
+    - <<: *if-merge-request-labels-run-single-db
+    - <<: *if-merge-request-labels-run-review-app
+    - <<: *if-merge-request-labels-run-all-e2e
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+    - <<: *if-merge-request
+      changes: *static-analysis-patterns
+    - <<: *if-merge-request
+      changes: *db-patterns
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+    - <<: *if-merge-request
+      changes: *redis-patterns
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-qa-patterns
+    - <<: *if-security-merge-request
+      changes: *db-patterns
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
 
 .as-if-foss:rules:start-as-if-foss:allow-failure:manual:
   rules:
     - if: '$AS_IF_FOSS_TOKEN == null'
       when: never
+    - <<: *if-not-merge-request
+      when: never
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss-cross-project
-      when: manual
+    # Copy everything from .as-if-foss:rules:start-as-if-foss
+    # and add `allow_failure: true` and `when: manual` to all
+    - <<: *if-merge-request-labels-as-if-foss
       allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-all-rspec
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-all-jest
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-clusterwide-db
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-single-db
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-review-app
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *static-analysis-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *db-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *redis-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-security-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-security-merge-request
+      changes: *db-patterns
+      allow_failure: true
+      when: manual
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+      when: manual
 
 .as-if-foss:rules:start-as-if-foss:allow-failure:
   rules:
     - if: '$AS_IF_FOSS_TOKEN == null'
       when: never
+    - <<: *if-not-merge-request
+      when: never
     - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-merge-request-labels-as-if-foss-cross-project
+    # Copy everything from .as-if-foss:rules:start-as-if-foss
+    # and add `allow_failure: true` to all
+    - <<: *if-merge-request-labels-as-if-foss
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-rspec
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-jest
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-clusterwide-db
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-single-db
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-review-app
+      allow_failure: true
+    - <<: *if-merge-request-labels-run-all-e2e
+      allow_failure: true
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *nodejs-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *static-analysis-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *db-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *workhorse-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *decomposed-db-models-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *redis-patterns
+      allow_failure: true
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
+      allow_failure: true
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+      allow_failure: true
+    - <<: *if-automated-merge-request
+      changes: *db-patterns
+      allow_failure: true
+    - <<: *if-automated-merge-request
+      changes: *backend-patterns
+      allow_failure: true
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+      allow_failure: true
+    - <<: *if-security-merge-request
+      changes: *backend-patterns
+      allow_failure: true
+    - <<: *if-security-merge-request
+      changes: *code-backstage-qa-patterns
+      allow_failure: true
+    - <<: *if-security-merge-request
+      changes: *db-patterns
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
+      changes: *feature-flag-development-config-patterns
       allow_failure: true
 
 ##################

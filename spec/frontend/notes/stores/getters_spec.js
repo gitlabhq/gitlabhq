@@ -87,6 +87,19 @@ describe('Getters Notes Store', () => {
 
     const getDiscussions = () => getters.discussions(state, {}, { batchComments });
 
+    describe('merge request filters', () => {
+      it('returns only bot comments', () => {
+        const discussion = JSON.parse(JSON.stringify(discussionMock));
+        discussion.notes[0].author.bot = true;
+
+        state.noteableData = { targetType: 'merge_request' };
+        state.discussions = [discussion];
+        state.mergeRequestFilters = ['bot_comments'];
+
+        expect(getDiscussions()).toContain(discussion);
+      });
+    });
+
     describe('without batchComments module', () => {
       it('should return all discussions in the store', () => {
         expect(getDiscussions()).toEqual([individualNote]);

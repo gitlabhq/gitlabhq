@@ -18367,6 +18367,7 @@ CREATE TABLE issuable_resource_links (
     link_type smallint DEFAULT 0 NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    is_unique boolean,
     CONSTRAINT check_67be6729db CHECK ((char_length(link) <= 2200)),
     CONSTRAINT check_b137147e0b CHECK ((char_length(link_text) <= 255))
 );
@@ -23601,6 +23602,8 @@ CREATE TABLE sbom_occurrences (
     highest_severity smallint,
     vulnerability_count integer DEFAULT 0 NOT NULL,
     source_package_id bigint,
+    archived boolean DEFAULT false NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
     CONSTRAINT check_bd1367d4c1 CHECK ((char_length(input_file_path) <= 255))
@@ -35689,6 +35692,8 @@ CREATE UNIQUE INDEX index_uniq_projects_on_runners_token_encrypted ON projects U
 CREATE UNIQUE INDEX index_unique_ci_runner_projects_on_runner_id_and_project_id ON ci_runner_projects USING btree (runner_id, project_id);
 
 CREATE UNIQUE INDEX index_unique_epics_on_issue_id ON epics USING btree (issue_id);
+
+CREATE UNIQUE INDEX index_unique_issuable_resource_links_on_unique_issue_link ON issuable_resource_links USING btree (issue_id, link) WHERE is_unique;
 
 CREATE UNIQUE INDEX index_unique_issue_metrics_issue_id ON issue_metrics USING btree (issue_id);
 

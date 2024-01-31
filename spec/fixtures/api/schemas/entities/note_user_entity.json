@@ -7,7 +7,8 @@
     "avatar_url",
     "path",
     "name",
-    "username"
+    "username",
+    "bot"
   ],
   "properties": {
     "id": {
@@ -38,6 +39,9 @@
       "$ref": "../types/nullable_string.json"
     },
     "show_status": {
+      "type": "boolean"
+    },
+    "bot": {
       "type": "boolean"
     }
   }

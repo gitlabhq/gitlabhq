@@ -8,7 +8,6 @@ RSpec.shared_context 'with ambiguous refs for controllers' do
     project.repository.add_tag(project.creator, 'ambiguous_ref', RepoHelpers.sample_commit.id)
     project.repository.add_branch(project.creator, 'ambiguous_ref', RepoHelpers.another_sample_commit.id)
 
-    stub_feature_flags(redirect_with_ref_type: redirect_with_ref_type)
     stub_feature_flags(ambiguous_ref_modal: ambiguous_ref_modal)
   end
 

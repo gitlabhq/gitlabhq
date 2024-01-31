@@ -232,7 +232,8 @@ function rspec_parallelized_job() {
   read -ra job_name <<< "${CI_JOB_NAME}"
   local test_tool="${job_name[0]}"
   local test_level="${job_name[1]}"
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg13 1/24' would become 'rspec_unit_pg13_1_24'
+  # e.g. 'rspec unit pg13 1/24 278964' would become 'rspec_unit_pg13_1_24_278964'
+  local report_name=$(echo "${CI_JOB_NAME} ${CI_PROJECT_ID}" | sed -E 's|[/ ]|_|g')
   local rspec_opts="${1:-}"
   local rspec_tests_mapping_enabled="${RSPEC_TESTS_MAPPING_ENABLED:-}"
   local spec_folder_prefixes=""
@@ -311,7 +312,6 @@ function retry_failed_rspec_examples() {
 
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
-  local report_name=$(echo "${CI_JOB_NAME}" | sed -E 's|[/ ]|_|g') # e.g. 'rspec unit pg13 1/24' would become 'rspec_unit_pg13_1_24'
   echoinfo "RSPEC_RETRIED_TESTS_REPORT_PATH: ${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"
 
   echo "${CI_JOB_URL}" > "${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"

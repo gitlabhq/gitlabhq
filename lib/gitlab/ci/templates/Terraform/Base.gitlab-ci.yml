@@ -20,6 +20,24 @@ cache:
   paths:
     - ${TF_ROOT}/.terraform/
 
+'deprecated-and-will-be-removed-in-17.0':
+  stage: .pre
+  needs: []
+  allow_failure: true
+  image: alpine:3.19
+  script:
+    - |
+      echo "You are using the Terraform CI/CD template, which is deprecated and will be removed in GitLab 17.0."
+      echo "GitLab provides an alternative OpenTofu CI/CD component for GitLab.com users."
+      echo "Self-managed users should use the OpenTofu CI/CD template, which will be removed after "
+      echo "CI/CD components are available on GitLab self-managed."
+      echo "You can read about more about the OpenTofu CI/CD component here:"
+      echo "https://gitlab.com/components/opentofu"
+      echo " "
+      echo "Alternatively, you can continue building the Terraform templates and "
+      echo "accompanying image (see https://gitlab.com/gitlab-org/terraform-images) yourself and use them as before."
+    - 'false'
+
 .terraform:fmt:
   stage: validate
   script:

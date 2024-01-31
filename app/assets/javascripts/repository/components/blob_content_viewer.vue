@@ -195,10 +195,6 @@ export default {
     isUsingLfs() {
       return this.blobInfo.storedExternally && this.blobInfo.externalStorage === LFS_STORAGE;
     },
-    isBlameEnabled() {
-      // Blame information within the blob viewer is not yet supported in our fallback (HAML) viewers
-      return !this.useFallback;
-    },
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
@@ -318,7 +314,7 @@ export default {
         :show-path="false"
         :override-copy="true"
         :show-fork-suggestion="showForkSuggestion"
-        :show-blame-toggle="isBlameEnabled"
+        :show-blame-toggle="true"
         :project-path="projectPath"
         :project-id="projectId"
         @viewer-changed="handleViewerChanged"
@@ -359,8 +355,10 @@ export default {
         :content="legacySimpleViewer"
         :is-raw-content="true"
         :active-viewer="viewer"
-        :hide-line-numbers="true"
+        :show-blame="showBlame"
+        :current-ref="currentRef"
         :loading="isLoadingLegacyViewer"
+        :project-path="projectPath"
         :data-loading="isRenderingLegacyTextViewer"
       />
       <component

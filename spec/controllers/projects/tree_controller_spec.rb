@@ -24,16 +24,12 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
 
     let(:ref_type) { nil }
 
-    let(:redirect_with_ref_type) { true }
-
     # Make sure any errors accessing the tree in our views bubble up to this spec
     render_views
 
     include_context 'with ambiguous refs for controllers'
 
     describe '#set_is_ambiguous_ref before action' do
-      let(:redirect_with_ref_type) { false }
-
       before do
         request
       end
@@ -51,83 +47,25 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
       end
     end
 
-    context 'when the redirect_with_ref_type flag is disabled' do
-      let(:redirect_with_ref_type) { false }
+    context 'when there is a ref and tag with the same name' do
+      let(:id) { 'ambiguous_ref' }
+      let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
 
-      context 'when there is a ref and tag with the same name' do
-        let(:id) { 'ambiguous_ref' }
-        let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
+      context 'and explicitly requesting a branch' do
+        let(:ref_type) { 'heads' }
 
-        context 'and explicitly requesting a branch' do
-          let(:ref_type) { 'heads' }
-
-          it 'redirects to blob#show with sha for the branch' do
-            request
-            expect(response).to redirect_to(project_tree_path(project, RepoHelpers.another_sample_commit.id))
-          end
-        end
-
-        context 'and explicitly requesting a tag' do
-          let(:ref_type) { 'tags' }
-
-          it 'responds with success' do
-            request
-            expect(response).to be_ok
-          end
+        it 'redirects to blob#show with sha for the branch' do
+          request
+          expect(response).to redirect_to(project_tree_path(project, RepoHelpers.another_sample_commit.id))
         end
       end
-    end
 
-    describe 'delegating to ExtractsRef::RequestedRef' do
-      context 'when there is a ref and tag with the same name' do
-        let(:id) { 'ambiguous_ref' }
-        let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
+      context 'and explicitly requesting a tag' do
+        let(:ref_type) { 'tags' }
 
-        let(:requested_ref_double) { ExtractsRef::RequestedRef.new(project.repository, ref_type: ref_type, ref: id) }
-
-        before do
-          allow(ExtractsRef::RequestedRef).to receive(:new).with(kind_of(Repository), ref_type: ref_type, ref: id).and_return(requested_ref_double)
-        end
-
-        context 'and not specifying a ref_type' do
-          it 'finds the tags and redirects' do
-            expect(requested_ref_double).to receive(:find).and_call_original
-            request
-            expect(subject).to redirect_to("/#{project.full_path}/-/tree/#{id}/?ref_type=tags")
-          end
-        end
-
-        context 'and explicitly requesting a branch' do
-          let(:ref_type) { 'heads' }
-
-          it 'checks for tree with ref_type' do
-            allow(project.repository).to receive(:tree).and_call_original
-            expect(project.repository).to receive(:tree).with(id, '', ref_type: 'heads').and_call_original
-            request
-          end
-
-          it 'finds the branch' do
-            expect(requested_ref_double).not_to receive(:find)
-
-            request
-            expect(response).to be_ok
-          end
-        end
-
-        context 'and explicitly requesting a tag' do
-          let(:ref_type) { 'tags' }
-
-          it 'checks for tree with ref_type' do
-            allow(project.repository).to receive(:tree).and_call_original
-            expect(project.repository).to receive(:tree).with(id, '', ref_type: 'tags').and_call_original
-            request
-          end
-
-          it 'finds the tag' do
-            expect(requested_ref_double).not_to receive(:find)
-            request
-            expect(response).to be_ok
-          end
+        it 'responds with success' do
+          request
+          expect(response).to be_ok
         end
       end
     end

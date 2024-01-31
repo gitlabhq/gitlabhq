@@ -114,46 +114,43 @@ for the group's projects to meet your group's needs.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. To invite a group, you must be a member of it.
-To share a given group, for example, `Frontend` with another group, for example,
-`Engineering`:
+you can share a group with another group by invitation. To invite a group, you must be a member of the inviting group.
 
-1. Go to the `Frontend` group.
+To invite a group to your group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
-1. In the **Select a group to invite** list, select `Engineering`.
+1. In the **Select a group to invite** list, select the group you want to invite.
 1. Select a [role](../permissions.md) as maximum access level.
 1. Select **Invite**.
 
-After sharing the `Frontend` group with the `Engineering` group:
+After inviting a group to your group:
 
-- The **Groups** tab lists the `Engineering` group.
-- The **Groups** tab lists a group regardless of whether it is a public or private group.
+- The **Groups** tab lists the invited group. This list includes both public and private groups.
 - From [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
-  the invited group's name and membership source will be masked unless:
-  - the invited group is public, or
-  - the current user is a member of the invited group, or
-  - the current user is a member of the current group.
-- All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
-  - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
-  - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
-- Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
-- Direct members of the `Engineering` group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the `Frontend` group.
+  the invited group's name and membership source are masked, unless either:
+  - The invited group is public.
+  - The current user is a member of the invited group.
+  - The current user is a member of the current group.
+- All direct members of the invited group have access to the inviting group. The least access is granted between the access in the invited group and the access in the inviting group.
+  For example, if a member has the Maintainer role in the invited group, and that group is invited with the Developer role, the member has the Developer role in the inviting group.
+- Inherited members of the invited group do not gain access to the inviting group.
+- Direct members of the invited group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the inviting group.
 
-## Remove a shared group
+## Remove an invited group
 
-To unshare a group:
+To remove an invited group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Groups** tab.
 1. To the right of the account you want to remove, select **Remove group** (**{remove}**).
 
-For example, if the `Engineering` group is shared with the `Frontend` group, when
-you unshare the `Engineering` group:
+For example, when you remove the invited group from your group:
 
-- All direct members of the `Engineering` group no longer have access to the `Frontend` group.
-- Members of the `Engineering` group no longer count towards the billable members of the `Frontend` group.
+- All direct members of the invited group no longer have access to the inviting group.
+- Members of the invited group no longer count towards the billable members of the inviting group.
 
 ## Transfer a group
 

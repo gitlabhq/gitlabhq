@@ -23,6 +23,8 @@ describe('Blob Content component', () => {
     wrapper = shallowMount(BlobContent, {
       propsData: {
         loading: false,
+        projectPath: 'somePath',
+        currentRef: 'test',
         activeViewer,
         ...propsData,
       },

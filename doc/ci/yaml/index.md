@@ -1,7 +1,10 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: >-
+  To determine the technical writer assigned to the Stage/Group associated with
+  this page, see
+  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
 # CI/CD YAML syntax reference
@@ -59,6 +62,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
   | [`environment`](#environment)               | Name of an environment to which the job deploys. |
   | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
+  | [`identity_provider`](#identity_provider)   | Authenticate with third party services. |
   | [`image`](#image)                           | Use Docker images. |
   | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
   | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
@@ -2436,6 +2440,33 @@ job1:
 **Related topics**:
 
 - [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+
+### `identity_provider` **(EXPERIMENT)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+
+FLAG:
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `identity_provider` to authenticate with third party services.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
+
+**Possible inputs**: A provider identifier. Supported providers: `google_cloud` (Google Cloud). The Google Cloud
+
+**Example of `identity_provider`**:
+
+```yaml
+job_with_identity_provider:
+  identity_provider: google_cloud
+  script:
+    - gcloud compute instances list
+```
+
+**Related topics**:
+
+- [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
 
 ### `id_tokens`
 

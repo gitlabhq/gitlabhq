@@ -6,7 +6,7 @@
   table-layout: fixed;
 
   pre {
-    padding: 10px 0;
+    line-height: 0;
     border: 0;
     border-radius: 0 0 $border-radius-default;
     font-family: $monospace-font;
@@ -41,7 +41,8 @@
   }
 
   .line-numbers {
-    padding: 10px;
+    padding: 0 10px;
+    line-height: 19px;
     text-align: right;
     float: left;
     border-bottom-left-radius: $border-radius-default;

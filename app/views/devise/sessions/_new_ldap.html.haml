@@ -12,7 +12,8 @@
     %input.form-control.gl-form-input.js-password{ data: { id: "#{provider}_password", name: 'password', testid: 'password-field' } }
 
   - if render_remember_me
-    = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
+    .gl-mb-3
+      = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'sign-in-button' } }) do
     = submit_message

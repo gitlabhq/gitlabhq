@@ -121,7 +121,7 @@ module Gitlab
             inherit: false
 
           entry :id_tokens, ::Gitlab::Config::Entry::ComposableHash,
-            description: 'Configured JWTs for this job',
+            description: 'Configured JWTs for this job.',
             inherit: true,
             metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
 

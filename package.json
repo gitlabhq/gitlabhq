@@ -10,7 +10,7 @@
     "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives --ext .js,.vue,.graphql",
     "internal:stylelint": "stylelint -q --rd '{ee/,}app/assets/stylesheets/**/*.{css,scss}'",
     "prejest": "yarn check-dependencies",
-    "build:css": "node ./scripts/frontend/compile_css.mjs",
+    "build:css": "node scripts/frontend/build_css.mjs",
     "jest": "jest --config jest.config.js",
     "jest-debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
     "jest:ci": "jest --config jest.config.js --ci --coverage --testSequencer ./scripts/frontend/parallel_ci_sequencer.js",

@@ -33,13 +33,15 @@ const hideActivity = (filters, discussion) => {
       // the first in a discussion or a single note
       // If the filter option filters based on icon check against the first notes system note icon
       f.systemNoteIcons?.includes(firstNote.system_note_icon_name) ||
-      // If the filter option filters based on note type user the first notes type
-      f.noteType?.includes(firstNote.type) ||
+      // If the filter option filters based on note type use the first notes type
+      (f.noteType?.includes(firstNote.type) && !firstNote.author.bot) ||
       // If the filter option filters based on the note text then check if it is sytem
       // and filter based on the text of the system note
       (firstNote.system && f.noteText?.some((t) => firstNote.note.includes(t))) ||
       // For individual notes we filter if the discussion is a single note and is not a sytem
-      (f.individualNote === discussion.individual_note && !firstNote.system)
+      (f.individualNote === discussion.individual_note && !firstNote.system) ||
+      // For bot comments we filter on the authors `bot` boolean attribute
+      (f.bot && firstNote.author.bot)
     ) {
       return true;
     }

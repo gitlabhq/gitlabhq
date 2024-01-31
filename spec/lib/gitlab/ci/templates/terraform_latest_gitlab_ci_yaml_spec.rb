@@ -27,6 +27,10 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
     end
 
     context 'on master branch' do
+      it 'creates deprecation warning job' do
+        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+      end
+
       it 'creates init, validate and build jobs', :aggregate_failures do
         expect(pipeline.errors).to be_empty
         expect(build_names).to include('validate', 'build', 'deploy')
@@ -35,6 +39,10 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
 
     context 'outside the master branch' do
       let(:pipeline_branch) { 'patch-1' }
+
+      it 'creates deprecation warning job' do
+        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+      end
 
       it 'does not creates a deploy and a test job', :aggregate_failures do
         expect(pipeline.errors).to be_empty
@@ -51,6 +59,10 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
       let(:branch_service) { Ci::CreatePipelineService.new(project, user, ref: merge_request.source_branch ) }
       let(:branch_pipeline) { branch_service.execute(:push).payload }
       let(:branch_build_names) { branch_pipeline.builds.pluck(:name) }
+
+      it 'creates deprecation warning job' do
+        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+      end
 
       # This is needed so that the terraform artifacts and sast_iac artifacts
       # are both available in the MR

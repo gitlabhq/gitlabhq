@@ -1,7 +1,7 @@
 .as-if-foss-variables:
   variables:
     AS_IF_FOSS_BRANCH: "as-if-foss/${CI_COMMIT_REF_NAME}"
-    FOSS_REPOSITORY: "https://dummy:${AS_IF_FOSS_TOKEN}@gitlab.com/gitlab-org/gitlab-foss.git"
+    FOSS_REPOSITORY: "https://dummy:${AS_IF_FOSS_TOKEN}@gitlab.com/${CI_PROJECT_NAMESPACE}/gitlab-foss.git"
 
 prepare-as-if-foss-branch:
   extends:
@@ -66,6 +66,10 @@ start-as-if-foss:
     RUBY_VERSION: $RUBY_VERSION
     ENABLE_RSPEC: $ENABLE_RSPEC
     ENABLE_RSPEC_FAST_SPEC_HELPER: $ENABLE_RSPEC_FAST_SPEC_HELPER
+    ENABLE_RSPEC_PRAEFECT: $ENABLE_RSPEC_PRAEFECT
+    ENABLE_RSPEC_SINGLE_DB: $ENABLE_RSPEC_SINGLE_DB
+    ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION: $ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION
+    ENABLE_RSPEC_SINGLE_REDIS: $ENABLE_RSPEC_SINGLE_REDIS
     ENABLE_RSPEC_UNIT: $ENABLE_RSPEC_UNIT
     ENABLE_RSPEC_INTEGRATION: $ENABLE_RSPEC_INTEGRATION
     ENABLE_RSPEC_SYSTEM: $ENABLE_RSPEC_SYSTEM
@@ -86,7 +90,7 @@ start-as-if-foss:
     ENABLE_QA_SELECTORS: $ENABLE_QA_SELECTORS
     ENABLE_STATIC_ANALYSIS: $ENABLE_STATIC_ANALYSIS
   trigger:
-    project: gitlab-org/gitlab-foss
+    project: ${CI_PROJECT_NAMESPACE}/gitlab-foss
     branch: as-if-foss/${CI_COMMIT_REF_NAME}
     strategy: depend
 

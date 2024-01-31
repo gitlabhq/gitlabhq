@@ -1318,9 +1318,6 @@ msgstr ""
 msgid "%{user_name} (%{user_username}) was removed from the following escalation policies in %{project}:"
 msgstr ""
 
-msgid "%{user_name} profile page"
-msgstr ""
-
 msgid "%{username} has asked for a GitLab account on your instance %{host}:"
 msgstr ""
 
@@ -8578,6 +8575,9 @@ msgstr ""
 msgid "Bot"
 msgstr ""
 
+msgid "Bot comments"
+msgstr ""
+
 msgid "Both SSH and HTTP(S)"
 msgstr ""
 
@@ -9344,9 +9344,6 @@ msgid "Buy Storage"
 msgstr ""
 
 msgid "Buy more Pipeline minutes"
-msgstr ""
-
-msgid "By %{user_name}"
 msgstr ""
 
 msgid "By default, all projects and groups use the global notifications setting."

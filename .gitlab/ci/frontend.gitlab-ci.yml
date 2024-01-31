@@ -226,12 +226,6 @@ graphql-schema-dump:
       - tmp/tests/graphql/gitlab_schema.graphql
       - tmp/tests/graphql/gitlab_schema.json
 
-graphql-schema-dump as-if-foss:
-  extends:
-    - graphql-schema-dump
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-    - .as-if-foss
-
 .frontend-test-base:
   extends:
     - .default-retry
@@ -278,14 +272,6 @@ jest predictive:
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
-
-jest as-if-foss:
-  extends:
-    - .jest-base
-    - .frontend:rules:jest:as-if-foss
-    - .as-if-foss
-  needs: ["rspec-all frontend_fixture as-if-foss"]
-  parallel: 10
 
 jest predictive as-if-foss:
   extends:
@@ -434,12 +420,3 @@ compile-storybook:
     when: always
     paths:
       - storybook/public
-
-compile-storybook as-if-foss:
-  extends:
-    - .compile-storybook-base
-    - .as-if-foss
-    - .frontend:rules:default-frontend-jobs-as-if-foss
-  needs:
-    - job: "graphql-schema-dump as-if-foss"
-    - job: "rspec-all frontend_fixture as-if-foss"

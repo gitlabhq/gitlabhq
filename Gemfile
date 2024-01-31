@@ -198,6 +198,7 @@ gem 'google-apis-androidpublisher_v3', '~> 0.34.0' # rubocop:todo Gemfile/Missin
 
 gem 'googleauth', '~> 1.8.1', feature_category: :shared
 gem 'google-cloud-artifact_registry-v1', '~> 0.11.0', feature_category: :shared
+gem 'google-cloud-compute-v1', '~> 2.6.0', feature_category: :shared
 
 # Seed data
 gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -276,7 +277,7 @@ gem 're2', '2.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 
-gem 'semver_dialects', '~> 1.6', feature_category: :static_application_security_testing
+gem 'semver_dialects', '~> 1.6.1', feature_category: :static_application_security_testing
 gem 'version_sorter', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'csv_builder', path: 'gems/csv_builder' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -556,7 +557,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 16.8', feature_category: :gitaly
+gem 'gitaly', '~> 16.9.0-rc2', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.3.0', feature_category: :deployment_management
