@@ -88,7 +88,7 @@ For database specific requirements, see [`Project maintainer process for gitlab-
 
 ## What to do if you feel overwhelmed
 
-Similar to all types of reviews, [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization).
+Similar to all types of reviews, [unblocking others is always a top priority](https://handbook.gitlab.com/handbook/values/#global-optimization).
 Database reviewers are expected to [review assigned merge requests in a timely manner](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#review-turnaround-time)
 or let the author know as soon as possible and help them find another reviewer or maintainer.
 

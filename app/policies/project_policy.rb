@@ -595,6 +595,8 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
   end
 
+  rule { can?(:admin_build) }.enable :manage_trigger
+
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard
   end

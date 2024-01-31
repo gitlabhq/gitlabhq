@@ -2,8 +2,12 @@ import { PROJECT_STORAGE_TYPES } from '~/usage_quotas/storage/constants';
 import {
   getStorageTypesFromProjectStatistics,
   descendingStorageUsageSort,
+  parseGetStorageResults,
 } from '~/usage_quotas/storage/utils';
-import { mockGetProjectStorageStatisticsGraphQLResponse } from './mock_data';
+import {
+  mockGetProjectStorageStatisticsGraphQLResponse,
+  mockGetNamespaceStorageGraphQLResponse,
+} from 'jest/usage_quotas/storage/mock_data';
 
 describe('getStorageTypesFromProjectStatistics', () => {
   const {
@@ -68,5 +72,24 @@ describe('descendingStorageUsageSort', () => {
 
     const expectedSorted = [{ k: 3 }, { k: 2 }, { k: 1 }];
     expect(sorted).toEqual(expectedSorted);
+  });
+});
+
+describe('parseGetStorageResults', () => {
+  it('returns the object keys we use', () => {
+    const objectKeys = Object.keys(
+      parseGetStorageResults(mockGetNamespaceStorageGraphQLResponse.data),
+    );
+    expect(objectKeys).toEqual([
+      'additionalPurchasedStorageSize',
+      'actualRepositorySizeLimit',
+      'containsLockedProjects',
+      'repositorySizeExcessProjectCount',
+      'totalRepositorySize',
+      'totalRepositorySizeExcess',
+      'totalUsage',
+      'rootStorageStatistics',
+      'limit',
+    ]);
   });
 });

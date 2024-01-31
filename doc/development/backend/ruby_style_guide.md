@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Ruby style guide
 
-This is a GitLab-specific style guide for Ruby code. Everything documented in this page can be [reopened for discussion](https://about.gitlab.com/handbook/values/#disagree-commit-and-disagree).
+This is a GitLab-specific style guide for Ruby code. Everything documented in this page can be [reopened for discussion](https://handbook.gitlab.com/handbook/values/#disagree-commit-and-disagree).
 
 We use [RuboCop](../rubocop_development_guide.md) to enforce Ruby style guide rules.
 

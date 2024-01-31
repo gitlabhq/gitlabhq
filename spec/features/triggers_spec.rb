@@ -40,9 +40,33 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         click_button 'Create pipeline trigger token'
 
         aggregate_failures 'display creation notice and trigger is created' do
-          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger was created successfully.'
+          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger token was created successfully.'
           expect(page.find('.triggers-list')).to have_content 'trigger desc'
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
+        end
+      end
+
+      context 'when trigger is not saved' do
+        before do
+          allow_next_instance_of(Ci::PipelineTriggers::CreateService) do |instance|
+            allow(instance).to receive(:execute).and_return(
+              ServiceResponse.error(
+                message: 'Validation error',
+                payload: { trigger: { description: ['is missing'] } },
+                reason: :validation_error
+              )
+            )
+          end
+        end
+
+        it 'trigger.errors has an error' do
+          click_button 'Add new token'
+          fill_in 'trigger_description', with: 'trigger desc'
+          click_button 'Create pipeline trigger token'
+
+          expect(page.find('.flash-container')).to(
+            have_content("Validation error")
+          )
         end
       end
     end

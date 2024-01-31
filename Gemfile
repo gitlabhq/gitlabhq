@@ -28,7 +28,7 @@ gem 'rails', '~> 7.0.8' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'bootsnap', '~> 1.17.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'bootsnap', '~> 1.18.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ipaddr', '~> 1.2.5' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -561,9 +561,9 @@ gem 'gitaly', '~> 16.8', feature_category: :gitaly
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.3.0', feature_category: :deployment_management
 
-gem 'grpc', '~> 1.58.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'grpc', '~> 1.60.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'google-protobuf', '~> 3.25', '>= 3.25.2' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'google-protobuf', '~> 3.25', '>= 3.25.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'toml-rb', '~> 2.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

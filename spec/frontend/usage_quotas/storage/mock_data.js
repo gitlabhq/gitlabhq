@@ -7,6 +7,9 @@ export { mockGetProjectStorageStatisticsGraphQLResponse };
 export { mockGetNamespaceStorageGraphQLResponse };
 export { mockGetProjectListStorageGraphQLResponse };
 
+export const { namespace } = mockGetNamespaceStorageGraphQLResponse.data;
+export const projectList = mockGetProjectListStorageGraphQLResponse.data.namespace.projects.nodes;
+
 export const mockEmptyResponse = { data: { project: null } };
 
 export const defaultProjectProvideValues = {
@@ -14,8 +17,32 @@ export const defaultProjectProvideValues = {
 };
 
 export const defaultNamespaceProvideValues = {
+  namespaceId: '0',
+  namespacePath: 'GitLab',
   userNamespace: false,
-  namespaceId: '42',
   defaultPerPage: 20,
+  customSortKey: null,
   helpLinks: storageTypeHelpPaths,
+  // only used in EE
+  purchaseStorageUrl: undefined,
+  buyAddonTargetAttr: undefined,
+  namespacePlanName: undefined,
+  isInNamespaceLimitsPreEnforcement: undefined,
+  perProjectStorageLimit: undefined,
+  namespaceStorageLimit: undefined,
+  totalRepositorySizeExcess: undefined,
+  isUsingProjectEnforcementWithLimits: undefined,
+  isUsingProjectEnforcementWithNoLimits: undefined,
+  isUsingNamespaceEnforcement: undefined,
 };
+
+export const storageTypes = [
+  { key: 'storage' },
+  { key: 'repository' },
+  { key: 'snippets' },
+  { key: 'buildArtifacts' },
+  { key: 'containerRegistry' },
+  { key: 'lfsObjects' },
+  { key: 'packages' },
+  { key: 'wiki' },
+];

@@ -86,7 +86,7 @@ The configuration arguments disabled for authentication tokens are:
 - `--run-untagged`
 - `--tag-list`
 
-This change is a breaking change. You should use an [authentication token](../ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
+This change is a breaking change. You should use an [authentication token](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
 
 </div>
 
@@ -113,7 +113,7 @@ The configuration arguments disabled for authentication tokens are:
 - `--tag-list`
 - `--maintenance-note`
 
-This change is a breaking change. You should [create a runner in the UI](../ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
+This change is a breaking change. You should [create a runner in the UI](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) to add configurations, and use the authentication token in the `gitlab-runner register` command instead.
 
 </div>
 

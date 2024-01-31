@@ -230,7 +230,7 @@ install, and upgrade your Docker-based GitLab installation:
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
-       name: gitlab
+       container_name: gitlab
        restart: always
        hostname: 'gitlab.example.com'
        environment:
@@ -268,7 +268,7 @@ version: '3.6'
 services:
   gitlab:
     image: gitlab/gitlab-ee:<version>-ee.0
-    name: gitlab
+    container_name: gitlab
     restart: always
     hostname: 'gitlab.example.com'
     environment:
@@ -309,7 +309,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
    services:
      gitlab:
        image: gitlab/gitlab-ee:<version>-ee.0
-       name: gitlab
+       container_name: gitlab
        restart: always
        hostname: 'gitlab.example.com'
        ports:

@@ -23,25 +23,23 @@ contribution model in a cellular architecture.
 
 A Cells 1.0 is meant to target enterprise customers that have the following expectations:
 
-1. They want to use our multi-tenant SaaS solution GitLab.com to serve their Organization.
-1. They may receive updates later than the rest of GitLab.com.
-1. They want use environment with higher degree of isolation to rest of the system.
+1. They want to use our multi-tenant SaaS solution (GitLab.com) to serve their Organization.
+1. They accept that they may receive updates later than the rest of GitLab.com.
+1. They want to use an environment with higher degree of isolation to rest of the system.
 1. They want to control all users that contribute to their Organization.
 1. Their groups and projects are meant to be private.
-1. Their users don't need to interact with many Organizations, or contribute to public projects with their account.
-   For example these authenticated users would receive a 404 if they navigated to any public project
-   like `gitlab.com/gitlab-org/gitlab`.
-1. Are OK with not being able to switch Organizations with their account.
+1. Their users don't need to interact with other Organizations, or contribute to public projects with their account.
+1. Are OK with being unable to switch Organizations with their account.
 
 From a development and infrastructure perspective we want to achieve the following goals:
 
 1. All Cells are accessible under a single domain.
 1. Cells are mostly independent with minimal data sharing. All stateful data is segregated, and minimal data sharing is needed initially. This includes any database and cloud storage buckets.
-1. Cells needs to be able to run independently with different versions.
-1. The proposed architecture allows us to achieve a cluster-wide data sharing later.
-1. We have a lightweight routing solution that is robust, but simple.
-1. All identifiers (primary keys, user, group and project names) are unique across the cluster, so that we can perform logical re-balancing at a later time. This includes all database tables, except ones using schemas `gitlab_internal`, or `gitlab_shared`.
-1. Since all users and groups are unique across the cluster, the same user will be able to access other Organizations and groups at GitLab.com in [Cells 2.0](cells-2.0.md).
+1. Cells need to be able to run independently with different versions.
+1. An architecture that allows for eventual cluster-wide data sharing.
+1. A routing solution that is robust, but simple.
+1. All identifiers (primary keys, user, group, and project names) are unique across the cluster, so that we can perform logical re-balancing at a later time. This includes all database tables, except ones using schemas `gitlab_internal`, or `gitlab_shared`.
+1. Because all users and groups are unique across the cluster, the same user can access other Organizations and groups at GitLab.com in [Cells 2.0](cells-2.0.md).
 1. The overhead of managing and upgrading Cells is minimal and similar to managing a GitLab Dedicated instance. Secondary Cells should not be a linear increase in operational burden.
 1. The Cell should be deployed using the same tooling as GitLab Dedicated.
 
@@ -108,7 +106,7 @@ The following statements describe a low-level development proposal to achieve th
    1. The routing service is implemented as a Cloudflare Worker and is run on edge. The routing service is run with a static list of Cells. Each Cell is described by a proxy URL, and a prefix.
    1. Cells are exposed over the public internet, but might be guarded with Zero Trust.
 
-### Overview (Architecture)
+### Architecture overview
 
 ```plantuml
 @startuml
@@ -125,21 +123,21 @@ node "GitLab Inc. Infrastructure" {
     }
 
     [Container Registry] as PC_Registry
-    
+
     database DB as PC_DB {
       frame "PostgreSQL Cluster" as PC_PSQL {
         package "ci" as PC_PSQL_ci {
           [gitlab_ci] as PC_PSQL_gitlab_ci
         }
-  
+
         package "main" as PC_PSQL_main {
           [gitlab_main_clusterwide] as PC_PSQL_gitlab_main_clusterwide
           [gitlab_main_cell] as PC_PSQL_gitlab_main_cell
         }
-  
+
         PC_PSQL_main -[hidden]-> PC_PSQL_ci
       }
-      
+
       frame "Redis Cluster" as PC_Redis {
         [Redis (many)] as PC_Redis_many
       }
@@ -148,10 +146,10 @@ node "GitLab Inc. Infrastructure" {
         [Gitaly Nodes (many)] as PC_Gitaly_many
       }
     }
-    
+
     PC_Rails -[hidden]-> PC_DB
   }
-  
+
   node "Secondary Cell" as SC {
     frame "GitLab Rails" as SC_Rails {
       [Puma + Workhorse + LB] as SC_Puma
@@ -159,21 +157,21 @@ node "GitLab Inc. Infrastructure" {
     }
 
     [Container Registry] as SC_Registry
-    
+
     database DB as SC_DB {
       frame "PostgreSQL Cluster" as SC_PSQL {
         package "ci" as SC_PSQL_ci {
           [gitlab_ci] as SC_PSQL_gitlab_ci
         }
-  
+
         package "main" as SC_PSQL_main {
           [gitlab_main_clusterwide] as SC_PSQL_gitlab_main_clusterwide
           [gitlab_main_cell] as SC_PSQL_gitlab_main_cell
         }
-  
+
         SC_PSQL_main -[hidden]-> SC_PSQL_ci
       }
-      
+
       frame "Redis Cluster" as SC_Redis {
         [Redis (many)] as SC_Redis_many
       }
@@ -182,7 +180,7 @@ node "GitLab Inc. Infrastructure" {
         [Gitaly Nodes (many)] as SC_Gitaly_many
       }
     }
-    
+
     SC_Rails -[hidden]-> SC_DB
   }
 }
@@ -195,7 +193,7 @@ CF_RSW --> SC_Registry
 @enduml
 ```
 
-### Overview (API)
+### API overview
 
 ```plantuml
 @startuml
@@ -209,7 +207,7 @@ node "GitLab Inc. Infrastructure" {
       [Sidekiq] as PC_Sidekiq
     }
   }
-  
+
   node "Secondary Cell" as SC {
     frame SC_Rails [
       {{
@@ -235,7 +233,7 @@ The following technical problems have to be addressed:
 
 ### GitLab Configuration
 
-The GitLab configuration in `gitlab.yml` will be extended with the following parameters to:
+The GitLab configuration in `gitlab.yml` is extended with the following parameters to:
 
 ```yaml
 production:
@@ -246,7 +244,7 @@ production:
         secrets_prefix: kPptz
 ```
 
-1. `primary_cell:` will be configured on Secondary Cells, and will indicate the URL endpoint to access the Primary Cell API.
+1. `primary_cell:` configured on Secondary Cells, and indicates the URL endpoint to access the Primary Cell API.
 1. `secrets_prefix:` can be used on all Cells, and indicates that each secret and session cookie is prefixed with this identifier.
 
 ### Primary Cell
@@ -317,11 +315,11 @@ The API is considered internal, and is guarded with a secret that is shared with
 The Secondary Cell does not expose any specific API at this point.
 The Secondary Cell implements a solution to guarantee uniqueness of primary database keys.
 
-1. `ReplenishDatabaseSequencesWorker`: this worker will run periodically, check all sequences, and replenish them.
+1. `ReplenishDatabaseSequencesWorker`: this worker runs periodically, check all sequences, and replenish them.
 
 #### Simple uniqueness of Database Sequences
 
-Currently our DDL schema uses ID generation in the form: `id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL`.
+Our DDL schema uses ID generation in the form: `id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL`.
 
 The `/api/v4/internal/cells/database/claim` would execute the following sequence to claim range:
 
@@ -410,7 +408,7 @@ $$;
   - Secondary Cells would not be able to enforce unique constraints: create group, project, or user.
   - Other functionality of Secondary Cells would continue working as is: push, run CI.
 - The routing layer makes this service very simple, because it is secret-based and uses prefix.
-  - Reliability of the service is not dependent on Cell availability, since at this stage no dynamic classification is required.
+  - Reliability of the service is not dependent on Cell availability, because at this stage no dynamic classification is required.
   - We anticipate that the routing layer will evolve to perform regular classification at a later point.
 - Mixed-deployment compatible by design.
   - We do not share database connections. We expose APIs to interact with cluster-wide data.
@@ -463,14 +461,14 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    If GitLab Pages are meant to support the `.gitlab.io` domain:
 
    - GitLab Pages need to be run as a single service that is not run as part of a Cell.
-   - Since GitLab Pages use the API we need to make them routable.
+   - Because GitLab Pages use the API we need to make them routable.
    - Similar to `routes`, claim `pages_domain` on the Primary Cell
    - Implement dynamic classification in the routing service, based on a sharding key.
    - Cons: This adds another table that has to be kept unique cluster-wide.
 
    Alternatively:
 
-   - Run GitLab Pages within a Cell, but provide separate a domain.
+   - Run GitLab Pages in a Cell, but provide a separate domain.
    - Custom domains would use the separate domain.
    - Cons: This creates a problem with having to manage a domain per Cell.
    - Cons: We expose Cells to users.
@@ -541,7 +539,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
      that we would migrate.
    - Making all existing routes routable would be a significant effort to fix
      for routes like `/-/autocomplete/users` and likely a multi-year effort. Some preliminary analysis
-     how many routes are already classified can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/430330#note_1633125914).
+     how many routes are already classified can be found [in this comment](https://gitlab.com/gitlab-org/gitlab/-/issues/430330#note_1633125914).
    - In each case the routing service needs to be able to dynamically classify existing routes
      based on some defined criteria, requiring significant development effort, and increasing the
      dependency on the Primary Cell or Cluster-wide service.
@@ -573,7 +571,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
 1. How would we synchronize `users` across Cells?
 
    We build out-of-bounds replication of tables marked as `main_clusterwide`. We have yet to define
-   if this would be better to do via an `API` that is part of Rails, or using the Dedicated service.
+   if this would be better to do with an `API` that is part of Rails, or using the Dedicated service.
    However, using Rails would likely be the simplest and most reliable solution, because the
    application knows the expected data structure.
 
@@ -600,7 +598,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    1. Run the Primary Cell API as an additional node that has dedicated database replica and can work while the main Cell is down.
    1. Implement a Primary Cell API on top of another highly available database in a different technology than Rails. Forward the API write calls to this storage (claim), but make read API calls (classify) to use this storage.
 
-1. How will instance wide CI runners be configured on the new cells?
+1. How can instance-wide CI runners be configured on the new cells?
 
    To be defined.
 

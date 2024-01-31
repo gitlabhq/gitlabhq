@@ -27,7 +27,7 @@ Use a separate MR to create a deprecation entry. For steps to create a deprecati
 
 Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
 
-However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
+However, at GitLab, we [give agency](https://handbook.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
 
 ## When can a feature be removed/changed?
 

@@ -650,16 +650,16 @@ This section covers configuration options that go beyond the recommended and min
 The Linux package supports running separate Redis and Sentinel instances for different
 persistence classes.
 
-| Class          | Purpose                                          |
-| -------------- | ------------------------------------------------ |
-| `cache`        | Store cached data.                               |
-| `queues`       | Store Sidekiq background jobs.                   |
-| `shared_state` | Store session-related and other persistent data. |
-| `actioncable`  | Pub/Sub queue backend for ActionCable.           |
-| `trace_chunks` | Store [CI trace chunks](../job_logs.md#enable-or-disable-incremental-logging) data. |
-| `rate_limiting` | Store [rate limiting](../settings/user_and_ip_rate_limits.md) state. |
-| `sessions` | Store [sessions](../../../ee/development/session.md#gitlabsession). |
-| `repository_cache` | Store cache data specific to repositories.   |
+| Class              | Purpose |
+|--------------------|---------|
+| `cache`            | Store cached data. |
+| `queues`           | Store Sidekiq background jobs. |
+| `shared_state`     | Store session-related and other persistent data. |
+| `actioncable`      | Pub/Sub queue backend for ActionCable. |
+| `trace_chunks`     | Store [CI trace chunks](../job_logs.md#enable-or-disable-incremental-logging) data. |
+| `rate_limiting`    | Store [rate limiting](../settings/user_and_ip_rate_limits.md) state. |
+| `sessions`         | Store [sessions](../../development/session.md#gitlabsession). |
+| `repository_cache` | Store cache data specific to repositories. |
 
 To make this work with Sentinel:
 

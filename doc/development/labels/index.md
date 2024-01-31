@@ -50,7 +50,7 @@ already reserved for category labels).
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
 
-The GitLab handbook documents [when something is a bug](https://about.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://about.gitlab.com/handbook/product/product-processes/#feature-issues).
+The GitLab handbook documents [when something is a bug](https://handbook.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://handbook.gitlab.com/handbook/product/product-processes/#feature-issues).
 
 ## Stage labels
 

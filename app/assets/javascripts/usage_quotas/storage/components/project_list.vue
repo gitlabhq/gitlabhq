@@ -21,7 +21,6 @@ export default {
     StorageTypeHelpLink,
     StorageTypeWarning,
   },
-  inject: ['isUsingProjectEnforcementWithLimits'],
   props: {
     projects: {
       type: Array,
@@ -38,18 +37,18 @@ export default {
     sortBy: {
       type: String,
       required: false,
-      default: undefined,
+      default: null,
     },
-    sortDesc: {
-      type: Boolean,
-      required: false,
-      default: undefined,
+    sortableFields: {
+      type: Object,
+      required: true,
+      default: null,
     },
   },
   created() {
     this.fields = [
       { key: 'name', label: __('Project') },
-      { key: 'storage', label: __('Total'), sortable: !this.isUsingProjectEnforcementWithLimits },
+      { key: 'storage', label: __('Total'), sortable: this.sortableFields.storage },
       { key: 'repository', label: __('Repository') },
       { key: 'snippets', label: __('Snippets') },
       { key: 'buildArtifacts', label: __('Jobs') },
@@ -107,7 +106,7 @@ export default {
     small
     stacked="lg"
     :sort-by="sortBy"
-    :sort-desc="sortDesc"
+    sort-desc
     no-local-sorting
     no-sort-reset
     @sort-changed="$emit('sortChanged', $event)"

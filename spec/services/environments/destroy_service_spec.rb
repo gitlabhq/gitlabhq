@@ -43,7 +43,7 @@ RSpec.describe Environments::DestroyService, feature_category: :continuous_deliv
       end
 
       it 'returns errors' do
-        expect(subject.message).to include("Attemped to destroy the environment but failed")
+        expect(subject.message).to include("Attempted to destroy the environment but failed")
       end
     end
   end

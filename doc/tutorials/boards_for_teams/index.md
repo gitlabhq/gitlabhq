@@ -17,7 +17,7 @@ This tutorial shows you how to set up [issue boards](../../user/project/issue_bo
 In this example, you'll create two issue boards for the UX and Frontend teams.
 Using the following steps, you can create issue boards and workflows for more sub-teams, like Backend
 or Quality Assurance.
-To learn how we use workflow labels at GitLab, see [Product Development Flow](https://about.gitlab.com/handbook/product-development-flow).
+To learn how we use workflow labels at GitLab, see [Product Development Flow](https://handbook.gitlab.com/handbook/product-development-flow/).
 
 To set up issue boards for multiple teams:
 

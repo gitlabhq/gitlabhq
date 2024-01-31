@@ -484,7 +484,7 @@
   .form-control {
     min-width: 100px;
   }
-
+  
   &.form-group {
     @include media-breakpoint-up(sm) {
       margin-bottom: 0;

@@ -103,10 +103,10 @@ as artifacts.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [security widget](../../user/application_security/api_fuzzing/index.md#view-details-of-an-api-fuzzing-vulnerability).
+- The merge request [security widget](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#view-details-of-an-api-fuzzing-vulnerability).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
-- The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
+- The [security dashboard](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#security-dashboard).
 
 ## `artifacts:reports:browser_performance`
 

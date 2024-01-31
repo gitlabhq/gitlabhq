@@ -113,8 +113,6 @@ export const mockFindings = [
         },
       },
       pipeline: { id: 78375355, path: '/gitlab-org/gitlab-ui/pipelines/78375355' },
-      destroy_vulnerability_feedback_dismissal_path:
-        '/gitlab-org/gitlab-ui/vulnerability_feedback/2528',
       category: 'dependency_scanning',
       feedback_type: 'dismissal',
       branch: 'leipert-dogfood-secure',
@@ -196,8 +194,6 @@ export const mockFindings = [
           path: '/leipert',
         },
       },
-      destroy_vulnerability_feedback_dismissal_path:
-        '/gitlab-org/gitlab-ui/vulnerability_feedback/4197',
       category: 'dependency_scanning',
       feedback_type: 'dismissal',
       branch: null,
@@ -278,8 +274,6 @@ export const mockFindings = [
         },
       },
       pipeline: { id: 78375355, path: '/gitlab-org/gitlab-ui/pipelines/78375355' },
-      destroy_vulnerability_feedback_dismissal_path:
-        '/gitlab-org/gitlab-ui/vulnerability_feedback/2527',
       category: 'dependency_scanning',
       feedback_type: 'dismissal',
       branch: 'leipert-dogfood-secure',

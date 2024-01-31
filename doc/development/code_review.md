@@ -183,7 +183,7 @@ by a reviewer before passing it to a maintainer as described in the
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
 | End-to-end **and** non-end-to-end changes <sup>4</sup> | [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors). |
 | Only End-to-end changes <sup>4</sup> **or** if the MR author is a [Software Engineer in Test](https://handbook.gitlab.com/handbook/engineering/quality/#individual-contributors) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa). |
-| A new or updated [application limit](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits) | [Product manager](https://about.gitlab.com/company/team/). |
+| A new or updated [application limit](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits) | [Product manager](https://about.gitlab.com/company/team/). |
 | Analytics Instrumentation (telemetry or analytics) changes | [Analytics Instrumentation engineer](https://gitlab.com/gitlab-org/analytics-section/analytics-instrumentation/engineers). |
 | An addition of, or changes to a [Feature spec](testing_guide/testing_levels.md#frontend-feature-tests) | [Quality maintainer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_qa) or [Quality reviewer](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_qa). |
 | A new service to GitLab (Puma, Sidekiq, Gitaly are examples) | [Product manager](https://about.gitlab.com/company/team/). See the [process for adding a service component to GitLab](adding_service_component.md) for details. |
@@ -274,7 +274,7 @@ See the [test engineering process](https://handbook.gitlab.com/handbook/engineer
 1. You have included changelog trailers, or you have decided that they are not needed.
     - [Does this MR need a changelog?](changelog.md#what-warrants-a-changelog-entry)
 1. You have added/updated documentation or decided that documentation changes are unnecessary for this MR.
-    - [Is documentation required?](https://about.gitlab.com/handbook/product/ux/technical-writing/workflow/#when-documentation-is-required)
+    - [Is documentation required?](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#documentation-for-a-product-change)
 
 ##### Security
 
@@ -725,13 +725,13 @@ author.
   well. Building abstractions and good design is what makes it possible to hide
   complexity and makes future changes easier.
 - Enforcing and improving [code style](contributing/style_guides.md) should be primarily done through
-  [automation](https://about.gitlab.com/handbook/values/#cleanup-over-sign-off)
+  [automation](https://handbook.gitlab.com/handbook/values/#cleanup-over-sign-off)
   instead of review comments.
 - Asking the author to change the design sometimes means the complete rewrite
   of the contributed code. It's usually a good idea to ask another maintainer or
   reviewer before doing it, but have the courage to do it when you believe it is
   important.
-- In the interest of [Iteration](https://about.gitlab.com/handbook/values/#iteration),
+- In the interest of [Iteration](https://handbook.gitlab.com/handbook/values/#iteration),
   if your review suggestions are non-blocking changes, or personal preference
   (not a documented or agreed requirement), consider approving the merge request
   before passing it back to the author. This allows them to implement your suggestions
@@ -803,7 +803,7 @@ Properties of customer critical merge requests:
 - The DRI applies the `customer-critical-merge-request` label to the merge request.
 - It is required that the reviewers and maintainers involved with a customer critical merge request are engaged as soon as this decision is made.
 - It is required to prioritize work for those involved on a customer critical merge request so that they have the time available necessary to focus on it.
-- It is required to adhere to GitLab [values](https://about.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
+- It is required to adhere to GitLab [values](https://handbook.gitlab.com/handbook/values/) and processes when working on customer critical merge requests, taking particular note of family and friends first/work second, definition of done, iteration, and release when it's ready.
 - Customer critical merge requests are required to not reduce security, introduce data-loss risk, reduce availability, nor break existing functionality per the process for [prioritizing technical decisions](https://handbook.gitlab.com/handbook/engineering/development/principles/#prioritizing-technical-decisions).
 - On customer critical requests, it is _recommended_ that those involved _consider_ coordinating synchronously (Zoom, Slack) in addition to asynchronously (merge requests comments) if they believe this may reduce the elapsed time to merge even though this _may_ sacrifice [efficiency](https://about.gitlab.com/company/culture/all-remote/asynchronous/#evaluating-efficiency.md).
 - After a customer critical merge request is merged, a retrospective must be completed with the intention of reducing the frequency of future customer critical merge requests.

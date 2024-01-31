@@ -39,7 +39,7 @@ easier to measure the impact of both separately.
 
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the
-[Feature flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
+[Feature flags process](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
 For an up to date list of feature flag commands see
@@ -492,7 +492,7 @@ To remove a feature flag, open **one merge request** to make the changes. In the
 1. Add the ~"feature flag" label so release managers are aware of the removal.
 1. If the merge request has to be backported into the current version, follow the
    [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md) process.
-   See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
+   See [the feature flag process](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
    for further details.
 1. Remove all references to the feature flag from the codebase, including tests.
 1. Remove the YAML definition for the feature from the repository.

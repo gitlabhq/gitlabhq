@@ -13,7 +13,7 @@ module Environments
 
       unless environment.destroyed?
         return ServiceResponse.error(
-          message: 'Attemped to destroy the environment but failed'
+          message: 'Attempted to destroy the environment but failed'
         )
       end
 

@@ -8,7 +8,7 @@ module Types
       present_using ::Ci::TriggerPresenter
       connection_type_class Types::CountableConnectionType
 
-      authorize :admin_build
+      authorize :manage_trigger
 
       field :can_access_project, GraphQL::Types::Boolean,
         null: false,

@@ -56,7 +56,7 @@ RSpec.describe Mutations::Environments::Delete, feature_category: :environment_m
       end
 
       it 'returns errors' do
-        expect(subject[:errors]).to include("Attemped to destroy the environment but failed")
+        expect(subject[:errors]).to include("Attempted to destroy the environment but failed")
       end
     end
 

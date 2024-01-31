@@ -460,7 +460,7 @@ Performance deficiencies should be addressed right away after we merge initial
 changes.
 
 Read more about when and how feature flags should be used in
-[Feature flags in GitLab development](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+[Feature flags in GitLab development](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#how-to-use-feature-flags).
 
 ## Storage
 

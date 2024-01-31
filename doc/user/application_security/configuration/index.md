@@ -68,7 +68,7 @@ You can configure the following security controls:
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Secret Detection. For more details, read [Use an automatically configured merge request](../secret_detection/index.md#use-an-automatically-configured-merge-request).
 - [API Fuzzing](../api_fuzzing/index.md)
-  - Select **Enable API Fuzzing** to use API Fuzzing for the current project. For more details, read [API Fuzzing](../../../user/application_security/api_fuzzing/index.md#enable-web-api-fuzzing).
+  - Select **Enable API Fuzzing** to use API Fuzzing for the current project. For more details, read [API Fuzzing](../../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md).
 - [Coverage Fuzzing](../coverage_fuzzing/index.md)
   - Can be configured with `.gitlab-ci.yml`. For more details, read [Coverage Fuzzing](../../../user/application_security/coverage_fuzzing/index.md#enable-coverage-guided-fuzz-testing).
 

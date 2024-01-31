@@ -1,3 +1,6 @@
+import { numberToHumanSize } from '~/lib/utils/number_utils';
+import { __ } from '~/locale';
+
 /**
  * Populates an array of storage types with usage value and other details
  *
@@ -35,3 +38,46 @@ export const getStorageTypesFromProjectStatistics = (
 export function descendingStorageUsageSort(storageUsageKey) {
   return (a, b) => b[storageUsageKey] - a[storageUsageKey];
 }
+
+/**
+ * This method parses the results from `getNamespaceStorageStatistics`
+ * call.
+ *
+ * `rootStorageStatistics` will be sent as null until an
+ * event happens to trigger the storage count.
+ * For that reason we have to verify if `storageSize` is sent or
+ * if we should render 'Not applicable.'
+ *
+ * @param {Object} data graphql result
+ * @returns {Object}
+ */
+export const parseGetStorageResults = (data) => {
+  const {
+    namespace: {
+      storageSizeLimit,
+      totalRepositorySize,
+      containsLockedProjects,
+      totalRepositorySizeExcess,
+      rootStorageStatistics = {},
+      actualRepositorySizeLimit,
+      additionalPurchasedStorageSize,
+      repositorySizeExcessProjectCount,
+    },
+  } = data || {};
+
+  const totalUsage = rootStorageStatistics?.storageSize
+    ? numberToHumanSize(rootStorageStatistics.storageSize)
+    : __('Not applicable.');
+
+  return {
+    additionalPurchasedStorageSize,
+    actualRepositorySizeLimit,
+    containsLockedProjects,
+    repositorySizeExcessProjectCount,
+    totalRepositorySize,
+    totalRepositorySizeExcess,
+    totalUsage,
+    rootStorageStatistics,
+    limit: storageSizeLimit,
+  };
+};

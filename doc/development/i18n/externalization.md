@@ -215,7 +215,7 @@ expect(findText()).toBe('Lorem ipsum dolor sit');
 
 #### Recommendations
 
-If strings are reused throughout a component, it can be useful to define these strings as variables. We recommend defining an `i18n` property on the component's `$options` object. If there is a mixture of many-use and single-use strings in the component, consider using this approach to create a local [Single Source of Truth](https://about.gitlab.com/handbook/values/#single-source-of-truth) for externalized strings.
+If strings are reused throughout a component, it can be useful to define these strings as variables. We recommend defining an `i18n` property on the component's `$options` object. If there is a mixture of many-use and single-use strings in the component, consider using this approach to create a local [Single Source of Truth](https://handbook.gitlab.com/handbook/values/#single-source-of-truth) for externalized strings.
 
 ```javascript
 <script>

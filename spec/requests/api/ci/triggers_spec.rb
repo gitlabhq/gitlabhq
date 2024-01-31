@@ -251,9 +251,49 @@ RSpec.describe API::Ci::Triggers, feature_category: :continuous_integration do
 
       context 'without required parameters' do
         it 'does not create trigger' do
-          post api("/projects/#{project.id}/triggers", user)
+          expect do
+            post api("/projects/#{project.id}/triggers", user)
+          end.not_to change { project.triggers.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when the CreateService returns a permissions error' do
+        before do
+          failure_response = instance_double(ServiceResponse, success?: false, reason: :forbidden, message: "Permissions error message")
+
+          allow_next_instance_of(::Ci::PipelineTriggers::CreateService) do |instance|
+            allow(instance).to receive(:execute)
+                      .and_return(failure_response)
+          end
+        end
+
+        it 'returns forbidden' do
+          post api("/projects/#{project.id}/triggers", user),
+            params: { description: 'trigger' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to eq('403 Forbidden - Permissions error message')
+        end
+      end
+
+      context 'when trigger fails to save' do
+        before do
+          failure_response = instance_double(ServiceResponse, success?: false, reason: :validation_error, message: "Unexpected Ci::Trigger creation failure")
+
+          allow_next_instance_of(::Ci::PipelineTriggers::CreateService) do |instance|
+            allow(instance).to receive(:execute)
+                      .and_return(failure_response)
+          end
+        end
+
+        it 'returns bad request' do
+          post api("/projects/#{project.id}/triggers", user),
+            params: { description: 'trigger' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('400 Bad request - Unexpected Ci::Trigger creation failure')
         end
       end
     end

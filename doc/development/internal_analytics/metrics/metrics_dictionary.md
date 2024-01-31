@@ -150,7 +150,7 @@ For uniqueness, the generated files include a timestamp prefix in ISO 8601 forma
 
 ### Performance Indicator Metrics
 
-To use a metric definition to manage [performance indicator](https://about.gitlab.com/handbook/product/analytics-instrumentation-guide/#implementing-product-performance-indicators):
+To use a metric definition to manage [performance indicator](https://handbook.gitlab.com/handbook/product/analytics-instrumentation-guide/#instrumenting-metrics-and-events):
 
 1. Create a merge request that includes related changes.
 1. Use labels `~"analytics instrumentation"`, `"~Data Warehouse::Impact Check"`.

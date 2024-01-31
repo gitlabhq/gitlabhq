@@ -78,7 +78,7 @@ For a walkthrough of the contribution process, see [Tutorial: Make a GitLab cont
 
 *Live by smaller iterations.* Keep the amount of changes in a single MR **as small as possible**.
 If you want to contribute a large feature, think very carefully about what the
-[minimum viable change](https://about.gitlab.com/handbook/product/#the-minimally-viable-change)
+[minimum viable change](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc)
 is. Can you split the functionality into two smaller MRs? Can you submit only the
 backend/API code? Can you start with a very simple UI? Can you do just a part of the
 refactor?
@@ -231,7 +231,7 @@ requirements.
      for assistance to execute the database query that checks the existing rows to
      ensure existing rows aren't impacted by the change.
    - Add the necessary validation with a feature flag to be gradually rolled out
-     following [the rollout steps](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#rollout).
+     following [the rollout steps](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#rollout).
 
    If this merge request is urgent, the code owners should make the final call on
    whether reviewing existing rows should be included as an immediate follow-up task

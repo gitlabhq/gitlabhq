@@ -23,7 +23,7 @@ used in defined mitigations. If you have questions or when ready for a review, p
 ### Description
 
 Application permissions are used to determine who can access what and what actions they can perform.
-For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
+For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [user docs on permissions](../user/permissions.md).
 
 ### Impact
 
@@ -410,7 +410,7 @@ References:
 - When updating the content of an HTML element using JavaScript, mark user-controlled values as `textContent` or `nodeValue` instead of `innerHTML`.
 - Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/directives/safe_html.js) instead.
 - Render unsafe or unsanitized content using [`dompurify`](fe_guide/security.md#sanitize-html-output).
-- Consider using [`gl-sprintf`](../../ee/development/i18n/externalization.md#interpolation) to interpolate translated strings securely.
+- Consider using [`gl-sprintf`](i18n/externalization.md#interpolation) to interpolate translated strings securely.
 - Avoid `__()` with translations that contain user-controlled values.
 - When working with `postMessage`, ensure the `origin` of the message is allowlisted.
 - Consider using the [Safe Link Directive](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-link-directive--default) to generate secure hyperlinks by default.
@@ -1380,7 +1380,7 @@ When an attribute is protected with `prevent_from_serialization`, it is not incl
 For more guidance on serialization:
 
 - [Why using a serializer is important](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/serializers/README.md#why-using-a-serializer-is-important).
-- Always use [Grape entities](../../ee/development/api_styleguide.md#entities) for the API.
+- Always use [Grape entities](api_styleguide.md#entities) for the API.
 
 To `serialize` an `ActiveRecord` column:
 

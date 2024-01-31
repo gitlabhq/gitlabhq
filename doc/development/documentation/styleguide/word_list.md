@@ -1447,7 +1447,7 @@ Use **press** when talking about keyboard keys. For example:
 
 ## profanity
 
-Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
 
 ## provision
 

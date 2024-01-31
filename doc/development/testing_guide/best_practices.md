@@ -1313,7 +1313,7 @@ Most tests for Elasticsearch logic relate to:
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
 NOTE:
-Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
+Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
 

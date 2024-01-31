@@ -4,7 +4,7 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# HTTP Archive format
+# Create HAR Files
 
 DETAILS:
 **Tier:** Ultimate
@@ -14,7 +14,7 @@ HTTP Archive (HAR) format files are an industry standard for exchanging informat
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
 with a web site. The file extension `.har` is commonly used.
 
-The HAR files can be used to perform [web API Fuzz Testing](index.md#http-archive-har) as part of
+The HAR files can be used to perform [web API Fuzz Testing](configuration/enabling_the_analyzer.md#http-archive-har) as part of
 your [GitLab CI/CD](../../../ci/index.md) pipelines.
 
 WARNING:
@@ -82,7 +82,7 @@ To verify the HAR contains all requests, use an online HAR viewer, for example:
 
 [Insomnia API Client](https://insomnia.rest/) is an API design tool that among many uses, helps
 you to design, describe, and test your API. You can also use it to generate HAR files that can be
-used in [Web API Fuzz Testing](index.md#http-archive-har).
+used in [Web API Fuzz Testing](configuration/enabling_the_analyzer.md#http-archive-har).
 
 #### Create a HAR file with the Insomnia API Client
 
