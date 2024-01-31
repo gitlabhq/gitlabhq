@@ -71,6 +71,10 @@ openssl x509 -in <filename.crt> -noout -fingerprint -sha1
 
 Replace `filename.crt` with the name of the certificate file.
 
+## SSO Certificate updates
+
+When the certificate used for your identity provider changes (for example when updating or renewing the certificate), you must update the certificate fingerprint as well. You can find the certificate fingerprint in your identity provider's UI. If you cannot get the certificate in the identity provider UI, follow the steps in the [calculate the fingerprint](#calculate-the-fingerprint) documentation.
+
 ## Searching Rails log for a SAML response
 
 DETAILS:

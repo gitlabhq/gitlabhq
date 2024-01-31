@@ -62,7 +62,7 @@ RSpec.describe ClickHouse::SyncStrategies::AuditEventSyncStrategy, '#execute', :
     hash_including(
       'id' => audit_event.id,
       'entity_type' => audit_event.entity_type,
-      'entity_id' => audit_event.entity.id.to_s,
+      'entity_id' => audit_event.entity_id.to_s,
       'author_id' => audit_event.author_id.to_s,
       'target_id' => audit_event.target_id.to_s,
       'target_type' => audit_event.target_type,

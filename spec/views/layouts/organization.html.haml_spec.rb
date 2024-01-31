@@ -12,48 +12,13 @@ RSpec.describe 'layouts/organization', feature_category: :cell do
     allow(view).to receive(:users_path).and_return('/root')
   end
 
-  subject do
-    render
-
-    rendered
-  end
-
   describe 'navigation' do
-    context 'when action is #index' do
-      before do
-        allow(view).to receive(:params).and_return({ action: 'index' })
-      end
+    it 'calls organization_layout_nav and sets @nav instance variable' do
+      expect(view).to receive(:organization_layout_nav).and_return('your_work')
 
-      it 'renders your_work navigation' do
-        subject
+      render
 
-        expect(view.instance_variable_get(:@nav)).to eq('your_work')
-      end
-    end
-
-    context 'when action is #new' do
-      before do
-        allow(view).to receive(:params).and_return({ action: 'new' })
-      end
-
-      it 'renders your_work navigation' do
-        subject
-
-        expect(view.instance_variable_get(:@nav)).to eq('your_work')
-      end
-    end
-
-    context 'when action is #show' do
-      before do
-        allow(view).to receive(:params).and_return({ action: 'show' })
-        view.instance_variable_set(:@organization, organization)
-      end
-
-      it 'renders organization navigation' do
-        subject
-
-        expect(view.instance_variable_get(:@nav)).to eq('organization')
-      end
+      expect(view.instance_variable_get(:@nav)).to eq('your_work')
     end
   end
 end

@@ -33,18 +33,18 @@ for the most popular hosting services:
 <!-- vale gitlab.Spelling = NO -->
 
 - [123-reg](https://www.123-reg.co.uk/support/domains/domain-name-server-dns-management-guide/)
-- [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html)
+- [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
-- [Cloudflare](https://developers.cloudflare.com/fundamentals/get-started/setup/)
-- [cPanel](https://documentation.cpanel.net/display/84Docs/Edit+DNS+Zone)
+- [Cloudflare](https://developers.cloudflare.com/fundamentals/setup/)
+- [cPanel](https://docs.cpanel.net/cpanel/domains/zone-editor/)
 - [DigitalOcean](https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/)
 - [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812)
 - [Gandi](https://docs.gandi.net/en/domain_names/faq/dns_records.html)
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
 - [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)
-- [Inmotion hosting](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
-- [Media Temple](https://mediatemple.net/community/products/dv/204403794/how-can-i-change-the-dns-records-for-my-domain)
-- [Microsoft](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb727018(v=technet.10))
+- [Inmotion hosting](https://www.inmotionhosting.com/support/edu/cpanel/how-do-i-make-custom-dns-records/)
+- [Media Temple](https://mediatemple.zendesk.com/hc/en-us/articles/204403794-how-can-i-change-the-dns-records-for-my-domain)
+- [Microsoft](https://learn.microsoft.com/en-us/windows-server/networking/dns/manage-resource-records?tabs=powershell)
 - [Namecheap](https://www.namecheap.com/support/knowledgebase/subcategory/2237/host-records-setup/)
 
 <!-- vale gitlab.Spelling = YES -->

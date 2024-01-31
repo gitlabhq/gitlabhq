@@ -38,6 +38,10 @@ To connect a remote machine to the Web IDE, you'll:
 To generate Let's Encrypt certificates:
 
 1. Create an `A` record to point a domain to your remote machine (for example, from `example.remote.gitlab.dev` to `10.0.2.2`).
+
+   NOTE:
+   If you do not have access to a domain, you can use a service like [DuckDNS](https://www.duckdns.org/).
+
 1. Install [Certbot](https://certbot.eff.org/) to enable HTTPS:
 
    ```shell
@@ -59,6 +63,10 @@ To generate Let's Encrypt certificates:
      --manual \
      --preferred-challenges dns certonly
    ```
+
+   NOTE:
+   With [DuckDNS](https://www.duckdns.org/), you must use the
+   [Certbot DNS DuckDNS](https://github.com/infinityofspace/certbot_dns_duckdns) plugin.
 
 Now that you've generated the certificates, it's time to create and connect a development environment.
 

@@ -27471,7 +27471,7 @@ Progress of standards adherence checks.
 | ---- | ---- | ----------- |
 | <a id="standardsadherencechecksstatuscheckscompleted"></a>`checksCompleted` | [`Int!`](#int) | Number of adherence checks successfully completed. |
 | <a id="standardsadherencechecksstatusstartedat"></a>`startedAt` | [`Time!`](#time) | UTC timestamp when the adherence checks scan was started. |
-| <a id="standardsadherencechecksstatustotalchecks"></a>`totalChecks` | [`Int!`](#int) | Total number of adherence checks. (Adherence checks multiplied by the number of projects in the group). |
+| <a id="standardsadherencechecksstatustotalchecks"></a>`totalChecks` | [`Int!`](#int) | Number of adherence checks multiplied by the number of projects in the group. |
 
 ### `StatusAction`
 

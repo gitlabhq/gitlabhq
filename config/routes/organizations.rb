@@ -17,5 +17,7 @@ resources(
     resource :settings, only: [], as: :settings_organization do
       get :general
     end
+
+    resource :groups, only: [:new], as: :groups_organization
   end
 end

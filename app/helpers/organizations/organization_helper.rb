@@ -2,6 +2,12 @@
 
 module Organizations
   module OrganizationHelper
+    def organization_layout_nav
+      return 'organization' unless current_controller?('organizations')
+
+      current_action?(:index, :new) ? "your_work" : "organization"
+    end
+
     def organization_show_app_data(organization)
       {
         organization: organization.slice(:id, :name, :description_html)
@@ -49,6 +55,17 @@ module Organizations
     def home_organization_setting_app_data
       {
         initial_selection: current_user.home_organization_id
+      }.to_json
+    end
+
+    def organization_groups_new_app_data(organization)
+      {
+        organization_id: organization.id,
+        base_path: root_url,
+        groups_organization_path: groups_and_projects_organization_path(organization, { display: 'groups' }),
+        mattermost_enabled: Gitlab.config.mattermost.enabled,
+        available_visibility_levels: available_visibility_levels(Group),
+        restricted_visibility_levels: restricted_visibility_levels
       }.to_json
     end
 

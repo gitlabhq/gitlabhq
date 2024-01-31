@@ -489,12 +489,12 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 #### `workflow:auto_cancel:on_new_commit`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or
-for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is available.
 
 Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
 the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
@@ -706,12 +706,12 @@ When the branch is something else:
 #### `workflow:rules:auto_cancel`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or
-for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is available.
 
 Use `workflow:rules:auto_cancel` to configure the behavior of
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
@@ -2720,7 +2720,7 @@ job2:
 ### `interruptible`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
-> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138508) in GitLab 16.8.
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature

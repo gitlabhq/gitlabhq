@@ -73,28 +73,6 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
   end
 
-  describe 'before_save' do
-    describe '#set_package_name_pattern_ilike_query' do
-      subject { create(:package_protection_rule, package_name_pattern: package_name_pattern) }
-
-      context 'with different package name patterns' do
-        where(:package_name_pattern, :expected_pattern_query) do
-          '@my-scope/my-package'                               | '@my-scope/my-package'
-          '@my-scope/*my-package-with-wildcard-start'          | '@my-scope/%my-package-with-wildcard-start'
-          '@my-scope/my-package-with-wildcard-end*'            | '@my-scope/my-package-with-wildcard-end%'
-          '@my-scope/my-package*with-wildcard-inbetween'       | '@my-scope/my-package%with-wildcard-inbetween'
-          '@my-scope/**my-package-**-with-wildcard-multiple**' | '@my-scope/%%my-package-%%-with-wildcard-multiple%%'
-          '@my-scope/my-package-with_____underscore'           | '@my-scope/my-package-with\_\_\_\_\_underscore'
-          '@my-scope/my-package-with-regex-characters.+'       | '@my-scope/my-package-with-regex-characters.+'
-        end
-
-        with_them do
-          it { is_expected.to have_attributes(package_name_pattern_ilike_query: expected_pattern_query) }
-        end
-      end
-    end
-  end
-
   describe '.for_package_name' do
     let_it_be(:package_protection_rule) do
       create(:package_protection_rule, package_name_pattern: '@my-scope/my_package')

@@ -33,7 +33,12 @@ module Sidebars
               title: _('Groups and projects'),
               link: groups_and_projects_organization_path(context.container),
               super_sidebar_parent: ::Sidebars::Organizations::Menus::ManageMenu,
-              active_routes: { path: 'organizations/organizations#groups_and_projects' },
+              active_routes: {
+                path: %w[
+                  organizations/organizations#groups_and_projects
+                  organizations/groups#new
+                ]
+              },
               item_id: :organization_groups_and_projects
             )
           )

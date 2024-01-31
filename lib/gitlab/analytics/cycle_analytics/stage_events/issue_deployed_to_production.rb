@@ -27,7 +27,7 @@ module Gitlab
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
-          def include_in(query)
+          def include_in(query, **)
             query.left_joins(merge_requests_closing_issues: { merge_request: [:metrics] })
           end
         end

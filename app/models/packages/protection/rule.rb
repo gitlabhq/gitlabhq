@@ -3,6 +3,9 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
+      include IgnorableColumns
+      ignore_column :package_name_pattern_ilike_query, remove_with: '16.11', remove_after: '2024-03-22'
+
       enum package_type: Packages::Package.package_types.slice(:npm)
       enum push_protected_up_to_access_level:
              Gitlab::Access.sym_options_with_owner.slice(:developer, :maintainer, :owner),
@@ -21,8 +24,6 @@ module Packages
       validates :package_type, presence: true
       validates :push_protected_up_to_access_level, presence: true
 
-      before_save :set_package_name_pattern_ilike_query, if: :package_name_pattern_changed?
-
       scope :for_package_name, ->(package_name) do
         return none if package_name.blank?
 
@@ -38,17 +39,6 @@ module Packages
         where(package_type: package_type, push_protected_up_to_access_level: access_level..)
           .for_package_name(package_name)
           .exists?
-      end
-
-      private
-
-      # We want to allow wildcard pattern (`*`) for the field `package_name_pattern`
-      # , e.g. `@my-scope/my-package-*`, etc.
-      # Therefore, we need to preprocess the field value before we can use the field in the ILIKE clause.
-      # E.g. convert wildcard character (`*`) to LIKE match character (`%`), escape certain characters, etc.
-      def set_package_name_pattern_ilike_query
-        self.package_name_pattern_ilike_query = self.class.sanitize_sql_like(package_name_pattern)
-                                                          .tr('*', '%')
       end
     end
   end

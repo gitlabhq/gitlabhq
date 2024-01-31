@@ -42,19 +42,22 @@ For example:
 This feature does something.
 ```
 
-The item text should include these words in order. Capitalization doesn't matter.
+The item text must include these words in order. Capitalization doesn't matter.
 
 - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
 - `GitLab` (or, for external projects, the name of the project)
 
-If you cannot use this format, you can use different language. Try to be
-consistent with other notes on the page, or other notes on the docs site.
+The docs site uses [Ruby code](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/lib/filters/introduced_in.rb)
+to render the notes based on these words.
 
-If possible, include a link to the related issue, merge request, or epic.
-Do not link to the pricing page. Do not include the subscription tier.
+In addition:
 
-Even if you have only one item, ensure it begins with `> -`.
+- Try to be consistent with other notes on the page, or other notes on the docs site.
+- Ensure that the output generates properly.
+- If possible, include a link to the related issue, merge request, or epic.
+- Do not link to the pricing page. Do not include the subscription tier.
+- Even if you have only one item, ensure it begins with `> -`.
 
 #### Introducing a new feature
 

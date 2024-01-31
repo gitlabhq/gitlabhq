@@ -61,7 +61,7 @@ module Gitlab
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
-          def include_in(query)
+          def include_in(query, **)
             query
           end
 

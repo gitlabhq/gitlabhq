@@ -331,7 +331,7 @@ export default {
   <header
     :class="{
       'gl-h-full': list.collapsed,
-      'board-inner gl-bg-gray-50': isSwimlanesHeader,
+      'gl-bg-gray-50': isSwimlanesHeader,
       'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base': isLabelList,
     }"
     :style="headerStyle"

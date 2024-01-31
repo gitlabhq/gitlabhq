@@ -35,5 +35,9 @@ module Organizations
     def authorize_admin_organization!
       access_denied! unless can?(current_user, :admin_organization, organization)
     end
+
+    def authorize_create_group!
+      access_denied! unless can?(current_user, :create_group, organization)
+    end
   end
 end
