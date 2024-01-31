@@ -143,6 +143,16 @@ RSpec.describe MergeRequests::UpdateAssigneesService, feature_category: :code_re
         expect { update_merge_request }
           .not_to change { merge_request.reload.assignees.to_a }
       end
+
+      context 'when skip_authorization is set' do
+        let(:opts) { { assignee_ids: [user2.id], skip_authorization: true } }
+
+        it 'updates the MR assignees' do
+          expect { update_merge_request }
+            .to change { merge_request.reload.assignees }
+            .from([user3]).to([user2])
+        end
+      end
     end
   end
 end

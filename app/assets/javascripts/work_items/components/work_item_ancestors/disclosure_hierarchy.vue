@@ -1,6 +1,7 @@
 <script>
 import uniqueId from 'lodash/uniqueId';
-import { GlIcon, GlTooltip, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlIcon, GlTooltip, GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {
@@ -9,6 +10,9 @@ export default {
     GlIcon,
     GlTooltip,
     DisclosureHierarchyItem,
+  },
+  directives: {
+    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     /**
@@ -48,10 +52,14 @@ export default {
   data() {
     return {
       itemUuid: uniqueId('disclosure-hierarchy-'),
+      isMobile: false,
     };
   },
   computed: {
     middleItems() {
+      if (this.isMobile) {
+        return this.items.slice(0, -1).map((item) => ({ ...item, text: item.title }));
+      }
       return this.items.slice(1, -1).map((item) => ({ ...item, text: item.title }));
     },
     firstItem() {
@@ -68,15 +76,23 @@ export default {
     itemId(index) {
       return `${this.itemUuid}-item-${index}`;
     },
+    handleResize() {
+      this.isMobile = ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+    },
   },
 };
 </script>
 
 <template>
-  <div class="gl-relative gl-display-flex">
-    <ul class="gl-p-0 gl-m-0 gl-relative gl-list-style-none gl-display-inline-flex gl-w-85p">
-      <template v-if="withEllipsis">
-        <disclosure-hierarchy-item :item="firstItem" :item-id="itemId(0)">
+  <div
+    v-gl-resize-observer="handleResize"
+    class="disclosure-hierarchy gl-relative gl-display-flex gl-flex-grow-2 gl-min-w-0"
+  >
+    <ul
+      class="gl-p-0 gl-m-0 gl-relative gl-list-style-none gl-display-inline-flex gl-flex-direction-row gl-max-w-full"
+    >
+      <template v-if="withEllipsis || isMobile">
+        <disclosure-hierarchy-item v-if="!isMobile" :item="firstItem" :item-id="itemId(0)">
           <slot :item="firstItem" :item-id="itemId(0)"></slot>
         </disclosure-hierarchy-item>
         <li class="disclosure-hierarchy-item">

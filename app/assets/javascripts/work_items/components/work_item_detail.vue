@@ -247,7 +247,8 @@ export default {
     },
     titleClassHeader() {
       return {
-        'gl-sm-display-none!': this.parentWorkItem,
+        'gl-sm-display-none! gl-mt-3': this.parentWorkItem,
+        'gl-sm-display-block!': !this.parentWorkItem,
         'gl-w-full': !this.parentWorkItem && !this.editMode,
         'editable-wi-title': this.editMode && !this.parentWorkItem,
       };
@@ -255,14 +256,8 @@ export default {
     titleClassComponent() {
       return {
         'gl-sm-display-block!': !this.parentWorkItem,
-        'gl-display-none gl-sm-display-block!': this.parentWorkItem,
-        'gl-mt-3 editable-wi-title': this.workItemsMvc2Enabled,
-      };
-    },
-    headerWrapperClass() {
-      return {
-        'gl-flex-wrap': this.parentWorkItem,
-        'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
+        'gl-display-none gl-sm-display-block! gl-mt-3': this.parentWorkItem,
+        'editable-wi-title': this.workItemsMvc2Enabled,
       };
     },
     shouldShowEditButton() {
@@ -443,7 +438,9 @@ export default {
             @click="$emit('close')"
           />
         </div>
-        <div :class="headerWrapperClass">
+        <div
+          class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
+        >
           <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
           <div
             v-if="!error && !workItemLoading"
@@ -453,7 +450,6 @@ export default {
             <work-item-title-with-edit
               v-if="workItem.title && workItemsMvc2Enabled"
               ref="title"
-              class="gl-mt-3 gl-sm-display-block!"
               :is-editing="editMode"
               :title="workItem.title"
               @updateWorkItem="updateWorkItem"
@@ -462,7 +458,6 @@ export default {
             <work-item-title
               v-else-if="workItem.title"
               ref="title"
-              class="gl-sm-display-block!"
               :work-item-id="workItem.id"
               :work-item-title="workItem.title"
               :work-item-type="workItemType"
@@ -470,9 +465,7 @@ export default {
               @error="updateError = $event"
             />
           </div>
-          <div
-            class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
-          >
+          <div class="gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3">
             <gl-button
               v-if="shouldShowEditButton"
               category="secondary"

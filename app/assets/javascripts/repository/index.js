@@ -10,9 +10,9 @@ import PerformancePlugin from '~/performance/vue_performance_plugin';
 import createStore from '~/code_navigation/store';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import HighlightWorker from '~/vue_shared/components/source_viewer/workers/highlight_worker?worker';
-import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import App from './components/app.vue';
 import Breadcrumbs from './components/breadcrumbs.vue';
+import DirectoryDownloadLinks from './components/directory_download_links.vue';
 import ForkInfo from './components/fork_info.vue';
 import LastCommit from './components/last_commit.vue';
 import BlobControls from './components/blob_controls.vue';
@@ -170,38 +170,6 @@ export default function setupVueRepositoryList() {
     });
   };
 
-  const initCodeDropdown = () => {
-    const codeDropdownEl = document.getElementById('js-code-dropdown');
-
-    if (!codeDropdownEl) return false;
-
-    const {
-      sshUrl,
-      httpUrl,
-      kerberosUrl,
-      xcodeUrl,
-      directoryDownloadLinks,
-    } = codeDropdownEl.dataset;
-
-    return new Vue({
-      el: codeDropdownEl,
-      router,
-      render(createElement) {
-        return createElement(CodeDropdown, {
-          props: {
-            sshUrl,
-            httpUrl,
-            kerberosUrl,
-            xcodeUrl,
-            currentPath: this.$route.params.path,
-            directoryDownloadLinks: JSON.parse(directoryDownloadLinks),
-          },
-        });
-      },
-    });
-  };
-
-  initCodeDropdown();
   initLastCommitApp();
   initBlobControlsApp();
   initRefSwitcher();
@@ -290,6 +258,30 @@ export default function setupVueRepositoryList() {
   });
 
   initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link'), router });
+
+  const directoryDownloadLinks = document.querySelector('.js-directory-downloads');
+
+  if (directoryDownloadLinks) {
+    // eslint-disable-next-line no-new
+    new Vue({
+      el: directoryDownloadLinks,
+      router,
+      render(h) {
+        const currentPath = this.$route.params.path || '/';
+
+        if (currentPath !== '/') {
+          return h(DirectoryDownloadLinks, {
+            props: {
+              currentPath: currentPath.replace(/^\//, ''),
+              links: JSON.parse(directoryDownloadLinks.dataset.links),
+            },
+          });
+        }
+
+        return null;
+      },
+    });
+  }
 
   // eslint-disable-next-line no-new
   new Vue({

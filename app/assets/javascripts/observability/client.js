@@ -337,7 +337,7 @@ async function fetchMetrics(metricsUrl, { filters = {}, limit } = {}) {
 
 const SUPPORTED_METRICS_DIMENSION_FILTER_OPERATORS = ['=', '!=', '=~', '!~'];
 
-function addMetricsDimensionFilterToQueryParams(dimensionFilter, params) {
+function addMetricsAttributeFilterToQueryParams(dimensionFilter, params) {
   if (!dimensionFilter || !params) return;
 
   Object.entries(dimensionFilter).forEach(([filterName, values]) => {
@@ -371,12 +371,12 @@ function addMetricsDateRangeFilterToQueryParams(dateRangeFilter, params) {
 function addGroupByFilterToQueryParams(groupByFilter, params) {
   if (!groupByFilter || !params) return;
 
-  const { func, dimensions } = groupByFilter;
+  const { func, attributes } = groupByFilter;
   if (func) {
     params.append('groupby_fn', func);
   }
-  if (Array.isArray(dimensions) && dimensions.length > 0) {
-    params.append('groupby_attrs', dimensions.join(','));
+  if (Array.isArray(attributes) && attributes.length > 0) {
+    params.append('groupby_attrs', attributes.join(','));
   }
 }
 
@@ -394,10 +394,10 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
       mtype: type,
     });
 
-    const { dimensions, dateRange, groupBy } = options.filters ?? {};
+    const { attributes, dateRange, groupBy } = options.filters ?? {};
 
-    if (dimensions) {
-      addMetricsDimensionFilterToQueryParams(dimensions, params);
+    if (attributes) {
+      addMetricsAttributeFilterToQueryParams(attributes, params);
     }
 
     if (dateRange) {
@@ -442,17 +442,24 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
     // });
     // return data;
 
-    return {
-      name: 'cpu_seconds_total',
-      type: 'sum',
-      description: 'some_description',
-      last_ingested_at: 1705374438711900000,
-      attribute_keys: ['host.name', 'host.dc', 'host.type'],
-      supported_aggregations: ['1m', '1h'],
-      supported_functions: ['min', 'max', 'avg', 'sum', 'count'],
-      default_group_by_attributes: ['host.name'],
-      default_group_by_function: ['avg'],
-    };
+    return new Promise((resolve) => {
+      setTimeout(() =>
+        resolve(
+          {
+            name: 'cpu_seconds_total',
+            type: 'sum',
+            description: 'some_description',
+            last_ingested_at: 1705374438711900000,
+            attribute_keys: ['host.name', 'host.dc', 'host.type'],
+            supported_aggregations: ['1m', '1h'],
+            supported_functions: ['min', 'max', 'avg', 'sum', 'count'],
+            default_group_by_attributes: ['host.name'],
+            default_group_by_function: 'avg',
+          },
+          1000,
+        ),
+      );
+    });
   } catch (e) {
     return reportErrorAndThrow(e);
   }

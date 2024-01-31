@@ -332,6 +332,19 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
 
       include_examples 'runs partition method'
     end
+
+    context 'when partitioning a table' do
+      let(:zero_partition_value) { single_partitioning_value }
+
+      it 'sets up partitioning analysis for parent table' do
+        expect(migration_context).to receive(:execute).with(/CREATE TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/ALTER TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:disable_statement_timeout).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/ANALYZE VERBOSE/).ordered.and_call_original
+
+        partition
+      end
+    end
   end
 
   describe '#revert_partitioning' do

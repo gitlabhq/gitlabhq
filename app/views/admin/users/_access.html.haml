@@ -9,7 +9,8 @@
     = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control gl-form-input gl-form-input-sm'
 
   .form-group.gl-form-group{ role: 'group' }
-    = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create top level group')
+    - if @user.allow_user_to_create_group_and_project?
+      = f.gitlab_ui_checkbox_component :can_create_group, s_('AdminUsers|Can create top level group')
     = f.gitlab_ui_checkbox_component :private_profile, s_('AdminUsers|Private profile')
 
   %fieldset.form-group.gl-form-group

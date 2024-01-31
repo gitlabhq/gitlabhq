@@ -64,7 +64,6 @@ export default {
 <template>
   <disclosure-hierarchy
     v-if="ancestors.length > 0"
-    class="gl-mr-auto"
     :items="ancestors"
     :with-ellipsis="ancestors.length > 2"
     :ellipsis-tooltip-label="$options.i18n.ancestorsTooltipLabel"

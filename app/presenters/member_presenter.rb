@@ -50,6 +50,8 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  def member_role_description; end
+
   private
 
   def admin_member_permission

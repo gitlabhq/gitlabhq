@@ -14,14 +14,14 @@ RSpec.describe Members::UnassignIssuablesService, feature_category: :groups_and_
 
   describe '#execute' do
     RSpec.shared_examples 'un-assigning issuables' do |issue_count, mr_count, open_issue_count, open_mr_count|
-      it 'removes issuable assignments', :aggregate_failures do
-        expect(user.assigned_issues.count).to eq(issue_count)
-        expect(user.assigned_merge_requests.count).to eq(mr_count)
-
-        subject
-
-        expect(user.assigned_issues.count).to eq(0)
-        expect(user.assigned_merge_requests.count).to eq(0)
+      # :sidekiq_inline is used b/c unlike issues, assignee changes for MRs get handled asynchronously.
+      it 'removes issuable assignments', :sidekiq_inline, :aggregate_failures do
+        expect { subject }
+          .to change { user.assigned_issues.count }.from(issue_count).to(0)
+          .and change { user.assigned_merge_requests.count }.from(mr_count).to(0)
+          .and change { Note.where('note ILIKE ?', '%unassigned%').count }.by(
+            user.assigned_issues.count + user.assigned_merge_requests.count
+          )
       end
 
       it 'invalidates user cache', :aggregate_failures, :clean_gitlab_redis_cache do

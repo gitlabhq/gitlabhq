@@ -54,6 +54,7 @@ class Packages::Package < ApplicationRecord
   has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
+  has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'

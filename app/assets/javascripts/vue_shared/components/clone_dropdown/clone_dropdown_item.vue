@@ -23,24 +23,9 @@ export default {
       type: String,
       required: true,
     },
-    labelClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
     link: {
       type: String,
       required: true,
-    },
-    inputTestId: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    name: {
-      type: String,
-      required: false,
-      default: null,
     },
     testId: {
       type: String,
@@ -52,20 +37,8 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown-item>
-    <gl-form-group
-      :label="label"
-      :label-class="labelClass"
-      :label-for="inputTestId"
-      class="gl-px-3 gl-mb-3 gl-text-left"
-    >
-      <gl-form-input-group
-        :id="inputTestId"
-        :value="link"
-        :name="name"
-        :data-testid="inputTestId"
-        readonly
-        select-on-click
-      >
+    <gl-form-group :label="label" class="gl-px-3 gl-mb-3">
+      <gl-form-input-group :value="link" readonly select-on-click>
         <template #append>
           <gl-button
             v-gl-tooltip.hover

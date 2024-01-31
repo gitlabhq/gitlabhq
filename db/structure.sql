@@ -21299,6 +21299,15 @@ CREATE SEQUENCE packages_tags_id_seq
 
 ALTER SEQUENCE packages_tags_id_seq OWNED BY packages_tags.id;
 
+CREATE TABLE packages_terraform_module_metadata (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    package_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    fields jsonb NOT NULL,
+    CONSTRAINT chk_rails_49f7b485ae CHECK ((char_length((fields)::text) <= 10485760))
+);
+
 CREATE TABLE pages_deployment_states (
     pages_deployment_id bigint NOT NULL,
     verification_state smallint DEFAULT 0 NOT NULL,
@@ -30187,6 +30196,9 @@ ALTER TABLE ONLY packages_rubygems_metadata
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT packages_tags_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_terraform_module_metadata
+    ADD CONSTRAINT packages_terraform_module_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY pages_deployment_states
     ADD CONSTRAINT pages_deployment_states_pkey PRIMARY KEY (pages_deployment_id);
 
@@ -34795,6 +34807,8 @@ CREATE INDEX index_packages_rpm_repository_files_on_project_id_and_file_name ON 
 CREATE INDEX index_packages_tags_on_package_id_and_updated_at ON packages_tags USING btree (package_id, updated_at DESC);
 
 CREATE INDEX index_packages_tags_on_project_id ON packages_tags USING btree (project_id);
+
+CREATE INDEX index_packages_terraform_module_metadata_on_project_id ON packages_terraform_module_metadata USING btree (project_id);
 
 CREATE INDEX index_pages_deployment_states_failed_verification ON pages_deployment_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
@@ -39720,6 +39734,9 @@ ALTER TABLE ONLY alert_management_alert_metric_images
 ALTER TABLE ONLY suggestions
     ADD CONSTRAINT fk_rails_33b03a535c FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_terraform_module_metadata
+    ADD CONSTRAINT fk_rails_33c045442a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY metrics_dashboard_annotations
     ADD CONSTRAINT fk_rails_345ab51043 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
@@ -40847,6 +40864,9 @@ ALTER TABLE ONLY vulnerability_issue_links
 
 ALTER TABLE ONLY alert_management_alert_assignees
     ADD CONSTRAINT fk_rails_d47570ac62 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_terraform_module_metadata
+    ADD CONSTRAINT fk_rails_d48f21a84b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY geo_hashed_storage_attachments_events
     ADD CONSTRAINT fk_rails_d496b088e9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

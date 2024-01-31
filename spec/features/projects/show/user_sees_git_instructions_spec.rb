@@ -34,16 +34,12 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
   shared_examples_for 'shows details of empty project' do
     let(:user_has_ssh_key) { false }
 
-    it 'shows details', :js do
+    it 'shows details' do
       expect(page).not_to have_content('Git global setup')
 
       page.all(:css, '.git-empty .clone').each do |element|
         expect(element.text).to include(project.http_url_to_repo)
       end
-
-      find_by_testid('code-dropdown').click
-
-      wait_for_requests
 
       expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end
@@ -52,14 +48,10 @@ RSpec.describe 'Projects > Show > User sees Git instructions', feature_category:
   shared_examples_for 'shows details of non empty project' do
     let(:user_has_ssh_key) { false }
 
-    it 'shows details', :js do
+    it 'shows details' do
       page.within('.breadcrumbs .js-breadcrumb-item-text') do
         expect(page).to have_content(project.title)
       end
-
-      find_by_testid('code-dropdown').click
-
-      wait_for_requests
 
       expect(page).to have_field('http_project_clone', with: project.http_url_to_repo) unless user_has_ssh_key
     end

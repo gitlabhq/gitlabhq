@@ -785,11 +785,11 @@ describe('buildClient', () => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
       });
 
-      describe('dimension filter', () => {
+      describe('attribute filter', () => {
         it('converts filter to proper query params', async () => {
           await client.fetchMetric('name', 'type', {
             filters: {
-              dimensions: {
+              attributes: {
                 attr_1: [
                   { operator: '=', value: 'foo' },
                   { operator: '!=', value: 'bar' },
@@ -811,7 +811,7 @@ describe('buildClient', () => {
         it('handles repeated params', async () => {
           await client.fetchMetric('name', 'type', {
             filters: {
-              dimensions: {
+              attributes: {
                 attr_1: [
                   { operator: '=', value: 'v1' },
                   { operator: '=', value: 'v2' },
@@ -824,7 +824,7 @@ describe('buildClient', () => {
 
         it('ignores empty filters', async () => {
           await client.fetchMetric('name', 'type', {
-            filters: { dimensions: [] },
+            filters: { attributes: [] },
           });
 
           expect(getQueryParam()).toBe('mname=name&mtype=type');
@@ -832,7 +832,7 @@ describe('buildClient', () => {
 
         it('ignores undefined dimension filters', async () => {
           await client.fetchMetric('name', 'type', {
-            filters: { dimensions: undefined },
+            filters: { attributes: undefined },
           });
 
           expect(getQueryParam()).toBe('mname=name&mtype=type');
@@ -841,7 +841,7 @@ describe('buildClient', () => {
         it('ignores non-array filters', async () => {
           await client.fetchMetric('name', 'type', {
             filters: {
-              dimensions: {
+              attributes: {
                 attr_1: { operator: '=', value: 'foo' },
               },
             },
@@ -853,7 +853,7 @@ describe('buildClient', () => {
         it('ignores unsupported operators', async () => {
           await client.fetchMetric('name', 'type', {
             filters: {
-              dimensions: {
+              attributes: {
                 attr_1: [
                   { operator: '*', value: 'foo' },
                   { operator: '>', value: 'foo' },
@@ -929,16 +929,16 @@ describe('buildClient', () => {
           expect(getQueryParam()).toContain(`groupby_fn=sum`);
         });
 
-        it('handle group by dimension', async () => {
+        it('handle group by attribute', async () => {
           await client.fetchMetric('name', 'type', {
-            filters: { groupBy: { dimensions: ['attr_1'] } },
+            filters: { groupBy: { attributes: ['attr_1'] } },
           });
           expect(getQueryParam()).toContain(`groupby_attrs=attr_1`);
         });
 
-        it('handle group by multiple dimensions', async () => {
+        it('handle group by multiple attributes', async () => {
           await client.fetchMetric('name', 'type', {
-            filters: { groupBy: { dimensions: ['attr_1', 'attr_2'] } },
+            filters: { groupBy: { attributes: ['attr_1', 'attr_2'] } },
           });
           expect(getQueryParam()).toContain(`groupby_attrs=attr_1,attr_2`);
         });
@@ -951,7 +951,7 @@ describe('buildClient', () => {
 
         it('ignores empty list', async () => {
           await client.fetchMetric('name', 'type', {
-            filters: { groupBy: { dimensions: [] } },
+            filters: { groupBy: { attributes: [] } },
           });
           expect(getQueryParam()).toBe('mname=name&mtype=type');
         });

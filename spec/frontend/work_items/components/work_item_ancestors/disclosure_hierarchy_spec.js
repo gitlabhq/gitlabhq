@@ -1,6 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 
 import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DisclosureHierarchy from '~/work_items/components/work_item_ancestors//disclosure_hierarchy.vue';
 import DisclosureHierarchyItem from '~/work_items/components/work_item_ancestors/disclosure_hierarchy_item.vue';
 import { mockDisclosureHierarchyItems } from './mock_data';
@@ -15,6 +18,9 @@ describe('DisclosurePath', () => {
         ...props,
       },
       ...options,
+      directives: {
+        GlResizeObserver: createMockDirective('gl-resize-observer'),
+      },
     });
   };
 
@@ -93,6 +99,36 @@ describe('DisclosurePath', () => {
       it('renders tooltip with text passed as prop', () => {
         expect(findTooltip().exists()).toBe(true);
         expect(findTooltipText()).toBe(tooltipText);
+      });
+    });
+
+    describe('for mobile', () => {
+      beforeEach(async () => {
+        wrapper = createComponent({
+          withEllipsis: false,
+        });
+
+        jest.spyOn(GlBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
+
+        window.dispatchEvent(new Event('resize'));
+        await nextTick();
+        const { value } = getBinding(wrapper.element, 'gl-resize-observer');
+        value();
+      });
+
+      it('renders 1 item', () => {
+        expect(listItems().length).toBe(1);
+      });
+
+      it('renders last item', () => {
+        expect(itemTextAt(0)).toContain(
+          mockDisclosureHierarchyItems[mockDisclosureHierarchyItems.length - 1].title,
+        );
+      });
+
+      it('renders dropdown with the rest of the items passed down', () => {
+        expect(findDropdown().exists()).toBe(true);
+        expect(findDropdown().props('items').length).toBe(mockDisclosureHierarchyItems.length - 1);
       });
     });
   });

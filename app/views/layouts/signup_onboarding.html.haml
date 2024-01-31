@@ -3,7 +3,7 @@
 !!! 5
 %html.html-devise-layout{ class: user_application_theme, lang: I18n.locale }
   = render "layouts/head"
-  %body.signup-page{ class: "#{system_message_class} #{client_class_list}", data: { page: body_data_page } }
+  %body.signup-page{ class: "#{system_message_class} #{client_class_list}", data: body_data }
     = header_message
     = render "layouts/init_client_detection_flags"
     = render "layouts/header/logo_with_title"

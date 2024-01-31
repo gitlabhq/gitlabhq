@@ -62,6 +62,7 @@ module Gitlab
             # Attaching foreign keys handles cases where one or more foreign keys already exists, so it doesn't
             # need a check similar to the rest of this method
             attach_foreign_keys_to_parent
+            analyze_parent_table
           end
 
           def revert_partitioning
@@ -216,6 +217,14 @@ module Gitlab
               migration_context.with_lock_retries(raise_on_exhaustion: true) do
                 migration_context.add_foreign_key(parent_table_name, fk.to_table, **fk.options)
               end
+            end
+          end
+
+          def analyze_parent_table
+            migration_context.disable_statement_timeout do
+              migration_context.execute(<<~SQL)
+                ANALYZE VERBOSE #{quote_table_name(parent_table_name)}
+              SQL
             end
           end
 

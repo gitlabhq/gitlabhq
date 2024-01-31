@@ -74,7 +74,7 @@
           %li
             %span.light= _('Can create top level groups:')
             %strong
-              = @user.can_create_group ? _('Yes') : _('No')
+              = @user.allow_user_to_create_group_and_project? && @user.can_create_group ? _('Yes') : _('No')
           %li
             %span.light= _('Private profile:')
             %strong

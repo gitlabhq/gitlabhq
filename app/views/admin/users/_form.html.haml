@@ -39,7 +39,7 @@
           = f.label :password_confirmation, _('Password confirmation'), class: 'gl-display-block col-form-label'
           = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input gl-form-input-lg'
 
-    = render partial: 'access_levels', locals: { f: f }
+    = render partial: 'access', locals: { f: f }
 
     = render_if_exists 'admin/users/namespace_plan_fieldset', f: f
 

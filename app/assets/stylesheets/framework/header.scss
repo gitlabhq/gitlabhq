@@ -76,28 +76,26 @@
 }
 
 .header-logged-out-logo {
-  a {
-    display: flex;
-    align-items: center;
-    padding: 4px;
-    margin-left: -4px;
-    height: 32px;
-    width: auto;
-    border-radius: $border-radius-default;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  margin-left: -4px;
+  height: 32px;
+  width: auto;
+  border-radius: $border-radius-default;
 
-    &:hover,
-    &:focus {
-      background-color: $brand-gray-04;
-    }
+  &:hover,
+  &:focus {
+    background-color: $brand-gray-04;
+  }
 
-    &:focus,
-    &:active {
-      @include gl-focus;
-    }
+  &:focus,
+  &:active {
+    @include gl-focus;
+  }
 
-    &:active {
-      background-color: $brand-gray-03;
-    }
+  &:active {
+    background-color: $brand-gray-03;
   }
 
   img {

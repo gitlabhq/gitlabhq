@@ -11022,6 +11022,9 @@ msgstr ""
 msgid "Clone this issue"
 msgstr ""
 
+msgid "Clone with %{http_label}"
+msgstr ""
+
 msgid "Clone with %{protocol}"
 msgstr ""
 
@@ -14533,6 +14536,9 @@ msgid "Create a project"
 msgstr ""
 
 msgid "Create an incident. Incidents are created for each alert triggered."
+msgstr ""
+
+msgid "Create and enforce custom CI jobs and scripts using this new policy action. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import."
@@ -18266,9 +18272,6 @@ msgid "Download (%{size})"
 msgstr ""
 
 msgid "Download PDF"
-msgstr ""
-
-msgid "Download Source Code"
 msgstr ""
 
 msgid "Download artifacts"
@@ -23888,10 +23891,7 @@ msgstr ""
 msgid "GroupSettings|Reporting"
 msgstr ""
 
-msgid "GroupSettings|Security policy Pipeline Execution Action Experiment"
-msgstr ""
-
-msgid "GroupSettings|Security policy scope Experiment"
+msgid "GroupSettings|Security policy management"
 msgstr ""
 
 msgid "GroupSettings|Select a subgroup to use as a source of custom templates for new projects in this group. %{link_start}Learn more%{link_end}."
@@ -23936,9 +23936,6 @@ msgstr ""
 msgid "GroupSettings|These features are being developed and might be unstable."
 msgstr ""
 
-msgid "GroupSettings|This feature is being developed and might be unstable."
-msgstr ""
-
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
 msgstr ""
 
@@ -23967,6 +23964,9 @@ msgid "GroupSettings|What is Analytics Dashboards?"
 msgstr ""
 
 msgid "GroupSettings|What is Insights?"
+msgstr ""
+
+msgid "GroupSettings|When you enable any of these features, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|You must have the Owner role in the target group"
@@ -33588,7 +33588,7 @@ msgstr ""
 msgid "ObservabilityMetrics|Failed to load metrics."
 msgstr ""
 
-msgid "ObservabilityMetrics|Filter dimensions..."
+msgid "ObservabilityMetrics|Filter attributes..."
 msgstr ""
 
 msgid "ObservabilityMetrics|Last ingested"
@@ -34739,6 +34739,9 @@ msgid "Package type must be RPM"
 msgstr ""
 
 msgid "Package type must be RubyGems"
+msgstr ""
+
+msgid "Package type must be Terraform Module"
 msgstr ""
 
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
@@ -46212,16 +46215,13 @@ msgstr ""
 msgid "Settings saved successfully."
 msgstr ""
 
-msgid "Settings|Enable this feature allows you to add customized CI YAML file to run as part of the policies action. This features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
+msgid "Settings|Granularly scope each policy you create to projects containing a compliance framework label, or a list of projects. %{link_start}Learn more%{link_end}."
 msgstr ""
 
-msgid "Settings|Enabling this feature allows you to scope scan result policies and scan execution policies, which determines which projects specifically will be enforced by a given policy. This features is your acceptance of the %{link_start}GitLab Testing Agreement%{link_end}."
+msgid "Settings|Security policy pipeline execution action"
 msgstr ""
 
-msgid "Settings|Run customized CI YAML file as security policy actions"
-msgstr ""
-
-msgid "Settings|Security Policy Scopes"
+msgid "Settings|Security policy scope"
 msgstr ""
 
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
@@ -48167,6 +48167,9 @@ msgid "Subscriptions|End date"
 msgstr ""
 
 msgid "Subscriptions|End date:"
+msgstr ""
+
+msgid "Subscriptions|I accept the %{privacyLinkStart}Privacy Statement%{privacyLinkEnd} and %{termsLinkStart}Terms of Service%{termsLinkEnd}."
 msgstr ""
 
 msgid "Subscriptions|Last sync"
@@ -58845,6 +58848,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "mergedCommitsAdded| (commits were squashed)"
+msgstr ""
+
+msgid "metadata is too large (maximum is %{max_size} characters)"
 msgstr ""
 
 msgid "milestone"

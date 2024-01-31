@@ -1,0 +1,12 @@
+---
+table_name: packages_terraform_module_metadata
+classes:
+- Packages::TerraformModule::Metadatum
+feature_categories:
+- package_registry
+description: Terraform Module package metadata
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141914
+milestone: '16.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
