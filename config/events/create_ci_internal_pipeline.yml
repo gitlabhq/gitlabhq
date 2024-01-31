@@ -1,7 +1,7 @@
 ---
-description: Tracks the number of Ci Builds created
+description: Tracks the number of internal Ci pipelines created
 category: InternalEventTracking
-action: create_ci_build
+action: create_ci_internal_pipeline
 identifiers:
 - project
 - namespace
@@ -10,7 +10,7 @@ product_section: ci
 product_stage: verify
 product_group: pipeline_execution
 milestone: '16.9'
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141421
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142356
 distributions:
 - ce
 - ee

@@ -1,0 +1,12 @@
+---
+# Warning: gitlab.VersionHistory
+#
+# Ensures version history items are properly formatted.
+#
+extends: existence
+message: "Version history items should always start with '> -', even if there is only one item."
+link: https://docs.gitlab.com/ee/development/documentation/versions.html#add-a-version-history-item
+level: warning
+scope: raw
+raw:
+  - '(?m)(?<=^#+[^\n]*\n\n)> [^-]'

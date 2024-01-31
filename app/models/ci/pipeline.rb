@@ -166,6 +166,7 @@ module Ci
     validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+    after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
     use_fast_destroy :job_artifacts
@@ -1462,6 +1463,16 @@ module Ci
     def object_hierarchy(options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy
         .new(self.class.unscoped.where(id: id), options: options)
+    end
+
+    def internal_pipeline?
+      source != "external"
+    end
+
+    def track_ci_pipeline_created_event
+      return unless Feature.enabled?(:track_ci_pipeline_created_event, project, type: :gitlab_com_derisk)
+
+      Gitlab::InternalEvents.track_event('create_ci_internal_pipeline', project: project, user: user)
     end
   end
 end

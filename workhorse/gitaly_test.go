@@ -40,7 +40,6 @@ func TestFailedCloneNoGitaly(t *testing.T) {
 
 	// Prepare test server and backend
 	ts := testAuthServer(t, nil, nil, 200, authBody)
-	defer ts.Close()
 	ws := startWorkhorseServer(t, ts.URL)
 
 	// Do the git clone
@@ -91,7 +90,6 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 			apiResponse.ShowAllRefs = tc.showAllRefs
 
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 
 			ws := startWorkhorseServer(t, ts.URL)
 
@@ -142,7 +140,6 @@ func TestGetInfoRefsProxiedToGitalyInterruptedStream(t *testing.T) {
 	apiResponse.GitalyServer.Address = gitalyAddress
 
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -169,7 +166,6 @@ func TestGetInfoRefsRouting(t *testing.T) {
 	apiResponse := gitOkBody(t)
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, url.Values{"service": {"git-receive-pack"}}, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -236,7 +232,6 @@ func TestPostReceivePackProxiedToGitalySuccessfully(t *testing.T) {
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	apiResponse.GitConfigOptions = []string{"git-config-hello=world"}
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -280,7 +275,6 @@ func TestPostReceivePackProxiedToGitalyInterrupted(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -312,7 +306,6 @@ func TestPostReceivePackRouting(t *testing.T) {
 	apiResponse := gitOkBody(t)
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -388,7 +381,6 @@ func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
 
 			apiResponse.GitalyServer.Address = "unix:" + socketPath
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 
 			ws := startWorkhorseServer(t, ts.URL)
 
@@ -454,7 +446,6 @@ func TestPostUploadPackProxiedToGitalyInterrupted(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -486,7 +477,6 @@ func TestPostUploadPackRouting(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 

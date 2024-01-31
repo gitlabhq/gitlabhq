@@ -91,31 +91,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when running after_commit callbacks' do
-      context 'without user present' do
-        it 'tracks creation event' do
-          build = FactoryBot.build(:ci_build)
+      it 'tracks creation event' do
+        build = FactoryBot.build(:ci_build, user: create(:user))
 
-          expect(Gitlab::InternalEvents).to receive(:track_event).with(
-            'create_ci_build',
-            project: build.project
-          )
+        expect(Gitlab::InternalEvents).to receive(:track_event).with(
+          'create_ci_build',
+          project: build.project,
+          user: build.user
+        )
 
-          build.save!
-        end
-      end
-
-      context 'with user present' do
-        it 'tracks creation event' do
-          build = FactoryBot.build(:ci_build, user: create(:user))
-
-          expect(Gitlab::InternalEvents).to receive(:track_event).with(
-            'create_ci_build',
-            project: build.project,
-            user: build.user
-          )
-
-          build.save!
-        end
+        build.save!
       end
 
       context 'with FF track_ci_build_created_internal_event disabled' do

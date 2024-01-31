@@ -29,6 +29,14 @@ module Gitlab
         MARKDOWN
       end
 
+      def matches_filters?(filters)
+        filters.all? do |filter|
+          identifiers.any? do |identifier|
+            identifier.match?(filter)
+          end
+        end
+      end
+
       def valid?
         @identifiers && @title && @description && @changed_files
       end

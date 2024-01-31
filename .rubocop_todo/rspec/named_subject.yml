@@ -374,7 +374,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/auth/group_saml/response_check_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/response_store_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/sso_enforcer_spec.rb'
-    - 'ee/spec/lib/gitlab/auth/group_saml/sso_state_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/token_actor_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/user_spec.rb'
     - 'ee/spec/lib/gitlab/auth/group_saml/xml_response_spec.rb'

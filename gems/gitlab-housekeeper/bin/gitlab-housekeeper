@@ -20,6 +20,10 @@ OptionParser.new do |opts|
     options[:keeps] = k
   end
 
+  opts.on('--filter-identifiers some-identifier-regex,another-regex', Array, 'Skip any changes where none of the identifiers match these regexes. The identifiers is an array, so at least one element must match at least one regex.') do |filters|
+    options[:filter_identifiers] = filters.map { |f| Regexp.new(f) }
+  end
+
   opts.on('-h', '--help', 'Prints this help') do
     abort opts.to_s
   end

@@ -11,7 +11,7 @@ require 'digest'
 module Gitlab
   module Housekeeper
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, keeps: nil)
+      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [])
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
@@ -22,6 +22,8 @@ module Gitlab
                  else
                    all_keeps
                  end
+
+        @filter_identifiers = filter_identifiers
       end
 
       def run
@@ -38,6 +40,13 @@ module Gitlab
 
               branch_name = git.commit_in_branch(change)
               add_standard_change_data(change)
+
+              # Must be done after we commit so that we don't keep around changed files. We could checkout those files
+              # but then it might be riskier in local development in case we lose unrelated changes.
+              unless change.matches_filters?(@filter_identifiers)
+                puts "Skipping change: #{change.identifiers} due to not matching filter"
+                next
+              end
 
               if @dry_run
                 dry_run(change, branch_name)

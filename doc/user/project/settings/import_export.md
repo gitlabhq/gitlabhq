@@ -27,8 +27,9 @@ self-managed instance.
 
 When migrating projects by using file exports, an administrator's access token is required for user contributions to map correctly.
 
-Therefore, user contributions never map correctly when importing file exports from a self-managed instance to GitLab.com. Instead, all GitLab user associations (such as
-comment author) are changed to the user importing the project. To preserve contribution history, do one of the following:
+Therefore, user contributions never map correctly when importing file exports from a self-managed instance to GitLab.com.
+Instead, all GitLab user associations (such as comment author) are changed to the user importing the project. To preserve
+contribution history, do one of the following:
 
 - [Migrate by using direct transfer](../../group/import/index.md).
 - Consider engaging Professional Services. For more information, see the
@@ -38,17 +39,22 @@ comment author) are changed to the user importing the project. To preserve contr
 
 To ensure GitLab maps users and their contributions correctly:
 
-- The owner of the project's top-level group should export the project so that the information of all members (direct and inherited) with access to the project can be included in the exported file. Project maintainers and owners can initiate the project export. However, only direct members of a project are then exported.
+- The owner of the project's top-level group should export the project so that the information of all members (direct
+  and inherited) with access to the project can be included in the exported file. Project maintainers and owners can
+  initiate the project export. However, only direct members of a project are then exported.
 - An administrator must perform the import with an administrator access token.
-- Required users must exist on the destination GitLab instance. An administrator can create confirmed users either in bulk in a Rails console or one by one in the UI.
-- Users must [set a public email in their profiles](../../profile/index.md#set-your-public-email) on the source GitLab instance that matches their primary email
-  address on the destination GitLab instance. You can also manually add users' public emails by
-  [editing project export files](#edit-project-export-files).
+- Required users must exist on the destination GitLab instance. An administrator can create confirmed users either in
+  bulk in a Rails console or one by one in the UI.
+- Users must [set a public email in their profiles](../../profile/index.md#set-your-public-email) on the source GitLab
+  instance that matches their primary email address on the destination GitLab instance. You can also manually add users'
+  public emails by [editing project export files](#edit-project-export-files).
 
-When the email of an existing user matches the email of an imported user, that user is added as a [direct member](../members/index.md) to the imported project.
+When the email of an existing user matches the email of an imported user, that user is added as a
+[direct member](../members/index.md) to the imported project.
 
-If any of the previous conditions are not met, user contributions are not mapped correctly. Instead, all GitLab user associations are changed to the user who performed the import.
-That user becomes an author of merge requests created by other users. Supplementary comments mentioning original authors are:
+If any of the previous conditions are not met, user contributions are not mapped correctly. Instead, all GitLab user
+associations are changed to the user who performed the import. That user becomes an author of merge requests created by
+other users. Supplementary comments mentioning original authors are:
 
 - Added for comments, merge request approvals, linked tasks, and items.
 - Not added for the merge request or issue creator, added or removed labels, and merged-by information.
@@ -204,9 +210,11 @@ Migrating projects with file exports uses the same export and import mechanisms 
 
 ### Import a project and its data
 
-> - Default maximum import file size [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to unlimited in GitLab 13.8. Administrators of self-managed instances can [set maximum import file size](#set-maximum-import-file-size). On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
+You can import a project and its data. The amount of data you can import depends on the maximum import file size:
 
-You can import a project and its data.
+- On GitLab self-managed instances, administrators of self-managed instances can
+  [set maximum import file size](#set-maximum-import-file-size).
+- On GitLab.com, the value is [set to 5 GB](../../gitlab_com/index.md#account-and-limit-settings).
 
 WARNING:
 Only import projects from sources you trust. If you import a project from an untrusted source, it
@@ -281,7 +289,6 @@ To help avoid abuse, by default, users are rate limited to:
 
 ## Migrate groups by uploading an export file (deprecated)
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2888) in GitLab 13.0 as an experimental feature. May change in future releases.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/4619) in GitLab 14.6.
 
 WARNING:
@@ -305,7 +312,7 @@ user contributions correctly when you are importing from a self-managed instance
 contributions when importing from a self-managed instance to GitLab.com can be preserved with paid involvement of
 Professional Services team.
 
-Note the following:
+### Additional information
 
 - Exports are stored in a temporary directory and are deleted every 24 hours by a specific worker.
 - To preserve group-level relationships from imported projects, export and import groups first so that projects can
@@ -316,6 +323,15 @@ Note the following:
   and vice versa. The Enterprise Edition retains some group data that isn't part of the Community Edition. If you're
   exporting a group from the Enterprise Edition to the Community Edition, you may lose this data. For more information,
   see [downgrading from EE to CE](../../../index.md).
+
+The maximum import file size depends on whether you import to a GitLab self-managed instance or GitLab.com:
+
+- If importing to a GitLab self-managed instance, you can import a import file of any size. Administrators can change
+  this behavior using either:
+  - The `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
+  - The [Admin Area](../../../administration/settings/account_and_limit_settings.md).
+- On GitLab.com, you can import groups using import files of no more than
+  [5 GB](../../gitlab_com/index.md#account-and-limit-settings) in size.
 
 ### Compatibility
 
@@ -348,11 +364,10 @@ Group items that are exported include:
 - Badges
 - Subgroups (including all the aforementioned data)
 - Epics
-  - Epic resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+  - Epic resource state events. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4.
 - Events
 - [Wikis](../../project/wiki/group.md)
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53247) in GitLab 13.9)
-- Iterations cadences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in 15.4)
+- Iterations cadences. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in GitLab 15.4.
 
 Items that are **not** exported include:
 
@@ -364,7 +379,8 @@ Items that are **not** exported include:
 
 - To preserve the member list and their respective permissions on imported groups, review the users in these groups. Make
   sure these users exist before importing the desired groups.
-- Users must set a public email in the source GitLab instance that matches their confirmed primary email in the destination GitLab instance. Most users receive an email asking them to confirm their email address.
+- Users must set a public email in the source GitLab instance that matches their confirmed primary email in the
+  destination GitLab instance. Most users receive an email asking them to confirm their email address.
 
 ### Enable export for a group
 
@@ -396,18 +412,14 @@ To export the contents of a group:
 
 ### Import the group
 
+To import the group:
+
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the **Import group from file** section, enter a group name and accept or modify the associated group URL.
 1. Select **Choose file...**.
 1. Select the GitLab export file you want to import.
 1. To begin importing, select **Import**.
-
-The maximum import file size can be set by the administrator, default is `0` (unlimited).
-As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the
-[Application settings API](../../../api/settings.md#change-application-settings) or the
-[Admin Area](../../../administration/settings/account_and_limit_settings.md).
-Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
 ### Rate limits
 

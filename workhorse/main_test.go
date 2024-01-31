@@ -62,7 +62,6 @@ func TestMain(m *testing.M) {
 func TestDeniedClone(t *testing.T) {
 	// Prepare test server and backend
 	ts := testAuthServer(t, nil, nil, 403, "Access denied")
-	defer ts.Close()
 	ws := startWorkhorseServer(t, ts.URL)
 
 	// Do the git clone
@@ -75,7 +74,6 @@ func TestDeniedClone(t *testing.T) {
 func TestDeniedPush(t *testing.T) {
 	// Prepare the test server and backend
 	ts := testAuthServer(t, nil, nil, 403, "Access denied")
-	defer ts.Close()
 	ws := startWorkhorseServer(t, ts.URL)
 
 	// Perform the git push
@@ -701,7 +699,7 @@ func newBranch() string {
 }
 
 func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code int, body interface{}) *httptest.Server {
-	return testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
 		require.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
 		// return a 204 No Content response if we don't receive the JWT header
@@ -753,6 +751,12 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 		w.WriteHeader(code)
 		w.Write(data)
 	})
+
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
 func newUpstreamConfig(authBackend string) *config.Config {

@@ -1248,11 +1248,7 @@ module Ci
     def track_ci_build_created_event
       return unless Feature.enabled?(:track_ci_build_created_internal_event, project, type: :gitlab_com_derisk)
 
-      if user
-        Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
-      else
-        Gitlab::InternalEvents.track_event('create_ci_build', project: project)
-      end
+      Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
     end
 
     def partition_id_prefix_in_16_bit_encode

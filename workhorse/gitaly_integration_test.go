@@ -133,7 +133,6 @@ func TestAllowedClone(t *testing.T) {
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 			ws := startWorkhorseServer(t, ts.URL)
 
 			// Do the git clone
@@ -160,7 +159,6 @@ func TestAllowedShallowClone(t *testing.T) {
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 			ws := startWorkhorseServer(t, ts.URL)
 
 			// Shallow git clone (depth 1)
@@ -187,7 +185,6 @@ func TestAllowedPush(t *testing.T) {
 
 			// Prepare the test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 			ws := startWorkhorseServer(t, ts.URL)
 
 			// Do the git clone
