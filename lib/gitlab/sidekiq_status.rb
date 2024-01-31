@@ -138,7 +138,10 @@ module Gitlab
     end
 
     def self.with_redis
-      if Feature.enabled?(:use_primary_and_secondary_stores_for_sidekiq_status) ||
+      if Feature.enabled?(:use_primary_and_secondary_stores_for_sidekiq_status_migrator) ||
+          Feature.enabled?(:use_primary_store_as_default_for_sidekiq_status_migrator)
+        Gitlab::Redis::SidekiqStatusMigrator.with { |redis| yield redis }
+      elsif Feature.enabled?(:use_primary_and_secondary_stores_for_sidekiq_status) ||
           Feature.enabled?(:use_primary_store_as_default_for_sidekiq_status)
         # TODO: Swap for Gitlab::Redis::SharedState after store transition
         # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923

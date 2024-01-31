@@ -49,6 +49,10 @@ To implement a new AI action, connect to the preferred AI provider. You can conn
 
 All AI features are experimental.
 
+## Test self-managed AI features locally
+
+See [below](#test-ai-features-with-ai-gateway-locally)
+
 ## Test SaaS-only AI features locally
 
 **One-line setup**
@@ -67,7 +71,7 @@ RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
    Feature.enable(:ai_global_switch, type: :ops)
    ```
 
-1. Ensure you have followed [the process to obtain an EE license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance
+1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance and you applied this license.
 1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
 1. Enable `Experiment & Beta features`
    1. Go to the group with the Ultimate license
@@ -197,23 +201,20 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 
 ### Setup
 
-1. Set up AI Gateway:
-   1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-   1. Ensure that the following environment variables are set in the `.env` file:
-
-      ```shell
-      AIGW_AUTH__BYPASS_EXTERNAL=true
-      ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
-      AIGW_VERTEX_TEXT_MODEL__PROJECT="[REDACTED]"
-      ```
-
-   1. Run `poetry run ai_gateway`.
-   1. Visit OpenAPI playground (`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
-      If something went wrong, check `modelgateway_debug.log` if it contains error information.
-1. Setup GitLab Development Kit (GDK):
-   1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation).
-   1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#set-up-gdktest-hostname).
-   1. [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) (e.g. Ultimate).
+1. Setup CustomersDot:
+   1. Install CustomersDot: [internal video tutorial](https://youtu.be/_8wOMa_yGSw)
+      - This video loosely follows [official installation steps](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md)
+      - It also offers guidance on how to create a self-managed subscription. You will receive a *cloud activation code* in return.
+        - Bookmark [this link](http://localhost:5000/subscriptions/new?plan_id=2c92c0f976d721ed0176db74d74f4fd4&test=capabilities) for creating Ultimate Self-Managed Subscription locally.
+        - A list of other subscription plan ids are available [here](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/buy_subscription.md).
+1. Setup GitLab Development Kit (GDK): [internal video tutorial](https://youtu.be/rudS6KeQHcA)
+   1. [Install it](https://gitlab.com/gitlab-org/gitlab-development-kit#installation) as a separate GDK instance.
+   1. Run `gdk config set license.customer_portal_url 'http://localhost:5000'`
+   1. [Set up `gdk.test` hostname](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#local-interface).
+   1. Follow [Instruct your local CustomersDot instance to use the GitLab application](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md#instruct-your-local-customersdot-instance-to-use-the-gitlab-application)
+   1. Activate GitLab Enterprise license
+       - To test Self Managed instances, follow [Cloud Activation steps](../../administration/license.md#activate-gitlab-ee) using the cloud activation code you received earlier.
+       - To test SaaS, follow [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) with your license file.
    1. Export these environment variables in the same terminal session with `gdk start`:
 
       ```shell
@@ -228,19 +229,25 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
      rake gitlab:duo:enable_feature_flags
      ```
 
-   1. Create a dummy access token via `gdk rails console` OR skip this step and setup GitLab or Customer Dot as OIDC provider (See the following section):
+1. Set up AI Gateway: [internal video tutorial](https://youtu.be/ePoHqvw78oQ)
+    1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
+    1. Ensure that the following environment variables are set in the `.env` file:
 
-      ```ruby
-      # Creating dummy token, and this will work as long as `AIGW_AUTH__BYPASS_EXTERNAL=true` in AI Gateway.
-      ::CloudConnector::ServiceAccessToken.create!(token: 'dummy', expires_at: 1.month.from_now)
-      ```
+       ```shell
+       AIGW_AUTH__BYPASS_EXTERNAL=true
+       ANTHROPIC_API_KEY="[REDACTED]"        # IMPORTANT: Ensure you use Corp account. See https://gitlab.com/gitlab-org/gitlab/-/issues/435911#note_1701762954.
+       ```
 
-   1. Ensure GitLab-Rails can talk to the AI Gateway. Run `gdk rails console` and execute:
+    1. (Optional) [Configure OIDC](#set-oidc-provider-in-ai-gateway) if needed.
+    1. Run `poetry run ai_gateway`.
+    1. Visit OpenAPI playground (`http://0.0.0.0:5052/docs`), try an endpoint (e.g. `/v1/chat/agent`) and make sure you get a successful response.
+       If something went wrong, check `modelgateway_debug.log` if it contains error information.
 
-      ```ruby
-      user = User.first
-      Gitlab::Llm::AiGateway::Client.new(user).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
-      ```
+You are set, and should be able to verify AI feature by calling the following in GitLab-Rails console:
+
+```ruby
+Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
+```
 
 #### Verify the setup with GraphQL
 
@@ -282,32 +289,21 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
 
    If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
 
-### Use GitLab as OIDC provider in AI Gateway
+### Set OIDC provider in AI Gateway
 
-1. Reconfigure AI Gateway:
-   1. Additionally, ensure that the following environment variables are set in the `.env` file:
-
-      ```shell
-      AIGW_GITLAB_URL="http://gdk.test:3000/"
-      AIGW_GITLAB_API_URL="http://gdk.test:3000/api/v4/"
-      AIGW_AUTH__BYPASS_EXTERNAL=False
-      ```
-
+1. Configure AI Gateway:
+   1. [Set the OIDC provider URLs](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#set-oidc-providers).
+      Make sure to adapt to the domain you use.
+      Note that you can choose to only set either GitLab SaaS instance or CDot as a provider.
    1. Restart AI Gateway.
-1. Reconfigure GitLab Development Kit (GDK):
-   1. Additionally, export the following environment variables:
+1. If GitLab instance is set as a provider, you need to configure GDK to run in SaaS mode:
+   1. Export the following environment variables:
 
       ```shell
-      export GITLAB_SIMULATE_SAAS=1                                 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
+      export GITLAB_SIMULATE_SAAS=1 # Simulate a SaaS instance. See https://docs.gitlab.com/ee/development/ee_features.html#simulate-a-saas-instance.
       ```
 
    1. Restart GDK.
-
-### Use Customer Dot as OIDC provider in AI Gateway
-
-1. AI Gateway:
-   1. Ensure `AIGW_CUSTOMER_PORTAL_URL` in the `.env` file points to your Customer Dot URL.
-   1. Restart
 
 ## Experimental REST API
 

@@ -1308,6 +1308,38 @@ that is available now. We recommend this alternative solution because it provide
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Secure analyzers major version update
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438123).
+</div>
+
+The Secure stage will be bumping the major versions of its analyzers in tandem with the GitLab
+17.0 release.
+
+If you are not using the default included templates, or have pinned your analyzer versions you
+must update your CI/CD job definition to either remove the pinned version or to update
+the latest major version.
+
+Users of GitLab 16.0-16.11 will continue to experience analyzer updates as normal until the
+release of GitLab 17.0, following which all newly fixed bugs and released features will be
+released only in the new major version of the analyzers.
+
+We do not backport bugs and features to deprecated versions as per our maintenance policy. As
+required, security patches will be backported within the latest 3 minor releases.
+
+Specifically, the following analyzers are being deprecated and will no longer be updated after
+the GitLab 17.0 release:
+
+- Container Scanning: version 6
+- Dependency Scanning: version 4
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Security policy field `newly_detected` is deprecated
 
 <div class="deprecation-notes">

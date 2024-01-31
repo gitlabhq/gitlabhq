@@ -157,9 +157,32 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
     end
   end
 
-  context 'with multi-store feature flags turned on' do
+  context 'with migrator class multi-store feature flags turned on' do
+    def with_redis(&block)
+      Gitlab::Redis::SidekiqStatusMigrator.with(&block)
+    end
+
+    it 'uses Gitlab::Redis::SharedState.with' do
+      expect(Gitlab::Redis::SidekiqStatusMigrator).to receive(:with).and_call_original
+      expect(Gitlab::Redis::SharedState).not_to receive(:with)
+      expect(Sidekiq).not_to receive(:redis)
+
+      described_class.job_status(%w[123 456 789])
+    end
+
+    it_behaves_like 'tracking status in redis'
+  end
+
+  context 'with sidekiq-status multi-store feature flags turned on' do
     def with_redis(&block)
       Gitlab::Redis::SharedState.with(&block)
+    end
+
+    before do
+      stub_feature_flags(
+        use_primary_and_secondary_stores_for_sidekiq_status_migrator: false,
+        use_primary_store_as_default_for_sidekiq_status_migrator: false
+      )
     end
 
     it 'uses Gitlab::Redis::SharedState.with' do
@@ -178,8 +201,12 @@ RSpec.describe Gitlab::SidekiqStatus, :clean_gitlab_redis_queues,
     end
 
     before do
-      stub_feature_flags(use_primary_and_secondary_stores_for_sidekiq_status: false)
-      stub_feature_flags(use_primary_store_as_default_for_sidekiq_status: false)
+      stub_feature_flags(
+        use_primary_and_secondary_stores_for_sidekiq_status_migrator: false,
+        use_primary_store_as_default_for_sidekiq_status_migrator: false,
+        use_primary_and_secondary_stores_for_sidekiq_status: false,
+        use_primary_store_as_default_for_sidekiq_status: false
+      )
     end
 
     it 'uses Sidekiq.redis' do

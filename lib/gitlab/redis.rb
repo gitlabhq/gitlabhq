@@ -18,6 +18,7 @@ module Gitlab
       Gitlab::Redis::RepositoryCache,
       Gitlab::Redis::Sessions,
       Gitlab::Redis::SharedState,
+      Gitlab::Redis::SidekiqStatusMigrator,
       Gitlab::Redis::TraceChunks,
       Gitlab::Redis::Chat,
       Gitlab::Redis::Workhorse
