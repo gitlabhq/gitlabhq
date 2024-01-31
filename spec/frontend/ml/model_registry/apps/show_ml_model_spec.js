@@ -1,45 +1,76 @@
-import { GlBadge, GlTab } from '@gitlab/ui';
+import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import VueRouter from 'vue-router';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { ShowMlModel } from '~/ml/model_registry/apps';
 import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
 import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
-import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
-import EmptyState from '~/ml/model_registry/components/empty_state.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
-import { MODEL, makeModel } from '../mock_data';
+import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
+import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { MODEL } from '../mock_data';
+
+// Vue Test Utils `stubs` option does not stub components mounted
+// in <router-view>. Use mocking instead:
+jest.mock('~/ml/model_registry/components/candidate_list.vue', () => {
+  const { props } = jest.requireActual('~/ml/model_registry/components/candidate_list.vue').default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/model_registry/components/model_version_list.vue', () => {
+  const { props } = jest.requireActual(
+    '~/ml/model_registry/components/model_version_list.vue',
+  ).default;
+  return {
+    props,
+    render() {},
+  };
+});
+
+jest.mock('~/ml/model_registry/components/model_detail.vue', () => {
+  const { props } = jest.requireActual('~/ml/model_registry/components/model_detail.vue').default;
+  return {
+    props,
+    render() {},
+  };
+});
 
 const apolloProvider = createMockApollo([]);
 let wrapper;
 
-Vue.use(VueApollo);
+describe('ml/model_registry/apps/show_ml_model', () => {
+  Vue.use(VueApollo);
+  Vue.use(VueRouter);
 
-const createWrapper = (model = MODEL) => {
-  wrapper = shallowMountExtended(ShowMlModel, {
-    apolloProvider,
-    propsData: { model },
-    stubs: { GlTab },
-  });
-};
+  const createWrapper = ({ model = MODEL, mountFn = shallowMountExtended } = {}) => {
+    wrapper = mountFn(ShowMlModel, {
+      apolloProvider,
+      propsData: { model },
+      stubs: { GlTab },
+    });
 
-const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
-const findVersionsTab = () => wrapper.findAllComponents(GlTab).at(1);
-const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
-const findModelVersionList = () => findVersionsTab().findComponent(ModelVersionList);
-const findModelVersionDetail = () => findDetailTab().findComponent(ModelVersionDetail);
-const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
-const findCandidateList = () => findCandidateTab().findComponent(CandidateList);
-const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
-const findTitleArea = () => wrapper.findComponent(TitleArea);
-const findEmptyState = () => wrapper.findComponent(EmptyState);
-const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
-const findVersionLink = () => wrapper.findByTestId('model-version-link');
+    return waitForPromises();
+  };
 
-describe('ShowMlModel', () => {
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findDetailTab = () => wrapper.findAllComponents(GlTab).at(0);
+  const findVersionsTab = () => wrapper.findAllComponents(GlTab).at(1);
+  const findVersionsCountBadge = () => findVersionsTab().findComponent(GlBadge);
+  const findModelVersionList = () => wrapper.findComponent(ModelVersionList);
+  const findModelDetail = () => wrapper.findComponent(ModelDetail);
+  const findCandidateTab = () => wrapper.findAllComponents(GlTab).at(2);
+  const findCandidateList = () => wrapper.findComponent(CandidateList);
+  const findCandidatesCountBadge = () => findCandidateTab().findComponent(GlBadge);
+  const findTitleArea = () => wrapper.findComponent(TitleArea);
+  const findVersionCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
+
   describe('Title', () => {
     beforeEach(() => createWrapper());
 
@@ -56,61 +87,75 @@ describe('ShowMlModel', () => {
     });
   });
 
-  describe('Details', () => {
+  describe('Tabs', () => {
     beforeEach(() => createWrapper());
 
     it('has a details tab', () => {
       expect(findDetailTab().attributes('title')).toBe('Details');
     });
 
-    describe('when it has latest version', () => {
-      it('displays the version', () => {
-        expect(findModelVersionDetail().props('modelVersion')).toBe(MODEL.latestVersion);
-      });
-
-      it('displays a link to latest version', () => {
-        expect(findDetailTab().text()).toContain('Latest version:');
-        expect(findVersionLink().attributes('href')).toBe(MODEL.latestVersion.path);
-        expect(findVersionLink().text()).toBe('1.2.3');
-      });
-    });
-
-    describe('when it does not have latest version', () => {
-      beforeEach(() => {
-        createWrapper(makeModel({ latestVersion: null }));
-      });
-
-      it('shows empty state', () => {
-        expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.modelVersion);
-      });
-
-      it('does not render model version detail', () => {
-        expect(findModelVersionDetail().exists()).toBe(false);
-      });
-    });
-  });
-
-  describe('Versions tab', () => {
-    beforeEach(() => createWrapper());
-
     it('shows the number of versions in the tab', () => {
       expect(findVersionsCountBadge().text()).toBe(MODEL.versionCount.toString());
     });
 
-    it('shows a list of model versions', () => {
-      expect(findModelVersionList().props('modelId')).toBe(MODEL.id);
-    });
-  });
-
-  describe('Candidates tab', () => {
-    beforeEach(() => createWrapper());
-
     it('shows the number of candidates in the tab', () => {
       expect(findCandidatesCountBadge().text()).toBe(MODEL.candidateCount.toString());
     });
+  });
 
-    it('shows a list of candidates', () => {
+  describe('Navigation', () => {
+    it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (path) => {
+      createWrapper({ mountFn: mountExtended });
+      await wrapper.vm.$router.push({ path });
+
+      expect(findTabs().props('value')).toBe(0);
+      expect(findModelDetail().props('model')).toBe(MODEL);
+      expect(findModelVersionList().exists()).toBe(false);
+      expect(findCandidateList().exists()).toBe(false);
+    });
+
+    it('shows model version list when location hash is `#/versions`', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      await wrapper.vm.$router.push({ path: '/versions' });
+
+      expect(findTabs().props('value')).toBe(1);
+      expect(findModelDetail().exists()).toBe(false);
+      expect(findModelVersionList().props('modelId')).toBe(MODEL.id);
+      expect(findCandidateList().exists()).toBe(false);
+    });
+
+    it('shows candidate list when location hash is `#/candidates`', async () => {
+      await createWrapper({ mountFn: mountExtended });
+
+      await findCandidateTab().vm.$emit('click');
+
+      expect(findTabs().props('value')).toBe(2);
+      expect(findModelDetail().exists()).toBe(false);
+      expect(findModelVersionList().exists()).toBe(false);
       expect(findCandidateList().props('modelId')).toBe(MODEL.id);
+    });
+
+    describe.each`
+      location        | tab                | navigatedTo
+      ${'#/'}         | ${findDetailTab}   | ${0}
+      ${'#/'}         | ${findVersionsTab} | ${1}
+      ${'#/versions'} | ${findDetailTab}   | ${0}
+      ${'#/versions'} | ${findVersionsTab} | ${1}
+    `('When at $location', ({ location, tab, navigatedTo }) => {
+      beforeEach(async () => {
+        setWindowLocation(location);
+
+        await createWrapper({
+          mountFn: mountExtended,
+        });
+      });
+
+      it(`on click on ${tab}, navigates to ${JSON.stringify(navigatedTo)}`, async () => {
+        await tab().vm.$emit('click');
+
+        expect(findTabs().props('value')).toBe(navigatedTo);
+      });
     });
   });
 });

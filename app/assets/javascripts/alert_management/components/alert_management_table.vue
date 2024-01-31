@@ -335,7 +335,7 @@ export default {
         >
           <template #cell(severity)="{ item }">
             <div
-              class="d-inline-flex align-items-center justify-content-between"
+              class="d-inline-flex gl-align-items-center justify-content-between"
               data-testid="severityField"
             >
               <gl-icon

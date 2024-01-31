@@ -84,7 +84,10 @@ export default {
             <item :item="item" :project-id="currentProjectId" :is-active="isActiveBranch(item)" />
           </li>
         </template>
-        <li v-else class="ide-search-list-empty d-flex align-items-center justify-content-center">
+        <li
+          v-else
+          class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
+        >
           <template v-if="hasNoSearchResults">
             {{ __('No branches found') }}
           </template>

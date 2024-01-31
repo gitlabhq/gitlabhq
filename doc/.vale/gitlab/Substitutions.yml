@@ -7,7 +7,7 @@
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
 message: "Use '%s' instead of '%s'."
-link: https://about.gitlab.com/handbook/communication/#top-misused-terms
+link: https://handbook.gitlab.com/handbook/communication/top-misused-terms/
 level: error
 ignorecase: true
 swap:

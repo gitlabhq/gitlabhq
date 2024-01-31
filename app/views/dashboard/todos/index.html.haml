@@ -12,7 +12,7 @@
 - open_todo_count = todos_has_filtered_results? && !filter_by_done ? @allowed_todos.count : todos_pending_count
 - done_todo_count = todos_has_filtered_results? && filter_by_done ? @allowed_todos.count : todos_done_count
 
-.page-title-holder.d-flex.align-items-center
+.page-title-holder.d-flex.gl-align-items-center
   %h1.page-title.gl-font-size-h-display= _("To-Do List")
 
 - if current_user.todos.any?

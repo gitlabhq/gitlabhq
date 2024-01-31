@@ -286,7 +286,9 @@ module Gitlab
               status: path.status,
               path: EncodingHelper.encode!(path.path),
               old_mode: path.old_mode.to_s(8),
-              new_mode: path.new_mode.to_s(8)
+              new_mode: path.new_mode.to_s(8),
+              old_blob_id: path.old_blob_id,
+              new_blob_id: path.new_blob_id
             )
           end
         end

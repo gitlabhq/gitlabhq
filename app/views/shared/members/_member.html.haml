@@ -59,6 +59,6 @@
             = link_to member.created_by.name, user_path(member.created_by)
           = time_ago_with_tooltip(member.created_at)
   - if show_roles
-    .controls.member-controls.align-items-center
+    .controls.member-controls.gl-align-items-center
       = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
       %span.member-access-text.user-access-role= member.human_access

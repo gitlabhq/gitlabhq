@@ -9,8 +9,7 @@
     = render 'devise/shared/omniauth_provider_button',
       href: omniauth_authorize_path(:user, provider),
       provider: provider,
-      data: { testid: test_id_for_provider(provider) },
-      id: "oauth-login-#{provider}"
+      data: { testid: test_id_for_provider(provider) }
   - if render_remember_me
     = render Pajamas::CheckboxTagComponent.new(name: 'js-remember-me-omniauth', value: nil) do |c|
       - c.with_label do

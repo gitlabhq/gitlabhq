@@ -25,23 +25,29 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
 
   describe '#base_and_ancestors' do
     it 'includes the base and its ancestors' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
-                                     options: { project_condition: :same }).base_and_ancestors
+      relation = described_class.new(
+        ::Ci::Pipeline.where(id: parent.id),
+        options: { project_condition: :same }
+      ).base_and_ancestors
 
       expect(relation).to contain_exactly(ancestor, parent)
     end
 
     it 'can find ancestors upto a certain level' do
-      relation = described_class.new(::Ci::Pipeline.where(id: child.id),
-                                     options: { project_condition: :same }).base_and_ancestors(upto: ancestor.id)
+      relation = described_class.new(
+        ::Ci::Pipeline.where(id: child.id),
+        options: { project_condition: :same }
+      ).base_and_ancestors(upto: ancestor.id)
 
       expect(relation).to contain_exactly(parent, child)
     end
 
     describe 'hierarchy_order option' do
       let(:relation) do
-        described_class.new(::Ci::Pipeline.where(id: child.id),
-                            options: { project_condition: :same }).base_and_ancestors(hierarchy_order: hierarchy_order)
+        described_class.new(
+          ::Ci::Pipeline.where(id: child.id),
+          options: { project_condition: :same }
+        ).base_and_ancestors(hierarchy_order: hierarchy_order)
       end
 
       context ':asc' do
@@ -64,16 +70,20 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
 
   describe '#base_and_descendants' do
     it 'includes the base and its descendants' do
-      relation = described_class.new(::Ci::Pipeline.where(id: parent.id),
-                                     options: { project_condition: :same }).base_and_descendants
+      relation = described_class.new(
+        ::Ci::Pipeline.where(id: parent.id),
+        options: { project_condition: :same }
+      ).base_and_descendants
 
       expect(relation).to contain_exactly(parent, child)
     end
 
     context 'when project_condition: :different' do
       it "includes the base and other project pipelines" do
-        relation = described_class.new(::Ci::Pipeline.where(id: child.id),
-                                       options: { project_condition: :different }).base_and_descendants
+        relation = described_class.new(
+          ::Ci::Pipeline.where(id: child.id),
+          options: { project_condition: :different }
+        ).base_and_descendants
 
         expect(relation).to contain_exactly(child, triggered_pipeline, triggered_child_pipeline)
       end
@@ -89,8 +99,10 @@ RSpec.describe Gitlab::Ci::PipelineObjectHierarchy do
 
     context 'when with_depth is true' do
       let(:relation) do
-        described_class.new(::Ci::Pipeline.where(id: ancestor.id),
-                            options: { project_condition: :same }).base_and_descendants(with_depth: true)
+        described_class.new(
+          ::Ci::Pipeline.where(id: ancestor.id),
+          options: { project_condition: :same }
+        ).base_and_descendants(with_depth: true)
       end
 
       it 'includes depth in the results' do

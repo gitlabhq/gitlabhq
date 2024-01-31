@@ -46,8 +46,7 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous
     end
 
     before do
-      create(:ci_build, :allowed_to_fail, :failed,
-             stage_id: stage.id, pipeline: stage.pipeline)
+      create(:ci_build, :allowed_to_fail, :failed, stage_id: stage.id, pipeline: stage.pipeline)
     end
 
     it 'fabricates extended "success with warnings" status' do

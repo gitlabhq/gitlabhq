@@ -251,7 +251,7 @@ At GitLab, we mostly use:
 used by the `docs-lint` test.
 
 Our [Documentation Style Guide](styleguide/index.md#markdown) and
-[Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/) elaborate on which choices must
+[Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/) elaborate on which choices must
 be made when selecting Markdown syntax for GitLab documentation. This tool helps catch deviations
 from those guidelines.
 

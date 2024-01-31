@@ -14,7 +14,7 @@ participating-stages: []
 
 The [GitLab Customers Portal](https://customers.gitlab.com/) is an application separate from the GitLab product that allows GitLab Customers to manage their account and subscriptions, tasks like purchasing additional seats. More information about the Customers Portal can be found in [the GitLab docs](../../../subscriptions/customers_portal.md). Internally, the application is known as [CustomersDot](https://gitlab.com/gitlab-org/customers-gitlab-com) (also known as CDot).
 
-GitLab uses [Zuora's platform](https://about.gitlab.com/handbook/business-technology/enterprise-applications/guides/zuora/) to manage their subscription-based services. CustomersDot integrates directly with Zuora Billing and treats [Zuora Billing](https://about.gitlab.com/handbook/finance/accounting/finance-ops/billing-ops/zuora-billing/) as the single source of truth for subscription data.
+GitLab uses [Zuora's platform](https://handbook.gitlab.com/handbook/business-technology/enterprise-applications/guides/zuora/) to manage their subscription-based services. CustomersDot integrates directly with Zuora Billing and treats [Zuora Billing](https://handbook.gitlab.com/handbook/finance/accounting/finance-ops/billing-ops/zuora-billing/) as the single source of truth for subscription data.
 
 CustomersDot stores some subscription and order data locally, in the form of the `orders` database table, which at times can be out of sync with Zuora Billing. The main objective for this blueprint is to lay out a plan for improving the integration with Zuora Billing, making it more reliable, accurate, and performant.
 

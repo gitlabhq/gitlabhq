@@ -114,7 +114,7 @@ module LoginHelpers
 
     check 'js-remember-me-omniauth' if remember_me
 
-    click_button "oauth-login-#{provider}"
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   def sign_in_using_ldap!(user, ldap_tab, ldap_name)
@@ -132,7 +132,7 @@ module LoginHelpers
     visit new_user_registration_path
     expect(page).to have_content('Create an account using').or(have_content('Register with'))
 
-    click_link_or_button Gitlab::Auth::OAuth::Provider.label_for(provider)
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   def fake_successful_webauthn_authentication

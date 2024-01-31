@@ -50,7 +50,7 @@ export default {
             backgroundColor: workItem.backgroundColor,
             color: workItem.color,
           }"
-          class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center align-items-center hierarchy-icon-wrapper"
+          class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
         >
           <gl-icon :size="workItem.iconSize || 12" :name="workItem.icon" />
         </span>
@@ -106,7 +106,7 @@ export default {
                 backgroundColor: nestedWorkItem.backgroundColor,
                 color: nestedWorkItem.color,
               }"
-              class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center align-items-center hierarchy-icon-wrapper"
+              class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
             >
               <gl-icon :size="nestedWorkItem.iconSize || 12" :name="nestedWorkItem.icon" />
             </span>

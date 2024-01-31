@@ -8,11 +8,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Use ubiquitous language instead of CRUD terminology
 
-The code should use the same [ubiquitous language](https://about.gitlab.com/handbook/communication/#ubiquitous-language)
+The code should use the same [ubiquitous language](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
 as used in the product and user documentation. Failure to use ubiquitous language correctly
 can be a major cause of confusion for contributors and customers when there is constant translation
 or use of multiple terms.
-This also goes against our [communication strategy](https://about.gitlab.com/handbook/communication/#mecefu-terms).
+This also goes against our [communication strategy](https://handbook.gitlab.com/handbook/communication/#mecefu-terms).
 
 In the example below, [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
 terminology introduces ambiguity. The name says we are creating an `epic_issues`

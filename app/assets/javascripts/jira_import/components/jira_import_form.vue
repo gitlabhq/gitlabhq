@@ -260,7 +260,7 @@ export default {
 
     <form @submit="initiateJiraImport">
       <gl-form-group
-        class="row align-items-center"
+        class="row gl-align-items-center"
         :invalid-feedback="__('Please select a Jira project')"
         :label="__('Import from')"
         label-cols-sm="2"

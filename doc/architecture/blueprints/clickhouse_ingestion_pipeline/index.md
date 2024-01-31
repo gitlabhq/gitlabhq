@@ -73,7 +73,7 @@ The following case-studies describe how these groups intend to solve the underly
 
   - In addition to the problems described above, another class of problems when replicating data across systems is also the handling of data backfill and/or data migrations that happen upstream.
 
-- [group::data](https://about.gitlab.com/handbook/business-technology/data-team/) has been working around syncing data from some of our Postgres databases into a Snowflake-based data warehouse. See this issue for optioned considered: [List down all possible options for postgres to snowflake pipeline](https://gitlab.com/gitlab-data/gitlab.com-saas-data-pipeline/-/issues/13) before designing the current system in place.
+- [group::data](https://handbook.gitlab.com/handbook/business-technology/data-team/) has been working around syncing data from some of our Postgres databases into a Snowflake-based data warehouse. See this issue for optioned considered: [List down all possible options for postgres to snowflake pipeline](https://gitlab.com/gitlab-data/gitlab.com-saas-data-pipeline/-/issues/13) before designing the current system in place.
 
   - With the work done around our [Next Gen GitLab SaaS Data Pipeline](https://docs.google.com/presentation/d/1hVaCY42YhaO5UvgLzp3mbuMYJIFuTFYFJjdhixFTxPE/edit#slide=id.g143a48de8a3_0_0), the data team owns a "custom" pipeline that does incremental data extractions based on an `updated_at` timestamp column. This helps import a significant subset of operational database relations into Snowflake data-warehouse.
 

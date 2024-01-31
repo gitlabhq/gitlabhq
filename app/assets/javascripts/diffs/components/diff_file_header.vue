@@ -379,7 +379,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
+      class="file-actions d-flex gl-align-items-center gl-ml-auto gl-align-self-start"
     >
       <diff-stats
         :diff-file="diffFile"
@@ -506,7 +506,7 @@ export default {
 
     <div
       v-if="diffFile.submodule_compare"
-      class="file-actions d-none d-sm-flex align-items-center gl-flex-wrap"
+      class="file-actions d-none d-sm-flex gl-align-items-center gl-flex-wrap"
     >
       <gl-button
         v-gl-tooltip.hover

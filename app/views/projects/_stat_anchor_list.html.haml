@@ -8,4 +8,4 @@
   - anchors.each do |anchor|
     %li.nav-item
       = link_to_if(anchor.link, anchor.label, anchor.link, stat_anchor_attrs(anchor)) do
-        .stat-text.d-flex.align-items-center{ class: "#{'btn gl-button btn-default disabled' if project_buttons} #{'gl-px-0! gl-pb-2!' if ff_reorg_enabled}" }= anchor.label
+        .stat-text.d-flex.gl-align-items-center{ class: "#{'btn gl-button btn-default disabled' if project_buttons} #{'gl-px-0! gl-pb-2!' if ff_reorg_enabled}" }= anchor.label

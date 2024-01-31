@@ -31,6 +31,9 @@ Experts can be from any department in GitLab, from Engineering to Support, Custo
 
 If a component is related to a GitLab feature (for example Secret Detection), the team that owns the
 feature category or is most closely related to it should maintain the project.
+In this case, the Engineering Manager for the feature category is assigned as the project owner.
+
+Members with the `owner` role in the project are the DRIs responsible for triaging open issues and merge requests to ensure they get addressed promptly.
 
 The component project can be created by a separate team or individual initially but it must be transitioned
 to a set of owners before the first version gets published to the catalog.
@@ -49,11 +52,16 @@ in the catalog.
    or ask one of the group owners to create an empty project for you.
 1. Follow the [standard guide for creating components](../../ci/components/index.md).
 1. Add a concise project description that clearly describes the capabilities offered by the component project.
-1. Ensure that the [best practices](../../ci/components/index.md#best-practices) are followed.
+1. Ensure that the [general best practices](../../ci/components/index.md#best-practices) are followed as well as
+   [those for the official components](#best-practices-for-official-components).
 1. Add a `LICENSE.md` file with the MIT license.
 1. The project must have a `.gitlab-ci.yml` file that:
    - Validates all the components in the project correctly.
    - Contains a `release` job to publish newly released tags to the catalog.
+1. For official component projects, upload the [official avatar image](img/avatar_component_project.png) to the component project.
+
+### Best practices for official components
+
 1. Ensure that the `README.md` contains at least the sections below (for example, see the [Code quality component](https://gitlab.com/components/code-quality)):
    - **Overview**: The capabilities offered by the component project.
    - **Components**: Sub-sections for each component, each with:
@@ -62,7 +70,7 @@ in the catalog.
      - **Variables** (when applicable): The variable names, possible values, and descriptions.
    - **Contribute**: Notes and how to get in touch with the maintainers.
      Usually the contribution process should follow the [official guide](../../ci/components/index.md).
-1. For official component projects, upload the [official avatar image](img/avatar_component_project.png) to the component project.
+1. Use underscores `_` for composite input names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.
 
 ## Review and contribution process for official components
 

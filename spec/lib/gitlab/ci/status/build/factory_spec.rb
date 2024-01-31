@@ -302,8 +302,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
         before do
           allow(build.project).to receive(:empty_repo?).and_return(false)
 
-          create(:protected_branch, :no_one_can_push,
-                 name: build.ref, project: build.project)
+          create(:protected_branch, :no_one_can_push, name: build.ref, project: build.project)
         end
 
         it 'fabricates status that has no action' do
@@ -334,8 +333,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
         before do
           allow(build.project).to receive(:empty_repo?).and_return(false)
 
-          create(:protected_branch, :no_one_can_push,
-                 name: build.ref, project: build.project)
+          create(:protected_branch, :no_one_can_push, name: build.ref, project: build.project)
         end
 
         it 'fabricates status with correct details' do
@@ -390,8 +388,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
       before do
         allow(build.project).to receive(:empty_repo?).and_return(false)
 
-        create(:protected_branch, :no_one_can_push,
-                name: build.ref, project: build.project)
+        create(:protected_branch, :no_one_can_push, name: build.ref, project: build.project)
       end
 
       it 'fabricates status that has no action' do

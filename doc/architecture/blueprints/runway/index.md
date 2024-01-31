@@ -59,7 +59,7 @@ optional.
 -->
 
 - Hosting the GitLab monolith: The monolith is a complex application with very specialized requirements, and as such is out of scope. Deployment of the monolith is owned by the Delivery team, and there are other tools and initiatives that target this space, e.g. [Cells](../cells/index.md).
-- Arbitrary GCP resources: While we may support a commonly used subset of GCP resources, we will be selective with what we support. If you need more flexibility, you may want to request a [GitLab Sandbox](https://about.gitlab.com/handbook/infrastructure-standards/realms/sandbox/) project instead.
+- Arbitrary GCP resources: While we may support a commonly used subset of GCP resources, we will be selective with what we support. If you need more flexibility, you may want to request a [GitLab Sandbox](https://handbook.gitlab.com/handbook/infrastructure-standards/realms/sandbox/) project instead.
 - Arbitrary Kubernetes resources: As a managed platform, we aim not to expose too much of the underlying deployment mechanisms. This allows us to have a well-supported subset and gives us the flexibility to change providers. If you have specialized requirements, getting your own Kubernetes cluster may be a better option.
 
 ## Proposal

@@ -103,7 +103,7 @@ export default {
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button
                 type="button"
-                class="btn-link d-flex align-items-center"
+                class="btn-link d-flex gl-align-items-center"
                 @click.stop="setSearchType(searchType)"
               >
                 <span class="d-flex gl-mr-3 ide-search-list-current-icon">
@@ -122,7 +122,10 @@ export default {
               />
             </li>
           </template>
-          <li v-else class="ide-search-list-empty d-flex align-items-center justify-content-center">
+          <li
+            v-else
+            class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
+          >
             {{ __('No merge requests found') }}
           </li>
         </ul>

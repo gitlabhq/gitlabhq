@@ -3,13 +3,15 @@
 module Gitlab
   module Git
     class ChangedPath
-      attr_reader :status, :path, :old_mode, :new_mode
+      attr_reader :status, :path, :old_mode, :new_mode, :new_blob_id, :old_blob_id
 
-      def initialize(status:, path:, old_mode:, new_mode:)
+      def initialize(status:, path:, old_mode:, new_mode:, new_blob_id: nil, old_blob_id: nil)
         @status = status
         @path = path
         @old_mode = old_mode
         @new_mode = new_mode
+        @old_blob_id = old_blob_id
+        @new_blob_id = new_blob_id
       end
 
       def new_file?

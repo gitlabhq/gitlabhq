@@ -98,4 +98,4 @@ For these reasons, do not add AI-generated content to the documentation.
 - [Technical writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 - The [Style Guide](styleguide/index.md)
 - The [Word list](styleguide/word_list.md)
-- The [Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/)
+- The [Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/)

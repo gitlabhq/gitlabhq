@@ -2,7 +2,7 @@
 
 exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
 <div
-  class="align-items-center d-flex file-header-content gl-line-height-1"
+  class="d-flex file-header-content gl-align-items-center gl-line-height-1"
 >
   <file-icon-stub
     aria-hidden="true"

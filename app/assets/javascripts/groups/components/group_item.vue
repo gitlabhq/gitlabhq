@@ -176,9 +176,9 @@ export default {
   >
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents d-flex align-items-center py-2 pr-3"
+      class="group-row-contents d-flex gl-align-items-center py-2 pr-3"
     >
-      <div class="folder-toggle-wrap gl-mr-2 d-flex align-items-center">
+      <div class="folder-toggle-wrap gl-mr-2 d-flex gl-align-items-center">
         <gl-button
           v-if="hasChildren"
           :aria-label="toggleAriaLabel"
@@ -212,7 +212,7 @@ export default {
           :itemprop="microdata.imageItemprop"
         />
       </a>
-      <div class="group-text-container d-flex flex-fill align-items-center">
+      <div class="group-text-container d-flex flex-fill gl-align-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div
             class="gl-display-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-weight-bold gl-mr-3"

@@ -77,7 +77,7 @@ topics and use cases. The most frequently required during database reviewing are
 - [Migrations style guide](../migration_style_guide.md) for creating safe SQL migrations.
 - [Avoiding downtime in migrations](avoiding_downtime_in_migrations.md).
 - [SQL guidelines](../sql.md) for working with SQL queries.
-- [Guidelines for JiHu contributions with database migrations](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process.html)
+- [Guidelines for JiHu contributions with database migrations](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
 
 ## How to apply to become a database maintainer
 

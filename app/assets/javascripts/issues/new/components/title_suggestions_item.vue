@@ -66,7 +66,7 @@ export default {
 
 <template>
   <div class="suggestion-item">
-    <div class="d-flex align-items-center">
+    <div class="d-flex gl-align-items-center">
       <gl-icon
         v-if="suggestion.confidential"
         v-gl-tooltip.bottom

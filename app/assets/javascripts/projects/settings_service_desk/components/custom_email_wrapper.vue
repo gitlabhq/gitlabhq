@@ -172,7 +172,7 @@ export default {
     <div class="col-md-9">
       <gl-card>
         <template #header>
-          <div class="gl-display-flex align-items-center justify-content-between">
+          <div class="gl-display-flex gl-align-items-center justify-content-between">
             <h5 class="gl-my-0">{{ $options.I18N_CARD_TITLE }}</h5>
             <beta-badge />
           </div>

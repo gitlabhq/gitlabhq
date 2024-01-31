@@ -209,9 +209,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
     subject { command.source_sha }
 
     let(:command) do
-      described_class.new(project: project,
-                          source_sha: source_sha,
-                          merge_request: merge_request)
+      described_class.new(project: project, source_sha: source_sha, merge_request: merge_request)
     end
 
     let(:merge_request) do
@@ -233,9 +231,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
     subject { command.target_sha }
 
     let(:command) do
-      described_class.new(project: project,
-                          target_sha: target_sha,
-                          merge_request: merge_request)
+      described_class.new(project: project, target_sha: target_sha, merge_request: merge_request)
     end
 
     let(:merge_request) do

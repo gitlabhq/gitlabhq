@@ -138,7 +138,7 @@ export default {
   >
     <template #cell(name)="{ item }">
       <div
-        class="gl-display-flex align-items-center gl-justify-content-end gl-md-justify-content-start"
+        class="gl-display-flex gl-align-items-center gl-justify-content-end gl-md-justify-content-start"
         data-testid="terraform-states-table-name"
       >
         <p class="gl-font-weight-bold gl-m-0 gl-text-gray-900">

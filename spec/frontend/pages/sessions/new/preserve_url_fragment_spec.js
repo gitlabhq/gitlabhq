@@ -35,21 +35,22 @@ describe('preserve_url_fragment', () => {
 
   describe('OAuth login forms', () => {
     const findFormAction = (selector) =>
-      document.querySelector(`.js-oauth-login #oauth-login-${selector}`).parentElement.action;
+      document.querySelector(`.js-oauth-login [data-testid=${selector}-login-button]`).parentElement
+        .action;
 
     describe('appendRedirectQuery', () => {
       it('does not add an empty query parameter to the login form actions', () => {
         appendRedirectQuery();
 
-        expect(findFormAction('auth0')).toBe('http://test.host/users/auth/auth0');
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
       });
 
       describe('adds "redirect_fragment" query parameter to the login form actions', () => {
         it('when "remember_me" is not present', () => {
           appendRedirectQuery('#L65');
 
-          expect(findFormAction('auth0')).toBe(
-            'http://test.host/users/auth/auth0?redirect_fragment=L65',
+          expect(findFormAction('github')).toBe(
+            'http://test.host/users/auth/github?redirect_fragment=L65',
           );
         });
 
@@ -60,8 +61,8 @@ describe('preserve_url_fragment', () => {
 
           appendRedirectQuery('#L65');
 
-          expect(findFormAction('auth0')).toBe(
-            'http://test.host/users/auth/auth0?remember_me=1&redirect_fragment=L65',
+          expect(findFormAction('github')).toBe(
+            'http://test.host/users/auth/github?remember_me=1&redirect_fragment=L65',
           );
         });
       });
@@ -73,15 +74,15 @@ describe('preserve_url_fragment', () => {
       it('toggles "remember_me" query parameter', () => {
         toggleRememberMeQuery();
 
-        expect(findFormAction('auth0')).toBe('http://test.host/users/auth/auth0');
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
 
         rememberMe().click();
 
-        expect(findFormAction('auth0')).toBe('http://test.host/users/auth/auth0?remember_me=1');
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github?remember_me=1');
 
         rememberMe().click();
 
-        expect(findFormAction('auth0')).toBe('http://test.host/users/auth/auth0');
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
       });
     });
   });

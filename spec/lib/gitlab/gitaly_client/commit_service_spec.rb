@@ -203,15 +203,51 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     shared_examples 'includes paths different in any parent' do
       let(:changed_paths) do
         [
-          { path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' }
+          {
+            path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+          },
+          {
+            path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+          },
+          {
+            path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+          },
+          {
+            path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+          },
+          {
+            path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+          }
         ].as_json
       end
 
@@ -223,12 +259,36 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
     shared_examples 'includes paths different in all parents' do
       let(:changed_paths) do
         [
-          { path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' },
-          { path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644' }
+          {
+            path: 'files/locked/foo.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+          },
+          {
+            path: 'files/locked/foo.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+            new_blob_id: "3eac02ca74e5b8e5df01dbdfdd7a9905c5e12007"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1"
+          },
+          {
+            path: 'files/locked/bar.lfs', status: 'MODIFIED', old_mode: '100644', new_mode: '100644',
+            old_blob_id: "ea6c0a2142103f2d9157c1a9d50cc708032ec4a1",
+            new_blob_id: "9d8e9599c93013dee199bfdc13e8365c11652bba"
+          },
+          {
+            path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+          },
+          {
+            path: 'files/locked/baz.lfs', status: 'ADDED', old_mode: '0', new_mode: '100644',
+            old_blob_id: "0000000000000000000000000000000000000000",
+            new_blob_id: "dd1a523861a19addf2cce888119a07560be334b9"
+          }
         ].as_json
       end
 

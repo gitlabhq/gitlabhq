@@ -78,7 +78,7 @@ export default {
 
 <template>
   <div class="ide-pipeline build-page d-flex flex-column flex-fill">
-    <header class="ide-job-header d-flex align-items-center">
+    <header class="ide-job-header d-flex gl-align-items-center">
       <gl-button category="secondary" icon="chevron-left" size="small" @click="setDetailJob(null)">
         {{ __('View jobs') }}
       </gl-button>

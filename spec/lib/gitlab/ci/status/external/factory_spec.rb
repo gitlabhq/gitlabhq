@@ -17,8 +17,7 @@ RSpec.describe Gitlab::Ci::Status::External::Factory do
     Ci::HasStatus::AVAILABLE_STATUSES.each do |simple_status|
       context "when core status is #{simple_status}" do
         let(:resource) do
-          create(:generic_commit_status, status: simple_status,
-                                         target_url: external_url)
+          create(:generic_commit_status, status: simple_status, target_url: external_url)
         end
 
         let(:expected_status) do

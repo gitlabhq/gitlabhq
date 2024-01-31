@@ -786,7 +786,7 @@ An external registry can also be configured to use GitLab as an auth endpoint.
   - [Source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Monitoring
-- GitLab.com: [Searching Sentry](https://about.gitlab.com/handbook/support/workflows/500_errors.html#searching-sentry)
+- GitLab.com: [Searching Sentry](https://handbook.gitlab.com/handbook/support/workflows/500_errors/#searching-sentry)
 
 Sentry fundamentally is a service that helps you monitor and fix crashes in real time.
 The server is in Python, but it contains a full API for sending events from any language, in any application.

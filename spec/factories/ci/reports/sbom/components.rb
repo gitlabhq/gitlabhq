@@ -22,6 +22,10 @@ FactoryBot.define do
       )
     end
 
+    trait :with_source_package_name do
+      sequence(:source_package_name) { |n| "source-package-name-#{n}" }
+    end
+
     skip_create
 
     initialize_with do

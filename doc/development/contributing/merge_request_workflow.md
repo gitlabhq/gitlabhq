@@ -315,7 +315,7 @@ The following items are checked after the merge request has been merged:
 1. *If the merge request uses feature flags, per-project or per-group enablement, and a staged rollout:*
    - Confirmed to be working on GitLab projects.
    - Confirmed to be working at each stage for all projects added.
-1. Added to the [release post](https://about.gitlab.com/handbook/marketing/blog/release-posts/),
+1. Added to the [release post](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/),
    if relevant.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml), if relevant.
 
@@ -327,7 +327,7 @@ If you add a dependency in GitLab (such as an operating system package),
 consider updating the following, and note the applicability of each in your merge
 request:
 
-1. Note the addition in the [release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/)
+1. Note the addition in the [release blog post](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/)
    (create one if it doesn't exist yet).
 1. [The upgrade guide](../../update/upgrading_from_source.md).
 1. The [GitLab Installation Guide](../../install/installation.md#1-packages-and-dependencies).

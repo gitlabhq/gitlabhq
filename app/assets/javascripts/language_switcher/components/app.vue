@@ -3,7 +3,7 @@ import { GlCollapsibleListbox, GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { setCookie } from '~/lib/utils/common_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { PREFERRED_LANGUAGE_COOKIE_KEY } from '../constants';
+import { PREFERRED_LANGUAGE_COOKIE_KEY, EN } from '../constants';
 
 const HELP_TRANSLATE_MSG = __('Help translate to your language');
 const HELP_TRANSLATE_HREF = helpPagePath('/development/i18n/translation.md');
@@ -18,7 +18,7 @@ export default {
       default: [],
     },
     preferredLocale: {
-      default: {},
+      default: EN,
     },
   },
   data() {

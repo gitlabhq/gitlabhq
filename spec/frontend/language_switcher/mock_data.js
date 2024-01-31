@@ -1,7 +1,4 @@
-export const EN = {
-  value: 'en',
-  text: 'English',
-};
+import { EN } from '~/language_switcher/constants';
 
 export const ZH_CN = {
   value: 'zh_CN',
