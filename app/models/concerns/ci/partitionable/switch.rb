@@ -34,7 +34,7 @@ module Ci
           return false if routing_class?
 
           Gitlab::SafeRequestStore.fetch(routing_table_name_flag) do
-            ::Feature.enabled?(routing_table_name_flag, :request)
+            ::Feature.enabled?(routing_table_name_flag, :request, type: :gitlab_com_derisk)
           end
         end
 

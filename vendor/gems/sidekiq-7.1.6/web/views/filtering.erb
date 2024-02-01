@@ -1,0 +1,7 @@
+<div class="sm-col-3 pull-right" style="display: inline; margin: 25px 15px 0 0;">
+  <%= t('Filter') %>:
+  <form method="POST" action='<%= root_path %>filter/<%= which %>' style="display: inline-block">
+    <%= csrf_tag %>
+    <input class="search" type="search" name="substr" value="<%= h params[:substr] %>" placeholder="<%= t('AnyJobContent') %>"/>
+  </form>
+</div>

@@ -6,12 +6,17 @@ module Ci
     include Ci::HasVariable
     include Ci::RawVariable
 
+    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_pipeline_variables_routing_table
+
     belongs_to :pipeline
 
     self.primary_key = :id
     self.sequence_name = :ci_pipeline_variables_id_seq
 
-    partitionable scope: :pipeline
+    partitionable scope: :pipeline, through: {
+      table: :p_ci_pipeline_variables,
+      flag: ROUTING_FEATURE_FLAG
+    }
 
     alias_attribute :secret_value, :value
 

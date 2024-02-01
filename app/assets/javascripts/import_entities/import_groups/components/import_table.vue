@@ -13,7 +13,7 @@ import {
   GlFormCheckbox,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { debounce, isNumber } from 'lodash';
+import { debounce, isNumber, isUndefined } from 'lodash';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
@@ -31,7 +31,7 @@ import { STATUSES } from '../../constants';
 import importGroupsMutation from '../graphql/mutations/import_groups.mutation.graphql';
 import updateImportStatusMutation from '../graphql/mutations/update_import_status.mutation.graphql';
 import bulkImportSourceGroupsQuery from '../graphql/queries/bulk_import_source_groups.query.graphql';
-import { NEW_NAME_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
+import { NEW_NAME_FIELD, TARGET_NAMESPACE_FIELD, ROOT_NAMESPACE, i18n } from '../constants';
 import { StatusPoller } from '../services/status_poller';
 import {
   isFinished,
@@ -177,11 +177,16 @@ export default {
           : isAvailableForImport(group) && status !== STATUSES.SCHEDULING;
 
         const flags = {
-          isInvalid: (importTarget.validationErrors ?? []).filter((e) => !e.nonBlocking).length > 0,
+          isInvalid:
+            (importTarget?.validationErrors ?? []).filter((e) => !e.nonBlocking).length > 0,
           isAvailableForImport: isGroupAvailableForImport,
           isAllowedForReimport: false,
           isFinished: isFinished(group),
-          isProjectCreationAllowed: isProjectCreationAllowed(importTarget?.targetNamespace),
+          isProjectCreationAllowed: importTarget?.targetNamespace
+            ? isProjectCreationAllowed(importTarget.targetNamespace)
+            : // When targetNamespace is not selected, we set the flag to undefined (instead of defaulting to true / false)
+              // to allow import_actions_cell.vue to use its default prop value.
+              undefined,
         };
 
         return {
@@ -428,6 +433,10 @@ export default {
     },
 
     async importGroup({ group, extraArgs, index }) {
+      if (!this.validateImportTargetNamespace(group.importTarget)) {
+        return;
+      }
+
       if (group.flags.isFinished && !this.reimportRequests.includes(group.id)) {
         this.validateImportTarget(group.importTarget);
         this.reimportRequests.push(group.id);
@@ -495,9 +504,25 @@ export default {
       });
     },
 
+    validateImportTargetNamespace(importTarget) {
+      if (isUndefined(importTarget.targetNamespace)) {
+        // eslint-disable-next-line no-param-reassign
+        importTarget.validationErrors = [
+          { field: TARGET_NAMESPACE_FIELD, message: i18n.ERROR_TARGET_NAMESPACE_REQUIRED },
+        ];
+        return false;
+      }
+      return true;
+    },
+
     validateImportTarget: debounce(async function validate(importTarget) {
       const newValidationErrors = [];
       importTarget.cancellationToken?.cancel();
+
+      if (!this.validateImportTargetNamespace(importTarget)) {
+        return;
+      }
+
       if (importTarget.newName === '') {
         newValidationErrors.push({ field: NEW_NAME_FIELD, message: i18n.ERROR_REQUIRED });
       } else if (!isNameValid(importTarget, this.groupPathRegex)) {
@@ -539,14 +564,9 @@ export default {
     }, VALIDATION_DEBOUNCE_TIME),
 
     setDefaultImportTarget(group) {
-      // If we've reached this Vue application we have at least one potential import destination
-      const defaultTargetNamespace =
-        // first option: namespace id was explicitly provided
-        this.availableNamespaces.find((ns) => ns.id === this.defaultTargetNamespace) ??
-        // second option: first available namespace
-        this.availableNamespaces[0] ??
-        // last resort: if no namespaces are available - suggest creating new namespace at root
-        ROOT_NAMESPACE;
+      const lastTargetNamespace = this.availableNamespaces.find(
+        (ns) => ns.id === this.defaultTargetNamespace,
+      );
 
       let importTarget;
       if (group.lastImportTarget) {
@@ -555,12 +575,12 @@ export default {
         );
 
         importTarget = {
-          targetNamespace: targetNamespace ?? defaultTargetNamespace,
+          targetNamespace: targetNamespace ?? lastTargetNamespace,
           newName: group.lastImportTarget.newName,
         };
       } else {
         importTarget = {
-          targetNamespace: defaultTargetNamespace,
+          targetNamespace: lastTargetNamespace,
           newName: group.fullPath,
         };
       }
@@ -571,6 +591,10 @@ export default {
         cancellationToken,
         validationErrors: [],
       });
+
+      if (!importTarget.targetNamespace) {
+        return;
+      }
 
       getGroupPathAvailability(
         importTarget.newName,

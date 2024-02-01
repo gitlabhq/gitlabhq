@@ -698,6 +698,12 @@ module Types
       calls_gitaly: true,
       alpha: { milestone: '16.9' }
 
+    field :project_plan_limits, Types::ProjectPlanLimitsType,
+      resolver: Resolvers::Projects::PlanLimitsResolver,
+      description: 'Plan limits for the current project.',
+      alpha: { milestone: '16.9' },
+      null: true
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end

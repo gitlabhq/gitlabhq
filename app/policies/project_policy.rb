@@ -992,6 +992,10 @@ class ProjectPolicy < BasePolicy
 
   rule { ~private_project & guest & external_user }.enable :read_container_image
 
+  rule { can?(:create_pipeline_schedule) }.policy do
+    enable :read_ci_pipeline_schedules_plan_limit
+  end
+
   private
 
   def user_is_user?

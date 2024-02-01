@@ -2,18 +2,12 @@
 
 module MergeRequests
   class UpdateAssigneesService < UpdateService
-    def initialize(project:, current_user: nil, params: {})
-      super
-
-      @skip_authorization = @params.delete(:skip_authorization) || false
-    end
-
     # a stripped down service that only does what it must to update the
     # assignees, and knows that it does not have to check for other updates.
     # This saves a lot of queries for irrelevant things that cannot possibly
     # change in the execution of this service.
     def execute(merge_request)
-      return merge_request unless current_user&.can?(:set_merge_request_metadata, merge_request) || skip_authorization
+      return merge_request unless current_user&.can?(:set_merge_request_metadata, merge_request)
 
       old_assignees = merge_request.assignees.to_a
       old_ids = old_assignees.map(&:id)
@@ -38,8 +32,6 @@ module MergeRequests
     end
 
     private
-
-    attr_reader :skip_authorization
 
     def assignee_ids
       filter_sentinel_values(params.fetch(:assignee_ids)).first(1)

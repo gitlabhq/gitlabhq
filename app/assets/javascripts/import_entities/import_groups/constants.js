@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 
 export const i18n = {
+  ERROR_TARGET_NAMESPACE_REQUIRED: s__('BulkImport|Please select a parent group.'),
   ERROR_INVALID_FORMAT: s__(
     'GroupSettings|Please choose a group URL with no special characters or spaces.',
   ),
@@ -24,5 +25,6 @@ export const i18n = {
 };
 
 export const NEW_NAME_FIELD = 'newName';
+export const TARGET_NAMESPACE_FIELD = 'targetNamespace';
 
 export const ROOT_NAMESPACE = { fullPath: '', id: null };

@@ -8,7 +8,7 @@ export const generateFakeEntry = ({ id, status, hasFailures = false, message, ..
   fullName: `fake_name_${id}`,
   lastImportTarget: {
     id,
-    targetNamespace: 'root',
+    targetNamespace: 'Commit451',
     newName: `group${id}`,
   },
   id,

@@ -1,0 +1,12 @@
+<div>
+  <select class="form-control" onchange="window.location.href = '<%= path %>?period=' + event.target.value">
+    <% periods.each_key do |code| %>
+
+      <% if code == period %>
+        <option selected value="<%= code %>"><%= code %></option>
+      <% else %>
+        <option value="<%= code %>"><%= code %></option>
+      <% end %>
+    <% end %>
+  </select>
+</div>

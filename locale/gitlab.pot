@@ -9259,10 +9259,16 @@ msgstr ""
 msgid "BulkImport|Path of the new group."
 msgstr ""
 
+msgid "BulkImport|Please select a parent group."
+msgstr ""
+
 msgid "BulkImport|Project import history"
 msgstr ""
 
 msgid "BulkImport|Re-import creates a new group. It does not sync with the existing group."
+msgstr ""
+
+msgid "BulkImport|Select parent group"
 msgstr ""
 
 msgid "BulkImport|Showing %{start}-%{end} of %{total}"

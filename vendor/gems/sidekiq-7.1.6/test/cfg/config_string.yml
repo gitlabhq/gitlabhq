@@ -1,0 +1,8 @@
+---
+verbose:      false
+require:      ./test/fake_env.rb
+concurrency:  50
+queues:
+  - [<%="very_"%>often, 2]
+  - [seldom, 1]
+

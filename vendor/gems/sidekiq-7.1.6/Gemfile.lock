@@ -1,0 +1,195 @@
+PATH
+  remote: .
+  specs:
+    sidekiq (7.1.6)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    actionmailer (7.0.8)
+      actionpack (= 7.0.8)
+      actionview (= 7.0.8)
+      activejob (= 7.0.8)
+      activesupport (= 7.0.8)
+      mail (~> 2.5, >= 2.5.4)
+      net-imap
+      net-pop
+      net-smtp
+      rails-dom-testing (~> 2.0)
+    actionpack (7.0.8)
+      actionview (= 7.0.8)
+      activesupport (= 7.0.8)
+      rack (~> 2.0, >= 2.2.4)
+      rack-test (>= 0.6.3)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.0, >= 1.2.0)
+    actionview (7.0.8)
+      activesupport (= 7.0.8)
+      builder (~> 3.1)
+      erubi (~> 1.4)
+      rails-dom-testing (~> 2.0)
+      rails-html-sanitizer (~> 1.1, >= 1.2.0)
+    activejob (7.0.8)
+      activesupport (= 7.0.8)
+      globalid (>= 0.3.6)
+    activemodel (7.0.8)
+      activesupport (= 7.0.8)
+    activerecord (7.0.8)
+      activemodel (= 7.0.8)
+      activesupport (= 7.0.8)
+    activesupport (7.0.8)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    after_commit_everywhere (1.3.1)
+      activerecord (>= 4.2)
+      activesupport
+    ast (2.4.2)
+    builder (3.2.4)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
+    crass (1.0.6)
+    date (3.3.4)
+    docile (1.4.0)
+    erubi (1.12.0)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
+    json (2.7.1)
+    language_server-protocol (3.17.0.3)
+    lint_roller (1.1.0)
+    loofah (2.22.0)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.12.0)
+    mail (2.8.1)
+      mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
+    maxitest (5.4.0)
+      minitest (>= 5.14.0, < 5.21.0)
+    method_source (1.0.0)
+    mini_mime (1.1.5)
+    mini_portile2 (2.8.5)
+    minitest (5.20.0)
+    net-imap (0.4.9.1)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.2)
+      timeout
+    net-smtp (0.4.0.1)
+      net-protocol
+    nokogiri (1.16.0)
+      mini_portile2 (~> 2.8.2)
+      racc (~> 1.4)
+    nokogiri (1.16.0-arm64-darwin)
+      racc (~> 1.4)
+    parallel (1.24.0)
+    parser (3.3.0.5)
+      ast (~> 2.4.1)
+      racc
+    racc (1.7.3)
+    rack (2.2.8)
+    rack-test (2.1.0)
+      rack (>= 1.3)
+    rails-dom-testing (2.2.0)
+      activesupport (>= 5.0.0)
+      minitest
+      nokogiri (>= 1.6)
+    rails-html-sanitizer (1.6.0)
+      loofah (~> 2.21)
+      nokogiri (~> 1.14)
+    railties (7.0.8)
+      actionpack (= 7.0.8)
+      activesupport (= 7.0.8)
+      method_source
+      rake (>= 12.2)
+      thor (~> 1.0)
+      zeitwerk (~> 2.5)
+    rainbow (3.1.1)
+    rake (13.1.0)
+    redis-client (0.19.1)
+      connection_pool
+    regexp_parser (2.9.0)
+    rexml (3.2.6)
+    rubocop (1.59.0)
+      json (~> 2.3)
+      language_server-protocol (>= 3.17.0)
+      parallel (~> 1.10)
+      parser (>= 3.2.2.4)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml (>= 3.2.5, < 4.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 2.4.0, < 3.0)
+    rubocop-ast (1.30.0)
+      parser (>= 3.2.1.0)
+    rubocop-performance (1.20.2)
+      rubocop (>= 1.48.1, < 2.0)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    ruby-prof (1.7.0)
+    ruby-progressbar (1.13.0)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov_json_formatter (0.1.4)
+    sqlite3 (1.7.1)
+      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.7.1-arm64-darwin)
+    standard (1.33.0)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.59.0)
+      standard-custom (~> 1.0.0)
+      standard-performance (~> 1.3)
+    standard-custom (1.0.2)
+      lint_roller (~> 1.0)
+      rubocop (~> 1.50)
+    standard-performance (1.3.1)
+      lint_roller (~> 1.1)
+      rubocop-performance (~> 1.20.2)
+    thor (1.3.0)
+    timeout (0.4.1)
+    toxiproxy (2.0.2)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    unicode-display_width (2.5.0)
+    yard (0.9.34)
+    zeitwerk (2.6.12)
+
+PLATFORMS
+  arm64-darwin-23
+  ruby
+
+DEPENDENCIES
+  actionmailer (~> 7.0.4)
+  actionpack (~> 7.0.4)
+  activejob (~> 7.0.4)
+  activerecord (~> 7.0.4)
+  activerecord-jdbcsqlite3-adapter
+  after_commit_everywhere
+  maxitest
+  railties (~> 7.0.4)
+  rake
+  redis-client
+  ruby-prof
+  sidekiq!
+  simplecov
+  sqlite3
+  standard
+  toxiproxy
+  yard
+
+BUNDLED WITH
+   2.5.5

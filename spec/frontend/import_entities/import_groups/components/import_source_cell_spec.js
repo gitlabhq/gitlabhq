@@ -58,7 +58,8 @@ describe('import source cell', () => {
     });
 
     it('renders last imported line', () => {
-      expect(wrapper.text()).toMatchInterpolatedText('fake_group_1 Last imported to root/group1');
+      expect(wrapper.text()).toContain('fake_group_1');
+      expect(wrapper.text()).toContain('Last imported to Commit451/group1');
     });
   });
 });

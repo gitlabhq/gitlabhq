@@ -1,0 +1,23 @@
+<div class="navbar navbar-fixed-bottom navbar-inverse ltr">
+  <div class="navbar-inner">
+    <div class="container text-center">
+        <ul class="nav">
+          <li>
+            <p class="navbar-text product-version"><%= product_version %></p>
+          </li>
+          <li>
+            <p class="navbar-text redis-url" title="<%= redis_url %>"><%= redis_url %></p>
+          </li>
+          <li>
+            <p id="serverUtcTime" class="navbar-text server-utc-time"><%= server_utc_time %></p>
+          </li>
+          <li>
+            <p class="navbar-text"><a rel=help href="https://github.com/sidekiq/sidekiq/wiki">docs</a></p>
+          </li>
+          <li>
+            <p class="navbar-text"><a rel=external href="https://github.com/sidekiq/sidekiq/tree/main/web/locales"><%= locale %></a></p>
+          </li>
+        </ul>
+    </div>
+  </div>
+</div>

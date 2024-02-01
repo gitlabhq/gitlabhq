@@ -1,9 +1,0 @@
----
-name: allow_members_to_see_invited_groups_in_access_dropdowns
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/345140
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140927
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17364
-milestone: '16.8'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

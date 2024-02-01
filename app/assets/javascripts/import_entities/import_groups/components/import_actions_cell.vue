@@ -51,7 +51,7 @@ export default {
     isProjectCreationAllowed: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
   },
 

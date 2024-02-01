@@ -91,13 +91,17 @@ RSpec.describe Packages::Nuget::Symbol, type: :model, feature_category: :package
     end
 
     describe '.with_file_sha256' do
-      subject(:with_file_sha256) { described_class.with_file_sha256(checksums) }
+      subject { described_class.with_file_sha256(checksum) }
 
-      let_it_be(:checksums) { OpenSSL::Digest.hexdigest('SHA256', 'checksums') }
-      let_it_be(:symbol) { create(:nuget_symbol, file_sha256: checksums) }
+      let_it_be(:checksum) { OpenSSL::Digest.hexdigest('SHA256', 'checksum') }
+      let_it_be(:symbol) { create(:nuget_symbol, file_sha256: checksum) }
 
-      it 'returns symbols with the given checksums' do
-        expect(with_file_sha256).to eq([symbol])
+      it { is_expected.to contain_exactly(symbol) }
+
+      context 'when checksum is in uppercase' do
+        subject { described_class.with_file_sha256(checksum.upcase) }
+
+        it { is_expected.to contain_exactly(symbol) }
       end
     end
 

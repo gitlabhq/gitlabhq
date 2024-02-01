@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineVariable do
+RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration do
   subject { build(:ci_pipeline_variable) }
 
   it_behaves_like "CI variable"
@@ -35,6 +35,28 @@ RSpec.describe Ci::PipelineVariable do
 
       it 'does not change the partition_id value' do
         expect { variable.valid? }.not_to change(variable, :partition_id)
+      end
+    end
+  end
+
+  describe 'routing table switch' do
+    context 'with ff disabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_pipeline_variables_routing_table: false)
+      end
+
+      it 'uses the legacy table' do
+        expect(described_class.table_name).to eq('ci_pipeline_variables')
+      end
+    end
+
+    context 'with ff enabled' do
+      before do
+        stub_feature_flags(ci_partitioning_use_ci_pipeline_variables_routing_table: true)
+      end
+
+      it 'uses the routing table' do
+        expect(described_class.table_name).to eq('p_ci_pipeline_variables')
       end
     end
   end

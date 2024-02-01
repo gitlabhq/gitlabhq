@@ -28,7 +28,7 @@ module Packages
       scope :pending_destruction, -> { stale.default }
       scope :with_file_name, ->(file_name) { where(arel_table[:file].lower.eq(file_name.downcase)) }
       scope :with_signature, ->(signature) { where(arel_table[:signature].lower.eq(signature.downcase)) }
-      scope :with_file_sha256, ->(checksums) { where(file_sha256: checksums) }
+      scope :with_file_sha256, ->(checksums) { where(file_sha256: Array.wrap(checksums).map(&:downcase)) }
 
       def self.find_by_signature_and_file_and_checksum(signature, file_name, checksums)
         with_signature(signature)

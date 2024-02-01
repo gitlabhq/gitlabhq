@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
+RSpec.describe Ci::Partitionable::Switch, :aggregate_failures, feature_category: :continuous_integration do
   let(:model) do
     Class.new(Ci::ApplicationRecord) do
       self.primary_key = :id
@@ -71,7 +71,7 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
     allow(Feature::Definition).to receive(:get).with(table_rollout_flag)
       .and_return(
         Feature::Definition.new("development/#{table_rollout_flag}.yml",
-          { type: 'development', name: table_rollout_flag }
+          { type: 'gitlab_com_derisk', name: table_rollout_flag }
         )
       )
   end

@@ -1,0 +1,5 @@
+---
+:require:  ./test/fake_env.rb
+
+:__FILE__: <%= __FILE__ %>
+:__dir__:  <%= __dir__ %>

@@ -145,8 +145,10 @@ The modules that can be configured for logging are as follows:
 | `BROWS`    | Used for querying the state or page of the browser.                                               |
 | `CACHE`    | Used for reporting on cache hit and miss for cached HTTP resources.                               |
 | `CHROM`    | Used to log Chrome DevTools messages.                                                             |
+| `CONFG`    | Used to log the analyzer configuration.                                                           |
 | `CONTA`    | Used for the container that collects parts of HTTP requests and responses from DevTools messages. |
 | `CRAWL`    | Used for the core crawler algorithm.                                                              |
+| `CRWLG`    | Used for the crawl graph generator.                                                               |
 | `DATAB`    | Used for persisting data to the internal database.                                                |
 | `LEASE`    | Used to create browsers to add them to the browser pool.                                          |
 | `MAIN`     | Used for the flow of the main event loop of the crawler.                                          |

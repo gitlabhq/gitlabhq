@@ -300,12 +300,32 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
         end
 
-        it 'returns an error' do
-          expect(project.repository).not_to receive(:import_repository)
-          expect(subject.execute).to include(
-            status: :error,
-            message: end_with('Requests to localhost are not allowed')
-          )
+        context 'when the IP is allow-listed' do
+          before do
+            stub_application_setting(outbound_local_requests_whitelist: ["127.0.0.1"])
+          end
+
+          it 'imports successfully' do
+            expect(project.repository)
+              .to receive(:import_repository)
+              .and_return(true)
+
+            expect(subject.execute[:status]).to eq(:success)
+          end
+        end
+
+        context 'when the IP is not allow-listed' do
+          before do
+            stub_application_setting(outbound_local_requests_whitelist: [])
+          end
+
+          it 'returns an error' do
+            expect(project.repository).not_to receive(:import_repository)
+            expect(subject.execute).to include(
+              status: :error,
+              message: end_with('Requests to localhost are not allowed')
+            )
+          end
         end
       end
     end
@@ -323,7 +343,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
             allow_local_network: false,
             allow_localhost: false,
             dns_rebind_protection: false,
-            deny_all_requests_except_allowed: false
+            deny_all_requests_except_allowed: false,
+            outbound_local_requests_allowlist: []
           )
           .and_return([Addressable::URI.parse("https://example.com/group/project"), nil])
       end
@@ -359,7 +380,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
               allow_local_network: false,
               allow_localhost: false,
               dns_rebind_protection: true,
-              deny_all_requests_except_allowed: false
+              deny_all_requests_except_allowed: false,
+              outbound_local_requests_allowlist: []
             )
             .and_return([Addressable::URI.parse("https://172.16.123.1/group/project"), 'example.com'])
         end
@@ -388,7 +410,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
                 allow_local_network: false,
                 allow_localhost: false,
                 dns_rebind_protection: true,
-                deny_all_requests_except_allowed: false
+                deny_all_requests_except_allowed: false,
+                outbound_local_requests_allowlist: []
               )
              .and_return([Addressable::URI.parse('https://[2606:4700:90:0:f22e:fbec:5bed:a9b9]/gitlab-org/gitlab-development-kit'), 'gitlab.com'])
           end
@@ -419,7 +442,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
               allow_local_network: false,
               allow_localhost: false,
               dns_rebind_protection: true,
-              deny_all_requests_except_allowed: false
+              deny_all_requests_except_allowed: false,
+              outbound_local_requests_allowlist: []
             )
             .and_return([Addressable::URI.parse("http://172.16.123.1/group/project"), 'example.com'])
         end
@@ -449,7 +473,8 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
               allow_local_network: false,
               allow_localhost: false,
               dns_rebind_protection: true,
-              deny_all_requests_except_allowed: false
+              deny_all_requests_except_allowed: false,
+              outbound_local_requests_allowlist: []
             )
             .and_return([Addressable::URI.parse("git://172.16.123.1/group/project"), 'example.com'])
         end

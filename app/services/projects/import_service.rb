@@ -174,7 +174,8 @@ module Projects
           allow_localhost: allow_local_requests?,
           allow_local_network: allow_local_requests?,
           dns_rebind_protection: dns_rebind_protection?,
-          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
         .then do |(import_url, resolved_host)|
           next '' if resolved_host.nil? || !import_url.scheme.in?(%w[http https])
 
