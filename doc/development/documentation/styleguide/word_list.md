@@ -1582,6 +1582,12 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 When referring to runners, if you have to specify that the runners are installed on a customer's GitLab instance,
 use **self-managed** rather than **self-hosted**.
 
+When referring to the scope of runners, use:
+
+- **project runner**: Associated with specific projects.
+- **group runner**: Available to all projects and subgroups in a group.
+- **instance runner**: Available to all groups and projects in a GitLab instance.
+
 ## runner manager, runner managers
 
 Use lowercase for **runner managers**. These are a type of runner that can create multiple runners for autoscaling. See also [GitLab Runner](#gitlab-runner).

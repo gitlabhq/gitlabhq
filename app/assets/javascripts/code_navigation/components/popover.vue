@@ -117,7 +117,7 @@ export default {
             v-else
             :href="definitionPath"
             :target="isDefinitionCurrentBlob ? null : '_blank'"
-            class="w-100"
+            class="gl-w-full"
             variant="default"
             data-testid="go-to-definition-btn"
           >

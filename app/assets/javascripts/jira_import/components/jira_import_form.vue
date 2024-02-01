@@ -302,7 +302,7 @@ export default {
         <template #cell(gitlabUsername)="data">
           <gl-dropdown
             :text="data.value || $options.currentUsername"
-            class="w-100"
+            class="gl-w-full"
             :aria-label="
               /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
               sprintf($options.dropdownLabel, {

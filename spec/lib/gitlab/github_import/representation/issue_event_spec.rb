@@ -168,7 +168,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
   describe '.from_api_response' do
     let(:response) do
       event_resource = Struct.new(
-        :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone, :state, :body,
+        :id, :node_id, :url, :actor, :user, :event, :commit_id, :commit_url, :label, :rename, :milestone, :state, :body,
         :source, :assignee, :requested_reviewer, :review_requester, :issue, :created_at, :updated_at, :submitted_at,
         :performed_via_github_app,
         keyword_init: true
@@ -179,6 +179,7 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
         node_id: 'CE_lADOHK9fA85If7x0zwAAAAGDf0mG',
         url: 'https://api.github.com/repos/elhowm/test-import/issues/events/6501124486',
         actor: with_actor ? user_resource.new(id: 4, login: 'alice') : nil,
+        user: with_user ? user_resource.new(id: 4, login: 'alice') : nil,
         event: 'closed',
         commit_id: '570e7b2abdd848b95f2f578043fc23bd6f6fd24d',
         commit_url: 'https://api.github.com/repos/octocat/Hello-World/commits'\
@@ -202,10 +203,24 @@ RSpec.describe Gitlab::GithubImport::Representation::IssueEvent do
     let(:with_milestone) { true }
     let(:with_assignee) { true }
     let(:with_reviewer) { true }
+    let(:with_user) { false }
     let(:pull_request) { nil }
 
     it_behaves_like 'an IssueEvent' do
       let(:issue_event) { described_class.from_api_response(response) }
+    end
+
+    context 'when event uses user instead of actor' do
+      let(:with_actor) { false }
+      let(:with_user) { true }
+
+      it 'includes the actor details' do
+        issue_event = described_class.from_api_response(response)
+
+        expect(issue_event.actor).to be_an_instance_of(Gitlab::GithubImport::Representation::User)
+        expect(issue_event.actor.id).to eq(4)
+        expect(issue_event.actor.login).to eq('alice')
+      end
     end
   end
 

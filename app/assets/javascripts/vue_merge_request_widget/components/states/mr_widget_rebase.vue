@@ -228,14 +228,14 @@ export default {
         >
           <span
             v-if="!rebasingError"
-            class="gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
+            class="gl-w-full gl-md-w-auto gl-flex-grow-1 gl-ml-0! gl-text-body! gl-md-mr-3"
             data-testid="rebase-message"
           >
             <bold-text :message="$options.i18n.rebaseError" />
           </span>
           <span
             v-else
-            class="gl-font-weight-bold danger gl-w-100 gl-md-w-auto gl-flex-grow-1 gl-md-mr-3"
+            class="gl-font-weight-bold danger gl-w-full gl-md-w-auto gl-flex-grow-1 gl-md-mr-3"
             data-testid="rebase-message"
             >{{ rebasingError }}</span
           >

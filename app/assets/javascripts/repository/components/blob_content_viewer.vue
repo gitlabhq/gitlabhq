@@ -12,7 +12,6 @@ import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
-import { addBlameLink } from '~/blob/blob_blame_link';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import projectInfoQuery from '../queries/project_info.query.graphql';
 import getRefMixin from '../mixins/get_ref';
@@ -242,7 +241,6 @@ export default {
 
             if (type === SIMPLE_BLOB_VIEWER) {
               new LineHighlighter(); // eslint-disable-line no-new
-              addBlameLink('.file-holder', 'js-line-links');
             }
           });
 

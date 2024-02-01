@@ -111,7 +111,7 @@ export default {
     <div class="terminal-wrapper d-flex flex-fill min-height-0">
       <div
         ref="terminal"
-        class="ide-terminal-trace flex-fill min-height-0 w-100"
+        class="ide-terminal-trace flex-fill min-height-0 gl-w-full"
         :data-project-path="terminalPath"
       ></div>
     </div>

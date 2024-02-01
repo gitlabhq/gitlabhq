@@ -82,7 +82,7 @@ export default {
       :class="{
         'is-active': isActive,
       }"
-      class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
+      class="multi-file-commit-list-path gl-w-full border-0 ml-0 mr-0"
       role="button"
       @click="openFileInEditor"
     >

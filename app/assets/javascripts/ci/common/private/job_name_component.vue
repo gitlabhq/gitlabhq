@@ -29,7 +29,7 @@ export default {
 };
 </script>
 <template>
-  <span class="mw-100 gl-display-flex gl-align-items-center gl-flex-grow-1">
+  <span class="gl-max-w-full gl-display-flex gl-align-items-center gl-flex-grow-1">
     <ci-icon
       :size="iconSize"
       :status="status"

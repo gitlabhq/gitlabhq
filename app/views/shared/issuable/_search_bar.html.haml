@@ -8,8 +8,8 @@
 
 .issues-filters
   .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-lg-row{ class: block_css_class }
-    .d-flex.flex-column.flex-md-row.flex-grow-1.mb-lg-0.mb-md-2.mb-sm-0.w-100
-      = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form w-100' do
+    .d-flex.flex-column.flex-md-row.flex-grow-1.mb-lg-0.mb-md-2.mb-sm-0.gl-w-full
+      = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
         - if @can_bulk_update

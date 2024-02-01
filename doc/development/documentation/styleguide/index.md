@@ -1420,6 +1420,15 @@ With this formatting:
 - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode)
   of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
 
+## Link to click-through demos
+
+Linking to click-through demos should follow similar guidelines to [videos](#videos).
+
+```markdown
+For a click-through demo, see [Demo Title](link-to-demo).
+<!-- Demo published on YYYY-MM-DD -->
+```
+
 ## Alert boxes
 
 Use alert boxes to call attention to information. Use them sparingly, and never have an alert box immediately follow another alert box.
@@ -1713,8 +1722,8 @@ SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We w
 
 For tier, choose one:
 
-- Free, Premium, and Ultimate
-- Premium and Ultimate
+- Free, Premium, Ultimate
+- Premium, Ultimate
 - Ultimate
 
 For status, choose one:

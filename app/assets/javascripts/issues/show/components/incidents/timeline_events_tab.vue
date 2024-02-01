@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE } from '~/graphql_shared/constants';
 import { fetchPolicies } from '~/lib/graphql';
@@ -13,7 +13,6 @@ import IncidentTimelineEventsList from './timeline_events_list.vue';
 export default {
   components: {
     GlButton,
-    GlEmptyState,
     GlLoadingIcon,
     CreateTimelineEvent,
     IncidentTimelineEventsList,
@@ -78,11 +77,9 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="timelineEventLoading" size="lg" color="dark" class="gl-mt-5" />
-    <gl-empty-state
-      v-else-if="showEmptyState"
-      :compact="true"
-      :description="$options.i18n.emptyDescription"
-    />
+    <div v-if="showEmptyState" class="gl-mt-4">
+      <p class="gl-mb-0">{{ $options.i18n.emptyDescription }}</p>
+    </div>
     <incident-timeline-events-list
       v-if="hasTimelineEvents"
       :timeline-event-loading="timelineEventLoading"
@@ -100,7 +97,7 @@ export default {
     <gl-button
       v-if="canUpdateTimelineEvent"
       variant="default"
-      class="gl-mb-3 gl-mt-7"
+      class="gl-mb-3 gl-mt-6"
       @click="showEventForm"
     >
       {{ $options.i18n.addEventButton }}

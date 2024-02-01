@@ -13,7 +13,7 @@ exports[`Repository directory download links component renders downloads links f
     class="dropdown-menu-content"
   >
     <div
-      class="btn-group ml-0 w-100"
+      class="btn-group gl-w-full ml-0"
     >
       <gl-button-stub
         buttontextclasses=""
@@ -53,7 +53,7 @@ exports[`Repository directory download links component renders downloads links f
     class="dropdown-menu-content"
   >
     <div
-      class="btn-group ml-0 w-100"
+      class="btn-group gl-w-full ml-0"
     >
       <gl-button-stub
         buttontextclasses=""

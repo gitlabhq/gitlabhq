@@ -51,7 +51,7 @@ export default {
     :collapsed="mr.mergeDetailsCollapsed"
     @toggle="() => mr.toggleMergeDetails()"
   >
-    <span class="gl-ml-3 gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!">
+    <span class="gl-ml-3 gl-gl-w-full gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!">
       <bold-text :message="failedText" />
     </span>
   </state-container>

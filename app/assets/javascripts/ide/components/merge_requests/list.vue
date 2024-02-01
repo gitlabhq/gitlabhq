@@ -98,7 +98,7 @@ export default {
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
       <template v-else>
-        <ul class="mb-0 w-100">
+        <ul class="mb-0 gl-w-full">
           <template v-if="showSearchTypes">
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button

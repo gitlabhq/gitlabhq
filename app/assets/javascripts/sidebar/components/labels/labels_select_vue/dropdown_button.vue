@@ -35,7 +35,7 @@ export default {
 
 <template>
   <gl-button
-    class="labels-select-dropdown-button js-dropdown-button w-100 text-left"
+    class="labels-select-dropdown-button js-dropdown-button gl-w-full text-left"
     @click="handleButtonClick"
   >
     <span class="dropdown-toggle-text gl-pointer-events-none flex-fill">

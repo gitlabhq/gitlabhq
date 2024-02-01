@@ -5,12 +5,12 @@
 .wiki-page-header.top-area.has-sidebar-toggle.py-3.flex-column.flex-lg-row
   = wiki_sidebar_toggle_button
 
-  .git-access-header.w-100.d-flex.flex-column.justify-content-center
+  .git-access-header.gl-w-full.d-flex.flex-column.justify-content-center
     %span
       = _("Clone repository")
       %strong= @wiki.full_path
 
-  .pt-3.pt-lg-0.w-100
+  .pt-3.pt-lg-0.gl-w-full
     = render "shared/clone_panel", container: @wiki
 
 .wiki-git-access

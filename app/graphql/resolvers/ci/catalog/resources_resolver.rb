@@ -21,18 +21,11 @@ module Resolvers
           required: false,
           description: 'Sort catalog resources by given criteria.'
 
-        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/429636
-        argument :project_path, GraphQL::Types::ID,
-          required: false,
-          description: 'Project with the namespace catalog.'
-
-        def resolve_with_lookahead(scope:, project_path: nil, search: nil, sort: nil)
-          project = Project.find_by_full_path(project_path)
-
+        def resolve_with_lookahead(scope:, search: nil, sort: nil)
           apply_lookahead(
             ::Ci::Catalog::Listing
               .new(context[:current_user])
-              .resources(namespace: project&.root_namespace, sort: sort, search: search, scope: scope)
+              .resources(sort: sort, search: search, scope: scope)
           )
         end
 

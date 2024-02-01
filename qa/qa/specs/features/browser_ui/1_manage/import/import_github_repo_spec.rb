@@ -42,7 +42,6 @@ module QA
           Page::Project::Import::Github.perform do |import_page|
             import_page.add_personal_access_token(Runtime::Env.github_access_token)
 
-            import_page.select_advanced_option(:single_endpoint_issue_events_import)
             import_page.select_advanced_option(:single_endpoint_notes_import)
             import_page.select_advanced_option(:attachments_import)
 
@@ -64,7 +63,6 @@ module QA
             end
           end
 
-          # Validate :single_endpoint_issue_events_import option was triggered correctly and imported the events
           expect(imported_issue_events).to match_array(
             [
               { name: "add_label", label: "question" },

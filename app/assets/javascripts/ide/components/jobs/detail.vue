@@ -101,7 +101,7 @@ export default {
         <scroll-button :disabled="isScrolledToBottom" direction="down" @click="scrollDown" />
       </div>
     </div>
-    <pre ref="buildJobLog" class="build-log mb-0 h-100 mr-3" @scroll="scrollBuildLog">
+    <pre ref="buildJobLog" class="build-log mb-0 gl-h-full mr-3" @scroll="scrollBuildLog">
       <code
         v-show="!detailJob.isLoading"
         v-safe-html="jobOutput"

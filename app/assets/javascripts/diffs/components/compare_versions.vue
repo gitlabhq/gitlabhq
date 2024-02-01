@@ -110,7 +110,7 @@ export default {
             <span
               v-if="!commit.prev_commit_id"
               v-gl-tooltip
-              class="h-100 w-100 position-absolute position-top-0 position-left-0"
+              class="gl-h-full gl-w-full position-absolute position-top-0 position-left-0"
               :title="__('You\'re at the first commit')"
             ></span>
             <gl-icon name="chevron-left" />
@@ -124,7 +124,7 @@ export default {
             <span
               v-if="!commit.next_commit_id"
               v-gl-tooltip
-              class="h-100 w-100 position-absolute position-top-0 position-left-0"
+              class="gl-h-full gl-w-full position-absolute position-top-0 position-left-0"
               :title="__('You\'re at the last commit')"
             ></span>
             {{ __('Next') }}
