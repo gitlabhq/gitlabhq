@@ -141,6 +141,7 @@ export default {
         :is-flyout="true"
         @pin-add="(itemId, itemTitle) => $emit('pin-add', itemId, itemTitle)"
         @pin-remove="(itemId, itemTitle) => $emit('pin-remove', itemId, itemTitle)"
+        @nav-link-click="$emit('nav-link-click')"
       />
     </ul>
     <svg

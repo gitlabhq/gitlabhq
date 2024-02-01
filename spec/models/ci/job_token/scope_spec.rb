@@ -57,39 +57,46 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
-  describe 'add!' do
-    let_it_be(:new_project) { create(:project) }
+  describe 'accessible?' do
+    subject { scope.accessible?(accessed_project) }
 
-    subject { scope.add!(new_project, direction: direction, user: user) }
+    context 'with groups in allowlist' do
+      let_it_be(:target_group) { create(:group) }
+      let_it_be(:target_project) do
+        create(:project,
+          ci_inbound_job_token_scope_enabled: true,
+          group: target_group
+        )
+      end
 
-    [:inbound, :outbound].each do |d|
-      context "with #{d}" do
-        let(:direction) { d }
+      let(:scope) { described_class.new(target_project) }
 
-        it 'adds the project' do
-          subject
+      include_context 'with accessible and inaccessible project groups'
 
-          expect(scope.send("#{direction}_projects")).to contain_exactly(current_project, new_project)
+      where(:accessed_project, :result) do
+        ref(:project_with_target_project_group_in_allowlist)            | true
+        ref(:project_wo_target_project_group_in_allowlist)              | false
+      end
+
+      with_them do
+        it { is_expected.to eq(result) }
+      end
+
+      context 'when ci_job_token_groups_allowlist feature flag is disabled' do
+        before do
+          stub_feature_flags(ci_job_token_groups_allowlist: false)
+        end
+
+        where(:accessed_project, :result) do
+          ref(:project_with_target_project_group_in_allowlist) | false
+          ref(:project_wo_target_project_group_in_allowlist) | false
+        end
+
+        with_them do
+          it { is_expected.to eq(result) }
         end
       end
     end
-
-    # Context and before block can go away leaving just the example in 16.0
-    context 'with inbound only enabled' do
-      before do
-        project.ci_cd_settings.update!(job_token_scope_enabled: false)
-      end
-
-      it 'provides access' do
-        expect do
-          scope.add!(new_project, direction: :inbound, user: user)
-        end.to change { described_class.new(new_project).accessible?(current_project) }.from(false).to(true)
-      end
-    end
-  end
-
-  describe 'accessible?' do
-    subject { scope.accessible?(accessed_project) }
 
     context 'with inbound and outbound scopes enabled' do
       context 'when inbound and outbound access setup' do

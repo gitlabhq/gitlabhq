@@ -105,7 +105,7 @@ module RuboCop
                                   .find { |n| TABLE_METHODS.include?(n.children[1]) }
 
             if create_table_node
-              table_name = create_table_node.children[2].value
+              table_name = table_name_or_const_name(create_table_node.children[2])
             else
               # Guard against errors when a new table create/change migration
               # helper is introduced and warn the author so that it can be
@@ -117,7 +117,7 @@ module RuboCop
             attribute_name = node.children[2].value
           else
             # We are in a node for one of the ADD_COLUMN_METHODS
-            table_name = node.children[2].value
+            table_name = table_name_or_const_name(node.children[2])
             attribute_name = node.children[3].value
           end
 
@@ -151,10 +151,14 @@ module RuboCop
         end
 
         def matching_add_text_limit?(send_node, table_name, attribute_name)
-          limit_table = send_node.children[2].value
+          limit_table = table_name_or_const_name(send_node.children[2])
           limit_attribute = send_node.children[3].value
 
           limit_table == table_name && limit_attribute == attribute_name
+        end
+
+        def table_name_or_const_name(node)
+          node.type == :const ? node.const_name : node.value
         end
 
         def encrypted_attribute_name?(attribute_name)

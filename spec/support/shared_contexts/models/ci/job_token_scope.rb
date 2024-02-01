@@ -14,6 +14,11 @@ RSpec.shared_context 'with accessible and inaccessible projects' do
   include_context 'with inaccessible projects'
 end
 
+RSpec.shared_context 'with accessible and inaccessible project groups' do
+  let_it_be(:project_with_target_project_group_in_allowlist) { create_project_with_group_allowlist(target_project) }
+  let_it_be(:project_wo_target_project_group_in_allowlist) { create_project_without_group_allowlist }
+end
+
 RSpec.shared_context 'with inaccessible projects' do
   let_it_be(:inbound_allowlist_project) { create_project_in_allowlist(source_project, direction: :inbound) }
 

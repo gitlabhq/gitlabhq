@@ -11,9 +11,14 @@ rspec:artifact-collector as-if-foss:
     - project: gitlab-org/gitlab-foss
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
       job: rspec:artifact-collector unit
+      # optional is not supported. Error:
+      # jobs:rspec:artifact-collector as-if-foss:needs:need config contains unknown keys: optional
+      # optional: true
     - project: gitlab-org/gitlab-foss
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
       job: rspec:artifact-collector system
+      # optional: true
     - project: gitlab-org/gitlab-foss
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
       job: rspec:artifact-collector remainder
+      # optional: true

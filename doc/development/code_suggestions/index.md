@@ -28,7 +28,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In your terminal, navigate to a `gitlab` inside your `gitlab-development-kit` directory
       1. Run `bundle exec rails c` to start a Rails console
       1. Call `Feature.enable(:code_suggestions_tokens_api)` from the console
-   1. Run the GDK with ```export CODE_SUGGESTIONS_BASE_URL=http://localhost:5052```
+   1. Run the GDK with ```export AI_GATEWAY_URL=http://localhost:5052```
 1. [Setup AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally)
     1. Build tree sitter libraries ```poetry run scripts/build-tree-sitter-lib.py```
     1. Extra .env changes for all debugging insights
@@ -48,7 +48,7 @@ with the deployed staging AI Gateway. To do this:
    ```shell
    export GITLAB_LICENSE_MODE=test
    export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-   export CODE_SUGGESTIONS_BASE_URL=https://codesuggestions.staging.gitlab.com
+   export AI_GATEWAY_URL=https://cloud.staging.gitlab.com/ai
    ```
 
 1. Restart the GDK.

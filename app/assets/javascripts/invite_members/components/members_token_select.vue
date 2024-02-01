@@ -62,7 +62,7 @@ export default {
       required: false,
       default: '',
     },
-    rootGroupId: {
+    groupId: {
       type: String,
       required: true,
     },
@@ -149,7 +149,7 @@ export default {
     },
     retrieveUsersRequest() {
       if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID && this.glFeatures.groupUserSaml) {
-        return getGroupUsers(this.query, this.rootGroupId, this.queryOptions);
+        return getGroupUsers(this.query, this.groupId, this.queryOptions);
       }
 
       return getUsers(this.query, this.queryOptions);

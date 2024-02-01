@@ -3092,6 +3092,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def parent_groups
+    Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
+  end
+
   def enforced_runner_token_expiration_interval
     all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
     all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)

@@ -431,35 +431,15 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
       throw new Error('fetchMetric() - metric type is required.');
     }
 
-    // TODO remove mocks once API has been implemented https://gitlab.com/gitlab-org/opstrace/opstrace/-/work_items/2624
-    // const params = new URLSearchParams({
-    //   mname: name,
-    //   mtype: type,
-    // });
-    // const { data } = await axios.get(searchMetadataUrl, {
-    //   params,
-    //   withCredentials: true,
-    // });
-    // return data;
-
-    return new Promise((resolve) => {
-      setTimeout(() =>
-        resolve(
-          {
-            name: 'cpu_seconds_total',
-            type: 'sum',
-            description: 'some_description',
-            last_ingested_at: 1705374438711900000,
-            attribute_keys: ['host.name', 'host.dc', 'host.type'],
-            supported_aggregations: ['1m', '1h'],
-            supported_functions: ['min', 'max', 'avg', 'sum', 'count'],
-            default_group_by_attributes: ['host.name'],
-            default_group_by_function: 'avg',
-          },
-          1000,
-        ),
-      );
+    const params = new URLSearchParams({
+      mname: name,
+      mtype: type,
     });
+    const { data } = await axios.get(searchMetadataUrl, {
+      params,
+      withCredentials: true,
+    });
+    return data;
   } catch (e) {
     return reportErrorAndThrow(e);
   }

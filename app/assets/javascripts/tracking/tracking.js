@@ -19,11 +19,12 @@ const Tracking = Object.assign(Tracker, {
           return localCategory || opts.category;
         },
         trackingOptions() {
-          const options = addExperimentContext(opts);
           // TODO: refactor to remove potentially undefined property
           // https://gitlab.com/gitlab-org/gitlab/-/issues/432995
           const tracking = 'tracking' in this ? this.tracking : {};
-          return { ...options, ...tracking };
+          const options = addExperimentContext({ ...opts, ...tracking });
+
+          return options;
         },
       },
       methods: {

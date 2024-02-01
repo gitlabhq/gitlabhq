@@ -2,15 +2,22 @@
 module Ci
   module JobToken
     class Allowlist
-      def initialize(source_project, direction:)
+      def initialize(source_project, direction: :inbound)
         @source_project = source_project
         @direction = direction
       end
 
-      def includes?(target_project)
+      def includes_project?(target_project)
         source_links
           .with_target(target_project)
           .exists?
+      end
+
+      def includes_group?(target_project)
+        allowlist_group_ids = group_links.pluck(:target_group_id)
+        target_project_group_path_ids = target_project.parent_groups.map(&:id)
+
+        allowlist_group_ids.intersect?(target_project_group_path_ids)
       end
 
       def projects
@@ -32,6 +39,11 @@ module Ci
         Ci::JobToken::ProjectScopeLink
           .with_source(@source_project)
           .where(direction: @direction)
+      end
+
+      def group_links
+        Ci::JobToken::GroupScopeLink
+          .with_source(@source_project)
       end
 
       def target_project_ids

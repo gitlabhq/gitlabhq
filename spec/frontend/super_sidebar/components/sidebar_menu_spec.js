@@ -4,7 +4,7 @@ import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
-import { PANELS_WITH_PINS } from '~/super_sidebar/constants';
+import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '~/super_sidebar/constants';
 import { sidebarData } from '../mock_data';
 
 const menuItems = [
@@ -173,6 +173,30 @@ describe('Sidebar Menu', () => {
         panelType: 'explore',
       });
       expect(findMainMenuSeparator().exists()).toBe(false);
+    });
+  });
+
+  describe('Detect if pinned nav item was used', () => {
+    describe('when sessionStorage is "true"', () => {
+      beforeEach(() => {
+        window.sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, 'true');
+        createWrapper({ panelType: 'project' });
+      });
+
+      it('sets prop for pinned section to true', () => {
+        expect(findPinnedSection().props('wasPinnedNav')).toBe(true);
+      });
+    });
+
+    describe('when sessionStorage is null', () => {
+      beforeEach(() => {
+        window.sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, null);
+        createWrapper({ panelType: 'project' });
+      });
+
+      it('sets prop for pinned section to false', () => {
+        expect(findPinnedSection().props('wasPinnedNav')).toBe(false);
+      });
     });
   });
 });

@@ -335,6 +335,15 @@ export default {
             :loading="isLoadingRoles"
             block
           >
+            <template #list-item="{ item }">
+              <div :class="{ 'gl-font-weight-bold': item.memberRoleId }">{{ item.text }}</div>
+              <div
+                v-if="item.description"
+                class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2"
+              >
+                {{ item.description }}
+              </div>
+            </template>
             <template #footer>
               <manage-roles-dropdown-footer />
             </template>

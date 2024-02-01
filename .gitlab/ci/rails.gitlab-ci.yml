@@ -358,9 +358,10 @@ gitlab:setup:
 rspec:artifact-collector unit:
   extends:
     - .artifact-collector
-    - .rails:rules:ee-and-foss-unit
+    - .rails:rules:artifact-collector-unit
   needs:
-    - rspec unit pg14  # 32 jobs
+    - job: rspec unit pg14  # 32 jobs
+      optional: true
     - job: rspec unit clickhouse  # 1 job
       optional: true
 
@@ -369,11 +370,13 @@ rspec:artifact-collector system:
     - .artifact-collector
     - .rails:rules:ee-and-foss-system
   needs:
-    - rspec system pg14  # 32 jobs
+    - job: rspec system pg14  # 32 jobs
+      optional: true
 
 rspec:artifact-collector remainder:
   extends:
     - .artifact-collector
+    - .rails:rules:artifact-collector-remainder
   needs:
     - job: rspec integration pg14  # 16 jobs
       optional: true
@@ -381,31 +384,30 @@ rspec:artifact-collector remainder:
       optional: true
     - job: rspec background_migration pg14  # 5 jobs
       optional: true
-  rules:
-    - !reference ['.rails:rules:ee-and-foss-integration', rules]
-    - !reference ['.rails:rules:ee-and-foss-migration', rules]
-    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
 
 rspec:artifact-collector unit single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec unit pg14 single-redis  # 32 jobs
+    - job: rspec unit pg14 single-redis  # 32 jobs
+      optional: true
 
 rspec:artifact-collector system single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec system pg14 single-redis  # 32 jobs
+    - job: rspec system pg14 single-redis  # 32 jobs
+      optional: true
 
 rspec:artifact-collector remainder single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - rspec integration pg14 single-redis  # 16 jobs
+    - job: rspec integration pg14 single-redis  # 16 jobs
+      optional: true
 
 rspec:artifact-collector ee single-redis:
   extends:

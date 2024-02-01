@@ -9152,4 +9152,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let_it_be(:model) { create(:project, creator: parent) }
     end
   end
+
+  describe '#parent_groups' do
+    context 'when project has parent groups' do
+      let_it_be(:nested_group) { create(:group, parent: group) }
+      let_it_be_with_reload(:group) { create(:group, name: 'foo', parent: nested_group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      it 'builds an groups path' do
+        groups_path = project.parent_groups
+        expect(groups_path).to match_array([group, nested_group])
+      end
+    end
+
+    context 'when project does not have a parent group' do
+      let_it_be(:project) { create(:project) }
+
+      it 'builds an empty path' do
+        groups_path = project.parent_groups
+        expect(groups_path).to eq([])
+      end
+    end
+  end
 end

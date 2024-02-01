@@ -64,8 +64,8 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     end
   end
 
-  describe '#includes?' do
-    subject { allowlist.includes?(includes_project) }
+  describe '#includes_project?' do
+    subject { allowlist.includes_project?(includes_project) }
 
     context 'without scoped projects' do
       let(:unscoped_project) { build(:project) }
@@ -100,6 +100,43 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
 
       with_them do
         it { is_expected.to be result }
+      end
+    end
+
+    describe '#includes_group' do
+      subject { allowlist.includes_group?(target_project) }
+
+      let_it_be(:target_group) { create(:group) }
+      let_it_be(:target_project) do
+        create(:project,
+          ci_inbound_job_token_scope_enabled: true,
+          group: target_group
+        )
+      end
+
+      context 'without scoped groups' do
+        let_it_be(:unscoped_project) { build(:project) }
+
+        where(:source_project, :result) do
+          ref(:unscoped_project) | false
+        end
+
+        with_them do
+          it { is_expected.to be result }
+        end
+      end
+
+      context 'with a group in each allowlist' do
+        include_context 'with accessible and inaccessible project groups'
+
+        where(:source_project, :result) do
+          ref(:project_with_target_project_group_in_allowlist) | true
+          ref(:project_wo_target_project_group_in_allowlist) | false
+        end
+
+        with_them do
+          it { is_expected.to be result }
+        end
       end
     end
   end

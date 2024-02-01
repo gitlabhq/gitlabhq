@@ -2240,6 +2240,25 @@
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
+.rails:rules:artifact-collector-unit:
+  rules:
+    # Always run for as-if-foss to work around not having needs.optional for
+    # cross project pipeline. See .gitlab/ci/artifact-collector/as-if-foss.gitlab-ci.yml
+    - if: '$START_AS_IF_FOSS == "true"'
+    - !reference [".rails:rules:ee-and-foss-unit", rules]
+
+.rails:rules:artifact-collector-system:
+  rules:
+    - if: '$START_AS_IF_FOSS == "true"'
+    - !reference [".rails:rules:ee-and-foss-system", rules]
+
+.rails:rules:artifact-collector-remainder:
+  rules:
+    - if: '$START_AS_IF_FOSS == "true"'
+    - !reference ['.rails:rules:ee-and-foss-integration', rules]
+    - !reference ['.rails:rules:ee-and-foss-migration', rules]
+    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
+
 .rails:rules:detect-tests:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec

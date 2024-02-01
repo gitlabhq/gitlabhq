@@ -41,7 +41,7 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 ```shell
 2023-07-14T17:29:00:763 [debug]: Disabling code completion
 2023-07-14T17:29:01:802 [debug]: Enabling code completion
-2023-07-14T17:29:01:802 [debug]: AI Assist: Using server: https://codesuggestions.gitlab.com/v2/completions
+2023-07-14T17:29:01:802 [debug]: AI Assist: Using server: https://cloud.gitlab.com/ai/v2/code/completions
 ```
 
 ### Code Suggestions not displayed in Microsoft Visual Studio

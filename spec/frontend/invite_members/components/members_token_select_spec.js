@@ -10,7 +10,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const label = 'testgroup';
 const placeholder = 'Search for a member';
-const rootGroupId = '31';
+const groupId = '31';
 const user1 = { id: 1, name: 'John Smith', username: 'one_1', avatar_url: '' };
 const user2 = { id: 2, name: 'Jane Doe', username: 'two_2', avatar_url: '' };
 const allUsers = [user1, user2];
@@ -22,7 +22,7 @@ const createComponent = (props = {}, glFeatures = {}) => {
       ariaLabelledby: label,
       invalidMembers: {},
       placeholder,
-      rootGroupId,
+      groupId,
       ...props,
     },
     provide: { glFeatures },
@@ -247,7 +247,7 @@ describe('MembersTokenSelect', () => {
     });
 
     it('calls the group API with correct parameters', () => {
-      expect(UserApi.getGroupUsers).toHaveBeenCalledWith(searchParam, rootGroupId, {
+      expect(UserApi.getGroupUsers).toHaveBeenCalledWith(searchParam, groupId, {
         active: true,
         include_saml_users: true,
         include_service_accounts: true,

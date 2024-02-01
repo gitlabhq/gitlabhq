@@ -46,6 +46,44 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
           end
         RUBY
       end
+
+      context 'when the table name is a constant' do
+        it 'registers an offense' do
+          expect_offense(<<~RUBY)
+            class TestTextLimits < ActiveRecord::Migration[6.0]
+              disable_ddl_transaction!
+
+              TABLE_NAME = :test_text_limits
+
+              def up
+                create_table TABLE_NAME, id: false do |t|
+                  t.integer :test_id, null: false
+                  t.text :name
+                    ^^^^ #{msg}
+                end
+
+                create_table TABLE_NAME do |t|
+                  t.integer :test_id, null: false
+                  t.text :title
+                  t.text :description
+                    ^^^^ #{msg}
+
+                  t.text_limit :title, 100
+                end
+
+                add_column :TABLE_NAME, :email, :text
+                ^^^^^^^^^^ #{msg}
+
+                add_column :TABLE_NAME, :role, :text, default: 'default'
+                ^^^^^^^^^^ #{msg}
+
+                change_column_type_concurrently :TABLE_NAME, :test_id, :text
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
+              end
+            end
+          RUBY
+        end
+      end
     end
 
     context 'when text columns are defined with a limit' do
@@ -77,6 +115,40 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
             end
           end
         RUBY
+      end
+
+      context 'when the table name is a constant' do
+        it 'registers no offense' do
+          expect_no_offenses(<<~RUBY)
+            class TestTextLimits < ActiveRecord::Migration[6.0]
+              disable_ddl_transaction!
+
+              TABLE_NAME = :test_text_limits
+
+              def up
+                create_table TABLE_NAME, id: false do |t|
+                  t.integer :test_id, null: false
+                  t.text :name
+                end
+
+                create_table TABLE_NAME do |t|
+                  t.integer :test_id, null: false
+                  t.text :title, limit: 100
+                  t.text :description, limit: 255
+                end
+
+                add_column TABLE_NAME, :email, :text
+                add_column TABLE_NAME, :role, :text, default: 'default'
+                change_column_type_concurrently TABLE_NAME, :test_id, :text
+
+                add_text_limit TABLE_NAME, :name, 255
+                add_text_limit TABLE_NAME, :email, 255
+                add_text_limit TABLE_NAME, :role, 255
+                add_text_limit TABLE_NAME, :test_id, 255
+              end
+            end
+          RUBY
+        end
       end
     end
 

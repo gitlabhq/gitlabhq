@@ -71,13 +71,10 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
       visit project_issues_path(project)
     end
 
-    it_behaves_like 'page has active tab', 'Pinned'
+    it_behaves_like 'page has active tab', 'Plan'
 
-    context "on project Code/Milestones" do
+    context 'on project Plan/Milestones' do
       before do
-        within_testid('super-sidebar') do
-          click_button("Plan")
-        end
         click_tab('Milestones')
       end
 

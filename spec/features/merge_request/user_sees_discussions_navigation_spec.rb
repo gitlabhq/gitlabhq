@@ -173,7 +173,9 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       before do
         # we can't go directly to the commits page since it doesn't load discussions
         visit project_merge_request_path(project, merge_request)
-        click_link 'Commits'
+        within '.merge-request-tabs' do
+          click_link 'Commits'
+        end
       end
 
       it_behaves_like 'a page with no code discussions'

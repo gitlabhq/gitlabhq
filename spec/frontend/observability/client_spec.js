@@ -985,4 +985,31 @@ describe('buildClient', () => {
       expectErrorToBeReported(new Error(e));
     });
   });
+
+  describe('fetchMetricSearchMetadata', () => {
+    it('fetches the metric metadata from the API', async () => {
+      const data = {
+        name: 'system.network.packets',
+        type: 'sum',
+        description: 'System network packets',
+        attribute_keys: ['device', 'direction'],
+        last_ingested_at: 1706338215873651200,
+        supported_aggregations: ['1m', '1h', '1d'],
+        supported_functions: ['avg', 'sum', 'min', 'max', 'count'],
+        default_group_by_attributes: ['*'],
+        default_group_by_function: 'sum',
+      };
+
+      axiosMock.onGet(metricsSearchMetadataUrl).reply(200, data);
+
+      const result = await client.fetchMetricSearchMetadata('name', 'type');
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchMetadataUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+      });
+      expect(result).toEqual(data);
+    });
+  });
 });

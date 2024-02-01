@@ -218,8 +218,8 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
    1. Export these environment variables in the same terminal session with `gdk start`:
 
       ```shell
-      export CODE_SUGGESTIONS_BASE_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance
-      export LLM_DEBUG=1                                   # Enable debug logging
+      export AI_GATEWAY_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance
+      export LLM_DEBUG=1                        # Enable debug logging
       ```
 
       Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.

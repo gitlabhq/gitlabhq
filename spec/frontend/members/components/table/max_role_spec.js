@@ -1,4 +1,4 @@
-import { GlBadge, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
@@ -60,7 +60,6 @@ describe('MaxRole', () => {
     });
   };
 
-  const findBadge = () => wrapper.findComponent(GlBadge);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findListboxItems = () => wrapper.findAllComponents(GlListboxItem);
   const findListboxItemByText = (text) =>
@@ -71,14 +70,14 @@ describe('MaxRole', () => {
   });
 
   describe('when member can not be updated', () => {
-    it('renders a badge instead of a collapsible listbox', () => {
+    it('renders the role name instead of a collapsible listbox', () => {
       createComponent({
         permissions: {
           canUpdate: false,
         },
       });
 
-      expect(findBadge().text()).toBe('Owner');
+      expect(wrapper.text()).toContain('Owner');
     });
   });
 

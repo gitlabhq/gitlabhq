@@ -52,6 +52,8 @@ export const HELP_MENU_TRACKING_DEFAULTS = {
 export const SIDEBAR_PINS_EXPANDED_COOKIE = 'sidebar_pinned_section_expanded';
 export const SIDEBAR_COOKIE_EXPIRATION = 365 * 10;
 
+export const PINNED_NAV_STORAGE_KEY = 'super-sidebar-pinned-nav-item-clicked';
+
 export const DROPDOWN_Y_OFFSET = 4;
 
 export const NAV_ITEM_LINK_ACTIVE_CLASS = 'super-sidebar-nav-item-current';

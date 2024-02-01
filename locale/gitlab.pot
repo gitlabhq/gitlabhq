@@ -30170,13 +30170,10 @@ msgstr ""
 msgid "MemberRole|Create new role"
 msgstr ""
 
-msgid "MemberRole|Custom permissions:"
+msgid "MemberRole|Custom role"
 msgstr ""
 
 msgid "MemberRole|Custom roles"
-msgstr ""
-
-msgid "MemberRole|Custom roles based on %{accessLevel}"
 msgstr ""
 
 msgid "MemberRole|Delete role"
