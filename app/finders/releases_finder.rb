@@ -2,6 +2,7 @@
 
 class ReleasesFinder
   include Gitlab::Utils::StrongMemoize
+  include UpdatedAtFilter
 
   attr_reader :parent, :current_user, :params
 
@@ -20,6 +21,7 @@ class ReleasesFinder
 
     releases = params[:latest] ? get_latest_releases : get_releases
     releases = by_tag(releases)
+    releases = by_updated_at(releases)
     releases = releases.preloaded if preload
     order_releases(releases)
   end

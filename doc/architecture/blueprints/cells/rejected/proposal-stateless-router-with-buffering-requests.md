@@ -5,7 +5,7 @@ description: 'Cells Stateless Router Proposal'
 status: rejected
 ---
 
-_This proposal was superseded by the [routing service proposal](routing-service.md)_
+_This proposal was superseded by the [routing service proposal](../routing-service.md)_
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -31,7 +31,7 @@ databases to be replicated across regions.
 
 Users are not directly exposed to the concept of Cells but instead they see
 different data dependent on their chosen Organization.
-[Organizations](goals.md#organizations) will be a new entity introduced to enforce isolation in the
+[Organizations](../goals.md#organizations) will be a new entity introduced to enforce isolation in the
 application and allow us to decide which request routes to which Cell, since an
 Organization can only be on a single Cell.
 

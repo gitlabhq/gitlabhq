@@ -7,6 +7,7 @@ class Release < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include EachBatch
   include FromUnion
+  include UpdatedAtFilterable
 
   cache_markdown_field :description
 

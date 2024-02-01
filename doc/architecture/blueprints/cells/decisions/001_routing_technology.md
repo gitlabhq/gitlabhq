@@ -13,8 +13,8 @@ In <https://gitlab.com/groups/gitlab-org/-/epics/11002> we first brainstormed [m
 We favored the Cloudflare Worker PoC and extended the PoC with the [Cell 1.0 proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/437818) to have multiple routing rules.
 These PoCs help validate the [routing service blueprint](../routing-service.md),
 that got accepted in <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142397>,
-and rejected the [request buffering](../proposal-stateless-router-with-buffering-requests.md),
-and [routes learning](../proposal-stateless-router-with-routes-learning.md)
+and rejected the [request buffering](../rejected/proposal-stateless-router-with-buffering-requests.md),
+and [routes learning](../rejected/proposal-stateless-router-with-routes-learning.md)
 
 ## Decision
 
@@ -35,6 +35,6 @@ You can read a detailed analysis of Cloudflare workers in <https://gitlab.com/gi
 ## Alternatives
 
 - We considered [Istio](https://gitlab.com/gitlab-org/gitlab/-/issues/433472) but concluded that it's not the right fit.
-- We considered [Request Buffering](../proposal-stateless-router-with-buffering-requests.md)
-- We considered [Routes Learning](../proposal-stateless-router-with-routes-learning.md)
+- We considered [Request Buffering](../rejected/proposal-stateless-router-with-buffering-requests.md)
+- We considered [Routes Learning](../rejected/proposal-stateless-router-with-routes-learning.md)
 - Use WASM for Cloudflare workers which is the wrong choice: <https://blog.cloudflare.com/webassembly-on-cloudflare-workers#whentousewebassembly>

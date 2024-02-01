@@ -116,7 +116,7 @@ Prerequisites:
 To enable Code Quality, either:
 
 - Enable [Auto DevOps](../../topics/autodevops/index.md), which includes
-  [Auto Code Quality](../../topics/autodevops/stages.md#auto-secret-detection).
+  [Auto Code Quality](../../topics/autodevops/stages.md#auto-code-quality).
 
 - Include the Code Quality template in your
   `.gitlab-ci.yml` file.

@@ -17,14 +17,14 @@ When working with GitLab Duo Code Suggestions, you might encounter the following
 If Code Suggestions are not displayed, and you have [installed a supported IDE extension](index.md#supported-editor-extensions), try the following troubleshooting steps.
 
 In GitLab, ensure Code Suggestions is enabled for **at least one**
-[top-level group your account belongs to](../../../group/manage.md#enable-code-suggestions-for-a-group).
+[top-level group your account belongs to](saas.md#enable-code-suggestions).
 If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 
-### Code Suggestions not displayed in VS Code or GitLab WebIDE
+### Code Suggestions not displayed in VS Code or GitLab Web IDE
 
 Check all the steps in [Code Suggestions are not displayed](#code-suggestions-are-not-displayed) first.
 
-If you are a self-managed user, ensure that Code Suggestions for the [GitLab WebIDE](../../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
+If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web IDE](../../../project/web_ide/index.md) are enabled. The same settings apply to VS Code as local IDE.
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.

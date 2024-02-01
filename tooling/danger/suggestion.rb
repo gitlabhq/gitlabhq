@@ -15,6 +15,8 @@ module Tooling
     class Suggestion
       include ::Tooling::Danger::Suggestor
 
+      ONCE_PER_FILE = false
+
       attr_reader :filename
 
       def initialize(filename, context:)
@@ -27,7 +29,8 @@ module Tooling
           filename: filename,
           regex: self.class::MATCH,
           replacement: self.class::REPLACEMENT,
-          comment_text: self.class::SUGGESTION
+          comment_text: self.class::SUGGESTION,
+          once_per_file: self.class::ONCE_PER_FILE
         )
       end
 

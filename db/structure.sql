@@ -25713,6 +25713,8 @@ CREATE TABLE vulnerability_reads (
     has_merge_request boolean DEFAULT false,
     has_remediations boolean DEFAULT false NOT NULL,
     owasp_top_10 smallint,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[],
+    archived boolean DEFAULT false NOT NULL,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10))
 );
@@ -35230,6 +35232,8 @@ CREATE UNIQUE INDEX index_release_links_on_release_id_and_url ON release_links U
 CREATE INDEX index_releases_on_author_id_id_created_at ON releases USING btree (author_id, id, created_at);
 
 CREATE INDEX index_releases_on_project_id_and_released_at_and_id ON releases USING btree (project_id, released_at, id);
+
+CREATE INDEX index_releases_on_project_id_and_updated_at_and_released_at ON releases USING btree (project_id, updated_at, released_at);
 
 CREATE INDEX index_releases_on_project_id_id ON releases USING btree (project_id, id);
 

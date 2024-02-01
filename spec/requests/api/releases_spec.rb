@@ -152,6 +152,16 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       expect(json_response.first['upcoming_release']).to eq(false)
     end
 
+    it 'filters by updated_at' do
+      create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: 1.day.ago, updated_at: 1.day.ago)
+      release = create(:release, project: project, tag: 'v0.2', author: maintainer, released_at: 1.day.ago, updated_at: 4.days.ago)
+
+      get api("/projects/#{project.id}/releases", maintainer), params: { updated_before: 2.days.ago }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.map { |p| p['tag_name'] }).to match([release.tag])
+    end
+
     it 'avoids N+1 queries', :use_sql_query_cache do
       create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
       create(:release_link, release: project.releases.first)

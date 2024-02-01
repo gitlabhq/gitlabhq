@@ -9,7 +9,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
   let(:params) { {} }
   let(:args) { {} }
   let(:repository) { project.repository }
-  let_it_be(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
+  let_it_be(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0', updated_at: 4.days.ago) }
   let_it_be(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
 
   shared_examples_for 'when the user is not authorized' do
@@ -168,6 +168,52 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
           let(:params) { { order_by: 'created_at', sort: 'asc' } }
 
           it { is_expected.to eq([v2_1_0, v2_0_0, v1_1_0, v1_0_0]) }
+        end
+      end
+
+      context 'filtered by updated_at' do
+        before do
+          v1_0_0.update!(updated_at: 4.days.ago)
+        end
+
+        context 'when only updated_before is present' do
+          let(:params) { { updated_before: 2.days.ago } }
+
+          it { is_expected.to contain_exactly(v1_0_0) }
+        end
+
+        context 'when only updated_after is present' do
+          let(:params) { { updated_after: 2.days.ago } }
+
+          it { is_expected.not_to include(v1_0_0) }
+        end
+
+        context 'when both updated_before and updated_after are present' do
+          let(:params) { { updated_before: 2.days.ago, updated_after: 6.days.ago } }
+
+          it { is_expected.to contain_exactly(v1_0_0) }
+
+          context 'when updated_after > updated_before' do
+            let(:params) { { updated_before: 6.days.ago, updated_after: 2.days.ago } }
+
+            it { is_expected.to be_empty }
+          end
+
+          context 'when updated_after equals updated_before' do
+            let(:params) { { updated_after: v1_0_0.updated_at, updated_before: v1_0_0.updated_at } }
+
+            it 'allows an exact match' do
+              expect(subject).to contain_exactly(v1_0_0)
+            end
+          end
+
+          context 'when arguments are invalid datetimes' do
+            let(:params) { { updated_after: 'invalid', updated_before: 'invalid' } }
+
+            it 'does not filter by updated_at' do
+              expect(subject).to include(v1_0_0)
+            end
+          end
         end
       end
     end

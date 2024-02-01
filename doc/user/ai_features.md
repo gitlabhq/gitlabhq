@@ -29,7 +29,7 @@ Some features are still in development. View details about [support for each sta
 | Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
 | Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions. | [Code review summary](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
 | Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6sDf73QOav8) | [Vulnerability summary](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Beta |
-| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#explaining-a-vulnerability) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
+| Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
 | Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** SaaS <br>**Status:** Experiment |
 | Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** SaaS, self-managed <br>**Status:** Experiment |
@@ -50,7 +50,7 @@ Some features are still in development. View details about [support for each sta
     who has the Owner role in the group.
   - View [how to enable this setting](group/manage.md#enable-experiment-and-beta-features).
 - Code Suggestions
-  - View [how to enable for self-managed](project/repository/code_suggestions/self_managed.md#enable-code-suggestions-on-self-managed-gitlab).
+  - View [how to enable for self-managed](project/repository/code_suggestions/self_managed.md#enable-code-suggestions).
   - View [how to enable for SaaS](project/repository/code_suggestions/saas.md#enable-code-suggestions).
 
 ## Experimental AI features and how to use them

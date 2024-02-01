@@ -322,22 +322,6 @@ To access your **Followers** and **Following** tabs:
 - On the left sidebar, select your avatar > select your name or username.
 - Select **Followers** or **Following**.
 
-## Enable Code Suggestions
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121079) in GitLab 16.1 as [Beta](../../policy/experiment-beta-support.md#beta).
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139916) in GitLab 16.8. UI user setting removed.
-
-If Code Suggestions is
-[enabled for your top-level group](../group/manage.md#enable-code-suggestions-for-a-group),
-you can use Code Suggestions after you
-[configure a supported IDE extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
-
-If Code Suggestions are disabled [for all the groups that you belong to](../../user/group/manage.md#enable-code-suggestions-for-a-group), then you cannot enable them for yourself.
-
 ## Integrate your GitLab instance with third-party services
 
 Give third-party services access to your GitLab account.

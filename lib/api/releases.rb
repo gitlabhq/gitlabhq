@@ -93,10 +93,13 @@ module API
         optional :include_html_description,
           type: Boolean,
           desc: 'If `true`, a response includes HTML rendered markdown of the release description'
+
+        optional :updated_before, type: DateTime, desc: 'Return releases updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
+        optional :updated_after, type: DateTime, desc: 'Return releases updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ'
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/releases' do
-        releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort)).execute
+        releases = ::ReleasesFinder.new(user_project, current_user, declared_params.slice(:order_by, :sort, :updated_before, :updated_after)).execute
 
         # We cache the serialized payload per user in order to avoid repeated renderings.
         # Since the cached result could contain sensitive information,

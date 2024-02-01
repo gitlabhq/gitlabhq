@@ -28,7 +28,7 @@ gem 'rails', '~> 7.0.8' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'bootsnap', '~> 1.17.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'bootsnap', '~> 1.18.3', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'openssl', '~> 3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'ipaddr', '~> 1.2.5' # rubocop:todo Gemfile/MissingFeatureCategory
