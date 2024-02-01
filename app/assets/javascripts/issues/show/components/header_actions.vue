@@ -14,7 +14,9 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
-import { ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import { STATUS_CLOSED, TYPE_ISSUE, issuableTypeText } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -192,10 +194,14 @@ export default {
       };
     },
     editShortcutKey() {
-      return ISSUABLE_EDIT_DESCRIPTION.defaultKeys[0];
+      return shouldDisableShortcuts() ? null : keysFor(ISSUABLE_EDIT_DESCRIPTION)[0];
     },
     editTooltip() {
-      return `${this.$options.i18n.editTitleAndDescription} <kbd class="glat gl-ml-1" aria-hidden=true>${this.editShortcutKey}</kbd>`;
+      const description = this.$options.i18n.editTitleAndDescription;
+      const key = this.editShortcutKey;
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
   },
   created() {

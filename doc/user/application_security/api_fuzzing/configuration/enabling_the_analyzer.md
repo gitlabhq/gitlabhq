@@ -876,7 +876,7 @@ reported.
 
 ### View details of an API Fuzzing vulnerability
 
-> Introduced in GitLab 13.7.
+> - Introduced in GitLab 13.7.
 
 Faults detected by API Fuzzing occur in the live web application, and require manual investigation
 to determine if they are vulnerabilities. Fuzzing faults are included as vulnerabilities with a

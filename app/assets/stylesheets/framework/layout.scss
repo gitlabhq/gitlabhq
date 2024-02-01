@@ -134,8 +134,8 @@ body {
 
 .gl--flex-full {
   display: flex;
-  @include gl-align-items-stretch;
-  @include gl-overflow-hidden;
+  align-items: stretch;
+  overflow: hidden;
 }
 
 .fullscreen-layout {

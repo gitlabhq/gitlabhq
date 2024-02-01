@@ -847,13 +847,13 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-extension-icon::before {
-  @include gl-content-empty;
+  content: '';
   position: absolute;
-  @include gl-left-50p;
-  @include gl-top-half;
-  @include gl-opacity-3;
+  left: 50%;
+  top: 50%;
+  opacity: 0.3;
   border-style: solid;
-  @include gl-border-4;
+  border-width: $gl-border-size-4;
   border-radius: $gl-border-radius-full;
 
   width: 24px;
@@ -862,11 +862,11 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-extension-icon::after {
-  @include gl-content-empty;
+  content: '';
   position: absolute;
   border-radius: $gl-border-radius-full;
-  @include gl-left-50p;
-  @include gl-top-half;
+  left: 50%;
+  top: 50%;
 
   width: 16px;
   height: 16px;
@@ -981,7 +981,8 @@ $tabs-holder-z-index: 250;
   .detail-page-description,
   .merge-request-tabs-container {
     &.is-merge-request {
-      @include gl-mx-auto;
+      margin-left: auto;
+      margin-right: auto;
       max-width: $fixed-layout-width - ($container-margin-xl * 2);
     }
   }
@@ -989,8 +990,9 @@ $tabs-holder-z-index: 250;
 
 .container-fluid.diffs-container-limited {
   .flash-container {
-    @include gl-mx-auto;
-    @include gl-max-w-container-xl;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: $container-xl;
     padding-left: $gl-spacing-scale-5;
     padding-right: $gl-spacing-scale-5;
   }
@@ -1042,7 +1044,7 @@ $tabs-holder-z-index: 250;
 .mr-ready-merge-related-links a,
 .mr-widget-merge-details a,
 .mr-widget-author {
-  @include gl-text-decoration-underline;
+  text-decoration: underline;
 
   &:hover,
   &:focus {
@@ -1066,28 +1068,28 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-status-icon-level-1::before {
-  @include gl-content-empty;
+  content: '';
   position: absolute;
   left: 0;
   top: 0;
-  @include gl-bottom-0;
-  @include gl-right-0;
-  @include gl-opacity-3;
+  bottom: 0;
+  right: 0;
+  opacity: 0.3;
   border-radius: $gl-border-radius-full;
   border-style: solid;
-  @include gl-border-4;
+  border-width: $gl-border-size-4;
 }
 
 .mr-widget-status-icon-level-1::after {
-  @include gl-content-empty;
+  content: '';
   position: absolute;
   border-radius: $gl-border-radius-full;
   border-style: solid;
-  @include gl-border-4;
-  @include gl-left-2;
-  @include gl-right-2;
-  @include gl-top-2;
-  @include gl-bottom-2;
+  border-width: $gl-border-size-4;
+  left: $gl-spacing-scale-2;
+  right: $gl-spacing-scale-2;
+  top: $gl-spacing-scale-2;
+  bottom: $gl-spacing-scale-2;
 }
 
 .memory-graph-container {
@@ -1202,11 +1204,11 @@ $tabs-holder-z-index: 250;
 
   .discussion-collapsible {
     margin: 0;
-    @include gl-border-l-0;
-    @include gl-border-r-0;
+    border-left-width: 0;
+    border-right-width: 0;
     border-bottom-width: 0;
-    @include gl-rounded-top-left-none;
-    @include gl-rounded-top-right-none;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 

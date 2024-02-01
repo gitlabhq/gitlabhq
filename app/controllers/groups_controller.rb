@@ -389,9 +389,9 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  override :markdown_service_params
-  def markdown_service_params
-    params.merge(group: group)
+  override :resource_parent
+  def resource_parent
+    group
   end
 
   override :has_project_list?
@@ -412,4 +412,4 @@ class GroupsController < Groups::ApplicationController
   end
 end
 
-GroupsController.prepend_mod_with('GroupsController')
+GroupsController.prepend_mod

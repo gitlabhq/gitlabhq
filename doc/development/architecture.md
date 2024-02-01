@@ -462,7 +462,6 @@ Elasticsearch is a distributed RESTful search engine built for the cloud.
   - [Source](../install/installation.md#install-gitaly)
 - Layer: Core Service (Data)
 - Process: `gitaly`
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's README](https://gitlab.com/gitlab-org/gitaly).
 
@@ -474,7 +473,6 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
   - [Source](../install/installation.md#install-gitaly)
 - Layer: Core Service (Data)
 - Process: `praefect`
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 Praefect is a transparent proxy between each Git client and the Gitaly coordinating the replication of
 repository updates to secondary nodes.
@@ -553,7 +551,6 @@ GitLab CI/CD is the open-source continuous integration service included with Git
   - [Source](../install/installation.md#install-gitlab-shell)
   - [GDK](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/gitlab.yml.example)
 - Layer: Core Service (Processor)
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 [GitLab Shell](gitlab_shell/index.md) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
 
@@ -566,7 +563,6 @@ GitLab CI/CD is the open-source continuous integration service included with Git
   - [Source](../install/installation.md#install-gitlab-workhorse)
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/workhorse) is a program designed at GitLab to help alleviate pressure from Puma. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
@@ -640,7 +636,6 @@ MinIO is an object storage server released under the GNU AGPL v3.0. It is compat
   - [Source](../install/installation.md#10-nginx)
 - Layer: Core Service (Processor)
 - Process: `nginx`
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 NGINX has an Ingress port for all HTTP requests and routes them to the appropriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
 
@@ -733,7 +728,6 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
   - [Source](../install/installation.md#8-redis)
 - Layer: Core Service (Data)
 - Process: `redis`
-- GitLab.com: [Service Architecture](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#service-architecture)
 
 Redis is packaged to provide a place to store:
 

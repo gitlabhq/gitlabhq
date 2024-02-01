@@ -1,6 +1,8 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 query getOrganizationGroups(
   $id: OrganizationsOrganizationID!
+  $search: String
+  $sort: OrganizationGroupSort
   $first: Int
   $last: Int
   $before: String
@@ -8,7 +10,14 @@ query getOrganizationGroups(
 ) {
   organization(id: $id) {
     id
-    groups(first: $first, last: $last, before: $before, after: $after) {
+    groups(
+      first: $first
+      search: $search
+      sort: $sort
+      last: $last
+      before: $before
+      after: $after
+    ) {
       nodes {
         id
         fullName

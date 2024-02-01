@@ -271,15 +271,15 @@
 
 .projects-list {
   @include basic-list;
-  @include gl-display-table;
+  display: table;
 
   .project-row {
-    @include gl-display-table-row;
+    display: table-row;
   }
 
   .project-cell {
-    @include gl-display-table-cell;
-    @include gl-vertical-align-top;
+    display: table-cell;
+    vertical-align: top;
     padding-top: $gl-spacing-scale-4;
     padding-bottom: $gl-spacing-scale-4;
     border-bottom: 1px solid var(--gray-50, $gray-50);
@@ -287,7 +287,7 @@
 
   .project-row:last-of-type {
     .project-cell {
-      @include gl-border-none;
+      border-style: none;
     }
   }
 
@@ -303,7 +303,7 @@
     }
 
     .controls {
-      @include gl-line-height-42;
+      line-height: $gl-line-height-42;
     }
   }
 
@@ -323,7 +323,7 @@
   &:not(.compact) {
     .controls {
       @include media-breakpoint-up(lg) {
-        @include gl-justify-content-start;
+        justify-content: flex-start;
         padding-right: $gl-spacing-scale-9;
 
         &:not(.with-pipeline-status) {
@@ -339,7 +339,7 @@
     .project-details {
       p,
       .commit-row-message {
-        @include gl-white-space-normal;
+        white-space: normal;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         /* stylelint-disable-next-line value-no-vendor-prefix */
@@ -350,7 +350,7 @@
 
   .controls {
     @include media-breakpoint-up(sm) {
-      @include gl-justify-content-end;
+      justify-content: flex-end;
     }
 
     .icon-wrapper {
@@ -376,8 +376,8 @@
   &.compact {
     .description {
       width: 100%;
-      @include gl-display-table;
-      @include gl-table-layout-fixed;
+      display: table;
+      table-layout: fixed;
     }
 
     .avatar-container {
@@ -409,7 +409,7 @@
   @include media-breakpoint-down(md) {
     .updated-note {
       margin-top: $gl-spacing-scale-3;
-      @include gl-text-right;
+      text-align: right;
     }
   }
 
@@ -431,7 +431,7 @@
   @include media-breakpoint-down(xs) {
     .updated-note {
       margin-top: 0;
-      @include gl-text-left;
+      text-align: left;
     }
   }
 }

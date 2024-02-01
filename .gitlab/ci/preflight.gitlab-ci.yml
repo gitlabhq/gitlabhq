@@ -56,6 +56,7 @@ rails-production-server-boot-puma-cng:
 ruby_syntax:
   extends:
     - .preflight-job-base
+    - .preflight:rules:ruby_syntax
   before_script:
     - source scripts/utils.sh
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}

@@ -343,7 +343,7 @@ $comparison-empty-state-height: 62px;
 }
 
 .survey-slide-up-enter-active {
-  @include gl-transition-slow;
+  transition: all $gl-transition-duration-slow ease;
 }
 
 .mr-compare-dropdown {

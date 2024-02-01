@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PreviewMarkdownService < BaseService
+class PreviewMarkdownService < BaseContainerService
   def execute
     text, commands = explain_quick_actions(params[:text])
     users = find_user_references(text)
@@ -55,7 +55,7 @@ class PreviewMarkdownService < BaseService
 
   def find_commands_target
     QuickActions::TargetService
-      .new(container: project, current_user: current_user, params: { group: params[:group] })
+      .new(container: container, current_user: current_user)
       .execute(target_type, target_id)
   end
 
@@ -68,4 +68,4 @@ class PreviewMarkdownService < BaseService
   end
 end
 
-PreviewMarkdownService.prepend_mod_with('PreviewMarkdownService')
+PreviewMarkdownService.prepend_mod

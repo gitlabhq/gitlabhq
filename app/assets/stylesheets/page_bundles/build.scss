@@ -85,7 +85,7 @@
   top: $calc-application-header-height;
 
   @include media-breakpoint-up(lg) {
-    @include gl-border-l-0;
+    border-left-width: 0;
   }
 
   &.right-sidebar-collapsed {

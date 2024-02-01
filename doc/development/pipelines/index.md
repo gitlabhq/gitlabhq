@@ -587,7 +587,7 @@ If these commands return `undercover: ✅ No coverage is missing in latest chang
 
 ### `pajamas_adoption` job
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141368) in GitLab 16.8.
 
 The `pajamas_adoption` job runs the [Pajamas Adoption Scanner](https://gitlab-org.gitlab.io/frontend/pajamas-adoption-scanner/) in merge requests to prevent regressions in the adoption of the [Pajamas Design System](https://design.gitlab.com/).
 

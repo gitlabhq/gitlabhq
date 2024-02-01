@@ -11,7 +11,6 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
 
   it { is_expected.to delegate_method(:sha).to(:release) }
-  it { is_expected.to delegate_method(:released_at).to(:release) }
   it { is_expected.to delegate_method(:author_id).to(:release) }
 
   describe 'validations' do

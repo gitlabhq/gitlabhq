@@ -1,5 +1,5 @@
 .whats-new-drawer {
-  @include gl-shadow-none;
+  box-shadow: none;
   overflow-y: hidden;
   width: 500px;
 

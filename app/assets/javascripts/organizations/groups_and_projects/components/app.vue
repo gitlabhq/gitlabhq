@@ -17,15 +17,14 @@ import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
 import GroupsView from '../../shared/components/groups_view.vue';
 import ProjectsView from '../../shared/components/projects_view.vue';
 import { onPageChange } from '../../shared/utils';
-import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '../../shared/constants';
 import {
-  DISPLAY_LISTBOX_ITEMS,
+  QUERY_PARAM_END_CURSOR,
+  QUERY_PARAM_START_CURSOR,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
-  SORT_ITEMS,
-  SORT_ITEM_CREATED,
-  FILTERED_SEARCH_TERM_KEY,
-} from '../constants';
+  SORT_ITEM_NAME,
+} from '../../shared/constants';
+import { DISPLAY_LISTBOX_ITEMS, SORT_ITEMS, FILTERED_SEARCH_TERM_KEY } from '../constants';
 
 export default {
   i18n: {
@@ -60,10 +59,13 @@ export default {
       return this.$options.sortItems.find((sortItem) => sortItem.value === this.sortName);
     },
     sortName() {
-      return this.$route.query.sort_name || SORT_ITEM_CREATED.value;
+      return this.$route.query.sort_name || SORT_ITEM_NAME.value;
+    },
+    sortDirection() {
+      return this.$route.query.sort_direction || SORT_DIRECTION_ASC;
     },
     isAscending() {
-      return this.$route.query.sort_direction !== SORT_DIRECTION_DESC;
+      return this.sortDirection !== SORT_DIRECTION_DESC;
     },
     sortText() {
       return this.activeSortItem.text;
@@ -91,6 +93,21 @@ export default {
         ? display
         : RESOURCE_TYPE_GROUPS;
     },
+    search() {
+      return (
+        this.filteredSearchValue.find((token) => token.type === FILTERED_SEARCH_TERM)?.value
+          ?.data || ''
+      );
+    },
+    routeQueryWithoutPagination() {
+      const {
+        [QUERY_PARAM_START_CURSOR]: startCursor,
+        [QUERY_PARAM_END_CURSOR]: endCursor,
+        ...routeQuery
+      } = this.$route.query;
+
+      return routeQuery;
+    },
   },
   methods: {
     pushQuery(query) {
@@ -110,11 +127,11 @@ export default {
         return;
       }
 
-      this.pushQuery({ ...this.$route.query, sort_name: sortValue });
+      this.pushQuery({ ...this.routeQueryWithoutPagination, sort_name: sortValue });
     },
     onSortDirectionChange(isAscending) {
       this.pushQuery({
-        ...this.$route.query,
+        ...this.routeQueryWithoutPagination,
         sort_direction: isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC,
       });
     },
@@ -182,6 +199,9 @@ export default {
       list-item-class="gl-px-5"
       :start-cursor="startCursor"
       :end-cursor="endCursor"
+      :search="search"
+      :sort-name="sortName"
+      :sort-direction="sortDirection"
       @page-change="onPageChange"
     />
   </div>

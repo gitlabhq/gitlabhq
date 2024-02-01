@@ -12,7 +12,7 @@
       color: var(--gray-500, $gray-500);
 
       > .gl-tab-counter-badge {
-        @include gl-reset-color;
+        color: inherit;
         font-size: $gl-font-size-sm;
         background-color: var(--gray-50, $gray-50);
       }
@@ -21,7 +21,7 @@
 
   @include media-breakpoint-down(xs) {
     .list-header {
-      @include gl-flex-direction-column-reverse;
+      flex-direction: column-reverse;
     }
 
     .create-incident-button {

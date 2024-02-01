@@ -3,6 +3,6 @@ name: ci_job_artifacts_backlog_large_loop_limit
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76509
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/347151
 milestone: '14.10'
-type: development
+type: ops
 group: group::pipeline security
 default_enabled: false

@@ -135,10 +135,10 @@ ul.related-merge-requests > li gl-emoji {
 
     @include media-breakpoint-down(xs) {
       .btn.btn-confirm {
-        @include gl-justify-content-start;
+        justify-content: flex-start;
 
         &.dropdown-toggle {
-          @include gl-flex-grow-0;
+          flex-grow: 0;
         }
       }
     }

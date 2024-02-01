@@ -146,7 +146,7 @@
 
     p {
       line-height: 1.5;
-      @include gl-reset-color;
+     color: inherit;
 
       &:last-child {
         margin: 0;

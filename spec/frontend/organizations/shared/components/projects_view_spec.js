@@ -193,8 +193,23 @@ describe('ProjectsView', () => {
       });
 
       describe('when next button is clicked', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           findPagination().vm.$emit('next', mockEndCursor);
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: mockEndCursor,
+              startCursor: null,
+            },
+          ]);
+        });
+      });
+
+      describe('when `endCursor` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ endCursor: mockEndCursor });
           await waitForPromises();
         });
 
@@ -206,16 +221,6 @@ describe('ProjectsView', () => {
             id: defaultProvide.organizationGid,
             last: null,
           });
-        });
-
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
-            {
-              endCursor: mockEndCursor,
-              startCursor: null,
-              hasPreviousPage: false,
-            },
-          ]);
         });
       });
     });
@@ -248,8 +253,23 @@ describe('ProjectsView', () => {
       });
 
       describe('when next button is clicked', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           findPagination().vm.$emit('prev', mockStartCursor);
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[1]).toEqual([
+            {
+              endCursor: null,
+              startCursor: mockStartCursor,
+            },
+          ]);
+        });
+      });
+
+      describe('when `startCursor` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ startCursor: mockStartCursor });
           await waitForPromises();
         });
 
@@ -261,16 +281,6 @@ describe('ProjectsView', () => {
             id: defaultProvide.organizationGid,
             last: DEFAULT_PER_PAGE,
           });
-        });
-
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
-            {
-              endCursor: null,
-              startCursor: mockStartCursor,
-              hasPreviousPage: true,
-            },
-          ]);
         });
       });
     });

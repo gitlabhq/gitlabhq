@@ -2,6 +2,8 @@
 
 module Groups
   class CreateService < Groups::BaseService
+    include Organization::CurrentOrganization
+
     def initialize(user, params = {})
       @current_user = user
       @params = params.dup
@@ -14,6 +16,8 @@ module Groups
       set_visibility_level
 
       @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))
+
+      set_organization unless @params[:organization_id]
 
       @group.build_namespace_settings
       handle_namespace_settings
@@ -96,13 +100,30 @@ module Groups
         # We are unsetting this here to match behavior of invalid parent_id above and protect against possible
         # committing to the database of a value that isn't allowed.
         @group.organization = nil
-        message = s_("CreateGroup|You don't have permission to create a group in the provided organization.")
-        @group.errors.add(:organization_id, message)
 
         return false
       end
 
       true
+    end
+
+    def can_create_group_in_organization?
+      return true if can?(current_user, :create_group, @group.organization)
+
+      message = s_("CreateGroup|You don't have permission to create a group in the provided organization.")
+      @group.errors.add(:organization_id, message)
+
+      false
+    end
+
+    def matches_parent_organization?
+      return true if @group.parent_id.blank?
+      return true if @group.parent.organization_id == @group.organization_id
+
+      message = s_("CreateGroup|You can't create a group in a different organization than the parent group.")
+      @group.errors.add(:organization_id, message)
+
+      false
     end
 
     def organization_setting_valid?
@@ -115,7 +136,7 @@ module Groups
       return true if params[:organization_id].blank?
       return true if @group.organization.blank?
 
-      can?(current_user, :create_group, @group.organization)
+      can_create_group_in_organization? && matches_parent_organization?
     end
 
     def can_use_visibility_level?
@@ -138,6 +159,14 @@ module Groups
 
       @group.shared_runners_enabled = @group.parent.shared_runners_enabled
       @group.allow_descendants_override_disabled_shared_runners = @group.parent.allow_descendants_override_disabled_shared_runners
+    end
+
+    def set_organization
+      if @group.parent_id
+        @group.organization = @group.parent.organization
+      elsif current_organization
+        @group.organization = current_organization
+      end
     end
   end
 end

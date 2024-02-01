@@ -48,7 +48,7 @@
   // - app/helpers/ci/status_helper.rb
   .ci-icon-gl-icon-wrapper {
     border-radius: $gl-border-radius-full;
-    @include gl-line-height-0;
+    line-height: 0;
   }
 
   // Makes the borderless CI icons appear slightly bigger than the default 16px.

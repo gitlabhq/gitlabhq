@@ -75,6 +75,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
       expect(json_response['can_create_group']).to eq(true)
       expect(json_response['jira_connect_application_key']).to eq(nil)
+      expect(json_response['jira_connect_public_key_storage_enabled']).to eq(false)
       expect(json_response['jira_connect_proxy_url']).to eq(nil)
       expect(json_response['user_defaults_to_private_profile']).to eq(false)
       expect(json_response['default_syntax_highlighting_theme']).to eq(1)
@@ -200,6 +201,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             inactive_projects_send_warning_email_after_months: 12,
             can_create_group: false,
             jira_connect_application_key: '123',
+            jira_connect_public_key_storage_enabled: true,
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
             bulk_import_max_download_file_size: 1,
@@ -284,6 +286,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
         expect(json_response['can_create_group']).to eq(false)
         expect(json_response['jira_connect_application_key']).to eq('123')
+        expect(json_response['jira_connect_public_key_storage_enabled']).to eq(true)
         expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
         expect(json_response['bulk_import_enabled']).to be(false)
         expect(json_response['allow_runner_registration_token']).to be(true)

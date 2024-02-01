@@ -47,7 +47,7 @@
 
   .dropdown-menu {
     width: 100%;
-    @include gl-max-w-none;
+    max-width: none;
   }
 
   .gl-dropdown-item-check-icon {

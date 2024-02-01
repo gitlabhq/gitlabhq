@@ -51,7 +51,7 @@
       font-family: $monospace-font;
       white-space: nowrap;
       display: flex;
-      @include gl-justify-content-end;
+      justify-content: flex-end;
 
       i,
       svg {
@@ -115,12 +115,12 @@ td.line-numbers {
   .line-numbers:not(.line-links) a:focus-within::before,
   .line-links:hover a::before,
   .line-links:focus-within a::before {
-    @include gl-visibility-visible;
+    visibility: visible;
   }
 
 
   .file-line-num {
-    @include gl-justify-content-end;
+    justify-content: flex-end;
     flex-grow: 1;
     padding-right: $gl-spacing-scale-3;
   }

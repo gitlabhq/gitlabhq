@@ -19,7 +19,7 @@ module Gitlab
           delegate :instrument, to: :logger
 
           # We try to keep the number of parallel HTTP requests to a minimum to avoid overloading IO.
-          MAX_PARALLEL_REMOTE_REQUESTS = 2
+          MAX_PARALLEL_REMOTE_REQUESTS = 4
 
           def initialize(
             project: nil, pipeline: nil, sha: nil, user: nil, parent_pipeline: nil, variables: nil,

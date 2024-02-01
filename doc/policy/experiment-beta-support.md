@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 There are cases where GitLab would like to validate the edge-cases of scale, support, and maintenance burden of features in their current form for every designed use case.
 There are also scenarios where a feature is not complete enough to be considered an [MVC](https://handbook.gitlab.com/handbook/product/product-principles/#the-minimal-viable-change-mvc).
-In these cases, GitLab has the option to release features as Experiment, Beta, or Limited Availability, and users can opt-in and test the new experience.
+In these cases, GitLab has the option to release features as Experiments or Beta features, and users can opt-in and test the new experience.
 Features might not be fully documented or supported in the Experiment or Beta phases.
 
 Please note that some features may not be aligned to these recommendations if they were developed before the recommendations were in place or if the group determined an alternative implementation approach was needed.
@@ -92,11 +92,11 @@ The experimental features are only shown when people/organizations opt-in to exp
 All features that are available on GitLab.com are considered "in production".
 Because all Experiment, Beta, and Generally Available features are available on GitLab.com, they are all considered to be in production.
 
-## Experiment, Beta and Limited Availability Exit Criteria
+## Experiment and Beta Exit Criteria
 
 To ensure the phases before General Availability are as short as possible each phase of Experiment, Beta and LA should include exit criteria.
 This encourages rapid iteration and reduces [cycle time](https://handbook.gitlab.com/handbook/values/#reduce-cycle-time).
-GitLab Product Managers will take the following into account when deciding what exit criteria to apply to their Experimental, Beta, and Limited Availability features:
+GitLab Product Managers will take the following into account when deciding what exit criteria to apply to their Experimental and Beta features:
 
 - **Time**: Define an end date at which point the feature will be General Availability.
   - Consider setting a time-bound target metric that will define readiness for exit into GA (e.g. X number of customers retained MoM over 6 months after launch of Experiment, X% growth of free and paid users in three months since launch Beta, etc.)

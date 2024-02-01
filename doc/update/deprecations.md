@@ -1664,6 +1664,22 @@ Multiple DORA metrics can now be queried simultaneously using a new metrics fiel
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### `omniauth-azure-oauth2` gem is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408989).
+</div>
+
+GitLab users can use the `omniauth-azure-oauth2` gem to authenticate with GitLab. In 17.0, this gem will be replaced with the `omniauth_openid_connect` gem. The new gem contains all of the same features as the old gem, but also has upstream maintenance and is better for security and centralized maintenance.
+
+This change requires that users re-connect to the OAuth2 provider at time of migration. To avoid disruption, [add `omniauth_openid_connect` as a new provider](https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-multiple-openid-connect-providers) any time before 17.0. Users will see a new login button and have to manually reconnect their credentials. If you do not implement the `omniauth_openid_connect` gem before 17.0, users will no longer be able to sign in using the Azure login button, and will have to sign in using their username and password, until the correct gem is implemented by the administrator.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### `postgres_exporter['per_table_stats']` configuration setting
 
 <div class="deprecation-notes">

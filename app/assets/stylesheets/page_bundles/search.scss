@@ -325,7 +325,7 @@ $language-filter-max-height: 20rem;
     pre {
       padding: 0; // This overrides the existing style that will add space between each line.
       .line {
-        @include gl-word-break-word;
+        word-break: break-word;
         white-space: break-spaces;
       }
     }

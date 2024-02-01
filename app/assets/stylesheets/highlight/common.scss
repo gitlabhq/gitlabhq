@@ -112,7 +112,7 @@
 
 @mixin line-link($color, $icon) {
   &::before {
-    @include gl-visibility-hidden;
+    visibility: hidden;
     align-self: center;
     margin-right: $gl-spacing-scale-1;
     width: $gl-spacing-scale-5;

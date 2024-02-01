@@ -4,6 +4,7 @@ import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { createAlert } from '~/alert';
+import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import { formatProjects } from '../utils';
 
@@ -61,32 +62,25 @@ export default {
       required: false,
       default: DEFAULT_PER_PAGE,
     },
+    search: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    sortName: {
+      type: String,
+      required: false,
+      default: SORT_ITEM_NAME.value,
+    },
+    sortDirection: {
+      type: String,
+      required: false,
+      default: SORT_DIRECTION_ASC,
+    },
   },
   data() {
-    const baseData = {
-      projects: {},
-    };
-
-    if (!this.startCursor && !this.endCursor) {
-      return {
-        ...baseData,
-        pagination: {
-          first: this.perPage,
-          after: null,
-          last: null,
-          before: null,
-        },
-      };
-    }
-
     return {
-      ...baseData,
-      pagination: {
-        first: this.endCursor && this.perPage,
-        after: this.endCursor,
-        last: this.startCursor && this.perPage,
-        before: this.startCursor,
-      },
+      projects: {},
     };
   },
   apollo: {
@@ -127,6 +121,23 @@ export default {
     pageInfo() {
       return this.projects.pageInfo || {};
     },
+    pagination() {
+      if (!this.startCursor && !this.endCursor) {
+        return {
+          first: this.perPage,
+          after: null,
+          last: null,
+          before: null,
+        };
+      }
+
+      return {
+        first: this.endCursor && this.perPage,
+        after: this.endCursor,
+        last: this.startCursor && this.perPage,
+        before: this.startCursor,
+      };
+    },
     isLoading() {
       return this.$apollo.queries.projects.loading;
     },
@@ -151,20 +162,16 @@ export default {
   },
   methods: {
     onNext(endCursor) {
-      this.pagination = {
-        first: this.perPage,
-        after: endCursor,
-        last: null,
-        before: null,
-      };
+      this.$emit('page-change', {
+        endCursor,
+        startCursor: null,
+      });
     },
     onPrev(startCursor) {
-      this.pagination = {
-        first: null,
-        after: null,
-        last: this.perPage,
-        before: startCursor,
-      };
+      this.$emit('page-change', {
+        endCursor: null,
+        startCursor,
+      });
     },
   },
 };

@@ -125,7 +125,7 @@
 }
 
 .suggestions.md > .markdown-code-block {
-  @include gl-static;
+  position: static;
 }
 
 .md-suggestion-header {

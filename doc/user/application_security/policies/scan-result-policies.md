@@ -300,19 +300,13 @@ actions:
 ## Understanding scan result policy approvals
 
 > - The branch comparison logic for `scan_finding` was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_merge_base_pipeline`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_merge_base_pipeline`.
-On GitLab.com, this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435297) in GitLab 16.9. Feature flag `scan_result_policy_merge_base_pipeline` removed.
 
 ### Scope of scan result policy comparison
 
 - To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
 - For the source branch, the comparison pipeline is its latest completed `HEAD` pipeline.
-- For `license_finding` rules, we compare to a common ancestor's latest completed pipeline.
-- For `scan_finding` rules, the comparison pipeline may differ:
-  - If the `scan_result_policy_merge_base_pipeline` feature flag is enabled, we compare to a common ancestor's latest completed pipeline.
-  - Otherwise, we compare to the target branch's latest completed `HEAD` pipeline.
+- For the target branch, we compare to a common ancestor's latest completed pipeline.
 - Scan result policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests

@@ -39,10 +39,9 @@ export const formatGroups = (groups) =>
 export const onPageChange = ({
   startCursor,
   endCursor,
-  hasPreviousPage,
   routeQuery: { start_cursor, end_cursor, ...routeQuery },
 }) => {
-  if (startCursor && hasPreviousPage) {
+  if (startCursor) {
     return {
       ...routeQuery,
       [QUERY_PARAM_START_CURSOR]: startCursor,

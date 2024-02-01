@@ -478,7 +478,7 @@ span.idiff {
   overflow: hidden;
 
   .tree-list-parent::before {
-    @include gl-content-empty;
+    content: '';
     position: absolute;
     z-index: 1;
     pointer-events: none;

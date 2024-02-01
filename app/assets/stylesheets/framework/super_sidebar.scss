@@ -245,7 +245,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
     .user-bar-dropdown-toggle {
       padding: $gl-spacing-scale-2;
-      @include gl-border-none;
+      border-style: none;
 
       &[aria-expanded='true'] {
         background-color: var(--super-sidebar-user-bar-button-hover-bg);

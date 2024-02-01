@@ -2,6 +2,7 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
+import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import { formatGroups } from '~/organizations/shared/utils';
 import groupsQuery from '~/organizations/shared/graphql/queries/groups.query.graphql';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
@@ -33,6 +34,9 @@ describe('GroupsView', () => {
 
   const defaultPropsData = {
     listItemClass: 'gl-px-5',
+    search: 'foo',
+    sortName: SORT_ITEM_NAME.value,
+    sortDirection: SORT_DIRECTION_ASC,
   };
 
   const groups = {
@@ -125,7 +129,21 @@ describe('GroupsView', () => {
 
     describe('when there are groups', () => {
       beforeEach(() => {
-        createComponent();
+        createComponent({ propsData: {} });
+      });
+
+      it('calls GraphQL query with correct variables', async () => {
+        await waitForPromises();
+
+        expect(successHandler).toHaveBeenCalledWith({
+          id: defaultProvide.organizationGid,
+          search: defaultPropsData.search,
+          sort: 'NAME_ASC',
+          last: null,
+          first: DEFAULT_PER_PAGE,
+          before: null,
+          after: null,
+        });
       });
 
       it('renders `GroupsList` component and passes correct props', async () => {
@@ -190,9 +208,23 @@ describe('GroupsView', () => {
       });
 
       describe('when next button is clicked', () => {
-        beforeEach(async () => {
+        beforeEach(() => {
           findPagination().vm.$emit('next', mockEndCursor);
-          await waitForPromises();
+        });
+
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[0]).toEqual([
+            {
+              endCursor: mockEndCursor,
+              startCursor: null,
+            },
+          ]);
+        });
+      });
+
+      describe('when `endCursor` prop is changed', () => {
+        beforeEach(() => {
+          wrapper.setProps({ endCursor: mockEndCursor });
         });
 
         it('calls query with correct variables', () => {
@@ -202,17 +234,9 @@ describe('GroupsView', () => {
             first: DEFAULT_PER_PAGE,
             id: defaultProvide.organizationGid,
             last: null,
+            search: defaultPropsData.search,
+            sort: 'NAME_ASC',
           });
-        });
-
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
-            {
-              endCursor: mockEndCursor,
-              startCursor: null,
-              hasPreviousPage: false,
-            },
-          ]);
         });
       });
     });
@@ -250,6 +274,22 @@ describe('GroupsView', () => {
           await waitForPromises();
         });
 
+        it('emits `page-change` event', () => {
+          expect(wrapper.emitted('page-change')[0]).toEqual([
+            {
+              endCursor: null,
+              startCursor: mockStartCursor,
+            },
+          ]);
+        });
+      });
+
+      describe('when `startCursor` prop is changed', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ startCursor: mockStartCursor });
+          await waitForPromises();
+        });
+
         it('calls query with correct variables', () => {
           expect(handler).toHaveBeenCalledWith({
             after: null,
@@ -257,17 +297,9 @@ describe('GroupsView', () => {
             first: null,
             id: defaultProvide.organizationGid,
             last: DEFAULT_PER_PAGE,
+            search: defaultPropsData.search,
+            sort: 'NAME_ASC',
           });
-        });
-
-        it('emits `page-change` event', () => {
-          expect(wrapper.emitted('page-change')[1]).toEqual([
-            {
-              endCursor: null,
-              startCursor: mockStartCursor,
-              hasPreviousPage: true,
-            },
-          ]);
         });
       });
     });

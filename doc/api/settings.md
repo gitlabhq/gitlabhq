@@ -125,6 +125,7 @@ Example response:
   "external_pipeline_validation_service_token": null,
   "external_pipeline_validation_service_url": null,
   "jira_connect_application_key": null,
+  "jira_connect_public_key_storage_enabled": false,
   "jira_connect_proxy_url": null,
   "silent_mode_enabled": false,
   "package_registry_allow_anyone_to_pull_option": true,
@@ -269,6 +270,7 @@ Example response:
   "external_pipeline_validation_service_url": null,
   "can_create_group": false,
   "jira_connect_application_key": "123",
+  "jira_connect_public_key_storage_enabled": true,
   "jira_connect_proxy_url": "http://gitlab.example.com",
   "user_defaults_to_private_profile": true,
   "projects_api_rate_limit_unauthenticated": 400,
@@ -467,8 +469,9 @@ listed in the descriptions of the relevant settings.
 | `import_sources`                         | array of strings | no                                   | Sources to allow project import from, possible values: `github`, `bitbucket`, `bitbucket_server`, `fogbugz`, `git`, `gitlab_project`, `gitea`, and `manifest`. |
 | `invisible_captcha_enabled`              | boolean          | no                                   | Enable Invisible CAPTCHA spam detection during sign-up. Disabled by default. |
 | `issues_create_limit`                    | integer          | no                                   | Max number of issue creation requests per minute per user. Disabled by default.|
-| `jira_connect_application_key`           | String           | no                                   | Application ID of the OAuth application that should be used to authenticate with the GitLab for Jira Cloud app |
-| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance that should be used as a proxy for the GitLab for Jira Cloud app |
+| `jira_connect_application_key`           | String           | no                                   | ID of the OAuth application used to authenticate with the GitLab for Jira Cloud app. |
+| `jira_connect_public_key_storage_enabled` | boolean         | no                                   | Enable public key storage for the GitLab for Jira Cloud app. |
+| `jira_connect_proxy_url`                 | String           | no                                   | URL of the GitLab instance used as a proxy for the GitLab for Jira Cloud app. |
 | `keep_latest_artifact`                   | boolean          | no                                   | Prevent the deletion of the artifacts from the most recent successful jobs, regardless of the expiry time. Enabled by default. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached Markdown should be invalidated. |
 | `mailgun_signing_key`                    | string           | no                                   | The Mailgun HTTP webhook signing key for receiving events from webhook. |

@@ -39,7 +39,7 @@ export default function deviseState() {
     return stateKey.shaMismatch;
   }
   if (this.autoMergeEnabled && !this.mergeError) {
-    return stateKey.autoMergeEnabled;
+    return window.gon?.features?.mergeBlockedComponent ? null : stateKey.autoMergeEnabled;
   }
   if (
     this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE ||

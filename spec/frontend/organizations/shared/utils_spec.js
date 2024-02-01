@@ -40,27 +40,14 @@ describe('formatGroups', () => {
 describe('onPageChange', () => {
   const mockRouteQuery = { start_cursor: 'mockStartCursor', end_cursor: 'mockEndCursor' };
 
-  describe('when `startCursor` is defined and `hasPreviousPage` is `true`', () => {
+  describe('when `startCursor` is defined', () => {
     it('sets start cursor query param', () => {
       expect(
         onPageChange({
           startCursor: 'newMockStartCursor',
-          hasPreviousPage: true,
           routeQuery: mockRouteQuery,
         }),
       ).toEqual({ start_cursor: 'newMockStartCursor' });
-    });
-  });
-
-  describe('when `startCursor` is defined and `hasPreviousPage` is `false`', () => {
-    it('does not set any query params', () => {
-      expect(
-        onPageChange({
-          startCursor: 'newMockStartCursor',
-          hasPreviousPage: false,
-          routeQuery: mockRouteQuery,
-        }),
-      ).toEqual({});
     });
   });
 

@@ -327,6 +327,14 @@
 .lib-gitlab-patterns: &lib-gitlab-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}gitlab/**/*"
 
+# Patterns to match pure Ruby code
+.ruby-patterns: &ruby-patterns
+  - "**/Rakefile"
+  - "**/Dangerfile"
+  - "**/Gemfile"
+  - "**/Guardfile"
+  - "**/*.rb"
+
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
@@ -2847,7 +2855,7 @@
 .preflight:rules:ruby_syntax:
   rules:
     - <<: *if-default-refs
-      changes: *backend-patterns
+      changes: *ruby-patterns
 
 .preflight:rules:no-ee-check:
   rules:

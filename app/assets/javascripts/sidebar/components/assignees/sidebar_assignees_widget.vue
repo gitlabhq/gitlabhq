@@ -6,7 +6,9 @@ import { TYPE_ALERT, TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import UserSelect from '~/vue_shared/components/user_select/user_select.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import { assigneesQueries } from '../../queries/constants';
 import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarAssigneesRealtime from './assignees_realtime.vue';
@@ -158,10 +160,17 @@ export default {
       return this.issuable?.author;
     },
     assigneeShortcutDescription() {
-      return ISSUE_MR_CHANGE_ASSIGNEE.description;
+      return shouldDisableShortcuts() ? null : ISSUE_MR_CHANGE_ASSIGNEE.description;
     },
     assigneeShortcutKey() {
-      return ISSUE_MR_CHANGE_ASSIGNEE.defaultKeys[0];
+      return shouldDisableShortcuts() ? null : keysFor(ISSUE_MR_CHANGE_ASSIGNEE)[0];
+    },
+    assigneeTooltip() {
+      const description = this.assigneeShortcutDescription;
+      const key = this.assigneeShortcutKey;
+      return shouldDisableShortcuts()
+        ? null
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
   },
   watch: {
@@ -253,7 +262,7 @@ export default {
       :loading="isSettingAssignees"
       :initial-loading="isAssigneesLoading"
       :title="assigneeText"
-      :edit-tooltip="`${assigneeShortcutDescription} <kbd class='flat ml-1' aria-hidden=true>${assigneeShortcutKey}</kbd>`"
+      :edit-tooltip="assigneeTooltip"
       :edit-aria-label="assigneeShortcutDescription"
       :edit-keyshortcuts="assigneeShortcutKey"
       :is-dirty="isDirty"

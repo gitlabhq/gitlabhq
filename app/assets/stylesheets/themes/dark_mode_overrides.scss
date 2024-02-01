@@ -130,7 +130,7 @@
 }
 
 .gl-avatar {
-  @include gl-border-none;
+  border-style: none;
   box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
 }
 

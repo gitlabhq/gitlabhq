@@ -296,7 +296,7 @@ label {
     border-color: var(--gray-700, $gray-700);
 
     input {
-      @include gl-shadow-none;
+      box-shadow: none;
     }
   }
 

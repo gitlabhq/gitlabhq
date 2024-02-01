@@ -3,7 +3,7 @@
 .file-editor {
   #editor,
   .editor {
-    @include gl-border-0;
+    border-width: 0;
     margin: 0;
     padding: 0;
     position: relative;
@@ -12,7 +12,7 @@
 
     .editor-loading-content {
       height: 100%;
-      @include gl-border-0;
+      border-width: 0;
     }
   }
 

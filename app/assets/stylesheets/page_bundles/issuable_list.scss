@@ -93,7 +93,7 @@
     padding-left: $gl-spacing-scale-1;
     padding-right: $gl-spacing-scale-2;
     height: $gl-spacing-scale-5;
-    @include gl-min-w-5;
+    min-width: $gl-spacing-scale-5;
     line-height: 14px;
   }
 }

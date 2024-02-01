@@ -8,6 +8,10 @@ Shared styles for system note dot and icon styles used for MR, Issue, Work Item
     margin-left: 12px;
     margin-right: 8px;
     border: 2px solid var(--gray-50, $gray-50);
+    
+    .gl-dark .modal-body & {
+      border-color: var(--gray-100, $gray-100);
+    }
   }
   
   .system-note-icon {

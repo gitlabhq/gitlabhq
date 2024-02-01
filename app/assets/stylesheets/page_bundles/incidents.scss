@@ -58,7 +58,7 @@
 .timeline-entry:not(:last-child) {
   .timeline-event-border {
     padding-bottom: $gl-spacing-scale-3;
-    @include gl-border-gray-50;
+    border-color: $gray-50;
     border-width: $gl-border-size-1;
     border-bottom-style: solid;
   }
@@ -68,7 +68,7 @@
   .timeline-entry:last-child,
   .create-timeline-event {
     .timeline-event-bottom-border {
-      @include gl-border-b;
+      border-bottom: solid $gl-border-size-1 $border-color;
       padding-top: $gl-spacing-scale-5;
     }
   }

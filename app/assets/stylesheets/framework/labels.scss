@@ -14,11 +14,11 @@
   // GitLab UI's label component
   .gl-label,
   .gl-label-sm {
-    @include gl-vertical-align-bottom;
+    vertical-align: bottom;
 
     &:focus:active {
-      @include gl-reset-color;
-      @include gl-shadow-none;
+      color: inherit;
+      box-shadow: none;
       outline: none;
     }
 
@@ -51,6 +51,6 @@
   }
 
   .md code {
-    @include gl-vertical-align-bottom;
+    vertical-align: bottom;
   }
 }

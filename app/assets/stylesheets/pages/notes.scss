@@ -34,6 +34,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   .main-notes-list::before {
     background: var(--gray-50, $gray-50);
+
+    .gl-dark .modal-body & {
+      background: var(--gray-100, $gray-100);
+    }
   }
 
   .timeline-entry:not(.draft-note):last-child::before {
@@ -41,6 +45,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .gl-dark & {
       background: var(--gray-10);
+    }
+    
+    .gl-dark .modal-body & {
+      background: var(--gray-50, $gray-50);
     }
 
     &.note-comment {

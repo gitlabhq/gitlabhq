@@ -11,7 +11,8 @@ import { s__, __ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
-import { GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
@@ -198,8 +199,11 @@ export default {
         ...handleOptions,
       };
     },
+    shortcutsDisabled() {
+      return shouldDisableShortcuts();
+    },
     webIdeActionShortcutKey() {
-      return GO_TO_PROJECT_WEBIDE.defaultKeys[0];
+      return keysFor(GO_TO_PROJECT_WEBIDE)[0];
     },
     webIdeActionText() {
       if (this.webIdeText) {
@@ -368,7 +372,9 @@ export default {
                 <span data-testid="action-primary-text" class="gl-font-weight-bold">{{
                   action.text
                 }}</span>
-                <kbd v-if="action.shortcut" class="flat">{{ action.shortcut }}</kbd>
+                <kbd v-if="action.shortcut && !shortcutsDisabled" class="flat">{{
+                  action.shortcut
+                }}</kbd>
               </span>
               <span data-testid="action-secondary-text" class="gl-font-sm gl-text-secondary">
                 {{ action.secondaryText }}

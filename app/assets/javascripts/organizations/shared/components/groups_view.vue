@@ -5,6 +5,7 @@ import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { DEFAULT_PER_PAGE } from '~/api';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
+import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import { formatGroups } from '../utils';
 
 export default {
@@ -57,32 +58,25 @@ export default {
       required: false,
       default: DEFAULT_PER_PAGE,
     },
+    search: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    sortName: {
+      type: String,
+      required: false,
+      default: SORT_ITEM_NAME.value,
+    },
+    sortDirection: {
+      type: String,
+      required: false,
+      default: SORT_DIRECTION_ASC,
+    },
   },
   data() {
-    const baseData = {
-      groups: {},
-    };
-
-    if (!this.startCursor && !this.endCursor) {
-      return {
-        ...baseData,
-        pagination: {
-          first: this.perPage,
-          after: null,
-          last: null,
-          before: null,
-        },
-      };
-    }
-
     return {
-      ...baseData,
-      pagination: {
-        first: this.endCursor && this.perPage,
-        after: this.endCursor,
-        last: this.startCursor && this.perPage,
-        before: this.startCursor,
-      },
+      groups: {},
     };
   },
   apollo: {
@@ -91,6 +85,8 @@ export default {
       variables() {
         return {
           id: this.organizationGid,
+          search: this.search,
+          sort: this.sort,
           ...this.pagination,
         };
       },
@@ -104,13 +100,6 @@ export default {
           pageInfo,
         };
       },
-      result() {
-        this.$emit('page-change', {
-          endCursor: this.pagination.after,
-          startCursor: this.pagination.before,
-          hasPreviousPage: this.pageInfo.hasPreviousPage,
-        });
-      },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
       },
@@ -122,6 +111,26 @@ export default {
     },
     pageInfo() {
       return this.groups.pageInfo || {};
+    },
+    pagination() {
+      if (!this.startCursor && !this.endCursor) {
+        return {
+          first: this.perPage,
+          after: null,
+          last: null,
+          before: null,
+        };
+      }
+
+      return {
+        first: this.endCursor && this.perPage,
+        after: this.endCursor,
+        last: this.startCursor && this.perPage,
+        before: this.startCursor,
+      };
+    },
+    sort() {
+      return `${this.sortName}_${this.sortDirection}`.toUpperCase();
     },
     isLoading() {
       return this.$apollo.queries.groups.loading;
@@ -147,20 +156,16 @@ export default {
   },
   methods: {
     onNext(endCursor) {
-      this.pagination = {
-        first: this.perPage,
-        after: endCursor,
-        last: null,
-        before: null,
-      };
+      this.$emit('page-change', {
+        endCursor,
+        startCursor: null,
+      });
     },
     onPrev(startCursor) {
-      this.pagination = {
-        first: null,
-        after: null,
-        last: this.perPage,
-        before: startCursor,
-      };
+      this.$emit('page-change', {
+        endCursor: null,
+        startCursor,
+      });
     },
   },
 };

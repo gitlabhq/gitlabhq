@@ -1,7 +1,7 @@
 [data-editor-loading] {
   position: relative;
   display: flex;
-  @include gl-justify-content-center;
+  justify-content: center;
   align-items: center;
   z-index: 0;
 
@@ -29,7 +29,7 @@
   display: flex;
 
   .md {
-    @include gl-overflow-scroll;
+    overflow: scroll;
     padding-left: $gl-spacing-scale-6;
     padding-right: $gl-spacing-scale-6;
     padding-top: $gl-spacing-scale-4;
@@ -38,7 +38,7 @@
   }
 
   .gl-source-editor {
-    @include gl-order-n1;
+    order: -1;
     border-radius: 0 0 $border-radius-default $border-radius-default;
   }
 }
@@ -70,11 +70,11 @@
   .margin-view-overlays {
     .line-numbers {
       display: flex;
-      @include gl-justify-content-end;
+      justify-content: flex-end;
       position: relative;
 
       &::before {
-        @include gl-visibility-hidden;
+        visibility: hidden;
         align-self: center;
         background-color: $gray-400;
         margin-right: $gl-spacing-scale-2;
@@ -88,16 +88,16 @@
       }
 
       &:hover {
-        @include gl-text-decoration-underline;
+        text-decoration: underline;
         cursor: pointer !important;
       }
 
       &:hover::before {
-        @include gl-visibility-visible;
+        visibility: visible;
       }
 
       &:focus::before {
-        @include gl-visibility-visible;
+        visibility: visible;
         outline: auto;
       }
 
@@ -112,11 +112,11 @@
 
   // Remove custom focus from element
   .inputarea {
-    @include gl-shadow-none;
+    box-shadow: none;
   }
 }
 
 .active-line-text {
   background-color: $orange-600;
-  @include gl-opacity-3;
+  opacity: 0.3;
 }

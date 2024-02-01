@@ -34,7 +34,7 @@ use the default approval rules from the target (upstream) project, not the sourc
 
 ## Add an approval rule
 
-> Approval rules for all protected branches introduced in GitLab 15.3.
+> - Approval rules for all protected branches introduced in GitLab 15.3.
 
 Prerequisites:
 

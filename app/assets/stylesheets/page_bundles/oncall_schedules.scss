@@ -66,7 +66,7 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 .list-section .details-cell {
   &::after {
     height: 100%;
-    @include gl-content-empty;
+    content: '';
     position: absolute;
     top: 0;
     right: -$grid-size;

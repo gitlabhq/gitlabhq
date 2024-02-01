@@ -29,7 +29,7 @@
   &.todo-pending.done-reversible {
     .todo-item,
     .todo-timestamp {
-      @include gl-opacity-5;
+      opacity: 0.5;
     }
 
     .todo-avatar {
@@ -38,8 +38,8 @@
 
     &:hover {
       border-top-width: $gl-border-size-1;
-      @include gl-border-t-transparent;
-      @include gl-border-t-solid;
+      border-top-color: transparent;
+      border-top-style: solid;
     }
   }
 }
@@ -49,12 +49,12 @@
 
   .todo-label a::before {
     // Make area of the todo item clickable by expanding the area around the todo link
-    @include gl-content-empty;
+    content: '';
     position: absolute;
     left: 0;
-    @include gl-right-0;
+    right: 0;
     top: 0;
-    @include gl-bottom-0;
+    bottom: 0;
     z-index: 9;
   }
 }
@@ -64,9 +64,9 @@
 
   @include media-breakpoint-up(sm) {
     margin-right: 0;
-    @include gl-text-overflow-ellipsis;
-    @include gl-white-space-nowrap;
-    @include gl-overflow-hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 
@@ -82,7 +82,7 @@
     padding-left: $gl-spacing-scale-1;
     padding-right: $gl-spacing-scale-1;
     margin: 0;
-    @include gl-border-0;
+    border-width: 0;
     border-radius: $gl-border-radius-base;
     display: inline-flex;
     background: var(--gray-50, $gray-50);
@@ -106,7 +106,7 @@
 
 .todo-actions {
   position: absolute;
-  @include gl-right-0;
+  right: 0;
 
   @include media-breakpoint-up(sm) {
     position: relative;

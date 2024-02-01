@@ -28,7 +28,7 @@ $stroke-size: 1px;
 
 .escalation-rule-row {
   @media (max-width: $breakpoint-lg) {
-    @include gl-flex-wrap;
+    flex-wrap: wrap;
   }
 }
 
