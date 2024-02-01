@@ -298,7 +298,7 @@ See the [test engineering process](https://handbook.gitlab.com/handbook/engineer
 ### The responsibility of the merge request author
 
 The responsibility to find the best solution and implement it lies with the
-merge request author. The author or [directly responsible individual](https://about.gitlab.com/handbook/people-group/directly-responsible-individuals/)
+merge request author. The author or [directly responsible individual](https://handbook.gitlab.com/handbook/people-group/directly-responsible-individuals/)
 (DRI) stays assigned to the merge request as the assignee throughout
 the code review lifecycle. If you are unable to set yourself as an assignee, ask a [reviewer](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#reviewer) to do this for you.
 

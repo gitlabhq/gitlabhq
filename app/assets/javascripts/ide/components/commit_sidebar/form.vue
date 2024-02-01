@@ -195,7 +195,7 @@ export default {
           </div>
           <gl-button
             v-if="!discardDraftButtonDisabled"
-            class="float-right"
+            class="gl-float-right"
             data-testid="discard-draft"
             @click="discardDraft"
           >
@@ -204,7 +204,7 @@ export default {
           <gl-button
             v-else
             type="button"
-            class="float-right"
+            class="gl-float-right"
             category="secondary"
             variant="default"
             @click="toggleIsCompact"

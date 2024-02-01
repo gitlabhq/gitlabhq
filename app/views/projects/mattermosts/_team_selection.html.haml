@@ -41,7 +41,7 @@
         = sprite_icon('external-link')
   %hr
   .clearfix
-    .float-right
+    .gl-float-right
       = render Pajamas::ButtonComponent.new(href: edit_project_settings_integration_path(@project, @integration)) do
         = _('Cancel')
       = f.submit s_('MattermostService|Install'), pajamas_button: true

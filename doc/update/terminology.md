@@ -24,7 +24,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - Will be removed in a future major release.
 - Begins after an end-of-support date has passed.
 
-[Announcing an End of Support period](https://about.gitlab.com/handbook/marketing/blog/release-posts/#announcing-an-end-of-support-period)
+[Announcing an End of Support period](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#announcing-an-end-of-support-period)
 should only be used in special circumstances and is not recommended for general use.
 Most features should be deprecated and then removed.
 

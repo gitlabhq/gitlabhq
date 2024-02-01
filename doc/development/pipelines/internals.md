@@ -45,7 +45,7 @@ Some more context and background can be found at:
 Here's a list of where we're using this right now, and should try to move away
 from using `$FORCE_GITLAB_CI`.
 
-- [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html)
+- [JiHu validation pipeline](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines/)
 
 See the next section for how we can enable pipelines without using
 `$FORCE_GITLAB_CI`.

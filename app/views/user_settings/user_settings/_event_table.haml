@@ -8,6 +8,6 @@
         %span.description
           = audit_icon('key', css_class: 'gl-mr-2')
           = _('Signed in with %{authentication} authentication') % { authentication: event.provider }
-        %span.float-right= time_ago_with_tooltip(event.created_at)
+        %span.gl-float-right= time_ago_with_tooltip(event.created_at)
 
 = paginate events, theme: "gitlab"

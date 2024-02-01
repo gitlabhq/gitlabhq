@@ -37,7 +37,7 @@ Some generated dashboards are already available:
 ![Default time filter](img/stage_group_dashboards_time_filter.png)
 
 By default, all the times are in UTC time zone.
-[We use UTC when communicating in Engineering.](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
+[We use UTC when communicating in Engineering.](https://handbook.gitlab.com/handbook/communication/#writing-style-guidelines)
 
 All metrics recorded in the GitLab production system have
 [one-year retention](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus/-/blob/31526b03fef823e2f9b3cda7c75dcd28a12418a3/attributes/prometheus.rb#L40).

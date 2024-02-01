@@ -33,5 +33,5 @@
       - else
         = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
-    .float-right
+    .gl-float-right
       = _('updated %{timeAgo}').html_safe % { timeAgo: time_ago_with_tooltip(snippet.updated_at, placement: 'bottom') }

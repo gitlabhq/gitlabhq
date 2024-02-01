@@ -26,6 +26,6 @@
       = l(active_session.created_at, format: :short)
 
   - unless is_current_session
-    .float-right
+    .gl-float-right
       = link_button_to revoke_session_path(active_session), data: { confirm: _('Are you sure? The device will be signed out of GitLab and all remember me tokens revoked.'), confirm_btn_variant: :danger }, method: :delete, class: 'gl-ml-3', variant: :danger, 'aria-label': _('Revoke') do
         = _('Revoke')

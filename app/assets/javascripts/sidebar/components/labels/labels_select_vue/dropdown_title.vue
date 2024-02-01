@@ -36,7 +36,7 @@ export default {
       <gl-button
         category="tertiary"
         size="small"
-        class="float-right js-sidebar-dropdown-toggle gl-mr-n2"
+        class="gl-float-right js-sidebar-dropdown-toggle gl-mr-n2"
         @click="toggleDropdownContents"
       >
         {{ __('Edit') }}

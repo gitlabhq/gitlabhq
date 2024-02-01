@@ -122,29 +122,29 @@
           %h4.gl-heading-4
             = s_('AdminArea|Components')
             - if show_version_check?
-              .float-right
+              .gl-float-right
                 .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
                 = link_to(sprite_icon('question-o'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path
-            %span.float-right
+            %span.gl-float-right
               = link_to_version
           %p
             = _('GitLab Shell')
-            %span.float-right
+            %span.gl-float-right
               = Gitlab::Shell.version
           %p
             = _('GitLab Workhorse')
-            %span.float-right
+            %span.gl-float-right
               = gitlab_workhorse_version
           %p
             = _('GitLab API')
-            %span.float-right
+            %span.gl-float-right
               = API::API::version
           - if Gitlab.config.pages.enabled
             %p
               = _('GitLab Pages')
-              %span.float-right
+              %span.gl-float-right
                 = Gitlab::Pages::VERSION
           - if Gitlab::Kas.enabled?
             %p
@@ -156,20 +156,20 @@
 
           %p
             = _('Ruby')
-            %span.float-right
+            %span.gl-float-right
               #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
           %p
             = _('Rails')
-            %span.float-right
+            %span.gl-float-right
               #{Rails::VERSION::STRING}
           - database_versions.each do |database_name, database|
             %p
               #{database[:adapter_name]} (#{database_name})
-              %span.float-right
+              %span.gl-float-right
                 = database[:version]
           %p
             = _('Redis')
-            %span.float-right
+            %span.gl-float-right
               = @redis_versions&.join(", ")
           %p
             = link_to _("Gitaly Servers"), admin_gitaly_servers_path

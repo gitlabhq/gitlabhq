@@ -35,7 +35,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 If 2FA is not enabled users are locked after three failed sign-in attempts within 24 hours. These users remain locked until:
 
 - Their next successful sign-in, at which point they are sent an email with a six-digit unlock code and redirected to a verification page where they can unlock their account by entering the code.
-- GitLab Support [manually unlock](https://about.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/#manual-unlock) the account after account ownership is verified.
+- GitLab Support [manually unlock](https://handbook.gitlab.com/handbook/support/workflows/reinstating-blocked-accounts/#manual-unlock) the account after account ownership is verified.
 
 If 2FA is enabled, users are locked after three failed sign-in attempts. Accounts are unlocked automatically after 30 minutes.
 

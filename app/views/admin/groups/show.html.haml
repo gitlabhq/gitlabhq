@@ -79,7 +79,7 @@
               %strong
                 = link_to project.full_name, [:admin, project]
                 = gl_badge_tag storage_counter(project.statistics.storage_size)
-              %span.float-right.light
+              %span.gl-float-right.light
                 %span.monospace= project.full_path + '.git'
         - unless @projects.size < Kaminari.config.default_per_page
           - c.with_footer do
@@ -98,7 +98,7 @@
                 %strong
                   = link_to project.full_name, [:admin, project]
                   = gl_badge_tag storage_counter(project.statistics.storage_size)
-                %span.float-right.light
+                %span.gl-float-right.light
                   %span.monospace= project.full_path + '.git'
 
   .col-md-6

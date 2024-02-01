@@ -59,7 +59,7 @@
 
         = render 'shared/issuable_meta_data', issuable: issue
 
-      .float-right.issuable-timestamp.d-none.d-sm-inline-block
+      .gl-float-right.issuable-timestamp.d-none.d-sm-inline-block
         %span
           - if issue.closed? && issue.closed_at
             = _('closed %{timeago}').html_safe % { timeago: time_ago_with_tooltip(issue.closed_at, placement: 'bottom') }

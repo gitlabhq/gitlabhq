@@ -14,7 +14,7 @@ GitLab is creating AI-assisted features across our DevSecOps platform. These fea
 
 Some features are still in development. View details about [support for each status](../policy/experiment-beta-support.md#experiment) (Experiment, Beta, Generally Available).
 
- As features become Generally Available, GitLab is [transparent](https://about.gitlab.com/handbook/content/handbook/values/index.md/#transparency) and updates the documentation to clearly state how and where you can access these capabilities.
+ As features become Generally Available, GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparency) and updates the documentation to clearly state how and where you can access these capabilities.
 
 | Goal | Feature | Tier/Offering/Status |
 |---|---|---|
@@ -268,7 +268,7 @@ All of these AI providers are under data protection agreements with GitLab that 
 
 ### Telemetry
 
-GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://about.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
+GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
 
 - Number of unique users
 - Number of unique instances

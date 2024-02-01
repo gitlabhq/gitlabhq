@@ -116,7 +116,7 @@ GitLab selects the best-in-class large-language models for specific tasks. We us
 
 ### Telemetry
 
-For self-managed instances that have enabled Code Suggestions and for SaaS accounts, we collect aggregated or de-identified first-party usage data through our [Snowplow collector](https://about.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
+For self-managed instances that have enabled Code Suggestions and for SaaS accounts, we collect aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
 
 - Language the code suggestion was in (for example, Python)
 - Editor being used (for example, VS Code)

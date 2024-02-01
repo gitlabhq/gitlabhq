@@ -199,7 +199,7 @@ Take for example the following scenarios:
   [
   the lowest number from
     - number of cores: 2
-    - memory limit: (8 - 1.5) = 6
+    - memory limit: (8 - 1.5) = 6.5
   ]
   ```
 

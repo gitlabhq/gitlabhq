@@ -679,7 +679,7 @@ In order to run Product Analytics services, devkit can be used. Instructions to 
 Additionally, the following setup is required on the GDK:
 
 - Ultimate license applied.
-  - [How to request the license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
+  - [How to request the license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
   - [How to activate GitLab EE with a license file or key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 - Product Analytics feature flags enabled. The list of feature flags can be [found here](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/user/product_analytics#enable-product-analytics).
 - Simulate SaaS enabled. Instructions can be [found here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md#simulate-a-saas-instance).

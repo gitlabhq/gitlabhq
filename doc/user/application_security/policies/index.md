@@ -321,6 +321,7 @@ The workaround is to amend your group or instance push rules to allow branches f
   source and target branch. To ensure scan result policies capture the necessary results, confirm
   your scan execution is properly implemented and enforced. If using scan execution policies,
   enforcing on `all branches` often addresses this need.
+- Comparison in scan result policies depends on a successful and completed merge base pipeline. If the merge base pipeline is [skipped](../../../ci/pipelines/index.md#skip-a-pipeline), merge requests with the merge base pipeline are blocked.
 - When running scan execution policies based on a SAST action, ensure target repositories contain
   proper code files. SAST runs different analyzers
   [based on the types of files in the repository](../sast/index.md#supported-languages-and-frameworks),

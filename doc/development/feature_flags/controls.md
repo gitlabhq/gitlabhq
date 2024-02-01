@@ -104,7 +104,7 @@ Guidelines:
 - Consider notifying `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
 - If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
-- For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
+- For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
 
 #### Guideline for which percentages to choose during the rollout
 
@@ -463,7 +463,7 @@ Changes to the issue format can be submitted in the
 
 Any feature flag change that affects any GitLab instance is automatically logged in
 [features_json.log](../../administration/logs/index.md#features_jsonlog).
-You can search the change history in [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html).
+You can search the change history in [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/).
 You can also access the feature flag change history for GitLab.com [in Kibana](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 
 ## Cleaning up

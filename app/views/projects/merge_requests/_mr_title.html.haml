@@ -19,7 +19,7 @@
 
       - unless hide_gutter_toggle
         %div
-          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle gl-md-display-none!" })
+          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle gl-md-display-none!" })
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request

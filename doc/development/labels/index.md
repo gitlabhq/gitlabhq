@@ -132,7 +132,7 @@ For instance, the "DevOps Reports" category is represented by the
 `devops_reports.name` value is "DevOps Reports".
 
 If a category's label doesn't respect this naming convention, it should be specified
-with [the `label` attribute](https://about.gitlab.com/handbook/marketing/digital-experience/website/#category-attributes)
+with [the `label` attribute](https://handbook.gitlab.com/handbook/marketing/digital-experience/website/#category-attributes)
 in <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml>.
 
 ## Feature labels

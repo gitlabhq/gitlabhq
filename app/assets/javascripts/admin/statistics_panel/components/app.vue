@@ -39,7 +39,7 @@ export default {
           class="js-stats"
         >
           {{ statistic.label }}
-          <span class="light float-right">{{ statistic.value }}</span>
+          <span class="light gl-float-right">{{ statistic.value }}</span>
         </p>
       </template>
     </slot>

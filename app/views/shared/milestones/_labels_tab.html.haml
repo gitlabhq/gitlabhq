@@ -9,7 +9,7 @@
       %span.prepend-description-left
         = markdown_field(label, :description)
 
-      .float-right.d-none.d-lg-block
+      .gl-float-right.d-none.d-lg-block
         = link_button_to milestones_issues_path(options.merge(state: 'opened')), category: :tertiary do
           = n_('open issue', 'open issues', milestone_issues_by_label_count(@milestone, label, state: :opened))
         = link_button_to milestones_issues_path(options.merge(state: 'closed')), category: :tertiary do

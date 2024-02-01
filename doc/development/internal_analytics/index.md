@@ -78,7 +78,7 @@ On self-managed this depends on the particular instance. In general, only the me
 
 Event and metrics data is ultimately stored in our [Snowflake data warehouse](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowflake/).
 It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#snowflake-analyst) or visualized in our data visualization tool
-[Tableau](https://about.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
+[Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
 Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access)).
 
 ### Tableau
@@ -136,7 +136,7 @@ WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of
 ORDER BY ping_created_at DESC
 ```
 
-For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
 
 ## Data flow
 

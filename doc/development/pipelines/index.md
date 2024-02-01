@@ -332,9 +332,9 @@ The intent is to ensure that a change doesn't introduce a failure after
 
 #### What it is
 
-This pipeline is also called [JiHu validation pipeline](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html),
+This pipeline is also called [JiHu validation pipeline](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines/),
 and it's currently allowed to fail. When that happens, follow
-[What to do when the validation pipeline fails](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines.html#what-to-do-when-the-validation-pipeline-failed).
+[What to do when the validation pipeline fails](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-validation-pipelines/#what-to-do-when-the-validation-pipeline-failed).
 
 #### How we run it
 

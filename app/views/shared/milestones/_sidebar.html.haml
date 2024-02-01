@@ -4,7 +4,7 @@
 %aside.right-sidebar.js-right-sidebar{ data: { "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class(false), 'aria-live' => 'polite', 'aria-label': _('Milestone') }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
-      %a.gutter-toggle.float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => s_('MilestoneSidebar|Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+      %a.gutter-toggle.gl-float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => s_('MilestoneSidebar|Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
         = sidebar_gutter_toggle_icon
       .title.hide-collapsed
         %strong.bold== #{milestone.percent_complete}%
@@ -22,7 +22,7 @@
       .title
         = s_('MilestoneSidebar|Start date')
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
+          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link gl-float-right'
       .value
         %span.value-content{ data: { testid: 'start-date-content' } }
           - if milestone.start_date
@@ -59,7 +59,7 @@
       .title.hide-collapsed
         = s_('MilestoneSidebar|Due date')
         - if @project && can?(current_user, :admin_milestone, @project)
-          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link float-right'
+          = link_to s_('MilestoneSidebar|Edit'), edit_project_milestone_path(@project, @milestone), class: 'js-sidebar-dropdown-toggle edit-link gl-float-right'
       .value.hide-collapsed
         %span.value-content{ data: { testid: 'due-date-content' } }
           - if milestone.due_date
@@ -81,7 +81,7 @@
           = s_('MilestoneSidebar|Issues')
           = gl_badge_tag milestone.issues_visible_to_user(current_user).count, variant: :muted, size: :sm
           - if show_new_issue_link?(project)
-            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "float-right", title: s_('MilestoneSidebar|New Issue') do
+            = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "gl-float-right", title: s_('MilestoneSidebar|New Issue') do
               = s_('MilestoneSidebar|New issue')
         .value.hide-collapsed.bold
           %span.milestone-stat

@@ -573,7 +573,7 @@ DETAILS:
       sudo gitlab-rake "gitlab:password:reset[user_handle]"
       ```
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
 
 ### Self-compiled installations
 
@@ -683,7 +683,7 @@ DETAILS:
   end
   ```
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
 
 ### Geo installations
 
@@ -766,7 +766,7 @@ DETAILS:
   [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
   GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
 
 ### Geo installations
 

@@ -188,7 +188,7 @@ Upgrading across multiple GitLab versions in one go is *only possible by accepti
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/)
-maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share
+maintained by the [GitLab Support team](https://handbook.gitlab.com/handbook/support/#about-the-support-team). To share
 feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 
 When upgrading:

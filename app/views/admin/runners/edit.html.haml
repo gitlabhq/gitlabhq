@@ -48,7 +48,7 @@
         %td
           = project.full_name
         %td
-          .float-right
+          .gl-float-right
             = gitlab_ui_form_for project.runner_projects.new, url: admin_namespace_project_runner_projects_path(project.namespace, project), method: :post do |f|
               = f.hidden_field :runner_id, value: @runner.id
               = render Pajamas::ButtonComponent.new(size: :small, type: :submit) do
