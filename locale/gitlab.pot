@@ -40723,9 +40723,6 @@ msgstr ""
 msgid "Released"
 msgstr ""
 
-msgid "Released at"
-msgstr ""
-
 msgid "Released date"
 msgstr ""
 
