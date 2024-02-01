@@ -287,8 +287,6 @@ To protect a new branch and enable force push:
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
 1. To allow all users with push access to force push, turn on the **Allowed to force push** toggle.
-1. To reject code pushes that change files listed in the `CODEOWNERS` file, turn on the
-   **Require approval from code owners** toggle.
 1. Select **Protect**.
 
 To enable force pushes on branches that are already protected:

@@ -115,6 +115,16 @@ variables:
 
 See [specify a private remote configuration example](#specify-a-private-remote-configuration) for advanced usage.
 
+### Troubleshooting remote configuration files
+
+If remote configuration file doesn't seem to be applying customizations correctly, the causes can be:
+
+1. Your repository has a local `.gitlab/sast-ruleset.toml` file.
+    - A local file is used if it's present, even if a remote configuration is set as a variable.
+    - A change to this logic is considered in [issue 414732](https://gitlab.com/gitlab-org/gitlab/-/issues/414732).
+1. There is a problem with authentication.
+    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
+
 ## Schema
 
 ### The top-level section

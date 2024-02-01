@@ -34267,6 +34267,8 @@ CREATE INDEX index_members_on_requested_at ON members USING btree (requested_at)
 
 CREATE INDEX index_members_on_source_and_type_and_access_level ON members USING btree (source_id, source_type, type, access_level);
 
+CREATE INDEX index_members_on_source_and_type_and_id ON members USING btree (source_id, source_type, type, id) WHERE (invite_token IS NULL);
+
 CREATE INDEX index_members_on_source_state_type_access_level_and_user_id ON members USING btree (source_id, source_type, state, type, access_level, user_id) WHERE ((requested_at IS NULL) AND (invite_token IS NULL));
 
 CREATE INDEX index_members_on_user_id_and_access_level_requested_at_is_null ON members USING btree (user_id, access_level) WHERE (requested_at IS NULL);

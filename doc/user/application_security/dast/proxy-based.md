@@ -107,7 +107,8 @@ To include the DAST template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    To use the DAST stable template:
 

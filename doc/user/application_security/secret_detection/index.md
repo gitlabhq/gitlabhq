@@ -144,7 +144,8 @@ your GitLab CI/CD configuration file is complex.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    ```yaml
    include:
@@ -520,7 +521,7 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
 ```
 
-For more information on the syntax of remote configurations, see the
+For more information on the syntax of remote configurations and how to troubleshoot, see the
 [specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
 on the SAST customize rulesets page.
 

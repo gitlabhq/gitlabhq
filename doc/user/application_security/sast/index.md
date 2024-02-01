@@ -315,7 +315,8 @@ To enable SAST, you [include](../../../ci/yaml/index.md#includetemplate)
 the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
 The template is provided as a part of your GitLab installation.
 
-Add the following to your `.gitlab-ci.yml` file:
+Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+already exists, add only the `template` line below it.
 
 ```yaml
 include:
