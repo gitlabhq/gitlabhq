@@ -28,7 +28,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
 
     context 'on master branch' do
       it 'creates deprecation warning job' do
-        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+        expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
       end
 
       it 'creates init, validate and build jobs', :aggregate_failures do
@@ -41,7 +41,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
       let(:pipeline_branch) { 'patch-1' }
 
       it 'creates deprecation warning job' do
-        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+        expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
       end
 
       it 'does not creates a deploy and a test job', :aggregate_failures do
@@ -61,7 +61,7 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml', feature_category: :continuous_i
       let(:branch_build_names) { branch_pipeline.builds.pluck(:name) }
 
       it 'creates deprecation warning job' do
-        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+        expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
       end
 
       # This is needed so that the terraform artifacts and sast_iac artifacts

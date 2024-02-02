@@ -23,7 +23,7 @@ gem 'rotp', '~> 6.3.0'
 gem 'parallel', '~> 1.24'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.0'
-gem 'octokit', '~> 8.0.0'
+gem 'octokit', '~> 8.1.0'
 gem "faraday-retry", "~> 2.2"
 gem 'zeitwerk', '~> 2.6', '>= 2.6.12'
 gem 'influxdb-client', '~> 3.0'

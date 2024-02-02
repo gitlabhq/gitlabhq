@@ -116,10 +116,9 @@ If the addition, inclusion or adaptation of a rule addressing the Desired Change
 
 Use the [SAST Improvement Board](https://gitlab.com/groups/gitlab-org/-/boards/7309853) to track the progress of your issues or find other SAST work to get involved with.
 
-Use the ~"workflow::ready for development", ~"workflow::in dev" and ~"workflow::ready for review" labels to signal this issue is ready to be worked on, this issue is actively being worked on by the assignee or this issue and its associated MR require review before proceeding.
+Use the ~"workflow::ready for development", ~"workflow::in dev" and ~"workflow::ready for review" labels to signal, respectively, that this issue is ready to be worked on, this issue is actively being worked on by the assignee or this issue and its associated MR require review before proceeding.
 
-
-/label ~"devops::secure" ~"feature::enhancement" ~"group::vulnerability research" ~"issue::validation" ~"section::sec" ~"type::feature" ~"Category:SAST" ~"SAST::Ruleset::Skip" 
+/label ~"devops::secure" ~"feature::enhancement" ~"group::vulnerability research" ~"section::sec" ~"type::feature" ~"Category:SAST" ~"SAST::Ruleset" 
 
 /epic &10971
 

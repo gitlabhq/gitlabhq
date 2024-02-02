@@ -28,7 +28,7 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
 
     context 'on master branch' do
       it 'creates deprecation warning job' do
-        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+        expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
       end
 
       it 'creates init, validate,build terraform jobs as well as kics-iac-sast job', :aggregate_failures do
@@ -41,7 +41,7 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
       let(:pipeline_branch) { 'patch-1' }
 
       it 'creates deprecation warning job' do
-        expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+        expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
       end
 
       it 'does not creates a deploy and a test job', :aggregate_failures do

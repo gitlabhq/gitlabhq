@@ -15644,7 +15644,6 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. **Status**: Experiment. Name of the catalog resource. |
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
-| <a id="cicatalogresourcereadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.1. **Status**: Experiment. GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
 | <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceComponentVerificationLevel`](#cicatalogresourcecomponentverificationlevel) | **Introduced** in 16.9. **Status**: Experiment. Verification level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.1. **Status**: Experiment. Web path of the catalog resource. |

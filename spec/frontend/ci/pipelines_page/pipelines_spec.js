@@ -96,7 +96,7 @@ describe('Pipelines', () => {
   const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
   const findStagesDropdownToggle = () =>
-    wrapper.find('[data-testid="mini-pipeline-graph-dropdown"] .dropdown-toggle');
+    wrapper.find('.mini-pipeline-graph-dropdown [data-testid="base-dropdown-toggle"]');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = ({ props = {}, withPermissions = true } = {}) => {
@@ -769,6 +769,11 @@ describe('Pipelines', () => {
           .onGet(mockPipelineWithStages.details.stages[0].dropdown_path)
           .reply(HTTP_STATUS_OK, stageReply);
 
+        // cancelMock is getting overwritten in pipelines_service.js#L29
+        // so we have to spy on it again here
+        cancelMock = { cancel: jest.fn() };
+        jest.spyOn(axios.CancelToken, 'source').mockReturnValue(cancelMock);
+
         createComponent();
 
         stopMock = jest.spyOn(window, 'clearTimeout');
@@ -789,13 +794,9 @@ describe('Pipelines', () => {
           await findStagesDropdownToggle().trigger('click');
           jest.runOnlyPendingTimers();
 
-          // cancelMock is getting overwritten in pipelines_service.js#L29
-          // so we have to spy on it again here
-          cancelMock = jest.spyOn(axios.CancelToken, 'source');
-
           await waitForPromises();
 
-          expect(cancelMock).toHaveBeenCalled();
+          expect(cancelMock.cancel).toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
             `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
@@ -807,7 +808,7 @@ describe('Pipelines', () => {
           jest.runOnlyPendingTimers();
           await waitForPromises();
 
-          expect(cancelMock).not.toHaveBeenCalled();
+          expect(cancelMock.cancel).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
             `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,

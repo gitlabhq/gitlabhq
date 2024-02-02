@@ -21,15 +21,7 @@
  - mini graph in Commit widget pipeline
 */
 @mixin pipeline-graph-dropdown-menu() {
-  width: auto;
-  max-width: 400px;
-
-  // override dropdown.scss
-  &.dropdown-menu li button,
-  &.dropdown-menu li a.ci-action-icon-container {
-    padding: 0;
-    text-align: center;
-  }
+  max-height: $gl-max-dropdown-max-height;
 
   .ci-action-icon-container {
     position: absolute;

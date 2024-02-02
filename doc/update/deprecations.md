@@ -69,6 +69,43 @@ next major release, GitLab 18.0. This gem sees very little use and its
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Deprecate Terraform CI/CD templates
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438010).
+</div>
+
+The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
+This affects the following templates:
+
+- `Terraform.gitlab-ci.yml`
+- `Terraform.latest.gitlab-ci.yml`
+- `Terraform/Base.gitlab-ci.yml`
+- `Terraform/Base.latest.gitlab-ci.yml`
+
+In GitLab 16.9, a new job is added to the templates to inform users of the deprecation.
+
+GitLab won't be able to update the `terraform` binary in the job images to any version that
+is licensed under BSL.
+
+To continue using Terraform, clone the templates and [Terraform image](https://gitlab.com/gitlab-org/terraform-images),
+and maintain them as needed.
+
+As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
+or the new OpenTofu CI/CD template on self-managed.
+CI/CD components are not yet available on GitLab self-managed,
+but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
+proposes to add this feature. If CI/CD components become available on self-managed,
+the OpenTofu CI/CD template will be removed.
+
+You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner registration token in Runner Operator
 
 <div class="deprecation-notes">
@@ -490,40 +527,6 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
 
 Maven versions below 3.6.3 have reached their end-of-life. Users are advised to upgrade to 3.8.8 or greater.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Deprecate Terraform CI/CD templates
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438010).
-</div>
-
-The Terraform CI/CD templates are deprecated and will be removed in GitLab 17.0.
-This affects the following templates:
-
-- `Terraform.gitlab-ci.yml`
-- `Terraform.latest.gitlab-ci.yml`
-- `Terraform/Base.gitlab-ci.yml`
-- `Terraform/Base.latest.gitlab-ci.yml`
-
-In GitLab 16.9, a new job is added to the templates to inform users of the deprecation.
-
-To continue using Terraform, clone the templates and [Terraform image](https://gitlab.com/gitlab-org/terraform-images),
-and maintain them as needed.
-
-As an alternative we recommend using the new OpenTofu CI/CD component on GitLab.com
-or the new OpenTofu CI/CD template on self-managed.
-CI/CD components are not yet available on GitLab self-managed,
-but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
-proposes to add this feature. If CI/CD components become available on self-managed,
-the OpenTofu CI/CD template will be removed.
-
-You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).
 
 </div>
 

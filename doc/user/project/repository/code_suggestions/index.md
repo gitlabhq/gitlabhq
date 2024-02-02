@@ -26,10 +26,10 @@ or on [SaaS](saas.md).
 ## Watch a demo
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [How to set up and start using GitLab Duo Code Suggestions](https://youtu.be/xQUlrbIWo8o).
+[Watch a video overview](https://youtu.be/xQUlrbIWo8o).
 <!-- Video published on 2023-12-09 -->
 
-For a click-through demo, see [Accelerate coding with GitLab Duo Code Suggestions](https://gitlab.navattic.com/code-suggestions).
+[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
 <!-- Demo published on 2024-02-01 -->
 
 ## Required subscription

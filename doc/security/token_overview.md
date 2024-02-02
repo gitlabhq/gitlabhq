@@ -199,6 +199,17 @@ with a different token that is only valid for one feed.
 
 Anyone who has your token can read activity and issue RSS feeds or your calendar feed as if they were you, including confidential issues. If that happens, [reset the token](../user/profile/contributions_calendar.md#reset-the-user-activity-feed-token).
 
+#### Disable a feed token
+
+Prerequisites:
+
+- You must be an administrator.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Under **Feed token**, select the **Disable feed token** checkbox, then select **Save changes**.
+
 ### Incoming email token
 
 Each user has a long-lived incoming email token that does not expire. This token allows a user to [create a new issue by email](../user/project/issues/create_issues.md#by-sending-an-email), and is included in that user's personal project-specific email addresses. You cannot use this token to access any other data. Anyone who has your token can create issues and merge requests as if they were you. If that happens, reset the token.

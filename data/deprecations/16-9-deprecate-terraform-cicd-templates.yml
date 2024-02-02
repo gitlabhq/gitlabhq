@@ -1,6 +1,6 @@
 - title: "Deprecate Terraform CI/CD templates"
   # The milestones for the deprecation announcement, and the removal.
-  removal_milestone: "17.0"
+  removal_milestone: "18.0"
   announcement_milestone: "16.9"
   # Change breaking_change to false if needed.
   breaking_change: true
@@ -10,7 +10,7 @@
   stage: deploy
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438010
   body: |  # (required) Don't change this line.
-    The Terraform CI/CD templates are deprecated and will be removed in GitLab 17.0.
+    The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
     This affects the following templates:
 
     - `Terraform.gitlab-ci.yml`
@@ -19,6 +19,9 @@
     - `Terraform/Base.latest.gitlab-ci.yml`
 
     In GitLab 16.9, a new job is added to the templates to inform users of the deprecation.
+
+    GitLab won't be able to update the `terraform` binary in the job images to any version that
+    is licensed under BSL.
 
     To continue using Terraform, clone the templates and [Terraform image](https://gitlab.com/gitlab-org/terraform-images),
     and maintain them as needed.

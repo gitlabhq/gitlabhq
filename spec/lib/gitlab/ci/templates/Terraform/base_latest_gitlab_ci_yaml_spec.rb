@@ -31,7 +31,7 @@ RSpec.describe 'Terraform/Base.latest.gitlab-ci.yml' do
     end
 
     it 'creates deprecation warning job' do
-      expect(build_names).to include('deprecated-and-will-be-removed-in-17.0')
+      expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
     end
   end
 end

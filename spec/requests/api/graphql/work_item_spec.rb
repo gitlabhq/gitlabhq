@@ -650,7 +650,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
             let(:first_param) { 1 }
             let(:all_records) { [link1, link2] }
-            let(:data_path) { ['workItem', 'widgets', 'linkedItems', -3] }
+            let(:data_path) { %w[workItem widgets linkedItems] }
 
             def widget_fields(args)
               query_graphql_field(

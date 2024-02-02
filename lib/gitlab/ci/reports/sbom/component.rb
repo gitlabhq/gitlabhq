@@ -41,6 +41,10 @@ module Gitlab
             [purl.namespace, purl.name].compact.join('/')
           end
 
+          def name_without_namespace
+            @name
+          end
+
           def key
             [name, version, purl&.type]
           end

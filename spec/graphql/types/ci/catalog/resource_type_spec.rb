@@ -17,7 +17,6 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       latest_released_at
       verification_level
       star_count
-      readme_html
       open_issues_count
       open_merge_requests_count
     ]

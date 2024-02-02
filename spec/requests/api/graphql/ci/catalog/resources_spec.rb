@@ -48,7 +48,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             verificationLevel
             latestReleasedAt
             starCount
-            readmeHtml
           }
         }
       }
@@ -87,7 +86,6 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
         webPath: "/#{project1.full_path}",
         verificationLevel: "UNVERIFIED",
         starCount: project1.star_count,
-        readmeHtml: a_string_including('Test</strong>'),
         latestReleasedAt: resource1.latest_released_at
       ),
       a_graphql_entity_for(public_resource)

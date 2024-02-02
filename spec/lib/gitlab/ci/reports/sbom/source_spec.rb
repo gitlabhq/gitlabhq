@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require './app/models/concerns/enums/sbom'
 
 RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_management do
   let(:attributes) do
@@ -14,12 +15,36 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_
 
   subject(:source) { described_class.new(**attributes) }
 
-  shared_examples_for 'it has correct common attributes' do
+  shared_examples_for 'it has correct attributes' do
     it 'has correct type and data' do
       expect(subject).to have_attributes(
         source_type: type,
         data: attributes[:data]
       )
+    end
+  end
+
+  context 'when dependency scanning' do
+    let(:type) { :dependency_scanning }
+    let(:extra_attributes) do
+      {
+        'input_file' => { 'path' => 'package-lock.json' },
+        'source_file' => { 'path' => 'package.json' }
+      }
+    end
+
+    it_behaves_like 'it has correct attributes'
+
+    describe '#source_file_path' do
+      it 'returns the correct source_file_path' do
+        expect(subject.source_file_path).to eq('package.json')
+      end
+    end
+
+    describe '#input_file_path' do
+      it 'returns the correct input_file_path' do
+        expect(subject.input_file_path).to eq("package-lock.json")
+      end
     end
 
     describe '#packager' do
@@ -35,30 +60,6 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_
     end
   end
 
-  context 'when dependency scanning' do
-    let(:type) { :dependency_scanning }
-    let(:extra_attributes) do
-      {
-        'input_file' => { 'path' => 'package-lock.json' },
-        'source_file' => { 'path' => 'package.json' }
-      }
-    end
-
-    it_behaves_like 'it has correct common attributes'
-
-    describe '#source_file_path' do
-      it 'returns the correct source_file_path' do
-        expect(subject.source_file_path).to eq('package.json')
-      end
-    end
-
-    describe '#input_file_path' do
-      it 'returns the correct input_file_path' do
-        expect(subject.input_file_path).to eq("package-lock.json")
-      end
-    end
-  end
-
   context 'when container scanning' do
     let(:type) { :container_scanning }
     let(:extra_attributes) do
@@ -68,7 +69,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_
       }
     end
 
-    it_behaves_like 'it has correct common attributes'
+    it_behaves_like 'it has correct attributes'
 
     describe "#image_name" do
       subject { source.image_name }
@@ -92,6 +93,30 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_
       subject { source.operating_system_version }
 
       it { is_expected.to eq("7") }
+    end
+  end
+
+  context 'when trivy' do
+    let(:type) { :trivy }
+    let(:attributes) do
+      {
+        type: type, data: {
+          'FilePath' => '/usr/local/lib/node_modules/npm/node_modules/@colors/colors/package.json',
+          'PkgType' => 'node-pkg'
+        }
+      }
+    end
+
+    describe '#packager' do
+      subject { source.packager }
+
+      it { is_expected.to eq('npm') }
+    end
+
+    describe '#input_file_path' do
+      subject { source.input_file_path }
+
+      it { is_expected.to eq('/usr/local/lib/node_modules/npm/node_modules/@colors/colors/package.json') }
     end
   end
 end

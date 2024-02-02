@@ -54,9 +54,6 @@ module Types
           description: 'Number of times the catalog resource has been starred.',
           alpha: { milestone: '16.1' }
 
-        markdown_field :readme_html, null: false,
-          alpha: { milestone: '16.1' }
-
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
         end

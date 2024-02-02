@@ -368,7 +368,7 @@ rspec:artifact-collector unit:
 rspec:artifact-collector system:
   extends:
     - .artifact-collector
-    - .rails:rules:ee-and-foss-system
+    - .rails:rules:artifact-collector-system
   needs:
     - job: rspec system pg14  # 32 jobs
       optional: true
