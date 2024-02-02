@@ -4,6 +4,7 @@ This product includes software developed at
 Contributed Systems LLC(https://contribsys.com/).
 
 Modifications to the following files were made on 30 Jan 2024 by GitLab:
+- sidekiq.gemspec
 - lib/sidekiq/redis_client_adapter.rb
 - lib/sidekiq/redis_connection.rb
 - lib/sidekiq/api.rb

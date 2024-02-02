@@ -525,7 +525,7 @@ group :test do
   gem 'gitlab_quality-test_tooling', '~> 1.14.2', require: false, feature_category: :tooling
 end
 
-gem 'octokit', '~> 6.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'octokit', '~> 8.0', feature_category: :importers
 
 gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :shared
 

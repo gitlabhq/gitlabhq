@@ -8,6 +8,10 @@
 = render_if_exists 'shared/qrtly_reconciliation_alert'
 = render 'admin/dashboard/security_newsletter_callout'
 
+- if show_transition_to_jihu_callout?
+  .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,
+    user_preferred_language: current_user.preferred_language} }
+
 - if @notices
   - @notices.each do |notice|
     .js-vue-alert{ 'v-cloak': true, data: { variant: notice[:type],

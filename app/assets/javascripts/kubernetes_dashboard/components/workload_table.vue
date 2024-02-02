@@ -23,6 +23,16 @@ export default {
       default: () => DEFAULT_WORKLOAD_TABLE_FIELDS,
       required: false,
     },
+    pageSize: {
+      type: Number,
+      default: PAGE_SIZE,
+      required: false,
+    },
+    rowClickable: {
+      type: Boolean,
+      default: true,
+      required: false,
+    },
   },
   data() {
     return {
@@ -38,10 +48,17 @@ export default {
         };
       });
     },
+    tableRowClass() {
+      return this.rowClickable ? 'gl-hover-cursor-pointer' : '';
+    },
   },
   methods: {
     selectItem(item) {
-      this.$emit('select-item', item);
+      const selectedItem = item[0];
+
+      if (selectedItem) {
+        this.$emit('select-item', selectedItem);
+      }
     },
   },
   i18n: {
@@ -54,18 +71,22 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-8">
+  <div>
     <gl-table
       :items="items"
       :fields="tableFields"
-      :per-page="$options.PAGE_SIZE"
+      :per-page="pageSize"
       :current-page="currentPage"
       :empty-text="$options.i18n.emptyText"
-      tbody-tr-class="gl-hover-cursor-pointer"
+      :tbody-tr-class="tableRowClass"
+      :hover="rowClickable"
+      :selectable="rowClickable"
+      :no-select-on-click="!rowClickable"
+      select-mode="single"
+      selected-variant="primary"
       show-empty
       stacked="md"
-      hover
-      @row-clicked="selectItem"
+      @row-selected="selectItem"
     >
       <template #cell(status)="{ item: { status } }">
         <gl-badge
@@ -79,7 +100,7 @@ export default {
 
     <gl-pagination
       v-model="currentPage"
-      :per-page="$options.PAGE_SIZE"
+      :per-page="pageSize"
       :total-items="items.length"
       align="center"
       class="gl-mt-6"

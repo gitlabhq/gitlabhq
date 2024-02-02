@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTabs, GlTab, GlTable, GlPagination, GlBadge } from '@gitlab/ui';
+import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
+import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
+import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
+
 import { mockKasTunnelUrl } from './mock_data';
 import { k8sServicesMock } from './graphql/mock_data';
 
@@ -27,8 +29,7 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTab = () => wrapper.findComponent(GlTab);
-  const findTable = () => wrapper.findComponent(GlTable);
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findWorkloadTable = () => wrapper.findComponent(WorkloadTable);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -46,9 +47,6 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       apolloProvider,
       stubs: {
         GlTab,
-        GlTable: stubComponent(GlTable, {
-          props: ['items', 'per-page'],
-        }),
         GlBadge,
       },
     });
@@ -87,8 +85,9 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       });
 
       it('renders services table when gets services data', () => {
-        expect(findTable().props('perPage')).toBe(SERVICES_LIMIT_PER_PAGE);
-        expect(findTable().props('items')).toMatchObject([
+        expect(findWorkloadTable().props('pageSize')).toBe(SERVICES_LIMIT_PER_PAGE);
+        expect(findWorkloadTable().props('fields')).toBe(SERVICES_TABLE_FIELDS);
+        expect(findWorkloadTable().props('items')).toMatchObject([
           {
             name: 'my-first-service',
             namespace: 'default',
@@ -109,34 +108,6 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
           },
         ]);
       });
-
-      it("doesn't render pagination when services are less then SERVICES_LIMIT_PER_PAGE", async () => {
-        createWrapper();
-        await waitForPromises();
-
-        expect(findPagination().exists()).toBe(false);
-      });
-    });
-
-    it('shows pagination when services are more then SERVICES_LIMIT_PER_PAGE', async () => {
-      const createApolloProviderWithPagination = () => {
-        const mockResolvers = {
-          Query: {
-            k8sServices: jest
-              .fn()
-              .mockReturnValue(
-                Array.from({ length: 6 }, () => k8sServicesMock).flatMap((array) => array),
-              ),
-          },
-        };
-
-        return createMockApollo([], mockResolvers);
-      };
-
-      createWrapper(createApolloProviderWithPagination());
-      await waitForPromises();
-
-      expect(findPagination().exists()).toBe(true);
     });
 
     it('emits an error message when gets an error from the cluster_client API', async () => {

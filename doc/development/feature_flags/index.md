@@ -65,6 +65,11 @@ When the feature implementation is delivered over multiple merge requests:
    - Add a [changelog entry](#changelog).
    - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
 
+When the feature flag removal is delivered over multiple merge requests:
+
+1. The value change of a feature flag should be the only change in a merge request. As long as the feature flag exists in the codebase, both states should be fully functional (when the feature is on and off).
+1. After all mentions of the feature flag have been removed, legacy code can be removed. Steps in the feature flag roll-out issue should be followed, and if a step needs to be skipped, a comment should be added to the issue detailing why.
+
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time

@@ -182,4 +182,35 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       include_examples 'CalloutsHelper#web_hook_disabled_dismissed shared examples'
     end
   end
+
+  describe '.show_transition_to_jihu_callout?', :do_not_mock_admin_mode_setting do
+    let_it_be(:admin) { create(:user, :admin) }
+
+    subject { helper.show_transition_to_jihu_callout? }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:gitlab_jh, :current_user, :timezone, :user_dismissed, :expected_result) do
+      false | ref(:admin) | 'Asia/Hong_Kong'      | false | true
+      false | ref(:admin) | 'Asia/Shanghai'       | false | true
+      false | ref(:admin) | 'Asia/Macau'          | false | true
+      false | ref(:admin) | 'Asia/Chongqing'      | false | true
+
+      true  | ref(:admin) | 'Asia/Shanghai'       | false | false
+      false | ref(:user)  | 'Asia/Shanghai'       | false | false
+      false | ref(:admin) | 'America/Los_Angeles' | false | false
+      false | ref(:admin) | 'Asia/Shanghai'       | true  | false
+    end
+
+    with_them do
+      before do
+        allow(::Gitlab).to receive(:jh?).and_return(gitlab_jh)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(helper).to receive(:user_dismissed?).with(described_class::TRANSITION_TO_JIHU_CALLOUT) { user_dismissed }
+        allow(current_user).to receive(:timezone).and_return(timezone)
+      end
+
+      it { is_expected.to be expected_result }
+    end
+  end
 end

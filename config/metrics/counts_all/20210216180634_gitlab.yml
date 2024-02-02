@@ -5,7 +5,7 @@ description: Distinct count of users that triggered an import using the Group Mi
   tool
 product_section: dev
 product_stage: manage
-product_group: import
+product_group: import_and_integrate
 value_type: number
 status: removed
 time_frame: all

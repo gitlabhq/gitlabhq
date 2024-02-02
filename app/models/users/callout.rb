@@ -82,7 +82,8 @@ module Users
       duo_chat_callout: 80, # EE-only
       code_suggestions_ga_owner_alert: 81, # EE-only
       product_analytics_dashboard_feedback: 82, # EE-only
-      joining_a_project_alert: 83 # EE-only
+      joining_a_project_alert: 83, # EE-only
+      transition_to_jihu_callout: 84
     }
 
     validates :feature_name,

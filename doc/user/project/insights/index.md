@@ -71,8 +71,9 @@ To exclude a dimension, from the legend below the chart, select the name of the 
 ### Drill down on charts
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436704) to extend support to all `issuables` charts in GitLab 16.9.
 
-You can drill down into the data of the **Bugs created per month by priority** and **Bugs created per month by severity** charts from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+You can drill down into the data of all charts whose `query.data_source` is `issuables`.
 
 To view a drill-down report of the data for a specific priority or severity in a month:
 
@@ -314,9 +315,6 @@ monthlyBugsCreated:
 
 Use `query.params.collection_labels` to group issuables by the configured labels.
 Grouping is not applied by default.
-
-When using this parameter, you must
-set `type` to `line` or `stacked-bar`.
 
 **Example:**
 

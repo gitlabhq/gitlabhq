@@ -16,6 +16,7 @@ module Users
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
     NEW_NAV_FOR_EVERYONE_CALLOUT = 'new_nav_for_everyone_callout'
+    TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -81,6 +82,13 @@ module Users
       # We don't want to show it for users who never touched the toggle and already had the new nav by default (`nil`)
       user_had_new_nav_off = current_user && current_user.use_new_navigation == false
       user_had_new_nav_off && !user_dismissed?(NEW_NAV_FOR_EVERYONE_CALLOUT)
+    end
+
+    def show_transition_to_jihu_callout?
+      !Gitlab.jh? &&
+        current_user&.can_admin_all_resources? &&
+        %w[Asia/Hong_Kong Asia/Shanghai Asia/Macau Asia/Chongqing].include?(current_user.timezone) &&
+        !user_dismissed?(TRANSITION_TO_JIHU_CALLOUT)
     end
 
     private

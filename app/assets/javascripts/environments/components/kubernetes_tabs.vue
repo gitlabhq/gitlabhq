@@ -1,23 +1,21 @@
 <script>
-import { GlTabs, GlTab, GlLoadingIcon, GlBadge, GlTable, GlPagination } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { GlTabs, GlTab, GlLoadingIcon, GlBadge } from '@gitlab/ui';
+import { s__ } from '~/locale';
 import {
   getAge,
   generateServicePortsString,
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
+import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
 import { SERVICES_LIMIT_PER_PAGE } from '../constants';
-
-const tableHeadingClasses = 'gl-bg-gray-50! gl-font-weight-bold gl-white-space-nowrap';
 
 export default {
   components: {
     GlTabs,
     GlTab,
     GlBadge,
-    GlTable,
-    GlPagination,
+    WorkloadTable,
     GlLoadingIcon,
   },
   apollo: {
@@ -47,11 +45,6 @@ export default {
       type: String,
     },
   },
-  data() {
-    return {
-      currentPage: 1,
-    };
-  },
   computed: {
     servicesItems() {
       if (!this.k8sServices?.length) return [];
@@ -71,38 +64,11 @@ export default {
     servicesLoading() {
       return this.$apollo.queries.k8sServices.loading;
     },
-    showPagination() {
-      return this.servicesItems.length > SERVICES_LIMIT_PER_PAGE;
-    },
-    prevPage() {
-      return Math.max(this.currentPage - 1, 0);
-    },
-    nextPage() {
-      const nextPage = this.currentPage + 1;
-      return nextPage > Math.ceil(this.servicesItems.length / SERVICES_LIMIT_PER_PAGE)
-        ? null
-        : nextPage;
-    },
-    servicesFields() {
-      return SERVICES_TABLE_FIELDS.map((field) => {
-        return {
-          ...field,
-          thClass: tableHeadingClasses,
-        };
-      });
-    },
   },
   i18n: {
     servicesTitle: s__('Environment|Services'),
-    name: __('Name'),
-    namespace: __('Namespace'),
-    status: __('Status'),
-    type: __('Type'),
-    clusterIP: s__('Environment|Cluster IP'),
-    externalIP: s__('Environment|External IP'),
-    ports: s__('Environment|Ports'),
-    age: s__('Environment|Age'),
   },
+  SERVICES_TABLE_FIELDS,
   SERVICES_LIMIT_PER_PAGE,
 };
 </script>
@@ -116,22 +82,13 @@ export default {
 
       <gl-loading-icon v-if="servicesLoading" />
 
-      <gl-table
+      <workload-table
         v-else
-        :fields="servicesFields"
         :items="servicesItems"
-        :per-page="$options.SERVICES_LIMIT_PER_PAGE"
-        :current-page="currentPage"
-        stacked="lg"
-        class="gl-bg-white! gl-mt-3"
-      />
-      <gl-pagination
-        v-if="showPagination"
-        v-model="currentPage"
-        :prev-page="prevPage"
-        :next-page="nextPage"
-        align="center"
-        class="gl-mt-6"
+        :fields="$options.SERVICES_TABLE_FIELDS"
+        :page-size="$options.SERVICES_LIMIT_PER_PAGE"
+        :row-clickable="false"
+        class="gl-mt-5"
       />
     </gl-tab>
   </gl-tabs>
