@@ -284,7 +284,7 @@ More details about the permissions for some project-level features follow.
 |---------------------------------------------------------------------------------------------------------------------------|------------|---------|----------|-----------|------------|-------|
 | See that artifacts exist                                                                                                  | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
 | View a list of jobs                                                                                                       | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
-| View and download artifacts                                                                                               | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
+| View and download artifacts                                                                                               | ✓ (1)      | ✓ (2)   | ✓ (8)    | ✓         | ✓          | ✓     |
 | View [environments](../ci/environments/index.md)                                                                          | ✓ (3)      | ✓ (3)   | ✓        | ✓         | ✓          | ✓     |
 | View job logs and job details page                                                                                        | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
 | View pipelines and pipeline details pages                                                                                 | ✓ (1)      | ✓ (2)   | ✓        | ✓         | ✓          | ✓     |
@@ -324,6 +324,7 @@ More details about the permissions for some project-level features follow.
 5. If the user is [allowed to merge or push to the protected branch](../ci/pipelines/index.md#pipeline-security-on-protected-branches).
 6. If the user if [part of a group with at least the Reporter role](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments)
 7. Cancellation permissions can be [customized via the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs)
+8. If [`artifacts:public`](../ci/yaml/index.md#artifactspublic) is not set on the job.
 
 <!-- markdownlint-enable MD029 -->
 

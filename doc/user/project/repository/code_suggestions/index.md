@@ -44,6 +44,8 @@ Starting February 15, 2024, Code Suggestions will be part of [GitLab Duo Pro](ht
 NOTE:
 On February 15th, if you have not purchased GitLab Duo Pro,
 you will no longer have access to Code Suggestions.
+Get access by
+[contacting your sales team and assigning seats to the users who want access](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
 
 Code Suggestions are not available for the GitLab Community Edition.
 

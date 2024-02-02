@@ -271,7 +271,7 @@ describe('Job table app', () => {
         message: s__(
           'Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens.',
         ),
-        type: 'warning',
+        variant: 'warning',
       };
 
       createComponent();

@@ -1377,10 +1377,10 @@ Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
 
 When `artifacts:public` is `true` (default), the artifacts in
-public pipelines are available for download by anonymous and guest users.
+public pipelines are available for download by anonymous, guest, and reporter users.
 
-To deny read access for anonymous and guest users to artifacts in public
-pipelines, set `artifacts:public` to `false`:
+To deny read access to artifacts in public
+pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `false`:
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).

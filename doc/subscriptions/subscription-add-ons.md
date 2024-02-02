@@ -24,6 +24,9 @@ Prerequisites:
 
 After you purchase GitLab Duo Pro, you can assign seats to billable users to grant access to the add-on.
 
+NOTE:
+For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available for GitLab 16.8 and later only.
+
 ### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.
