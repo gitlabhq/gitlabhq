@@ -236,7 +236,9 @@ module Gitlab
             url,
             schemes: %w[http https],
             allow_localhost: true,
-            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+          )
 
           URI(url)
         end

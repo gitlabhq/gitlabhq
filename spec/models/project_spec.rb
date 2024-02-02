@@ -9029,6 +9029,28 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#repository_object_format' do
+    subject { project.repository_object_format }
+
+    let_it_be(:project) { create(:project) }
+
+    context 'when project without a repository' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when project with sha1 repository' do
+      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha1') }
+
+      it { is_expected.to eq 'sha1' }
+    end
+
+    context 'when project with sha256 repository' do
+      let_it_be(:project_repository) { create(:project_repository, project: project, object_format: 'sha256') }
+
+      it { is_expected.to eq 'sha256' }
+    end
+  end
+
   describe '#supports_lock_on_merge?' do
     it_behaves_like 'checks self (project) and root ancestor feature flag' do
       let(:feature_flag) { :enforce_locked_labels_on_merge }

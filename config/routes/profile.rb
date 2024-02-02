@@ -3,7 +3,7 @@
 # for secondary email confirmations - uses the same confirmation controller as :users
 devise_for :emails, path: 'profile/emails', controllers: { confirmations: :confirmations }
 
-resource :profile, only: [:show, :update] do
+resource :profile, only: [] do
   member do
     get :audit_log, to: redirect('-/user_settings/authentication_log')
     get :applications, to: redirect('-/user_settings/applications')

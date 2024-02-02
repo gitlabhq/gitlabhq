@@ -168,7 +168,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
         subject
 
         expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(user_settings_profile_path)
       end
 
       context 'when redirect_uri is invalid' do

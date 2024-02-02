@@ -72,7 +72,7 @@ module ProfilesHelper
 
   def user_profile_data(user)
     {
-      profile_path: profile_path,
+      profile_path: user_settings_profile_path,
       profile_avatar_path: profile_avatar_path,
       avatar_url: avatar_icon_for_user(user, current_user: current_user),
       has_avatar: user.avatar?.to_s,

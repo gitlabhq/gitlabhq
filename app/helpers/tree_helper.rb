@@ -192,7 +192,7 @@ module TreeHelper
 
       gitpod_url: gitpod_url,
       user_preferences_gitpod_path: profile_preferences_path(anchor: 'user_gitpod_enabled'),
-      user_profile_enable_gitpod_path: profile_path(user: { gitpod_enabled: true })
+      user_profile_enable_gitpod_path: user_settings_profile_path(user: { gitpod_enabled: true })
     }
   end
 

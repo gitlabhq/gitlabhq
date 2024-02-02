@@ -16,7 +16,7 @@ class UserPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def profile_enable_gitpod_path
-    profile_path(user: { gitpod_enabled: true }) if application_gitpod_enabled?
+    user_settings_profile_path(user: { gitpod_enabled: true }) if application_gitpod_enabled?
   end
 
   delegator_override :saved_replies

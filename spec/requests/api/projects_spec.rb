@@ -1644,6 +1644,55 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(response).to have_gitlab_http_status(:created)
     end
 
+    context 'with repository_object_format' do
+      context 'when sha1' do
+        it 'creates a project with SHA1 repository' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'sha1')
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['repository_object_format']).to eq 'sha1'
+        end
+      end
+
+      context 'when sha256' do
+        it 'creates a project with SHA256 repository' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'sha256')
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['repository_object_format']).to eq 'sha256'
+        end
+
+        context 'when "support_sha256_repositories" FF is disabled' do
+          before do
+            stub_feature_flags(support_sha256_repositories: false)
+          end
+
+          it 'creates a project with SHA1 repository' do
+            project = attributes_for(:project)
+
+            post api(path, user), params: project.merge(repository_object_format: 'sha256')
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['repository_object_format']).to eq 'sha1'
+          end
+        end
+      end
+
+      context 'when unknown format' do
+        it 'rejects a project creation' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'unknown')
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+    end
+
     context 'when a visibility level is restricted' do
       let(:project_param) { attributes_for(:project, visibility: 'public') }
 

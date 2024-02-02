@@ -6222,6 +6222,11 @@ msgstr ""
 msgid "Approval rejected."
 msgstr ""
 
+msgid "Approval required"
+msgid_plural "Approvals required"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Approval rules"
 msgstr ""
 
@@ -6299,9 +6304,6 @@ msgstr ""
 msgid "ApprovalRule|More than"
 msgstr ""
 
-msgid "ApprovalRule|Name"
-msgstr ""
-
 msgid "ApprovalRule|Need triage"
 msgstr ""
 
@@ -6318,6 +6320,9 @@ msgid "ApprovalRule|Reduce your time to merge."
 msgstr ""
 
 msgid "ApprovalRule|Resolved"
+msgstr ""
+
+msgid "ApprovalRule|Rule"
 msgstr ""
 
 msgid "ApprovalRule|Rule name"
@@ -14535,9 +14540,6 @@ msgstr ""
 msgid "Create and enforce custom CI jobs and scripts using this new policy action. %{link_start}Learn more%{link_end}."
 msgstr ""
 
-msgid "Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import."
-msgstr ""
-
 msgid "Create branch"
 msgstr ""
 
@@ -22643,6 +22645,15 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
+msgid "GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to."
+msgstr ""
+
+msgid "GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from."
+msgstr ""
+
+msgid "GithubImporter|%{code_start}repo.org%{code_end} (optional): Used to import collaborators from GitHub repositories."
+msgstr ""
+
 msgid "GithubImporter|%{noteable_type} comment %{note_id}"
 msgstr ""
 
@@ -22716,6 +22727,15 @@ msgid "GithubImporter|Release attachments"
 msgstr ""
 
 msgid "GithubImporter|Your import of GitHub gists into GitLab snippets is complete."
+msgstr ""
+
+msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:"
+msgstr ""
+
+msgid "GithubImport|To connect to GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
+msgstr ""
+
+msgid "GithubImport|To import GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -23139,6 +23159,9 @@ msgid "Google Play service account key."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Configure in settings"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Open in Google Cloud"
@@ -32911,13 +32934,7 @@ msgstr ""
 msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
-msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
-msgstr ""
-
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
 msgstr ""
 
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
@@ -42047,6 +42064,9 @@ msgid "Root cause analysis is a feature that analyzes your logs to determine why
 msgstr ""
 
 msgid "Ruby"
+msgstr ""
+
+msgid "Rule"
 msgstr ""
 
 msgid "Rule name is already taken."
@@ -51490,15 +51510,6 @@ msgstr ""
 msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
 msgstr ""
 
-msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to connect."
-msgstr ""
-
-msgid "To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories."
-msgstr ""
-
-msgid "To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
-msgstr ""
-
 msgid "To connect an SVN repository, check out %{svn_link}."
 msgstr ""
 
@@ -52052,6 +52063,9 @@ msgstr ""
 msgid "Tracing|Error"
 msgstr ""
 
+msgid "Tracing|Error rate (%%)"
+msgstr ""
+
 msgid "Tracing|Error: Failed to load trace details. Try reloading the page."
 msgstr ""
 
@@ -52077,6 +52091,9 @@ msgid "Tracing|Operation"
 msgstr ""
 
 msgid "Tracing|Refresh the page, or edit your search filter and try again"
+msgstr ""
+
+msgid "Tracing|Request rate (req/s)"
 msgstr ""
 
 msgid "Tracing|Resource attributes"

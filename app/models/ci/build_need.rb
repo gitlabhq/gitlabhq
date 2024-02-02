@@ -3,7 +3,6 @@
 module Ci
   class BuildNeed < Ci::ApplicationRecord
     include Ci::Partitionable
-    include IgnorableColumns
     include BulkInsertSafe
 
     MAX_JOB_NAME_LENGTH = 255

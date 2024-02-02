@@ -67,24 +67,3 @@ func TestReadAt(t *testing.T) {
 		require.Equal(t, "some strin\x00", string(buf))
 	})
 }
-
-func TestSizeToLimit(t *testing.T) {
-	tests := []struct {
-		size  int64
-		limit int64
-		name  string
-	}{
-		{size: 1, limit: 104857600, name: "1b to 100mb"},
-		{size: 100, limit: 104857600, name: "100b to 100mb"},
-		{size: 104857600, limit: 104857600, name: "100mb to 100mb"},
-		{size: 1073741824, limit: 104857600, name: "1gb to 100mb"},
-		{size: 10737418240, limit: 1073741824, name: "10gb to 1gb"},
-		{size: 53687091200, limit: 5368709120, name: "50gb to 5gb"},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			require.Equal(t, test.limit, SizeToLimit(test.size))
-		})
-	}
-}

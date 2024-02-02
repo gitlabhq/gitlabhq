@@ -10,6 +10,21 @@ RSpec.describe "Legacy routes", type: :request, feature_category: :system_access
     login_as(user)
   end
 
+  it "GET /-/profile" do
+    get "/-/profile"
+    expect(response).to redirect_to('/-/user_settings/profile')
+  end
+
+  it "PUT /-/profile" do
+    put "/-/profile", params: { user: { pronouns: 'they/them' } }
+    expect(user.reload.pronouns).to eq('they/them')
+  end
+
+  it "PATCH /-/profile" do
+    patch "/-/profile", params: { user: { pronouns: 'they/them' } }
+    expect(user.reload.pronouns).to eq('they/them')
+  end
+
   it "/-/profile/audit_log" do
     get "/-/profile/audit_log"
     expect(response).to redirect_to('/-/user_settings/authentication_log')

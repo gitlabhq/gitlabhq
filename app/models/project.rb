@@ -3225,6 +3225,10 @@ class Project < ApplicationRecord
     errors.add(:path, s_('Project|already in use'))
   end
 
+  def repository_object_format
+    project_repository&.object_format
+  end
+
   def instance_runner_running_jobs_count
     # excluding currently started job
     ::Ci::RunningBuild.instance_type.where(project_id: self.id)

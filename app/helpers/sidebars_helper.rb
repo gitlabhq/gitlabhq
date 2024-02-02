@@ -85,7 +85,7 @@ module SidebarsHelper
       status: user_status_menu_data(user),
       settings: {
         has_settings: current_user_menu?(:settings),
-        profile_path: profile_path,
+        profile_path: user_settings_profile_path,
         profile_preferences_path: profile_preferences_path
       },
       user_counts: {
@@ -359,7 +359,7 @@ module SidebarsHelper
     links = [
       ({ title: s_('Navigation|Your work'), link: root_path, icon: 'work' } if current_user),
       { title: s_('Navigation|Explore'), link: explore_root_path, icon: 'compass' },
-      ({ title: s_('Navigation|Profile'), link: profile_path, icon: 'profile' } if current_user),
+      ({ title: s_('Navigation|Profile'), link: user_settings_profile_path, icon: 'profile' } if current_user),
       ({ title: s_('Navigation|Preferences'), link: profile_preferences_path, icon: 'preferences' } if current_user)
     ]
 

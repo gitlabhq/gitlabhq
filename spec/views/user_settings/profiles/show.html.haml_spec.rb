@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'profiles/show' do
-  let_it_be(:user_status) { create(:user_status, clear_status_at: 8.hours.from_now) }
+RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
+  let_it_be(:user_status) { build_stubbed(:user_status, clear_status_at: 8.hours.from_now) }
   let_it_be(:user) { user_status.user }
 
   before do

@@ -3,22 +3,18 @@ stage: Secure
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
 
-# DAST proxy-based analyzer
+# DAST proxy-based analyzer (deprecated)
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** SaaS, Self-managed
 
 WARNING:
-Proxy-based DAST is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
-We plan to [remove support for Proxy-based DAST](../../../update/deprecations.md#proxy-based-dast-deprecated). Migrate to [Browser-based DAST](browser_based.md)
-to continue analyzing your projects for security findings via dynamic analysis.
-
-WARNING:
-Proxy-based DAST is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
-We plan to [remove support for Proxy-based DAST](../../../update/deprecations.md#proxy-based-dast-deprecated). Migrate to [Browser-based DAST](browser_based.md)
-to continue analyzing your projects for security findings via dynamic analysis.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9
+and is planned for removal in 17.0. Use [browser-based DAST](browser_based.md) instead.
+This change is a breaking change.
 
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
@@ -28,8 +24,9 @@ see the [DAST browser-based analyzer](browser_based.md).
 For a video walkthrough, see [How to set up Dynamic Application Security Testing (DAST) with GitLab](https://youtu.be/EiFE1QrUQfk?si=6rpgwgUpalw3ByiV).
 
 WARNING:
-Do not run DAST scans against a production server. Not only can it perform *any* function that
-a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.
+Do not run DAST scans against a production server. Not only can it perform *any* function that a
+user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
+modification, or loss of production data. Only run DAST scans against a test server.
 
 The analyzer uses the [Software Security Project Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
 
@@ -495,3 +492,5 @@ future.
 ### `unable to get local issuer certificate` when trying to validate a site profile
 
 The use of self-signed certificates is not supported and may cause the job to fail with an error message: `unable to get local issuer certificate`. For more information, see [issue 416670](https://gitlab.com/gitlab-org/gitlab/-/issues/416670).
+
+<!--- end_remove -->

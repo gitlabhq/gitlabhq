@@ -62,7 +62,9 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-direction-column">
-    <div class="gl-display-flex gl-justify-content-space-between gl-py-3">
+    <div
+      class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-justify-content-space-between gl-py-3"
+    >
       <div class="gl-flex-direction-column gl-flex-grow-1">
         <div class="gl-display-flex">
           <gl-avatar

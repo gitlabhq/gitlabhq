@@ -51,6 +51,7 @@ module API
       expose :container_expiration_policy,
              using: Entities::ContainerExpirationPolicy,
              if: -> (project, _) { project.container_expiration_policy }
+      expose :repository_object_format, documentation: { type: 'string', example: 'sha1' }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level
@@ -179,6 +180,7 @@ module API
                                 .preload(:project_setting)
                                 .preload(:container_expiration_policy)
                                 .preload(:auto_devops)
+                                .preload(:project_repository)
                                 .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,

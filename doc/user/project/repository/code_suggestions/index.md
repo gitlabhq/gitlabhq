@@ -23,9 +23,14 @@ With GitLab Duo Code Suggestions, you get:
 Get started with Code Suggestions on your [self-managed](self_managed.md) instance
 or on [SaaS](saas.md).
 
+## Watch a demo
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[Watch a video overview](https://youtu.be/xQUlrbIWo8o).
+For an overview, see [How to set up and start using GitLab Duo Code Suggestions](https://youtu.be/xQUlrbIWo8o).
 <!-- Video published on 2023-12-09 -->
+
+For a click-through demo, see [Accelerate coding with GitLab Duo Code Suggestions](https://gitlab.navattic.com/code-suggestions).
+<!-- Demo published on 2024-02-01 -->
 
 ## Required subscription
 

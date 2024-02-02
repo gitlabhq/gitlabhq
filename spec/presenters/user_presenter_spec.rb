@@ -40,7 +40,10 @@ RSpec.describe UserPresenter do
       end
 
       describe '#profile_enable_gitpod_path' do
-        it { expect(presenter.profile_enable_gitpod_path).to eq("/-/profile?user%5Bgitpod_enabled%5D=true") }
+        it do
+          expect(presenter.profile_enable_gitpod_path).to eq(
+            "/-/user_settings/profile?user%5Bgitpod_enabled%5D=true")
+        end
       end
     end
 

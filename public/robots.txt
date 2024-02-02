@@ -24,6 +24,7 @@ Disallow: /api/v*
 Disallow: /help
 Disallow: /s/
 Disallow: /-/profile
+Disallow: /-/user_settings/profile
 Disallow: /-/ide/
 Disallow: /-/experiment
 # Restrict allowed routes to avoid very ugly search results

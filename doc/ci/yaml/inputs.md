@@ -109,6 +109,23 @@ In this example:
 - `version` is a mandatory string input that must match the specified regular expression.
 - `export_results` is an optional boolean input. When not specified, it defaults to `true`.
 
+### Multi-line input string values
+
+[Inputs](../yaml/inputs.md) support different value types. You can pass multi-string values using the following format:
+
+```yaml
+spec:
+  inputs:
+    closed_message:
+      description: Message to announce when an issue is closed.
+      default: 'Hi {{author}} :wave:,
+
+        Based on the policy for inactive issues, this is now being closed.
+
+        If this issue requires further attention, please reopen this issue.'
+---
+```
+
 ## Set input values when using `include`
 
 > - `include:with` [renamed to `include:inputs`](https://gitlab.com/gitlab-org/gitlab/-/issues/406780) in GitLab 16.0.

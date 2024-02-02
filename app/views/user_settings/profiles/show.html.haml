@@ -7,7 +7,7 @@
 - if Feature.enabled?(:edit_user_profile_vue, current_user)
   .js-user-profile{ data: user_profile_data(@user) }
 - else
-  = gitlab_ui_form_for @user, url: profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
+  = gitlab_ui_form_for @user, url: user_settings_profile_path, method: :put, html: { multipart: true, class: 'edit-user js-edit-user js-quick-submit gl-show-field-errors js-password-prompt-form', remote: true }, authenticity_token: true do |f|
     .settings-section.js-search-settings-section
       .settings-sticky-header
         .settings-sticky-header-inner
@@ -78,7 +78,7 @@
         - if current_user.ldap_user?
           = s_("Profiles|Some options are unavailable for LDAP accounts")
       .form-group.gl-form-group.rspec-full-name.gl-max-w-80
-        = render 'profiles/name', form: f, user: @user
+        = render 'user_settings/profiles/name', form: f, user: @user
       .form-group.gl-form-group.gl-md-form-input-lg
         = f.label :id, s_('Profiles|User ID')
         = f.text_field :id, class: 'gl-form-input form-control', readonly: true
@@ -93,7 +93,7 @@
         %small.form-text.text-gl-muted
           = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
       = render_if_exists 'profiles/extra_settings', form: f
-      = render_if_exists 'profiles/email_settings', form: f
+      = render_if_exists 'user_settings/profiles/email_settings', form: f
       .form-group.gl-form-group
         = f.label :skype
         = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")

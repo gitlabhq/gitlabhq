@@ -353,7 +353,7 @@ class ApplicationController < BaseActionController
 
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
-      redirect_to profile_path, notice: _('Please complete your profile with email address')
+      redirect_to user_settings_profile_path, notice: _('Please complete your profile with email address')
     end
   end
 

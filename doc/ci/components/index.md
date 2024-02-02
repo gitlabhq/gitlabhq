@@ -358,7 +358,9 @@ that builds Go source code likely needs some samples of Go to test against. Alte
 a component that builds Docker images likely needs some sample Dockerfiles to test against.
 
 You can include sample files like these directly in the component project, to be used
-during component testing. For example, you can see the [code-quality CI/CD component's testing samples](https://gitlab.com/components/code-quality/-/tree/main/src).
+during component testing.
+
+You can learn more in [examples for testing a component](examples.md#test-a-component).
 
 ### Avoid using global keywords
 
@@ -533,6 +535,8 @@ can be converted to a CI/CD component:
      or making it [more efficient](../pipelines/pipeline_efficiency.md).
 1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](index.md#test-the-component).
 1. Tag and [release the component](#publish-a-new-release).
+
+You can learn more by following a practical example for [migrating the Go CI/CD template to CI/CD component](examples.md#cicd-component-migration-example-go).
 
 ## Troubleshooting
 

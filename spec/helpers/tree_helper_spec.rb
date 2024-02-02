@@ -37,7 +37,7 @@ RSpec.describe TreeHelper do
     let(:blob) { project.repository.blob_at('refs/heads/master', @path) }
 
     let_it_be(:user_preferences_gitpod_path) { '/-/profile/preferences#user_gitpod_enabled' }
-    let_it_be(:user_profile_enable_gitpod_path) { '/-/profile?user%5Bgitpod_enabled%5D=true' }
+    let_it_be(:user_profile_enable_gitpod_path) { '/-/user_settings/profile?user%5Bgitpod_enabled%5D=true' }
 
     before do
       @path = ''

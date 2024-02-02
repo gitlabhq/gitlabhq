@@ -120,7 +120,7 @@ RSpec.describe 'Admin Appearance', feature_category: :shared do
 
     it 'renders guidelines when set' do
       sign_in create(:user)
-      visit profile_path
+      visit user_settings_profile_path
 
       expect(page).to have_content 'Custom profile image guidelines, please 😄!'
     end

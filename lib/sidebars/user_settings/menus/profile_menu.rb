@@ -8,7 +8,7 @@ module Sidebars
 
         override :link
         def link
-          profile_path
+          user_settings_profile_path
         end
 
         override :title
@@ -23,7 +23,7 @@ module Sidebars
 
         override :active_routes
         def active_routes
-          { path: 'profiles#show' }
+          { path: 'user_settings/profiles#show' }
         end
       end
     end

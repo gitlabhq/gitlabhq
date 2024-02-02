@@ -165,7 +165,9 @@ module Gitlab
           api_prefix,
           allow_local_network: false,
           schemes: %w[http https],
-          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+        )
       end
 
       def service_account_exists?(resource)

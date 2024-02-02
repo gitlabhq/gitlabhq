@@ -3,7 +3,7 @@
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div>
   <div
-    class="code file-content gl-display-flex gl-overflow-hidden js-syntax-highlight"
+    class="code file-content gl-display-flex js-syntax-highlight"
   >
     <div
       class="gl-px-0! line-numbers"
@@ -16,7 +16,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
           href="/blame/foo-bar#L1"
         />
         <a
-          class="file-line-num gl-flex-grow-1 gl-shadow-none! gl-user-select-none"
+          class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="1"
           href="#LC1"
           id="reference-0"
@@ -32,7 +32,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
           href="/blame/foo-bar#L2"
         />
         <a
-          class="file-line-num gl-flex-grow-1 gl-shadow-none! gl-user-select-none"
+          class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="2"
           href="#LC2"
           id="reference-1"
@@ -48,7 +48,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
           href="/blame/foo-bar#L3"
         />
         <a
-          class="file-line-num gl-flex-grow-1 gl-shadow-none! gl-user-select-none"
+          class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="3"
           href="#LC3"
           id="reference-2"
@@ -58,7 +58,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
       </div>
     </div>
     <div
-      class="blob-content gl-display-flex gl-flex-direction-column gl-w-full"
+      class="blob-content gl-display-flex gl-flex-direction-column gl-overflow-y-auto gl-w-full"
     >
       <pre
         class="code gl-p-0! highlight"

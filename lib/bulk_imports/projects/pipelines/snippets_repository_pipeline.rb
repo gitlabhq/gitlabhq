@@ -58,7 +58,8 @@ module BulkImports
             allow_local_network: allow_local_requests?,
             allow_localhost: allow_local_requests?,
             deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-            schemes: %w[http https]
+            schemes: %w[http https],
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
           )
         end
 

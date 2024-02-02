@@ -78,6 +78,7 @@ itself: # project
     - topics
     - web_url
     - description_html
+    - repository_object_format
 
 build_auto_devops: # auto_devops
   unexposed_attributes:

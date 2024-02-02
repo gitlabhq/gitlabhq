@@ -7,7 +7,8 @@ module Tooling
   #
   # It does not check for compile time warnings yet. See https://gitlab.com/-/snippets/1929968
   class CheckRubySyntax
-    VALID_RUBYFILES = %w[Rakefile Dangerfile Gemfile Guardfile].to_set.freeze
+    VALID_RUBY_FILES = %w[Rakefile Dangerfile Gemfile Guardfile].to_set.freeze
+    VALID_RUBY_EXTENSIONS = %w[.rb .rake .ru].freeze
 
     attr_reader :files
 
@@ -18,7 +19,7 @@ module Tooling
     def ruby_files
       @ruby_files ||=
         @files.select do |file|
-          file.end_with?(".rb") || VALID_RUBYFILES.include?(File.basename(file))
+          file.end_with?(*VALID_RUBY_EXTENSIONS) || VALID_RUBY_FILES.include?(File.basename(file))
         end
     end
 

@@ -64,7 +64,9 @@ module Gitlab
             ports: Project::VALID_IMPORT_PORTS,
             allow_localhost: allow_local_requests?,
             allow_local_network: allow_local_requests?,
-            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+          )
 
           host.present? ? validated_pull_url.host.to_s : ''
         end

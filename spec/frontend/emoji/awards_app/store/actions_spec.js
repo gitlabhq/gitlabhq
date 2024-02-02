@@ -66,9 +66,8 @@ describe('Awards app actions', () => {
       });
 
       it('calls Sentry.captureException', async () => {
-        await testAction(actions.fetchAwards, null, { path: '/awards' }, [], [], () => {
-          expect(Sentry.captureException).toHaveBeenCalled();
-        });
+        await testAction(actions.fetchAwards, null, { path: '/awards' }, [], []);
+        expect(Sentry.captureException).toHaveBeenCalled();
       });
     });
   });
@@ -140,10 +139,8 @@ describe('Awards app actions', () => {
               { path: '/awards', awards: [] },
               [makeOptimisticAddMutation(), makeOptimisticRemoveMutation()],
               [],
-              () => {
-                expect(Sentry.captureException).toHaveBeenCalled();
-              },
             );
+            expect(Sentry.captureException).toHaveBeenCalled();
           });
         });
       });
@@ -191,10 +188,8 @@ describe('Awards app actions', () => {
               },
               [makeOptimisticRemoveMutation(1), makeOptimisticAddMutation(1, name, currentUserId)],
               [],
-              () => {
-                expect(Sentry.captureException).toHaveBeenCalled();
-              },
             );
+            expect(Sentry.captureException).toHaveBeenCalled();
           });
         });
       });

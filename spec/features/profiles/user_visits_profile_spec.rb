@@ -12,7 +12,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
   end
 
   it 'shows profile info' do
-    visit(profile_path)
+    visit(user_settings_profile_path)
 
     expect(page).to have_content "This information will appear on your profile"
   end

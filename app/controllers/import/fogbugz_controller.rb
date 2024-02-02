@@ -130,7 +130,8 @@ class Import::FogbugzController < Import::BaseController
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
       deny_all_requests_except_allowed: deny_all_requests_except_allowed?,
-      schemes: %w[http https]
+      schemes: %w[http https],
+      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
     )
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }

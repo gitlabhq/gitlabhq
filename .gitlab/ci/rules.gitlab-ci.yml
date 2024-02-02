@@ -333,7 +333,9 @@
   - "**/Dangerfile"
   - "**/Gemfile"
   - "**/Guardfile"
+  - "**/*.rake"
   - "**/*.rb"
+  - "**/*.ru"
 
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns

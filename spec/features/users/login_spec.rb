@@ -1085,7 +1085,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           expect_to_be_on_terms_page
           click_button 'Accept terms'
 
-          expect(page).to have_current_path(profile_path, ignore_query: true)
+          expect(page).to have_current_path(user_settings_profile_path, ignore_query: true)
 
           fill_in 'Email', with: 'hello@world.com'
 

@@ -23,6 +23,8 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+const Megabyte = 1 << 20
+
 type TomlURL struct {
 	url.URL
 }
@@ -111,6 +113,10 @@ type ImageResizerConfig struct {
 	MaxFilesize    uint64 `toml:"max_filesize" json:"max_filesize"`
 }
 
+type MetadataConfig struct {
+	ZipReaderLimitBytes int64 `toml:"zip_reader_limit_bytes"`
+}
+
 type TlsConfig struct {
 	Certificate string `toml:"certificate" json:"certificate"`
 	Key         string `toml:"key" json:"key"`
@@ -143,6 +149,7 @@ type Config struct {
 	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage" json:"object_storage"`
 	PropagateCorrelationID       bool                     `toml:"-"`
 	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer" json:"image_resizer"`
+	MetadataConfig               MetadataConfig           `toml:"metadata" json:"metadata"`
 	AltDocumentRoot              string                   `toml:"alt_document_root" json:"alt_document_root"`
 	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout" json:"shutdown_timeout"`
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for" json:"trusted_cidrs_for_x_forwarded_for"`
@@ -156,9 +163,14 @@ var DefaultImageResizerConfig = ImageResizerConfig{
 	MaxFilesize:    250 * 1000, // 250kB,
 }
 
+var DefaultMetadataConfig = MetadataConfig{
+	ZipReaderLimitBytes: 100 * Megabyte,
+}
+
 func NewDefaultConfig() *Config {
 	return &Config{
 		ImageResizerConfig: DefaultImageResizerConfig,
+		MetadataConfig:     DefaultMetadataConfig,
 	}
 }
 

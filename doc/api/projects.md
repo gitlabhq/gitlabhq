@@ -1567,6 +1567,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `public_builds`                                                   | boolean | No                             | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                                     | boolean | No                             | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string  | No                             | One of `disabled`, `private`, or `enabled`. |
+| `repository_object_format`                                        | string  | No                             | Repository object format. Defaults to `sha1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419887) in GitLab 16.9. |
 | `remove_source_branch_after_merge`                                | boolean | No                             | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                         | string  | No                             | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                              | string  | No                             | Which storage shard the repository is on. _(administrator only)_ |
@@ -1661,6 +1662,7 @@ POST /projects/user/:user_id
 | `public_builds`                                                   | boolean | No       | _(Deprecated)_ If `true`, jobs can be viewed by non-project members. Use `public_jobs` instead. |
 | `public_jobs`                                                     | boolean | No       | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                           | string  | No       | One of `disabled`, `private`, or `enabled`. |
+| `repository_object_format`                                        | string  | No       | Repository object format. Defaults to `sha1`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419887) in GitLab 16.9. |
 | `remove_source_branch_after_merge`                                | boolean | No       | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                         | string  | No       | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                              | string  | No       | Which storage shard the repository is on. _(administrators only)_ |
@@ -1891,6 +1893,7 @@ Example responses:
     "name_with_namespace": "Diaspora / Diaspora Project Site",
     "path": "diaspora-project-site",
     "path_with_namespace": "diaspora/diaspora-project-site",
+    "repository_object_format": "sha1",
     "issues_enabled": true,
     "open_issues_count": 1,
     "merge_requests_enabled": true,
@@ -1993,6 +1996,7 @@ Example response:
   "name_with_namespace": "Diaspora / Diaspora Project Site",
   "path": "diaspora-project-site",
   "path_with_namespace": "diaspora/diaspora-project-site",
+  "repository_object_format": "sha1",
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
@@ -2101,6 +2105,7 @@ Example response:
   "name_with_namespace": "Diaspora / Diaspora Project Site",
   "path": "diaspora-project-site",
   "path_with_namespace": "diaspora/diaspora-project-site",
+  "repository_object_format": "sha1",
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
@@ -2289,6 +2294,7 @@ Example response:
   "name_with_namespace": "Diaspora / Diaspora Project Site",
   "path": "diaspora-project-site",
   "path_with_namespace": "diaspora/diaspora-project-site",
+  "repository_object_format": "sha1",
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,
@@ -2422,6 +2428,7 @@ Example response:
   "name_with_namespace": "Diaspora / Diaspora Project Site",
   "path": "diaspora-project-site",
   "path_with_namespace": "diaspora/diaspora-project-site",
+  "repository_object_format": "sha1",
   "issues_enabled": true,
   "open_issues_count": 1,
   "merge_requests_enabled": true,

@@ -8,6 +8,6 @@ class Profiles::AvatarsController < Profiles::ApplicationController
 
     Users::UpdateService.new(current_user, user: @user).execute(&:remove_avatar!)
 
-    redirect_to profile_path, status: :found
+    redirect_to user_settings_profile_path, status: :found
   end
 end

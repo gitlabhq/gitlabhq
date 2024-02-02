@@ -26,14 +26,30 @@ RSpec.describe Tooling::CheckRubySyntax, feature_category: :tooling do
       it { is_expected.to eq([]) }
     end
 
-    context "with files ending with .rb" do
-      before do
-        FileUtils.touch("foo.rb")
-        FileUtils.touch("bar.rb")
-        FileUtils.touch("baz.erb")
+    context "with files ending with Ruby extensions" do
+      let(:ruby_files) do
+        %w[
+          ruby_file.rb
+          rspec.html.haml_spec.rb
+          task.rake
+          config.ru
+        ]
       end
 
-      it { is_expected.to contain_exactly("foo.rb", "bar.rb") }
+      let(:non_ruby_files) do
+        %w[
+          a.txt
+          a.erb
+        ]
+      end
+
+      before do
+        (ruby_files + non_ruby_files).each do |file|
+          FileUtils.touch(file)
+        end
+      end
+
+      it { is_expected.to match_array(ruby_files) }
     end
 
     context "with special Ruby files" do

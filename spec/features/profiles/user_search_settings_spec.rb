@@ -12,7 +12,7 @@ RSpec.describe 'User searches their settings', :js, feature_category: :user_prof
 
   context 'in profile page' do
     before do
-      visit profile_path
+      visit user_settings_profile_path
     end
 
     it_behaves_like 'can search settings', 'Public avatar', 'Main settings'

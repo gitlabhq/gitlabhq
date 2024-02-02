@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -16,6 +17,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/command"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/lsif_transformer/parser"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
@@ -44,7 +46,7 @@ type artifactsUploadProcessor struct {
 }
 
 // Artifacts is like a Multipart but specific for artifacts upload.
-func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
+func Artifacts(myAPI *api.API, h http.Handler, p Preparer, cfg *config.Config) http.Handler {
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		format := r.URL.Query().Get(ArtifactFormatKey)
 		mg := &artifactsUploadProcessor{
@@ -53,11 +55,11 @@ func Artifacts(myAPI *api.API, h http.Handler, p Preparer) http.Handler {
 			tempDir:          a.TempPath,
 			SavedFileTracker: SavedFileTracker{Request: r},
 		}
-		interceptMultipartFiles(w, r, h, mg, &eagerAuthorizer{a}, p)
+		interceptMultipartFiles(w, r, h, mg, &eagerAuthorizer{a}, p, cfg)
 	}, "/authorize")
 }
 
-func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler) (*destination.FileHandler, error) {
+func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, file *destination.FileHandler, readerLimit int64) (*destination.FileHandler, error) {
 	metaOpts := &destination.UploadOpts{
 		LocalTempPath: a.tempDir,
 	}
@@ -70,7 +72,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 		fileName = file.RemoteURL
 	}
 
-	zipMd := exec.CommandContext(ctx, "gitlab-zip-metadata", fileName)
+	zipMd := exec.CommandContext(ctx, "gitlab-zip-metadata", "-zip-reader-limit", strconv.FormatInt(readerLimit, 10), fileName)
 	zipMd.Stderr = log.ContextLogger(ctx).Writer()
 	zipMd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 
@@ -111,7 +113,7 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 	return fh, nil
 }
 
-func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error {
+func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer, cfg *config.Config) error {
 	//  ProcessFile for artifacts requires file form-data field name to eq `file`
 	if formName != "file" {
 		return fmt.Errorf("invalid form field: %q", formName)
@@ -132,7 +134,7 @@ func (a *artifactsUploadProcessor) ProcessFile(ctx context.Context, formName str
 		return nil
 	}
 
-	metadata, err := a.generateMetadataFromZip(ctx, file)
+	metadata, err := a.generateMetadataFromZip(ctx, file, cfg.MetadataConfig.ZipReaderLimitBytes)
 	if err != nil {
 		return err
 	}

@@ -18,6 +18,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
@@ -167,7 +168,8 @@ func testUploadArtifacts(t *testing.T, contentType, url string, body io.Reader) 
 	testhelper.ConfigureSecret()
 	apiClient := api.NewAPI(parsedURL, "123", roundTripper)
 	proxyClient := proxy.NewProxy(parsedURL, "123", roundTripper)
-	Artifacts(apiClient, proxyClient, &DefaultPreparer{}).ServeHTTP(response, httpRequest)
+
+	Artifacts(apiClient, proxyClient, &DefaultPreparer{}, config.NewDefaultConfig()).ServeHTTP(response, httpRequest)
 	return response
 }
 

@@ -244,7 +244,7 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
       it 'needs change user password' do
         stub_application_setting(require_two_factor_authentication: true)
 
-        visit profile_path
+        visit user_settings_profile_path
 
         expect(page).to have_current_path new_user_settings_password_path, ignore_query: true
       end

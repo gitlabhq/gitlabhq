@@ -146,7 +146,7 @@ export default {
 <template>
   <div>
     <div
-      class="file-content code js-syntax-highlight gl-overflow-hidden gl-display-flex"
+      class="file-content code js-syntax-highlight gl-display-flex"
       :class="$options.userColorScheme"
     >
       <blame v-if="showBlame && blameInfoForRange.length" :blame-info="blameInfoForRange" />
@@ -164,7 +164,7 @@ export default {
           <a
             :id="`L${line}`"
             :key="line"
-            class="gl-user-select-none gl-shadow-none! file-line-num gl-flex-grow-1"
+            class="gl-user-select-none gl-shadow-none! file-line-num"
             :href="`#LC${line}`"
             :data-line-number="line"
             @click="scrollToLine(`#LC${line}`)"
@@ -173,7 +173,9 @@ export default {
           </a>
         </div>
       </div>
-      <div class="blob-content gl-display-flex gl-flex-direction-column gl-w-full">
+      <div
+        class="blob-content gl-display-flex gl-flex-direction-column gl-overflow-y-auto gl-w-full"
+      >
         <pre
           class="code highlight gl-p-0!"
         ><code v-safe-html="content" :data-blob-hash="blobHash" ></code></pre>

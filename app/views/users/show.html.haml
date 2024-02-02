@@ -19,7 +19,7 @@
         = render 'users/follow_user'
         -# The following edit button is mutually exclusive to the follow user button, they won't be shown together
         - if @user == current_user
-          = render Pajamas::ButtonComponent.new(href: profile_path,
+          = render Pajamas::ButtonComponent.new(href: user_settings_profile_path,
             button_options: { class: 'gl-flex-grow-1', title: s_('UserProfile|Edit profile') }) do
             = s_("UserProfile|Edit profile")
         = render 'users/view_gpg_keys'

@@ -97,7 +97,8 @@ class Import::GiteaController < Import::GithubController
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
       schemes: %w[http https],
-      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
+      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
     )
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     session[access_token_key] = nil

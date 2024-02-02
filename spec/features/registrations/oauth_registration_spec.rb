@@ -76,7 +76,7 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
         it 'redirects to the profile path' do
           register_via(provider, uid, email, additional_info: additional_info)
 
-          expect(page).to have_current_path profile_path
+          expect(page).to have_current_path user_settings_profile_path
           expect(page).to have_content('Please complete your profile with email address')
         end
       end

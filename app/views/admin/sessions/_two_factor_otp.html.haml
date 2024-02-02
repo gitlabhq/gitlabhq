@@ -6,4 +6,5 @@
       = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
 
   .submit-container
-    = submit_tag 'Verify code', class: 'gl-button btn btn-confirm'
+    = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
+      = _("Verify code")

@@ -51,7 +51,7 @@ export default {
 
 <template>
   <div class="gl-display-inline-flex gl-align-items-center">
-    <gl-icon v-if="icon" :name="icon" class="gl-text-gray-500 gl-mr-3" />
+    <gl-icon v-if="icon" :name="icon" class="gl-text-gray-500 gl-min-w-5 gl-mr-3" />
     <tooltip-on-truncate v-if="link" :title="text" class="gl-text-truncate" :class="sizeClass">
       <gl-link :href="link" class="gl-font-weight-bold">
         {{ text }}

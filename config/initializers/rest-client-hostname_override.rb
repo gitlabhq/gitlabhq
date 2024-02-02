@@ -13,7 +13,8 @@ module RestClient
             allow_localhost: allow_settings_local_requests?,
             dns_rebind_protection: dns_rebind_protection?,
             deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
-            schemes: %w[http https])
+            schemes: %w[http https],
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
 
           self.hostname_override = hostname_override
         rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e

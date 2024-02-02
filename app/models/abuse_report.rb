@@ -210,8 +210,8 @@ class AbuseReport < ApplicationRecord
         schemes: %w[http https],
         allow_localhost: true,
         dns_rebind_protection: true,
-        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
-      )
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+        outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
 
       next unless link.length > MAX_CHAR_LIMIT_URL
 

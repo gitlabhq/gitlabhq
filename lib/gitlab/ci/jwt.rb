@@ -58,6 +58,7 @@ module Gitlab
           user_id: user&.id.to_s,
           user_login: user&.username,
           user_email: user&.email,
+          user_access_level: user_access_level,
           pipeline_id: pipeline.id.to_s,
           pipeline_source: pipeline.source.to_s,
           job_id: build.id.to_s,
@@ -103,6 +104,12 @@ module Gitlab
 
       def environment_protected?
         false # Overridden in EE
+      end
+
+      def user_access_level
+        return unless user
+
+        project.team.human_max_access(user.id)&.downcase
       end
     end
   end

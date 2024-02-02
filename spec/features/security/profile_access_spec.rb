@@ -13,8 +13,8 @@ RSpec.describe "Profile access", feature_category: :user_management do
     it { is_expected.to be_denied_for :visitor }
   end
 
-  describe "GET /-/profile" do
-    subject { profile_path }
+  describe "GET /-/user_settings/profile" do
+    subject { user_settings_profile_path }
 
     it { is_expected.to be_allowed_for :admin }
     it { is_expected.to be_allowed_for :user }

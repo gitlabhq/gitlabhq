@@ -4,8 +4,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   I18N_PASSWORD_PROMPT_CANCEL_BUTTON,
   I18N_PASSWORD_PROMPT_CONFIRM_BUTTON,
-} from '~/pages/profiles/password_prompt/constants';
-import PasswordPromptModal from '~/pages/profiles/password_prompt/password_prompt_modal.vue';
+} from '~/profile/password_prompt/constants';
+import PasswordPromptModal from '~/profile/password_prompt/password_prompt_modal.vue';
 
 const createComponent = ({ props }) => {
   return shallowMountExtended(PasswordPromptModal, {
