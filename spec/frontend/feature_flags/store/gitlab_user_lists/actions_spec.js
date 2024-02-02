@@ -16,9 +16,9 @@ describe('~/feature_flags/store/gitlab_user_list/actions', () => {
   });
 
   describe('fetchUserLists', () => {
-    it('should commit FETCH_USER_LISTS and RECEIEVE_USER_LISTS_SUCCESS on success', () => {
+    it('should commit FETCH_USER_LISTS and RECEIEVE_USER_LISTS_SUCCESS on success', async () => {
       Api.searchFeatureFlagUserLists.mockResolvedValue({ data: [userList] });
-      return testAction(
+      await testAction(
         fetchUserLists,
         undefined,
         mockedState,
@@ -27,13 +27,13 @@ describe('~/feature_flags/store/gitlab_user_list/actions', () => {
           { type: types.RECEIVE_USER_LISTS_SUCCESS, payload: [userList] },
         ],
         [],
-        () => expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'test'),
       );
+      expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'test');
     });
 
-    it('should commit FETCH_USER_LISTS and RECEIEVE_USER_LISTS_ERROR on success', () => {
+    it('should commit FETCH_USER_LISTS and RECEIEVE_USER_LISTS_ERROR on success', async () => {
       Api.searchFeatureFlagUserLists.mockRejectedValue({ message: 'error' });
-      return testAction(
+      await testAction(
         fetchUserLists,
         undefined,
         mockedState,
@@ -42,8 +42,8 @@ describe('~/feature_flags/store/gitlab_user_list/actions', () => {
           { type: types.RECEIVE_USER_LISTS_ERROR, payload: ['error'] },
         ],
         [],
-        () => expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'test'),
       );
+      expect(Api.searchFeatureFlagUserLists).toHaveBeenCalledWith('1', 'test');
     });
   });
 

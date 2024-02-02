@@ -6297,7 +6297,7 @@ Input type: `PipelineTriggerDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinetriggerdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationpipelinetriggerdeleteid"></a>`id` | [`CiTriggerID!`](#citriggerid) | ID of the pipeline trigger token to mutate. |
+| <a id="mutationpipelinetriggerdeleteid"></a>`id` | [`CiTriggerID!`](#citriggerid) | ID of the pipeline trigger token to delete. |
 
 #### Fields
 
@@ -6320,7 +6320,7 @@ Input type: `PipelineTriggerUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationpipelinetriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinetriggerupdatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline trigger token. |
-| <a id="mutationpipelinetriggerupdateid"></a>`id` | [`CiTriggerID!`](#citriggerid) | ID of the pipeline trigger token to mutate. |
+| <a id="mutationpipelinetriggerupdateid"></a>`id` | [`CiTriggerID!`](#citriggerid) | ID of the pipeline trigger token to update. |
 
 #### Fields
 

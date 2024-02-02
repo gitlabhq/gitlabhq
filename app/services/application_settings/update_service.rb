@@ -25,6 +25,10 @@ module ApplicationSettings
         return false
       end
 
+      if params[:enabled_git_access_protocol] == 'all'
+        params[:enabled_git_access_protocol] = ''
+      end
+
       update_terms(@params.delete(:terms))
       update_default_branch_protection_defaults(@params[:default_branch_protection])
 

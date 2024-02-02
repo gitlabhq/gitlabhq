@@ -628,6 +628,7 @@ export const workItemResponseFactory = ({
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
   weightWidgetPresent = true,
+  participantsWidgetPresent = true,
   progressWidgetPresent = true,
   milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
@@ -751,6 +752,24 @@ export const workItemResponseFactory = ({
                   title: 'A dolores assumenda harum non facilis similique delectus quod.',
                   __typename: 'IterationCadence',
                 },
+              },
+            }
+          : { type: 'MOCK TYPE' },
+        participantsWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetParticipants',
+              type: 'PARTICIPANTS',
+              participants: {
+                nodes: [
+                  {
+                    __typename: 'UserCore',
+                    id: 'gid://gitlab/User/5',
+                    avatarUrl: '/avatar2',
+                    name: 'rookie',
+                    username: 'rookie',
+                    webUrl: 'rookie',
+                  },
+                ],
               },
             }
           : { type: 'MOCK TYPE' },

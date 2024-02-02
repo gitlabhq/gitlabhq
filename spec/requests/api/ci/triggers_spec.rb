@@ -366,6 +366,44 @@ RSpec.describe API::Ci::Triggers, feature_category: :continuous_integration do
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
+
+    context 'when the UpdateService returns a permissions error' do
+      before do
+        failure_response = instance_double(ServiceResponse, success?: false, reason: :forbidden, message: "Permissions error message")
+
+        allow_next_instance_of(::Ci::PipelineTriggers::UpdateService) do |instance|
+          allow(instance).to receive(:execute)
+                    .and_return(failure_response)
+        end
+      end
+
+      it 'returns forbidden' do
+        put api("/projects/#{project.id}/triggers/#{trigger.id}", user),
+          params: { description: 'updated trigger' }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response['message']).to eq('403 Forbidden - Permissions error message')
+      end
+    end
+
+    context 'when trigger fails to update' do
+      before do
+        failure_response = instance_double(ServiceResponse, success?: false, reason: :validation_error, message: "Unexpected Ci::Trigger update failure")
+
+        allow_next_instance_of(::Ci::PipelineTriggers::UpdateService) do |instance|
+          allow(instance).to receive(:execute)
+                    .and_return(failure_response)
+        end
+      end
+
+      it 'returns bad request' do
+        put api("/projects/#{project.id}/triggers/#{trigger.id}", user),
+          params: { description: 'updated trigger' }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']).to eq('400 Bad request - Unexpected Ci::Trigger update failure')
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/triggers/:trigger_id' do

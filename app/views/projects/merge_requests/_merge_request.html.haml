@@ -15,18 +15,18 @@
           = hidden_merge_request_icon(merge_request)
           = link_to merge_request.title, merge_request_path(merge_request), class: 'js-prefetch-document'
         - if merge_request.tasks?
-          %span.task-status.d-none.d-sm-inline-block.gl-font-sm
+          %span.task-status.gl-display-none.gl-sm-display-inline-block.gl-font-sm
             &nbsp;
             = merge_request.task_status
 
       .issuable-info
         %span.issuable-reference
           #{issuable_reference(merge_request)}
-        %span.issuable-authored.d-none.d-sm-inline-block.gl-text-gray-500!
+        %span.issuable-authored.gl-display-none.gl-sm-display-inline-block.gl-text-gray-500!
           &middot;
           #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
         - if merge_request.milestone
-          %span.issuable-milestone.d-none.d-sm-inline-block.gl-text-truncate.gl-max-w-26.gl-vertical-align-bottom
+          %span.issuable-milestone.gl-display-none.gl-sm-display-inline-block.gl-text-truncate.gl-max-w-26.gl-vertical-align-bottom
             &nbsp;
             = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: 'gl-text-gray-500!', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
               = sprite_icon('clock', size: 12, css_class: 'gl-vertical-align-text-bottom')
@@ -68,6 +68,6 @@
         = render 'shared/issuable_meta_data', issuable: merge_request
 
       - if merge_request.updated_at != merge_request.created_at
-        .gl-float-right.issuable-updated-at.d-none.d-sm-inline-block.gl-text-gray-500
+        .gl-float-right.issuable-updated-at.gl-display-none.gl-sm-display-inline-block.gl-text-gray-500
           %span
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

@@ -18117,6 +18117,9 @@ msgstr ""
 msgid "Display blame info"
 msgstr ""
 
+msgid "Display by"
+msgstr ""
+
 msgid "Display milestones"
 msgstr ""
 
@@ -21179,9 +21182,6 @@ msgid "Filter"
 msgstr ""
 
 msgid "Filter activity"
-msgstr ""
-
-msgid "Filter by"
 msgstr ""
 
 msgid "Filter by %{page_context_word} that are currently open."
@@ -26905,6 +26905,9 @@ msgid "Issue boards"
 msgstr ""
 
 msgid "Issue cannot be found."
+msgstr ""
+
+msgid "Issue count"
 msgstr ""
 
 msgid "Issue created from vulnerability %{vulnerability_link}"
@@ -52332,13 +52335,13 @@ msgstr ""
 msgid "Trigger token was created successfully."
 msgstr ""
 
+msgid "Trigger token was successfully updated."
+msgstr ""
+
 msgid "Trigger token:"
 msgstr ""
 
 msgid "Trigger variables"
-msgstr ""
-
-msgid "Trigger was successfully updated."
 msgstr ""
 
 msgid "Triggerer"
@@ -58036,19 +58039,10 @@ msgstr ""
 msgid "ciReport|%{danger_start}%{degradedNum} degraded%{danger_end}, %{same_start}%{sameNum} same%{same_end}, and %{success_start}%{improvedNum} improved%{success_end}"
 msgstr ""
 
-msgid "ciReport|%{degradedNum} degraded"
-msgstr ""
-
-msgid "ciReport|%{improvedNum} improved"
-msgstr ""
-
 msgid "ciReport|%{prefix} %{strong_start}%{score}%{strong_end} %{delta} %{deltaPercent} in %{path}"
 msgstr ""
 
 msgid "ciReport|%{remainingPackagesCount} more"
-msgstr ""
-
-msgid "ciReport|%{sameNum} same"
 msgstr ""
 
 msgid "ciReport|%{scanner} detected %{atleastStart}at least%{atleastEnd} %{number} new potential %{vulnStr}"
@@ -58212,12 +58206,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "ciReport|Load performance test metrics results are being parsed"
-msgstr ""
-
-msgid "ciReport|Load performance test metrics: "
-msgstr ""
-
-msgid "ciReport|Load performance test metrics: No changes"
 msgstr ""
 
 msgid "ciReport|Loading %{reportName} report"

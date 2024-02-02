@@ -50,11 +50,6 @@ export default {
       return this.participants.length;
     },
   },
-  methods: {
-    onClickCollapsedIcon() {
-      this.$emit('toggleSidebar');
-    },
-  },
 };
 </script>
 
@@ -65,7 +60,7 @@ export default {
       v-gl-tooltip.left.viewport
       :title="participantLabel"
       class="sidebar-collapsed-icon"
-      @click="onClickCollapsedIcon"
+      @click="$emit('toggleSidebar')"
     >
       <gl-icon name="users" />
       <gl-loading-icon v-if="loading" size="sm" />

@@ -1,4 +1,5 @@
 <script>
+import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -7,6 +8,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
@@ -26,6 +28,7 @@ import WorkItemParent from './work_item_parent_with_edit.vue';
 
 export default {
   components: {
+    Participants,
     WorkItemLabels,
     WorkItemMilestoneInline,
     WorkItemMilestoneWithEdit,
@@ -81,6 +84,9 @@ export default {
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemParticipants() {
+      return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
     },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
@@ -290,5 +296,11 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <participants
+      v-if="workItemParticipants && glFeatures.workItemsMvc"
+      class="gl-mb-5"
+      :number-of-less-participants="10"
+      :participants="workItemParticipants.participants.nodes"
+    />
   </div>
 </template>

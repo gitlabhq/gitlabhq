@@ -18,7 +18,7 @@ describe('Participants component', () => {
   const participants = [participant, { ...participant, id: 2 }, { ...participant, id: 3 }];
 
   const findMoreParticipantsButton = () => wrapper.findComponent(GlButton);
-  const findParticipantsAuthor = () => wrapper.findAll('.participants-author');
+  const findParticipantsAuthor = () => wrapper.findAll('.author-link');
 
   const mountComponent = (propsData) => shallowMount(Participants, { propsData });
 

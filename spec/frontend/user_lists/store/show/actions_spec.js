@@ -16,9 +16,9 @@ describe('User Lists Show Actions', () => {
   });
 
   describe('fetchUserList', () => {
-    it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_SUCCESS on success', () => {
+    it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_SUCCESS on success', async () => {
       Api.fetchFeatureFlagUserList.mockResolvedValue({ data: userList });
-      return testAction(
+      await testAction(
         actions.fetchUserList,
         undefined,
         mockState,
@@ -27,8 +27,8 @@ describe('User Lists Show Actions', () => {
           { type: types.RECEIVE_USER_LIST_SUCCESS, payload: userList },
         ],
         [],
-        () => expect(Api.fetchFeatureFlagUserList).toHaveBeenCalledWith('1', '2'),
       );
+      expect(Api.fetchFeatureFlagUserList).toHaveBeenCalledWith('1', '2');
     });
 
     it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_ERROR on error', () => {
@@ -85,9 +85,9 @@ describe('User Lists Show Actions', () => {
       mockState.userIds = ['user1', 'user2', 'user3'];
     });
 
-    it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_SUCCESS on success', () => {
+    it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_SUCCESS on success', async () => {
       Api.updateFeatureFlagUserList.mockResolvedValue({ data: userList });
-      return testAction(
+      await testAction(
         actions.updateUserList,
         undefined,
         mockState,
@@ -96,12 +96,11 @@ describe('User Lists Show Actions', () => {
           { type: types.RECEIVE_USER_LIST_SUCCESS, payload: userList },
         ],
         [],
-        () =>
-          expect(Api.updateFeatureFlagUserList).toHaveBeenCalledWith('1', {
-            ...userList,
-            user_xids: stringifyUserIds(mockState.userIds),
-          }),
       );
+      expect(Api.updateFeatureFlagUserList).toHaveBeenCalledWith('1', {
+        ...userList,
+        user_xids: stringifyUserIds(mockState.userIds),
+      });
     });
     it('commits REQUEST_USER_LIST and RECEIVE_USER_LIST_ERROR on error', () => {
       Api.updateFeatureFlagUserList.mockRejectedValue({ message: 'fail' });

@@ -906,6 +906,30 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       end
     end
 
+    context 'with enabled_git_access_protocol' do
+      %w[ssh http].each do |protocol|
+        it "allows #{protocol}" do
+          put api('/application/settings', admin), params: {
+            enabled_git_access_protocol: protocol
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['enabled_git_access_protocol']).to eq(protocol)
+          expect(ApplicationSetting.current.enabled_git_access_protocol).to eq(protocol)
+        end
+      end
+
+      it 'allows "all"' do
+        put api('/application/settings', admin), params: {
+          enabled_git_access_protocol: 'all'
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['enabled_git_access_protocol']).to eq('')
+        expect(ApplicationSetting.current.enabled_git_access_protocol).to eq('')
+      end
+    end
+
     context 'runner token expiration_intervals' do
       it 'updates the settings' do
         put api("/application/settings", admin), params: {

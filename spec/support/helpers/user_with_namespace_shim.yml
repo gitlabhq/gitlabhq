@@ -233,6 +233,7 @@
 - ee/spec/requests/projects/analytics/code_reviews_controller_spec.rb
 - ee/spec/requests/projects/issues_controller_spec.rb
 - ee/spec/requests/projects/metrics_controller_spec.rb
+- ee/spec/requests/projects/logs_controller_spec.rb
 - ee/spec/requests/projects/security/policies_controller_spec.rb
 - ee/spec/requests/projects/tracing_controller_spec.rb
 - ee/spec/requests/subscriptions/hand_raise_leads_spec.rb

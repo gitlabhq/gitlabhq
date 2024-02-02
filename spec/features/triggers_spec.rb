@@ -93,7 +93,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
         click_button 'Save trigger'
 
         aggregate_failures 'display update notice and trigger is updated' do
-          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger was successfully updated.'
+          expect(page.find('[data-testid="alert-info"]')).to have_content 'Trigger token was successfully updated.'
           expect(page.find('.triggers-list')).to have_content new_trigger_title
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end

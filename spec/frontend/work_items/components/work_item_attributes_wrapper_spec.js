@@ -1,5 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
+import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemDueDateInline from '~/work_items/components/work_item_due_date_inline.vue';
 import WorkItemDueDateWithEdit from '~/work_items/components/work_item_due_date_with_edit.vue';
@@ -31,6 +32,7 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
   const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
+  const findWorkItemParticipents = () => wrapper.findComponent(Participants);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
@@ -48,6 +50,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
+          workItemsMvc: true,
           workItemsMvc2,
         },
       },
@@ -203,6 +206,19 @@ describe('WorkItemAttributesWrapper component', () => {
       await nextTick();
 
       expect(wrapper.emitted('error')).toEqual([[updateError]]);
+    });
+  });
+
+  describe('participants widget', () => {
+    it.each`
+      description                                               | participantsWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                   | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}                  | ${false}
+    `('$description', ({ participantsWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ participantsWidgetPresent });
+      createComponent({ workItem: response.data.workItem });
+
+      expect(findWorkItemParticipents().exists()).toBe(exists);
     });
   });
 });

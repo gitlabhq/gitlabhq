@@ -133,7 +133,7 @@ module API
           end
         end
 
-        desc 'Update a trigger' do
+        desc 'Update a trigger token' do
           success code: 200, model: Entities::Trigger
           failure [
             { code: 400, message: 'Bad request' },
@@ -143,22 +143,28 @@ module API
           ]
         end
         params do
-          requires :trigger_id, type: Integer,  desc: 'The trigger ID'
-          optional :description, type: String,  desc: 'The trigger description'
+          requires :trigger_id, type: Integer,  desc: 'The trigger token ID'
+          optional :description, type: String,  desc: 'The trigger token description'
         end
         put ':id/triggers/:trigger_id' do
           authenticate!
-          authorize! :admin_build, user_project
 
           trigger = user_project.triggers.find(params.delete(:trigger_id))
           break not_found!('Trigger') unless trigger
 
-          authorize! :admin_trigger, trigger
+          response =
+            ::Ci::PipelineTriggers::UpdateService.new(
+              user: current_user,
+              trigger: trigger,
+              description: declared_params(include_missing: false)[:description]
+            ).execute
 
-          if trigger.update(declared_params(include_missing: false))
-            present trigger, with: Entities::Trigger, current_user: current_user
+          if response.success?
+            present response.payload[:trigger], with: Entities::Trigger, current_user: current_user
+          elsif response.reason == :forbidden
+            forbidden!(response.message)
           else
-            render_validation_error!(trigger)
+            bad_request!(response.message)
           end
         end
 

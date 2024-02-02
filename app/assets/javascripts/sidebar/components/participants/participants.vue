@@ -91,35 +91,32 @@ export default {
 
 <template>
   <div>
-    <div v-if="showParticipantLabel" class="title gl-line-height-20 gl-font-weight-bold gl-mb-0!">
+    <div v-if="showParticipantLabel" class="title gl-line-height-20 gl-font-weight-bold gl-mb-2">
       <gl-loading-icon v-if="loading" inline />
       {{ participantLabel }}
     </div>
-    <div class="gl-display-flex gl-flex-wrap gl-mt-2 gl-mb-n3">
-      <div
+    <div class="gl-display-flex gl-flex-wrap gl-gap-3">
+      <a
         v-for="participant in visibleParticipants"
         :key="participant.id"
-        class="participants-author gl-display-inline-block gl-mr-3 gl-mb-3"
+        :href="participant.web_url || participant.webUrl"
+        :data-user-id="getParticipantId(participant.id)"
+        :data-username="participant.username"
+        class="author-link js-user-link gl-display-inline-block gl-rounded-full"
       >
-        <a
-          :href="participant.web_url || participant.webUrl"
-          :data-user-id="getParticipantId(participant.id)"
-          :data-username="participant.username"
-          class="author-link js-user-link gl-display-inline-block gl-rounded-full"
-        >
-          <user-avatar-image
-            :lazy="lazy"
-            :img-src="participant.avatar_url || participant.avatarUrl"
-            :size="24"
-            :img-alt="participant.name"
-            css-classes="gl-mr-0!"
-            tooltip-placement="bottom"
-          />
-        </a>
-      </div>
+        <user-avatar-image
+          :lazy="lazy"
+          :img-src="participant.avatar_url || participant.avatarUrl"
+          :size="24"
+          :img-alt="participant.name"
+          css-classes="gl-mr-0!"
+          tooltip-placement="bottom"
+        />
+      </a>
     </div>
     <gl-button
       v-if="hasMoreParticipants"
+      class="gl-mt-3"
       category="tertiary"
       size="small"
       @click="toggleMoreParticipants"
