@@ -595,7 +595,6 @@
 {"name":"sexp_processor","version":"4.17.0","platform":"ruby","checksum":"4daa4874ce1838cd801c65e66ed5d4f140024404a3de7482c36d4ef2604dff6f"},
 {"name":"shellany","version":"0.0.1","platform":"ruby","checksum":"0e127a9132698766d7e752e82cdac8250b6adbd09e6c0a7fbbb6f61964fedee7"},
 {"name":"shoulda-matchers","version":"5.1.0","platform":"ruby","checksum":"a01d20589989e9653ab4a28c67d9db2b82bcf0a2496cf01d5e1a95a4aaaf5b07"},
-{"name":"sidekiq","version":"7.1.6","platform":"ruby","checksum":"7859da66d5bcef3c22bea2c3091d08c866890168e003f5bf4dea197dc37843a2"},
 {"name":"sidekiq-cron","version":"1.12.0","platform":"ruby","checksum":"6663080a454088bd88773a0da3ae91e554b8a2e8b06cfc629529a83fd1a3096c"},
 {"name":"sigdump","version":"0.2.4","platform":"ruby","checksum":"0bf2176e55c1a262788623fe5ea57caddd6ba2abebe5e349d9d5e7c3a3010ed7"},
 {"name":"signet","version":"0.17.0","platform":"ruby","checksum":"1d2831930dc28da32e34bec68cf7ded97ee2867b208f97c500ee293829cb0004"},

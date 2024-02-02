@@ -252,7 +252,7 @@ gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeat
 gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
-gem 'sidekiq', '~> 7.1.6' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq', path: 'vendor/gems/sidekiq-7.1.6', require: 'sidekiq' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'sidekiq-cron', '~> 1.12.0', feature_category: :shared
 gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', require: 'sidekiq-reliable-fetch' # rubocop:todo Gemfile/MissingFeatureCategory
 

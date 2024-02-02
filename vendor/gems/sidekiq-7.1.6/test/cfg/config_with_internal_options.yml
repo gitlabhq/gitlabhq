@@ -1,0 +1,11 @@
+---
+:verbose:      false
+:timeout:      10
+:require:      ./test/fake_env.rb
+:concurrency:  50
+:tag:          tag
+:queues:
+  - [often]
+  - [seldom]
+
+:strict:       false

@@ -178,6 +178,15 @@ PATH
       omniauth (~> 2.0)
 
 PATH
+  remote: vendor/gems/sidekiq-7.1.6
+  specs:
+    sidekiq (7.1.6)
+      concurrent-ruby (< 2)
+      connection_pool (>= 2.3.0)
+      rack (>= 2.2.4)
+      redis-client (>= 0.14.0)
+
+PATH
   remote: vendor/gems/sidekiq-reliable-fetch
   specs:
     gitlab-sidekiq-fetcher (0.11.0)
@@ -1548,11 +1557,6 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
-    sidekiq (7.1.6)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      rack (>= 2.2.4)
-      redis-client (>= 0.14.0)
     sidekiq-cron (1.12.0)
       fugit (~> 1.8)
       globalid (>= 1.0.1)
@@ -2079,7 +2083,7 @@ DEPENDENCIES
   sentry-ruby (~> 5.10.0)
   sentry-sidekiq (~> 5.10.0)
   shoulda-matchers (~> 5.1.0)
-  sidekiq (~> 7.1.6)
+  sidekiq!
   sidekiq-cron (~> 1.12.0)
   sigdump (~> 0.2.4)
   simple_po_parser (~> 1.1.6)

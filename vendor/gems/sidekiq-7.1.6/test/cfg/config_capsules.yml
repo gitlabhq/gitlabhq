@@ -1,0 +1,17 @@
+---
+:verbose:      false
+:require:      ./test/fake_env.rb
+:concurrency:  50
+:queues:
+  - [<%="very_"%>often, 2]
+  - [seldom, 1]
+:capsules:
+  :non_concurrent:
+    :queues:
+      - non_concurrent
+    :concurrency: 1
+  :binary:
+    :queues:
+      - sirius
+      - sirius_b
+    :concurrency: 2
