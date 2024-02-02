@@ -22,5 +22,10 @@ else
     gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
   done
 
+  # TODO: Check if we can reconfigure gitlab to write logs directly to `BUILDS_DIR`
+  for logfile in ${HOME}/gitlab-development-kit/gitlab/log/*.log; do
+    tail -f $logfile &>${CI_BUILDS_DIR}/$(basename $logfile) &
+  done
+
   exec "$@"
 fi

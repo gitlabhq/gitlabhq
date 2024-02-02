@@ -360,7 +360,7 @@ After the initial rollout of Organizations, the following functionality will be 
 1. Security policies at the Organization level.
 1. Vulnerability Report and Dependency List at the Organization level.
 1. Cascading Organization setting to enforce security scans.
-1. Scan result policies at the Organization level.
+1. Merge request approval policies at the Organization level.
 1. Compliance frameworks.
 1. [Support the agent for Kubernetes sharing at the Organization level](https://gitlab.com/gitlab-org/gitlab/-/issues/382731).
 

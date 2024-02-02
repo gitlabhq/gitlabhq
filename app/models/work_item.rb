@@ -174,6 +174,10 @@ class WorkItem < Issue
     linked_work_items(authorize: false).size
   end
 
+  def supports_time_tracking?
+    work_item_type.supports_time_tracking?
+  end
+
   private
 
   override :parent_link_confidentiality

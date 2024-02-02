@@ -23,8 +23,7 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::PlanMenu, feature_category: 
       :milestones,
       :iterations,
       :group_wiki,
-      :crm_contacts,
-      :crm_organizations
+      :crm_contacts
     ])
   end
 end

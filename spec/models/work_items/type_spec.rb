@@ -186,6 +186,25 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
+  describe '#supports_time_tracking??' do
+    let_it_be_with_reload(:work_item_type) { create(:work_item_type) }
+    let_it_be_with_reload(:widget_definition) do
+      create(:widget_definition, work_item_type: work_item_type, widget_type: :time_tracking)
+    end
+
+    subject(:supports_time_tracking) { work_item_type.supports_time_tracking? }
+
+    it { is_expected.to be_truthy }
+
+    context 'when the time tracking widget is not supported' do
+      before do
+        widget_definition.update!(disabled: true)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#default_issue?' do
     context 'when work item type is default Issue' do
       let(:work_item_type) { build(:work_item_type, name: described_class::TYPE_NAMES[:issue]) }

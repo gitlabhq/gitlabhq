@@ -16,6 +16,7 @@ describe('Customer relations contacts root app', () => {
   let wrapper;
   let fakeApollo;
 
+  const findOrganizationsLink = () => wrapper.findByTestId('organizations-link');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findNewContactButton = () => wrapper.findByTestId('new-contact-button');
   const findTable = () => wrapper.findComponent(PaginatedTableWithSearchAndTabs);
@@ -26,6 +27,7 @@ describe('Customer relations contacts root app', () => {
     queryHandler = successQueryHandler,
     countQueryHandler = successCountQueryHandler,
     canAdminCrmContact = true,
+    canReadCrmOrganization = true,
     textQuery = null,
   } = {}) => {
     fakeApollo = createMockApollo([
@@ -37,7 +39,9 @@ describe('Customer relations contacts root app', () => {
         groupFullPath: 'flightjs',
         groupId: 26,
         groupIssuesPath: '/issues',
+        groupOrganizationsPath: '/organizations',
         canAdminCrmContact,
+        canReadCrmOrganization,
         textQuery,
       },
       apolloProvider: fakeApollo,
@@ -73,6 +77,20 @@ describe('Customer relations contacts root app', () => {
       filterSearchTokens: [],
     });
     expect(findLoadingIcon().exists()).toBe(true);
+  });
+
+  describe('organizations link', () => {
+    it('renders when canReadCrmOrganization is true', () => {
+      mountComponent();
+
+      expect(findOrganizationsLink().attributes('href')).toBe('/organizations');
+    });
+
+    it('does not render when canReadCrmOrganization is false', () => {
+      mountComponent({ canReadCrmOrganization: false });
+
+      expect(findOrganizationsLink().exists()).toBe(false);
+    });
   });
 
   describe('new contact button', () => {

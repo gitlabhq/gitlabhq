@@ -141,11 +141,11 @@ gem 'grape-path-helpers', '~> 2.0.0', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
-gem 'graphql', '~> 2.0.27', feature_category: :api
+gem 'graphql', '~> 2.2.5', feature_category: :api
 gem 'graphql-docs', '~> 4.0.0', group: [:development, :test], feature_category: :api
 gem 'graphiql-rails', '~> 1.8.0', feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.5', feature_category: :api
-gem 'graphlient', '~> 0.5.0', feature_category: :importers # Used by BulkImport feature (group::import)
+gem 'graphlient', '~> 0.6.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Generate Fake data
 gem 'ffaker', '~> 2.10' # rubocop:todo Gemfile/MissingFeatureCategory

@@ -13,7 +13,7 @@ RSpec.describe Mutations::CustomEmoji::Destroy do
   context 'field tests' do
     subject { described_class }
 
-    it { is_expected.to have_graphql_arguments(:id) }
+    it { is_expected.to have_graphql_arguments(:clientMutationId, :id) }
     it { is_expected.to have_graphql_field(:custom_emoji) }
   end
 

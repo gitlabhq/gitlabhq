@@ -196,6 +196,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue
+    enable :update_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package

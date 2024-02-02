@@ -7,7 +7,6 @@ module Sidebars
         override :configure_menu_items
         def configure_menu_items
           add_item(contacts_menu_item) if can_read_contact?
-          add_item(organizations_menu_item) if can_read_organization?
 
           true
         end
@@ -26,7 +25,7 @@ module Sidebars
         def render?
           return false unless context.group.root?
 
-          can_read_contact? || can_read_organization?
+          can_read_contact?
         end
 
         override :serialize_as_menu_item_args
@@ -38,30 +37,16 @@ module Sidebars
 
         def contacts_menu_item
           ::Sidebars::MenuItem.new(
-            title: context.is_super_sidebar ? _('Customer contacts') : _('Contacts'),
+            title: context.is_super_sidebar ? _('Customer relations') : _('Contacts'),
             link: group_crm_contacts_path(context.group),
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
-            active_routes: { controller: 'groups/crm/contacts' },
+            active_routes: { controller: %w[groups/crm/contacts groups/crm/organizations] },
             item_id: :crm_contacts
-          )
-        end
-
-        def organizations_menu_item
-          ::Sidebars::MenuItem.new(
-            title: context.is_super_sidebar ? _('Customer organizations') : _('Organizations'),
-            link: group_crm_organizations_path(context.group),
-            super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::PlanMenu,
-            active_routes: { controller: 'groups/crm/organizations' },
-            item_id: :crm_organizations
           )
         end
 
         def can_read_contact?
           can?(context.current_user, :read_crm_contact, context.group)
-        end
-
-        def can_read_organization?
-          can?(context.current_user, :read_crm_organization, context.group)
         end
       end
     end

@@ -15027,6 +15027,9 @@ msgstr ""
 msgid "Crm|Contact has been updated."
 msgstr ""
 
+msgid "Crm|Contacts"
+msgstr ""
+
 msgid "Crm|Customer relations contacts"
 msgstr ""
 
@@ -15064,6 +15067,9 @@ msgid "Crm|Organization has been added."
 msgstr ""
 
 msgid "Crm|Organization has been updated."
+msgstr ""
+
+msgid "Crm|Organizations"
 msgstr ""
 
 msgid "Cron time zone"
@@ -15195,13 +15201,7 @@ msgstr ""
 msgid "Custom range"
 msgstr ""
 
-msgid "Customer contacts"
-msgstr ""
-
 msgid "Customer experience improvement and third-party offers"
-msgstr ""
-
-msgid "Customer organizations"
 msgstr ""
 
 msgid "Customer relations"

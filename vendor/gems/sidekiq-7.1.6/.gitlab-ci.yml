@@ -12,9 +12,10 @@ rspec:
   parallel:
     matrix:
       - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+        REDIS_VERSION: ["6.0", "6.2", "7.0"]
 
 .with_redis:
   services:
-    - redis:6.0-alpine
+    - redis:${REDIS_VERSION}-alpine
   variables:
     REDIS_URL: "redis://redis"

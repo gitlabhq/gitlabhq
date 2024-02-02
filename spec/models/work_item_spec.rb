@@ -142,6 +142,17 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '#supports_time_tracking?' do
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+      specify do
+        work_item = build(:work_item, base_type)
+        supports_time_tracking = widgets.include?(:time_tracking)
+
+        expect(work_item.supports_time_tracking?).to eq(supports_time_tracking)
+      end
+    end
+  end
+
   describe '#supported_quick_action_commands' do
     let(:work_item) { build(:work_item, :task) }
 

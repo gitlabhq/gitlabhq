@@ -62,6 +62,11 @@ module Types
           null: true,
           description: 'Indicates if a group has email notifications disabled.'
 
+    field :emails_enabled,
+          type: GraphQL::Types::Boolean,
+          null: true,
+          description: 'Indicates if a group has email notifications enabled.'
+
     field :max_access_level, Types::AccessLevelType,
           null: false,
           description: 'The maximum access level of the current user in the group.'
@@ -363,6 +368,10 @@ module Types
         descendants_counts = Group.id_in(group_ids).descendant_groups_counts
         descendants_counts.each { |group_id, count| loader.call(group_id, count) }
       end
+    end
+
+    def emails_disabled
+      !group.emails_enabled?
     end
 
     def projects_count

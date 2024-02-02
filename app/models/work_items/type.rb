@@ -108,6 +108,10 @@ module WorkItems
       widgets.include? ::WorkItems::Widgets::Assignees
     end
 
+    def supports_time_tracking?
+      widgets.include?(::WorkItems::Widgets::TimeTracking)
+    end
+
     def default_issue?
       name == WorkItems::Type::TYPE_NAMES[:issue]
     end

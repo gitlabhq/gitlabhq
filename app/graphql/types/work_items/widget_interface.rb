@@ -23,7 +23,8 @@ module Types
         ::Types::WorkItems::Widgets::CurrentUserTodosType,
         ::Types::WorkItems::Widgets::AwardEmojiType,
         ::Types::WorkItems::Widgets::LinkedItemsType,
-        ::Types::WorkItems::Widgets::ParticipantsType
+        ::Types::WorkItems::Widgets::ParticipantsType,
+        ::Types::WorkItems::Widgets::TimeTrackingType
       ].freeze
 
       def self.ce_orphan_types
@@ -33,6 +34,8 @@ module Types
       # Whenever a new widget is added make sure to update the spec to avoid N + 1 queries in
       # spec/requests/api/graphql/project/work_items_spec.rb and add the necessary preloads
       # in app/graphql/resolvers/work_items_resolver.rb
+      #
+      # rubocop:disable Metrics/CyclomaticComplexity -- we'll have a lot of widgets to handle in the WidgetInterface
       def self.resolve_type(object, context)
         case object
         when ::WorkItems::Widgets::Description
@@ -59,10 +62,13 @@ module Types
           ::Types::WorkItems::Widgets::LinkedItemsType
         when ::WorkItems::Widgets::Participants
           ::Types::WorkItems::Widgets::ParticipantsType
+        when ::WorkItems::Widgets::TimeTracking
+          ::Types::WorkItems::Widgets::TimeTrackingType
         else
           raise "Unknown GraphQL type for widget #{object}"
         end
       end
+      # rubocop:enable Metrics/CyclomaticComplexity
 
       orphan_types(*ORPHAN_TYPES)
     end

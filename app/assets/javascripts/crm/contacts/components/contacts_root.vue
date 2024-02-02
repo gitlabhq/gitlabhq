@@ -22,7 +22,14 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['canAdminCrmContact', 'groupFullPath', 'groupIssuesPath', 'textQuery'],
+  inject: [
+    'canAdminCrmContact',
+    'canReadCrmOrganization',
+    'groupFullPath',
+    'groupIssuesPath',
+    'groupOrganizationsPath',
+    'textQuery',
+  ],
   data() {
     return {
       contacts: { list: [] },
@@ -147,6 +154,7 @@ export default {
     title: s__('Crm|Customer relations contacts'),
     newContact: s__('Crm|New contact'),
     errorMsg: __('Something went wrong. Please try again.'),
+    organizations: s__('Crm|Organizations'),
   },
   EDIT_ROUTE_NAME,
   NEW_ROUTE_NAME,
@@ -191,11 +199,20 @@ export default {
       @error-alert-dismissed="errorAlertDismissed"
     >
       <template #header-actions>
-        <router-link v-if="canAdminCrmContact" :to="{ name: $options.NEW_ROUTE_NAME }">
-          <gl-button class="gl-my-3 gl-mr-5" variant="confirm" data-testid="new-contact-button">
-            {{ $options.i18n.newContact }}
-          </gl-button>
-        </router-link>
+        <div class="gl-display-flex gl-align-items-center gl-justify-content-end gl-my-3 gl-mr-5">
+          <a
+            v-if="canReadCrmOrganization"
+            :href="groupOrganizationsPath"
+            class="gl-mr-3"
+            data-testid="organizations-link"
+            >{{ $options.i18n.organizations }}</a
+          >
+          <router-link v-if="canAdminCrmContact" :to="{ name: $options.NEW_ROUTE_NAME }">
+            <gl-button variant="confirm" data-testid="new-contact-button">
+              {{ $options.i18n.newContact }}
+            </gl-button>
+          </router-link>
+        </div>
       </template>
 
       <template #title>

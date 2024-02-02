@@ -164,7 +164,7 @@ module Gitlab
         types Issue, MergeRequest
         condition do
           quick_action_target.supports_time_tracking? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         parse_params do |raw_duration|
           Gitlab::TimeTrackingFormatter.parse(raw_duration, keep_zero: true)
@@ -214,7 +214,7 @@ module Gitlab
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :remove_estimate, :remove_time_estimate do
           @updates[:time_estimate] = 0
@@ -225,7 +225,7 @@ module Gitlab
         execution_message { _('Removed spent time.') }
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         types Issue, MergeRequest
         command :remove_time_spent do

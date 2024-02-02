@@ -123,6 +123,6 @@ module TimeTrackable
   end
 
   def category_id(category)
-    TimeTracking::TimelogCategory.find_by_name(project.root_namespace, category).first&.id
+    TimeTracking::TimelogCategory.find_by_name(project&.root_namespace, category).first&.id
   end
 end

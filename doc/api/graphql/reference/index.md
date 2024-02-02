@@ -19482,6 +19482,7 @@ GPG signature for a signed commit.
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="groupdora"></a>`dora` | [`Dora`](#dora) | Group's DORA metrics. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
+| <a id="groupemailsenabled"></a>`emailsEnabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications enabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
@@ -29507,6 +29508,19 @@ Represents a test reports widget.
 | <a id="workitemwidgettestreportstestreports"></a>`testReports` | [`TestReportConnection`](#testreportconnection) | Test reports of the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgettestreportstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetTimeTracking`
+
+Represents a time tracking widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettimetrackingtimeestimate"></a>`timeEstimate` | [`Int!`](#int) | Time estimate of the work item. |
+| <a id="workitemwidgettimetrackingtimelogs"></a>`timelogs` | [`TimelogConnection!`](#timelogconnection) | Timelogs on the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgettimetrackingtotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time (in seconds) reported as spent on the work item. |
+| <a id="workitemwidgettimetrackingtype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetWeight`
 
 Represents a weight widget.
@@ -32440,6 +32454,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettypetest_reports"></a>`TEST_REPORTS` | Test Reports widget. |
+| <a id="workitemwidgettypetime_tracking"></a>`TIME_TRACKING` | Time Tracking widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
 ## Scalar types
@@ -34134,6 +34149,7 @@ Implementations:
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetTestReports`](#workitemwidgettestreports)
+- [`WorkItemWidgetTimeTracking`](#workitemwidgettimetracking)
 - [`WorkItemWidgetWeight`](#workitemwidgetweight)
 
 ##### Fields

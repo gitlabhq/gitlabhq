@@ -49,7 +49,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
    - These scheduled jobs run independently from any other security scans you may have defined in a compliance framework pipeline or in the project's `.gitlab-ci.yml` file.
    - Running regular dependency and [container scans](container_scanning/index.md) surface newly-discovered vulnerabilities that already exist in your repository.
    - Scheduled scans are most useful for projects or important branches with low development activity where pipeline scans are infrequent.
-1. Create a [scan result policy](policies/index.md) to limit new vulnerabilities from being merged
+1. Create a [merge request approval policy](policies/index.md) to limit new vulnerabilities from being merged
    into your [default branch](../project/repository/branches/default.md).
 1. Enable other scan types such as [SAST](sast/index.md), [DAST](dast/index.md),
    [Fuzz testing](coverage_fuzzing/index.md), or [Container Scanning](container_scanning/index.md).

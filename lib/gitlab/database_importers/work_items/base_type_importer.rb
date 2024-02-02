@@ -25,7 +25,8 @@ module Gitlab
           linked_items: 'Linked items',
           color: 'Color',
           rolledup_dates: 'Rolledup dates',
-          participants: 'Participants'
+          participants: 'Participants',
+          time_tracking: 'Time tracking'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -44,7 +45,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ],
           incident: [
             :assignees,
@@ -55,7 +57,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ],
           test_case: [
             :description,
@@ -64,7 +67,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ],
           requirement: [
             :description,
@@ -76,7 +80,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ],
           task: [
             :assignees,
@@ -92,7 +97,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ],
           objective: [
             :assignees,
@@ -139,7 +145,8 @@ module Gitlab
             :linked_items,
             :color,
             :rolledup_dates,
-            :participants
+            :participants,
+            :time_tracking
           ],
           ticket: [
             :assignees,
@@ -156,7 +163,8 @@ module Gitlab
             :current_user_todos,
             :award_emoji,
             :linked_items,
-            :participants
+            :participants,
+            :time_tracking
           ]
         }.freeze
 

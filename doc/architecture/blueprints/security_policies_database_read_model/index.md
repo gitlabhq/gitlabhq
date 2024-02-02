@@ -36,9 +36,9 @@ The current architecture of synchronising policies from YAML to approval rules i
 ### Goals
 
 1. Reduce the calls to Gitaly and depend on reading from the database. The YAML data will be mirrored on a database table and a read-only ActiveRecord model allows us to build features without performance concerns.
-1. Remove duplicated columns related to scan result policies in approval_project_rules and approval_merge_request_rules
+1. Remove duplicated columns related to merge request approval policies in approval_project_rules and approval_merge_request_rules
 1. Change the current process in [UpdateOrchestrationPolicyConfiguration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/concerns/update_orchestration_policy_configuration.rb) not to delete and recreate all related records, but rather update/recreate only the affected records
-1. Reduce the average propagation duration of scan result policy changes
+1. Reduce the average propagation duration of merge request approval policy changes
 1. Reduce the number of queries to the database performed by workers from Security Policies
 
 ## Proposal
@@ -47,7 +47,7 @@ The current architecture of synchronising policies from YAML to approval rules i
 
 Security policy project that are linked to a group or a project has a corresponding entry in `security_orchestration_policy_configurations` table. In order to read/query policies, the YAML has to be read from policy project which involves a RPC call to Gitaly. This does not perform well when there are huge number of projects/groups configured with security policies.
 
-Scan result policy that are stored in the policy project as YAML file gets synchronised to approval rules through `approval_project_rules` table. Currently we are storing these fields related to scan result policy in the table:
+Merge request approval policy that are stored in the policy project as YAML file gets synchronised to approval rules through `approval_project_rules` table. Currently we are storing these fields related to merge request approval policy in the table:
 
 - `scanners`
 - `vulnerabilities_allowed`
@@ -73,7 +73,7 @@ This worker is called whenever these events happen:
 - Protected branch is added/removed from a project
 - Policy is created/updated/deleted for a project
 
-To avoid this, we have created the `scan_result_policies` table (`Security::ScanResultPolicyRead` model) which acts as a read model for scan result policies to avoid reading from policy project. But currently, we don't store all the required fields in the table, we only store `role_approvers` , `license_state` and `match_on_inclusion`.
+To avoid this, we have created the `scan_result_policies` table (`Security::ScanResultPolicyRead` model) which acts as a read model for merge request approval policies to avoid reading from policy project. But currently, we don't store all the required fields in the table, we only store `role_approvers` , `license_state` and `match_on_inclusion`.
 
 ```mermaid
 erDiagram
