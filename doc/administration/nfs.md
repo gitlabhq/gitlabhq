@@ -138,12 +138,12 @@ Note there are several options that you should consider using:
 
 | Setting | Description |
 | ------- | ----------- |
-| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/-/issues/1339) that can cause significant problems due to stale data.
-| `nofail` | Don't halt boot process waiting for this mount to become available
-| `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously.
-| `hard` | Instead of `soft`. [Further details](#soft-mount-option).
-| `cto` | `cto` is the default option, which you should use. Do not use `nocto`. [Further details](#nocto-mount-option).
-| `_netdev` | Wait to mount file system until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration.html#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option.
+| `vers=4.1` |NFS v4.1 should be used instead of v4.0 because there is a Linux [NFS client bug in v4.0](https://gitlab.com/gitlab-org/gitaly/-/issues/1339) that can cause significant problems due to stale data. |
+| `nofail` | Don't halt boot process waiting for this mount to become available. |
+| `lookupcache=positive` | Tells the NFS client to honor `positive` cache results but invalidates any `negative` cache results. Negative cache results cause problems with Git. Specifically, a `git push` can fail to register uniformly across all NFS clients. The negative cache causes the clients to 'remember' that the files did not exist previously. |
+| `hard` | Instead of `soft`. [Further details](#soft-mount-option). |
+| `cto` | `cto` is the default option, which you should use. Do not use `nocto`. [Further details](#nocto-mount-option). |
+| `_netdev` | Wait to mount file system until network is online. See also the [`high_availability['mountpoint']`](https://docs.gitlab.com/omnibus/settings/configuration.html#only-start-omnibus-gitlab-services-after-a-given-file-system-is-mounted) option. |
 
 #### `soft` mount option
 
@@ -261,9 +261,9 @@ following are the 4 locations need to be shared:
 
 | Location | Description | Default configuration |
 | -------- | ----------- | --------------------- |
-| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
-| `/var/opt/gitlab/gitlab-rails/shared` | Objects such as build artifacts, GitLab Pages, LFS objects, and temp files. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
-| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI/CD build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'`
+| `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'` |
+| `/var/opt/gitlab/gitlab-rails/shared` | Objects such as build artifacts, GitLab Pages, LFS objects, and temp files. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'` |
+| `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI/CD build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'` |
 
 Other GitLab directories should not be shared between nodes. They contain
 node-specific files and GitLab code that does not need to be shared. To ship

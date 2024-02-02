@@ -72,7 +72,7 @@ The editor uses the same public API as
 [provided by Monaco editor](https://microsoft.github.io/monaco-editor/docs.html)
 with additional functions on the instance level:
 
-| Function              | Arguments | Description
+| Function              | Arguments | Description |
 | --------------------- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on the instance level. |
 | `use`                 | Array of objects | Array of extensions to apply to the instance. Accepts only an array of **objects**. The extensions' ES6 modules must be fetched and resolved in your views or components before they're passed to `use`. Available on the instance and global editor (all instances) levels. |

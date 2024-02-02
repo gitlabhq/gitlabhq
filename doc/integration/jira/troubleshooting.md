@@ -141,7 +141,10 @@ To change all Jira projects to use instance-level integration settings:
        integration.inherit_from_id = default_integration.id
 
        if integration.save(context: :manual_change)
-         BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+         # In GitLab 16.9 and later:
+         Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+         # In GitLab 16.8 and earlier, instead do:
+         # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
        end
      end
      ```
@@ -175,7 +178,10 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
     integration.inherit_from_id = default_integration.id
 
     if integration.save(context: :manual_change)
-      BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      # In GitLab 16.9 and later:
+      Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+      # In GitLab 16.8 and earlier, instead do:
+      # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
     end
   end
 

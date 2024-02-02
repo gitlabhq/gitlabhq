@@ -23,7 +23,7 @@ are supported.
 
 | Feature | Supported | Example |
 | ------- | --------- | ------- |
-| [Redirects (`301`, `302`)](#redirects) | **{check-circle}** Yes  | `/wardrobe.html /narnia.html 302`
+| [Redirects (`301`, `302`)](#redirects) | **{check-circle}** Yes  | `/wardrobe.html /narnia.html 302` |
 | [Rewrites (`200`)](#rewrites)          | **{check-circle}** Yes  | `/* / 200` |
 | [Splats](#splats)                      | **{check-circle}** Yes  | `/news/*  /blog/:splat` |
 | [Placeholders](#placeholders)          | **{check-circle}** Yes  | `/news/:year/:month/:date /blog-:year-:month-:date.html` |

@@ -61,22 +61,22 @@ PUT /application/appearance
 
 | Attribute                         | Type    | Required | Description |
 | --------------------------------- | ------- | -------- | ----------- |
-| `title`                           | string  | no       | Instance title on the sign in / sign up page
-| `description`                     | string  | no       | Markdown text shown on the sign in / sign up page
-| `pwa_name`                        | string  | no       | Full name of the Progressive Web App. Used for the attribute `name` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8.
-| `pwa_short_name`                  | string  | no       | Short name for Progressive Web App. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8.
-| `pwa_description`                 | string  | no       | An explanation of what the Progressive Web App does. Used for the attribute `description` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8.
-| `pwa_icon`                        | mixed   | no       | Icon used for Progressive Web App. See [Change logo](#change-logo). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8.
-| `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo)
-| `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar
-| `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format
-| `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page
-| `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar
-| `header_message`                  | string  | no       | Message in the system header bar
-| `footer_message`                  | string  | no       | Message in the system footer bar
-| `message_background_color`        | string  | no       | Background color for the system header / footer bar
-| `message_font_color`              | string  | no       | Font color for the system header / footer bar
-| `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled
+| `title`                           | string  | no       | Instance title on the sign in / sign up page |
+| `description`                     | string  | no       | Markdown text shown on the sign in / sign up page |
+| `pwa_name`                        | string  | no       | Full name of the Progressive Web App. Used for the attribute `name` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `pwa_short_name`                  | string  | no       | Short name for Progressive Web App. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `pwa_description`                 | string  | no       | An explanation of what the Progressive Web App does. Used for the attribute `description` in `manifest.json`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `pwa_icon`                        | mixed   | no       | Icon used for Progressive Web App. See [Change logo](#change-logo). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.8. |
+| `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo) |
+| `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar |
+| `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format |
+| `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page |
+| `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar |
+| `header_message`                  | string  | no       | Message in the system header bar |
+| `footer_message`                  | string  | no       | Message in the system footer bar |
+| `message_background_color`        | string  | no       | Background color for the system header / footer bar |
+| `message_font_color`              | string  | no       | Font color for the system header / footer bar |
+| `email_header_and_footer_enabled` | boolean | no       | Add header and footer to all outgoing emails if enabled |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/application/appearance?email_header_and_footer_enabled=true&header_message=test"

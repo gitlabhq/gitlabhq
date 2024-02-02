@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkUpdateIntegrationService, feature_category: :integrations do
+RSpec.describe Integrations::Propagation::BulkUpdateService, feature_category: :integrations do
   include JiraIntegrationHelpers
 
   before_all do
@@ -17,7 +17,9 @@ RSpec.describe BulkUpdateIntegrationService, feature_category: :integrations do
   end
 
   let(:batch) do
-    Integration.inherited_descendants_from_self_or_ancestors_from(subgroup_integration).where(id: group_integration.id..integration.id)
+    Integration
+      .inherited_descendants_from_self_or_ancestors_from(subgroup_integration)
+      .where(id: group_integration.id..integration.id)
   end
 
   let_it_be(:group) { create(:group) }

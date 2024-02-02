@@ -3,7 +3,7 @@ table_name: merge_request_user_mentions
 classes:
 - MergeRequestUserMention
 feature_categories:
-- team_planning
+- code_review_workflow
 description: Store user mentions for merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'

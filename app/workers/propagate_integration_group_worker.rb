@@ -23,7 +23,7 @@ class PropagateIntegrationGroupWorker
 
     return if batch.empty?
 
-    BulkCreateIntegrationService.new(integration, batch, 'group').execute
+    Integrations::Propagation::BulkCreateService.new(integration, batch, 'group').execute
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -940,7 +940,7 @@ Supported attributes:
 | `name`                     | string            | Yes | The name of the approval rule.                                               |
 | `approval_project_rule_id` | integer           | No | The ID of a project-level approval rule.                                     |
 | `group_ids`                | Array             | No | The IDs of groups as approvers.                                              |
-| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added.
+| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
 | `usernames`                | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and

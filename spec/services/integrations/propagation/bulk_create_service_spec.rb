@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
+RSpec.describe Integrations::Propagation::BulkCreateService, feature_category: :integrations do
   include JiraIntegrationHelpers
 
   before_all do
@@ -32,7 +32,7 @@ RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
       expect(attributes(created_integration)).to eq attributes(integration)
     end
 
-    context 'integration with data fields' do
+    context 'when integration has data fields' do
       let(:excluded_attributes) { %w[id service_id integration_id created_at updated_at] }
 
       it 'updates the data fields from inherited integrations' do
@@ -68,7 +68,7 @@ RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
     end
   end
 
-  context 'passing an instance-level integration' do
+  context 'with an instance-level integration' do
     let(:integration) { instance_integration }
     let(:inherit_from_id) { integration.id }
 
@@ -91,14 +91,14 @@ RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
     end
   end
 
-  context 'passing a group integration' do
+  context 'with a group-level integration' do
     let_it_be(:group) { create(:group) }
 
     context 'with a project association' do
       let!(:project) { create(:project, group: group) }
       let(:integration) { create(:jira_integration, :group, group: group) }
       let(:created_integration) { project.jira_integration }
-      let(:batch) { Project.where(id: Project.minimum(:id)..Project.maximum(:id)).without_integration(integration).in_namespace(integration.group.self_and_descendants) }
+      let(:batch) { Project.without_integration(integration).in_namespace(integration.group.self_and_descendants) }
       let(:association) { 'project' }
       let(:inherit_from_id) { integration.id }
 
@@ -123,7 +123,9 @@ RSpec.describe BulkCreateIntegrationService, feature_category: :integrations do
       it_behaves_like 'creates integration successfully'
 
       context 'with different foreign key of data_fields' do
-        let(:integration) { create(:zentao_integration, :group, group: group, inherit_from_id: instance_integration.id) }
+        let(:integration) do
+          create(:zentao_integration, :group, group: group, inherit_from_id: instance_integration.id)
+        end
 
         it_behaves_like 'creates integration successfully'
       end

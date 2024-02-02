@@ -7,13 +7,14 @@ module MergeRequests
     def execute(merge_request)
       merge_request.ensure_merge_request_diff
 
-      logger.info(**log_payload(merge_request, 'Executing hooks'))
-      execute_hooks(merge_request)
-      logger.info(**log_payload(merge_request, 'Executed hooks'))
       prepare_for_mergeability(merge_request)
       prepare_merge_request(merge_request)
 
       mark_merge_request_as_prepared(merge_request)
+
+      logger.info(**log_payload(merge_request, 'Executing hooks'))
+      execute_hooks(merge_request)
+      logger.info(**log_payload(merge_request, 'Executed hooks'))
     end
 
     private

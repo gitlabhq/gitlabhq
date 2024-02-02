@@ -175,8 +175,8 @@ When using the `schedule` rule type in conjunction with the `branches` field, no
 
 Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).
 
-| Field        | Type                | Required | Possible values          | Description |
-|--------------|---------------------|----------|--------------------------|-------------|
+| Field        | Type                | Required | Description |
+|--------------|---------------------|----------|-------------|
 | `namespaces` | `array` of `string` | true | The namespace that is scanned. If empty, all namespaces are scanned. |
 
 #### Policy example

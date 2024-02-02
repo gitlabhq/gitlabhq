@@ -225,7 +225,10 @@ RSpec.configure do |config|
 
     # Gradually stop using rspec-retry
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/438388
-    %i[lib migrations models requests services].each do |type|
+    %i[
+      lib migrations models requests services sidekiq sidekiq_cluster
+      spam support_specs tasks tooling uploaders validators views workers
+    ].each do |type|
       config.prepend_before(:each, type: type) do |example|
         example.metadata[:retry] = 1
       end

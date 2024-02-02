@@ -3,7 +3,7 @@ table_name: customer_relations_organizations
 classes:
 - CustomerRelations::Organization
 feature_categories:
-- team_planning
+- service_desk
 description: Organizations, against which time can be spent by users on issues using
   the CRM functionality
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67551

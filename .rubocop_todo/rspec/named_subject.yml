@@ -2719,7 +2719,6 @@ RSpec/NamedSubject:
     - 'spec/models/integrations/external_wiki_spec.rb'
     - 'spec/models/integrations/gitlab_slack_application_spec.rb'
     - 'spec/models/integrations/google_play_spec.rb'
-    - 'spec/models/integrations/integration_list_spec.rb'
     - 'spec/models/integrations/irker_spec.rb'
     - 'spec/models/integrations/jenkins_spec.rb'
     - 'spec/models/integrations/jira_spec.rb'

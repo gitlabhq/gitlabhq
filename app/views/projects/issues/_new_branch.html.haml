@@ -8,6 +8,7 @@
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid, format: :json)
   - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
+  - tracking_data = create_mr_tracking_data(can_create_merge_request, can_create_confidential_merge_request?)
 
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path(from: @issue.to_branch_name, source_project: @project, to: @project.default_branch, mr_params: { issue_iid: @issue.iid }), create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
@@ -18,7 +19,8 @@
 
 
     .btn-group.available.hidden
-      = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-create-merge-request', data: { action: data_action } }) do
+      = render Pajamas::ButtonComponent.new(variant: :confirm,
+        button_options: { class: 'js-create-merge-request', data: { action: data_action, **tracking_data } }) do
         = gl_loading_icon(inline: true , css_class: 'js-create-mr-spinner js-spinner gl-display-none')
         = value
 
@@ -56,7 +58,8 @@
               %input#source-name.js-ref.ref.form-control.gl-form-input{ type: 'text', placeholder: "#{@project.default_branch}", value: "#{@project.default_branch}", data: { value: "#{@project.default_branch}" } }
               %span.js-ref-message.form-text.gl-font-sm
 
-            = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-create-target', data: { action: 'create-mr' } }) do
+            = render Pajamas::ButtonComponent.new(variant: :confirm,
+              button_options: { class: 'js-create-target', data: { action: 'create-mr', **tracking_data } }) do
               = create_mr_text
 
             - if can_create_confidential_merge_request?

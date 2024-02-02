@@ -59,10 +59,10 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)
-| `issue_iid`         | integer          | yes        | The IID of an issue
-| `sort`              | string           | no         | Return issue notes sorted in `asc` or `desc` order. Default is `desc`
-| `order_by`          | string           | no         | Return issue notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `issue_iid`         | integer          | yes        | The IID of an issue |
+| `sort`              | string           | no         | Return issue notes sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by`          | string           | no         | Return issue notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 
 ```json
 [
@@ -219,10 +219,10 @@ GET /projects/:id/snippets/:snippet_id/notes?sort=asc&order_by=updated_at
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)
-| `snippet_id`        | integer          | yes        | The ID of a project snippet
-| `sort`              | string           | no         | Return snippet notes sorted in `asc` or `desc` order. Default is `desc`
-| `order_by`          | string           | no         | Return snippet notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `snippet_id`        | integer          | yes        | The ID of a project snippet |
+| `sort`              | string           | no         | Return snippet notes sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by`          | string           | no         | Return snippet notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/snippets/11/notes"
@@ -350,10 +350,10 @@ GET /projects/:id/merge_requests/:merge_request_iid/notes?sort=asc&order_by=upda
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)
-| `merge_request_iid` | integer          | yes        | The IID of a project merge request
-| `sort`              | string           | no         | Return merge request notes sorted in `asc` or `desc` order. Default is `desc`
-| `order_by`          | string           | no         | Return merge request notes ordered by `created_at` or `updated_at` fields. Default is `created_at`
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `merge_request_iid` | integer          | yes        | The IID of a project merge request |
+| `sort`              | string           | no         | Return merge request notes sorted in `asc` or `desc` order. Default is `desc` |
+| `order_by`          | string           | no         | Return merge request notes ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes"

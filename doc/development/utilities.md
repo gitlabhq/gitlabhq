@@ -152,7 +152,7 @@ Derived.f # => nil
 
 ## `StrongMemoize`
 
-Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/utils/strong_memoize.rb):
+Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-utils/lib/gitlab/utils/strong_memoize.rb):
 
 - Memoize the value even if it is `nil` or `false`.
 

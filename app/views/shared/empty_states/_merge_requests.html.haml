@@ -4,6 +4,7 @@
 - is_opened_state = params[:state] == 'opened'
 - is_closed_state = params[:state] == 'closed'
 - can_create_merge_request = merge_request_source_project_for_project(@project)
+- tracking_data = { event_tracking: 'click_new_merge_request_empty_list' }
 
 .row.empty-state.merge-requests{ data: { testid: 'issuable-empty-state' } }
   .col-12
@@ -18,7 +19,8 @@
           = _("To widen your search, change or remove filters above")
         .text-center
           - if can_create_merge_request
-            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project), title: _("New merge request"), variant: :confirm
+            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project),
+              title: _("New merge request"), variant: :confirm, data: tracking_data
       - elsif is_opened_state && opened_merged_count == 0 && closed_merged_count > 0
         %h4.text-center
           = _("There are no open merge requests")
@@ -26,7 +28,8 @@
           = _("To keep this project going, create a new merge request")
         .text-center
           - if can_create_merge_request
-            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project), title: _("New merge request"), variant: :confirm
+            = link_button_to _("New merge request"), button_path || project_new_merge_request_path(@project),
+              title: _("New merge request"), variant: :confirm, data: tracking_data
       - elsif is_closed_state && opened_merged_count > 0 && closed_merged_count == 0
         %h4.text-center
           = _("There are no closed merge requests")
@@ -37,4 +40,8 @@
           = _("Interested parties can even contribute by pushing commits if they want to.")
         - if button_path
           .text-center
-            = link_button_to _('New merge request'), button_path, title: _('New merge request'), id: 'new_merge_request_link', data: { testid: "new-merge-request-button" }, variant: :confirm
+            = link_button_to _('New merge request'), button_path,
+              title: _('New merge request'),
+              id: 'new_merge_request_link',
+              variant: :confirm,
+              data: { testid: "new-merge-request-button", **tracking_data }

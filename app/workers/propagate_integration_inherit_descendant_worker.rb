@@ -17,7 +17,7 @@ class PropagateIntegrationInheritDescendantWorker
 
     batch = Integration.inherited_descendants_from_self_or_ancestors_from(integration).where(id: min_id..max_id)
 
-    BulkUpdateIntegrationService.new(integration, batch).execute
+    Integrations::Propagation::BulkUpdateService.new(integration, batch).execute
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

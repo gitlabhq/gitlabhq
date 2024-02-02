@@ -3,7 +3,7 @@ table_name: issue_customer_relations_contacts
 classes:
 - CustomerRelations::IssueContact
 feature_categories:
-- team_planning
+- service_desk
 description: Holds Customer Relations (CRM) Contacts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71007
 milestone: '14.4'

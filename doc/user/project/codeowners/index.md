@@ -33,10 +33,10 @@ For example:
 
 | Type | Name | Scope  | Comment    |
 |------|------|--------|------------|
-| Approval rule            | UX                   | All files     | A user experience (UX) team member reviews the user experience of all changes made in your project.
-| Approval rule            | Security             | All files     | A security team member reviews all changes for vulnerabilities.
-| Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards.
-| Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files.
+| Approval rule            | UX                   | All files     | A user experience (UX) team member reviews the user experience of all changes made in your project. |
+| Approval rule            | Security             | All files     | A security team member reviews all changes for vulnerabilities. |
+| Code Owner approval rule | Frontend: Code Style | `*.css` files | A frontend engineer reviews CSS file changes for adherence to project style standards. |
+| Code Owner approval rule | Backend: Code Review | `*.rb` files  | A backend engineer reviews the logic and code style of Ruby files. |
 
 <div class="video-fallback">
   Video introduction: <a href="https://www.youtube.com/watch?v=RoyBySTUSB0">Code Owners</a>.

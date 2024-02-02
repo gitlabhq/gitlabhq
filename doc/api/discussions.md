@@ -194,7 +194,7 @@ Parameters:
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid`     | integer        | yes      | The IID of an issue. |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights.
+| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -360,7 +360,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion item.
+| `discussion_id` | integer        | yes      | The ID of a discussion item. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `snippet_id`    | integer        | yes      | The ID of an snippet. |
 

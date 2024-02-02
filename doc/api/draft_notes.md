@@ -109,12 +109,12 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 
 | Attribute                                | Type              | Required    | Description           |
 | ---------------------------------------- | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request.
-| `note`                                   | string            | yes         | The content of a note.
-| `commit_id`                              | string            | no          | The SHA of a commit to associate the draft note to.
-| `in_reply_to_discussion_id`              | string            | no          | The ID of a discussion the draft note replies to.
-| `resolve_discussion`                     | boolean           | no          | The associated discussion should be resolved.
+| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
+| `note`                                   | string            | yes         | The content of a note. |
+| `commit_id`                              | string            | no          | The SHA of a commit to associate the draft note to. |
+| `in_reply_to_discussion_id`              | string            | no          | The ID of a discussion the draft note replies to. |
+| `resolve_discussion`                     | boolean           | no          | The associated discussion should be resolved. |
 | `position[base_sha]`                     | string            | yes         | Base commit SHA in the source branch. |
 | `position[head_sha]`                     | string            | yes         | SHA referencing HEAD of this merge request. |
 | `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
@@ -145,10 +145,10 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 
 | Attribute                                | Type              | Required    | Description           |
 | -------------------                      | ----------------- | ----------- | --------------------- |
-| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `draft_note_id`                          | integer           | yes         | The ID of a draft note.
-| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request.
-| `note`                                   | string            | no          | The content of a note.
+| `id`                                     | integer or string | yes         | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `draft_note_id`                          | integer           | yes         | The ID of a draft note. |
+| `merge_request_iid`                      | integer           | yes         | The IID of a project merge request. |
+| `note`                                   | string            | no          | The content of a note. |
 | `position[base_sha]`                     | string            | yes         | Base commit SHA in the source branch. |
 | `position[head_sha]`                     | string            | yes         | SHA referencing HEAD of this merge request. |
 | `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
@@ -180,9 +180,9 @@ DELETE /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_i
 
 | Attribute           | Type             | Required    | Description           |
 | ------------------- | ---------------- | ----------- | --------------------- |
-| `draft_note_id`     | integer           | yes        | The ID of a draft note.
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `merge_request_iid` | integer           | yes        | The IID of a project merge request.
+| `draft_note_id`     | integer           | yes        | The ID of a draft note. |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
 
 ```shell
 curl --request DELETE \
@@ -200,9 +200,9 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id/p
 
 | Attribute           | Type             | Required    | Description           |
 | ------------------- | ---------------- | ----------- | --------------------- |
-| `draft_note_id`     | integer           | yes        | The ID of a draft note.
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).
-| `merge_request_iid` | integer           | yes        | The IID of a project merge request.
+| `draft_note_id`     | integer           | yes        | The ID of a draft note. |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `merge_request_iid` | integer           | yes        | The IID of a project merge request. |
 
 ```shell
 curl --request PUT \

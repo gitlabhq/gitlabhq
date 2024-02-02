@@ -30,7 +30,7 @@ GET /projects/:id/deployments
 | `finished_after`  | datetime       | no       | Return deployments finished after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `finished_before` | datetime       | no       | Return deployments finished before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `environment`     | string         | no       | The [name of the environment](../ci/environments/index.md) to filter deployments by.       |
-| `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`.
+| `status`          | string         | no       | The status to filter deployments by. One of `created`, `running`, `success`, `failed`, `canceled`, or `blocked`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments"

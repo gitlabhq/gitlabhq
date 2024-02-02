@@ -95,7 +95,7 @@ This feature is not ready for production use.
 | If the feature is...                        | Use this text |
 |---------------------------------------------|---------------|
 | Available                                   | `On GitLab.com, this feature is available.` |
-| Available to GitLab.com administrators only | `On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.`
+| Available to GitLab.com administrators only | `On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.` |
 | Unavailable                                 | `On GitLab.com, this feature is not available.`|
 
 ### Optional information

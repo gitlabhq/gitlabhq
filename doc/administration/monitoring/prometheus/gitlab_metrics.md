@@ -44,11 +44,11 @@ The following metrics are available:
 | `gitlab_cache_operation_duration_seconds`                        | Histogram   | 10.2    | Cache access time                                                                                                     | `operation`, `store`, `endpoint_id`                                      |
 | `gitlab_cache_operations_total`                                  | Counter     | 12.2    | Cache operations by controller or action                                                                              | `controller`, `action`, `operation`, `store`, `endpoint_id`              |
 | `gitlab_cache_read_multikey_count`                               | Histogram   | 15.7    | Count of keys in multi-key cache read operations                                                                      | `controller`, `action`, `store`, `endpoint_id`                   |
-| `gitlab_ci_pipeline_builder_scoped_variables_duration`           | Histogram   | 14.5   | Time in seconds it takes to create the scoped variables for a CI/CD job
+| `gitlab_ci_pipeline_builder_scoped_variables_duration`           | Histogram   | 14.5   | Time in seconds it takes to create the scoped variables for a CI/CD job | |
 | `gitlab_ci_pipeline_creation_duration_seconds`                   | Histogram   | 13.0    | Time in seconds it takes to create a CI/CD pipeline                                                                   | `gitlab`                                                  |
 | `gitlab_ci_pipeline_size_builds`                                 | Histogram   | 13.1    | Total number of builds within a pipeline grouped by a pipeline source                                                 | `source`                                                  |
 | `gitlab_ci_runner_authentication_success_total`                  | Counter     | 15.2    | Total number of times that runner authentication has succeeded                                                        | `type`                                                    |
-| `gitlab_ci_runner_authentication_failure_total`                  | Counter     | 15.2    | Total number of times that runner authentication has failed
+| `gitlab_ci_runner_authentication_failure_total`                  | Counter     | 15.2    | Total number of times that runner authentication has failed | |
 | `gitlab_ghost_user_migration_lag_seconds`                        | Gauge       | 15.6    | The waiting time in seconds of the oldest scheduled record for ghost user migration                                   |                                                           |
 | `gitlab_ghost_user_migration_scheduled_records_total`            | Gauge       | 15.6    | The total number of scheduled ghost user migrations                                                                   |                                                           |
 | `gitlab_ci_active_jobs`                                          | Histogram   | 14.2    | Count of active jobs when pipeline is created                                                                         |                                                           |
@@ -171,18 +171,18 @@ The following metrics are available:
 | `gitlab_sli_rails_request_apdex_total` | Counter | 14.4 | Total number of request Apdex measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_apdex_success_total` | Counter | 14.4 | Total number of successful requests that met the target duration for their urgency. Divide by `gitlab_sli_rails_requests_apdex_total` to get a success ratio | `endpoint_id`, `feature_category`, `request_urgency` |
 | `gitlab_sli_rails_request_error_total` | Counter | 15.7 | Total number of request error measurements. For more information, see [Rails request SLIs](../../../development/application_slis/rails_request.md) | `endpoint_id`, `feature_category`, `request_urgency`, `error` |
-| `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job |
-| `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job |
-| `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time |
-| `gitlab_ci_queue_operations_total` | Counter | 16.3 | Counts all the operations that are happening inside a queue |
-| `gitlab_ci_queue_depth_total` | Histogram | 16.3 | Size of a CI/CD builds queue in relation to the operation result |
-| `gitlab_ci_queue_size_total` | Histogram | 16.3 | Size of initialized CI/CD builds queue |
-| `gitlab_ci_current_queue_size` | Gauge | 16.3 | Current size of initialized CI/CD builds queue |
-| `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue |
-| `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue |
-| `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool |
-| `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool |
-| `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process merge request approval policies |
+| `job_register_attempts_failed_total` | Counter | 9.5 | Counts the times a runner fails to register a job | |
+| `job_register_attempts_total` | Counter | 9.5 | Counts the times a runner tries to register a job | |
+| `job_queue_duration_seconds` | Histogram | 9.5 | Request handling execution time | |
+| `gitlab_ci_queue_operations_total` | Counter | 16.3 | Counts all the operations that are happening inside a queue | |
+| `gitlab_ci_queue_depth_total` | Histogram | 16.3 | Size of a CI/CD builds queue in relation to the operation result | |
+| `gitlab_ci_queue_size_total` | Histogram | 16.3 | Size of initialized CI/CD builds queue | |
+| `gitlab_ci_current_queue_size` | Gauge | 16.3 | Current size of initialized CI/CD builds queue | |
+| `gitlab_ci_queue_iteration_duration_seconds` | Histogram | 16.3 | Time it takes to find a build in CI/CD queue | |
+| `gitlab_ci_queue_retrieval_duration_seconds` | Histogram | 16.3 | Time it takes to execute a SQL query to retrieve builds queue | |
+| `gitlab_connection_pool_size` | Gauge | 16.7 | Size of connection pool | |
+| `gitlab_connection_pool_available_count` | Gauge | 16.7 | Number of available connections in the pool | |
+| `gitlab_security_policies_scan_result_process_duration_seconds` | Histogram | 16.7 | The amount of time to process merge request approval policies | |
 | `gitlab_highlight_usage` | Counter | 16.8 | The number of times `Gitlab::Highlight` is used | `used_on` |
 | `dependency_linker_usage` | Counter | 16.8 | The number of times dependency linker is used | `used_on` |
 
@@ -410,7 +410,7 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_design_management_repositories_verification_total`  | Gauge   | 16.1 | Number of design repositories verifications tried on secondary | `url` |
 | `geo_design_management_repositories_verified`            | Gauge   | 16.1 | Number of design repositories verified on secondary | `url` |
 | `geo_design_management_repositories_verification_failed` | Gauge   | 16.1 | Number of design repositories verifications failed on secondary | `url` |
-| `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3 | The number of active runners that can process the CI/CD queue in a project |
+| `gitlab_ci_queue_active_runners_total`                   | Histogram | 16.3 | The number of active runners that can process the CI/CD queue in a project | |
 
 ## Database load balancing metrics
 
