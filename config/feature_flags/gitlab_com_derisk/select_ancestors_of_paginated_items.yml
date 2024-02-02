@@ -1,0 +1,9 @@
+---
+name: select_ancestors_of_paginated_items
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/418749
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108022
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17517
+milestone: '16.9'
+group: group::tenant scale
+type: gitlab_com_derisk
+default_enabled: false

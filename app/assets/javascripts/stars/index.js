@@ -2,6 +2,7 @@ import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
+import { parseBoolean } from '../lib/utils/common_utils';
 import StarCount from './components/star_count.vue';
 
 Vue.use(GlToast);
@@ -19,17 +20,16 @@ export default () => {
   }
 
   return containers.forEach((el) => {
-    const { containerClass, projectPath, projectId, starCount, starred, starrersPath } = el.dataset;
+    const { projectId, starCount, starred, starrersPath, signInPath } = el.dataset;
 
     return new Vue({
       el,
       provide: {
-        containerClass,
-        starred: starred !== undefined,
+        starred: parseBoolean(starred),
         starCount,
         projectId,
-        projectPath,
         starrersPath,
+        signInPath,
       },
       render(h) {
         return h(StarCount);

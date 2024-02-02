@@ -536,7 +536,7 @@ class Group < Namespace
     owners = []
 
     members_from_hiearchy.all_owners.non_invite.each_batch do |relation|
-      owners += relation.preload(:user).load.reject do |member|
+      owners += relation.preload(:user, :source).load.reject do |member|
         member.user.nil? || member.user.project_bot?
       end
     end

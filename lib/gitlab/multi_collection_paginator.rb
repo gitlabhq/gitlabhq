@@ -22,8 +22,6 @@ module Gitlab
       @total_count ||= first_collection.size + second_collection.size
     end
 
-    private
-
     def paginated_first_collection(page)
       @first_collection_pages ||= Hash.new do |hash, page|
         hash[page] = first_collection.page(page).per(per_page)
@@ -49,6 +47,8 @@ module Gitlab
 
       @second_collection_pages[page]
     end
+
+    private
 
     def first_collection_page_count
       return @first_collection_page_count if defined?(@first_collection_page_count)

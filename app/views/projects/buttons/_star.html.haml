@@ -1,15 +1,1 @@
-- if current_user
-  - starred = current_user.starred?(@project)
-  .js-vue-star-count{ data: {
-    starred: starred,
-    project_id: @project.id,
-    project_path: @project.full_path,
-    star_count: @project.star_count,
-    starrers_path: project_starrers_path(@project)
-  } }
-- else
-  .count-badge.d-inline-flex.align-item-stretch.btn-group
-    = link_button_to new_user_session_path, class: 'has-tooltip star-btn', title: s_('ProjectOverview|You must sign in to star a project'), icon: 'star-o' do
-      = s_('ProjectOverview|Star')
-    = link_button_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'has-tooltip star-count count' do
-      = @project.star_count
+.js-vue-star-count{ star_count_data_attributes(@project) }

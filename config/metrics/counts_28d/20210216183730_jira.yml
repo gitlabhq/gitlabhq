@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.manage.issues_imported.jira
 description: Count of projects imported from Jira
 product_section: dev
 product_stage: manage
-product_group: import
+product_group: import_and_integrate
 value_type: number
 status: removed
 time_frame: 28d

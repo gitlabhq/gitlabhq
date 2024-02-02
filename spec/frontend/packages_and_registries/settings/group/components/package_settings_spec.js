@@ -61,16 +61,21 @@ describe('Packages Settings', () => {
   const findMavenSettings = () => wrapper.findByTestId('maven-settings');
   const findGenericSettings = () => wrapper.findByTestId('generic-settings');
   const findNugetSettings = () => wrapper.findByTestId('nuget-settings');
+  const findTerraformModuleSettings = () => wrapper.findByTestId('terraform-module-settings');
 
   const findMavenDuplicatedSettingsToggle = () => findMavenSettings().findComponent(GlToggle);
   const findGenericDuplicatedSettingsToggle = () => findGenericSettings().findComponent(GlToggle);
   const findNugetDuplicatedSettingsToggle = () => findNugetSettings().findComponent(GlToggle);
+  const findTerraformModuleDuplicatedSettingsToggle = () =>
+    findTerraformModuleSettings().findComponent(GlToggle);
   const findMavenDuplicatedSettingsExceptionsInput = () =>
     findMavenSettings().findComponent(ExceptionsInput);
   const findGenericDuplicatedSettingsExceptionsInput = () =>
     findGenericSettings().findComponent(ExceptionsInput);
   const findNugetDuplicatedSettingsExceptionsInput = () =>
     findNugetSettings().findComponent(ExceptionsInput);
+  const findTerraformModuleDuplicatedSettingsExceptionsInput = () =>
+    findTerraformModuleSettings().findComponent(ExceptionsInput);
 
   const fillApolloCache = () => {
     apolloProvider.defaultClient.cache.writeQuery({
@@ -260,6 +265,63 @@ describe('Packages Settings', () => {
 
       expect(mutationResolver).toHaveBeenCalledWith({
         input: { nugetDuplicateExceptionRegex: ')', namespacePath: 'foo_group_path' },
+      });
+    });
+  });
+
+  describe('terraform module settings', () => {
+    it('exists', () => {
+      mountComponent({ mountFn: mountExtended });
+      expect(findTerraformModuleSettings().find('td').text()).toBe('Terraform module');
+    });
+
+    it('renders toggle', () => {
+      mountComponent({ mountFn: mountExtended });
+
+      const { terraformModuleDuplicatesAllowed } = packageSettings;
+
+      expect(findTerraformModuleDuplicatedSettingsToggle().exists()).toBe(true);
+      expect(findTerraformModuleDuplicatedSettingsToggle().props()).toMatchObject({
+        label: DUPLICATES_TOGGLE_LABEL,
+        value: terraformModuleDuplicatesAllowed,
+        disabled: false,
+        labelPosition: 'hidden',
+      });
+    });
+
+    it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
+      mountComponent({ mountFn: mountExtended });
+
+      const {
+        terraformModuleDuplicatesAllowed,
+        terraformModuleDuplicateExceptionRegex,
+      } = packageSettings;
+
+      expect(findTerraformModuleDuplicatedSettingsExceptionsInput().props()).toMatchObject({
+        duplicatesAllowed: terraformModuleDuplicatesAllowed,
+        duplicateExceptionRegex: terraformModuleDuplicateExceptionRegex,
+        duplicateExceptionRegexError: '',
+        loading: false,
+        name: 'terraformModuleDuplicateExceptionRegex',
+        id: 'terraform-module-duplicated-settings-regex-input',
+      });
+    });
+
+    it('on update event calls the mutation', () => {
+      const mutationResolver = jest.fn().mockResolvedValue(groupPackageSettingsMutationMock());
+      mountComponent({ mountFn: mountExtended, mutationResolver });
+
+      fillApolloCache();
+
+      findTerraformModuleDuplicatedSettingsExceptionsInput().vm.$emit('update', {
+        terraformModuleDuplicateExceptionRegex: ')',
+      });
+
+      expect(mutationResolver).toHaveBeenCalledWith({
+        input: {
+          terraformModuleDuplicateExceptionRegex: ')',
+          namespacePath: 'foo_group_path',
+        },
       });
     });
   });

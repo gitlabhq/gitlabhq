@@ -22,7 +22,7 @@
         - if @notification_setting
           .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
 
-      = render 'projects/buttons/star'
+      = render 'projects/buttons/star', project: @project
       = render 'projects/buttons/fork'
       = render 'shared/groups_projects_more_actions_dropdown', source: @project
 

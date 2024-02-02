@@ -12,12 +12,10 @@
   .row.justify-content-center
     .col-12.col-md-10.col-lg-8.gl-my-6
       .gl-display-flex
-        %ol.breadcrumb.gl-breadcrumb-list.gl-mb-4
-          %li.gl-breadcrumb-item
-            = link_to project_path(@user.user_project) do
-              = @user.username
-          %li.gl-breadcrumb-item
-            = link_to @user.user_readme.path, @user.user_project.readme_url
+        = render Pajamas::BreadcrumbComponent.new(class: 'gl-mb-4') do |c|
+          - c.with_item(text: @user.username, href: project_path(@user.user_project))
+          - c.with_item(text: @user.user_readme.path, href: @user.user_project.readme_url)
+
         - if current_user == @user
           .gl-ml-auto
             = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)

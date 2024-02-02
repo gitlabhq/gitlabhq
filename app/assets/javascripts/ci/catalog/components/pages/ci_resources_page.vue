@@ -99,9 +99,6 @@ export default {
     namespacesCount() {
       return this.catalogResourcesCount.namespaces;
     },
-    currentTabTotalCount() {
-      return this.catalogResourcesCount[this.scope.toLowerCase()];
-    },
   },
   methods: {
     async handlePrevPage() {
@@ -193,7 +190,6 @@ export default {
         :prev-text="__('Prev')"
         :next-text="__('Next')"
         :resources="catalogResources"
-        :total-count="currentTabTotalCount"
         @onPrevPage="handlePrevPage"
         @onNextPage="handleNextPage"
       />

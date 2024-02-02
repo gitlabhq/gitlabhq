@@ -10537,9 +10537,6 @@ msgstr ""
 msgid "CiCatalog|No result found"
 msgstr ""
 
-msgid "CiCatalog|Page %{currentPage} of %{totalPage}"
-msgstr ""
-
 msgid "CiCatalog|Readme"
 msgstr ""
 
@@ -30185,7 +30182,7 @@ msgstr ""
 msgid "MemberRole|Failed to create role."
 msgstr ""
 
-msgid "MemberRole|Failed to create role: %{message}"
+msgid "MemberRole|Failed to create role: %{error}"
 msgstr ""
 
 msgid "MemberRole|Failed to delete role."
@@ -33573,6 +33570,48 @@ msgstr ""
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
+msgid "ObservabilityLogs|Check again"
+msgstr ""
+
+msgid "ObservabilityLogs|Date"
+msgstr ""
+
+msgid "ObservabilityLogs|Debug"
+msgstr ""
+
+msgid "ObservabilityLogs|Error"
+msgstr ""
+
+msgid "ObservabilityLogs|Failed to load logs."
+msgstr ""
+
+msgid "ObservabilityLogs|Fatal"
+msgstr ""
+
+msgid "ObservabilityLogs|Info"
+msgstr ""
+
+msgid "ObservabilityLogs|Level"
+msgstr ""
+
+msgid "ObservabilityLogs|Logs"
+msgstr ""
+
+msgid "ObservabilityLogs|Message"
+msgstr ""
+
+msgid "ObservabilityLogs|No logs to display."
+msgstr ""
+
+msgid "ObservabilityLogs|Service"
+msgstr ""
+
+msgid "ObservabilityLogs|Trace"
+msgstr ""
+
+msgid "ObservabilityLogs|Warning"
+msgstr ""
+
 msgid "ObservabilityMetrics|Date"
 msgstr ""
 
@@ -35185,6 +35224,9 @@ msgid "PackageRegistry|Summary: %{summary}"
 msgstr ""
 
 msgid "PackageRegistry|Target SHA: %{sha}"
+msgstr ""
+
+msgid "PackageRegistry|Terraform module"
 msgstr ""
 
 msgid "PackageRegistry|There are no other versions of this package."
@@ -38353,9 +38395,6 @@ msgid "ProjectOverview|Star"
 msgstr ""
 
 msgid "ProjectOverview|Star toggle failed. Try again later."
-msgstr ""
-
-msgid "ProjectOverview|Starrer"
 msgstr ""
 
 msgid "ProjectOverview|Starrers"

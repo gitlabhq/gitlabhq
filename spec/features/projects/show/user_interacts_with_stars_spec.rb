@@ -55,7 +55,7 @@ RSpec.describe 'Projects > Show > User interacts with project stars', feature_ca
     end
   end
 
-  context 'when user is not signed in' do
+  context 'when user is not signed in', :js do
     before do
       visit(project_path(project))
     end

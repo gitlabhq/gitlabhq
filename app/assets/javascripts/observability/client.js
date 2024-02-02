@@ -445,6 +445,20 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
   }
 }
 
+export async function fetchLogs(logsSearchUrl) {
+  try {
+    const { data } = await axios.get(logsSearchUrl, {
+      withCredentials: true,
+    });
+    if (!Array.isArray(data.results)) {
+      throw new Error('logs are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
+    return data.results;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
 export function buildClient(config) {
   if (!config) {
     throw new Error('No options object provided'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -459,6 +473,7 @@ export function buildClient(config) {
     metricsUrl,
     metricsSearchUrl,
     metricsSearchMetadataUrl,
+    logsSearchUrl,
   } = config;
 
   if (typeof provisioningUrl !== 'string') {
@@ -493,6 +508,10 @@ export function buildClient(config) {
     throw new Error('metricsSearchMetadataUrl param must be a string');
   }
 
+  if (typeof logsSearchUrl !== 'string') {
+    throw new Error('logsSearchUrl param must be a string');
+  }
+
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
@@ -506,5 +525,6 @@ export function buildClient(config) {
       fetchMetric(metricsSearchUrl, metricName, metricType, options),
     fetchMetricSearchMetadata: (metricName, metricType) =>
       fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
+    fetchLogs: () => fetchLogs(logsSearchUrl),
   };
 }

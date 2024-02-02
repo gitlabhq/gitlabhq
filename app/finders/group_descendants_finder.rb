@@ -20,6 +20,8 @@
 #                        `non_archived` is passed to the `ProjectFinder`s if none
 #                        was given.
 class GroupDescendantsFinder
+  include Gitlab::Utils::StrongMemoize
+
   attr_reader :current_user, :parent_group, :params
 
   def initialize(parent_group:, current_user: nil, params: {})
@@ -44,14 +46,10 @@ class GroupDescendantsFinder
     Kaminari.paginate_array(all_required_elements, total_count: total_count)
   end
 
-  def has_children?
-    projects.any? || subgroups.any?
-  end
-
   private
 
   def children
-    @children ||= paginator.paginate(params[:page])
+    @children ||= paginator.paginate(page)
   end
 
   def paginator
@@ -106,24 +104,39 @@ class GroupDescendantsFinder
   # 'nested-group' but not 'subgroup' or 'root'
   # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_groups(base_for_ancestors)
-    group_ids = base_for_ancestors.except(:select, :sort).select(:id)
-    groups = Group.where(id: group_ids)
+    group_ids = if select_ancestors_of_paginated_items_feature_enabled?
+                  base_for_ancestors
+                else
+                  base_for_ancestors.except(:select, :sort).select(:id)
+                end
 
-    groups.self_and_ancestors(upto: parent_group.id)
+    Group.where(id: group_ids).self_and_ancestors(upto: parent_group.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_filtered_projects
-    projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
-    groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
+    # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- Limit of 100 max per page is defined in kaminari config
+    groups_to_load_ancestors_of = if select_ancestors_of_paginated_items_feature_enabled?
+                                    paginated_projects_without_direct_descendents.pluck(:namespace_id)
+                                  else
+                                    projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
+                                    Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
+                                  end
+    # rubocop:enable Database/AvoidUsingPluckWithoutLimit
     ancestors_of_groups(groups_to_load_ancestors_of)
       .with_selects_for_list(archived: params[:archived])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def ancestors_of_filtered_subgroups
-    ancestors_of_groups(subgroups)
+    subgroups_to_find_ancestors = if select_ancestors_of_paginated_items_feature_enabled?
+                                    paginated_subgroups_without_direct_descendents
+                                  else
+                                    subgroups
+                                  end
+
+    ancestors_of_groups(subgroups_to_find_ancestors)
       .with_selects_for_list(archived: params[:archived])
   end
 
@@ -141,7 +154,8 @@ class GroupDescendantsFinder
 
   # rubocop: disable CodeReuse/Finder
   def direct_child_projects
-    GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params, options: { exclude_shared: true })
+    GroupProjectsFinder
+      .new(group: parent_group, current_user: current_user, params: params, options: { exclude_shared: true })
       .execute
   end
   # rubocop: enable CodeReuse/Finder
@@ -177,9 +191,28 @@ class GroupDescendantsFinder
     params.fetch(:sort, 'name_asc')
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def hierarchy_for_parent
-    @hierarchy ||= Gitlab::ObjectHierarchy.new(Group.where(id: parent_group.id))
+  def paginated_subgroups_without_direct_descendents
+    # We remove direct descendants (ie. item.parent_id == parent_group.id) as we already have their parent
+    # i.e. `parent_group`.
+    paginator
+      .paginated_first_collection(page)
+      .reject { |item| item.parent_id == parent_group.id }
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def paginated_projects_without_direct_descendents
+    # We remove direct descendants (ie. item.namespace_id == parent_group.id) as we already have their parent
+    # i.e. `parent_group`.
+    paginator
+      .paginated_second_collection(page)
+      .reject { |item| item.namespace_id == parent_group.id }
+  end
+
+  def page
+    params[:page].to_i
+  end
+
+  def select_ancestors_of_paginated_items_feature_enabled?
+    Feature.enabled?(:select_ancestors_of_paginated_items, parent_group.root_ancestor, type: :gitlab_com_derisk)
+  end
+  strong_memoize_attr :select_ancestors_of_paginated_items_feature_enabled?
 end

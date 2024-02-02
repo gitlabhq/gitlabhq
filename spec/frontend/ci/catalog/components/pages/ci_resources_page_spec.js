@@ -152,7 +152,6 @@ describe('CiResourcesPage', () => {
           currentPage: 1,
           resources: nodes,
           pageInfo,
-          totalCount: 0,
         });
       });
 

@@ -160,9 +160,18 @@ For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML 
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
 
-By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace. To allow publishing duplicate module names:
+By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace.
 
-- Enable `terraform_module_duplicates_allowed` for the namespace with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+To allow publishing duplicate module names:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
+1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of packages to allow.
+
+Your changes are automatically saved.
+
+You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings).
 
 To allow duplicates with specific names:
 

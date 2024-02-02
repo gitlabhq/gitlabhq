@@ -21,6 +21,7 @@ describe('buildClient', () => {
   const metricsUrl = 'https://example.com/metrics';
   const metricsSearchUrl = 'https://example.com/metrics/search';
   const metricsSearchMetadataUrl = 'https://example.com/metrics/searchmetadata';
+  const logsSearchUrl = 'https://example.com/metrics/logs/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -32,6 +33,7 @@ describe('buildClient', () => {
     metricsUrl,
     metricsSearchUrl,
     metricsSearchMetadataUrl,
+    logsSearchUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -1010,6 +1012,58 @@ describe('buildClient', () => {
         params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
       });
       expect(result).toEqual(data);
+    });
+  });
+
+  describe('fetchLogs', () => {
+    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
+    it('fetches logs from the tracing URL', async () => {
+      const mockResponse = {
+        results: [
+          {
+            timestamp: '2024-01-28T10:36:08.2960655Z',
+            trace_id: 'trace-id',
+            span_id: 'span-id',
+            trace_flags: 1,
+            severity_text: 'Information',
+            severity_number: 1,
+            service_name: 'a/service/name',
+            body: 'GetCartAsync called with userId={userId} ',
+            resource_attributes: {
+              'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
+              'k8s.deployment.name': 'otel-demo-cartservice',
+              'k8s.namespace.name': 'otel-demo-app',
+            },
+            log_attributes: {
+              userId: '',
+            },
+          },
+        ],
+      };
+
+      axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+
+      const result = await client.fetchLogs();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse.results);
+    });
+
+    it('rejects if logs are missing', async () => {
+      axiosMock.onGet(logsSearchUrl).reply(200, {});
+
+      await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
+    });
+
+    it('rejects if logs are invalid', async () => {
+      axiosMock.onGet(logsSearchUrl).reply(200, { logs: 'invalid' });
+
+      await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
     });
   });
 });

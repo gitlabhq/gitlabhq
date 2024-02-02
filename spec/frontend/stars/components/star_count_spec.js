@@ -35,13 +35,14 @@ describe('StarCount', () => {
     },
   };
 
-  const createComponent = (
-    options = {
-      setStarStatusHandler: jest.fn().mockResolvedValue(setStarStatusResponse),
-      injections: {},
-    },
-  ) => {
-    const { injections, setStarStatusHandler } = options;
+  const createComponent = ({
+    setStarStatusHandler = jest.fn().mockResolvedValue(setStarStatusResponse),
+    injections = {},
+    isLoggedIn = true,
+  } = {}) => {
+    if (isLoggedIn) {
+      window.gon.current_user_id = 1;
+    }
 
     mockApollo = createMockApollo([[setStarStatus, setStarStatusHandler]]);
 
@@ -53,6 +54,7 @@ describe('StarCount', () => {
         starCount: initialStarCount,
         starred: false,
         starrersPath: '/project/stars/-/starrers',
+        signInPath: 'sign/in/path',
         ...injections,
       },
       mocks: {
@@ -139,6 +141,14 @@ describe('StarCount', () => {
       expect($toast.show).toHaveBeenCalled();
       expect(findStarCount().text()).toBe(`${initialStarCount}`);
       expect(findStarButton().text()).toBe('Star');
+    });
+  });
+
+  describe('non-logged in user', () => {
+    it('redirects to the sign-in page', () => {
+      createComponent({ isLoggedIn: false });
+
+      expect(findStarButton().attributes('href')).toBe('sign/in/path');
     });
   });
 });

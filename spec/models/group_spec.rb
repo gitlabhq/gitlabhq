@@ -1476,6 +1476,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
     end
 
+    it 'preloads user and source' do
+      owner = group.member_owners_excluding_project_bots.first
+
+      expect(owner.association(:user).loaded?).to be_truthy
+      expect(owner.association(:source).loaded?).to be_truthy
+    end
+
     context 'there is also a project_bot owner' do
       before do
         group.add_member(create(:user, :project_bot), GroupMember::OWNER)

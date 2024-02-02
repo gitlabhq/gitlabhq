@@ -1743,7 +1743,6 @@ RSpec/FeatureCategory:
     - 'spec/finders/feature_flags_user_lists_finder_spec.rb'
     - 'spec/finders/fork_projects_finder_spec.rb'
     - 'spec/finders/fork_targets_finder_spec.rb'
-    - 'spec/finders/group_descendants_finder_spec.rb'
     - 'spec/finders/group_projects_finder_spec.rb'
     - 'spec/finders/groups/accepting_group_transfers_finder_spec.rb'
     - 'spec/finders/groups/accepting_project_transfers_finder_spec.rb'

@@ -157,8 +157,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           @pipelines,
           preload: true,
           disable_failed_builds: true,
-          disable_coverage: Feature.enabled?(:merge_request_pipelines_list_disable_coverage, @project,
-            type: :gitlab_com_derisk)
+          disable_coverage: true
         ),
       count: {
         all: @pipelines.count
