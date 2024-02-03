@@ -810,12 +810,86 @@ export const agent = {
 
 export const kubernetesNamespace = 'agent-namespace';
 
-const runningPod = { status: { phase: 'Running' } };
-const pendingPod = { status: { phase: 'Pending' } };
-const succeededPod = { status: { phase: 'Succeeded' } };
-const failedPod = { status: { phase: 'Failed' } };
+const runningPod = {
+  metadata: { name: 'pod-1', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
+  status: { phase: 'Running' },
+};
+const pendingPod = {
+  metadata: {
+    name: 'pod-2',
+    namespace: 'new-namespace',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+  },
+  status: { phase: 'Pending' },
+};
+const succeededPod = {
+  metadata: { name: 'pod-3', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
+  status: { phase: 'Succeeded' },
+};
+const failedPod = {
+  metadata: { name: 'pod-4', namespace: 'default', creationTimestamp: '2023-11-21T11:50:59Z' },
+  status: { phase: 'Failed' },
+};
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
+
+export const k8sPodsStatsData = [
+  {
+    value: 2,
+    title: 'Running',
+  },
+  {
+    value: 1,
+    title: 'Pending',
+  },
+  {
+    value: 1,
+    title: 'Succeeded',
+  },
+  {
+    value: 2,
+    title: 'Failed',
+  },
+];
+
+export const k8sPodsTableData = [
+  {
+    name: 'pod-1',
+    namespace: 'default',
+    status: 'Running',
+    age: '114d',
+  },
+  {
+    name: 'pod-1',
+    namespace: 'default',
+    status: 'Running',
+    age: '114d',
+  },
+  {
+    name: 'pod-2',
+    namespace: 'new-namespace',
+    status: 'Pending',
+    age: '1d',
+  },
+  {
+    name: 'pod-3',
+    namespace: 'default',
+    status: 'Succeeded',
+    age: '114d',
+  },
+  {
+    name: 'pod-4',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+  },
+  {
+    name: 'pod-4',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+  },
+];
 
 export const k8sServicesMock = [
   {

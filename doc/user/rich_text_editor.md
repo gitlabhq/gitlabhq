@@ -17,8 +17,6 @@ DETAILS:
 > - Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
 > - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
 
-![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
-
 Rich text editor is available in:
 
 - [Wikis](project/wiki/index.md)
@@ -52,6 +50,8 @@ If you want to enter Markdown source in the text box, return to using the plain 
 
 To switch to the plain text editor: In a text box, in the lower-left corner, select
 **Switch to plain text editing**.
+
+![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
 
 ## Compatibility with GitLab Flavored Markdown
 

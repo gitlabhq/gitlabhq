@@ -64,9 +64,7 @@ export default {
   i18n: {
     emptyText: __('No results found'),
   },
-  PAGE_SIZE,
   WORKLOAD_STATUS_BADGE_VARIANTS,
-  TABLE_CELL_CLASSES: 'gl-p-2',
 };
 </script>
 

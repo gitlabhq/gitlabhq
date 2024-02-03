@@ -221,5 +221,17 @@ describe('Workload table component', () => {
         expect(findTable().props('noSelectOnClick')).toBe(true);
       });
     });
+
+    it('row has hover styles by default', () => {
+      createWrapper({ items: mockPodsTableItems });
+
+      expect(findRow(0).attributes('class')).toContain('gl-hover-cursor-pointer');
+    });
+
+    it('row has no hover styles if rowClickable is false', () => {
+      createWrapper({ items: mockPodsTableItems, rowClickable: false });
+
+      expect(findRow(0).attributes('class')).not.toContain('gl-hover-cursor-pointer');
+    });
   });
 });

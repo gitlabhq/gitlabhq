@@ -655,7 +655,8 @@ module Gitlab
         ActiveSupport::TimeWithZone,
         ActiveSupport::TimeZone,
         Gitlab::Color, # https://gitlab.com/gitlab-org/gitlab/-/issues/368844,
-        Hashie::Array # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
+        Hashie::Array, # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
+        Hashie::Mash # https://gitlab.com/gitlab-org/gitlab/-/issues/440316
       ]
       #
       # Restore setting the YAML permitted classes for ActiveRecord

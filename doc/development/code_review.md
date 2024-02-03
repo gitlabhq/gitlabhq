@@ -108,6 +108,8 @@ each area of the codebase that your merge request seems to touch. It makes
 **recommendations** for developer reviewers and you should override it if you think someone else is a better
 fit.
 
+[Approval Guidelines](#approval-guidelines) can help to pick [domain experts](#domain-experts).
+
 We only do UX reviews for MRs from teams that include a Product Designer. User-facing changes from these teams are required to have a UX review, even if it's behind a feature flag. Default to the recommended UX reviewer suggested.
 
 It picks reviewers and maintainers from the list at the

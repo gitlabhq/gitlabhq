@@ -269,7 +269,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
       end
 
-      context 'with manual actions', :js do
+      context 'with manual actions' do
         let!(:manual) do
           create(:ci_build, :manual,
             pipeline: pipeline,
@@ -286,7 +286,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         it 'has link to the manual action' do
-          find_by_testid('pipelines-manual-actions-dropdown').click
+          find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           wait_for_requests
 
@@ -295,13 +295,11 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'when manual action was played' do
           before do
-            find_by_testid('pipelines-manual-actions-dropdown').click
+            find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
             wait_for_requests
 
             click_button('manual build')
-
-            wait_for_all_requests
           end
 
           it 'enqueues manual action job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/409984' do
@@ -327,8 +325,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           expect(page).to have_selector('[data-testid="pipelines-manual-actions-dropdown"] [data-testid="play-icon"]')
         end
 
-        it "has link to the delayed job's action", :js do
-          find_by_testid('pipelines-manual-actions-dropdown').click
+        it "has link to the delayed job's action" do
+          find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
           wait_for_requests
 
@@ -346,8 +344,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               stage: 'test')
           end
 
-          it "shows 00:00:00 as the remaining time", :js do
-            find_by_testid('pipelines-manual-actions-dropdown').click
+          it "shows 00:00:00 as the remaining time" do
+            find('[data-testid="pipelines-manual-actions-dropdown"]').click
 
             wait_for_requests
 
@@ -536,20 +534,15 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           expect(page).to have_selector(dropdown_selector)
         end
 
-        context 'when clicking a stage badge', :js do
+        context 'when clicking a stage badge' do
           it 'opens a dropdown' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
-
-            wait_for_requests
+            find(dropdown_selector).click
 
             expect(page).to have_link build.name
           end
 
           it 'is possible to cancel pending build' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
-
-            wait_for_requests
-
+            find(dropdown_selector).click
             find('.js-ci-action').click
             wait_for_requests
 
@@ -557,18 +550,16 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
         end
 
-        context 'for a failed pipeline', :js do
+        context 'for a failed pipeline' do
           let!(:build) do
             create(:ci_build, :failed, pipeline: pipeline, stage: 'build', name: 'build')
           end
 
           it 'displays the failure reason' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+            find(dropdown_selector).click
 
-            wait_for_requests
-
-            within_testid('mini-pipeline-graph-dropdown') do
-              build_element = page.find('.pipeline-job-item [data-testid="job-name"]')
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.pipeline-job-item')
               expect(build_element['title']).to eq('build - failed - (unknown failure)')
             end
           end

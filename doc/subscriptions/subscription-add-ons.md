@@ -1,7 +1,7 @@
 ---
 stage: Fulfillment
 group: Purchase
-description: Subscription add-ons, GitLab Duo Pro, seat assignment
+description: Seat assignment, GitLab Duo Pro add-on
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -34,8 +34,7 @@ For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available fo
 <!-- vale gitlab.Substitutions = NO -->
 1. Select the **Duo Pro** tab.
 <!-- vale gitlab.Substitutions = YES -->
-1. To the right of the user, turn on the toggle to assign or unassign
-GitLab Duo Pro.
+1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 ### For self-managed
 
@@ -52,5 +51,4 @@ Prerequisites:
      1. In **Subscription details**, to the right of **Last sync**, select
      synchronize subscription (**{retry}**).
 <!-- vale gitlab.Substitutions = YES -->
-1. To the right of the user, turn on the toggle to assign or unassign
-GitLab Duo Pro.
+1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.

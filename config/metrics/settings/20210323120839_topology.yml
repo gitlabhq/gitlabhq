@@ -4,7 +4,7 @@ key_path: topology
 description: Topology data
 product_section: enablement
 product_stage: enablement
-product_group: memory
+product_group: application_performance
 value_type: object
 status: active
 milestone: "13.11"

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlTab, GlLoadingIcon, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
   STATUS_RUNNING,
@@ -8,13 +8,18 @@ import {
   STATUS_FAILED,
   STATUS_LABELS,
 } from '~/kubernetes_dashboard/constants';
+import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
+import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import k8sPodsQuery from '../graphql/queries/k8s_pods.query.graphql';
 
 export default {
   components: {
+    GlTab,
     GlLoadingIcon,
+    GlBadge,
     WorkloadStats,
+    WorkloadTable,
   },
   apollo: {
     k8sPods: {
@@ -25,8 +30,18 @@ export default {
           namespace: this.namespace,
         };
       },
+
       update(data) {
-        return data?.k8sPods || [];
+        return (
+          data?.k8sPods?.map((pod) => {
+            return {
+              name: pod.metadata?.name,
+              namespace: pod.metadata?.namespace,
+              status: pod.status.phase,
+              age: getAge(pod.metadata?.creationTimestamp),
+            };
+          }) || []
+        );
       },
       error(error) {
         this.error = error.message;
@@ -78,10 +93,13 @@ export default {
     loading() {
       return this.$apollo?.queries?.k8sPods?.loading;
     },
+    podsCount() {
+      return this.k8sPods?.length || 0;
+    },
   },
   methods: {
     countPodsByPhase(phase) {
-      const filteredPods = this.k8sPods.filter((item) => item.status.phase === phase);
+      const filteredPods = this.k8sPods?.filter((item) => item.status === phase) || [];
 
       const hasFailedState = Boolean(phase === STATUS_FAILED && filteredPods.length);
       this.$emit('update-failed-state', { pods: hasFailedState });
@@ -92,13 +110,27 @@ export default {
   i18n: {
     podsTitle: s__('Environment|Pods'),
   },
+  PAGE_SIZE: 10,
 };
 </script>
 <template>
-  <div>
-    <p class="gl-text-gray-500">{{ $options.i18n.podsTitle }}</p>
+  <gl-tab>
+    <template #title>
+      {{ $options.i18n.podsTitle }}
+      <gl-badge size="sm" class="gl-tab-counter-badge">{{ podsCount }}</gl-badge>
+    </template>
 
     <gl-loading-icon v-if="loading" />
-    <workload-stats v-else-if="podStats && !error" :stats="podStats" />
-  </div>
+
+    <template v-else-if="!error">
+      <workload-stats v-if="podStats" :stats="podStats" class="gl-mt-3" />
+      <workload-table
+        v-if="k8sPods"
+        :items="k8sPods"
+        :page-size="$options.PAGE_SIZE"
+        :row-clickable="false"
+        class="gl-mt-8"
+      />
+    </template>
+  </gl-tab>
 </template>

@@ -52,7 +52,9 @@ export default {
   k8sPods(_, { configuration, namespace }, { client }) {
     const query = k8sPodsQuery;
     const enableWatch = gon.features?.k8sWatchApi;
-    return getK8sPods({ client, query, configuration, namespace, enableWatch });
+    // TODO: Remove mapping function once the drawer with the pods details is added under the Kubernetes overview section
+    const mapPodItem = (item) => item;
+    return getK8sPods({ client, query, configuration, namespace, enableWatch, mapFn: mapPodItem });
   },
   k8sServices(_, { configuration, namespace }, { client }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));

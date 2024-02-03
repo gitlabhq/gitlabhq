@@ -4,7 +4,6 @@ import { __, s__ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
-import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 
@@ -14,7 +13,6 @@ export default {
     GlButton,
     GlAlert,
     KubernetesAgentInfo,
-    KubernetesPods,
     KubernetesTabs,
     KubernetesStatusBar,
   },
@@ -45,7 +43,6 @@ export default {
       error: '',
       failedState: {},
       podsLoading: false,
-      workloadTypesLoading: false,
     };
   },
   computed: {
@@ -71,8 +68,7 @@ export default {
       };
     },
     clusterHealthStatus() {
-      const clusterDataLoading = this.podsLoading || this.workloadTypesLoading;
-      if (clusterDataLoading) {
+      if (this.podsLoading) {
         return '';
       }
 
@@ -129,19 +125,12 @@ export default {
           {{ error }}
         </gl-alert>
 
-        <kubernetes-pods
-          :configuration="k8sAccessConfiguration"
-          :namespace="namespace"
-          class="gl-mb-5"
-          @cluster-error="onClusterError"
-          @loading="podsLoading = $event"
-          @update-failed-state="onUpdateFailedState" />
         <kubernetes-tabs
           :configuration="k8sAccessConfiguration"
           :namespace="namespace"
           class="gl-mb-5"
           @cluster-error="onClusterError"
-          @loading="workloadTypesLoading = $event"
+          @loading="podsLoading = $event"
           @update-failed-state="onUpdateFailedState"
       /></template>
     </gl-collapse>

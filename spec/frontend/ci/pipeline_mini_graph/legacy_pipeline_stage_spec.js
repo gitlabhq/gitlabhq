@@ -1,4 +1,4 @@
-import { GlDisclosureDropdown } from '@gitlab/ui';
+import { GlDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
@@ -53,9 +53,8 @@ describe('Pipelines stage component', () => {
 
   const findCiActionBtn = () => wrapper.find('.js-ci-action');
   const findCiIcon = () => wrapper.findComponent(CiIcon);
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findDropdownToggle = () =>
-    wrapper.find('[data-testid="mini-pipeline-graph-dropdown-toggle"]');
+  const findDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownToggle = () => wrapper.find('button.dropdown-toggle');
   const findDropdownMenu = () =>
     wrapper.find('[data-testid="mini-pipeline-graph-dropdown-menu-list"]');
   const findDropdownMenuTitle = () =>
@@ -79,9 +78,8 @@ describe('Pipelines stage component', () => {
     });
 
     it('displays loading state while jobs are being fetched', async () => {
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isLoading: true });
-      await waitForPromises();
+      jest.runOnlyPendingTimers();
+      await nextTick();
 
       expect(findLoadingState().exists()).toBe(true);
       expect(findLoadingState().text()).toBe(LegacyPipelineStage.i18n.loadingText);
@@ -146,7 +144,7 @@ describe('Pipelines stage component', () => {
       await axios.waitForAll();
       await waitForPromises();
 
-      expect(findDropdownToggle().attributes('aria-expanded')).toBe('false');
+      expect(findDropdown().classes('show')).toBe(false);
     });
   });
 
@@ -199,7 +197,7 @@ describe('Pipelines stage component', () => {
       await clickCiAction();
       await waitForPromises();
 
-      expect(findDropdownToggle().attributes('aria-expanded')).toBe('true');
+      expect(findDropdown().classes('show')).toBe(true);
     });
   });
 

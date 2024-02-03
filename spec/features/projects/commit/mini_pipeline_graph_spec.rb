@@ -31,7 +31,7 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     end
   end
 
-  context 'when commit has pipelines and feature flag is disabled', :js do
+  context 'when commit has pipelines and feature flag is disabled' do
     let(:pipeline) do
       create(
         :ci_pipeline,
@@ -58,11 +58,11 @@ RSpec.describe 'Mini Pipeline Graph in Commit View', :js, feature_category: :sou
     it 'displays a mini pipeline graph' do
       expect(page).to have_selector('[data-testid="commit-box-pipeline-mini-graph"]')
 
-      find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+      first('[data-testid="mini-pipeline-graph-dropdown"]').click
 
       wait_for_requests
 
-      within_testid('mini-pipeline-graph-dropdown') do
+      page.within '.js-builds-dropdown-list' do
         expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
         expect(page).to have_content(build.stage_name)
       end
