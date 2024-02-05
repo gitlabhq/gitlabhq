@@ -89,6 +89,7 @@
     "MergeRequest"
   ],
   "OrchestrationPolicy": [
+    "ApprovalPolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy"
   ],

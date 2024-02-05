@@ -48,7 +48,13 @@ module ProjectForksHelper
       allow(service).to receive(:gitlab_shell).and_return(shell)
     end
 
-    forked_project = service.execute(params[:target_project])
+    response = service.execute(params[:target_project])
+
+    # This helper is expected to return a valid result.
+    # This exception will be raised if someone tries to test failed states using fork_project method (not recommended).
+    raise ArgumentError, response.message if response.error?
+
+    forked_project = response[:project]
 
     # Reload the both projects so they know about their newly created fork_network
     if forked_project.persisted?

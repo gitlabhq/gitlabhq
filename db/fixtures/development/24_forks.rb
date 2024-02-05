@@ -11,12 +11,19 @@ Sidekiq::Testing.inline! do
       next unless source_project
 
       Sidekiq::Worker.skipping_transaction_check do
-        fork_project = Projects::ForkService.new(
+        response = Projects::ForkService.new(
           source_project,
           user,
           namespace: user.namespace,
           skip_disk_validation: true
         ).execute
+
+        if response.error?
+          print 'F'
+          next
+        end
+
+        fork_project = response[:project]
 
         # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
         # hook won't run until after the fixture is loaded. That is too late

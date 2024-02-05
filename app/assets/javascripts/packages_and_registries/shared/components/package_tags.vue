@@ -58,7 +58,7 @@ export default {
       return {
         'gl-display-none': true,
         'gl-display-flex': this.tagCount === 1,
-        'd-md-flex': this.tagCount > 1,
+        'gl-md-display-flex!': this.tagCount > 1,
         'gl-mr-2': index !== this.tagsToRender.length - 1,
         'gl-ml-3': !this.hideLabel && index === 0,
       };

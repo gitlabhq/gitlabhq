@@ -29,7 +29,7 @@ module StatAnchorsHelper
     elsif anchor.is_link
       'stat-link'
     else
-      "gl-button btn #{button_attribute(anchor)}"
+      button_attribute(anchor)
     end
   end
 end

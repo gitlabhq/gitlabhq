@@ -331,7 +331,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     end
 
     context "with a cross-project fork reference" do
-      let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute }
+      let(:forked_project) { Projects::ForkService.new(project, project2.creator).execute[:project] }
       let(:fork_cross_reference) { issue.to_reference(forked_project) }
 
       subject { described_class.new(forked_project, forked_project.creator) }

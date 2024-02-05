@@ -224,7 +224,6 @@
   - ".gitlab/ci/**/*.yml"
   - "lib/gitlab/ci/templates/**/*.yml"
   - "data/deprecations/**/*.yml"
-  - "data/removals/**/*.yml"
   - "data/whats_new/**/*.yml"
 
 .lint-metrics-yaml-patterns: &lint-metrics-yaml-patterns
@@ -256,22 +255,12 @@
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
 .python-patterns: &python-patterns
-  - '{requirements.txt,*/requirements.txt,*/*/requirements.txt}'
-  - '{requirements.pip,*/requirements.pip,*/*/requirements.pip}'
   - '{Pipfile,*/Pipfile,*/*/Pipfile}'
-  - '{requires.txt,*/requires.txt,*/*/requires.txt}'
-  - '{setup.py,*/setup.py,*/*/setup.py}'
 
 .dependency-patterns: &dependency-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
-  - '{composer.lock,*/composer.lock,*/*/composer.lock}'
-  - '{gems.locked,*/gems.locked,*/*/gems.locked}'
   - '{go.sum,*/go.sum,*/*/go.sum}'
-  - '{npm-shrinkwrap.json,*/npm-shrinkwrap.json,*/*/npm-shrinkwrap.json}'
-  - '{package-lock.json,*/package-lock.json,*/*/package-lock.json}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
-  - '{packages.lock.json,*/packages.lock.json,*/*/packages.lock.json}'
-  - '{conan.lock,*/conan.lock,*/*/conan.lock}'
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
@@ -344,7 +333,7 @@
   - "config.ru"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,config,db,gems,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
   - ".gitlab-ci.yml"
@@ -360,7 +349,7 @@
   - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
-  - "{,ee/,jh/}{bin,config,db,generator_templates,lib}/**/*"
+  - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
 # Redis patterns + feature flags
@@ -370,7 +359,6 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage_data_counters/{hll_redis_counter,redis_counter}{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/instrumentations/redis{_metric,hll_metric}{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/usage/metrics/aggregates/sources/redis_hll{,_spec}.rb"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/patch/action_cable_redis_listener{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/merge_requests/mergeability/redis_interface{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/markdown_cache/redis/*.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/redis/**/*.rb"
@@ -383,9 +371,9 @@
 
 # AI patterns:
 .ai-patterns: &ai-patterns
-  - "{,ee/,jh/}lib/gitlab/llm/**/*"
-  - "{,ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
-  - "{,ee/,jh/}lib/gitlab/duo/**/*"
+  - "{ee/,jh/}lib/gitlab/llm/**/*"
+  - "{ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
+  - "{ee/,jh/}lib/gitlab/duo/**/*"
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
@@ -453,8 +441,10 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -477,8 +467,10 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -508,8 +500,10 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -536,7 +530,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   - "doc/administration/audit_event_streaming/audit_event_types.md"
@@ -575,8 +569,10 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
-  - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
+  # Auto-generated files
+  - "doc/api/graphql/reference/*"
+  - "doc/administration/audit_event_streaming/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -926,7 +922,7 @@
       variables:
         ARCH: amd64,arm64
     - <<: *if-ruby-branch
-    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
 
 .build-images:rules:build-qa-image-as-if-foss:
   rules:
@@ -2501,7 +2497,7 @@
       when: never
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
 
-.releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns:
+.releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env:
   rules:
     - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
       when: never
@@ -3237,7 +3233,7 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env-patterns", rules]
+    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
 
 ###################
 # Benchmark rules #

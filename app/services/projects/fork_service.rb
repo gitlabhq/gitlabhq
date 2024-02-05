@@ -3,14 +3,11 @@
 module Projects
   class ForkService < BaseService
     def execute(fork_to_project = nil)
-      forked_project = fork_to_project ? link_existing_project(fork_to_project) : fork_new_project
+      response = fork_to_project ? link_existing_project(fork_to_project) : fork_new_project
 
-      if forked_project&.saved?
-        refresh_forks_count
-        stream_audit_event(forked_project)
-      end
+      after_fork(response[:project]) if response.success?
 
-      forked_project
+      response
     end
 
     def valid_fork_targets(options = {})
@@ -29,23 +26,39 @@ module Projects
 
     private
 
+    def after_fork(project)
+      return unless project&.saved?
+
+      refresh_forks_count
+      stream_audit_event(project)
+    end
+
     def link_existing_project(fork_to_project)
-      return if fork_to_project.forked?
+      if fork_to_project.forked?
+        return ServiceResponse.error(message: _('Project already forked'), reason: :already_forked)
+      end
 
       build_fork_network_member(fork_to_project)
 
-      fork_to_project if link_fork_network(fork_to_project)
+      if link_fork_network(fork_to_project)
+        ServiceResponse.success(payload: { project: fork_to_project })
+      else
+        ServiceResponse.error(message: fork_to_project.errors.full_messages)
+      end
     end
 
     def fork_new_project
       new_project = CreateService.new(current_user, new_fork_params).execute
-      return new_project unless new_project.persisted?
+
+      unless new_project.persisted?
+        return ServiceResponse.error(message: new_project.errors.full_messages)
+      end
 
       new_project.project_feature.update!(
         @project.project_feature.slice(ProjectFeature::FEATURES.map { |f| "#{f}_access_level" })
       )
 
-      new_project
+      ServiceResponse.success(payload: { project: new_project })
     end
 
     def new_fork_params

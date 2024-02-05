@@ -211,7 +211,7 @@ export default {
 <template>
   <section class="gl-pb-4">
     <div class="gl-display-flex gl-align-items-center gl-gap-3">
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-scale-5">
+      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-5">
         {{ $options.i18n.dates }}
       </h3>
       <gl-button

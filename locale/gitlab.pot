@@ -31847,9 +31847,6 @@ msgstr ""
 msgid "Name can't be blank"
 msgstr ""
 
-msgid "Name has already been taken"
-msgstr ""
-
 msgid "Name is already taken."
 msgstr ""
 
@@ -38273,6 +38270,9 @@ msgid "Project access token creation is disabled in this group."
 msgstr ""
 
 msgid "Project already deleted"
+msgstr ""
+
+msgid "Project already forked"
 msgstr ""
 
 msgid "Project and wiki repositories"

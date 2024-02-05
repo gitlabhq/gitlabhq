@@ -3513,6 +3513,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
           expect(project_fork_target).to be_forked
         end
+
+        context 'when forking process fails' do
+          before do
+            allow_next_instance_of(Projects::ForkService) do |instance|
+              allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'Error'))
+            end
+          end
+
+          it 'fails with 400 error' do
+            expect(project_fork_target).not_to be_forked
+
+            post api(path, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq "Error"
+            expect(project_fork_target).not_to be_forked
+          end
+        end
       end
     end
 
@@ -5039,8 +5057,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{new_project.id}/fork", user)
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['name']).to eq(['has already been taken'])
-        expect(json_response['message']['path']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Path has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'fails if project to fork from does not exist' do
@@ -5192,7 +5215,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{project2.id}/fork", user2), params: { path: 'foobar' }
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['path']).to eq(['has already been taken'])
+        expect(json_response['message']).to eq(['Path has already been taken'])
       end
 
       it 'accepts custom parameters for the target project' do
@@ -5222,7 +5245,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{project2.id}/fork", user2), params: { name: 'My Random Project' }
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['name']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'forks to the same namespace with alternative path and name' do
@@ -5241,8 +5269,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user)
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['path']).to eq(['has already been taken'])
-        expect(json_response['message']['name']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Path has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'fails to fork with an unknown visibility level' do

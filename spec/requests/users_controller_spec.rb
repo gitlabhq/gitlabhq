@@ -461,7 +461,7 @@ RSpec.describe UsersController, feature_category: :user_management do
 
     context 'forked project' do
       let(:project) { create(:project) }
-      let(:forked_project) { Projects::ForkService.new(project, user).execute }
+      let(:forked_project) { Projects::ForkService.new(project, user).execute[:project] }
 
       before do
         sign_in(user)

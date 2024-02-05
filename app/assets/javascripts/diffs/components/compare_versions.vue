@@ -160,7 +160,7 @@ export default {
       >
         {{ __('Show latest version') }}
       </gl-button>
-      <div v-if="hasChanges" class="inline-parallel-buttons d-none d-md-flex ml-auto">
+      <div v-if="hasChanges" class="inline-parallel-buttons d-none gl-md-display-flex! ml-auto">
         <diff-stats
           :diff-files-count-text="diffFilesCountText"
           :added-lines="addedLines"

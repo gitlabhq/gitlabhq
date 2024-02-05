@@ -9085,6 +9085,29 @@ The edge type for [`AmazonS3ConfigurationType`](#amazons3configurationtype).
 | <a id="amazons3configurationtypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="amazons3configurationtypeedgenode"></a>`node` | [`AmazonS3ConfigurationType`](#amazons3configurationtype) | The item at the end of the edge. |
 
+#### `ApprovalPolicyConnection`
+
+The connection type for [`ApprovalPolicy`](#approvalpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalpolicyconnectionedges"></a>`edges` | [`[ApprovalPolicyEdge]`](#approvalpolicyedge) | A list of edges. |
+| <a id="approvalpolicyconnectionnodes"></a>`nodes` | [`[ApprovalPolicy]`](#approvalpolicy) | A list of nodes. |
+| <a id="approvalpolicyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ApprovalPolicyEdge`
+
+The edge type for [`ApprovalPolicy`](#approvalpolicy).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="approvalpolicyedgenode"></a>`node` | [`ApprovalPolicy`](#approvalpolicy) | The item at the end of the edge. |
+
 #### `ApprovalProjectRuleConnection`
 
 The connection type for [`ApprovalProjectRule`](#approvalprojectrule).
@@ -14747,6 +14770,26 @@ An API Fuzzing scan profile.
 | <a id="apifuzzingscanprofilename"></a>`name` | [`String`](#string) | Unique name of the profile. |
 | <a id="apifuzzingscanprofileyaml"></a>`yaml` | [`String`](#string) | Syntax highlighted HTML representation of the YAML. |
 
+### `ApprovalPolicy`
+
+Represents the approval policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="approvalpolicyallgroupapprovers"></a>`allGroupApprovers` | [`[PolicyApprovalGroup!]`](#policyapprovalgroup) | All potential approvers of the group type, including groups inaccessible to the user. |
+| <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
+| <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
+| <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
+| <a id="approvalpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in 16.5. Use `allGroupApprovers`. |
+| <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
+| <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
+| <a id="approvalpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
+| <a id="approvalpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
+| <a id="approvalpolicyuserapprovers"></a>`userApprovers` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
+| <a id="approvalpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
 ### `ApprovalProjectRule`
 
 Describes a project approval rule regarding who can approve merge requests.
@@ -19581,6 +19624,22 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="groupaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
+##### `Group.approvalPolicies`
+
+Approval Policies of the project.
+
+Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Group.autocompleteUsers`
 
 Search users for autocompletion.
@@ -20399,6 +20458,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 ##### `Group.scanResultPolicies`
 
 Scan Result Policies of the project.
+
+NOTE:
+**Deprecated** in 16.9.
+Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -23369,6 +23432,22 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="namespaceaddonpurchaseaddonname"></a>`addOnName` | [`String!`](#string) | AddOn name. |
 
+##### `Namespace.approvalPolicies`
+
+Approval Policies of the project.
+
+Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Namespace.complianceFrameworks`
 
 Compliance frameworks available to projects in this namespace.
@@ -23434,6 +23513,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 ##### `Namespace.scanResultPolicies`
 
 Scan Result Policies of the project.
+
+NOTE:
+**Deprecated** in 16.9.
+Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -24649,6 +24732,22 @@ Returns [`[AlertManagementPayloadAlertField!]`](#alertmanagementpayloadalertfiel
 | ---- | ---- | ----------- |
 | <a id="projectalertmanagementpayloadfieldspayloadexample"></a>`payloadExample` | [`String!`](#string) | Sample payload for extracting alert fields for custom mappings. |
 
+##### `Project.approvalPolicies`
+
+Approval Policies of the project.
+
+Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectapprovalpoliciesrelationship"></a>`relationship` | [`SecurityPolicyRelationType`](#securitypolicyrelationtype) | Filter policies by the given policy relationship. |
+
 ##### `Project.autocompleteUsers`
 
 Search users for autocompletion.
@@ -25768,6 +25867,10 @@ four standard [pagination arguments](#connection-pagination-arguments):
 ##### `Project.scanResultPolicies`
 
 Scan Result Policies of the project.
+
+NOTE:
+**Deprecated** in 16.9.
+Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -33749,6 +33852,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Implementations:
 
+- [`ApprovalPolicy`](#approvalpolicy)
 - [`ScanExecutionPolicy`](#scanexecutionpolicy)
 - [`ScanResultPolicy`](#scanresultpolicy)
 

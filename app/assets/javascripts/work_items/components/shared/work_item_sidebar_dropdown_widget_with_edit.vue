@@ -155,7 +155,7 @@ export default {
   <div>
     <div class="gl-display-flex gl-align-items-center gl-gap-3">
       <!-- hide header when editing, since we then have a form label. Keep it reachable for screenreader nav  -->
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-scale-5">
+      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-5">
         {{ dropdownLabel }}
       </h3>
       <gl-loading-icon v-if="updateInProgress" />
