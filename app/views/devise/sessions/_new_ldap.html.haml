@@ -1,7 +1,7 @@
 - server = local_assigns.fetch(:server)
 - provider = server['provider_name']
-- render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
-- submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
+- render_remember_me = local_assigns[:admin_mode] ? false : remember_me_enabled?
+- submit_message = local_assigns[:admin_mode] ? _('Enter admin mode') : _('Sign in')
 
 = gitlab_ui_form_for(provider, url: omniauth_callback_path(:user, provider), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_ldap_user' }}) do |f|
   .form-group

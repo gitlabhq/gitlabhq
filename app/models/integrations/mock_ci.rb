@@ -8,7 +8,8 @@ module Integrations
     ALLOWED_STATES = %w[failed canceled running pending success success-with-warnings skipped not_found].freeze
 
     field :mock_service_url,
-      title: -> { s_('ProjectService|Mock service URL') },
+      title: -> { s_('ProjectService|Mock CI URL') },
+      description: -> { _('URL of the Mock CI integration.') },
       placeholder: 'http://localhost:4004',
       required: true
 
@@ -19,7 +20,7 @@ module Integrations
     end
 
     def self.description
-      'Mock an external CI'
+      _('Mock an external CI integration.')
     end
 
     def self.to_param

@@ -1,25 +1,33 @@
-= gitlab_ui_form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'gl-p-5 gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
-  .form-group
-    = f.label :login, _('Username or primary email')
-    = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { testid: 'username-field' }
-  .form-group
-    = f.label :password, _('Password')
-    = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: "#{resource_name}_password",
-        testid: 'password-field',
-        name: "#{resource_name}[password]" }
-    .form-text.gl-text-right
-      - if unconfirmed_email?
-        = link_to _('Resend confirmation email'), new_user_confirmation_path
-      - else
-        = link_to _('Forgot your password?'), new_password_path(:user)
+- url = admin_mode ? admin_session_path : session_path(:user)
+- form_class = admin_mode ? '' : 'js-arkose-labs-form'
+- button_class = admin_mode ? '' : 'js-sign-in-button'
+- submit_message = admin_mode ? _('Enter admin mode') : _('Sign in')
 
-  .form-group
-    - if captcha_enabled? || captcha_on_login_required?
-      = recaptcha_tags nonce: content_security_policy_nonce
+= gitlab_ui_form_for(:user, url: url, html: { class: ['gl-p-5 gl-show-field-errors', form_class], aria: { live: 'assertive' }, data: { testid: 'sign-in-form' }}) do |f|
+  - if admin_mode
+    .form-group
+      = f.label :password, _('Password')
+      = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', name: 'user[password]', testid: 'password-field' }
+  - else
+    .form-group
+      = f.label :login, _('Username or primary email')
+      = f.text_field :login, value: @invite_email, class: 'form-control gl-form-input js-username-field', autocomplete: 'username', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { testid: 'username-field' }
+    .form-group
+      = f.label :password, _('Password')
+      = f.password_field :password, class: 'form-control gl-form-input js-password', data: { id: 'user_password', name: 'user[password]', testid: 'password-field' }
+      .form-text.gl-text-right
+        - if unconfirmed_email?
+          = link_to _('Resend confirmation email'), new_user_confirmation_path
+        - else
+          = link_to _('Forgot your password?'), new_password_path(:user)
 
-  - if remember_me_enabled?
-    .gl-mb-3
-      = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
+    .form-group
+      - if captcha_enabled? || captcha_on_login_required?
+        = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: 'js-sign-in-button', data: { testid: 'sign-in-button' } }) do
-    = _('Sign in')
+    - if remember_me_enabled?
+      .gl-mb-3
+        = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { autocomplete: 'off' }
+
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { class: [button_class], data: { testid: 'sign-in-button' } }) do
+    = submit_message

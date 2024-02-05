@@ -9,15 +9,7 @@ module API
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
     if Gitlab.dev_or_test_env?
-      integrations['mock-ci'] = [
-        {
-          required: true,
-          name: :mock_service_url,
-          type: String,
-          desc: 'URL to the mock integration'
-        }
-      ]
-      integrations['mock-deployment'] = []
+      integrations['mock-ci'] = ::Integrations::MockCi.api_fields
       integrations['mock-monitoring'] = []
 
       integration_classes += Helpers::IntegrationsHelpers.development_integration_classes

@@ -153,7 +153,8 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
         expect(ProtectedBranch.last.name).to eq('*-stable')
       end
 
-      it "displays the number of matching branches" do
+      it "displays the number of matching branches",
+        quarantine: 'https://gitlab.com/gitlab-org/quality/engineering-productivity/flaky-tests/-/issues/3459' do
         project.repository.add_branch(admin, 'production-stable', 'master')
         project.repository.add_branch(admin, 'staging-stable', 'master')
 

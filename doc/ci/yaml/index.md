@@ -111,7 +111,8 @@ is not used.
 - [`retry`](#retry)
 - [`services`](#services)
 - [`tags`](#tags)
-- [`timeout`](#timeout)
+- [`timeout`](#timeout), though due to [issue 213634](https://gitlab.com/gitlab-org/gitlab/-/issues/213634)
+  this keyword has no effect.
 
 **Example of `default`**:
 

@@ -1258,7 +1258,7 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `mock_service_url` | string | true | `http://localhost:4004`. |
+| `mock_service_url` | string | true | URL of the Mock CI integration. |
 | `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
 
 ### Disable Mock CI

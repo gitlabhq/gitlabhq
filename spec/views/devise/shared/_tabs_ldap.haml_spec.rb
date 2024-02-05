@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'devise/shared/_signin_box' do
+RSpec.describe 'devise/shared/_tabs_ldap.html.haml', feature_category: :system_access do
   describe 'Crowd form' do
     before do
       stub_devise
-      allow(view).to receive(:ldap_servers).and_return([])
-      allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+      allow(view).to receive(:current_application_settings)
+        .and_return(Gitlab::CurrentSettings.current_application_settings)
       allow(view).to receive(:captcha_enabled?).and_return(false)
       allow(view).to receive(:captcha_on_login_required?).and_return(false)
       allow(view).to receive(:experiment_enabled?).and_return(false)
@@ -43,6 +43,8 @@ RSpec.describe 'devise/shared/_signin_box' do
   end
 
   def stub_devise
+    allow(view).to receive(:admin_mode).and_return(false)
+    allow(view).to receive(:ldap_servers).and_return([])
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:resource).and_return(spy)
     allow(view).to receive(:resource_name).and_return(:user)

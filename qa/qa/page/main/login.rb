@@ -32,7 +32,6 @@ module QA
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
           element 'ldap-tab'
           element 'standard-tab'
-          element 'register-tab'
         end
 
         view 'app/views/devise/shared/_tab_single.html.haml' do

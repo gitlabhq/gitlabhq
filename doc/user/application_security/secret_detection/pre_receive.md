@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Pre-receive secret detection
 
 DETAILS:
+**Tier:** Ultimate
+**Offering:** Dedicated
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
