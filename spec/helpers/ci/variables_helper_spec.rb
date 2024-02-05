@@ -20,28 +20,6 @@ RSpec.describe Ci::VariablesHelper, feature_category: :secrets_management do
     end
   end
 
-  describe '#ci_variable_protected?' do
-    let(:variable) { build_stubbed(:ci_variable, key: 'test_key', value: 'test_value', protected: true) }
-
-    context 'when variable is provided and only_key_value is false' do
-      it 'expect ci_variable_protected? to return true' do
-        expect(helper.ci_variable_protected?(variable, false)).to eq(true)
-      end
-    end
-
-    context 'when variable is not provided / provided and only_key_value is true' do
-      it 'is equal to the value of ci_variable_protected_by_default?' do
-        expect(helper.ci_variable_protected?(nil, true)).to eq(
-          helper.ci_variable_protected_by_default?
-        )
-
-        expect(helper.ci_variable_protected?(variable, true)).to eq(
-          helper.ci_variable_protected_by_default?
-        )
-      end
-    end
-  end
-
   describe '#ci_variable_maskable_raw_regex' do
     it 'converts to a javascript regex' do
       expect(helper.ci_variable_maskable_raw_regex).to eq("^\\S{8,}$")

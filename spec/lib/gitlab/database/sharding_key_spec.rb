@@ -40,12 +40,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
   #   2. It does not yet have a foreign key as the index is still being backfilled
   let(:allowed_to_be_missing_foreign_key) do
     [
-      'p_catalog_resource_sync_events.project_id',
-      'zoekt_indices.namespace_id',
-      'zoekt_repositories.project_identifier',
+      'geo_repository_deleted_events.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439935
       'namespace_descendants.namespace_id',
+      'p_batched_git_ref_updates_deletions.project_id',
+      'p_catalog_resource_sync_events.project_id',
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
-      'geo_repository_deleted_events.project_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/439935
+      'zoekt_indices.namespace_id',
+      'zoekt_repositories.project_identifier'
     ]
   end
 
