@@ -381,7 +381,7 @@ Note the following:
 
 - For `custom` scans, you must specify one of `ci_configuration` or `ci_configuration_path`.
 - `custom` scans are being executed for triggered rules only.
-- Jobs variables and stages definitions from `custom` scans take precedence over the project's CI/CD configuration.
+- Jobs variables from `custom` scans take precedence over the project's CI/CD configuration.
 
 #### Example security policies project
 

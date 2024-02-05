@@ -165,6 +165,14 @@ query {
           }
         }
         eventTypeFilters
+        namespaceFilter {
+          id
+          namespace {
+            id
+            name
+            fullName
+          }
+        }
       }
     }
   }
@@ -333,6 +341,93 @@ mutation {
 ```
 
 Event type filters are removed if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
+#### Namespace filters
+
+> - Namespace filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 16.7.
+
+When you apply a namespace filter to a group, users can filter streamed audit events per destination for a specific subgroup or project of the group. Otherwise, the
+destination receives all audit events.
+
+A streaming destination that has a namespace filter set has a **filtered** (**{filter}**) label.
+
+##### Use the API to add a namespace filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can add a namespace filter by using the `auditEventsStreamingHttpNamespaceFiltersAdd` mutation type for both subgroups and projects.
+
+The namespace filter is added if:
+
+- The API returns an empty `errors` object.
+- The API responds with `200 OK`.
+
+###### Mutation for subgroup
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersAdd {
+  auditEventsStreamingHttpNamespaceFiltersAdd(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+    groupPath: "path/to/subgroup"
+  }) {
+    errors
+    namespaceFilter {
+      id
+      namespace {
+        id
+        name
+        fullName
+      }
+    }
+  }
+}
+```
+
+###### Mutation for project
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersAdd {
+  auditEventsStreamingHttpNamespaceFiltersAdd(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+    projectPath: "path/to/project"
+  }) {
+    errors
+    namespaceFilter {
+      id
+      namespace {
+        id
+        name
+        fullName
+      }
+    }
+  }
+}
+```
+
+##### Use the API to remove a namespace filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can remove a namespace filter by using the `auditEventsStreamingHttpNamespaceFiltersDelete` mutation type:
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersDelete {
+  auditEventsStreamingHttpNamespaceFiltersDelete(input: {
+    namespaceFilterId: "gid://gitlab/AuditEvents::Streaming::HTTP::NamespaceFilter/5"
+  }) {
+    errors
+  }
+}
+```
+
+Namespace filter is removed if:
 
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
