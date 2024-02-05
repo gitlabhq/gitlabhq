@@ -698,21 +698,18 @@ paths:
         required: true
         schema:
           type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              required:
-              - branch
-              - ref
-              properties:
-                branch:
-                  type: string
-                  description: The name of the branch
-                ref:
-                  type: string
-                  description: Create branch from commit sha or existing branch
+      - name: branch
+        in: query
+        description: The name of the branch
         required: true
+        schema:
+          type: string
+      - name: ref
+        in: query
+        description: Create branch from commit sha or existing branch
+        required: true
+        schema:
+          type: string
       responses:
         201:
           description: Create branch

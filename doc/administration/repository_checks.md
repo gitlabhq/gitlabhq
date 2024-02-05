@@ -20,6 +20,10 @@ committed to a repository. GitLab administrators can:
   `git fsck` against all repositories and generate repository checksums, as a way to compare repositories on different
   servers.
 
+Checks that aren't manually run on the command line are executed through a Gitaly node. For information on Gitaly
+repository consistency checks, some disabled checks, and how to configure consistency checks, see
+[Repository consistency checks](gitaly/consistency_checks.md).
+
 ## Check a project's repository using GitLab UI
 
 To check a project's repository using GitLab UI:

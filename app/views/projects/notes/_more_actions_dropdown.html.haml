@@ -5,7 +5,7 @@
     = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle has-tooltip', data: { title: 'More actions', toggle: 'dropdown', container: 'body', testid: 'more-actions-dropdown' }})
     %ul.dropdown-menu.more-actions-dropdown.dropdown-open-left
       %li
-        = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'btn-clipboard gl-rounded-0!', size: :medium, hide_tooltip: true, hide_button_icon: true)
+        = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'gl-rounded-0!', size: :medium, hide_tooltip: true, hide_button_icon: true)
       - unless is_current_user
         .gl-ml-n2
           .js-report-abuse-dropdown-item{ data: { report_abuse_path: add_category_abuse_reports_path, reported_user_id: note.author.id, reported_from_url: noteable_note_url(note) } }

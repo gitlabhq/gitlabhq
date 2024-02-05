@@ -233,17 +233,6 @@
   }
 }
 
-.btn-clipboard {
-  border: 0;
-  padding: 0 5px;
-
-  svg {
-    top: auto;
-    width: 16px;
-    height: 16px;
-  }
-}
-
 .input-group-prepend,
 .input-group-append {
   .btn {
@@ -255,11 +244,6 @@
 
     &:active {
       outline: none;
-    }
-
-    &.btn-clipboard {
-      padding-left: 15px;
-      padding-right: 15px;
     }
   }
 

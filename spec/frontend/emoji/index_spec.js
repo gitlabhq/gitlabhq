@@ -920,18 +920,6 @@ describe('emoji', () => {
       createMockEmojiClient();
     });
 
-    describe('flag disabled', () => {
-      beforeEach(() => {
-        window.gon = {};
-      });
-
-      it('returns empty emoji data', async () => {
-        const result = await loadCustomEmojiWithNames();
-
-        expect(result).toEqual({ emojis: {}, names: [] });
-      });
-    });
-
     describe('when not in a group', () => {
       beforeEach(() => {
         delete document.body.dataset.groupFullPath;

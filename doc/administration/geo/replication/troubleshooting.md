@@ -775,7 +775,7 @@ The following configuration example:
 - [Uses the new configuration structure](../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change) required from GitLab 16.0.
 - Ignores five common check failures.
 
-[The Gitaly documentation has more details](../../gitaly/configure_gitaly.md#repository-consistency-checks)
+[The Gitaly documentation has more details](../../gitaly/consistency_checks.md)
 about other Git check failures and older versions of GitLab.
 
 ```ruby

@@ -10,7 +10,6 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
   let_it_be(:custom_emoji) { create(:custom_emoji, group: group) }
 
   before do
-    stub_feature_flags(custom_emoji: true)
     group.add_developer(current_user)
   end
 
@@ -33,16 +32,6 @@ RSpec.describe 'getting custom emoji within namespace', feature_category: :share
       expect(response).to have_gitlab_http_status(:ok)
       expect(graphql_data['group']['customEmoji']['nodes'].count).to eq(1)
       expect(graphql_data['group']['customEmoji']['nodes'].first['name']).to eq(custom_emoji.name)
-    end
-
-    it 'returns empty array when the custom_emoji feature flag is disabled' do
-      stub_feature_flags(custom_emoji: false)
-
-      post_graphql(custom_emoji_query(group), current_user: current_user)
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(graphql_data['group']).to be_present
-      expect(graphql_data['group']['customEmoji']['nodes']).to eq([])
     end
 
     it 'returns nil group when unauthorised' do

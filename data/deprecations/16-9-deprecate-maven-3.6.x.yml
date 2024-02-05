@@ -8,4 +8,4 @@
   body: |  # (required) Don't change this line.
     GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
 
-    Maven versions below 3.6.3 have reached their end-of-life. Users are advised to upgrade to 3.8.8 or greater.
+    Users are advised to upgrade to 3.8.8 or greater.

@@ -33,23 +33,6 @@
   max-width: px-to-rem(500px);
 }
 
-.created-deploy-token-container {
-  .deploy-token-field {
-    width: 90%;
-    display: inline;
-  }
-
-  .btn-clipboard {
-    background-color: var(--white, $white);
-    border: 1px solid var(--gray-100, $gray-100);
-  }
-
-  .deploy-token-help-block {
-    display: block;
-    margin-bottom: 0;
-  }
-}
-
 .deploy-freeze-table {
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
     .truncated-container {

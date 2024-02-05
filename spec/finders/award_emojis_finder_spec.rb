@@ -12,23 +12,7 @@ RSpec.describe AwardEmojisFinder do
   let_it_be(:issue_2_thumbsup) { create(:award_emoji, name: 'thumbsup', awardable: issue_2) }
   let_it_be(:issue_2_thumbsdown) { create(:award_emoji, name: 'thumbsdown', awardable: issue_2) }
 
-  before do
-    stub_feature_flags(custom_emoji: false)
-  end
-
   describe 'param validation' do
-    it 'raises an error if `name` is invalid' do
-      expect { described_class.new(issue_1, { name: 'invalid' }).execute }.to raise_error(
-        ArgumentError,
-        'Invalid name param'
-      )
-    end
-
-    it 'does not raise an error if `name` is numeric' do
-      subject = described_class.new(issue_1, { name: 100 })
-      expect { subject.execute }.not_to raise_error
-    end
-
     it 'raises an error if `awarded_by` is invalid' do
       expectation = [ArgumentError, 'Invalid awarded_by param']
 

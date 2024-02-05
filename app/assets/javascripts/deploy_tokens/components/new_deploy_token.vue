@@ -184,7 +184,7 @@ export default {
         <h5 class="gl-mt-0!">{{ $options.translations.newTokenMessage }}</h5>
         <gl-form-group>
           <template #description>
-            <div class="deploy-token-help-block gl-mt-2">
+            <div class="gl-mt-2">
               <gl-sprintf
                 :message="$options.translations.newTokenUsernameDescription"
                 :placeholders="placeholders.link"
@@ -211,7 +211,7 @@ export default {
         </gl-form-group>
         <gl-form-group class="gl-mb-0">
           <template #description>
-            <div class="deploy-token-help-block gl-mt-2">
+            <div class="gl-mt-2">
               <gl-sprintf
                 :message="$options.translations.newTokenDescription"
                 :placeholders="placeholders.i"

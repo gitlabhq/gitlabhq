@@ -526,7 +526,7 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 
 GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
 
-Maven versions below 3.6.3 have reached their end-of-life. Users are advised to upgrade to 3.8.8 or greater.
+Users are advised to upgrade to 3.8.8 or greater.
 
 </div>
 

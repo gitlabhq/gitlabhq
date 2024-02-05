@@ -79,7 +79,7 @@ async function loadEmojiWithNames() {
 export async function loadCustomEmojiWithNames() {
   const emojiData = { emojis: {}, names: [] };
 
-  if (document.body?.dataset?.groupFullPath && window.gon?.features?.customEmoji) {
+  if (document.body?.dataset?.groupFullPath) {
     const client = createApolloClient();
     const { data } = await client.query({
       query: customEmojiQuery,

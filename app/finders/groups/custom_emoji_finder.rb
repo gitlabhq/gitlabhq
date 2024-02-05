@@ -12,8 +12,6 @@ module Groups
     end
 
     def execute
-      return CustomEmoji.none if Feature.disabled?(:custom_emoji, group)
-
       return CustomEmoji.for_resource(group) unless params[:include_ancestor_groups]
 
       CustomEmoji.for_namespaces(group_ids_for(group))

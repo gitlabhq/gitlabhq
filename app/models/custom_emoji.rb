@@ -48,7 +48,7 @@ class CustomEmoji < ApplicationRecord
   alias_attribute :url, :file # this might need a change in https://gitlab.com/gitlab-org/gitlab/-/issues/230467
 
   scope :for_resource, -> (resource) do
-    return none if resource.nil? || Feature.disabled?(:custom_emoji, resource)
+    return none if resource.nil?
     return none unless resource.is_a?(Group)
 
     resource.custom_emoji

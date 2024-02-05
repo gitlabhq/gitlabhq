@@ -463,10 +463,6 @@
     }
   }
 
-  .btn-clipboard:hover {
-    color: $gl-text-color;
-  }
-
   .issuable-sidebar {
     height: 100%;
 
@@ -652,26 +648,6 @@
 
       .author {
         display: none;
-      }
-
-      .btn-clipboard {
-        /*
-          This change should be temporary, because the DOM currently gets
-          generated from a ruby definition in `app/helpers/button_helper.rb`.
-          As soon as the `copy to clipboard` button will be transferred to
-          Vue this should be adjusted as well.
-        */
-        flex: 1;
-        align-self: stretch;
-        padding: 0;
-
-        border: 0;
-        background: transparent;
-        color: $gl-text-color-secondary;
-
-        &:hover {
-          color: $gl-text-color;
-        }
       }
 
       &.multiple-users {
