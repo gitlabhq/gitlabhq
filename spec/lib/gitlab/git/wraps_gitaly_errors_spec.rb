@@ -85,4 +85,35 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors, feature_category: :gitaly do
         .to raise_error(RuntimeError)
     end
   end
+
+  context 'when wrap GRPC::NotFound' do
+    context 'with Gitaly::ReferenceNotFoundError detail' do
+      let(:original_error) do
+        new_detailed_error(
+          GRPC::Core::StatusCodes::NOT_FOUND,
+          'not found',
+          Gitaly::ReferenceNotFoundError.new(reference_name: "foobar")
+        )
+      end
+
+      it "wraps in a Gitlab::Git::ReferenceNotFoundError" do
+        expect { wrapper.wrapped_gitaly_errors { raise original_error } }.to raise_error do |wrapped_error|
+          expect(wrapped_error).to be_a(Gitlab::Git::ReferenceNotFoundError)
+          expect(wrapped_error.name).to eql("foobar")
+        end
+      end
+    end
+
+    context 'without detail' do
+      let(:original_error) do
+        GRPC::NotFound
+      end
+
+      it "wraps in a Gitlab::Git::Repository::NoRepository" do
+        expect { wrapper.wrapped_gitaly_errors { raise original_error } }.to raise_error do |wrapped_error|
+          expect(wrapped_error).to be_a(Gitlab::Git::Repository::NoRepository)
+        end
+      end
+    end
+  end
 end

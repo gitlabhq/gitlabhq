@@ -23,7 +23,6 @@ module Gitlab
     CommandError = Class.new(BaseError)
     CommitError = Class.new(BaseError)
     OSError = Class.new(BaseError)
-    UnknownRef = Class.new(BaseError)
     AmbiguousRef = Class.new(BaseError)
     CommandTimedOut = Class.new(CommandError)
     InvalidPageToken = Class.new(BaseError)
@@ -43,6 +42,15 @@ module Gitlab
         else
           {}
         end
+      end
+    end
+
+    class ReferenceNotFoundError < BaseError
+      attr_reader :name
+
+      def initialize(msg = nil, name = "")
+        super(msg)
+        @name = name
       end
     end
 

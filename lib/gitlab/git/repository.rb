@@ -139,7 +139,7 @@ module Gitlab
         # `CommandError` by the wrapper. This has been converted in v15.3.0 to instead return a structured
         # error with a `tag_not_found` error, so rescuing from `Internal` errors can be removed in v15.4.0 and
         # later.
-      rescue Gitlab::Git::UnknownRef
+      rescue Gitlab::Git::ReferenceNotFoundError
         # This is the new error returned by `find_tag`, which knows to translate the structured error returned
         # by Gitaly when the tag does not exist.
       end

@@ -39,12 +39,13 @@ download-knapsack-report:
 _quarantine:
   extends:
     - .qa
-    - .rules:test:manual
+    - .rules:test:manual-except-default-branch
   needs:
     - job: trigger-omnibus
       optional: true
   stage: test
   variables:
+    CREATE_TEST_FAILURE_ISSUES: 'false'
     QA_RSPEC_TAGS: --tag quarantine
 
 # ------------------------------------------

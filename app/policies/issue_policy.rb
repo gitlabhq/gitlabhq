@@ -31,6 +31,14 @@ class IssuePolicy < IssuablePolicy
 
   condition(:group_issue, scope: :subject) { subject_container.is_a?(Group) }
 
+  condition(:service_desk_enabled, scope: :subject) do
+    if group_issue?
+      subject_container.has_project_with_service_desk_enabled?
+    else
+      subject_container.service_desk_enabled?
+    end
+  end
+
   rule { group_issue & can?(:read_group) }.policy do
     enable :create_note
   end
@@ -103,6 +111,8 @@ class IssuePolicy < IssuablePolicy
   rule { can?(:guest_access) & can?(:read_issue) }.policy do
     enable :admin_issue_relation
   end
+
+  rule { support_bot & service_desk_enabled }.enable :admin_issue_relation
 
   rule { can_read_crm_contacts }.policy do
     enable :read_crm_contacts

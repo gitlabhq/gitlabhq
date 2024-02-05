@@ -19539,6 +19539,9 @@ msgstr ""
 msgid "Epic events"
 msgstr ""
 
+msgid "Epic issue not found for given params"
+msgstr ""
+
 msgid "Epic not found for given params"
 msgstr ""
 
@@ -26114,6 +26117,9 @@ msgid "Insufficient permissions"
 msgstr ""
 
 msgid "Insufficient permissions for dast_configuration keyword"
+msgstr ""
+
+msgid "Insufficient permissions to update relation"
 msgstr ""
 
 msgid "Integration"

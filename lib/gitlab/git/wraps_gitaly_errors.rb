@@ -13,7 +13,7 @@ module Gitlab
         # status code to ensure adequate coverage of error cases.
         case e.code
         when GRPC::Core::StatusCodes::NOT_FOUND
-          raise Gitlab::Git::Repository::NoRepository, e
+          handle_not_found(e)
         when GRPC::Core::StatusCodes::INVALID_ARGUMENT
           raise ArgumentError, e
         when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
@@ -38,6 +38,19 @@ module Gitlab
           )
         else
           raise ResourceExhaustedError, _("Upstream Gitaly has been exhausted. Try again later")
+        end
+      end
+
+      def handle_not_found(exception)
+        detail = Gitlab::GitalyClient.decode_detailed_error(exception)
+
+        case detail.class.name
+        when Gitaly::ReferenceNotFoundError.name
+          raise Gitlab::Git::ReferenceNotFoundError.new(
+            exception, detail.reference_name
+          )
+        else
+          raise Gitlab::Git::Repository::NoRepository, exception
         end
       end
     end
