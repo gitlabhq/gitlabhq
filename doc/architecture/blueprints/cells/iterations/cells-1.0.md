@@ -319,29 +319,37 @@ The Secondary Cell implements a solution to guarantee uniqueness of primary data
 
 #### Simple uniqueness of Database Sequences
 
+Simple uniqueness of database sequences refers to
+the practice of claiming, using and replenishing a cluster-wide unique range of IDs for a table.
+
 Our DDL schema uses ID generation in the form: `id bigint DEFAULT nextval('product_analytics_events_experimental_id_seq'::regclass) NOT NULL`.
 
-The `/api/v4/internal/cells/database/claim` would execute the following sequence to claim range:
+The `/api/v4/internal/cells/database/claim` would execute the following logic
+to atomically claim a range of IDs.
 
 ```ruby
 def claim_table_seq(table, count)
-  # Example: Use trick to get increase sequence by specific number in transactional way
-  # Making the transaction to be "atomic".
   sql = <<-SQL
-    begin;
-      ALTER SEQUENCE ? INCREMENT BY ?;
-      SELECT nextval(?);
-      ALTER SEQUENCE ? INCREMENT BY 1;
-      % TODO: insert into cells_sequence_claims(cell_id, table_name, start_id, end_id)
-    commit;
+    BEGIN;
+      -- `ALTER SEQUENCE` effectively locks `some_seq` for write and read.
+      ALTER SEQUENCE seq_name INCREMENT BY 1000;
+      SELECT nextval(seq_name); -- Suppose this returned 1001.
+      ALTER SEQUENCE seq_name INCREMENT BY 1; -- UNDO "INCREMENT BY 1000".
+
+      INSERT INTO cells_sequence_claims (cell_id, table_name, start_id, end_id)
+        VALUES (cell_id, table_name, 2, 1001);
+    COMMIT;
   SQL
+
   seq_name = "#{table}_id_seq"
   last_id = select_one(sql, seq_name, limit, seq_name, seq_name).first
   { start: last_id - count, limit: count }
 end
 ```
 
-The ReplenishDatabaseSequencesWorker would check how much space is left in a sequence, and request a new range if the value goes below the threshold.
+#### Replenishing available IDs
+
+The `ReplenishDatabaseSequencesWorker` would check how much space is left in a sequence, and request a new range if the value goes below the threshold.
 
 ```ruby
 def replenish_table_seq(table, lower_limit, count)
@@ -357,6 +365,16 @@ end
 
 This makes us lose the `lower_limit` of IDs of sequence creating gaps. However, in this model we need to replenish the
 sequence ahead of time, otherwise we will have catastrophic failure on inserting new records.
+
+The above claiming and replenishing approach can potentially waste too much ID space
+claimed by each table.
+
+For example, after having claimed the range from `101` to `200`,
+a table might choose to replenish after it's used up the first 80 IDs (`101` to `180`)
+leaving the remaining 20 IDs to be wasted.
+
+To efficiently utilize all claimed IDs, we introduce the concept of robust uniqueness
+in which a table maintains two alternating sequences and uses a custom implementation for `nextval` and similar functions.
 
 #### Robust uniqueness of table sequences
 
@@ -416,6 +434,8 @@ $$;
 - Database migrations.
   - Work out of the box, and are isolated to the Cell.
   - Because we don't share databases across Cells, the Cell has full ownership of `main_clusterwide` tables.
+  - Fixing all the cross-joins between cluster-wide tables and cell-local tables is a large work.
+    Storing `main_clusterwide` tables locally in each cell allows us to save time for the first iteration.
 
 ## Cons
 

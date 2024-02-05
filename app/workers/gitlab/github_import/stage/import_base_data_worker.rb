@@ -26,7 +26,11 @@ module Gitlab
             klass.new(project, client).execute
           end
 
-          ImportPullRequestsWorker.perform_async(project.id)
+          if import_settings(project).prioritize_collaborators?
+            ImportCollaboratorsWorker.perform_async(project.id)
+          else
+            ImportPullRequestsWorker.perform_async(project.id)
+          end
         end
       end
     end

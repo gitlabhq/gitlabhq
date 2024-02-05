@@ -376,6 +376,7 @@ The following table lists group permissions available for each role:
 | Disable notification emails                                                             |       |          |           |            | ✓     |
 | Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓ (3) |
 | Edit group settings                                                                     |       |          |           |            | ✓     |
+| Configure project templates                                                             |       |          |           |            | ✓     |
 | Filter members by 2FA status                                                            |       |          |           |            | ✓     |
 | Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |    |            | ✓     |
 | Manage group level CI/CD variables                                                      |       |          |           |            | ✓     |

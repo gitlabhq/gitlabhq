@@ -27,7 +27,7 @@ const REVIEW_STATE_ICONS = {
     title: __('Reviewer commented'),
   },
   UNREVIEWED: {
-    name: 'dotted-circle',
+    name: 'dash-circle',
     title: __('Awaiting review'),
   },
 };
@@ -221,7 +221,7 @@ export default {
           v-gl-tooltip.left
           :size="16"
           :title="reviewedButNotApprovedTooltip(user)"
-          name="dotted-circle"
+          name="dash-circle"
           class="gl-float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
           data-testid="reviewed-not-approved"
         />

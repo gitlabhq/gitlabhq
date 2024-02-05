@@ -179,18 +179,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           end
         end
 
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
-
-            subject.execute
-          end
-        end
-
         it 'logs its progress' do
           expect_log(stage: 'import_standalone_pr_comments', message: 'starting')
           expect_log(stage: 'import_standalone_pr_comments', message: 'finished')
@@ -271,18 +259,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(reply_note.updated_at).to eq(reply.created_at)
           expect(reply_note.position.old_line).to be_nil
           expect(reply_note.position.new_line).to eq(pr_inline_note.new_pos)
-        end
-
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
-
-            subject.execute
-          end
         end
 
         it 'logs its progress' do

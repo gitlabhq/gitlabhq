@@ -8580,9 +8580,6 @@ msgstr ""
 msgid "Bot"
 msgstr ""
 
-msgid "Bot comments"
-msgstr ""
-
 msgid "Both SSH and HTTP(S)"
 msgstr ""
 
@@ -12412,6 +12409,12 @@ msgid "Commenting on this line is not supported"
 msgstr ""
 
 msgid "Comments"
+msgstr ""
+
+msgid "Comments (from bots)"
+msgstr ""
+
+msgid "Comments (from users)"
 msgstr ""
 
 msgid "Commit"
@@ -23161,10 +23164,24 @@ msgstr ""
 msgid "Google Play service account key."
 msgstr ""
 
+msgid "GoogleArtifactRegistry|%d more tag"
+msgid_plural "GoogleArtifactRegistry|%d more tags"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Configure in settings"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Copy image name"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Created"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Name"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Open in Google Cloud"
@@ -23174,6 +23191,12 @@ msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Repository name"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Tags"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Updated"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
@@ -45342,6 +45365,9 @@ msgid "SecurityReports|There was an error dismissing the vulnerability."
 msgstr ""
 
 msgid "SecurityReports|There was an error fetching the finding. Please try again."
+msgstr ""
+
+msgid "SecurityReports|There was an error fetching the finding. The security report for this pipeline may have expired. To generate a new security report, go the %{boldStart}Pipelines%{boldEnd} tab and run a pipeline."
 msgstr ""
 
 msgid "SecurityReports|There was an error reverting the dismissal."

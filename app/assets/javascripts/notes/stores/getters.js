@@ -23,31 +23,37 @@ const getDraftComments = (state) => {
 };
 
 const hideActivity = (filters, discussion) => {
-  const firstNote = discussion.notes[0];
+  if (filters.length === constants.MR_FILTER_OPTIONS) return false;
+  if (filters.length === 0) return true;
 
-  return constants.MR_FILTER_OPTIONS.some((f) => {
-    if (filters.includes(f.value) || f.value === '*') return false;
+  const firstNote = discussion.notes[0];
+  const hidingFilters = constants.MR_FILTER_OPTIONS.filter(({ value }) => !filters.includes(value));
+
+  for (let i = 0, len = hidingFilters.length; i < len; i += 1) {
+    const filter = hidingFilters[i];
 
     if (
       // For all of the below firstNote is the first note of a discussion, whether that be
       // the first in a discussion or a single note
       // If the filter option filters based on icon check against the first notes system note icon
-      f.systemNoteIcons?.includes(firstNote.system_note_icon_name) ||
+      filter.systemNoteIcons?.includes(firstNote.system_note_icon_name) ||
       // If the filter option filters based on note type use the first notes type
-      (f.noteType?.includes(firstNote.type) && !firstNote.author.bot) ||
+      (filter.noteType?.includes(firstNote.type) && !firstNote.author?.bot) ||
       // If the filter option filters based on the note text then check if it is sytem
       // and filter based on the text of the system note
-      (firstNote.system && f.noteText?.some((t) => firstNote.note.includes(t))) ||
+      (firstNote.system && filter.noteText?.some((t) => firstNote.note.includes(t))) ||
       // For individual notes we filter if the discussion is a single note and is not a sytem
-      (f.individualNote === discussion.individual_note && !firstNote.system) ||
+      (filter.individualNote === discussion.individual_note &&
+        !firstNote.system &&
+        !firstNote.author?.bot) ||
       // For bot comments we filter on the authors `bot` boolean attribute
-      (f.bot && firstNote.author.bot)
+      (filter.bot && firstNote.author?.bot)
     ) {
       return true;
     }
+  }
 
-    return false;
-  });
+  return false;
 };
 
 export const discussions = (state, getters, rootState) => {

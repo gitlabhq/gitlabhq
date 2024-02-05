@@ -336,8 +336,8 @@ only the items that are relevant to you.
 
    - Assignees & Reviewers
    - Approvals
-   - Bot comments
-   - Comments
+   - Comments (from bots)
+   - Comments (from users)
    - Commits & branches
    - Edits
    - Labels

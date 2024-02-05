@@ -153,6 +153,10 @@ To start using Internal Events Tracking, follow these steps:
 
 1. Update your test to use the `internal event tracking` shared example.
 
+1. Remove the event's name from [hll_redis_legacy_events](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml)
+
+1. Add the event to [hll_redis_key_overrides](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml) file. The format used in this file is: `project_created-user: 'project_created'`, where `project_created` is the event's name and `user` is the unique value that has been specified in the metric definition files.
+
 ### Frontend
 
 If you are calling `trackRedisHllUserEvent` in the frontend to track the frontend event, you can convert this to Internal events by using mixin, raw JavaScript or data tracking attribute,

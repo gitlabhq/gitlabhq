@@ -17,8 +17,9 @@ module Gitlab
 
       # The known importer stages and their corresponding Sidekiq workers.
       #
-      # Note: AdvanceStageWorker is not used for the repository, base_data, and pull_requests stages.
+      # Note: AdvanceStageWorker is not used to initiate the repository, base_data, and pull_requests stages.
       # They are included in the list for us to easily see all stage workers and the order in which they are executed.
+
       STAGES = {
         repository: Stage::ImportRepositoryWorker,
         base_data: Stage::ImportBaseDataWorker,

@@ -24,19 +24,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Stage::ImportRepositoryWorker, fea
         worker.perform(project.id)
       end
 
-      context 'when the bitbucket_server_convert_mentions_to_users flag is disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-        end
-
-        it 'skips the user import and schedules the next stage' do
-          expect(Gitlab::BitbucketServerImport::Stage::ImportPullRequestsWorker).to receive(:perform_async)
-            .with(project.id)
-
-          worker.perform(project.id)
-        end
-      end
-
       it 'logs stage start and finish' do
         expect(Gitlab::BitbucketServerImport::Logger)
           .to receive(:info).with(hash_including(message: 'starting stage', project_id: project.id))
