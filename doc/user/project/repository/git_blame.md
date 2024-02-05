@@ -17,6 +17,9 @@ commit hash.
 
 ## View blame for a file
 
+> - Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `graphql_git_blame` and `highlight_js_worker`. Enabled by default.
+> - Feature flags [`highlight_js_worker`](https://gitlab.com/gitlab-org/gitlab/-/issues/432706) and [`graphql_git_blame`](https://gitlab.com/gitlab-org/gitlab/-/issues/439847) removed in GitLab 16.9.
+
 Prerequisites:
 
 - The file type must be text-based. The GitLab UI does not display
@@ -27,7 +30,10 @@ To view the blame for a file:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Repository**.
 1. Select the file you want to review.
-1. In the upper-right corner, select **Blame**, and go to the line you want to see.
+1. Either:
+   - To change the view of the current file, in the file header, select **Blame**.
+   - To open the full blame page, in the upper-right corner, select **Blame**.
+1. Go to the line you want to see.
 
 When you select **Blame**, this information is displayed:
 
@@ -37,29 +43,6 @@ To see the precise date and time of the commit, hover over the date. The vertica
 to the left of the user avatar shows the general age of the commit. The newest
 commits have a dark blue bar. As the age of the commit increases, the bar color
 changes to light gray.
-
-### View blame directly in the file view
-<!--
-When `graphql_git_blame` feature flag is removed,
-delete this section and update the steps in "View blame for a file".
--->
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `graphql_git_blame` and `highlight_js_worker`. Enabled by default.
-> - Feature flag `highlight_js_worker` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432706) in GitLab 16.9.
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `graphql_git_blame`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, you can additionally view blame for a file directly from the file page.
-
-To do so:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
-1. Select the file you want to review.
-1. In the file header, select **Blame**, and go to the line you want to see.
 
 ### Blame previous commit
 

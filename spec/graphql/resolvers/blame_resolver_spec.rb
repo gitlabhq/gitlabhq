@@ -29,16 +29,6 @@ RSpec.describe Resolvers::BlameResolver, feature_category: :source_code_manageme
         project.add_developer(user)
       end
 
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(graphql_git_blame: false)
-        end
-
-        it 'returns nothing' do
-          expect(subject).to be_nil
-        end
-      end
-
       shared_examples 'argument error' do |error_message|
         it 'raises an ArgumentError' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError,

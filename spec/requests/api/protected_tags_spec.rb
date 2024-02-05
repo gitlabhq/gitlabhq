@@ -142,7 +142,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
 
       it 'protects a single tag with developers can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
-            params: { name: tag_name, create_access_level: 30 }
+          params: { name: tag_name, create_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_tag')
@@ -152,7 +152,7 @@ RSpec.describe API::ProtectedTags, feature_category: :source_code_management do
 
       it 'protects a single tag with no one can create tags' do
         post api("/projects/#{project.id}/protected_tags", user),
-            params: { name: tag_name, create_access_level: 0 }
+          params: { name: tag_name, create_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(:created)
         expect(response).to match_response_schema('protected_tag')

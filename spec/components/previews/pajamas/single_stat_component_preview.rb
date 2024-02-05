@@ -14,7 +14,6 @@ module Pajamas
     # @param meta_text text
     # @param meta_icon text
     # @param variant select {{ Pajamas::BadgeComponent::VARIANT_OPTIONS }}
-    # @param hide_units toggle
     def default(
       title: 'Single stat',
       stat_value: '9,001',

@@ -3,13 +3,13 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/migration/add_limit_to_text_columns'
 
-RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
+RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns, feature_category: :database do
   context 'when in migration' do
     let(:msg) { 'Text columns should always have a limit set (255 is suggested)[...]' }
 
     before do
       allow(cop).to receive(:in_migration?).and_return(true)
-      allow(cop).to receive(:version).and_return(described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE + 5)
+      allow(cop).to receive(:version).and_return(described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE)
     end
 
     context 'when text columns are defined without a limit' do
@@ -243,6 +243,95 @@ RSpec.describe RuboCop::Cop::Migration::AddLimitToTextColumns do
               add_column :no_offense_on_down, :email, :text
 
               add_column :no_offense_on_down, :role, :text, default: 'default'
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'when `limit:` is not supported' do
+      let(:msg) do
+        <<~MSG.tr("\n", " ").strip
+          Text columns should always have a limit set (255 is suggested).
+          Using limit: is not supported in this version. You can add a limit to a `text` column
+          by using `add_text_limit` or `.text_limit` inside `create_table`
+        MSG
+      end
+
+      before do
+        allow(cop).to receive(:version).and_return(described_class::TEXT_LIMIT_ATTRIBUTE_ALLOWED_SINCE - 1)
+      end
+
+      it 'registers offenses' do
+        expect_offense(<<~RUBY)
+          class TestTextLimits < ActiveRecord::Migration[6.0]
+            disable_ddl_transaction!
+
+            def up
+              create_table :test_text_limits, id: false do |t|
+                t.integer :test_id, null: false
+                t.text :name
+              end
+
+              create_table :test_text_limits_create do |t|
+                t.integer :test_id, null: false
+                t.text :title, limit: 100
+                  ^^^^ #{msg}
+                t.text :description, limit: 255
+                  ^^^^ #{msg}
+                t.text_limit :title, 100
+              end
+
+              add_column :test_text_limits, :email, :text
+              add_column :test_text_limits, :role, :text, default: 'default'
+              change_column_type_concurrently :test_text_limits, :test_id, :text
+
+              add_text_limit :test_text_limits, :name, 255
+              add_text_limit :test_text_limits, :email, 255
+              add_text_limit :test_text_limits, :role, 255
+              add_text_limit :test_text_limits, :test_id, 255
+            end
+          end
+        RUBY
+      end
+    end
+
+    context 'with unknonwn table method' do
+      let(:unknown_msg) do
+        <<~MSG
+          Unknown table method. Please tweak `MigrationHelpers::TABLE_METHODS`.
+        MSG
+      end
+
+      it 'registers an offense without limit' do
+        expect_offense(<<~RUBY)
+          class TestTextLimits < ActiveRecord::Migration[6.0]
+            disable_ddl_transaction!
+
+            def up
+              create_table_super_fast :test_text_limits_create do |t|
+              ^^^^^^^^^^^^^^^^^^^^^^^ #{unknown_msg}
+                t.integer :test_id, null: false
+                t.text :title
+                  ^^^^ #{msg}
+                t.text :description
+                  ^^^^ #{msg}
+              end
+            end
+          end
+        RUBY
+      end
+
+      it 'registers no offense with limit defined' do
+        expect_no_offenses(<<~RUBY)
+          class TestTextLimits < ActiveRecord::Migration[6.0]
+            disable_ddl_transaction!
+
+            def up
+              create_table_super_fast :test_text_limits_create do |t|
+                t.integer :test_id, null: false
+                t.text :title, limit: 100
+              end
             end
           end
         RUBY

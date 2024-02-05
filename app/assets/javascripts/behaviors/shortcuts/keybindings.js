@@ -451,13 +451,13 @@ export const MR_TOGGLE_FILE_BROWSER = {
 
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
-  description: __('Next unresolved discussion'),
+  description: __('Next unresolved thread'),
   defaultKeys: ['n'],
 };
 
 export const MR_PREVIOUS_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.previousUnresolvedDiscussion',
-  description: __('Previous unresolved discussion'),
+  description: __('Previous unresolved thread'),
   defaultKeys: ['p'],
 };
 

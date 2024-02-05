@@ -20,8 +20,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     let_it_be(:extra_cluster) { create(:cluster, :provided_by_gcp, :project) }
 
     let_it_be(:clusters) do
-      create_list(:cluster, 2, :provided_by_gcp, :project, :production_environment,
-                  projects: [project])
+      create_list(:cluster, 2, :provided_by_gcp, :project, :production_environment, projects: [project])
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -60,15 +59,19 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     let(:cluster_id) { cluster.id }
 
     let(:platform_kubernetes) do
-      create(:cluster_platform_kubernetes, :configured,
-             namespace: 'project-namespace')
+      create(:cluster_platform_kubernetes, :configured, namespace: 'project-namespace')
     end
 
     let(:cluster) do
-      create(:cluster, :project, :provided_by_gcp, :with_domain,
-             platform_kubernetes: platform_kubernetes,
-             user: maintainer_user,
-             projects: [project])
+      create(
+        :cluster,
+        :project,
+        :provided_by_gcp,
+        :with_domain,
+        platform_kubernetes: platform_kubernetes,
+        user: maintainer_user,
+        projects: [project]
+      )
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -139,8 +142,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
 
       context 'when cluster has no provider' do
         let(:cluster) do
-          create(:cluster, :project, :provided_by_user,
-                 projects: [project])
+          create(:cluster, :project, :provided_by_user, projects: [project])
         end
 
         it 'does not include GCP provider info' do
@@ -328,8 +330,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
 
     context 'when another cluster exists' do
       before do
-        create(:cluster, :provided_by_gcp, :project,
-               projects: [project])
+        create(:cluster, :provided_by_gcp, :project, projects: [project])
 
         post api("/projects/#{project.id}/clusters/user", maintainer_user), params: cluster_params
       end
@@ -363,14 +364,11 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     end
 
     let!(:kubernetes_namespace) do
-      create(:cluster_kubernetes_namespace,
-             cluster: cluster,
-             project: project)
+      create(:cluster_kubernetes_namespace, cluster: cluster, project: project)
     end
 
     let(:cluster) do
-      create(:cluster, :project, :provided_by_gcp,
-             projects: [project])
+      create(:cluster, :project, :provided_by_gcp, projects: [project])
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do
@@ -461,8 +459,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
         let(:api_url) { 'https://new-api-url.com' }
 
         let(:cluster) do
-          create(:cluster, :project, :provided_by_user,
-                 projects: [project])
+          create(:cluster, :project, :provided_by_user, projects: [project])
         end
 
         let(:platform_kubernetes_attributes) do
@@ -505,8 +502,7 @@ RSpec.describe API::ProjectClusters, feature_category: :deployment_management do
     let(:cluster_params) { { cluster_id: cluster.id } }
 
     let_it_be(:cluster) do
-      create(:cluster, :project, :provided_by_gcp,
-             projects: [project])
+      create(:cluster, :project, :provided_by_gcp, projects: [project])
     end
 
     include_examples ':certificate_based_clusters feature flag API responses' do

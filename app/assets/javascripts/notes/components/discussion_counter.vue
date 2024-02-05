@@ -5,6 +5,13 @@ import { mapActions, mapGetters } from 'vuex';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import {
+  keysFor,
+  MR_NEXT_UNRESOLVED_DISCUSSION,
+  MR_PREVIOUS_UNRESOLVED_DISCUSSION,
+} from '~/behaviors/shortcuts/keybindings';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { sanitize } from '~/lib/dompurify';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -44,6 +51,32 @@ export default {
     },
     toggleThreadsLabel() {
       return this.allExpanded ? __('Collapse all threads') : __('Expand all threads');
+    },
+    nextUnresolvedDiscussionShortcutKey() {
+      return shouldDisableShortcuts() ? null : keysFor(MR_NEXT_UNRESOLVED_DISCUSSION)[0];
+    },
+    nextUnresolvedDiscussionTitle() {
+      return MR_NEXT_UNRESOLVED_DISCUSSION.description;
+    },
+    nextUnresolvedDiscussionTooltip() {
+      const description = this.nextUnresolvedDiscussionTitle;
+      const key = this.nextUnresolvedDiscussionShortcutKey;
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
+    },
+    previousUnresolvedDiscussionShortcutKey() {
+      return shouldDisableShortcuts() ? null : keysFor(MR_PREVIOUS_UNRESOLVED_DISCUSSION)[0];
+    },
+    previousUnresolvedDiscussionTitle() {
+      return MR_PREVIOUS_UNRESOLVED_DISCUSSION.description;
+    },
+    previousUnresolvedDiscussionTooltip() {
+      const description = this.previousUnresolvedDiscussionTitle;
+      const key = this.previousUnresolvedDiscussionShortcutKey;
+      return shouldDisableShortcuts()
+        ? description
+        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
     },
     resolveAllDiscussionsIssuePath() {
       return this.getNoteableData.create_issue_to_resolve_discussions_path;
@@ -107,7 +140,7 @@ export default {
       <template v-if="allResolved">
         {{ __('All threads resolved!') }}
         <gl-disclosure-dropdown
-          v-gl-tooltip:discussionCounter.hover.top
+          v-gl-tooltip
           icon="ellipsis_v"
           size="small"
           category="tertiary"
@@ -116,7 +149,7 @@ export default {
           :title="__('Thread options')"
           :aria-label="__('Thread options')"
           toggle-class="btn-icon"
-          class="gl-pt-0! gl-px-2 gl-h-full gl-ml-2"
+          class="gl-rounded-base! gl-pt-0! gl-h-full gl-ml-3"
           :items="threadOptions"
         />
       </template>
@@ -124,9 +157,9 @@ export default {
         {{ n__('%d unresolved thread', '%d unresolved threads', unresolvedDiscussionsCount) }}
         <gl-button-group class="gl-ml-3">
           <gl-button
-            v-gl-tooltip:discussionCounter.hover.top
-            :title="__('Go to previous unresolved thread')"
-            :aria-label="__('Go to previous unresolved thread')"
+            v-gl-tooltip.html="previousUnresolvedDiscussionTooltip"
+            :aria-label="previousUnresolvedDiscussionTitle"
+            :aria-keyshortcuts="previousUnresolvedDiscussionShortcutKey"
             class="discussion-previous-btn gl-rounded-base! gl-px-2!"
             data-track-action="click_button"
             data-track-label="mr_previous_unresolved_thread"
@@ -136,9 +169,9 @@ export default {
             @click="jumpPrevious"
           />
           <gl-button
-            v-gl-tooltip:discussionCounter.hover.top
-            :title="__('Go to next unresolved thread')"
-            :aria-label="__('Go to next unresolved thread')"
+            v-gl-tooltip.html="nextUnresolvedDiscussionTooltip"
+            :aria-label="nextUnresolvedDiscussionTitle"
+            :aria-keyshortcuts="nextUnresolvedDiscussionShortcutKey"
             class="discussion-next-btn gl-rounded-base! gl-px-2!"
             data-track-action="click_button"
             data-track-label="mr_next_unresolved_thread"
@@ -148,7 +181,7 @@ export default {
             @click="jumpNext"
           />
           <gl-disclosure-dropdown
-            v-gl-tooltip:discussionCounter.hover.top
+            v-gl-tooltip
             icon="ellipsis_v"
             size="small"
             category="tertiary"
@@ -157,7 +190,7 @@ export default {
             :title="__('Thread options')"
             :aria-label="__('Thread options')"
             toggle-class="btn-icon"
-            class="gl-pt-0! gl-px-2"
+            class="gl-rounded-base! gl-pt-0!"
             :items="threadOptions"
           />
         </gl-button-group>

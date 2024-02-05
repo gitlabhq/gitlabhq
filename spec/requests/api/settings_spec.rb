@@ -309,7 +309,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expected_update = ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys
 
       put api("/application/settings", admin),
-          params: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE }
+        params: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
@@ -337,7 +337,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports legacy allow_local_requests_from_hooks_and_services' do
       put api("/application/settings", admin),
-          params: { allow_local_requests_from_hooks_and_services: true }
+        params: { allow_local_requests_from_hooks_and_services: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
@@ -391,8 +391,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
     end
 
     it 'disables ability to switch to legacy storage' do
-      put api("/application/settings", admin),
-          params: { hashed_storage_enabled: false }
+      put api("/application/settings", admin), params: { hashed_storage_enabled: false }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['hashed_storage_enabled']).to eq(true)
@@ -751,7 +750,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports legacy admin_notification_email' do
       put api('/application/settings', admin),
-          params: { admin_notification_email: 'test@example.com' }
+        params: { admin_notification_email: 'test@example.com' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['abuse_notification_email']).to eq('test@example.com')
@@ -759,7 +758,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports setting require_admin_approval_after_user_signup' do
       put api('/application/settings', admin),
-          params: { require_admin_approval_after_user_signup: true }
+        params: { require_admin_approval_after_user_signup: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
@@ -829,20 +828,14 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
       it 'updates setting' do
         new_value = 'all_tiers'
-        put api("/application/settings", admin),
-        params: {
-          whats_new_variant: new_value
-        }
+        put api("/application/settings", admin), params: { whats_new_variant: new_value }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['whats_new_variant']).to eq(new_value)
       end
 
       it 'fails to update setting with invalid value' do
-        put api("/application/settings", admin),
-        params: {
-          whats_new_variant: 'invalid_value'
-        }
+        put api("/application/settings", admin), params: { whats_new_variant: 'invalid_value' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('whats_new_variant does not have a valid value')

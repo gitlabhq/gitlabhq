@@ -53,7 +53,8 @@ module API
           page: params[:page],
           per_page: params[:per_page],
           order_by: params[:order_by],
-          sort: params[:sort]
+          sort: params[:sort],
+          source: 'api'
         }.merge(additional_params)
 
         SearchService.new(current_user, search_params)

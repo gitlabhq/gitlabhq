@@ -8,12 +8,13 @@
     - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }
-  = f.label s_('ProjectCreationLevel|Allowed to create projects'), class: 'gl-display-block col-form-label'
+  = f.label s_('ProjectCreationLevel|Roles allowed to create projects'), class: 'gl-display-block col-form-label'
   = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, @group.project_creation_level), {}, class: 'gl-form-select custom-select'
 
 .form-group.gl-form-group{ role: 'group' }
-  = f.label s_('SubgroupCreationlevel|Allowed to create subgroups'), class: 'gl-display-block col-form-label'
-  = f.select :subgroup_creation_level, options_for_select(::Gitlab::Access.subgroup_creation_options, @group.subgroup_creation_level), {}, class: 'gl-form-select custom-select'
+  = f.label s_('SubgroupCreationLevel|Roles allowed to create subgroups'), class: 'gl-display-block col-form-label'
+  - ::Gitlab::Access.subgroup_creation_options.each do |label, action|
+    = f.gitlab_ui_radio_component :subgroup_creation_level, action, label
 
 %fieldset.form-group.gl-form-group
   %legend.col-form-label.col-form-label

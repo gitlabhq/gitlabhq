@@ -248,8 +248,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           expect(response).to have_gitlab_http_status(:no_content)
           expect(
-            Users::GhostUserMigration.where(user: project_bot,
-                                            initiator_user: user)
+            Users::GhostUserMigration.where(user: project_bot, initiator_user: user)
           ).to be_exists
         end
 
@@ -267,8 +266,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
             expect(response).to have_gitlab_http_status(:no_content)
             expect(
-              Users::GhostUserMigration.where(user: other_project_bot,
-                                              initiator_user: user)
+              Users::GhostUserMigration.where(user: other_project_bot, initiator_user: user)
             ).to be_exists
           end
         end

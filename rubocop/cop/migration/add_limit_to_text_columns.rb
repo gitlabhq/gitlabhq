@@ -33,6 +33,14 @@ module RuboCop
           (send _ :add_text_limit ...)
         PATTERN
 
+        def_node_matcher :text_column?, <<~PATTERN
+          (sym :text)
+        PATTERN
+
+        def_node_matcher :text_operation_with_limit?, <<~PATTERN
+          (send _ :text ... (hash <(pair (sym :limit) _) ...>))
+        PATTERN
+
         def on_def(node)
           return unless in_migration?(node)
 
@@ -53,16 +61,6 @@ module RuboCop
 
         private
 
-        def text_operation_with_limit?(node)
-          migration_method = node.children[1]
-
-          return unless migration_method == :text
-
-          if attributes = node.children[3]
-            attributes.pairs.find { |pair| pair.key.value == :limit }.present?
-          end
-        end
-
         def text_operation?(node)
           # Don't complain about text arrays
           return false if array_column?(node)
@@ -75,10 +73,6 @@ module RuboCop
           elsif ADD_COLUMN_METHODS.include?(migration_method)
             modifier.nil? && text_column?(node.children[4])
           end
-        end
-
-        def text_column?(column_type)
-          column_type.type == :sym && column_type.value == :text
         end
 
         # For a given node, find the table and attribute this node is for
@@ -111,7 +105,10 @@ module RuboCop
               # helper is introduced and warn the author so that it can be
               # added in TABLE_METHODS
               table_name = 'unknown'
-              add_offense(block_node, message: 'Unknown table create/change helper')
+              add_offense(
+                block_node.send_node.loc.selector,
+                message: 'Unknown table method. Please tweak `MigrationHelpers::TABLE_METHODS`.'
+              )
             end
 
             attribute_name = node.children[2].value

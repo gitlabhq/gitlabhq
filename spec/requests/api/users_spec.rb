@@ -2795,8 +2795,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
 
       expect(response).to have_gitlab_http_status(:no_content)
-      expect(Users::GhostUserMigration.where(user: user,
-                                             initiator_user: admin)).to be_exists
+      expect(Users::GhostUserMigration.where(user: user, initiator_user: admin)).to be_exists
     end
 
     context "sole owner of a group" do
@@ -2866,9 +2865,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(issue.reload).to be_persisted
-        expect(Users::GhostUserMigration.where(user: user,
-                                               initiator_user: admin,
-                                               hard_delete: false)).to be_exists
+        expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: false)).to be_exists
       end
     end
 
@@ -2877,9 +2874,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin, admin_mode: true) }
 
         expect(response).to have_gitlab_http_status(:no_content)
-        expect(Users::GhostUserMigration.where(user: user,
-                                               initiator_user: admin,
-                                               hard_delete: true)).to be_exists
+        expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: true)).to be_exists
       end
     end
   end

@@ -9,12 +9,18 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** SaaS, self-managed
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `index_code_with_zoekt` for indexing and `search_code_with_zoekt` for searching. Both are disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`.
+On GitLab.com, this feature is available. The feature is not ready for production use.
 
 WARNING:
-We are still actively making changes to the Exact Code Search feature. GitLab will dogfood it first, and roll it out only to specific customers on GitLab.com who request access to it. We will make an announcement when it's available for GitLab.com customers to tryout. You can follow our development progress by checking [the Exact Code Search feature roadmap](https://gitlab.com/groups/gitlab-org/-/epics/9404).
-On self-managed GitLab, it is technically possible to enable this feature, however, GitLab does not provide support or documentation at this stage of development and it has not been widely tested at scale. There are also many known limitations.
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
 ## Usage
 
@@ -28,6 +34,19 @@ search for regular expressions. Since it allows searching for regular
 expressions, certain special characters will require escaping. Backslash can
 escape special characters and wrapping in double quotes can be used for phrase
 searches.
+
+## Zoekt search API
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143666) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `zoekt_search_api`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `zoekt_search_api`.
+On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
+
+To request access to this feature, contact GitLab.
 
 ## Syntax
 

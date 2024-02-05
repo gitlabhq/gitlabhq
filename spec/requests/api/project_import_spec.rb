@@ -498,8 +498,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       get api("/projects/#{project.id}/import", user)
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response).to include('import_status' => 'failed',
-                                       'import_error' => 'error')
+      expect(json_response).to include('import_status' => 'failed', 'import_error' => 'error')
     end
 
     it 'returns the import status if canceled' do

@@ -107,23 +107,33 @@ This job is performed by the `Arkose::BlockedUsersReportWorker` class.
 
 ## Test your integration
 
+> - Requesting specific behaviors with Data Exchange [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435275) in GitLab 16.8 [with a flag](../administration/feature_flags.md) named `arkose_labs_signup_data_exchange`. Disabled by default.
+
 In staging and development environments only, you can suppress a challenge, or force one to appear.
 You can use this feature if you want to receive a specific risk band.
 
 To force a challenge, change your browser [user agent string](https://developer.chrome.com/docs/devtools/device-mode/override-user-agent/). You can find the appropriate string in [1Password](https://start.1password.com/open/i?a=LKATQYUATRBRDHRRABEBH4RJ5Y&v=6gq44ckmq23vqk5poqunurdgay&i=5v3ushqmfgifpwyqohop5gv5xe&h=gitlab.1password.com).
 
-Alternatively, to request specific behaviors, modify the `setConfig` to include a `data.id` property:
+Alternatively, to request specific behaviors, enable the `arkose_labs_signup_data_exchange` feature flag and modify the Data Exchange payload to include an `interactive` field with any of the following values:
 
-- `'ML_defence'` - Force a challenge to appear.
-- `'customer_request'` - Suppress a challenge. If you suppress a challenge, ArkoseLabs considers your session safe.
+- `'true'` - Force a challenge to appear.
+- `'false'` - Suppress a challenge. If you suppress a challenge, ArkoseLabs considers your session safe.
 
-For example, this `setConfig` suppresses a challenge:
+For example, the following diff updates the payload to suppress the challenge:
 
-```javascript
-      arkoseObject.setConfig({
-        data: { id: 'customer_request' },
-        ...
-      });
+```diff
+diff --git a/ee/lib/arkose/data_exchange_payload.rb b/ee/lib/arkose/data_exchange_payload.rb
+index 191ae0b5cf82..b2d888b98c95 100644
+--- a/ee/lib/arkose/data_exchange_payload.rb
++++ b/ee/lib/arkose/data_exchange_payload.rb
+@@ -35,6 +35,7 @@ def json_data
+       now = Time.current.to_i
+ 
+       data = {
++        interactive: 'false',
+         timestamp: now.to_s, # required to be a string
+         "HEADER_user-agent" => request.user_agent,
+         "HEADER_origin" => request.origin,
 ```
 
 ## Additional resources
@@ -137,3 +147,4 @@ ArkoseLabs also maintains the following resources:
 - [ArkoseLabs portal](https://portal.arkoselabs.com/)
 - [ArkoseLabs Zendesk](https://support.arkoselabs.com/hc/en-us)
 - [ArkoseLabs documentation](https://developer.arkoselabs.com/docs/documentation-guide)
+- [ArkoseLabs Data Exchange documentation](https://support.arkoselabs.com/hc/en-us/articles/4410529474323-Data-Exchange-Enhanced-Detection-and-API-Source-Validation)

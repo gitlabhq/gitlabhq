@@ -4907,7 +4907,6 @@ RSpec/FeatureCategory:
     - 'spec/rubocop/cop/migration/add_concurrent_foreign_key_spec.rb'
     - 'spec/rubocop/cop/migration/add_concurrent_index_spec.rb'
     - 'spec/rubocop/cop/migration/add_index_spec.rb'
-    - 'spec/rubocop/cop/migration/add_limit_to_text_columns_spec.rb'
     - 'spec/rubocop/cop/migration/add_reference_spec.rb'
     - 'spec/rubocop/cop/migration/add_timestamps_spec.rb'
     - 'spec/rubocop/cop/migration/background_migration_base_class_spec.rb'

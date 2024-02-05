@@ -8,3 +8,5 @@ description: Keeps merge request approval settings per group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50256
 milestone: '13.8'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

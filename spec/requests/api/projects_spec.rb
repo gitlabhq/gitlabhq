@@ -60,28 +60,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   let_it_be(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let_it_be(:user4) { create(:user, username: 'user.withdot') }
   let_it_be(:project3, reload: true) do
-    create(:project,
-    :private,
-    :repository,
-    creator_id: user.id,
-    namespace: user.namespace,
-    merge_requests_enabled: false,
-    issues_enabled: false, wiki_enabled: false,
-    builds_enabled: false,
-    snippets_enabled: false)
+    create(
+      :project,
+      :private,
+      :repository,
+      creator_id: user.id,
+      namespace: user.namespace,
+      merge_requests_enabled: false,
+      issues_enabled: false, wiki_enabled: false,
+      builds_enabled: false,
+      snippets_enabled: false
+    )
   end
 
   let_it_be(:project_member2) do
-    create(:project_member,
-    user: user4,
-    project: project3,
-    access_level: ProjectMember::MAINTAINER)
+    create(
+      :project_member,
+      user: user4,
+      project: project3,
+      access_level: ProjectMember::MAINTAINER
+    )
   end
 
   let_it_be(:project4, reload: true) do
-    create(:project,
-    creator_id: user4.id,
-    namespace: user4.namespace)
+    create(:project, creator_id: user4.id, namespace: user4.namespace)
   end
 
   let(:user_projects) { [public_project, project, project2, project3] }
@@ -758,10 +760,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         context 'including membership filter' do
           before do
-            create(:project_member,
-                   user: user,
-                   project: project5,
-                   access_level: ProjectMember::MAINTAINER)
+            create(:project_member, user: user, project: project5, access_level: ProjectMember::MAINTAINER)
           end
 
           it 'returns only projects that satisfy all query parameters' do
@@ -3047,11 +3046,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         it 'filters related URIs when their feature is not enabled' do
-          project = create(:project, :public,
-                           :merge_requests_disabled,
-                           :issues_disabled,
-                           creator_id: user.id,
-                           namespace: user.namespace)
+          project = create(
+            :project,
+            :public,
+            :merge_requests_disabled,
+            :issues_disabled,
+            creator_id: user.id,
+            namespace: user.namespace
+          )
 
           get api("/projects/#{project.id}", user)
 
@@ -4256,13 +4258,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
         let_it_be(:alternate_avatar_file) { fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png') }
         let_it_be(:project_with_avatar, reload: true) do
-          create(:project,
-                 :private,
-                 :repository,
-                 name: 'project-with-avatar',
-                 creator_id: user.id,
-                 namespace: user.namespace,
-                 avatar: avatar_file)
+          create(
+            :project,
+            :private,
+            :repository,
+            name: 'project-with-avatar',
+            creator_id: user.id,
+            namespace: user.namespace,
+            avatar: avatar_file
+          )
         end
 
         it 'uploads avatar to project without an avatar' do
@@ -5552,15 +5556,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let_it_be(:shared_to_guest_group) { create(:group) }
 
         before do
-          create(:group_group_link, :owner,
-                 shared_with_group: owner_group,
-                 shared_group: shared_to_owner_group
-          )
-
-          create(:group_group_link, :guest,
-                 shared_with_group: guest_group,
-                 shared_group: shared_to_guest_group
-          )
+          create(:group_group_link, :owner, shared_with_group: owner_group, shared_group: shared_to_owner_group)
+          create(:group_group_link, :guest, shared_with_group: guest_group, shared_group: shared_to_guest_group)
         end
 
         it 'only includes groups arising from group shares where the user has permission to transfer a project to' do

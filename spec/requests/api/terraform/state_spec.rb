@@ -58,8 +58,10 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         let(:namespace) { project.namespace.reload }
         let(:user) { current_user }
         let(:context) do
-          payload = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                             event: 'p_terraform_state_api_unique_users').to_context
+          payload = Gitlab::Tracking::ServicePingContext.new(
+            data_source: :redis_hll,
+            event: 'p_terraform_state_api_unique_users'
+          ).to_context
           [Gitlab::Json.dump(payload)]
         end
       end

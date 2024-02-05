@@ -52,21 +52,27 @@ RSpec.describe API::ProjectEvents, feature_category: :user_profile do
       let(:public_project) { create(:project, :public) }
 
       before do
-        create(:event,
-               :closed,
-               project: public_project,
-               target: create(:issue, project: public_project, title: 'Issue 1'),
-               created_at: Date.parse('2018-12-10'))
-        create(:event,
-               :closed,
-               project: public_project,
-               target: create(:issue, confidential: true, project: public_project, title: 'Confidential event'),
-               created_at: Date.parse('2018-12-11'))
-        create(:event,
-               :closed,
-               project: public_project,
-               target: create(:issue, project: public_project, title: 'Issue 2'),
-               created_at: Date.parse('2018-12-12'))
+        create(
+          :event,
+          :closed,
+          project: public_project,
+          target: create(:issue, project: public_project, title: 'Issue 1'),
+          created_at: Date.parse('2018-12-10')
+        )
+        create(
+          :event,
+          :closed,
+          project: public_project,
+          target: create(:issue, confidential: true, project: public_project, title: 'Confidential event'),
+          created_at: Date.parse('2018-12-11')
+        )
+        create(
+          :event,
+          :closed,
+          project: public_project,
+          target: create(:issue, project: public_project, title: 'Issue 2'),
+          created_at: Date.parse('2018-12-12')
+        )
       end
 
       it 'correctly returns the second page without inaccessible events' do

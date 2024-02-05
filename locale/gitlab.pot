@@ -23053,9 +23053,6 @@ msgstr ""
 msgid "Go to next page"
 msgstr ""
 
-msgid "Go to next unresolved thread"
-msgstr ""
-
 msgid "Go to page %{page}"
 msgstr ""
 
@@ -23072,9 +23069,6 @@ msgid "Go to pipelines"
 msgstr ""
 
 msgid "Go to previous page"
-msgstr ""
-
-msgid "Go to previous unresolved thread"
 msgstr ""
 
 msgid "Go to project"
@@ -24559,7 +24553,7 @@ msgstr ""
 msgid "Hide details"
 msgstr ""
 
-msgid "Hide file browser (or press F)"
+msgid "Hide file browser"
 msgstr ""
 
 msgid "Hide file contents"
@@ -32526,7 +32520,7 @@ msgstr ""
 msgid "Next scan"
 msgstr ""
 
-msgid "Next unresolved discussion"
+msgid "Next unresolved thread"
 msgstr ""
 
 msgid "Next update"
@@ -37345,7 +37339,7 @@ msgstr ""
 msgid "Previous file in diff"
 msgstr ""
 
-msgid "Previous unresolved discussion"
+msgid "Previous unresolved thread"
 msgstr ""
 
 msgid "Primary navigation sidebar"
@@ -38399,9 +38393,6 @@ msgid "Project:Branches: %{source_project_path}:%{source_branch} → %{target_pr
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
-msgstr ""
-
-msgid "ProjectCreationLevel|Allowed to create projects"
 msgstr ""
 
 msgid "ProjectCreationLevel|Default project creation protection"
@@ -46447,7 +46438,7 @@ msgstr ""
 msgid "Show details"
 msgstr ""
 
-msgid "Show file browser (or press F)"
+msgid "Show file browser"
 msgstr ""
 
 msgid "Show file contents"
@@ -48021,9 +48012,6 @@ msgid "Subgroup navigation"
 msgstr ""
 
 msgid "SubgroupCreationLevel|Roles allowed to create subgroups"
-msgstr ""
-
-msgid "SubgroupCreationlevel|Allowed to create subgroups"
 msgstr ""
 
 msgid "SubgroupCreationlevel|Maintainers"

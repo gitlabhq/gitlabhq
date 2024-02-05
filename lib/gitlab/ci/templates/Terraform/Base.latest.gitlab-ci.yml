@@ -38,7 +38,11 @@ variables:
       echo " "
       echo "Alternatively, you can continue building the Terraform templates and "
       echo "accompanying image (see https://gitlab.com/gitlab-org/terraform-images) yourself and use them as before."
+      echo " "
+      echo "To disable this warning, set IGNORE_TF_DEPRECATION_WARNING to 'true' in your pipeline variables."
     - 'false'
+  rules:
+    - if: $IGNORE_TF_DEPRECATION_WARNING != "true"
 
 .terraform:fmt:
   stage: validate

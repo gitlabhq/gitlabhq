@@ -25,6 +25,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one :namespace_settings }
     it { is_expected.to have_one :namespace_details }
     it { is_expected.to have_one(:namespace_statistics) }
+    it { is_expected.to have_one(:catalog_verified_namespace) }
     it { is_expected.to have_many :custom_emoji }
     it { is_expected.to have_one :package_setting_relation }
     it { is_expected.to have_one :onboarding_progress }

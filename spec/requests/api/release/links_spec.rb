@@ -13,10 +13,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
   let_it_be(:commit) { create(:commit, project: project) }
 
   let!(:release) do
-    create(:release,
-           project: project,
-           tag: 'v0.1',
-           author: maintainer)
+    create(:release, project: project, tag: 'v0.1', author: maintainer)
   end
 
   before_all do
@@ -293,8 +290,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       it_behaves_like '400 response' do
         let(:request) do
-          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer),
-               params: params
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
         end
       end
     end
@@ -302,16 +298,14 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     context 'when user is a reporter' do
       it_behaves_like '403 response' do
         let(:request) do
-          post api("/projects/#{project.id}/releases/v0.1/assets/links", reporter),
-               params: params
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", reporter), params: params
         end
       end
     end
 
     context 'when user is not a project member' do
       it 'forbids the request' do
-        post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member),
-             params: params
+        post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -320,8 +314,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
         let(:project) { create(:project, :repository, :public) }
 
         it 'forbids the request' do
-          post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member),
-               params: params
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", non_project_member), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -330,16 +323,17 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
     context 'when the same link already exists' do
       before do
-        create(:release_link,
-               release: release,
-               name: 'awesome-app.dmg',
-               url: 'https://example.com/download/awesome-app.dmg')
+        create(
+          :release_link,
+          release: release,
+          name: 'awesome-app.dmg',
+          url: 'https://example.com/download/awesome-app.dmg'
+        )
       end
 
       it_behaves_like '400 response' do
         let(:request) do
-          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer),
-               params: params
+          post api("/projects/#{project.id}/releases/v0.1/assets/links", maintainer), params: params
         end
       end
     end
@@ -351,28 +345,28 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
     it 'accepts the request' do
       put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-          params: params
+        params: params
 
       expect(response).to have_gitlab_http_status(:ok)
     end
 
     it 'updates the name' do
       put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-          params: params
+        params: params
 
       expect(json_response['name']).to eq('awesome-app.msi')
     end
 
     it 'does not update the url' do
       put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-          params: params
+        params: params
 
       expect(json_response['url']).to eq(release_link.url)
     end
 
     it 'matches response schema' do
       put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-          params: params
+        params: params
 
       expect(response).to match_response_schema('release/link')
     end
@@ -380,7 +374,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     context 'when params are invalid' do
       it 'returns 400 error' do
         put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-            params: params.merge(url: 'wrong_url')
+          params: params.merge(url: 'wrong_url')
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -389,9 +383,10 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
     context 'when using `direct_asset_path`' do
       it 'updates the release link' do
         put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-            params: params.merge(direct_asset_path: '/binaries/awesome-app.msi')
+          params: params.merge(direct_asset_path: '/binaries/awesome-app.msi')
 
-        expect(json_response['direct_asset_url']).to eq("http://localhost/#{project.full_path}/-/releases/#{release.tag}/downloads/binaries/awesome-app.msi")
+        expect(json_response['direct_asset_url'])
+          .to eq("http://localhost/#{project.full_path}/-/releases/#{release.tag}/downloads/binaries/awesome-app.msi")
       end
     end
 
@@ -436,7 +431,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
 
       it 'does not allow the request' do
         put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", maintainer),
-            params: params
+          params: params
 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
@@ -448,7 +443,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       it_behaves_like '404 response' do
         let(:request) do
           put api("/projects/#{project.id}/releases/v0.1/assets/links/1", maintainer),
-              params: params
+            params: params
         end
       end
     end
@@ -457,7 +452,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       it_behaves_like '403 response' do
         let(:request) do
           put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", reporter),
-              params: params
+            params: params
         end
       end
     end
@@ -466,7 +461,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
       it_behaves_like '404 response' do
         let(:request) do
           put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", non_project_member),
-              params: params
+            params: params
         end
       end
 
@@ -476,7 +471,7 @@ RSpec.describe API::Release::Links, feature_category: :release_orchestration do
         it_behaves_like '403 response' do
           let(:request) do
             put api("/projects/#{project.id}/releases/v0.1/assets/links/#{release_link.id}", non_project_member),
-                params: params
+              params: params
           end
         end
       end

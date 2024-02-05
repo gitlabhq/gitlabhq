@@ -474,15 +474,22 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
             it 'properly removes tag' do
               expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
+              expect(Projects::ContainerRepository::DeleteTagsService)
+                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
 
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
-                                    user: api_user, namespace: project.namespace.reload,
-                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-                                    property: 'i_package_container_user', context: service_ping_context)
+              expect_snowplow_event(
+                category: described_class.name,
+                action: 'delete_tag',
+                project: project,
+                user: api_user,
+                namespace: project.namespace.reload,
+                label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                property: 'i_package_container_user',
+                context: service_ping_context
+              )
             end
           end
 
@@ -493,15 +500,22 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
             it 'properly removes tag' do
               expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
+              expect(Projects::ContainerRepository::DeleteTagsService)
+                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
 
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
-                                    user: api_user, namespace: project.namespace.reload,
-                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-                                    property: 'i_package_container_user', context: service_ping_context)
+              expect_snowplow_event(
+                category: described_class.name,
+                action: 'delete_tag',
+                project: project,
+                user: api_user,
+                namespace: project.namespace.reload,
+                label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                property: 'i_package_container_user',
+                context: service_ping_context
+              )
             end
           end
         end

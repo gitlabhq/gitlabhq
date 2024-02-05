@@ -14069,6 +14069,22 @@ CREATE SEQUENCE catalog_resources_id_seq
 
 ALTER SEQUENCE catalog_resources_id_seq OWNED BY catalog_resources.id;
 
+CREATE TABLE catalog_verified_namespaces (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    verification_level smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE catalog_verified_namespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE catalog_verified_namespaces_id_seq OWNED BY catalog_verified_namespaces.id;
+
 CREATE TABLE chat_names (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -27061,6 +27077,8 @@ ALTER TABLE ONLY catalog_resource_versions ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY catalog_resources ALTER COLUMN id SET DEFAULT nextval('catalog_resources_id_seq'::regclass);
 
+ALTER TABLE ONLY catalog_verified_namespaces ALTER COLUMN id SET DEFAULT nextval('catalog_verified_namespaces_id_seq'::regclass);
+
 ALTER TABLE ONLY chat_names ALTER COLUMN id SET DEFAULT nextval('chat_names_id_seq'::regclass);
 
 ALTER TABLE ONLY chat_teams ALTER COLUMN id SET DEFAULT nextval('chat_teams_id_seq'::regclass);
@@ -29077,6 +29095,9 @@ ALTER TABLE ONLY catalog_resource_versions
 
 ALTER TABLE ONLY catalog_resources
     ADD CONSTRAINT catalog_resources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY catalog_verified_namespaces
+    ADD CONSTRAINT catalog_verified_namespaces_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY chat_names
     ADD CONSTRAINT chat_names_pkey PRIMARY KEY (id);
@@ -32895,6 +32916,8 @@ CREATE UNIQUE INDEX index_catalog_resources_on_project_id ON catalog_resources U
 CREATE INDEX index_catalog_resources_on_search_vector ON catalog_resources USING gin (search_vector);
 
 CREATE INDEX index_catalog_resources_on_state ON catalog_resources USING btree (state);
+
+CREATE UNIQUE INDEX index_catalog_verified_namespaces_on_namespace_id ON catalog_verified_namespaces USING btree (namespace_id);
 
 CREATE INDEX index_chat_names_on_team_id_and_chat_id ON chat_names USING btree (team_id, chat_id);
 
@@ -39599,6 +39622,9 @@ ALTER TABLE ONLY vulnerability_user_mentions
 
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT fk_rails_1ae85be112 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY catalog_verified_namespaces
+    ADD CONSTRAINT fk_rails_1b6bb852c0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_slas
     ADD CONSTRAINT fk_rails_1b8768cd63 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

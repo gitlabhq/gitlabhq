@@ -10,7 +10,7 @@ module Ci
       TEMPLATE_FILE = 'template.yml'
       TEMPLATES_DIR = 'templates'
       TEMPLATE_PATH_REGEX = '^templates\/[\w-]+(?:\/template)?\.yml$'
-      COMPONENTS_LIMIT = 10
+      COMPONENTS_LIMIT = 30
 
       ComponentData = Struct.new(:content, :path, keyword_init: true)
 

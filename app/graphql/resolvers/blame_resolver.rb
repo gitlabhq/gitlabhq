@@ -19,14 +19,12 @@ module Resolvers
     alias_method :blob, :object
 
     def ready?(**args)
-      validate_line_params!(args) if feature_enabled?
+      validate_line_params!(args)
 
       super
     end
 
     def resolve(from_line:, to_line:)
-      return unless feature_enabled?
-
       authorize!
 
       Gitlab::Blame.new(blob, blob.repository.commit(blob.commit_id),
@@ -41,10 +39,6 @@ module Resolvers
 
     def read_code?
       Ability.allowed?(current_user, :read_code, blob.repository.project)
-    end
-
-    def feature_enabled?
-      Feature.enabled?(:graphql_git_blame, blob.repository.project)
     end
 
     def validate_line_params!(args)

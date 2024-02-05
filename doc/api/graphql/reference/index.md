@@ -26917,7 +26917,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 
 ##### `RepositoryBlob.blame`
 
-Blob blame.  Available only when feature flag `graphql_git_blame` is enabled.
+Blob blame.
 
 NOTE:
 **Introduced** in 16.3.

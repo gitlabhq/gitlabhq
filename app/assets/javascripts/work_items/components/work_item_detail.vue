@@ -565,6 +565,7 @@ export default {
         >
           <section>
             <work-item-attributes-wrapper
+              v-if="!workItemsMvc2Enabled"
               :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
               class="gl-border-b"
               :full-path="fullPath"
@@ -594,57 +595,11 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
-            <work-item-tree
-              v-if="showWorkItemTree"
-              :full-path="fullPath"
-              :work-item-type="workItemType"
-              :parent-work-item-type="workItem.workItemType.name"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
-              :children="children"
-              :can-update="canUpdate"
-              :confidential="workItem.confidential"
-              @show-modal="openInModal"
-              @addChild="$emit('addChild')"
-            />
-            <work-item-relationships
-              v-if="showWorkItemLinkedItems"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
-              :work-item-full-path="fullPath"
-              :work-item-type="workItem.workItemType.name"
-              @showModal="openInModal"
-            />
-            <work-item-notes
-              v-if="workItemNotes"
-              :full-path="fullPath"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItem.iid"
-              :work-item-type="workItemType"
-              :is-modal="isModal"
-              :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
-              :can-set-work-item-metadata="canAssignUnassignUser"
-              :report-abuse-path="reportAbusePath"
-              :is-discussion-locked="isDiscussionLocked"
-              :is-work-item-confidential="workItem.confidential"
-              class="gl-pt-5"
-              :use-h2="!isModal"
-              @error="updateError = $event"
-              @has-notes="updateHasNotes"
-              @openReportAbuse="openReportAbuseDrawer"
-            />
-            <gl-empty-state
-              v-if="error"
-              :title="$options.i18n.fetchErrorTitle"
-              :description="error"
-              :svg-path="noAccessSvgPath"
-              :svg-height="null"
-            />
           </section>
           <aside
             v-if="workItemsMvc2Enabled"
             data-testid="work-item-overview-right-sidebar"
-            class="work-item-overview-right-sidebar gl-display-none gl-md-display-block"
+            class="work-item-overview-right-sidebar"
             :class="{ 'is-modal': isModal }"
           >
             <work-item-attributes-wrapper
@@ -653,6 +608,53 @@ export default {
               @error="updateError = $event"
             />
           </aside>
+
+          <work-item-tree
+            v-if="showWorkItemTree"
+            :full-path="fullPath"
+            :work-item-type="workItemType"
+            :parent-work-item-type="workItem.workItemType.name"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItemIid"
+            :children="children"
+            :can-update="canUpdate"
+            :confidential="workItem.confidential"
+            @show-modal="openInModal"
+            @addChild="$emit('addChild')"
+          />
+          <work-item-relationships
+            v-if="showWorkItemLinkedItems"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItemIid"
+            :work-item-full-path="fullPath"
+            :work-item-type="workItem.workItemType.name"
+            @showModal="openInModal"
+          />
+          <work-item-notes
+            v-if="workItemNotes"
+            :full-path="fullPath"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItem.iid"
+            :work-item-type="workItemType"
+            :is-modal="isModal"
+            :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
+            :can-set-work-item-metadata="canAssignUnassignUser"
+            :report-abuse-path="reportAbusePath"
+            :is-discussion-locked="isDiscussionLocked"
+            :is-work-item-confidential="workItem.confidential"
+            class="gl-pt-5"
+            :use-h2="!isModal"
+            @error="updateError = $event"
+            @has-notes="updateHasNotes"
+            @openReportAbuse="openReportAbuseDrawer"
+          />
+          <gl-empty-state
+            v-if="error"
+            :title="$options.i18n.fetchErrorTitle"
+            :description="error"
+            :svg-path="noAccessSvgPath"
+            :svg-height="null"
+          />
         </div>
       </template>
       <work-item-detail-modal

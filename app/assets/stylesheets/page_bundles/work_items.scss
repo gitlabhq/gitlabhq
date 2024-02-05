@@ -2,7 +2,7 @@
 @import 'system_note_styles';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
-$work-item-overview-right-sidebar-width: 23rem;
+$work-item-overview-right-sidebar-width: 20rem;
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
@@ -146,13 +146,23 @@ $work-item-overview-gap-width: 2rem;
 .work-item-overview {
   @include media-breakpoint-up(md) {
     display: grid;
-    grid-template-columns: 1fr $work-item-overview-right-sidebar-width;
-    gap: $work-item-overview-gap-width;
+    // allow the main content area to shrink
+    // grid items have "max-width: auto" so without the minmax the content can
+    // spill outside of the overview container
+    grid-template-columns: minmax(0, 1fr) $work-item-overview-right-sidebar-width;
+    column-gap: $work-item-overview-gap-width;
   }
 }
 
 .work-item-overview-right-sidebar {
+  margin-top: $gl-spacing-scale-5;
+
   @include media-breakpoint-up(md) {
+    margin-top: 0;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-row-end: 4;
+
     &.is-modal {
       .work-item-attributes-wrapper {
         top: 0;

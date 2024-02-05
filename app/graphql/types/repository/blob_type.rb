@@ -87,7 +87,7 @@ module Types
                                                  description: 'Web path to blob blame page.'
 
       field :blame, Types::Blame::BlameType, null: true,
-            description: 'Blob blame.  Available only when feature flag `graphql_git_blame` is enabled.', alpha: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
+            description: 'Blob blame.', alpha: { milestone: '16.3' }, resolver: Resolvers::BlameResolver
 
       field :history_path, GraphQL::Types::String, null: true,
                                                    description: 'Web path to blob history page.'
