@@ -10251,6 +10251,9 @@ msgstr ""
 msgid "Checkout|Edit"
 msgstr ""
 
+msgid "Checkout|Edit in Customers Portal"
+msgstr ""
+
 msgid "Checkout|Exp %{expirationMonth}/%{expirationYear}"
 msgstr ""
 
