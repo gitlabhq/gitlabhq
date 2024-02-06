@@ -70,6 +70,15 @@ To customize your environments and deployments, you can use any of the
 [predefined CI/CD variables](../../ci/variables/predefined_variables.md),
 and define custom CI/CD variables.
 
+## Environment states
+
+An environment state indicates whether an environment's [stop job](../../ci/yaml/index.md#environmenton_stop) has run.
+There are three states:
+
+- `available`: The environment exists. There might be a deployment.
+- `stopping`: The _on stop job_ has started. This state does not apply when there is no on stop job defined.
+- `stopped`: Either the _on stop job_ has run, or a user manually stopped the job.
+
 ## Types of environments
 
 An environment is either static or dynamic:

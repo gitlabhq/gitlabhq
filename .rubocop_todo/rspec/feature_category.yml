@@ -1378,7 +1378,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/services/projects/gitlab_projects_import_service_spec.rb'
     - 'ee/spec/services/projects/group_links/destroy_service_spec.rb'
     - 'ee/spec/services/projects/group_links/update_service_spec.rb'
-    - 'ee/spec/services/projects/hashed_storage/migrate_attachments_service_spec.rb'
     - 'ee/spec/services/projects/import_export/export_service_spec.rb'
     - 'ee/spec/services/projects/import_service_spec.rb'
     - 'ee/spec/services/projects/mark_for_deletion_service_spec.rb'

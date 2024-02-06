@@ -93,43 +93,6 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
 
       let(:stage_table_events) { stage_table.all(stage_table_event_selector) }
 
-      shared_examples 'filters the issues by date' do
-        it 'can filter the issues by date' do
-          expect(page).to have_selector(stage_table_event_selector)
-
-          set_daterange(from, to)
-
-          expect(page).not_to have_selector(stage_table_event_selector)
-          expect(page).not_to have_selector(stage_table_pagination_selector)
-        end
-      end
-
-      shared_examples 'filters the metrics by date' do
-        it 'can filter the metrics by date' do
-          expect(metrics_values).to match_array(%w[21 2 1])
-
-          set_daterange(from, to)
-
-          expect(metrics_values).to eq(['-'] * 3)
-        end
-      end
-
-      shared_examples 'navigates directly to a value stream stream stage with filters applied' do
-        before do
-          visit project_cycle_analytics_path(project, created_before: '2019-12-31', created_after: '2019-11-01', stage_id: 'code', milestone_title: milestone.title)
-          wait_for_requests
-        end
-
-        it 'can navigate directly to a value stream stream stage with filters applied' do
-          expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Code')
-          expect(page.find(".js-daterange-picker-from input").value).to eq("2019-11-01")
-          expect(page.find(".js-daterange-picker-to input").value).to eq("2019-12-31")
-
-          filter_bar = page.find(stage_filter_bar)
-          expect(filter_bar.find(".gl-filtered-search-token-data-content").text).to eq("%#{milestone.title}")
-        end
-      end
-
       it 'displays metrics' do
         metrics_tiles = page.find(metrics_selector)
 
@@ -184,43 +147,39 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         expect(page).not_to have_text(original_first_title, exact: true)
       end
 
-      context 'when the `vsa_predefined_date_ranges` feature flag is enabled' do
-        before do
-          visit project_cycle_analytics_path(project)
-
-          wait_for_requests
+      it 'shows predefined date ranges dropdown with `Custom` option selected' do
+        page.within(predefined_date_ranges_dropdown_selector) do
+          expect(page).to have_button('Custom')
         end
-
-        it 'shows predefined date ranges dropdown with `Custom` option selected' do
-          page.within(predefined_date_ranges_dropdown_selector) do
-            expect(page).to have_button('Custom')
-          end
-        end
-
-        it_behaves_like 'filters the issues by date'
-
-        it_behaves_like 'filters the metrics by date'
-
-        it_behaves_like 'navigates directly to a value stream stream stage with filters applied'
       end
 
-      context 'when the `vsa_predefined_date_ranges` feature flag is disabled' do
-        before do
-          stub_feature_flags(vsa_predefined_date_ranges: false)
-          visit project_cycle_analytics_path(project)
+      it 'can filter the issues by date' do
+        expect(page).to have_selector(stage_table_event_selector)
 
-          wait_for_requests
-        end
+        set_daterange(from, to)
 
-        it 'does not show predefined date ranges dropdown' do
-          expect(page).not_to have_css(predefined_date_ranges_dropdown_selector)
-        end
+        expect(page).not_to have_selector(stage_table_event_selector)
+        expect(page).not_to have_selector(stage_table_pagination_selector)
+      end
 
-        it_behaves_like 'filters the issues by date'
+      it 'can filter the metrics by date' do
+        expect(metrics_values).to match_array(%w[21 2 1])
 
-        it_behaves_like 'filters the metrics by date'
+        set_daterange(from, to)
 
-        it_behaves_like 'navigates directly to a value stream stream stage with filters applied'
+        expect(metrics_values).to eq(['-'] * 3)
+      end
+
+      it 'can navigate directly to a value stream stream stage with filters applied' do
+        visit project_cycle_analytics_path(project, created_before: '2019-12-31', created_after: '2019-11-01', stage_id: 'code', milestone_title: milestone.title)
+        wait_for_requests
+
+        expect(page).to have_selector('.gl-path-active-item-indigo', text: 'Code')
+        expect(page.find(".js-daterange-picker-from input").value).to eq("2019-11-01")
+        expect(page.find(".js-daterange-picker-to input").value).to eq("2019-12-31")
+
+        filter_bar = page.find(stage_filter_bar)
+        expect(filter_bar.find(".gl-filtered-search-token-data-content").text).to eq("%#{milestone.title}")
       end
 
       def stage_time_column

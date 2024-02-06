@@ -217,9 +217,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 > - Predefined date ranges dropdown list [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408656/) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. Disabled by default.
 > - Predefined date ranges dropdown list [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433149) in GitLab 16.7.
-
-FLAG:
-On self-managed GitLab, by default the predefined date ranges dropdown list feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. On GitLab.com, this feature is available.
+> - Predefined date ranges dropdown list [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438051) in GitLab 16.9. Feature flag `vsa_predefined_date_ranges` removed.
 
 Prerequisites:
 

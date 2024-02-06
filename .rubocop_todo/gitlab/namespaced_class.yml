@@ -1154,7 +1154,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/multi_destination_logger.rb'
     - 'lib/gitlab/namespace_sanitizer.rb'
     - 'lib/gitlab/namespaced_session_store.rb'
-    - 'lib/gitlab/net_http_adapter.rb'
     - 'lib/gitlab/object_hierarchy.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
     - 'lib/gitlab/otp_key_rotator.rb'

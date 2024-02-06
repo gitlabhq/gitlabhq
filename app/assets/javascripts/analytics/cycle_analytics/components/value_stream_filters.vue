@@ -11,7 +11,6 @@ import {
   LAST_30_DAYS,
 } from '~/analytics/shared/constants';
 import { getCurrentUtcDate, datesMatch } from '~/lib/utils/datetime_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import FilterBar from './filter_bar.vue';
 
@@ -26,7 +25,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     selectedProjects: {
       type: Array,
@@ -85,9 +83,6 @@ export default {
     isDefaultDateRange() {
       return datesMatch(this.startDate, LAST_30_DAYS) && datesMatch(this.endDate, this.currentDate);
     },
-    supportsPredefinedDateRanges() {
-      return this.glFeatures?.vsaPredefinedDateRanges;
-    },
     dateRangeOption() {
       const { predefinedDateRange } = this;
 
@@ -100,11 +95,8 @@ export default {
     isCustomDateRangeSelected() {
       return this.dateRangeOption === DATE_RANGE_CUSTOM_VALUE;
     },
-    shouldShowPredefinedDateRanges() {
-      return this.supportsPredefinedDateRanges && this.hasPredefinedDateRangesFilter;
-    },
     shouldShowDateRangePicker() {
-      if (this.shouldShowPredefinedDateRanges) {
+      if (this.hasPredefinedDateRangesFilter) {
         return this.hasDateRangeFilter && this.isCustomDateRangeSelected;
       }
 
@@ -149,6 +141,7 @@ export default {
     <div
       v-if="shouldShowFilterDropdowns"
       class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-gap-5"
+      data-testid="vsa-filter-dropdowns-container"
     >
       <projects-dropdown-filter
         v-if="hasProjectFilter"
@@ -166,7 +159,7 @@ export default {
         data-testid="vsa-date-range-filter-container"
       >
         <date-ranges-dropdown
-          v-if="shouldShowPredefinedDateRanges"
+          v-if="hasPredefinedDateRangesFilter"
           data-testid="vsa-predefined-date-ranges-dropdown"
           :selected="dateRangeOption"
           :tooltip="maxDateRangeTooltip"

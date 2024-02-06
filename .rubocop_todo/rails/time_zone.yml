@@ -11,7 +11,6 @@ Rails/TimeZone:
     - 'ee/spec/lib/gitlab/geo/base_request_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/cache_invalidation_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/event_spec.rb'
-    - 'ee/spec/lib/gitlab/geo/log_cursor/events/hashed_storage_attachments_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb'
     - 'lib/api/helpers.rb'
     - 'lib/api/sidekiq_metrics.rb'

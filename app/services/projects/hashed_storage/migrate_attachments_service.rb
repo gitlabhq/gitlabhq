@@ -63,5 +63,3 @@ module Projects
     end
   end
 end
-
-Projects::HashedStorage::MigrateAttachmentsService.prepend_mod_with('Projects::HashedStorage::MigrateAttachmentsService')

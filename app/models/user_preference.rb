@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class UserPreference < MainClusterwide::ApplicationRecord
-  include IgnorableColumns
-
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates
   # extra methods that aren't really needed here.
@@ -34,9 +32,6 @@ class UserPreference < MainClusterwide::ApplicationRecord
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
 
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
-
-  # 2023-06-22 is after 16.1 release and during 16.2 release https://docs.gitlab.com/ee/development/database/avoiding_downtime_in_migrations.html#ignoring-the-column-release-m
-  ignore_columns :use_legacy_web_ide, remove_with: '16.2', remove_after: '2023-06-22'
 
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true

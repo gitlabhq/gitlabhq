@@ -82,6 +82,9 @@ The repository must contain:
   - In sub-directories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
 
+NOTE:
+Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
+
 You should also:
 
 - Configure the project's `.gitlab-ci.yml` to [test the components](#test-the-component)

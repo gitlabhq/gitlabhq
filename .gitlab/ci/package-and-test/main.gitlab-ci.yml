@@ -45,8 +45,10 @@ _quarantine:
       optional: true
   stage: test
   variables:
-    CREATE_TEST_FAILURE_ISSUES: 'false'
+    RSPEC_REPORT_OPTS: "--format html --out tmp/rspec-${CI_JOB_NAME}.htm --color --format documentation"
     QA_RSPEC_TAGS: --tag quarantine
+  after_script:
+    - echo "After script overridden in _quarantine job"
 
 # ------------------------------------------
 # FF changes

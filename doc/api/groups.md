@@ -1343,7 +1343,7 @@ by the group or subgroups.
 
 This endpoint is an [Experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
 
-Requires at least the Maintainer role in the group.
+Requires Owner role in the group.
 
 ```plaintext
 GET /groups/:id/users
