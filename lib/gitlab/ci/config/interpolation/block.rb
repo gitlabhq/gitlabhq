@@ -14,7 +14,7 @@ module Gitlab
         # they are presented.
         class Block
           PREFIX = '$[['
-          PATTERN = /(?<block>\$\[\[\s*(?<data>.*?)\s*\]\])/
+          PATTERN = /(?<block>\$\[\[\s*(?<data>\S{1}.*?\S{1})\s*\]\])/
           MAX_FUNCTIONS = 3
 
           attr_reader :block, :data, :ctx, :errors
