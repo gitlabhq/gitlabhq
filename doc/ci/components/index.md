@@ -48,7 +48,12 @@ to a dedicated component project.
 
 To create a component project, you must:
 
-1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file.
+1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file:
+   - Ensure the description gives a clear introduction to the component.
+   - Optional. After the project is created, you can [add a project avatar](../../user/project/working_with_projects.md#edit-project-name-and-description).
+
+   Components published to the [CI/CD catalog](#cicd-catalog) use both the description and avatar when displaying the component project's summary.
+
 1. Add a YAML configuration file for each component, following the [required directory structure](#directory-structure).
    For example:
 

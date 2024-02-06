@@ -98,7 +98,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           update_description: true,
           update_labels: true,
           update_reviewers: true
-        )
+        ).and_return({ 'web_url' => 'https://example.com' })
       expect(gitlab_client).to receive(:create_or_update_merge_request)
         .with(
           change: change2,
@@ -110,7 +110,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
           update_description: true,
           update_labels: true,
           update_reviewers: true
-        )
+        ).and_return({ 'web_url' => 'https://example.com' })
 
       described_class.new(max_mrs: 2, keeps: [fake_keep]).run
     end
@@ -142,7 +142,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             update_description: true,
             update_labels: true,
             update_reviewers: true
-          )
+          ).and_return({ 'web_url' => 'https://example.com' })
 
         described_class.new(max_mrs: 2, keeps: [fake_keep], filter_identifiers: [/second/]).run
       end
@@ -186,7 +186,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             update_description: false,
             update_labels: true,
             update_reviewers: false
-          )
+          ).and_return({ 'web_url' => 'https://example.com' })
         expect(gitlab_client).to receive(:create_or_update_merge_request)
           .with(
             change: change2,
@@ -198,7 +198,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             update_description: false,
             update_labels: true,
             update_reviewers: true
-          )
+          ).and_return({ 'web_url' => 'https://example.com' })
 
         described_class.new(max_mrs: 2, keeps: [fake_keep]).run
       end

@@ -97,6 +97,7 @@ export default {
           :board="board"
           :is-current-board-loading="isLoading"
           @switchBoard="$emit('switchBoard', $event)"
+          @updateBoard="$emit('updateBoard', $event)"
         />
         <new-board-button />
         <issue-board-filtered-search

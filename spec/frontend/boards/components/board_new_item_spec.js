@@ -3,7 +3,6 @@ import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 import BoardNewItem from '~/boards/components/board_new_item.vue';
-import eventHub from '~/boards/eventhub';
 
 import { mockList } from '../mock_data';
 
@@ -109,13 +108,6 @@ describe('BoardNewItem', () => {
             list: mockList,
           },
         ]);
-      });
-
-      it('emits `scroll-board-list-` event with list.id on eventHub when `submit` is triggered on gl-form', async () => {
-        jest.spyOn(eventHub, '$emit').mockImplementation();
-        await glForm().trigger('submit');
-
-        expect(eventHub.$emit).toHaveBeenCalledWith(`scroll-board-list-${mockList.id}`);
       });
 
       it('emits `form-cancel` event and clears title value when `reset` is triggered on gl-form', async () => {

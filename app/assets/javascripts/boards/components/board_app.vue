@@ -5,7 +5,6 @@ import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
-import eventHub from '~/boards/eventhub';
 import { listsQuery, FilterFields } from 'ee_else_ce/boards/constants';
 import { formatBoardLists, filterVariables, FiltersInfo } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
@@ -113,11 +112,9 @@ export default {
   },
   created() {
     window.addEventListener('popstate', refreshCurrentPage);
-    eventHub.$on('updateBoard', this.refetchLists);
   },
   destroyed() {
     window.removeEventListener('popstate', refreshCurrentPage);
-    eventHub.$off('updateBoard', this.refetchLists);
   },
   methods: {
     refetchLists() {
@@ -148,6 +145,7 @@ export default {
       @setFilters="setFilters"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
       @toggleSwimlanes="isShowingEpicsSwimlanes = $event"
+      @updateBoard="refetchLists"
     />
     <board-content
       :board-id="boardId"

@@ -243,7 +243,7 @@ export default {
     },
     showNewIssueForm() {
       if (this.isSwimlanesHeader) {
-        eventHub.$emit('open-unassigned-lane');
+        this.$emit('openUnassignedLane');
         this.$nextTick(() => {
           eventHub.$emit(`${toggleFormEventPrefix.issue}${this.list.id}`);
         });

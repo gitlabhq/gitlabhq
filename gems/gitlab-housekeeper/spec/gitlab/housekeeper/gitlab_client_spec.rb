@@ -274,6 +274,10 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
     end
 
     it 'calls the GitLab API passing the token' do
+      api_response = {
+        iid: 5678,
+        web_url: 'https://example.com/api/v4/merge_requests/abc123/5678'
+      }
       stub = stub_request(:post, "https://gitlab.com/api/v4/projects/123/merge_requests")
         .with(
           body: {
@@ -290,11 +294,14 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
             'Content-Type' => 'application/json',
             'Private-Token' => 'the-api-token'
           })
-        .to_return(status: 200, body: '{}')
+            .to_return(status: 200, body: api_response.to_json)
 
-      client.create_or_update_merge_request(**params)
+      result = client.create_or_update_merge_request(**params)
 
       expect(stub).to have_been_requested
+
+      expect(result['iid']).to eq(5678)
+      expect(result['web_url']).to eq('https://example.com/api/v4/merge_requests/abc123/5678')
     end
 
     context 'when the merge request for the branch already exists' do
@@ -303,6 +310,10 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'updates the merge request' do
+        api_response = {
+          iid: 1234,
+          web_url: 'https://example.com/api/v4/merge_requests/abc123/1234'
+        }
         stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
           .with(
             body: {
@@ -315,10 +326,13 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
               'Content-Type' => 'application/json',
               'Private-Token' => 'the-api-token'
             })
-         .to_return(status: 200, body: '{}')
+         .to_return(status: 200, body: api_response.to_json)
 
-        client.create_or_update_merge_request(**params)
+        result = client.create_or_update_merge_request(**params)
         expect(stub).to have_been_requested
+
+        expect(result['iid']).to eq(1234)
+        expect(result['web_url']).to eq('https://example.com/api/v4/merge_requests/abc123/1234')
       end
 
       context 'when multiple merge requests exist' do

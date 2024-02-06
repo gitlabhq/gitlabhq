@@ -73,7 +73,6 @@ export default {
   },
   data() {
     return {
-      scrollOffset: 250,
       showCount: false,
       showIssueForm: false,
       showEpicForm: false,
@@ -246,10 +245,8 @@ export default {
       handler(id, oldVal) {
         if (id) {
           eventHub.$on(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
-          eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
 
           eventHub.$off(`${this.toggleFormEventPrefix}${oldVal}`, this.toggleForm);
-          eventHub.$off(`scroll-board-list-${oldVal}`, this.scrollToTop);
         }
       },
       immediate: true,
@@ -257,7 +254,6 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
-    eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   methods: {
     listHeight() {
@@ -265,12 +261,6 @@ export default {
     },
     scrollHeight() {
       return this.listRef?.scrollHeight || 0;
-    },
-    scrollTop() {
-      return this.listRef.scrollTop + this.listHeight();
-    },
-    scrollToTop() {
-      this.listRef.scrollTop = 0;
     },
     async loadNextPage() {
       this.isLoadingMore = true;

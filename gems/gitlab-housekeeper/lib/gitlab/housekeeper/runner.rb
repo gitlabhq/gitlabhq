@@ -116,7 +116,7 @@ module Gitlab
           Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
         end
 
-        gitlab_client.create_or_update_merge_request(
+        mr = gitlab_client.create_or_update_merge_request(
           change: change,
           source_project_id: housekeeper_fork_project_id,
           source_branch: branch_name,
@@ -127,6 +127,8 @@ module Gitlab
           update_labels: !non_housekeeper_changes.include?(:labels),
           update_reviewers: !non_housekeeper_changes.include?(:reviewers)
         )
+
+        puts "Merge request URL: #{mr['web_url'].yellowish}"
       end
 
       def housekeeper_fork_project_id

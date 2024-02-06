@@ -81,7 +81,7 @@ module Keeps
         migration_file = generator.invoke_all.first
         change.changed_files = [migration_file]
 
-        add_ensure_call_to_migration(migration_file, queue_method_node, job_name)
+        add_ensure_call_to_migration(migration_file, queue_method_node, job_name, migration_record)
         ::Gitlab::Housekeeper::Shell.execute('rubocop', '-a', migration_file)
 
         digest = Digest::SHA256.hexdigest(generator.migration_number)
@@ -126,7 +126,7 @@ module Keeps
       nil
     end
 
-    def add_ensure_call_to_migration(file, queue_method_node, job_name)
+    def add_ensure_call_to_migration(file, queue_method_node, job_name, migration_record)
       source = RuboCop::ProcessedSource.new(File.read(file), 3.1)
       ast = source.ast
       source_buffer = source.buffer
@@ -140,7 +140,7 @@ module Keeps
       column_name = queue_method_node.children[4]
       job_arguments = queue_method_node.children[5..].select { |s| s.type != :hash } # All remaining non-keyword args
 
-      gitlab_schema = ::Gitlab::Database::GitlabSchema.table_schema(table_name.value.to_s)
+      gitlab_schema = migration_record.gitlab_schema
 
       added_content = <<~RUBY.strip
       disable_ddl_transaction!

@@ -106,6 +106,24 @@ You can read more about the new OpenTofu CI/CD component [here](https://gitlab.c
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Deprecate license metadata format V1
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438477).
+</div>
+
+The license metadata format V1 dataset has been deprecated and will be removed
+in GitLab 18.0.
+
+Users who have the `package_metadata_synchronization` feature flag enabled are advised to
+upgrade to GitLab 16.3 or above, and remove the feature flag configuration.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### GitLab Runner registration token in Runner Operator
 
 <div class="deprecation-notes">
@@ -660,24 +678,6 @@ Use `Vulnerability.hasRemediations` instead.
 </div>
 
 The runner's legacy escape sequence mechanism to handle variable expansion implements a sub-optimal implementation of Ansi-C quoting. This method means that the runner would expand arguments included in double quotes. As of 15.11, we are deprecating the legacy escaping and quoting methods in the runner shell executor.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Deprecate license metadata format V1
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438477).
-</div>
-
-The license metadata format V1 dataset has been deprecated and will be removed
-in GitLab 17.0.
-
-Users who have the `package_metadata_synchronization` feature flag enabled are advised to
-upgrade to GitLab 16.3 or above, and remove the feature flag configuration.
 
 </div>
 

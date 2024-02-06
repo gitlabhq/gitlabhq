@@ -329,6 +329,7 @@ export default {
         :current-board="board"
         :current-page="currentPage"
         @addBoard="addBoard"
+        @updateBoard="$emit('updateBoard', $event)"
         @cancel="cancel"
       />
     </span>
