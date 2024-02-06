@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_opentofu_base_latest_we
 description: Count of pipelines that include the OpenTofu job template from GitLab
 product_section: ops
 product_stage: deploy
-product_group: environment
+product_group: environments
 value_type: number
 status: active
 milestone: "16.9"

@@ -76,3 +76,7 @@ module UserSettings
     end
   end
 end
+
+# Added for JiHu
+# Used in https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/app/controllers/jh/user_settings/profiles_controller.rb
+UserSettings::ProfilesController.prepend_mod

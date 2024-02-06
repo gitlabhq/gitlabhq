@@ -10,6 +10,11 @@ module Gitlab
         :labels,
         :reviewers
 
+      def initialize
+        @labels = []
+        @reviewers = []
+      end
+
       def mr_description
         <<~MARKDOWN
         #{description}

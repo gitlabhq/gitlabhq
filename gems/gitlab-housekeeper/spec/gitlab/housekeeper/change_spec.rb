@@ -10,6 +10,15 @@ RSpec.describe ::Gitlab::Housekeeper::Change do
     change.description = 'The description'
   end
 
+  describe '#initialize' do
+    it 'sets default values for optional fields' do
+      change = described_class.new
+
+      expect(change.labels).to eq([])
+      expect(change.reviewers).to eq([])
+    end
+  end
+
   describe '#mr_description' do
     it 'includes standard content' do
       expect(change.mr_description).to eq(

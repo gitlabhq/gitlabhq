@@ -606,7 +606,7 @@ module QA
               r.merge_request == "false" and
               r.quarantined == "false" and
               r.smoke == "false" and
-              r.reliable == "#{reliable}"
+              (r.reliable == "#{reliable}" #{reliable ? 'or' : 'and'} r.blocking == "#{reliable}")
             )
             |> filter(fn: (r) => r["_field"] == "job_url" or
               r["_field"] == "failure_exception" or

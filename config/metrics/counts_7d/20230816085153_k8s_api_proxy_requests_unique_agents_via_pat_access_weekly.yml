@@ -3,7 +3,7 @@ key_path: redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agen
 description: WAU of the unique Agents using the KAS Kubernetes API proxy via Personal Access Token Access
 product_section: ops
 product_stage: deploy
-product_group: environment
+product_group: environments
 value_type: number
 status: active
 milestone: "16.4"

@@ -10,8 +10,5 @@
   .controls.d-flex.gl-align-items-center
     = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3', data: { track_label: "template_preview", track_property: template.name, track_action: "click_button", track_value: "" }, rel: 'noopener noreferrer' }, href: template.preview, target: '_blank') do
       = _("Preview")
-    %label.btn.gl-button.btn-confirm.template-button.choose-template.gl-mb-0{ for: template.name,
-      'data-testid': "use_template_#{template.name}" }
-      %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_action: "click_button", track_value: "" } }
-      %span{ data: { testid: 'use-template-button' } }
-        = _("Use template")
+    = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'js-use-template-button', data: { testid: "use-template-#{template.name}", track_label: 'template_use', track_property: template.name, track_action: 'click_button', track_value: '', template_name: template.name } }) do
+      = _("Use template")

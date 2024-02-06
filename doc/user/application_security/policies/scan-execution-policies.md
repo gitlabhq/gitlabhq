@@ -382,6 +382,7 @@ Note the following:
 - For `custom` scans, you must specify one of `ci_configuration` or `ci_configuration_path`.
 - `custom` scans are being executed for triggered rules only.
 - Jobs variables from `custom` scans take precedence over the project's CI/CD configuration.
+- Users triggering a pipeline must have at least read access to CI files specified in the `ci_configuration_path` or included in the CI/CD configuration.
 
 #### Example security policies project
 

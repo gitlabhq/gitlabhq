@@ -18,14 +18,14 @@ RSpec.describe 'Project', feature_category: :source_code_management do
     shared_examples 'creates from template' do |template, sub_template_tab = nil|
       let(:selected_template) { page.find('.project-fields-form .selected-template') }
 
-      choose_template_selector = '.choose-template'
+      choose_template_selector = '.js-use-template-button'
       template_option_selector = '.template-option'
       template_name_selector = '.description strong'
 
       it "is created from template", :js do
         click_link 'Create from template'
         find(".project-template #{sub_template_tab}").click if sub_template_tab
-        find("label[for=#{template.name}]").click
+        find("button[data-template-name=#{template.name}]").click
         fill_in("project_name", with: template.name)
 
         page.within '#content-body' do

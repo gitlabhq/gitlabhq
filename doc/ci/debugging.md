@@ -295,7 +295,7 @@ These errors can happen if the following are both true:
   the private project's allowlist.
 
 To resolve this issue, add any projects with CI/CD jobs that fetch images from the container
-registry to the target project's [job token allowlist](jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token).
+registry to the target project's [job token allowlist](jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist).
 
 These errors might also happen when trying to use a [project access token](../user/project/settings/project_access_tokens.md)
 to access images in another project. Project access tokens are scoped to one project,

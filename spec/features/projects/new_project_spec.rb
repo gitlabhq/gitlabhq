@@ -63,7 +63,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       click_link 'Create from template'
 
       page.within('#create-from-template-pane') do
-        find("[data-testid='use_template_#{Gitlab::ProjectTemplate.localized_templates_table.first.name}']").click
+        find_by_testid("use-template-#{Gitlab::ProjectTemplate.localized_templates_table.first.name}").click
 
         expect(page).to have_content(description_label)
       end
@@ -284,7 +284,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       it 'does not show the initialize with Readme checkbox on "Create from template" tab' do
         visit new_project_path
         click_link 'Create from template'
-        first('.choose-template').click
+        click_link_or_button('Use template', match: :first)
 
         page.within '.project-fields-form' do
           expect(page).not_to have_css('input#project_initialize_with_readme')

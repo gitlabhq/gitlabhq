@@ -3,6 +3,7 @@
 module Gitlab
   module GitalyClient
     class CleanupService
+      include Gitlab::EncodingHelper
       include WithFeatureFlagActors
 
       attr_reader :repository, :gitaly_repo, :storage
@@ -25,6 +26,26 @@ module Gitlab
           timeout: GitalyClient.long_timeout
         )
         response.each(&blk)
+      end
+
+      def rewrite_history(blobs: [], redactions: [])
+        req_enum = Enumerator.new do |y|
+          first_request = Gitaly::RewriteHistoryRequest.new(repository: @gitaly_repo)
+          y.yield(first_request)
+
+          blobs.each_slice(100) do |b|
+            y.yield Gitaly::RewriteHistoryRequest.new(blobs: b)
+          end
+
+          redactions.map { |r| encode_binary(r) }.each_slice(100) do |r|
+            y.yield Gitaly::RewriteHistoryRequest.new(redactions: r)
+          end
+        end
+
+        gitaly_client_call(@repository.storage, :cleanup_service, :rewrite_history, req_enum,
+          timeout: GitalyClient.long_timeout)
+      rescue GRPC::InvalidArgument => e
+        raise ArgumentError, e.message
       end
 
       private

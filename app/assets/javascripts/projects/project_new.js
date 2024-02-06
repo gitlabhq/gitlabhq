@@ -219,7 +219,7 @@ const bindEvents = () => {
   const $projectImportUrlPassword = $('#project_import_url_password');
   const $projectImportUrlError = $('.js-import-url-error');
   const $projectImportForm = $('form.js-project-import');
-  const $useTemplateBtn = $('.template-button > input');
+  const $useTemplateBtn = $('.js-use-template-button');
   const $changeTemplateBtn = $('.change-template');
 
   const $projectImportUrl = document.querySelector('#project_import_url');
@@ -256,9 +256,7 @@ const bindEvents = () => {
     clearChildren($selectedIcon);
 
     const $selectedTemplate = this;
-    $selectedTemplate.checked = true;
-
-    const { value } = $selectedTemplate;
+    const value = $($selectedTemplate).data('templateName');
     const selectedTemplate = DEFAULT_PROJECT_TEMPLATES[value];
     $selectedTemplateText.textContent = selectedTemplate.text;
     const clone = document.querySelector(selectedTemplate.icon).cloneNode(true);
@@ -273,11 +271,6 @@ const bindEvents = () => {
     setProjectNamePathHandlers($activeTabProjectName, $activeTabProjectPath);
   }
 
-  function toggleActiveClassOnLabel(event) {
-    const $label = $(event.target).parent();
-    $label.toggleClass('active');
-  }
-
   function chooseTemplateOnEnter(event) {
     if (event.code === ENTER_KEY) {
       chooseTemplate.call(this);
@@ -285,14 +278,11 @@ const bindEvents = () => {
   }
 
   $useTemplateBtn.on('click', chooseTemplate);
-
-  $useTemplateBtn.on('focus focusout', toggleActiveClassOnLabel);
   $useTemplateBtn.on('keypress', chooseTemplateOnEnter);
 
   $changeTemplateBtn.on('click', () => {
     $projectTemplateButtons.forEach((ptb) => ptb.classList.remove('hidden'));
     $projectFieldsForm.classList.remove('selected');
-    $useTemplateBtn.prop('checked', false);
   });
 
   $newProjectForm.on('submit', () => {
