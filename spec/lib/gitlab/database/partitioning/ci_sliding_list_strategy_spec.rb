@@ -40,13 +40,37 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     it 'detects both partitions' do
       expect(strategy.current_partitions).to eq(
         [
-          Gitlab::Database::Partitioning::SingleNumericListPartition.new(
+          Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
             table_name, 100, partition_name: "#{table_name}_100"
           ),
-          Gitlab::Database::Partitioning::SingleNumericListPartition.new(
+          Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
             table_name, 101, partition_name: "#{table_name}_101"
           )
         ])
+    end
+
+    context 'with multiple values' do
+      before do
+        connection.execute(<<~SQL)
+          create table #{table_name}_test
+          partition of #{table_name} for values in (102, 103, 104);
+        SQL
+      end
+
+      it 'detects all partitions' do
+        expect(strategy.current_partitions).to eq(
+          [
+            Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+              table_name, 100, partition_name: "#{table_name}_100"
+            ),
+            Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+              table_name, 101, partition_name: "#{table_name}_101"
+            ),
+            Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+              table_name, [102, 103, 104], partition_name: "#{table_name}_test"
+            )
+          ])
+      end
     end
   end
 
@@ -60,7 +84,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
 
   describe '#active_partition' do
     it 'is the partition with the largest value' do
-      expect(strategy.active_partition.value).to eq(101)
+      expect(strategy.active_partition.values).to eq([101])
     end
 
     context 'when there are no partitions' do
@@ -69,7 +93,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
       end
 
       it 'is the initial partition' do
-        expect(strategy.active_partition.value).to eq(100)
+        expect(strategy.active_partition.values).to eq([100])
       end
     end
   end
@@ -82,7 +106,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
         extra = strategy.missing_partitions
 
         expect(extra.length).to eq(1)
-        expect(extra.first.value).to eq(102)
+        expect(extra.first.values).to eq([102])
       end
 
       context 'when there are no partitions for the table' do
@@ -92,7 +116,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
           missing_partitions = strategy.missing_partitions
 
           expect(missing_partitions.size).to eq(2)
-          expect(missing_partitions.map(&:value)).to match_array([100, 101])
+          expect(missing_partitions.map(&:values)).to match_array([[100], [101]])
         end
       end
     end
@@ -114,7 +138,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
         expect(missing_partitions.size).to eq(1)
         missing_partition = missing_partitions.first
 
-        expect(missing_partition.value).to eq(100)
+        expect(missing_partition.values).to eq([100])
       end
     end
   end
@@ -136,7 +160,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
   describe '#initial_partition' do
     it 'starts with the value 100', :aggregate_failures do
       initial_partition = strategy.initial_partition
-      expect(initial_partition.value).to eq(100)
+      expect(initial_partition.values).to eq([100])
       expect(initial_partition.table).to eq(strategy.table_name)
       expect(initial_partition.partition_name).to eq("#{strategy.table_name}_100")
     end
@@ -147,7 +171,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
       it 'removes the prefix', :aggregate_failures do
         initial_partition = strategy.initial_partition
 
-        expect(initial_partition.value).to eq(100)
+        expect(initial_partition.values).to eq([100])
         expect(initial_partition.table).to eq(strategy.table_name)
         expect(initial_partition.partition_name).to eq('test_gitlab_ci_partitioned_test_100')
       end
@@ -158,13 +182,13 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     before do
       allow(strategy)
         .to receive(:active_partition)
-        .and_return(instance_double(Gitlab::Database::Partitioning::SingleNumericListPartition, value: 105))
+        .and_return(instance_double(Gitlab::Database::Partitioning::MultipleNumericListPartition, values: [105]))
     end
 
     it 'is one after the active partition', :aggregate_failures do
       next_partition = strategy.next_partition
 
-      expect(next_partition.value).to eq(106)
+      expect(next_partition.values).to eq([106])
       expect(next_partition.table).to eq(strategy.table_name)
       expect(next_partition.partition_name).to eq("#{strategy.table_name}_106")
     end
@@ -175,7 +199,7 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
       it 'removes the prefix', :aggregate_failures do
         next_partition = strategy.next_partition
 
-        expect(next_partition.value).to eq(106)
+        expect(next_partition.values).to eq([106])
         expect(next_partition.table).to eq(strategy.table_name)
         expect(next_partition.partition_name).to eq('test_gitlab_ci_partitioned_test_106')
       end

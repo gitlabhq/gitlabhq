@@ -13145,6 +13145,28 @@ CREATE SEQUENCE audit_events_google_cloud_logging_configurations_id_seq
 
 ALTER SEQUENCE audit_events_google_cloud_logging_configurations_id_seq OWNED BY audit_events_google_cloud_logging_configurations.id;
 
+CREATE TABLE audit_events_group_external_streaming_destinations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    type smallint NOT NULL,
+    name text NOT NULL,
+    config jsonb NOT NULL,
+    encrypted_secret_token bytea NOT NULL,
+    encrypted_secret_token_iv bytea NOT NULL,
+    CONSTRAINT check_97d157fbd0 CHECK ((char_length(name) <= 72))
+);
+
+CREATE SEQUENCE audit_events_group_external_streaming_destinations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_group_external_streaming_destinations_id_seq OWNED BY audit_events_group_external_streaming_destinations.id;
+
 CREATE SEQUENCE audit_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -26993,6 +27015,8 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations ALTER COLUMN id 
 
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_google_cloud_logging_configurations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_group_external_streaming_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_group_external_streaming_destinations_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_amazon_s3_configurations_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
@@ -28960,6 +28984,9 @@ ALTER TABLE ONLY audit_events_external_audit_event_destinations
 
 ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
     ADD CONSTRAINT audit_events_google_cloud_logging_configurations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_group_external_streaming_destinations
+    ADD CONSTRAINT audit_events_group_external_streaming_destinations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations
     ADD CONSTRAINT audit_events_instance_amazon_s3_configurations_pkey PRIMARY KEY (id);
@@ -32326,6 +32353,8 @@ CREATE INDEX idx_approval_merge_request_rules_on_sec_orchestration_config_id ON 
 CREATE INDEX idx_approval_project_rules_on_scan_result_policy_id ON approval_project_rules USING btree (scan_result_policy_id);
 
 CREATE INDEX idx_approval_project_rules_on_sec_orchestration_config_id ON approval_project_rules USING btree (security_orchestration_policy_configuration_id);
+
+CREATE INDEX idx_audit_events_group_external_destinations_on_group_id ON audit_events_group_external_streaming_destinations USING btree (group_id);
 
 CREATE INDEX idx_audit_events_part_on_entity_id_desc_author_id_created_at ON ONLY audit_events USING btree (entity_id, entity_type, id DESC, author_id, created_at);
 
@@ -40324,6 +40353,9 @@ ALTER TABLE ONLY milestone_releases
 
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY audit_events_group_external_streaming_destinations
+    ADD CONSTRAINT fk_rails_7dffb88f29 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;

@@ -45,8 +45,23 @@ ClickHouse::Client.select('SELECT 1', :main)
 
 ## Database schema and migrations
 
-There are `bundle exec rake gitlab:clickhouse:migrate` and `bundle exec rake gitlab:clickhouse:rollback` tasks
-(introduced in [!136103](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136103)).
+To run database migrations, execute:
+
+```shell
+bundle exec rake gitlab:clickhouse:migrate
+```
+
+To rollback last N migrations, execute:
+
+```shell
+bundle exec rake gitlab:clickhouse:rollback:main STEP=N
+```
+
+Or use the following command to rollback all migrations:
+
+```shell
+bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+```
 
 You can create a migration by creating a Ruby migration file in `db/click_house/migrate` folder. It should be prefixed with a timestamp in the format `YYYYMMDDHHMMSS_description_of_migration.rb`
 
@@ -73,17 +88,6 @@ class CreateIssues < ClickHouse::Migration
     SQL
   end
 end
-```
-
-When you're working locally in your development environment, you can create or re-create your table schema by
-executing `rake gitlab:clickhouse:rollback` and `rake gitlab:clickhouse:migrate`.
-Alternatively, you can use the following snippet in the Rails console:
-
-```ruby
-require_relative 'spec/support/database/click_house/hooks.rb'
-
-# Drops and re-creates all tables
-ClickHouseTestRunner.new.ensure_schema
 ```
 
 ## Writing database queries

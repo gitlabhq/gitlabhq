@@ -4,12 +4,18 @@ module Gitlab
   module Database
     module Partitioning
       class CiSlidingListStrategy < SlidingListStrategy
+        def current_partitions
+          Gitlab::Database::PostgresPartition.for_parent_table(table_name).map do |partition|
+            MultipleNumericListPartition.from_sql(table_name, partition.name, partition.condition)
+          end.sort
+        end
+
         def initial_partition
           partition_for(100)
         end
 
         def next_partition
-          partition_for(active_partition.value + 1)
+          partition_for(active_partition.values.max + 1)
         end
 
         def missing_partitions
@@ -36,7 +42,7 @@ module Gitlab
         def ensure_partitioning_column_ignored_or_readonly!; end
 
         def partition_for(value)
-          SingleNumericListPartition.new(table_name, value, partition_name: partition_name(value))
+          MultipleNumericListPartition.new(table_name, value, partition_name: partition_name(value))
         end
 
         def partition_name(value)

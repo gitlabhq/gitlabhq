@@ -2607,14 +2607,10 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def create_default_organization_user
-    return unless Feature.enabled?(:update_default_organization_users, self, type: :gitlab_com_derisk)
-
     Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
   end
 
   def update_default_organization_user
-    return unless Feature.enabled?(:update_default_organization_users, self, type: :gitlab_com_derisk)
-
     Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
   end
 

@@ -23,6 +23,7 @@ module QA
         end
 
         view 'app/views/projects/project_templates/_template.html.haml' do
+          element 'use-template-button'
           element 'template-option-container'
         end
 

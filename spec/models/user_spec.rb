@@ -1824,17 +1824,6 @@ RSpec.describe User, feature_category: :user_profile do
         expect(default_organization.user?(user)).to be(true)
       end
     end
-
-    context 'when feature flag update_default_organization_users is disabled' do
-      before do
-        stub_feature_flags(update_default_organization_users: false)
-      end
-
-      it 'adds user to organization_users as a regular user of default organization' do
-        expect { create_user }.not_to change { Organizations::OrganizationUser.count }
-        expect(default_organization.user?(user)).to be(false)
-      end
-    end
   end
 
   describe 'name getters' do

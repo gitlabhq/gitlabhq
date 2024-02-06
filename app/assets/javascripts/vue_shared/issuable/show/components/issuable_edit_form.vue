@@ -1,10 +1,11 @@
 <script>
 import { GlForm, GlFormGroup, GlFormInput } from '@gitlab/ui';
-
+import { __ } from '~/locale';
 import Autosave from '~/autosave';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import ZenMode from '~/zen_mode';
-
 import eventHub from '../event_hub';
 
 export default {
@@ -12,7 +13,7 @@ export default {
     GlForm,
     GlFormGroup,
     GlFormInput,
-    MarkdownField,
+    MarkdownEditor,
   },
   props: {
     issuable: {
@@ -48,7 +49,21 @@ export default {
     return {
       title: '',
       description: '',
+      formFieldProps: {
+        id: 'issuable-description',
+        name: 'issuable-description',
+        'aria-label': __('Description'),
+        placeholder: __('Write a comment or drag your files here…'),
+        class: 'note-textarea js-gfm-input js-autosize markdown-area',
+      },
     };
+  },
+  computed: {
+    descriptionAutosaveKey() {
+      if (this.enableAutosave)
+        return [document.location.pathname, document.location.search, 'description'].join('/');
+      return '';
+    },
   },
   watch: {
     issuable: {
@@ -76,25 +91,20 @@ export default {
   },
   methods: {
     initAutosave() {
-      const { titleInput, descriptionInput } = this.$refs;
+      const { titleInput } = this.$refs;
 
-      if (!titleInput || !descriptionInput) return;
+      if (!titleInput) return;
 
       this.autosaveTitle = new Autosave(titleInput.$el, [
         document.location.pathname,
         document.location.search,
         'title',
       ]);
-
-      this.autosaveDescription = new Autosave(descriptionInput, [
-        document.location.pathname,
-        document.location.search,
-        'description',
-      ]);
     },
     resetAutosave() {
       this.autosaveTitle.reset();
-      this.autosaveDescription.reset();
+
+      markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.descriptionAutosaveKey);
     },
     handleKeydown(e, inputType) {
       this.$emit(`keydown-${inputType}`, e, {
@@ -132,26 +142,15 @@ export default {
       label-for="issuable-description"
       class="col-12 gl-px-0 common-note-form"
     >
-      <markdown-field
-        :markdown-preview-path="descriptionPreviewPath"
+      <markdown-editor
+        v-model="description"
+        :render-markdown-path="descriptionPreviewPath"
         :markdown-docs-path="descriptionHelpPath"
         :enable-autocomplete="enableAutocomplete"
-        :textarea-value="description"
-      >
-        <template #textarea>
-          <textarea
-            id="issuable-description"
-            ref="descriptionInput"
-            v-model="description"
-            :data-supports-quick-actions="enableAutocomplete"
-            :aria-label="__('Description')"
-            :placeholder="__('Write a comment or drag your files here…')"
-            class="note-textarea js-gfm-input js-autosize markdown-area"
-            dir="auto"
-            @keydown="handleKeydown($event, 'description')"
-          ></textarea>
-        </template>
-      </markdown-field>
+        :supports-quick-actions="enableAutocomplete"
+        :form-field-props="formFieldProps"
+        @keydown="handleKeydown($event, 'description')"
+      />
     </gl-form-group>
     <div
       data-testid="actions"

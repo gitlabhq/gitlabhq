@@ -1,10 +1,14 @@
 import { GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-
 import { nextTick } from 'vue';
 import IssuableEditForm from '~/vue_shared/issuable/show/components/issuable_edit_form.vue';
 import IssuableEventHub from '~/vue_shared/issuable/show/event_hub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
+import EditorModeSwitcher from '~/vue_shared/components/markdown/editor_mode_switcher.vue';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import Autosave from '~/autosave';
 
 import { mockIssuableShowProps, mockIssuable } from '../mock_data';
@@ -20,7 +24,10 @@ const createComponent = ({ propsData = issuableEditFormProps } = {}) =>
   shallowMount(IssuableEditForm, {
     propsData,
     stubs: {
+      MarkdownEditor,
       MarkdownField,
+      MarkdownToolbar,
+      EditorModeSwitcher,
     },
     slots: {
       'edit-form-actions': `
@@ -109,17 +116,18 @@ describe('IssuableEditForm', () => {
   describe('methods', () => {
     describe('initAutosave', () => {
       it('initializes autosave', () => {
-        expect(Autosave.mock.calls).toEqual([
-          [expect.any(Element), ['/', '', 'title']],
-          [expect.any(Element), ['/', '', 'description']],
-        ]);
+        expect(Autosave.mock.calls).toEqual([[expect.any(Element), ['/', '', 'title']]]);
       });
     });
 
     describe('resetAutosave', () => {
-      it('resets title and description on "update.issuable event"', () => {
+      it('resets title on "update.issuable event"', () => {
+        const clearDescriptionAutosaveSpy = jest.fn();
+        markdownEditorEventHub.$on(CLEAR_AUTOSAVE_ENTRY_EVENT, clearDescriptionAutosaveSpy);
+
         IssuableEventHub.$emit('update.issuable');
-        expect(Autosave.prototype.reset.mock.calls).toEqual([[], []]);
+        expect(Autosave.prototype.reset).toHaveBeenCalled();
+        expect(clearDescriptionAutosaveSpy).toHaveBeenCalled();
       });
     });
   });
@@ -150,6 +158,12 @@ describe('IssuableEditForm', () => {
         'aria-label': 'Description',
         placeholder: 'Write a comment or drag your files here…',
       });
+    });
+
+    it('allows switching to rich text editor', () => {
+      const descriptionEl = wrapper.find('[data-testid="description"]');
+
+      expect(descriptionEl.text()).toContain('Switch to rich text editing');
     });
 
     it('renders form actions', () => {

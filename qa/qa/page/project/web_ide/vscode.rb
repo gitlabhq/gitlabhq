@@ -255,15 +255,12 @@ module QA
           end
 
           def wait_until_code_suggestions_enabled
-            wait_until(max_duration: 30, message: 'Wait for Code Suggestions extension to be enabled') do
+            wait_until(max_duration: 30, skip_finished_loading_check_on_refresh: true,
+              message: 'Wait for Code Suggestions extension to be enabled') do
+              raise code_suggestions_error if has_code_suggestions_error?
+
               has_code_suggestions_status?('enabled')
             end
-          end
-
-          def has_code_suggestions_status?(status)
-            page.document.has_css?(
-              "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label*=#{status.downcase}]"
-            )
           end
 
           def wait_for_code_suggestion
@@ -315,6 +312,22 @@ module QA
                 has_text?(item_name)
               end
             end
+          end
+
+          def code_suggestions_icon_selector(status)
+            "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label*=#{status.downcase}]"
+          end
+
+          def has_code_suggestions_status?(status)
+            page.document.has_css?(code_suggestions_icon_selector(status))
+          end
+
+          def has_code_suggestions_error?
+            !page.document.has_no_css?(code_suggestions_icon_selector('error'))
+          end
+
+          def code_suggestions_error
+            page.document.find(code_suggestions_icon_selector('error'))['aria-label']
           end
         end
       end

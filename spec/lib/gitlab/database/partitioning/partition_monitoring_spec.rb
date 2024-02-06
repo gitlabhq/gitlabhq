@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::PartitionMonitoring do
+RSpec.describe Gitlab::Database::Partitioning::PartitionMonitoring, feature_category: :database do
   describe '#report_metrics' do
     subject { described_class.new.report_metrics_for_model(model) }
 

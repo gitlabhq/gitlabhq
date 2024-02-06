@@ -17,8 +17,8 @@ hr-style:                         # MD035
   style: "---"
 line-length: false                # MD013
 link-fragments: false             # MD051
-no-duplicate-header:              # MD024
-  allow_different_nesting: true
+no-duplicate-heading:             # MD024
+  siblings_only: true
 no-emphasis-as-heading: false     # MD036
 no-inline-html: false             # MD033
 no-trailing-punctuation:          # MD026

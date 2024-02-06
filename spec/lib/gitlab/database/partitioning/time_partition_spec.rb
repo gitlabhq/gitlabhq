@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::TimePartition do
+RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: :database do
   describe '.from_sql' do
     subject { described_class.from_sql(table, partition_name, definition) }
 

@@ -118,6 +118,16 @@ RSpec.describe Ci::Partitionable do
 
           it { is_expected.to eq(false) }
         end
+
+        context 'with an existing partition for partition_id in 100, 101' do
+          before do
+            ci_model.connection.execute(<<~SQL)
+              CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (100, 101);
+            SQL
+          end
+
+          it { is_expected.to eq(false) }
+        end
       end
     end
 
