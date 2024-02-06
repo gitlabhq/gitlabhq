@@ -1,5 +1,5 @@
 query savedReplies($after: String = "", $before: String = "") {
-  currentUser {
+  object: currentUser {
     id
     savedReplies(after: $after, before: $before) {
       nodes {

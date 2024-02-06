@@ -36,14 +36,6 @@ RSpec.describe Groups::InfrastructureRegistryController, feature_category: :pack
 
           it_behaves_like 'returning response status', :not_found
         end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(group_level_infrastructure_registry: false)
-          end
-
-          it_behaves_like 'returning response status', :not_found
-        end
       end
     end
   end

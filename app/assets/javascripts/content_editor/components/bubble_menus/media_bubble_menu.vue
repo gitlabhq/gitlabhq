@@ -164,8 +164,8 @@ export default {
     },
 
     onTransaction({ transaction }) {
-      const { filename = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
-      if (this.uploading === filename) {
+      const { uploading = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
+      if (this.uploading === uploading) {
         this.uploadProgress = Math.round(progress * 100);
       }
     },

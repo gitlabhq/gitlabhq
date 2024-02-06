@@ -5,7 +5,13 @@ import createDefaultClient from '~/lib/graphql';
 import routes from './routes';
 import App from './components/app.vue';
 
-export const initCommentTemplates = () => {
+export const initCommentTemplates = ({
+  fetchAllQuery,
+  fetchSingleQuery,
+  createMutation,
+  deleteMutation,
+  updateMutation,
+}) => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
@@ -24,6 +30,13 @@ export const initCommentTemplates = () => {
     el,
     router,
     apolloProvider,
+    provide: {
+      fetchAllQuery,
+      fetchSingleQuery,
+      createMutation,
+      deleteMutation,
+      updateMutation,
+    },
     render(h) {
       return h(App);
     },

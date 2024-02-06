@@ -7,7 +7,6 @@ import { __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_USERS_SAVED_REPLY } from '~/graphql_shared/constants';
 import CreateForm from '../components/form.vue';
-import getSavedReply from '../queries/get_saved_reply.query.graphql';
 
 export default {
   components: {
@@ -17,19 +16,21 @@ export default {
   apollo: {
     savedReply: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
-      query: getSavedReply,
+      query() {
+        return this.fetchSingleQuery;
+      },
       variables() {
         return {
           id: convertToGraphQLId(TYPE_USERS_SAVED_REPLY, this.$route.params.id),
         };
       },
-      update: (r) => r.currentUser.savedReply,
+      update: (r) => r.object.savedReply,
       skip() {
         return !this.$route.params.id;
       },
       result({
         data: {
-          currentUser: { savedReply },
+          object: { savedReply },
         },
       }) {
         if (!savedReply) {
@@ -39,6 +40,7 @@ export default {
       },
     },
   },
+  inject: ['fetchSingleQuery'],
   data() {
     return {
       savedReply: null,

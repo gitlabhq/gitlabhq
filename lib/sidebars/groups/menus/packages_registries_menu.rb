@@ -58,10 +58,7 @@ module Sidebars
         end
 
         def infrastructure_registry_menu_item
-          unless context.group.packages_feature_enabled? &&
-              Feature.enabled?(:group_level_infrastructure_registry, context.group.root_ancestor, type: :gitlab_com_derisk)
-            return nil_menu_item(:infrastructure_registry)
-          end
+          return nil_menu_item(:infrastructure_registry) unless context.group.packages_feature_enabled?
 
           ::Sidebars::MenuItem.new(
             title: _('Terraform modules'),

@@ -14,7 +14,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
   end
 
   context 'when user has no comment templates' do
-    base_input_path = 'comment_templates/queries/'
+    base_input_path = 'pages/profiles/comment_templates/queries/'
     base_output_path = 'graphql/comment_templates/'
     query_name = 'saved_replies.query.graphql'
 
@@ -28,7 +28,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
   end
 
   context 'when user has comment templates' do
-    base_input_path = 'comment_templates/queries/'
+    base_input_path = 'pages/profiles/comment_templates/queries/'
     base_output_path = 'graphql/comment_templates/'
     query_name = 'saved_replies.query.graphql'
 
@@ -45,7 +45,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
   end
 
   context 'when user creates comment template' do
-    base_input_path = 'comment_templates/queries/'
+    base_input_path = 'pages/profiles/comment_templates/queries/'
     base_output_path = 'graphql/comment_templates/'
     query_name = 'create_saved_reply.mutation.graphql'
 
@@ -59,7 +59,7 @@ RSpec.describe GraphQL::Query, type: :request, feature_category: :user_profile d
   end
 
   context 'when user creates comment template and it errors' do
-    base_input_path = 'comment_templates/queries/'
+    base_input_path = 'pages/profiles/comment_templates/queries/'
     base_output_path = 'graphql/comment_templates/'
     query_name = 'create_saved_reply.mutation.graphql'
 

@@ -449,14 +449,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @update_current_user_path = expose_path(api_v4_user_preferences_path)
     @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
     @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
+
     if params[:pin] && Feature.enabled?(:pinned_file, @project)
-      @pinned_file_url = diff_by_file_hash_namespace_project_merge_request_path(
-        format: 'json',
-        id: merge_request.iid,
-        namespace_id: project&.namespace.to_param,
-        project_id: project&.path,
-        file_hash: params[:pin]
-      )
+      @pinned_file_url = pinned_file_url(@project, @merge_request)
     end
 
     if merge_request.diffs_batch_cache_with_max_age?
@@ -632,6 +627,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     params[:ck] = merge_request.merge_head_diff&.patch_id_sha if merge_request.diffs_batch_cache_with_max_age?
 
     diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
+  end
+
+  def pinned_file_url(project, merge_request)
+    diff_by_file_hash_namespace_project_merge_request_path(
+      format: 'json',
+      id: merge_request.iid,
+      namespace_id: project&.namespace.to_param,
+      project_id: project&.path,
+      file_hash: params[:pin],
+      diff_head: true
+    )
   end
 
   def convert_date_to_epoch(date)

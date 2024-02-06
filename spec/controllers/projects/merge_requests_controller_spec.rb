@@ -258,7 +258,8 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
               id: merge_request.iid,
               namespace_id: project.namespace.to_param,
               project_id: project.path,
-              file_hash: file_hash
+              file_hash: file_hash,
+              diff_head: true
             ))
         end
       end

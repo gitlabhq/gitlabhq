@@ -36,6 +36,8 @@ module API
         get do
           content_type 'application/json'
 
+          Gitlab::InternalEvents.track_event('request_service_ping_via_rest', user: current_user)
+
           Rails.cache.fetch(Gitlab::Usage::ServicePingReport::CACHE_KEY) ||
             ::RawUsageData.for_current_reporting_cycle.first&.payload || {}
         end

@@ -54891,6 +54891,9 @@ msgstr ""
 msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"
 msgstr ""
 
+msgid "Vulnerability|A solution is available for this vulnerability"
+msgstr ""
+
 msgid "Vulnerability|Activity"
 msgstr ""
 
@@ -54946,6 +54949,9 @@ msgid "Vulnerability|Crash type"
 msgstr ""
 
 msgid "Vulnerability|Crash type:"
+msgstr ""
+
+msgid "Vulnerability|Create a merge request to implement this solution, or download and apply the patch manually."
 msgstr ""
 
 msgid "Vulnerability|Description"

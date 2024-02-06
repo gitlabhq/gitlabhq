@@ -6,7 +6,7 @@ import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import ListItem from '~/comment_templates/components/list_item.vue';
-import deleteSavedReplyMutation from '~/comment_templates/queries/delete_saved_reply.mutation.graphql';
+import deleteSavedReplyMutation from '~/pages/profiles/comment_templates/queries/delete_saved_reply.mutation.graphql';
 
 function createMockApolloProvider(requestHandlers = [deleteSavedReplyMutation]) {
   Vue.use(VueApollo);
@@ -29,6 +29,9 @@ describe('Comment templates list item component', () => {
         GlModal: createMockDirective('gl-modal'),
       },
       apolloProvider,
+      provide: {
+        deleteMutation: deleteSavedReplyMutation,
+      },
       mocks: {
         $router,
       },

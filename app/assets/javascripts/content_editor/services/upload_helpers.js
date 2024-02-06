@@ -168,7 +168,7 @@ const uploadMedia = async ({ type, editor, file, uploadsPath, renderMarkdown, ev
 
   uploadFile({ file, uploadsPath, renderMarkdown })
     .tap((progress) => {
-      chain(editor).setMeta('uploadProgress', { filename: file.name, progress }).run();
+      chain(editor).setMeta('uploadProgress', { uploading: fileId, progress }).run();
     })
     .then(({ canonicalSrc }) => {
       // the position might have changed while uploading, so we need to find it again

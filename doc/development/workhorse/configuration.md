@@ -193,7 +193,7 @@ For example:
 
 ```toml
 [metadata]
-zip_reader_limit_bytes = 2097152 # 200 MB
+zip_reader_limit_bytes = 209715200 # 200 MB
 ```
 
 ## Error tracking

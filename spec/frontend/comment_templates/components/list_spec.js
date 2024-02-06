@@ -3,13 +3,17 @@ import noSavedRepliesResponse from 'test_fixtures/graphql/comment_templates/save
 import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_replies.query.graphql.json';
 import List from '~/comment_templates/components/list.vue';
 import ListItem from '~/comment_templates/components/list_item.vue';
+import deleteSavedReplyMutation from '~/pages/profiles/comment_templates/queries/delete_saved_reply.mutation.graphql';
 
 let wrapper;
 
 function createComponent(res = {}) {
-  const { savedReplies } = res.data.currentUser;
+  const { savedReplies } = res.data.object;
 
   return mount(List, {
+    provide: {
+      deleteMutation: deleteSavedReplyMutation,
+    },
     propsData: {
       savedReplies: savedReplies.nodes,
       pageInfo: savedReplies.pageInfo,
@@ -26,7 +30,7 @@ describe('Comment templates list component', () => {
   });
 
   it('renders list of comment templates', () => {
-    const savedReplies = savedRepliesResponse.data.currentUser.savedReplies.nodes;
+    const savedReplies = savedRepliesResponse.data.object.savedReplies.nodes;
     wrapper = createComponent(savedRepliesResponse);
 
     expect(wrapper.findAllComponents(ListItem).length).toBe(2);

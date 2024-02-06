@@ -43,6 +43,10 @@ export default TaskList.extend({
         tag: '.task-list',
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
+      {
+        tag: '.gl-new-dropdown',
+        ignore: true,
+      },
     ];
   },
 

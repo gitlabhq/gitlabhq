@@ -12,6 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 > - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
+> - Support for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215) in GitLab 16.9.
 
 With the Terraform Module Registry, you can use GitLab projects as a
 private registry for terraform modules. You can create and publish
@@ -20,10 +21,10 @@ projects.
 
 ## View Terraform modules
 
-To view Terraform modules in your project:
+To view Terraform modules in your project or group:
 
-1. Go to the project.
-1. On the left sidebar, select **Operate > Terraform modules**.
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
 

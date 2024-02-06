@@ -54,6 +54,12 @@ that are the largest value contributors, overperforming, or underperforming.
 You can also drill down the metrics for further analysis.
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
+The monthly values also indicate a percentage increase or decrease compared to the previous month.
+
+The sparkline for the past six months represents value trends over this time period, not the percentage change rate.
+The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
+Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
+
 NOTE:
 The contributor count metric is available only on GitLab.com at the group-level. To view this metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md), and enable the [feature flags](../../administration/feature_flags.md) `clickhouse_data_collection` and `event_sync_worker_for_click_house`.
 

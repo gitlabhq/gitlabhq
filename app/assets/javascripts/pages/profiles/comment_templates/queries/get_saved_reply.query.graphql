@@ -1,5 +1,5 @@
 query getSavedReply($id: UsersSavedReplyID!) {
-  currentUser {
+  object: currentUser {
     id
     savedReply(id: $id) {
       id

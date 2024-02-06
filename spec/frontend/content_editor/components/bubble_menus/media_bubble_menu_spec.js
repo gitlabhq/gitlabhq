@@ -141,13 +141,13 @@ describe.each`
 
       const setUploadProgress = async (progress) => {
         const transaction = createTransactionWithMeta('uploadProgress', {
-          filename: filePath,
+          uploading: 'file-123',
           progress,
         });
         await emitEditorEvent({ event: 'transaction', tiptapEditor, params: { transaction } });
       };
 
-      tiptapEditor.chain().selectAll().updateAttributes(mediaType, { uploading: filePath }).run();
+      tiptapEditor.chain().selectAll().updateAttributes(mediaType, { uploading: 'file-123' }).run();
 
       await emitEditorEvent({ event: 'selectionUpdate', tiptapEditor });
 

@@ -3,24 +3,25 @@
 import { GlCard, GlLoadingIcon, GlIcon, GlButton } from '@gitlab/ui';
 import { fetchPolicies } from '~/lib/graphql';
 import CreateForm from '../components/form.vue';
-import savedRepliesQuery from '../queries/saved_replies.query.graphql';
 import List from '../components/list.vue';
 
 export default {
   apollo: {
     savedReplies: {
       fetchPolicy: fetchPolicies.NETWORK_ONLY,
-      query: savedRepliesQuery,
-      update: (r) => r.currentUser?.savedReplies?.nodes,
+      query() {
+        return this.fetchAllQuery;
+      },
+      update: (r) => r.object?.savedReplies?.nodes,
       variables() {
         return {
           ...this.pagination,
         };
       },
       result({ data }) {
-        const pageInfo = data.currentUser?.savedReplies?.pageInfo;
+        const pageInfo = data.object?.savedReplies?.pageInfo;
 
-        this.count = data.currentUser?.savedReplies?.count;
+        this.count = data.object?.savedReplies?.count;
 
         if (pageInfo) {
           this.pageInfo = pageInfo;
@@ -36,6 +37,7 @@ export default {
     CreateForm,
     List,
   },
+  inject: ['fetchAllQuery'],
   data() {
     return {
       savedReplies: [],

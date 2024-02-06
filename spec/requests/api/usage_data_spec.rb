@@ -60,6 +60,13 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
         expect(response.body).to eq(usage_data.to_json)
       end
+
+      it 'tracks an internal event' do
+        expect(Gitlab::InternalEvents).to receive(:track_event)
+          .with('request_service_ping_via_rest', user: user)
+
+        get api(endpoint, personal_access_token: personal_access_token)
+      end
     end
   end
 

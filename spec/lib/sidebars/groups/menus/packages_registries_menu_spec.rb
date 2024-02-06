@@ -202,14 +202,6 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
           let(:packages_enabled) { true }
 
           it_behaves_like 'the menu entry is available'
-
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(group_level_infrastructure_registry: false)
-            end
-
-            it_behaves_like 'the menu entry is not available'
-          end
         end
       end
 

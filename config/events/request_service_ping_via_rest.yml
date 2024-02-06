@@ -1,0 +1,16 @@
+---
+description: Service Ping was requested via REST API endpoint
+category: InternalEventTracking
+action: request_service_ping_via_rest
+product_section: analytics
+product_stage: monitor
+product_group: analytics_instrumentation
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143385/
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
