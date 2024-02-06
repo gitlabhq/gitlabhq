@@ -16,7 +16,7 @@ When working with GitLab Duo Code Suggestions, you might encounter the following
 
 If Code Suggestions are not displayed, and you have [installed a supported IDE extension](index.md#supported-editor-extensions), try the following troubleshooting steps.
 
-In GitLab, ensure Code Suggestions is enabled for **at least one**
+In GitLab SaaS, ensure Code Suggestions is enabled for **at least one**
 [top-level group your account belongs to](saas.md#enable-code-suggestions).
 If you don't have a role that lets you view the top-level group's settings, contact a group owner.
 

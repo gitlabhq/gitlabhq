@@ -32430,6 +32430,8 @@ CREATE INDEX idx_members_created_at_user_id_invite_token ON members USING btree 
 
 CREATE INDEX idx_members_on_user_and_source_and_source_type_and_member_role ON members USING btree (user_id, source_id, source_type, member_role_id);
 
+CREATE INDEX idx_merge_request_metrics_on_merged_by_project_and_mr ON merge_request_metrics USING btree (merged_by_id, target_project_id, merge_request_id);
+
 CREATE INDEX idx_merge_requests_on_id_and_merge_jid ON merge_requests USING btree (id, merge_jid) WHERE ((merge_jid IS NOT NULL) AND (state_id = 4));
 
 CREATE INDEX idx_merge_requests_on_merged_state ON merge_requests USING btree (id) WHERE (state_id = 3);
@@ -34399,8 +34401,6 @@ CREATE INDEX index_merge_request_metrics_on_latest_closed_by_id ON merge_request
 CREATE INDEX index_merge_request_metrics_on_merge_request_id_and_merged_at ON merge_request_metrics USING btree (merge_request_id, merged_at) WHERE (merged_at IS NOT NULL);
 
 CREATE INDEX index_merge_request_metrics_on_merged_at ON merge_request_metrics USING btree (merged_at);
-
-CREATE INDEX index_merge_request_metrics_on_merged_by_id ON merge_request_metrics USING btree (merged_by_id);
 
 CREATE INDEX index_merge_request_metrics_on_pipeline_id ON merge_request_metrics USING btree (pipeline_id);
 

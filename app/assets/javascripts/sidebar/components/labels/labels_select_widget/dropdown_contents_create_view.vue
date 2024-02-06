@@ -148,7 +148,7 @@ export default {
         data-testid="label-title-input"
       />
     </div>
-    <sidebar-color-picker v-model.trim="selectedColor" />
+    <sidebar-color-picker v-model.trim="selectedColor" class="gl-px-3" />
     <div class="dropdown-actions gl-display-flex gl-justify-content-space-between gl-pt-3 gl-px-3">
       <gl-button
         :disabled="disableCreate"

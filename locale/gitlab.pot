@@ -22018,12 +22018,6 @@ msgstr ""
 msgid "Geo|Offline"
 msgstr ""
 
-msgid "Geo|Pending synchronization"
-msgstr ""
-
-msgid "Geo|Pending verification"
-msgstr ""
-
 msgid "Geo|Primary"
 msgstr ""
 

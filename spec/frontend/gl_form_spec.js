@@ -1,7 +1,6 @@
 import autosize from 'autosize';
 import $ from 'jquery';
 import GLForm from '~/gl_form';
-import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
@@ -45,43 +44,6 @@ describe('GLForm', () => {
 
         expect(setupFormSpy).toHaveBeenCalledTimes(1);
         expect(setupFormSpy).toHaveBeenCalledWith(customDataSources, false);
-      });
-    });
-
-    describe('GfmAutoComplete', () => {
-      let autocompleteDataFetchSpy;
-      const updatedMockGl = { ...mockGl };
-
-      updatedMockGl.GfmAutoComplete.dataSources = {
-        ...updatedMockGl.GfmAutoComplete.dataSources,
-        members: '/group/projects/-/autocomplete_sources/members',
-      };
-
-      beforeEach(() => {
-        jest.spyOn(window, 'requestIdleCallback').mockImplementation((cb) => cb());
-
-        // We need to mock implement fetchData to prevent
-        // the axios call which is not subject of this test
-        autocompleteDataFetchSpy = jest
-          .spyOn(GfmAutoComplete.prototype, 'fetchData')
-          .mockImplementation(() => 'test');
-
-        testContext.form = $('<form class="gfm-form"><textarea class="js-gfm-input"></form>');
-        testContext.textarea = testContext.form.find('textarea');
-      });
-
-      afterEach(() => {
-        window.requestIdleCallback.mockRestore();
-        autocompleteDataFetchSpy.mockRestore();
-      });
-
-      it('will call fetchdata if preloadMembers is enabled', () => {
-        window.gl = { ...updatedMockGl };
-
-        testContext.glForm = new GLForm(testContext.form, {}, true, {}, true);
-        jest.runAllTimers();
-        expect(autocompleteDataFetchSpy).toHaveBeenCalledTimes(1);
-        expect(autocompleteDataFetchSpy).toHaveBeenCalledWith(expect.any(Object), '@');
       });
     });
   });

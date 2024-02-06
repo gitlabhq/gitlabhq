@@ -71,7 +71,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:linked_work_items, project.linked_work_items_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
-    push_frontend_feature_flag(:preload_autocomplete_members_issues_mrs, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:discussions]

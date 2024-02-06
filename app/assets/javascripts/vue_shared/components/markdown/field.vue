@@ -33,13 +33,6 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: {
-    preloadMembers: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
   props: {
     /**
      * This prop should be bound to the value of the `<textarea>` element
@@ -285,7 +278,6 @@ export default {
       },
       true,
       this.autocompleteDataSources,
-      this.preloadMembers,
     );
 
     markdownEditorEventHub.$emit(MARKDOWN_EDITOR_READY_EVENT);

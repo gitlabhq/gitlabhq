@@ -7,7 +7,6 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import NotesApp from './components/notes_app.vue';
 import { store } from './stores';
 import { getNotesFilterData } from './utils/get_notes_filter_data';
-import { ISSUE_NOTEABLE_TYPE } from './constants';
 
 export default ({ editorAiActions = [] } = {}) => {
   const el = document.getElementById('js-vue-notes');
@@ -64,9 +63,6 @@ export default ({ editorAiActions = [] } = {}) => {
       resourceGlobalId: convertToGraphQLId(noteableData.noteableType, noteableData.id),
       editorAiActions: editorAiActions.map((factory) => factory(noteableData)),
       newCustomEmojiPath: notesDataset.newCustomEmojiPath,
-      preloadMembers:
-        notesDataset.noteableType === ISSUE_NOTEABLE_TYPE &&
-        gon?.features?.preloadAutocompleteMembersIssuesMrs,
     },
     data() {
       return {

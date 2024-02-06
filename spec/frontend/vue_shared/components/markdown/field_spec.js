@@ -67,9 +67,6 @@ describe('Markdown field component', () => {
           showContentEditorSwitcher,
           supportsQuickActions: true,
         },
-        provide: {
-          preloadMembers: true,
-        },
         mocks: {
           $apollo: {
             queries: {
@@ -95,9 +92,6 @@ describe('Markdown field component', () => {
         restrictedToolBarItems,
         showContentEditorSwitcher: false,
         autocompleteDataSources,
-      },
-      provide: {
-        preloadMembers: true,
       },
     });
   }
@@ -136,10 +130,6 @@ describe('Markdown field component', () => {
         expect(findGlForm().autoComplete.dataSources).toMatchObject({
           commands: '/foobar/-/autocomplete_sources',
         });
-      });
-
-      it('initializes GlForm with autocomplete data sources and preload memebers', () => {
-        expect(findGlForm().preloadMembers).toBe(true);
       });
     });
 

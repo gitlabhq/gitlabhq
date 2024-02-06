@@ -1070,6 +1070,21 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/llm.log` on Linux package installations.
 - `/home/git/gitlab/log/llm.log` on self-compiled installations.
 
+## `epic_work_item_sync.log`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-Managed, SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
+
+The `epic_work_item_sync.log` file logs information related to syncing and migrating epics as work items.
+
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/epic_work_item_sync.log` on Linux package installations.
+- `/home/git/gitlab/log/epic_work_item_sync.log` on self-compiled installations.
+
 ## Registry logs
 
 For Linux package installations, container registry logs are in `/var/log/gitlab/registry/current`.

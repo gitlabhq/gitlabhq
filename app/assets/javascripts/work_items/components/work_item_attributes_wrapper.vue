@@ -12,6 +12,7 @@ import {
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_COLOR,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
@@ -51,6 +52,8 @@ export default {
       import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
     WorkItemHealthStatusInline: () =>
       import('ee_component/work_items/components/work_item_health_status_inline.vue'),
+    WorkItemColorInline: () =>
+      import('ee_component/work_items/components/work_item_color_inline.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -112,6 +115,9 @@ export default {
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+    },
+    workItemColor() {
+      return this.isWidgetPresent(WIDGET_TYPE_COLOR);
     },
   },
   methods: {
@@ -296,6 +302,13 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <work-item-color-inline
+      v-if="workItemColor"
+      class="gl-mb-5"
+      :work-item="workItem"
+      :can-update="canUpdate"
+      @error="$emit('error', $event)"
+    />
     <participants
       v-if="workItemParticipants && glFeatures.workItemsMvc"
       class="gl-mb-5"

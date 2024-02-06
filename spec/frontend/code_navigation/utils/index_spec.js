@@ -88,6 +88,21 @@ describe('addInteractionClass', () => {
       expect(spans[2].textContent).toBe(' ');
     });
 
+    it('keeps datasets for all wrapped nodes in a line', () => {
+      setHTMLFixture(
+        '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"><span>console</span><span>.</span><span>log</span></div><div id="LC2" class="line"><span>function</span></div></div></div>',
+      );
+      addInteractionClass({ ...params, d: { start_line: 0, start_char: 0 }, wrapTextNodes: true });
+      // It should set the dataset the first time
+      expect(findAllSpans()[0].dataset).toMatchObject({ charIndex: '0', lineIndex: '0' });
+
+      addInteractionClass({ ...params, d: { start_line: 0, start_char: 8 }, wrapTextNodes: true });
+      // It should keep the dataset for the first token
+      expect(findAllSpans()[0].dataset).toMatchObject({ charIndex: '0', lineIndex: '0' });
+      // And set the dataset for the second token
+      expect(findAllSpans()[2].dataset).toMatchObject({ charIndex: '8', lineIndex: '0' });
+    });
+
     it('adds the correct class names to wrapped nodes', () => {
       setHTMLFixture(
         '<div data-path="index.js"><div class="blob-content"><div id="LC1" class="line"><span class="test"> Text </span></div></div></div>',

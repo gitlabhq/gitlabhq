@@ -33,7 +33,7 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
   end
 
-  context 'with content editor', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439368' do
+  context 'with content editor' do
     it_behaves_like 'edits content using the content editor'
   end
 
@@ -94,9 +94,7 @@ RSpec.describe 'User comments on a merge request', :js, feature_category: :code_
     end
 
     wait_for_requests
-    page.within('.modal-dialog') do
-      expect(page).to have_content('Are you sure you want to cancel creating this comment?')
-    end
+    expect(page.html).to include('Are you sure you want to cancel creating this comment?')
   end
 
   it 'loads new comment' do

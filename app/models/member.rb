@@ -680,11 +680,7 @@ class Member < ApplicationRecord
     return if invite?
     return if source.organization.blank?
 
-    Organizations::OrganizationUser.upsert(
-      { organization_id: source.organization_id, user_id: user_id, access_level: :default },
-      unique_by: [:organization_id, :user_id],
-      on_duplicate: :skip # Do not change access_level, could make :owner :default
-    )
+    Organizations::OrganizationUser.create_organization_record_for(user_id, source.organization_id)
   end
 end
 

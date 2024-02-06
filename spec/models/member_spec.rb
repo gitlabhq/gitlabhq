@@ -1093,7 +1093,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     subject(:commit_member) { member }
 
     before do
-      allow(Organizations::OrganizationUser).to receive(:upsert).once.and_call_original
+      allow(Organizations::OrganizationUser).to receive(:create_organization_record_for).once.and_call_original
       stub_feature_flags(update_organization_users: update_organization_users_enabled)
     end
 
@@ -1159,7 +1159,8 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
         context 'when updating the organization_users is not successful' do
           it 'rolls back the member creation' do
-            allow(Organizations::OrganizationUser).to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
+            allow(Organizations::OrganizationUser)
+              .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
 
             expect { commit_member }.to raise_error(ActiveRecord::StatementTimeout)
             expect(Organizations::OrganizationUser.exists?(organization: group.organization)).to be(false)
@@ -1205,7 +1206,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
             context 'when updating the organization_users is not successful' do
               before do
                 allow(Organizations::OrganizationUser)
-                  .to receive(:upsert).once.and_raise(ActiveRecord::StatementTimeout)
+                  .to receive(:create_organization_record_for).once.and_raise(ActiveRecord::StatementTimeout)
               end
 
               it 'rolls back the member creation' do

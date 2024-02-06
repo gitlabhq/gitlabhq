@@ -12,7 +12,6 @@ import discussionNavigator from '../notes/components/discussion_navigator.vue';
 import NotesApp from '../notes/components/notes_app.vue';
 import { getNotesFilterData } from '../notes/utils/get_notes_filter_data';
 import initWidget from '../vue_merge_request_widget';
-import { MERGE_REQUEST_NOTEABLE_TYPE } from '../notes/constants';
 
 export default () => {
   requestIdleCallback(
@@ -46,9 +45,6 @@ export default () => {
       newCommentTemplatePath: notesDataset.newCommentTemplatePath,
       mrFilter: true,
       newCustomEmojiPath: notesDataset.newCustomEmojiPath,
-      preloadMembers:
-        notesDataset?.noteableType === MERGE_REQUEST_NOTEABLE_TYPE &&
-        gon?.features?.preloadAutocompleteMembersIssuesMrs,
     },
     data() {
       const noteableData = JSON.parse(notesDataset.noteableData);

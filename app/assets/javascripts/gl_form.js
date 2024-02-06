@@ -5,7 +5,6 @@ import GfmAutoComplete, { defaultAutocompleteConfig } from 'ee_else_ce/gfm_auto_
 import { disableButtonIfEmptyField } from '~/lib/utils/common_utils';
 import dropzoneInput from './dropzone_input';
 import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
-import { PRELOAD_THROTTLE_TIMEOUT_MS } from './constants';
 
 export default class GLForm {
   /**
@@ -18,11 +17,10 @@ export default class GLForm {
    *                                By default, the backend embeds these in the global object gl.GfmAutocomplete.dataSources.
    *                                Use this param to override them.
    */
-  constructor(form, enableGFM = {}, forceNew = false, gfmDataSources = {}, preloadMembers = false) {
+  constructor(form, enableGFM = {}, forceNew = false, gfmDataSources = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
     this.enableGFM = { ...defaultAutocompleteConfig, ...enableGFM };
-    this.preloadMembers = preloadMembers;
 
     // Disable autocomplete for keywords which do not have dataSources available
     let dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
@@ -70,21 +68,6 @@ export default class GLForm {
       );
       this.autoComplete = new GfmAutoComplete(dataSources);
       this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
-
-      if (this.preloadMembers && dataSources?.members) {
-        // for now the preload is only implemented for the members
-        // timeout helping to trottle the preloads in the case content_editor
-        // is set as main comment editor and support for rspec tests
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/427437
-
-        requestIdleCallback(() =>
-          setTimeout(
-            () => this.autoComplete?.fetchData($('.js-gfm-input'), '@'),
-            PRELOAD_THROTTLE_TIMEOUT_MS,
-          ),
-        );
-      }
-
       this.formDropzone = dropzoneInput(this.form, { parallelUploads: 1 });
 
       if (this.form.is(':not(.js-no-autosize)')) {

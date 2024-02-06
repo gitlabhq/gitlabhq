@@ -161,4 +161,43 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
       it { is_expected.to eq(:default) }
     end
   end
+
+  describe '.create_organization_record_for' do
+    let_it_be(:organization) { create(:organization) }
+    let_it_be(:user) { create(:user, :without_default_org) }
+    let_it_be(:user_id) { user.id }
+    let_it_be(:organization_id) { organization.id }
+
+    subject(:create_organization_record) do
+      described_class.create_organization_record_for(user_id, organization_id)
+    end
+
+    context 'when record already exists' do
+      let_it_be(:existing_record) do
+        create(:organization_user, :owner, organization_id: organization_id, user_id: user_id)
+      end
+
+      it 'returns existing record without access_level change' do
+        expect { create_organization_record }.not_to change { described_class.count }
+        expect(organization.owner?(user)).to be(true)
+      end
+
+      context 'with race condition handling of already existing record' do
+        it 'performs the upsert without error' do
+          expect(described_class).to receive(:find_by).and_return(nil)
+
+          expect { create_organization_record }.not_to change { described_class.count }
+          expect(organization.owner?(user)).to be(true)
+        end
+      end
+    end
+
+    context 'when no existing record exists' do
+      it 'creates a new record with default access_level' do
+        expect { create_organization_record }.to change { described_class.count }.by(1)
+        expect(organization.user?(user)).to be(true)
+        expect(organization.owner?(user)).to be(false)
+      end
+    end
+  end
 end

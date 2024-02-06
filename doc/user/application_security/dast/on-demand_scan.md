@@ -30,8 +30,8 @@ a [site profile](#site-profile) defines **what** is to be scanned, and a
 
 An on-demand scan can be run in active or passive mode:
 
-- **Passive mode**: The default mode, which runs a [Passive Browser based scan](/ee/user/application_security/dast/browser_based.md#passive-scans).
-- **Active mode**: Runs an [Active Browser based scan](/ee/user/application_security/dast/browser_based.md#active-scans) which is potentially harmful to the site being scanned. To
+- **Passive mode**: The default mode, which runs a [Passive Browser based scan](browser/index.md#passive-scans).
+- **Active mode**: Runs an [Active Browser based scan](browser/index.md#active-scans) which is potentially harmful to the site being scanned. To
   minimize the risk of accidental damage, running an active scan requires a
   [validated site profile](#site-profile-validation).
 

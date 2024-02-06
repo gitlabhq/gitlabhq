@@ -35,7 +35,7 @@ RSpec.describe "User comments on issue", :js, feature_category: :team_planning d
 
     # do not test quick actions here since guest users don't have permission
     # to execute all quick actions
-    it_behaves_like 'edits content using the content editor', { with_quick_actions: false }, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439368'
+    it_behaves_like 'edits content using the content editor', { with_quick_actions: false }
 
     it "adds comment with code block" do
       code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"

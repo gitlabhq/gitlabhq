@@ -2,6 +2,8 @@ import { wrapNodes, isTextNode } from './dom_utils';
 
 export const cachedData = new Map();
 
+const wrappedLines = new WeakSet();
+
 export const getCurrentHoverElement = () => cachedData.get('current');
 export const setCurrentHoverElement = (el) => cachedData.set('current', el);
 
@@ -19,8 +21,9 @@ export const addInteractionClass = ({ path, d, wrapTextNodes }) => {
       line.childNodes.forEach((elm) => {
         // Highlight.js does not wrap all text nodes by default
         // We need all text nodes to be wrapped in order to append code nav attributes
-        elm.replaceWith(...wrapNodes(elm.textContent, elm.classList));
+        elm.replaceWith(...wrapNodes(elm.textContent, elm.classList, elm.dataset));
       });
+      wrappedLines.add(line);
     }
 
     const el = [...line.childNodes].find(({ textContent }) => {

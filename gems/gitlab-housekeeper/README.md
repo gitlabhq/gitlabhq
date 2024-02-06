@@ -116,3 +116,27 @@ a mistake. The alternative of using your own API token with it's permissions to
    ```
    bundle exec gitlab-housekeeper -d -m3 -k Keeps::OverdueFinalizeBackgroundMigration
    ```
+
+## Once-off keeps
+
+Sometimes we have a large group of merge requests that we need to generate to
+backfill a large refactoring across the codebase. An example might be fixing a
+RuboCop violation spanning hundreds of files but breaking it up into many small
+MRs. One real example we've been working on is in
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139747 .
+
+In this case the `gitlab-housekeeper` contains a lot of functionality that is
+preferable to writing a whole new once off script just for this case.
+
+In order to use the `gitlab-housekeeper` to help with this kind of work you can
+create a "once-off" keep. A once-off keep is not something that needs to be
+merged into master but instead you can just create a branch and put the file in
+the `keeps` directory.
+
+Some best practices to consider when using a once-off keep:
+
+1. Always push the work in a branch and create a `Draft` MR. You don't need to
+   merge it but this just increases transparency.
+1. Consider adding a link back to this MR in the description of your generated
+   MRs. This allows reviewers to understand where this work comes from and can
+   also help if they want to contribute improvements to an ongoing group of MRs.

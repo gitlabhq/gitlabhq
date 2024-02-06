@@ -187,11 +187,9 @@ export const METRIC_TOOLTIPS = {
   },
   [FLOW_METRICS.ISSUES_COMPLETED]: {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
-    groupLink: '-/analytics/value_stream_analytics',
-    projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_streams_dashboard', {
-      anchor: 'dashboard-metrics-and-drill-down-reports',
-    }),
+    groupLink: '-/issues_analytics',
+    projectLink: '-/analytics/issues_analytics',
+    docsLink: helpPagePath('user/analytics/issue_analytics'),
   },
   [FLOW_METRICS.DEPLOYS]: {
     description: s__('ValueStreamAnalytics|Total number of deploys to production.'),

@@ -845,6 +845,9 @@ project:
 - xray_reports
 - member_approvals
 - zoekt_repository
+- security_policy_management_project_linked_configurations
+- security_policy_project_linked_projects
+- security_policy_project_linked_namespaces
 award_emoji:
 - awardable
 - user

@@ -94,7 +94,14 @@ module LoginHelpers
     visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email
+
+    # When JavaScript is enabled, wait for the password field, with class `.js-password`,
+    # to be replaced by the Vue passsword component,
+    # `app/assets/javascripts/authentication/password/components/password_input.vue`.
+    expect(page).not_to have_selector('.js-password') if javascript_test?
+
     fill_in "user_password", with: (password || user.password)
+
     check 'user_remember_me' if remember
 
     wait_for_all_requests

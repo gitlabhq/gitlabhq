@@ -639,6 +639,7 @@ export const workItemResponseFactory = ({
   canInviteMembers = false,
   labelsWidgetPresent = true,
   linkedItemsWidgetPresent = true,
+  colorWidgetPresent = true,
   labels = mockLabels,
   allowsScopedLabels = false,
   lastEditedAt = null,
@@ -652,6 +653,7 @@ export const workItemResponseFactory = ({
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
   linkedItems = mockEmptyLinkedItems,
+  color = '#1068bf',
 } = {}) => ({
   data: {
     workItem: {
@@ -882,6 +884,14 @@ export const workItemResponseFactory = ({
             }
           : { type: 'MOCK TYPE' },
         linkedItemsWidgetPresent ? linkedItems : { type: 'MOCK TYPE' },
+        colorWidgetPresent
+          ? {
+              color,
+              textColor: '#FFFFFF',
+              type: 'COLOR',
+              __typename: 'WorkItemWidgetColor',
+            }
+          : { type: 'MOCK TYPE' },
       ],
     },
   },
