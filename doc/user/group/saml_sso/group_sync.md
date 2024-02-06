@@ -28,7 +28,7 @@ SAML Group Sync only manages a group if that group has one or more SAML group li
 
 You must configure the SAML group links before you configure SAML Group Sync.
 
-When SAML is enabled, users with the Maintainer or Owner role see a new menu
+When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
 - You can configure one or more **SAML Group Links** to map a SAML identity

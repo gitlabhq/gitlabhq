@@ -141,7 +141,7 @@ To help you migrate your data to GitLab Dedicated, you can choose from the follo
 
 The following GitLab application features are not available:
 
-- LDAP, Smartcard, or Kerberos authentication
+- LDAP, smart card, or Kerberos authentication
 - Multiple login providers
 - GitLab Pages
 - FortiAuthenticator, or FortiToken 2FA

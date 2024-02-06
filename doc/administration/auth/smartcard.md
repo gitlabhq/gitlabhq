@@ -4,22 +4,22 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Smartcard authentication
+# Smart card authentication
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-GitLab supports authentication using smartcards.
+GitLab supports authentication using smart cards.
 
 ## Existing password authentication
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33669) in GitLab 12.6.
 
-By default, existing users can continue to sign in with a username and password when smartcard
+By default, existing users can continue to sign in with a username and password when smart card
 authentication is enabled.
 
-To force existing users to use only smartcard authentication,
+To force existing users to use only smart card authentication,
 [disable username and password authentication](../settings/sign_in_restrictions.md#password-authentication-enabled).
 
 ## Authentication methods
@@ -34,12 +34,11 @@ GitLab supports two authentication methods:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/726) in GitLab 11.6 as an experimental feature.
 
 WARNING:
-Smartcard authentication against local databases may change or be removed completely in future
-releases.
+Smart card authentication against local databases may change or be removed completely in future releases.
 
-Smartcards with X.509 certificates can be used to authenticate with GitLab.
+Smart cards with X.509 certificates can be used to authenticate with GitLab.
 
-To use a smartcard with an X.509 certificate to authenticate against a local
+To use a smart card with an X.509 certificate to authenticate against a local
 database with GitLab, `CN` and `emailAddress` must be defined in the
 certificate. For example:
 
@@ -60,14 +59,14 @@ Certificate:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8605) in GitLab 12.3.
 
-Smartcards with X.509 certificates using SAN extensions can be used to authenticate
+Smart cards with X.509 certificates using SAN extensions can be used to authenticate
 with GitLab.
 
 NOTE:
-This is an experimental feature. Smartcard authentication against local databases may
+This is an experimental feature. Smart card authentication against local databases may
 change or be removed completely in future releases.
 
-To use a smartcard with an X.509 certificate to authenticate against a local
+To use a smart card with an X.509 certificate to authenticate against a local
 database with GitLab, in:
 
 - GitLab 12.4 and later, at least one of the `subjectAltName` (SAN) extensions
@@ -101,7 +100,7 @@ Certificate:
 
 ### Authentication against an LDAP server
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7693) in GitLab 11.8 as an experimental feature. Smartcard authentication against an LDAP server may change or be removed completely in the future.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7693) in GitLab 11.8 as an experimental feature. Smart card authentication against an LDAP server may change or be removed completely in the future.
 
 GitLab implements a standard way of certificate matching following
 [RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the
@@ -116,14 +115,14 @@ Active Directory doesn't support the `certificateExactMatch` matching rule so
 [it is not supported at this time](https://gitlab.com/gitlab-org/gitlab/-/issues/327491). For
 more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328074).
 
-## Configure GitLab for smartcard authentication
+## Configure GitLab for smart card authentication
 
 For Linux package installations:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
-   # Allow smartcard authentication
+   # Allow smart card authentication
    gitlab_rails['smartcard_enabled'] = true
 
    # Path to a file containing a CA certificate
@@ -215,9 +214,9 @@ For self-compiled installations:
 1. Edit `config/gitlab.yml`:
 
    ```yaml
-   ## Smartcard authentication settings
+   ## Smart card authentication settings
    smartcard:
-     # Allow smartcard authentication
+     # Allow smart card authentication
      enabled: true
 
      # Path to a file containing a CA certificate
@@ -251,7 +250,7 @@ For Linux package installations:
 
 For self-compiled installations:
 
-1. Add the `san_extensions` line to `config/gitlab.yml` within the smartcard section:
+1. Add the `san_extensions` line to `config/gitlab.yml` within the smart card section:
 
    ```yaml
    smartcard:
@@ -276,7 +275,7 @@ For Linux package installations:
    gitlab_rails['ldap_servers'] = YAML.load <<-EOS
    main:
      # snip...
-     # Enable smartcard authentication against the LDAP server. Valid values
+     # Enable smart card authentication against the LDAP server. Valid values
      # are "false", "optional", and "required".
      smartcard_auth: optional
    EOS
@@ -295,7 +294,7 @@ For self-compiled installations:
        servers:
          main:
            # snip...
-           # Enable smartcard authentication against the LDAP server. Valid values
+           # Enable smart card authentication against the LDAP server. Valid values
            # are "false", "optional", and "required".
            smartcard_auth: optional
    ```
@@ -303,7 +302,7 @@ For self-compiled installations:
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
-### Require browser session with smartcard sign-in for Git access
+### Require browser session with smart card sign-in for Git access
 
 For Linux package installations:
 
@@ -321,19 +320,19 @@ For self-compiled installations:
 1. Edit `config/gitlab.yml`:
 
    ```yaml
-   ## Smartcard authentication settings
+   ## Smart card authentication settings
    smartcard:
      # snip...
-     # Browser session with smartcard sign-in is required for Git access
+     # Browser session with smart card sign-in is required for Git access
      required_for_git_access: true
    ```
 
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)
    GitLab for the changes to take effect.
 
-## Passwords for users created via smartcard authentication
+## Passwords for users created via smart card authentication
 
-The [Generated passwords for users created through integrated authentication](../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via smartcard authentication.
+The [Generated passwords for users created through integrated authentication](../../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via smart card authentication.
 
 <!-- ## Troubleshooting
 

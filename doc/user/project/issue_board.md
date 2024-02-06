@@ -438,7 +438,7 @@ DETAILS:
 > - Moved to GitLab Premium in 13.9.
 
 You can set a work in progress (WIP) limit for each issue list on an issue board. When a limit is
-set, the list's header shows the number of issues in the list and the soft limit of issues.
+set, the list's header shows the number of issues in the list and the soft limit of issues. A line in the list separates items within the limit from those in excess of the limit.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
 Examples:
@@ -446,7 +446,7 @@ Examples:
 - When you have a list with four issues and a limit of five, the header shows **4/5**.
   If you exceed the limit, the current number of issues is shown in red.
 - You have a list with five issues with a limit of five. When you move another issue to that list,
-  the list's header displays **6/5**, with the six shown in red.
+  the list's header displays **6/5**, with the six shown in red. The work in progress line is shown before the sixth issue.
 
 Prerequisites:
 

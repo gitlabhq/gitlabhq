@@ -774,7 +774,7 @@ DRIs:
 | Leadership                   | Mark Nuzzo             |
 | Product                      | Dov Hershkovitch       |
 | Engineering                  | Fabio Pitino           |
-| UX                           | Kevin Comoli (interim), Sunjung Park          |
+| UX                           | Sunjung Park           |
 
 Domain experts:
 

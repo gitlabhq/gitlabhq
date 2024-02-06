@@ -448,8 +448,12 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     end
   end
 
-  describe '#delayed_project_removal' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :delayed_project_removal
+  describe '#toggle_security_policy_custom_ci' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policy_custom_ci
+  end
+
+  describe '#toggle_security_policies_policy_scope' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policies_policy_scope
   end
 
   describe 'default_branch_protection_defaults' do

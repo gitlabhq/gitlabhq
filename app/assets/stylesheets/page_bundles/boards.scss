@@ -242,3 +242,12 @@
     height: 100px;
   }
 }
+
+.board-cut-line {
+  &::before, &::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    border-top: 1px dashed $red-700;
+  }
+}

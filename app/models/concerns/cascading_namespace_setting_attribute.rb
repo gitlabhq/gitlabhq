@@ -30,16 +30,16 @@ module CascadingNamespaceSettingAttribute
     # similar to Rails' `attr_accessor`, defines convenience methods such as
     # a reader, writer, and validators.
     #
-    # Example: `cascading_attr :delayed_project_removal`
+    # Example: `cascading_attr :toggle_security_policy_custom_ci`
     #
     # Public methods defined:
-    # - `delayed_project_removal`
-    # - `delayed_project_removal=`
-    # - `delayed_project_removal_locked?`
-    # - `delayed_project_removal_locked_by_ancestor?`
-    # - `delayed_project_removal_locked_by_application_setting?`
-    # - `delayed_project_removal?` (only defined for boolean attributes)
-    # - `delayed_project_removal_locked_ancestor` - Returns locked namespace settings object (only namespace_id)
+    # - `toggle_security_policy_custom_ci`
+    # - `toggle_security_policy_custom_ci=`
+    # - `toggle_security_policy_custom_ci_locked?`
+    # - `toggle_security_policy_custom_ci_locked_by_ancestor?`
+    # - `toggle_security_policy_custom_ci_locked_by_application_setting?`
+    # - `toggle_security_policy_custom_ci?` (only defined for boolean attributes)
+    # - `toggle_security_policy_custom_ci_locked_ancestor` - Returns locked namespace settings object (only namespace_id)
     #
     # Defined validators ensure attribute value cannot be updated if locked by
     # an ancestor or application settings.

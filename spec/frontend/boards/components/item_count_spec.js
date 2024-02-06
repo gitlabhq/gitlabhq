@@ -2,19 +2,17 @@ import { shallowMount } from '@vue/test-utils';
 import IssueCount from '~/boards/components/item_count.vue';
 
 describe('IssueCount', () => {
-  let vm;
+  let wrapper;
   let maxIssueCount;
   let itemsSize;
 
   const createComponent = (props) => {
-    vm = shallowMount(IssueCount, { propsData: props });
+    wrapper = shallowMount(IssueCount, { propsData: props });
   };
 
   afterEach(() => {
     maxIssueCount = 0;
     itemsSize = 0;
-
-    if (vm) vm.destroy();
   });
 
   describe('when maxIssueCount is zero', () => {
@@ -25,11 +23,11 @@ describe('IssueCount', () => {
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('does not contains maxIssueCount in the template', () => {
-      expect(vm.find('.max-issue-size').exists()).toBe(false);
+      expect(wrapper.find('.max-issue-size').exists()).toBe(false);
     });
   });
 
@@ -42,15 +40,15 @@ describe('IssueCount', () => {
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('contains maxIssueCount in the template', () => {
-      expect(vm.find('.max-issue-size').text()).toContain(String(maxIssueCount));
+      expect(wrapper.find('.max-issue-size').text()).toContain(String(maxIssueCount));
     });
 
-    it('does not have text-danger class when issueSize is less than maxIssueCount', () => {
-      expect(vm.classes('.text-danger')).toBe(false);
+    it('does not have red text when issueSize is less than maxIssueCount', () => {
+      expect(wrapper.classes('.gl-text-red-700')).toBe(false);
     });
   });
 
@@ -63,15 +61,15 @@ describe('IssueCount', () => {
     });
 
     it('contains issueSize in the template', () => {
-      expect(vm.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
+      expect(wrapper.find('[data-testid="board-items-count"]').text()).toEqual(String(itemsSize));
     });
 
     it('contains maxIssueCount in the template', () => {
-      expect(vm.find('.max-issue-size').text()).toContain(String(maxIssueCount));
+      expect(wrapper.find('.max-issue-size').text()).toContain(String(maxIssueCount));
     });
 
-    it('has text-danger class', () => {
-      expect(vm.find('.text-danger').text()).toEqual(String(itemsSize));
+    it('has red text', () => {
+      expect(wrapper.find('.gl-text-red-700').text()).toEqual(String(itemsSize));
     });
   });
 });

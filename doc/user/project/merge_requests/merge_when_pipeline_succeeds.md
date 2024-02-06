@@ -11,25 +11,19 @@ DETAILS:
 **Offering:** SaaS, self-managed
 
 > - **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409530) to **Auto-merge** in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `auto_merge_labels_mr_widget`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120922) in GitLab 16.0. Feature flag `auto_merge_labels_mr_widget` removed.
 
-If you review a merge request and it's ready to merge, but the pipeline hasn't
-completed yet, you can set it to auto-merge. You don't
-have to remember later to merge the work manually:
+If the content of a merge request is ready to merge, use **Set to auto-merge** on
+the merge request. You don't have to remember later to merge the work manually. If set,
+a merge request auto-merges when all these conditions are met:
+
+- The merge request pipeline must complete successfully.
+- All required approvals must be given.
 
 ![Auto-merge is ready](img/auto_merge_ready_v16_0.png)
 
-NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), **Merge when pipeline succeeds** and **Add to merge train when pipeline succeeds** are renamed **Set to auto-merge**.
-
-If the pipeline succeeds, the merge request is merged. If the pipeline fails, the
-author can either retry any failed jobs, or push new commits to fix the failure:
-
-- If a retried job succeeds on the second try, the merge request is merged.
-- If new commits are added to the merge request, GitLab cancels the request
-  to ensure the new changes are reviewed before merge.
-- If new commits are added to the target branch of the merge request and
-  fast-forward only merge request is configured, GitLab cancels the request
-  to prevent merge conflicts.
+The [merge when checks pass](#merge-when-checks-pass) feature, available in
+GitLab 16.9 and later, adds more checks to the auto-merge process.
 
 ## Auto-merge a merge request
 
@@ -56,6 +50,42 @@ To do this from the GitLab user interface:
 If a new comment is added to the merge request after you select **Auto-merge**,
 but before the pipeline completes, GitLab blocks the merge until you
 resolve all existing threads.
+
+### Merge when pipeline succeeds
+
+If the pipeline succeeds, the merge request is merged. If the pipeline fails, the
+author can either retry any failed jobs, or push new commits to fix the failure:
+
+- If a retried job succeeds on the second try, the merge request is merged.
+- If new commits are added to the merge request, GitLab cancels the request
+  to ensure the new changes are reviewed before merge.
+- If new commits are added to the target branch of the merge request and
+  fast-forward only merge request is configured, GitLab cancels the request
+  to prevent merge conflicts.
+
+### Merge when checks pass
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 16.9.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To enable the feature,
+an administrator can [enable the feature flags](../../../administration/feature_flags.md)
+named `merge_when_checks_pass` and `additional_merge_when_checks_ready`.
+On GitLab.com, this feature is available.
+
+In GitLab 16.9 and later, **Merge when checks pass** adds more checks to the auto-merge
+process. When set to auto-merge, all of these checks must pass for a merge request to merge:
+
+- The merge request pipeline must complete successfully.
+- All required approvals must be given.
+- The merge request must not be a **Draft**.
+- All discussions must be resolved.
+- All blocking merge requests must be merged or closed.
 
 ## Cancel an auto-merge
 
@@ -109,8 +139,6 @@ an older but successful merge request pipeline allows a merge request to be merg
 despite a newer but failed branch pipeline.
 
 ### Allow merge after skipped pipelines
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211482) in GitLab 13.1.
 
 When the **Pipelines must succeed** checkbox is checked,
 [skipped pipelines](../../../ci/pipelines/index.md#skip-a-pipeline) prevent

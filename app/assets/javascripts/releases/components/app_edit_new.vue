@@ -15,7 +15,7 @@ import { __ } from '~/locale';
 import MilestoneCombobox from '~/milestones/components/milestone_combobox.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
 import { putCreateReleaseNotification } from '~/releases/release_notification_service';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import AssetLinksForm from './asset_links_form.vue';
 import ConfirmDeleteModal from './confirm_delete_modal.vue';
 import TagField from './tag_field.vue';
@@ -31,10 +31,21 @@ export default {
     GlLink,
     GlSprintf,
     ConfirmDeleteModal,
-    MarkdownField,
+    MarkdownEditor,
     AssetLinksForm,
     MilestoneCombobox,
     TagField,
+  },
+  data() {
+    return {
+      formFieldProps: {
+        id: 'release-notes',
+        name: 'release-notes',
+        class: 'note-textarea js-gfm-input js-autosize markdown-area',
+        'aria-label': __('Release notes'),
+        placeholder: __('Write your release notes or drag your files here…'),
+      },
+    };
   },
   computed: {
     ...mapState('editNew', [
@@ -71,7 +82,7 @@ export default {
     },
     releaseNotes: {
       get() {
-        return this.$store.state.editNew.release.description;
+        return this.$store.state.editNew.release.description || this.formattedReleaseNotes;
       },
       set(notes) {
         this.updateReleaseNotes(notes);
@@ -220,25 +231,13 @@ export default {
       </gl-form-group>
       <gl-form-group :label="__('Release notes')" data-testid="release-notes">
         <div class="common-note-form">
-          <markdown-field
-            :can-attach-file="true"
-            :markdown-preview-path="markdownPreviewPath"
+          <markdown-editor
+            v-model="releaseNotes"
+            :render-markdown-path="markdownPreviewPath"
             :markdown-docs-path="markdownDocsPath"
-            :add-spacing-classes="false"
-            :textarea-value="formattedReleaseNotes"
-          >
-            <template #textarea>
-              <textarea
-                id="release-notes"
-                v-model="releaseNotes"
-                class="note-textarea js-gfm-input js-autosize markdown-area"
-                dir="auto"
-                data-supports-quick-actions="false"
-                :aria-label="__('Release notes')"
-                :placeholder="__('Write your release notes or drag your files here…')"
-              ></textarea>
-            </template>
-          </markdown-field>
+            :supports-quick-actions="false"
+            :form-field-props="formFieldProps"
+          />
         </div>
       </gl-form-group>
       <gl-form-group v-if="!isExistingRelease">

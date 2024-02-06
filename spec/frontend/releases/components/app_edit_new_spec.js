@@ -16,7 +16,6 @@ import { putCreateReleaseNotification } from '~/releases/release_notification_se
 import AssetLinksForm from '~/releases/components/asset_links_form.vue';
 import ConfirmDeleteModal from '~/releases/components/confirm_delete_modal.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import { ValidationResult } from '~/lib/utils/ref_validator';
 
 const originalRelease = originalOneReleaseForEditingQueryResponse.data.project.release;
@@ -41,6 +40,7 @@ describe('Release edit/new component', () => {
       release,
       isExistingRelease: true,
       projectPath,
+      markdownPreviewPath: 'path/to/markdown/preview',
       markdownDocsPath: 'path/to/markdown/docs',
       releasesPagePath,
       projectId: '8',
@@ -54,6 +54,7 @@ describe('Release edit/new component', () => {
       saveRelease: jest.fn(),
       addEmptyAssetLink: jest.fn(),
       deleteRelease: jest.fn(),
+      updateReleaseNotes: jest.fn(),
     };
 
     getters = {
@@ -173,13 +174,12 @@ describe('Release edit/new component', () => {
       expect(wrapper.find('#release-notes').element.value).toBe(release.description);
     });
 
-    it('sets the preview text to be the formatted release notes', () => {
-      const notes = getters.formattedReleaseNotes();
-      expect(wrapper.findComponent(MarkdownField).props('textareaValue')).toBe(notes);
-    });
-
     it('renders the "Save changes" button as type="submit"', () => {
       expect(findSubmitButton().attributes('type')).toBe('submit');
+    });
+
+    it('allows switching to rich text editor', () => {
+      expect(wrapper.html()).toContain('Switch to rich text editing');
     });
 
     it('calls saveRelease when the form is submitted', () => {

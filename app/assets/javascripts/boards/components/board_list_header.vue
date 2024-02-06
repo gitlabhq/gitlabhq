@@ -110,6 +110,9 @@ export default {
     itemsCount() {
       return this.isEpicBoard ? this.list.metadata.epicsCount : this.boardList?.issuesCount;
     },
+    boardItemsSizeExceedsMax() {
+      return this.list.maxIssueCount > 0 && this.itemsCount > this.list.maxIssueCount;
+    },
     listAssignee() {
       return this.list?.assignee?.username || '';
     },
@@ -333,6 +336,7 @@ export default {
       'gl-h-full': list.collapsed,
       'gl-bg-gray-50': isSwimlanesHeader,
       'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base': isLabelList,
+      'gl-bg-red-50 gl-rounded-top-left-base gl-rounded-top-right-base': boardItemsSizeExceedsMax,
     }"
     :style="headerStyle"
     class="board-header gl-relative"

@@ -103,6 +103,9 @@ To find a domain expert:
 NOTE:
 Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
+NOTE:
+Until %16.11, GitLab is running [an experiment](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/377) to remove hungriness and busy indicators.
+
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
 **recommendations** for developer reviewers and you should override it if you think someone else is a better
@@ -140,7 +143,7 @@ page, with these behaviors:
   not counted. These MRs are usually backports, and maintainers or reviewers usually
   do not need much time reviewing them.
 
-- Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+- 'Hungriness' for reviews: Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
   is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
   - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
   - [Trainee maintainers](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.

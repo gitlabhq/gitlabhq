@@ -30,20 +30,8 @@ module API
     end
 
     SLASH_COMMAND_INTEGRATIONS = {
-      'mattermost-slash-commands' => [
-        {
-          name: :token,
-          type: String,
-          desc: 'The Mattermost token'
-        }
-      ],
-      'slack-slash-commands' => [
-        {
-          name: :token,
-          type: String,
-          desc: 'The Slack token'
-        }
-      ]
+      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
+      'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_fields
     }.freeze
 
     helpers do

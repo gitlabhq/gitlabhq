@@ -8,8 +8,8 @@ class NamespaceSetting < ApplicationRecord
 
   ignore_column :project_import_level, remove_with: '16.10', remove_after: '2024-02-22'
   ignore_column :third_party_ai_features_enabled, remove_with: '16.10', remove_after: '2024-02-22'
+  ignore_column %i[delayed_project_removal lock_delayed_project_removal], remove_with: '16.10', remove_after: '2024-02-22'
 
-  cascading_attr :delayed_project_removal
   cascading_attr :toggle_security_policy_custom_ci
   cascading_attr :toggle_security_policies_policy_scope
 
@@ -40,8 +40,6 @@ class NamespaceSetting < ApplicationRecord
 
   NAMESPACE_SETTINGS_PARAMS = %i[
     default_branch_name
-    delayed_project_removal
-    lock_delayed_project_removal
     resource_access_token_creation_allowed
     prevent_sharing_groups_outside_hierarchy
     new_user_signups_cap

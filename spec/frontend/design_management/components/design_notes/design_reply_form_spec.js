@@ -2,7 +2,8 @@ import { GlAlert } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import Autosave from '~/autosave';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -94,6 +95,12 @@ describe('Design reply form component', () => {
     expect(findTextarea().element).toEqual(document.activeElement);
   });
 
+  it('allows switching to rich text', () => {
+    createComponent();
+
+    expect(wrapper.text()).toContain('Switch to rich text editing');
+  });
+
   it('renders "Attach a file or image" button in markdown toolbar', () => {
     createComponent();
 
@@ -118,23 +125,6 @@ describe('Design reply form component', () => {
     expect(findSubmitButton().html()).toMatchSnapshot();
   });
 
-  it.each`
-    discussionId                         | shortDiscussionId
-    ${undefined}                         | ${'new'}
-    ${'gid://gitlab/DiffDiscussion/123'} | ${123}
-  `(
-    'initializes autosave support on discussion with proper key',
-    ({ discussionId, shortDiscussionId }) => {
-      createComponent({ props: { discussionId } });
-
-      expect(Autosave).toHaveBeenCalledWith(expect.any(Element), [
-        'Discussion',
-        6,
-        shortDiscussionId,
-      ]);
-    },
-  );
-
   describe('when form has no text', () => {
     beforeEach(() => {
       createComponent();
@@ -155,7 +145,7 @@ describe('Design reply form component', () => {
     });
 
     it('emits cancelForm event on pressing escape button on textarea', () => {
-      findTextarea().trigger('keyup.esc');
+      findTextarea().trigger('keydown.esc');
 
       expect(wrapper.emitted('cancel-form')).toHaveLength(1);
     });
@@ -261,7 +251,7 @@ describe('Design reply form component', () => {
     it('emits cancelForm event on Escape key if text was not changed', () => {
       createComponent();
 
-      findTextarea().trigger('keyup.esc');
+      findTextarea().trigger('keydown.esc');
 
       expect(wrapper.emitted('cancel-form')).toHaveLength(1);
     });
@@ -271,7 +261,7 @@ describe('Design reply form component', () => {
 
       findTextarea().setValue(mockComment);
 
-      findTextarea().trigger('keyup.esc');
+      findTextarea().trigger('keydown.esc');
 
       expect(confirmAction).toHaveBeenCalled();
     });
@@ -282,7 +272,7 @@ describe('Design reply form component', () => {
       createComponent({ props: { value: mockComment } });
       findTextarea().setValue('Comment changed');
 
-      findTextarea().trigger('keyup.esc');
+      findTextarea().trigger('keydown.esc');
 
       expect(confirmAction).toHaveBeenCalled();
 
@@ -296,7 +286,7 @@ describe('Design reply form component', () => {
       createComponent({ props: { value: mockComment } });
       findTextarea().setValue('Comment changed');
 
-      findTextarea().trigger('keyup.esc');
+      findTextarea().trigger('keydown.esc');
 
       expect(confirmAction).toHaveBeenCalled();
       await waitForPromises();
@@ -306,11 +296,12 @@ describe('Design reply form component', () => {
   });
 
   describe('when component is destroyed', () => {
-    it('calls autosave.reset', async () => {
-      const autosaveResetSpy = jest.spyOn(Autosave.prototype, 'reset');
+    it('clears autosave entry', async () => {
+      const clearAutosaveSpy = jest.fn();
+      markdownEditorEventHub.$on(CLEAR_AUTOSAVE_ENTRY_EVENT, clearAutosaveSpy);
       createComponent();
       await wrapper.destroy();
-      expect(autosaveResetSpy).toHaveBeenCalled();
+      expect(clearAutosaveSpy).toHaveBeenCalled();
     });
   });
 });

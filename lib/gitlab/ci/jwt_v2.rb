@@ -26,7 +26,7 @@ module Gitlab
 
       def reserved_claims
         super.merge({
-          iss: Feature.enabled?(:oidc_issuer_url) ? Gitlab.config.gitlab.url : Settings.gitlab.base_url,
+          iss: Gitlab.config.gitlab.url,
           sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
           aud: aud,
           wlif: wlif

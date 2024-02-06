@@ -49471,6 +49471,9 @@ msgstr ""
 msgid "The Slack notifications integration is deprecated and will be removed in a future release. To continue to receive notifications from Slack, use the GitLab for Slack app instead. %{learn_more_link_start}Learn more%{link_end}."
 msgstr ""
 
+msgid "The Slack token."
+msgstr ""
+
 msgid "The Snowplow cookie domain."
 msgstr ""
 
@@ -55942,6 +55945,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress limit"
+msgstr ""
+
+msgid "Work in progress limit: %{wipLimit}"
 msgstr ""
 
 msgid "Work item parent removed successfully"

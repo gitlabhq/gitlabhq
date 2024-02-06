@@ -578,6 +578,34 @@ These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `vers
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate `fmt` job in Terraform Module CI/CD template
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/440249).
+</div>
+
+The `fmt` job in the Terraform Module CI/CD templates is deprecated and will be removed in GitLab 17.0.
+This affects the following templates:
+
+- `Terraform-Module.gitlab-ci.yml`
+- `Terraform/Module-Base.gitlab-ci.yml`
+
+You can manually add back a Terraform `fmt` job to your pipeline using:
+
+```yaml
+fmt:
+  image: hashicorp/terraform
+  script: terraform fmt -chdir "$TF_ROOT" -check -diff -recursive
+```
+
+You can also use the `fmt` template from the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate `message` field from Vulnerability Management features
 
 <div class="deprecation-notes">

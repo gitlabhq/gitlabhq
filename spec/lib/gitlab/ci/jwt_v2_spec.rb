@@ -46,31 +46,11 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       expect(payload).not_to include(:user_identities)
     end
 
-    context 'when oidc_issuer_url is disabled' do
-      before do
-        stub_feature_flags(oidc_issuer_url: false)
-      end
-
-      it 'has correct values for the standard JWT attributes' do
-        aggregate_failures do
-          expect(payload[:iss]).to eq(Settings.gitlab.base_url)
-          expect(payload[:aud]).to eq(Settings.gitlab.base_url)
-          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
-        end
-      end
-    end
-
-    context 'when oidc_issuer_url is enabled' do
-      before do
-        stub_feature_flags(oidc_issuer_url: true)
-      end
-
-      it 'has correct values for the standard JWT attributes' do
-        aggregate_failures do
-          expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
-          expect(payload[:aud]).to eq(Settings.gitlab.base_url)
-          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
-        end
+    it 'has correct values for the standard JWT attributes' do
+      aggregate_failures do
+        expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
+        expect(payload[:aud]).to eq(Settings.gitlab.base_url)
+        expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
       end
     end
 
