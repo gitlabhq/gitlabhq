@@ -61,8 +61,8 @@
         "id_tokens": {
           "$ref": "#/definitions/id_tokens"
         },
-        "identity_provider": {
-          "$ref": "#/definitions/identity_provider"
+        "identity": {
+          "$ref": "#/definitions/identity"
         },
         "retry": {
           "$ref": "#/definitions/retry"
@@ -706,9 +706,9 @@
         }
       }
     },
-    "identity_provider": {
+    "identity": {
       "type": "string",
-      "markdownDescription": "Sets an identity provider (experimental), allowing automatic authentication with the external provider. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#identity_provider).",
+      "markdownDescription": "Sets a workload identity (experimental), allowing automatic authentication with the external system. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#identity).",
       "enum": [
         "google_cloud"
       ]
@@ -1642,8 +1642,8 @@
         "id_tokens": {
           "$ref": "#/definitions/id_tokens"
         },
-        "identity_provider": {
-          "$ref": "#/definitions/identity_provider"
+        "identity": {
+          "$ref": "#/definitions/identity"
         },
         "secrets": {
           "$ref": "#/definitions/secrets"

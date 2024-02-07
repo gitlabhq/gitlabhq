@@ -644,6 +644,15 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
+  scope :order_by_storage_size, -> (direction) do
+    build_keyset_order_on_joined_column(
+      scope: joins(:statistics),
+      attribute_name: 'project_statistics_storage_size',
+      column: ::ProjectStatistics.arel_table[:storage_size],
+      direction: direction,
+      nullable: :nulls_first
+    )
+  end
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
     order_expression = Gitlab::Database::SimilarityScore.build_expression(

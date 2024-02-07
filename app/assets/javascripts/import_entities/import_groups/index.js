@@ -15,6 +15,7 @@ export function mountImportGroupsApp(mountElement) {
     createBulkImportPath,
     jobsPath,
     historyPath,
+    historyShowPath,
     defaultTargetNamespace,
     sourceUrl,
     groupPathRegex,
@@ -40,6 +41,7 @@ export function mountImportGroupsApp(mountElement) {
           jobsPath,
           groupPathRegex: new RegExp(`^(${groupPathRegex})$`),
           historyPath,
+          historyShowPath,
           defaultTargetNamespace: parseInt(defaultTargetNamespace, 10) || null,
         },
       });

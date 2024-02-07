@@ -300,6 +300,44 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         end
       end
 
+      describe 'GET /history' do
+        subject(:request) { get :history }
+
+        it 'responds with a 200 and shows the template', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:history)
+        end
+      end
+
+      describe 'GET /:id/history' do
+        let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+
+        subject(:request) { get :history, params: { id: id } }
+
+        describe 'when bulk_import does not exist' do
+          let(:id) { 18231 }
+
+          it 'responds with a 404' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        describe 'when bulk_import exists' do
+          let(:id) { bulk_import.id }
+
+          it 'responds with a 200 and shows the template', :aggregate_failures do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:history)
+          end
+        end
+      end
+
       describe 'GET details' do
         subject(:request) { get :details }
 

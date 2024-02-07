@@ -51,7 +51,7 @@ pre-push:
     graphql_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{app/graphql/**/*.rb,ee/app/graphql/**/*.rb}'
+      glob: '{,ee/}app/graphql/**/*.rb'
       run: bundle exec rake gitlab:graphql:check_docs
     vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing.html#install-linters
       tags: documentation style
@@ -103,7 +103,7 @@ pre-push:
     audit_event_types_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml,doc/administration/audit_event_streaming/audit_event_types.md}'
+      glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml,doc/administration/audit_event_types.md,tooling/audit_events/docs/templates/audit_event_types.md.erb}'
       run: bundle exec rake gitlab:audit_event_types:check_docs
     rubocop:
       tags: backend style

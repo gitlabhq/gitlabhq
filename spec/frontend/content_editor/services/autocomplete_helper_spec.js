@@ -1,10 +1,10 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import DataSourceFactory, {
+import AutocompleteHelper, {
   defaultSorter,
   customSorter,
   createDataSource,
-} from '~/content_editor/services/data_source_factory';
+} from '~/content_editor/services/autocomplete_helper';
 import {
   MOCK_MEMBERS,
   MOCK_COMMANDS,
@@ -102,7 +102,7 @@ describe('createDataSource', () => {
   });
 });
 
-describe('DataSourceFactory', () => {
+describe('AutocompleteHelper', () => {
   let mock;
   let autocompleteHelper;
   let dateNowOld;
@@ -138,7 +138,7 @@ describe('DataSourceFactory', () => {
       },
     };
 
-    autocompleteHelper = new DataSourceFactory({
+    autocompleteHelper = new AutocompleteHelper({
       dataSourceUrls,
       sidebarMediator,
     });

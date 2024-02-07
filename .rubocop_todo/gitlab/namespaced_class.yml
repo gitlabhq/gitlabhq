@@ -1079,7 +1079,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/batch_worker_context.rb'
     - 'lib/gitlab/blame.rb'
     - 'lib/gitlab/branch_push_merge_commit_analyzer.rb'
-    - 'lib/gitlab/buffered_io.rb'
     - 'lib/gitlab/build_access.rb'
     - 'lib/gitlab/changes_list.rb'
     - 'lib/gitlab/chaos.rb'

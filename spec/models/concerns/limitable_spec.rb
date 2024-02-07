@@ -59,7 +59,6 @@ RSpec.describe Limitable do
 
           stub_feature_flags("#{limit_feature_flag}": limit_feature_flag_value ? [instance.project] : false) if limit_feature_flag
           stub_feature_flags("#{limit_feature_flag_for_override}": limit_feature_flag_override_value ? [instance.project] : false) if limit_feature_flag_for_override
-          skip_feature_flags_yaml_validation
           skip_default_enabled_yaml_check
 
           MinimalTestClass.limit_relation = :custom_relation

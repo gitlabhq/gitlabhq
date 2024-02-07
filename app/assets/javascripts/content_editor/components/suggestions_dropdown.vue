@@ -310,6 +310,7 @@ export default {
                 </span>
                 <span v-if="isMilestone">
                   <span v-safe-html:safeHtmlConfig="highlight(item.title)"></span>
+                  <span v-if="item.expired">{{ __('(expired)') }}</span>
                 </span>
                 <span v-if="isLabel" class="gl-display-flex">
                   <span

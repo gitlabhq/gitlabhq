@@ -252,15 +252,26 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
+        feature_flag = "use_primary_and_secondary_stores_for_#{instance_name.underscore}"
+
         feature_table_exists? &&
-          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
           !same_redis_store?
       end
 
       def use_primary_store_as_default?
+        feature_flag = "use_primary_store_as_default_for_#{instance_name.underscore}"
+
         feature_table_exists? &&
-          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
           !same_redis_store?
+      end
+
+      def feature_flag_type(feature_flag)
+        feature_definition = Feature::Definition.get(feature_flag)
+        return if feature_definition
+
+        :undefined
       end
 
       def increment_pipelined_command_error_count(command_name)

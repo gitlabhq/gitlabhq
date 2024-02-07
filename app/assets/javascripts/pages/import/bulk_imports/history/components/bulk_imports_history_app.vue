@@ -12,7 +12,7 @@ import { isEmpty, isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { joinPaths, getParameterValues } from '~/lib/utils/url_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportHistory, getBulkImportsHistory } from '~/rest_api';
 import { BULK_IMPORT_STATIC_ITEMS } from '~/import/constants';
 import ImportStats from '~/import_entities/components/import_stats.vue';
@@ -60,6 +60,14 @@ export default {
   },
 
   inject: ['realtimeChangesPath'],
+
+  props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
 
   data() {
     return {
@@ -161,11 +169,7 @@ export default {
 
   methods: {
     fetchFn(params) {
-      const bulkImportId = getParameterValues('bulk_import_id')[0];
-
-      return bulkImportId
-        ? getBulkImportHistory(bulkImportId, params)
-        : getBulkImportsHistory(params);
+      return this.id ? getBulkImportHistory(this.id, params) : getBulkImportsHistory(params);
     },
 
     async loadHistoryItems() {
@@ -179,7 +183,7 @@ export default {
         this.pageInfo = parseIntPagination(normalizeHeaders(headers));
         this.historyItems = historyItems;
       } catch (e) {
-        createAlert({ message: DEFAULT_ERROR, captureError: true, error: e });
+        createAlert({ message: e.message || DEFAULT_ERROR, captureError: true, error: e });
       } finally {
         this.loading = false;
       }

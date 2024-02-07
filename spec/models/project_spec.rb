@@ -2167,6 +2167,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.order_by_storage_size' do
+    let_it_be(:project_1) { create(:project_statistics, repository_size: 1).project }
+    let_it_be(:project_2) { create(:project_statistics, repository_size: 3).project }
+    let_it_be(:project_3) { create(:project_statistics, repository_size: 2).project }
+
+    context 'ascending' do
+      it { expect(described_class.order_by_storage_size(:asc)).to eq([project_1, project_3, project_2]) }
+    end
+
+    context 'descending' do
+      it { expect(described_class.order_by_storage_size(:desc)).to eq([project_2, project_3, project_1]) }
+    end
+  end
+
   describe '.with_shared_runners_enabled' do
     subject { described_class.with_shared_runners_enabled }
 

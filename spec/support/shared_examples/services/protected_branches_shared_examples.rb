@@ -30,6 +30,14 @@ RSpec.shared_context 'with scan result policy blocking protected branches' do
   end
 end
 
+RSpec.shared_context 'with scan result policy blocking group-level protected branches' do
+  include_context 'with scan result policy' do
+    let(:scan_result_policy) do
+      build(:scan_result_policy, branches: [branch_name], approval_settings: { block_group_branch_modification: true })
+    end
+  end
+end
+
 RSpec.shared_context 'with scan result policy preventing force pushing' do
   include_context 'with scan result policy' do
     let(:prevent_pushing_and_force_pushing) { true }

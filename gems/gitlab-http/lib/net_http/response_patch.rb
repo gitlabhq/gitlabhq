@@ -22,9 +22,6 @@ module Net
       while true
         uses_buffered_io = sock.is_a?(Gitlab::HTTP_V2::BufferedIo)
 
-        # TODO: Gitlab::BufferedIo is temporarily used for an easy migration.
-        uses_buffered_io ||= sock.is_a?(Gitlab::BufferedIo) if defined?(Gitlab::BufferedIo)
-
         line = uses_buffered_io ? sock.readuntil("\n", true, start_time) : sock.readuntil("\n", true)
         line = line.sub(/\s{0,10}\z/, '')
         break if line.empty?

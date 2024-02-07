@@ -42,13 +42,12 @@ User ==> R
 R ==> Primary
 R ==> Secondary
 
-Primary --> Secondary : "DB selective replica"
-Secondary --> Primary : "internal API"
+Secondary --> Primary : "Internal API"
 
 @enduml
 ```
 
-As we can see from the diagram, users interact with the system through the router only. Cells communicate with the Primary Cell using internal API calls and have a local copy of all the database rows necessary to operate.
+As we can see from the diagram, users interact with the system through the router only. Secondary Cells communicate with the Primary Cell using internal API and have a local copy of all the database rows necessary to operate.
 
 It is important to note that even if a Secondary Cell supports GitLab Geo out of the box, we will not be able to provide this feature to our users until the Router supports it.
 

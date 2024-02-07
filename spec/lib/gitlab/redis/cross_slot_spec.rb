@@ -45,7 +45,6 @@ RSpec.describe Gitlab::Redis::CrossSlot, feature_category: :redis do
       before do
         primary_store.set('a', 1)
         secondary_store.set('a', 1)
-        skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
       end
 

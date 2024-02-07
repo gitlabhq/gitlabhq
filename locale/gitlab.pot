@@ -42579,6 +42579,9 @@ msgstr ""
 msgid "Runners|Most recent failures"
 msgstr ""
 
+msgid "Runners|Most used instance runners"
+msgstr ""
+
 msgid "Runners|Name"
 msgstr ""
 
@@ -42760,7 +42763,7 @@ msgstr ""
 msgid "Runners|Runner Registration token"
 msgstr ""
 
-msgid "Runners|Runner Usage"
+msgid "Runners|Runner Usage (previous month)"
 msgstr ""
 
 msgid "Runners|Runner assigned to project."
@@ -43031,6 +43034,9 @@ msgstr ""
 msgid "Runners|Token expiry"
 msgstr ""
 
+msgid "Runners|Top projects consuming runners"
+msgstr ""
+
 msgid "Runners|UTC Time"
 msgstr ""
 
@@ -43050,6 +43056,9 @@ msgid "Runners|Upgrade available"
 msgstr ""
 
 msgid "Runners|Upgrade recommended"
+msgstr ""
+
+msgid "Runners|Usage (min)"
 msgstr ""
 
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."

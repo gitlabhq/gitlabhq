@@ -62,7 +62,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
   | [`environment`](#environment)               | Name of an environment to which the job deploys. |
   | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
-  | [`identity_provider`](#identity_provider)   | Authenticate with third party services. |
+  | [`identity`](#identity)                     | Authenticate with third party services using identity federation. |
   | [`image`](#image)                           | Use Docker images. |
   | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
   | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
@@ -2442,7 +2442,7 @@ job1:
 
 - [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 
-### `identity_provider`
+### `identity`
 
 DETAILS:
 **Status:** Experiment
@@ -2453,17 +2453,17 @@ FLAG:
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
-Use `identity_provider` to authenticate with third party services.
+Use `identity` to authenticate with third party services using identity federation.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
 
-**Possible inputs**: A provider identifier. Supported providers: `google_cloud` (Google Cloud). The Google Cloud
+**Possible inputs**: An identifier. Supported providers: `google_cloud` (Google Cloud).
 
-**Example of `identity_provider`**:
+**Example of `identity`**:
 
 ```yaml
-job_with_identity_provider:
-  identity_provider: google_cloud
+job_with_workload_identity:
+  identity: google_cloud
   script:
     - gcloud compute instances list
 ```

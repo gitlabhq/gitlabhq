@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.2 (2024-02-07)
+
+### Fixed (3 changes)
+
+- [Fix Redis 6.0 compatibility breakage with Sidekiq 7 gem](gitlab-org/security/gitlab@e61868ad98d2ae640b3deec2b148c01fb52dba77)
+- [Defer ConnectionPool instrumentation setup](gitlab-org/security/gitlab@d31ee125cd7ec9023b7558bd7af44c0293637b94)
+- [Fix invalid records with FK not valid](gitlab-org/security/gitlab@a8dece6c5d160a218d9622a3dab0f93a7b2ca181)
+
+### Security (4 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@96b81737b2b9f1aa3c9d710bc00b80be8359f68f) ([merge request](gitlab-org/security/gitlab!3854))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@6b12a71efe9c82b696cf1dc68c5aa2bc72e5fea3) ([merge request](gitlab-org/security/gitlab!3837))
+- [Restrict group access token creation for custom roles](gitlab-org/security/gitlab@e1d38e70f1f5c9defbb0ca2fa4608e603dcd2858) ([merge request](gitlab-org/security/gitlab!3834))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@5e5428919d4773731bed7f724bd650dbc7555d9e) ([merge request](gitlab-org/security/gitlab!3826))
+
 ## 16.8.1 (2024-01-24)
 
 ### Fixed (1 change)
@@ -503,6 +518,18 @@ entry.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.5 (2024-02-07)
+
+### Fixed (1 change)
+
+- [Update dependency prometheus-client-mmap to '~> 1.1', '>= 1.1.1'](gitlab-org/security/gitlab@41326f12836b409735f0745d57b135fd952b54e0)
+
+### Security (3 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@7b29c348a90b3311c5661b57572cbedf6160d02a) ([merge request](gitlab-org/security/gitlab!3855))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@5f8202c849059e28370d79aa79cd94a851abd61a) ([merge request](gitlab-org/security/gitlab!3838))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@95c1de1c1c297ba59e7e52485e9703b01d8ad552) ([merge request](gitlab-org/security/gitlab!3827))
 
 ## 16.7.4 (2024-01-24)
 
@@ -1443,6 +1470,14 @@ entry.
 ### fixed EE: true (1 change)
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
+
+## 16.6.7 (2024-02-07)
+
+### Security (3 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@4aea3a2d7f371d57a00eef647f84dce2b6963dc6) ([merge request](gitlab-org/security/gitlab!3856))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@6ea7b750df3a5c2505717555db0875be6b0b3cd0) ([merge request](gitlab-org/security/gitlab!3840))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@4896b80a35e3a31b2cf0df28a3545ba5caf9cc6f) ([merge request](gitlab-org/security/gitlab!3831))
 
 ## 16.6.6 (2024-01-24)
 

@@ -91,6 +91,10 @@ export default {
       type: String,
       required: true,
     },
+    historyShowPath: {
+      type: String,
+      required: true,
+    },
     defaultTargetNamespace: {
       type: Number,
       required: false,
@@ -645,7 +649,9 @@ export default {
         <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
         <span>{{ s__('BulkImport|Import groups by direct transfer') }}</span>
       </h1>
-      <gl-link :href="historyPath" class="gl-ml-auto">{{ s__('BulkImport|History') }}</gl-link>
+      <gl-link :href="historyPath" class="gl-ml-auto" data-testid="history-link">{{
+        s__('BulkImport|History')
+      }}</gl-link>
     </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"
@@ -868,7 +874,7 @@ export default {
             <import-history-link
               v-if="showHistoryLink(group)"
               :id="group.progress.id"
-              :history-path="historyPath"
+              :history-path="historyShowPath"
               class="gl-display-inline-block gl-mt-2"
             />
           </template>

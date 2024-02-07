@@ -6,7 +6,7 @@ import ImportHistoryLink from '~/import_entities/import_groups/components/import
 describe('import history link', () => {
   let wrapper;
 
-  const mockHistoryPath = '/import/history';
+  const mockHistoryPath = '/import/:id/history';
 
   const createComponent = ({ props } = {}) => {
     wrapper = shallowMount(ImportHistoryLink, {
@@ -29,6 +29,6 @@ describe('import history link', () => {
     });
 
     expect(findGlLink().text()).toBe('View details');
-    expect(findGlLink().attributes('href')).toBe('/import/history?bulk_import_id=174');
+    expect(findGlLink().attributes('href')).toBe('/import/174/history');
   });
 });

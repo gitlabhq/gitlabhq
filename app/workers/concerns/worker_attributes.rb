@@ -111,7 +111,7 @@ module WorkerAttributes
     def get_data_consistency_feature_flag_enabled?
       return true unless get_class_attribute(:data_consistency_feature_flag)
 
-      Feature.enabled?(get_class_attribute(:data_consistency_feature_flag))
+      Feature.enabled?(get_class_attribute(:data_consistency_feature_flag), type: :worker)
     end
 
     # Set this attribute on a job when it will call to services outside of the
@@ -197,7 +197,7 @@ module WorkerAttributes
     def deduplication_enabled?
       return true unless get_deduplication_options[:feature_flag]
 
-      Feature.enabled?(get_deduplication_options[:feature_flag])
+      Feature.enabled?(get_deduplication_options[:feature_flag], type: :worker)
     end
 
     def big_payload!

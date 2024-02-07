@@ -8,6 +8,8 @@ module AuthenticatesWithTwoFactorForAdminMode
   end
 
   def admin_mode_prompt_for_two_factor(user)
+    @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Set @user for Admin views
+
     return handle_locked_user(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id

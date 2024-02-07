@@ -42,7 +42,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
     context 'when the deduplication depends on a FF' do
       before do
-        skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
 
         allow(AuthorizedProjectsWorker).to receive(:get_deduplication_options).and_return(feature_flag: :my_feature_flag)

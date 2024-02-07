@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DataSourceFactory filters items based on command "/assign" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/assign" for reference type "user" and command 1`] = `
 Array [
   "florida.schoen",
   "root",
@@ -20,7 +20,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/assign_reviewer" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/assign_reviewer" for reference type "user" and command 1`] = `
 Array [
   "florida.schoen",
   "root",
@@ -38,7 +38,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/label" for reference type "label" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/label" for reference type "label" and command 1`] = `
 Array [
   "Bronce",
   "Contour",
@@ -58,7 +58,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/reassign" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/reassign" for reference type "user" and command 1`] = `
 Array [
   "florida.schoen",
   "root",
@@ -78,7 +78,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/reassign_reviewer" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/reassign_reviewer" for reference type "user" and command 1`] = `
 Array [
   "florida.schoen",
   "root",
@@ -98,7 +98,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/relabel" for reference type "label" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/relabel" for reference type "label" and command 1`] = `
 Array [
   "Amsche",
   "Brioffe",
@@ -118,14 +118,14 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/unassign" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/unassign" for reference type "user" and command 1`] = `
 Array [
   "errol",
   "evelynn_olson",
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/unassign_reviewer" for reference type "user" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/unassign_reviewer" for reference type "user" and command 1`] = `
 Array [
   "lakeesha.batz",
   "laurene_blick",
@@ -134,7 +134,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory filters items based on command "/unlabel" for reference type "label" and command 1`] = `
+exports[`AutocompleteHelper filters items based on command "/unlabel" for reference type "label" and command 1`] = `
 Array [
   "Amsche",
   "Brioffe",
@@ -143,7 +143,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "command", searches for "re" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "command", searches for "re" correctly 1`] = `
 Array [
   "relabel",
   "remove_milestone",
@@ -156,7 +156,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "epic", searches for "n" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "epic", searches for "n" correctly 1`] = `
 Array [
   "Nobis quidem aspernatur reprehenderit sunt ut ipsum tempora sapiente sed iste.",
   "Minus eius ut omnis quos sunt dicta ex ipsum.",
@@ -166,7 +166,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "issue", searches for "q" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "issue", searches for "q" correctly 1`] = `
 Array [
   "Quasi id et et nihil sint autem.",
   "Eaque omnis eius quas necessitatibus hic ut et corrupti.",
@@ -181,7 +181,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "label", searches for "c" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "label", searches for "c" correctly 1`] = `
 Array [
   "Contour",
   "Corolla",
@@ -195,7 +195,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "merge_request", searches for "n" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "merge_request", searches for "n" correctly 1`] = `
 Array [
   "Blanditiis maxime voluptatem ut pariatur vel autem vero non quod libero.",
   "Optio nemo qui dolorem sit ipsum qui saepe.",
@@ -207,24 +207,24 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "milestone", searches for "16" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "milestone", searches for "16" correctly 1`] = `
 Array [
   "16.7",
   "16.8",
   "16.9",
   "16.10",
   "16.11",
-  "16.0 (expired)",
-  "16.1 (expired)",
-  "16.2 (expired)",
-  "16.3 (expired)",
-  "16.4 (expired)",
-  "16.5 (expired)",
-  "16.6 (expired)",
+  "16.0",
+  "16.1",
+  "16.2",
+  "16.3",
+  "16.4",
+  "16.5",
+  "16.6",
 ]
 `;
 
-exports[`DataSourceFactory for reference type "snippet", searches for "s" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "snippet", searches for "s" correctly 1`] = `
 Array [
   "ss",
   "test snippet",
@@ -232,7 +232,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "user", searches for "r" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "user", searches for "r" correctly 1`] = `
 Array [
   "root",
   "errol",
@@ -247,7 +247,7 @@ Array [
 ]
 `;
 
-exports[`DataSourceFactory for reference type "vulnerability", searches for "cross" correctly 1`] = `
+exports[`AutocompleteHelper for reference type "vulnerability", searches for "cross" correctly 1`] = `
 Array [
   "Cross Site Scripting (Persistent)",
   "Cross Site Scripting (Persistent)",

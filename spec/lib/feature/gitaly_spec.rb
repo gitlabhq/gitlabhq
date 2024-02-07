@@ -10,9 +10,9 @@ RSpec.describe Feature::Gitaly do
   let_it_be(:repository_2) { project_2.repository.raw }
 
   before do
-    skip_feature_flags_yaml_validation
-    allow(Feature::Definition).to receive(:get).with(any_args).and_return(
-      Feature::Definition.new('flag.yml', name: :flag, type: :development)
+    allow(Feature::Definition).to receive(:get).and_call_original
+    allow(Feature::Definition).to receive(:get).with(:flag).and_return(
+      Feature::Definition.new('flag.yml', name: :flag, type: :undefined)
     )
   end
 

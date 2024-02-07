@@ -155,7 +155,7 @@ module Routable
       route&.public_send(attribute) || send("build_full_#{attribute}")
     end
 
-    unless persisted? && Feature.enabled?(:cached_route_lookups, self, type: :ops)
+    unless persisted? && Feature.enabled?(:cached_route_lookups, self)
       return attribute_from_route_or_self.call(attribute)
     end
 

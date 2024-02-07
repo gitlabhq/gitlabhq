@@ -137,7 +137,6 @@ Lint/MissingCopEnableDirective:
     - 'lib/gitlab/background_migration/populate_resolved_on_default_branch_column.rb'
     - 'lib/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'lib/gitlab/background_migration/update_jira_tracker_data_deployment_type_based_on_url.rb'
-    - 'lib/gitlab/buffered_io.rb'
     - 'lib/gitlab/ci/reports/test_suite_summary.rb'
     - 'lib/gitlab/data_builder/push.rb'
     - 'lib/gitlab/database/load_balancing/connection_proxy.rb'

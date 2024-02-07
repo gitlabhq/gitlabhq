@@ -31501,8 +31501,9 @@ Values for sorting projects.
 | Value | Description |
 | ----- | ----------- |
 | <a id="namespaceprojectsortactivity_desc"></a>`ACTIVITY_DESC` | Sort by latest activity, descending order. |
+| <a id="namespaceprojectsortexcess_repo_storage_size_desc"></a>`EXCESS_REPO_STORAGE_SIZE_DESC` | Sort by excess repository storage size, descending order. |
 | <a id="namespaceprojectsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
-| <a id="namespaceprojectsortstorage"></a>`STORAGE` | Sort by excess repository storage size, descending order. |
+| <a id="namespaceprojectsortstorage"></a>`STORAGE` **{warning-solid}** | **Deprecated** in 16.9. Please use EXCESS_REPO_STORAGE_SIZE_DESC. |
 | <a id="namespaceprojectsortstorage_size_asc"></a>`STORAGE_SIZE_ASC` | Sort by total storage size, ascending order. |
 | <a id="namespaceprojectsortstorage_size_desc"></a>`STORAGE_SIZE_DESC` | Sort by total storage size, descending order. |
 

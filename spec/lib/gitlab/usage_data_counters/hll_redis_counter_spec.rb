@@ -90,7 +90,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
 
     before do
-      skip_feature_flags_yaml_validation
       skip_default_enabled_yaml_check
       allow(described_class).to receive(:known_events).and_return(known_events)
     end

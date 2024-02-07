@@ -1,5 +1,4 @@
 import { identity, memoize, throttle } from 'lodash';
-import { sprintf, __ } from '~/locale';
 import { initEmojiMap, getAllEmoji, searchEmoji } from '~/emoji';
 import { parsePikadayDate } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
@@ -43,11 +42,7 @@ function parseMilestone(milestone) {
 
   return {
     id: milestone.iid,
-    title: expired
-      ? sprintf(__('%{milestone} (expired)'), {
-          milestone: milestone.title,
-        })
-      : milestone.title,
+    title: milestone.title,
     expired,
     dueDate,
   };
@@ -121,7 +116,7 @@ export function createDataSource({
   };
 }
 
-export default class DataSourceFactory {
+export default class AutocompleteHelper {
   constructor({ dataSourceUrls, sidebarMediator }) {
     this.dataSourceUrls = dataSourceUrls;
     this.sidebarMediator = sidebarMediator;

@@ -9,7 +9,7 @@ import createGlApiMarkdownDeserializer from './gl_api_markdown_deserializer';
 import createRemarkMarkdownDeserializer from './remark_markdown_deserializer';
 import AssetResolver from './asset_resolver';
 import trackInputRulesAndShortcuts from './track_input_rules_and_shortcuts';
-import DataSourceFactory from './data_source_factory';
+import AutocompleteHelper from './autocomplete_helper';
 
 const createTiptapEditor = ({ extensions = [], ...options } = {}) =>
   new Editor({
@@ -36,7 +36,7 @@ export const createContentEditor = ({
   const eventHub = eventHubFactory();
   const assetResolver = new AssetResolver({ renderMarkdown });
   const serializer = new MarkdownSerializer({ serializerConfig });
-  const autocompleteHelper = new DataSourceFactory({
+  const autocompleteHelper = new AutocompleteHelper({
     dataSourceUrls: autocompleteDataSources,
     sidebarMediator,
   });

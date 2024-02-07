@@ -22,7 +22,6 @@ RSpec.describe Gitlab::Redis::MultiStore, feature_category: :redis do
   end
 
   before do
-    skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
   end
 

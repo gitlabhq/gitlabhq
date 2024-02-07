@@ -66,6 +66,7 @@ describe('import table', () => {
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findHistoryLink = () => wrapper.findByTestId('history-link');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
   const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');
   const findAllImportStatuses = () => wrapper.findAllComponents(ImportStatus);
@@ -104,6 +105,7 @@ describe('import table', () => {
         jobsPath: '/fake_job_path',
         sourceUrl: SOURCE_URL,
         historyPath: '/fake_history_path',
+        historyShowPath: '/:id/fake_history_path',
         defaultTargetNamespace,
       },
       directives: {
@@ -157,6 +159,12 @@ describe('import table', () => {
     });
   });
 
+  it('renders "History" link', () => {
+    createComponent({ bulkImportSourceGroups: () => [] });
+
+    expect(findHistoryLink().attributes('href')).toBe('/fake_history_path');
+  });
+
   it('renders import row for each group in response', async () => {
     createComponent({
       bulkImportSourceGroups: () => ({
@@ -200,6 +208,13 @@ describe('import table', () => {
     expect(importHistoryLinks).toHaveLength(2);
     expect(importHistoryLinks.at(0).props('id')).toBe(FAKE_GROUPS[1].id);
     expect(importHistoryLinks.at(1).props('id')).toBe(FAKE_GROUPS[3].id);
+
+    expect(importHistoryLinks.at(0).attributes('href')).toBe(
+      `/${FAKE_GROUPS[1].id}/fake_history_path`,
+    );
+    expect(importHistoryLinks.at(1).attributes('href')).toBe(
+      `/${FAKE_GROUPS[3].id}/fake_history_path`,
+    );
   });
 
   describe('selecting import target namespace', () => {

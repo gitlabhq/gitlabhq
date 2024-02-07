@@ -14,7 +14,7 @@
 #
 # 2. Header timeouts
 #   When the use_read_total_timeout option is used, that means the receiver
-#   of the HTTP request cannot be trusted. Gitlab::BufferedIo will be used,
+#   of the HTTP request cannot be trusted. Gitlab::HTTP_V2::BufferedIo will be used,
 #   to read header data. It is a modified version of Net::BufferedIO that
 #   raises a timeout error if reading header data takes too much time.
 

@@ -1,2 +1,2 @@
-valid_identity_provider:
-  identity_provider: google_cloud
+valid_workload_identity:
+  identity: google_cloud

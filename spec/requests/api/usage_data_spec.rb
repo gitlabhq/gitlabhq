@@ -137,7 +137,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with unknown event' do
         before do
-          skip_feature_flags_yaml_validation
           skip_default_enabled_yaml_check
         end
 
@@ -214,10 +213,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
 
       context 'with unknown event' do
-        before do
-          skip_feature_flags_yaml_validation
-        end
-
         it 'returns status ok' do
           expect(Gitlab::Redis::HLL).not_to receive(:add)
 

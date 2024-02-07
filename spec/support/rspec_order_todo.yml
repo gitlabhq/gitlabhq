@@ -5342,7 +5342,6 @@
 - './spec/lib/gitlab/blame_spec.rb'
 - './spec/lib/gitlab/blob_helper_spec.rb'
 - './spec/lib/gitlab/branch_push_merge_commit_analyzer_spec.rb'
-- './spec/lib/gitlab/buffered_io_spec.rb'
 - './spec/lib/gitlab/build_access_spec.rb'
 - './spec/lib/gitlab/bullet/exclusions_spec.rb'
 - './spec/lib/gitlab/bullet_spec.rb'

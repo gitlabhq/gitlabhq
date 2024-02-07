@@ -77,6 +77,12 @@ namespace :import do
     get :details
   end
 
+  resources :bulk_imports, only: [] do
+    member do
+      get :history
+    end
+  end
+
   resource :manifest, only: [:create, :new], controller: :manifest do
     get :status
     get :realtime_changes

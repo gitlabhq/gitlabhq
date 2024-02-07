@@ -5,6 +5,7 @@ class Import::BulkImportsController < ApplicationController
 
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
+  before_action :bulk_import, only: [:history]
 
   feature_category :importers
   urgency :low
@@ -49,6 +50,8 @@ class Import::BulkImportsController < ApplicationController
     end
   end
 
+  def history; end
+
   def details; end
 
   def create
@@ -74,6 +77,13 @@ class Import::BulkImportsController < ApplicationController
   end
 
   private
+
+  def bulk_import
+    return unless params[:id]
+
+    @bulk_import ||= BulkImport.find(params[:id])
+    @bulk_import || render_404
+  end
 
   def pagination_headers
     %w[x-next-page x-page x-per-page x-prev-page x-total x-total-pages]

@@ -2325,7 +2325,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/bitbucket_import/importers/issue_notes_importer.rb'
     - 'lib/gitlab/bitbucket_server_import/importers/pull_request_notes_importer.rb'
     - 'lib/gitlab/blob_helper.rb'
-    - 'lib/gitlab/buffered_io.rb'
     - 'lib/gitlab/cache/ci/project_pipeline_status.rb'
     - 'lib/gitlab/cache/import/caching.rb'
     - 'lib/gitlab/cache/request_cache.rb'

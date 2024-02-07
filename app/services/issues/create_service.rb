@@ -49,15 +49,8 @@ module Issues
     def before_create(issue)
       issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
 
-      # current_user (defined in BaseService) is not available within run_after_commit block
-      user = current_user
       assign_description_from_template(issue)
-      issue.run_after_commit do
-        NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
-        Issues::PlacementWorker.perform_async(nil, issue.project_id)
-        # issue.namespace_id can point to either a project through project namespace or a group.
-        Onboarding::IssueCreatedWorker.perform_async(issue.namespace_id)
-      end
+      after_commit_tasks(current_user, issue)
     end
 
     # Add new items to Issues::AfterCreateService if they can be performed in Sidekiq
@@ -159,6 +152,15 @@ module Issues
       end
 
       issue.description = default_template.content if default_template.present?
+    end
+
+    def after_commit_tasks(user, issue)
+      issue.run_after_commit do
+        NewIssueWorker.perform_async(issue.id, user.id, issue.class.to_s)
+        Issues::PlacementWorker.perform_async(nil, issue.project_id)
+        # issue.namespace_id can point to either a project through project namespace or a group.
+        Onboarding::IssueCreatedWorker.perform_async(issue.namespace_id)
+      end
     end
   end
 end

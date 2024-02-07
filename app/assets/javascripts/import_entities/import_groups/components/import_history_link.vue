@@ -1,6 +1,5 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import { mergeUrlParams } from '~/lib/utils/url_utility';
 
 export default {
   components: {
@@ -21,7 +20,7 @@ export default {
 
   computed: {
     historyPathWithId() {
-      return mergeUrlParams({ bulk_import_id: this.id }, this.historyPath);
+      return this.historyPath.replace(':id', encodeURIComponent(this.id));
     },
   },
 };

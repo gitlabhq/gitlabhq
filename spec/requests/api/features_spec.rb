@@ -26,7 +26,6 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
       actor.respond_to?(:admin) && actor.admin?
     end
 
-    skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
   end
 
@@ -748,7 +747,7 @@ RSpec.describe API::Features, :clean_gitlab_redis_feature_flag, stub_feature_fla
             delete api("/features/#{feature_name}", admin, admin_mode: true)
             Feature.reset
           end.to change { Feature.persisted_name?(feature_name) }
-            .and change { Feature.enabled?(feature_name) }
+            .and change { Feature.enabled?(feature_name, type: :undefined) }
 
           expect(response).to have_gitlab_http_status(:no_content)
         end

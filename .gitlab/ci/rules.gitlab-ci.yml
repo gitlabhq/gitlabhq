@@ -444,7 +444,6 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -470,7 +469,6 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -503,7 +501,6 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -533,7 +530,6 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -572,7 +568,6 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -650,6 +645,11 @@
   - GITLAB_WORKHORSE_VERSION
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
+
+.audit-events-patterns: &audit-events-patterns
+  - "{,ee/}config/audit_events/types/*.yml"
+  - "doc/administration/audit_event_types.md"
+  - "tooling/audit_events/docs/templates/audit_event_types.md.erb"
 
 ##################
 # Conditions set #
@@ -1191,7 +1191,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      changes: *audit-events-patterns
 
 ##################
 # Frontend rules #

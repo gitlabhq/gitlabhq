@@ -4,7 +4,7 @@ import BulkImportHistoryApp from './components/bulk_imports_history_app.vue';
 function mountImportHistoryApp(mountElement) {
   if (!mountElement) return undefined;
 
-  const { realtimeChangesPath, detailsPath } = mountElement.dataset;
+  const { id, realtimeChangesPath, detailsPath } = mountElement.dataset;
 
   return new Vue({
     el: mountElement,
@@ -14,7 +14,11 @@ function mountImportHistoryApp(mountElement) {
       detailsPath,
     },
     render(createElement) {
-      return createElement(BulkImportHistoryApp);
+      return createElement(BulkImportHistoryApp, {
+        props: {
+          id,
+        },
+      });
     },
   });
 }
