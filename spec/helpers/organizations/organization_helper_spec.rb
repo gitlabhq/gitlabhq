@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
+  include Devise::Test::ControllerHelpers
+
+  let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
   let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
@@ -27,6 +30,31 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow(helper).to receive(:image_path).with(groups_empty_state_svg_path).and_return(groups_empty_state_svg_path)
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
     allow(helper).to receive(:preview_markdown_organizations_path).and_return(preview_markdown_organizations_path)
+    allow(helper).to receive(:current_user).and_return(user)
+  end
+
+  shared_examples 'includes that the user can create a group' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('can_create_group' => true)
+    end
+  end
+
+  shared_examples 'includes that the user can create a project' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('can_create_project' => true)
+    end
+  end
+
+  shared_examples 'includes that the organization has groups' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('has_groups' => true)
+    end
   end
 
   describe '#organization_layout_nav' do
@@ -68,13 +96,38 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
         .and_return(groups_and_projects_organization_path)
     end
 
-    it 'returns expected json' do
+    context 'when the user can create a group' do
+      before do
+        allow(helper).to receive(:can?).with(user, :create_group, organization).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a group', 'organization_show_app_data'
+    end
+
+    context 'when the user can create a project' do
+      before do
+        allow(user).to receive(:can_create_project?).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a project', 'organization_show_app_data'
+    end
+
+    context 'when the organization has groups' do
+      before do
+        allow(helper).to receive(:has_groups?).and_return(true)
+      end
+
+      include_examples 'includes that the organization has groups', 'organization_show_app_data'
+    end
+
+    it "includes all other non-conditional data" do
       expect(organization).to receive(:avatar_url).with(size: 128).and_return('avatar.jpg')
+
       expect(
         Gitlab::Json.parse(
           helper.organization_show_app_data(organization)
         )
-      ).to eq(
+      ).to include(
         {
           'organization_gid' => organization_gid,
           'organization' => {
@@ -99,12 +152,36 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_groups_and_projects_app_data' do
-    it 'returns expected json' do
+    context 'when the user can create a group' do
+      before do
+        allow(helper).to receive(:can?).with(user, :create_group, organization).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a group', 'organization_groups_and_projects_app_data'
+    end
+
+    context 'when the user can create a project' do
+      before do
+        allow(user).to receive(:can_create_project?).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a project', 'organization_groups_and_projects_app_data'
+    end
+
+    context 'when the organization has groups' do
+      before do
+        allow(helper).to receive(:has_groups?).and_return(true)
+      end
+
+      include_examples 'includes that the organization has groups', 'organization_groups_and_projects_app_data'
+    end
+
+    it "includes all other non-conditional data" do
       expect(
         Gitlab::Json.parse(
           helper.organization_groups_and_projects_app_data(organization)
         )
-      ).to eq(
+      ).to include(
         {
           'organization_gid' => organization_gid,
           'new_group_path' => new_group_path,

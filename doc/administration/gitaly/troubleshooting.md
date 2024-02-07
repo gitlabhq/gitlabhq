@@ -557,3 +557,28 @@ If you find that `fapolicyd` is denying execution, consider the following:
    ```
 
 1. Restart the service.
+
+## `Pre-receive hook declined` error when pushing to RHEL instance with `fapolicyd` enabled
+
+When pushing to an RHEL-based instance with `fapolicyd` enabled, you might get a `Pre-receive hook declined` error. This error can occur because `fapolicyd` can block the execution
+of the Gitaly binary. To resolve this problem, either:
+
+- Disable `fapolicyd`.
+- Create an `fapolicyd` rule to permit execution of Gitaly binaries with `fapolicyd` enabled.
+
+To create a rule to allow Gitaly binary execution:
+
+1. Create a file at `/etc/fapolicyd/rules.d/89-gitlab.rules`.
+1. Enter the following into the file:
+
+   ```plaintext
+   allow perm=any all : ftype=application/x-executable dir=/var/opt/gitlab/gitaly/
+   ```
+
+1. Restart the service:
+   
+   ```shell
+   systemctl restart fapolicyd
+   ```
+
+The new rule takes effect after the daemon restarts.

@@ -77,7 +77,10 @@ module Organizations
         projects_empty_state_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_group_path,
-        new_project_path: new_project_path
+        new_project_path: new_project_path,
+        can_create_group: can?(current_user, :create_group, organization),
+        can_create_project: current_user&.can_create_project?,
+        has_groups: has_groups?(organization)
       }
     end
 
@@ -94,6 +97,10 @@ module Organizations
       {
         admin_user: admin_user_path(:id)
       }
+    end
+
+    def has_groups?(organization)
+      organization.groups.exists?
     end
   end
 end

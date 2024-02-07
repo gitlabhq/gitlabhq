@@ -7,6 +7,7 @@ import { createAlert } from '~/alert';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import { formatProjects } from '../utils';
+import NewProjectButton from './new_project_button.vue';
 
 export default {
   i18n: {
@@ -18,7 +19,6 @@ export default {
       description: s__(
         'GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
       ),
-      primaryButtonText: __('New project'),
     },
     prev: __('Prev'),
     next: __('Next'),
@@ -28,13 +28,11 @@ export default {
     GlLoadingIcon,
     GlEmptyState,
     GlKeysetPagination,
+    NewProjectButton,
   },
   inject: {
     organizationGid: {},
     projectsEmptyStateSvgPath: {},
-    newProjectPath: {
-      default: null,
-    },
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -149,14 +147,6 @@ export default {
         description: this.$options.i18n.emptyState.description,
       };
 
-      if (this.shouldShowEmptyStateButtons && this.newProjectPath) {
-        return {
-          ...baseProps,
-          primaryButtonLink: this.newProjectPath,
-          primaryButtonText: this.$options.i18n.emptyState.primaryButtonText,
-        };
-      }
-
       return baseProps;
     },
   },
@@ -191,5 +181,9 @@ export default {
       />
     </div>
   </div>
-  <gl-empty-state v-else v-bind="emptyStateProps" />
+  <gl-empty-state v-else v-bind="emptyStateProps">
+    <template v-if="shouldShowEmptyStateButtons" #actions>
+      <new-project-button />
+    </template>
+  </gl-empty-state>
 </template>

@@ -7,6 +7,7 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import { formatGroups } from '../utils';
+import NewGroupButton from './new_group_button.vue';
 
 export default {
   i18n: {
@@ -18,19 +19,14 @@ export default {
       description: s__(
         'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
       ),
-      primaryButtonText: __('New group'),
     },
-
     prev: __('Prev'),
     next: __('Next'),
   },
-  components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList },
+  components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList, NewGroupButton },
   inject: {
     organizationGid: {},
     groupsEmptyStateSvgPath: {},
-    newGroupPath: {
-      default: null,
-    },
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -143,14 +139,6 @@ export default {
         description: this.$options.i18n.emptyState.description,
       };
 
-      if (this.shouldShowEmptyStateButtons && this.newGroupPath) {
-        return {
-          ...baseProps,
-          primaryButtonLink: this.newGroupPath,
-          primaryButtonText: this.$options.i18n.emptyState.primaryButtonText,
-        };
-      }
-
       return baseProps;
     },
   },
@@ -186,5 +174,9 @@ export default {
       />
     </div>
   </div>
-  <gl-empty-state v-else v-bind="emptyStateProps" />
+  <gl-empty-state v-else v-bind="emptyStateProps">
+    <template v-if="shouldShowEmptyStateButtons" #actions>
+      <new-group-button />
+    </template>
+  </gl-empty-state>
 </template>

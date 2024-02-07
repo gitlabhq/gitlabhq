@@ -2,6 +2,7 @@ import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import { formatProjects } from '~/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
@@ -66,6 +67,7 @@ describe('ProjectsView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
+  const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
 
   afterEach(() => {
     mockApollo = null;
@@ -80,51 +82,47 @@ describe('ProjectsView', () => {
   });
 
   describe('when API call is successful', () => {
-    describe('when there are no projects', () => {
-      const emptyHandler = jest.fn().mockResolvedValue({
-        data: {
-          organization: {
-            id: defaultProvide.organizationGid,
-            projects: {
-              nodes: [],
-              pageInfo: pageInfoEmpty,
+    describe.each`
+      shouldShowEmptyStateButtons
+      ${false}
+      ${true}
+    `(
+      'when there are no projects and `shouldShowEmptyStateButtons` is `$shouldShowEmptyStateButtons`',
+      ({ shouldShowEmptyStateButtons }) => {
+        const emptyHandler = jest.fn().mockResolvedValue({
+          data: {
+            organization: {
+              id: defaultProvide.organizationGid,
+              projects: {
+                nodes: [],
+                pageInfo: pageInfoEmpty,
+              },
             },
           },
-        },
-      });
-
-      it('renders empty state without buttons by default', async () => {
-        createComponent({ handler: emptyHandler });
-
-        await waitForPromises();
-
-        expect(findEmptyState().props()).toMatchObject({
-          title: "You don't have any projects yet.",
-          description:
-            'Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
-          svgHeight: 144,
-          svgPath: defaultProvide.projectsEmptyStateSvgPath,
-          primaryButtonLink: null,
-          primaryButtonText: null,
         });
-      });
 
-      describe('when `shouldShowEmptyStateButtons` is `true` and `projectsEmptyStateSvgPath` is set', () => {
-        it('renders empty state with buttons', async () => {
+        it(`renders empty state ${
+          shouldShowEmptyStateButtons ? 'with' : 'without'
+        } buttons`, async () => {
           createComponent({
             handler: emptyHandler,
-            propsData: { shouldShowEmptyStateButtons: true },
+            propsData: { shouldShowEmptyStateButtons },
           });
 
           await waitForPromises();
 
           expect(findEmptyState().props()).toMatchObject({
-            primaryButtonLink: defaultProvide.newProjectPath,
-            primaryButtonText: 'New project',
+            title: "You don't have any projects yet.",
+            description:
+              'Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
+            svgHeight: 144,
+            svgPath: defaultProvide.projectsEmptyStateSvgPath,
           });
+
+          expect(findNewProjectButton().exists()).toBe(shouldShowEmptyStateButtons);
         });
-      });
-    });
+      },
+    );
 
     describe('when there are projects', () => {
       beforeEach(() => {

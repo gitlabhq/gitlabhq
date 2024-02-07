@@ -2,6 +2,8 @@ import { GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
 import App from '~/organizations/groups_and_projects/components/app.vue';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
+import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
 import { SORT_ITEMS } from '~/organizations/groups_and_projects/constants';
 import {
@@ -35,10 +37,19 @@ describe('GroupsAndProjectsApp', () => {
     });
   };
 
+  const findPageTitle = () => wrapper.findByText('Groups and projects');
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSort = () => wrapper.findComponent(GlSorting);
   const findProjectsView = () => wrapper.findComponent(ProjectsView);
+  const findNewGroupButton = () => wrapper.findComponent(NewGroupButton);
+  const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
+
+  it('renders page title as Groups and projects', () => {
+    createComponent();
+
+    expect(findPageTitle().exists()).toBe(true);
+  });
 
   describe.each`
     display                   | expectedComponent | expectedDisplayListboxSelectedProp
@@ -98,6 +109,20 @@ describe('GroupsAndProjectsApp', () => {
       syncFilterAndSort: true,
       recentSearchesStorageKey: App.filteredSearch.recentSearchesStorageKey,
       searchInputPlaceholder: App.i18n.searchInputPlaceholder,
+    });
+  });
+
+  describe('actions', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders NewProjectButton', () => {
+      expect(findNewProjectButton().exists()).toBe(true);
+    });
+
+    it('renders NewGroupButton with correct props', () => {
+      expect(findNewGroupButton().props()).toStrictEqual({ category: 'secondary' });
     });
   });
 

@@ -34514,6 +34514,9 @@ msgstr ""
 msgid "Organization|Perform advanced options such as deleting the organization."
 msgstr ""
 
+msgid "Organization|Projects are hosted/created in groups. Before creating a project, you must create a group."
+msgstr ""
+
 msgid "Organization|Public - The organization can be accessed without any authentication."
 msgstr ""
 

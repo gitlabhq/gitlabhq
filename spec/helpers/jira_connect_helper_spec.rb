@@ -72,6 +72,22 @@ RSpec.describe JiraConnectHelper, feature_category: :integrations do
               oauth_token_path: '/oauth/token'
             )
           end
+
+          context 'with relative_url_root' do
+            let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'https://gitlab.example.com/gitlab') }
+
+            before do
+              stub_config_setting(relative_url_root: '/gitlab')
+              allow(Rails.application.routes).to receive(:default_url_options).and_return(script_name: '/gitlab')
+            end
+
+            it 'points urls to the self-managed instance' do
+              expect(parsed_oauth_metadata).to include(
+                oauth_authorize_url: start_with('https://gitlab.example.com/gitlab/oauth/authorize?'),
+                oauth_token_path: '/gitlab/oauth/token'
+              )
+            end
+          end
         end
       end
 

@@ -2780,7 +2780,6 @@ Style/InlineDisableAnnotation:
     - 'spec/controllers/projects/releases_controller_spec.rb'
     - 'spec/controllers/projects/runners_controller_spec.rb'
     - 'spec/db/docs_spec.rb'
-    - 'spec/deprecation_warnings.rb'
     - 'spec/factories/design_management/designs.rb'
     - 'spec/factories/events.rb'
     - 'spec/factories/go_module_commits.rb'

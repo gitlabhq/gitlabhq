@@ -19,14 +19,6 @@ module JiraConnectHelper
   def jira_connect_oauth_data(installation)
     oauth_instance_url = installation.oauth_authorization_url
 
-    oauth_authorize_path = oauth_authorization_path(
-      client_id: Gitlab::CurrentSettings.jira_connect_application_key,
-      response_type: 'code',
-      scope: 'api',
-      redirect_uri: jira_connect_oauth_callbacks_url,
-      state: oauth_state
-    )
-
     {
       oauth_authorize_url: Gitlab::Utils.append_path(oauth_instance_url, oauth_authorize_path),
       oauth_token_path: oauth_token_path,
@@ -54,5 +46,21 @@ module JiraConnectHelper
       created_at: subscription.created_at,
       unlink_path: jira_connect_subscription_path(subscription)
     }
+  end
+
+  def relative_url_root
+    Gitlab.config.gitlab.relative_url_root.presence
+  end
+
+  def oauth_authorize_path
+    oauth_authorize_path = oauth_authorization_path(
+      client_id: Gitlab::CurrentSettings.jira_connect_application_key,
+      response_type: 'code',
+      scope: 'api',
+      redirect_uri: jira_connect_oauth_callbacks_url,
+      state: oauth_state
+    )
+
+    oauth_authorize_path.delete_prefix(relative_url_root)
   end
 end

@@ -32,6 +32,9 @@ export const initOrganizationsGroupsAndProjects = () => {
     groupsEmptyStateSvgPath,
     newGroupPath,
     newProjectPath,
+    canCreateGroup,
+    canCreateProject,
+    hasGroups,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
@@ -51,6 +54,9 @@ export const initOrganizationsGroupsAndProjects = () => {
       groupsEmptyStateSvgPath,
       newGroupPath,
       newProjectPath,
+      canCreateGroup,
+      canCreateProject,
+      hasGroups,
     },
     render(createElement) {
       return createElement(App);

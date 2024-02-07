@@ -127,7 +127,8 @@ GitLab Support with:
 1. Your GitLab self-managed instance URL.
 1. Your GitLab.com username.
 1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
-1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting).
+1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) that you have
+   processed with the [harcleaner](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) utility.
 
 The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
 

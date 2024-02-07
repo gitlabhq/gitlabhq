@@ -96,6 +96,10 @@ module QA
           element 'pipeline-container'
         end
 
+        view 'app/assets/javascripts/ci/pipelines_page/components/pipelines_artifacts.vue' do
+          element 'artifacts-dropdown'
+        end
+
         view 'app/assets/javascripts/vue_shared/components/markdown/apply_suggestion.vue' do
           element 'apply-suggestion-dropdown'
           element 'commit-message-field'
@@ -499,7 +503,7 @@ module QA
 
         def click_artifacts_dropdown_button
           wait_for_requests
-          within_element('pipeline-container') do
+          within_element('artifacts-dropdown') do
             click_element('base-dropdown-toggle')
           end
         end
