@@ -1,9 +1,0 @@
----
-name: use_primary_and_secondary_stores_for_sidekiq_status_migrator
-feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141743
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439553
-milestone: '16.9'
-group: group::scalability
-type: development
-default_enabled: false

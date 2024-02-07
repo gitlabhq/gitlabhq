@@ -33,6 +33,10 @@ With the Value Streams Dashboard, you can:
 - Understand security exposure.
 - Drill down into individual projects or metrics to take actions for improvement.
 
+NOTE:
+Data displayed on the Value Streams Dashboard is continuously collected in the backend.
+If you upgrade to the Ultimate tier, you get access to historical data, and can view metrics about past GitLab usage and performance.
+
 ## Value Streams Dashboard panels
 
 The Value Streams Dashboard panels has a default configuration, but you can also [customize the dashboard panels](#customize-the-dashboard-panels).

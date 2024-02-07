@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to the development of GitLab.
 
-For a first-time step-by-step guide, see [Tutorial: Make a GitLab contribution](first_contribution.md).
+For a first-time step-by-step guide, see [Tutorial: Make a GitLab contribution](first_contribution/index.md).
 
 ## How to contribute
 

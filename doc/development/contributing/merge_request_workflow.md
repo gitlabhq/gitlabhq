@@ -54,7 +54,7 @@ within the MR.
 
 ## Merge request guidelines for contributors
 
-For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution.md).
+For a walkthrough of the contribution process, see [Tutorial: Make a GitLab contribution](first_contribution/index.md).
 
 ### Best practices
 

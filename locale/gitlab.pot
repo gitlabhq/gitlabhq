@@ -9375,6 +9375,9 @@ msgstr ""
 msgid "CI configuration validated, including all configuration added with the %{codeStart}include%{codeEnd} keyword. %{link}"
 msgstr ""
 
+msgid "CI pipeline"
+msgstr ""
+
 msgid "CI settings"
 msgstr ""
 
@@ -13374,6 +13377,9 @@ msgid "Container Repository"
 msgstr ""
 
 msgid "Container Scanning"
+msgstr ""
+
+msgid "Container expiration policy"
 msgstr ""
 
 msgid "Container must be a group."
@@ -38311,6 +38317,9 @@ msgstr ""
 msgid "Project export started. A download link will be sent by email and made available on this page."
 msgstr ""
 
+msgid "Project feature"
+msgstr ""
+
 msgid "Project groups"
 msgstr ""
 
@@ -40271,6 +40280,9 @@ msgid "Purchase|Your card was declined. Contact your card issuer for more inform
 msgstr ""
 
 msgid "Push"
+msgstr ""
+
+msgid "Push Rule"
 msgstr ""
 
 msgid "Push Rule updated successfully."

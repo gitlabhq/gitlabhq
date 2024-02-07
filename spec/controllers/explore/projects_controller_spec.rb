@@ -75,9 +75,9 @@ RSpec.describe Explore::ProjectsController, feature_category: :groups_and_projec
       end
 
       context 'projects aimed for deletion' do
-        let(:project1) { create(:project, :public, updated_at: 3.days.ago) }
-        let(:project2) { create(:project, :public, updated_at: 1.day.ago) }
-        let(:aimed_for_deletion_project) { create(:project, :public, :archived, updated_at: 2.days.ago, marked_for_deletion_at: 2.days.ago) }
+        let_it_be(:project1) { create(:project, :public, path: 'project-1') }
+        let_it_be(:project2) { create(:project, :public, path: 'project-2') }
+        let_it_be(:aimed_for_deletion_project) { create(:project, :public, :archived, marked_for_deletion_at: 2.days.ago) }
 
         before do
           create(:trending_project, project: project1)

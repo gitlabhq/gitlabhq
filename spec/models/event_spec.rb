@@ -31,15 +31,22 @@ RSpec.describe Event, feature_category: :user_profile do
 
     describe 'after_create :set_last_repository_updated_at' do
       context 'with a push event' do
-        it 'updates the project last_repository_updated_at and updated_at' do
-          project.touch(:last_repository_updated_at, time: 1.year.ago)
+        it 'updates the project last_repository_updated_at' do
+          project.update!(last_repository_updated_at: 1.year.ago)
 
           event = create_push_event(project, project.first_owner)
 
           project.reload
 
           expect(project.last_repository_updated_at).to be_like_time(event.created_at)
-          expect(project.updated_at).to be_like_time(event.created_at)
+        end
+
+        it 'calls the reset_project_activity method' do
+          expect_next_instance_of(described_class) do |instance|
+            expect(instance).to receive(:reset_project_activity)
+          end
+
+          create_push_event(project, project.first_owner)
         end
       end
 
@@ -916,14 +923,13 @@ RSpec.describe Event, feature_category: :user_profile do
       end
 
       it 'updates the project' do
-        project.touch(:last_activity_at, time: 1.year.ago)
+        project.update!(last_activity_at: 1.year.ago)
 
         event = create_push_event(project, project.first_owner)
 
         project.reload
 
         expect(project.last_activity_at).to be_like_time(event.created_at)
-        expect(project.updated_at).to be_like_time(event.created_at)
       end
 
       it "deletes the redis key for if the project was inactive" do

@@ -9,7 +9,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     [
       'abuse_report_assignees', # https://gitlab.com/gitlab-org/gitlab/-/issues/432365
       'sbom_occurrences_vulnerabilities', # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
-      'p_ci_pipeline_variables' # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
+      'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
+      'ml_model_metadata' # has a desired sharding key instead.
     ]
   end
 

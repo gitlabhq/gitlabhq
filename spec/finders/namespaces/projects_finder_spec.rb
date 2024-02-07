@@ -144,6 +144,7 @@ RSpec.describe Namespaces::ProjectsFinder, feature_category: :groups_and_project
         let(:params) { { sort: :latest_activity_desc } }
 
         before do
+          project_7.update!(last_activity_at: 20.minutes.ago)
           project_6.update!(last_activity_at: 15.minutes.ago)
           project_2.update!(last_activity_at: 10.minutes.ago)
           project_1.update!(last_activity_at: 5.minutes.ago)

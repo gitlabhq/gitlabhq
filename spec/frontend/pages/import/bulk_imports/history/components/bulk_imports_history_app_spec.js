@@ -8,6 +8,7 @@ import { getParameterValues } from '~/lib/utils/url_utility';
 
 import BulkImportsHistoryApp from '~/pages/import/bulk_imports/history/components/bulk_imports_history_app.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
+import ImportStats from '~/import_entities/components/import_stats.vue';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
@@ -41,6 +42,12 @@ describe('BulkImportsHistoryApp', () => {
       created_at: '2021-07-08T10:03:44.743Z',
       has_failures: false,
       failures: [],
+      stats: {
+        labels: {
+          fetched: 10,
+          imported: 9,
+        },
+      },
     },
     {
       id: 2,
@@ -67,6 +74,7 @@ describe('BulkImportsHistoryApp', () => {
           created_at: '2021-07-13T13:34:49.344Z',
         },
       ],
+      stats: {},
     },
   ];
 
@@ -86,6 +94,7 @@ describe('BulkImportsHistoryApp', () => {
 
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findPaginationBar = () => wrapper.findComponent(PaginationBar);
+  const findTableRow = (index) => wrapper.findAll('tbody tr').at(index);
   const findImportStatusAt = (index) => wrapper.findAllComponents(ImportStatus).at(index);
 
   beforeEach(() => {
@@ -261,6 +270,16 @@ describe('BulkImportsHistoryApp', () => {
       expect(failedImportStatusLink.text()).toBe('See failures');
       expect(failedImportStatusLink.attributes('href')).toContain('/mock-details');
     });
+
+    it('renders import stats', () => {
+      expect(findTableRow(0).findComponent(ImportStats).props('stats')).toEqual(
+        DUMMY_RESPONSE[0].stats,
+      );
+    });
+
+    it('does not render import stats when not available', () => {
+      expect(findTableRow(1).findComponent(ImportStats).exists()).toBe(false);
+    });
   });
 
   describe('status polling', () => {
@@ -311,7 +330,7 @@ describe('BulkImportsHistoryApp', () => {
           BULK_IMPORTS_API_URL,
           mockRealtimeChangesPath,
         ]);
-        expect(wrapper.findAll('tbody tr').at(0).text()).toContain('Pending');
+        expect(findTableRow(0).text()).toContain('Pending');
       });
 
       it('stops polling when import is finished', async () => {
@@ -326,7 +345,7 @@ describe('BulkImportsHistoryApp', () => {
           mockRealtimeChangesPath,
           mockRealtimeChangesPath,
         ]);
-        expect(wrapper.findAll('tbody tr').at(0).text()).toContain('Complete');
+        expect(findTableRow(0).text()).toContain('Complete');
       });
     });
   });

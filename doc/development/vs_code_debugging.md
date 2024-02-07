@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # VS Code debugging
 
-This document describes how to set up Rails debugging in [Visual Studio Code (VS Code)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution.md#install-and-configure-gitlab-development-kit-gdk).
+This document describes how to set up Rails debugging in [Visual Studio Code (VS Code)](https://code.visualstudio.com/) using the [GitLab Development Kit (GDK)](contributing/first_contribution/configure-dev-env-gdk.md#install-and-configure-gitlab-development-kit-gdk).
 
 ## Setup
 
@@ -65,7 +65,7 @@ The VS Code Ruby extension might have issues finding the correct Ruby installati
 
 ### Prerequisites
 
-- You must have a running [GDK](contributing/first_contribution.md#install-and-configure-gitlab-development-kit-gdk) instance.
+- You must have a running [GDK](contributing/first_contribution/configure-dev-env-gdk.md#install-and-configure-gitlab-development-kit-gdk) instance.
 
 To start debugging, do one of the following:
 

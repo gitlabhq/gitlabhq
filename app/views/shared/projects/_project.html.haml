@@ -9,7 +9,7 @@
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class = "gl-sm-display-flex gl-align-items-center gl-vertical-align-middle!" if project.description.blank? && !show_last_commit_as_description
-- updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
+- updated_tooltip = time_ago_with_tooltip(project.last_activity_at || project.updated_at)
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
 - css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?

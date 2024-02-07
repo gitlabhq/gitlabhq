@@ -29,10 +29,10 @@ Prerequisites:
   - Jira personal access token (GitLab 16.0 and later).
 
 You can enable the Jira issue integration by configuring your project settings in GitLab.
-You can also configure these settings at the:
-
-- [Instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration) (self-managed GitLab)
-- [Group level](../../user/project/integrations/index.md#manage-group-level-default-settings-for-a-project-integration)
+You can also configure the integration at the
+[group level](../../user/project/integrations/index.md#manage-group-level-default-settings-for-a-project-integration) and the
+[instance level](../../administration/settings/project_integration_management.md#manage-instance-level-default-settings-for-a-project-integration)
+on self-managed GitLab.
 
 To configure your project settings in GitLab:
 
@@ -41,10 +41,11 @@ To configure your project settings in GitLab:
 1. Select **Jira**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
-   - **Web URL**: Base URL for the Jira instance web interface you're linking to
-     this GitLab project (for example, `https://jira.example.com`).
+   - **Web URL**: Base URL for the Jira instance web interface you're linking
+     to this GitLab project (for example, `https://jira.example.com`).
    - **Jira API URL**: Base URL for the Jira instance API (for example, `https://jira-api.example.com`).
-     If this URL is not set, the **Web URL** value is used by default. For Jira Cloud, leave **Jira API URL** blank.
+     If this URL is not set, the **Web URL** value is used by default.
+     For Jira Cloud, leave **Jira API URL** blank.
    - **Authentication method**:
      - **Basic**:
        - **Email or username**:
@@ -53,35 +54,37 @@ To configure your project settings in GitLab:
        - **API token or password**:
           - For Jira Cloud, enter an API token.
           - For Jira Data Center or Jira Server, enter a password.
-     - **Jira personal access token** (only available for Jira Data Center and Jira Server): Enter a personal access token.
+     - **Jira personal access token** (only available for Jira Data Center and Jira Server):
+       Enter a personal access token.
 1. Provide trigger settings:
-   - Select **Commit**, **Merge request**, or both as triggers. When you mention a Jira issue ID in GitLab,
-   GitLab links to that issue.
-   - To add a comment to the Jira issue that links back to GitLab, select the
-   **Enable comments** checkbox and the information that the comment displays.
+   - Select **Commit**, **Merge request**, or both as triggers.
+     When you mention a Jira issue ID in GitLab, GitLab links to that issue.
+   - To add a comment to the Jira issue that links back to GitLab,
+     select the **Enable comments** checkbox.
    - To [transition Jira issues automatically](../../user/project/issues/managing_issues.md#closing-issues-automatically) in GitLab,
-   select the **Enable Jira transitions** checkbox.
+     select the **Enable Jira transitions** checkbox.
 1. In the **Jira issue matching** section:
    - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
    - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
-1. In the **Issues** section:
-   - To [view Jira issues](issues.md#view-jira-issues) in GitLab, select the **Enable Jira issues** checkbox and
-   enter a Jira project key. You can only view issues from a single Jira project in a GitLab project.
+1. Optional. In the **Issues** section:
+   - To [view issues](issues.md#view-jira-issues) from a single Jira project in a GitLab project:
+     1. Select the **Enable Jira issues** checkbox.
+     1. Enter the Jira project key.
 
    WARNING:
-   When you enable this setting, all users with access to that GitLab project
+   When you enable Jira issues, all users with access to your GitLab project
    can view all issues from the Jira project you've specified.
 
-   - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability), select the **Enable Jira issue creation from vulnerabilities** checkbox.
+   - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability),
+   select the **Enable Jira issue creation from vulnerabilities** checkbox.
 
    NOTE:
-   You can enable this setting at the project level only.
+   You can enable this setting at the project and group levels only.
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-Your GitLab project can now interact with all Jira projects in your instance, and the project
-displays a Jira link that opens the Jira project.
+Your GitLab project can now interact with all Jira projects on your instance.
 
 ## Create a Jira issue for a vulnerability
 
@@ -92,7 +95,7 @@ DETAILS:
 Prerequisites:
 
 - Ensure the Jira issue integration is [configured](#configure-the-integration) and the
-  **Enable Jira issue creation from vulnerabilities** checkbox is selected.
+  **Enable Jira issues** and **Enable Jira issue creation from vulnerabilities** checkboxes are selected.
 - You must have a Jira user account with permission to create issues in the target project.
 
 You can create a Jira issue to track any action taken to resolve or mitigate a vulnerability.

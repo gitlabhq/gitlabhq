@@ -107,6 +107,9 @@ class Project < ApplicationRecord
     snippets: gitlab_config_features.snippets
   }.freeze
 
+  # List of attributes that, when updated, should be considered as Project Activity
+  PROJECT_ACTIVITY_ATTRIBUTES = %w[description name].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   attribute :packages_enabled, default: true
@@ -132,6 +135,7 @@ class Project < ApplicationRecord
   before_validation :ensure_project_namespace_in_sync
   before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
   before_validation :remove_leading_spaces_on_name
+  before_validation :set_last_activity_at
   after_validation :check_pending_delete
   before_save :ensure_runners_token
 
@@ -630,8 +634,9 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
-  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
-  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
+  scope :sorted_by_activity, -> { reorder(self.arel_table['last_activity_at'].desc) }
+  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['last_activity_at'].asc) }
+  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['last_activity_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
   scope :sorted_by_path_asc, -> { reorder(self.arel_table['path'].asc) }
@@ -1674,10 +1679,6 @@ class Project < ApplicationRecord
 
   def last_activity
     last_event
-  end
-
-  def last_activity_date
-    updated_at
   end
 
   def project_id
@@ -3357,7 +3358,7 @@ class Project < ApplicationRecord
   end
 
   def set_timestamps_for_create
-    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
+    update_columns(last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)
@@ -3499,6 +3500,16 @@ class Project < ApplicationRecord
 
   def remove_leading_spaces_on_name
     name&.lstrip!
+  end
+
+  def set_last_activity_at
+    return if last_activity_at_changed?
+
+    if new_record? || (changed & PROJECT_ACTIVITY_ATTRIBUTES).any?
+      self.last_activity_at = Time.current
+    elsif last_activity_at.nil?
+      self.last_activity_at = created_at
+    end
   end
 
   def set_package_registry_access_level

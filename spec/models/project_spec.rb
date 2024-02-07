@@ -612,6 +612,53 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         end
       end
     end
+
+    context 'when last_activity_at is being set' do
+      let(:last_activity_at) { 1.day.ago }
+      let(:project) { build(:project, last_activity_at: last_activity_at) }
+
+      it 'will use supplied timestamp' do
+        expect { project.valid? }.not_to change(project, :last_activity_at)
+      end
+    end
+
+    context 'when last_activity_at is not being set' do
+      context 'and one of PROJECT_ACTIVITY_ATTRIBUTES is updated' do
+        let(:project) { build(:project) }
+
+        before do
+          project.name = "Name Changed"
+        end
+
+        it 'sets last_activity_at to the current time' do
+          freeze_time do
+            expect { project.valid? }.to change(project, :last_activity_at).to(Time.current)
+          end
+        end
+      end
+
+      context 'and the record is new' do
+        let(:project) { build(:project) }
+
+        it 'sets last_activity_at to the current time' do
+          freeze_time do
+            expect { project.valid? }.to change(project, :last_activity_at).from(nil).to(Time.current)
+          end
+        end
+      end
+
+      context 'and the last_activity_at is nil' do
+        let_it_be(:project) { create(:project) }
+
+        before do
+          project.update_column(:last_activity_at, nil)
+        end
+
+        it 'sets last_activity_at to created_at' do
+          expect { project.valid? }.to change(project, :last_activity_at).from(nil).to(project.created_at)
+        end
+      end
+    end
   end
 
   describe 'validation' do
@@ -1603,12 +1650,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         expect(project.last_activity).to eq(last_event)
       end
     end
-
-    describe 'last_activity_date' do
-      it 'returns the project\'s last update date' do
-        expect(project.last_activity_date).to be_like_time(project.updated_at)
-      end
-    end
   end
 
   describe '#get_issue' do
@@ -2091,9 +2132,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '.sort_by_attribute' do
-    let_it_be(:project1) { create(:project, star_count: 2, updated_at: 1.minute.ago) }
+    let_it_be(:project1) { create(:project, star_count: 2, last_activity_at: 1.minute.ago) }
     let_it_be(:project2) { create(:project, star_count: 1) }
-    let_it_be(:project3) { create(:project, updated_at: 2.minutes.ago) }
+    let_it_be(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
 
     it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)

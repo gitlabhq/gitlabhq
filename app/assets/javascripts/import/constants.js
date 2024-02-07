@@ -14,6 +14,16 @@ export const BULK_IMPORT_STATIC_ITEMS = {
   milestones: __('Milestone'),
   namespace_settings: s__('GroupSettings|Namespace setting'),
   project: __('Project'),
+  self: __('Group'),
+  auto_devops: __('Auto DevOps'),
+  ci_pipelines: __('CI pipeline'),
+  container_expiration_policy: __('Container expiration policy'),
+  design: __('Design'),
+  project_feature: __('Project feature'),
+  protected_branches: __('Protected Branch'),
+  push_rule: __('Push Rule'),
+  repository: __('Repository'),
+  service_desk_setting: __('Service Desk'),
 };
 
 const STATISTIC_ITEMS = {
