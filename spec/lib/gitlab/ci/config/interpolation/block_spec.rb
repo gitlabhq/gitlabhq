@@ -31,9 +31,9 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
         .to yield_successive_args(['$[[ access1 ]]', 'access1'], ['$[[ access2 ]]', 'access2'])
     end
 
-    it 'matches an empty block' do
+    it 'does not match an empty block' do
       expect { |b| described_class.match('$[[]]', &b) }
-        .to yield_with_args('$[[]]', '')
+        .not_to yield_with_args(anything)
     end
 
     context 'when functions are specified in the block' do

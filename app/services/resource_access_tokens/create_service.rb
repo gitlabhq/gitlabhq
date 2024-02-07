@@ -128,11 +128,10 @@ module ResourceAccessTokens
     end
 
     def validate_access_level(access_level)
-      return true unless resource.is_a?(Project)
       return true if current_user.bot?
-      return true if current_user.can?(:manage_owners, resource)
+      return true if current_user.can?(:owner_access, resource)
 
-      current_user.authorized_project?(resource, access_level.to_i)
+      resource.member?(current_user, access_level.to_i)
     end
 
     def do_not_allow_owner_access_level_for_project_bot?(access_level)

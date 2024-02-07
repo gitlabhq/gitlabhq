@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.2 (2024-02-07)
+
+### Fixed (3 changes)
+
+- [Fix Redis 6.0 compatibility breakage with Sidekiq 7 gem](gitlab-org/security/gitlab@e61868ad98d2ae640b3deec2b148c01fb52dba77)
+- [Defer ConnectionPool instrumentation setup](gitlab-org/security/gitlab@d31ee125cd7ec9023b7558bd7af44c0293637b94)
+- [Fix invalid records with FK not valid](gitlab-org/security/gitlab@a8dece6c5d160a218d9622a3dab0f93a7b2ca181)
+
+### Security (4 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@96b81737b2b9f1aa3c9d710bc00b80be8359f68f) ([merge request](gitlab-org/security/gitlab!3854))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@6b12a71efe9c82b696cf1dc68c5aa2bc72e5fea3) ([merge request](gitlab-org/security/gitlab!3837))
+- [Restrict group access token creation for custom roles](gitlab-org/security/gitlab@e1d38e70f1f5c9defbb0ca2fa4608e603dcd2858) ([merge request](gitlab-org/security/gitlab!3834))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@5e5428919d4773731bed7f724bd650dbc7555d9e) ([merge request](gitlab-org/security/gitlab!3826))
+
 ## 16.8.1 (2024-01-24)
 
 ### Fixed (1 change)
