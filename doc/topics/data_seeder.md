@@ -14,7 +14,76 @@ FactoryBot already reflects the change.
 
 ## Docker Setup
 
-See [Data Seeder Docker Demo](https://gitlab.com/-/snippets/2390362)
+### Prerequisites
+
+- Docker installation
+
+### Steps
+
+#### Run a GitLab container
+
+Run and wait for the container to start. The container has started completely when you see the login page at `http://localhost:8080`.
+
+##### With GDK
+
+```shell
+$ docker run \
+    -d \
+    -v ./scripts/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/scripts/data_seeder \
+    -v ./ee/db/seeds/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/ee/db/seeds/data_seeder \
+    -v ./ee/lib/tasks/gitlab/seed:/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/gitlab/seed \
+    --name gitlab \
+    gitlab/gitlab-ee:16.7.0-ee.0
+```
+
+##### Without GDK
+
+```shell
+$ docker run \
+    --name gitlab \
+    -d \
+    gitlab/gitlab-ee:16.7.0-ee.0
+```
+
+### Get the root password
+
+If you need to fetch the password for the GitLab instance that was spun up, execute the following command and use the password given by the output:
+
+```shell
+$ docker exec gitlab cat /etc/gitlab/initial_root_password
+5iveL!fe
+```
+
+_If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`, please wait for a bit for GitLab to boot and try again._
+
+You can then sign into `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
+
+### Import the test resources
+
+Because Seeding uses GitLab test resources and given that the GitLab Docker container is meant to be slim, the container does not ship with test resources by default.
+
+By default, the default GitLab branch `master` is checked out. This means that whatever is "latest" will be checked out. To change this, you can override this ref using the `REF` environment variable.
+
+Execute the following command to provide test resources (namely, FactoryBot Factories) for the Seeder to use.
+
+```ruby
+$ docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | bash"
+# OR check out a specific ref
+$ docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | REF=v16.7.0-ee bash"
+```
+
+### Seed the data
+
+**IMPORTANT**: This step should not be executed until the container has started completely and you are able to see the login page at `http://localhost:8080`.
+
+```shell
+$ docker exec -it gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/globalize_gems.rb | ruby; bundle install"
+Fetching gems...
+
+$ docker exec -it gitlab gitlab-rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+Seeding data for Administrator
+..........................
+```
 
 ## GDK Setup
 
@@ -31,20 +100,17 @@ ci: migrated
 
 ### Run
 
-The `ee:gitlab:seed:data_seeder` Rake task takes two arguments. `:name` and `:namespace_id`.
+The `ee:gitlab:seed:data_seeder` Rake task takes one argument. `:file`.
 
 ```shell
-$ bundle exec rake "ee:gitlab:seed:data_seeder[data_seeder,1]"
-Seeding Data for Administrator
+$ bundle exec rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+Seeding data for Administrator
+....
 ```
 
-#### `:name`
+#### `:file`
 
-Where `:name` is the filename. (This name reflects relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files.)
-
-#### `:namespace_id`
-
-Where `:namespace_id` is the ID of the User or Group Namespace
+Where `:file` is the file path. (This path reflects relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files.)
 
 ## Develop
 
@@ -64,7 +130,7 @@ The Data Seeder uses FactoryBot definitions from `spec/factories` which ...
 Factories reside in `spec/factories/*` and are fixtures for Rails models found in `app/models/*`. For example, For a model named `app/models/issue.rb`, the factory will
 be named `spec/factories/issues.rb`. For a model named `app/models/project.rb`, the factory will be named `app/models/projects.rb`.
 
-There are three parsers that the GitLab Data Seeder supports. Ruby, YAML, and JSON.
+Three parsers currently exist that the GitLab Data Seeder supports. Ruby, YAML, and JSON.
 
 ### Ruby
 
@@ -74,8 +140,9 @@ The `DataSeeder` class contains the following instance variables defined upon se
 
 - `@seed_file` - The `File` object.
 - `@owner` - The owner of the seed data.
-- `@name` - The name of the seed. This is the seed filename without the extension.
+- `@name` - The name of the seed. This is the seed file name without the extension.
 - `@group` - The root group that all seeded data is created under.
+- `@logger` - The logger object to log output. Logging output may be found in `log/data_seeder.log`.
 
 ```ruby
 # frozen_string_literal: true
@@ -83,6 +150,8 @@ The `DataSeeder` class contains the following instance variables defined upon se
 class DataSeeder
   def seed
     my_group = create(:group, name: 'My Group', path: 'my-group-path', parent: @group)
+    @logger.info "Created #{my_group.name}" #=> Created My Group
+
     my_project = create(:project, :public, name: 'My Project', namespace: my_group, creator: @owner)
   end
 end
@@ -128,6 +197,25 @@ The JSON Parser allows you to house seed files in JSON format.
     }
   ]
 }
+```
+
+### Logging
+
+When running the Data Seeder, the default level of logging is set to "information".
+
+You can override the logging level by specifying `GITLAB_LOG_LEVEL=<level>`.
+
+```shell
+$ GITLAB_LOG_LEVEL=debug bundle exec rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+Seeding data for Administrator
+......
+
+$ GITLAB_LOG_LEVEL=warn bundle exec rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+Seeding data for Administrator
+......
+
+$ GITLAB_LOG_LEVEL=error bundle exec rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+......
 ```
 
 ### Taxonomy of a Factory

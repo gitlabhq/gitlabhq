@@ -5,4 +5,4 @@ rollout_issue_url:
 milestone: '14.8'
 type: ops
 group: group::environments
-default_enabled: true
+default_enabled: false

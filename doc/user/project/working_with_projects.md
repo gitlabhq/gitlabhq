@@ -181,6 +181,58 @@ Each project in the list shows:
 - The time the project is scheduled for final deletion.
 - A **Restore** link to stop the project being eventually deleted.
 
+## Restore a project
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be marked for deletion.
+
+To restore a project marked for deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the Restore project section, select **Restore project**.
+
+## Archive a project
+
+When you archive a project, the repository, packages, issues, merge requests, and all
+other features become read-only. Archived projects are also hidden from project lists.
+
+To archive a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Archive project** section, select **Archive project**.
+1. To confirm, select **OK**.
+
+## Unarchive a project
+
+When you unarchive a project, the read-only restriction is removed,
+and the project becomes available in project lists.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the project.
+
+1. Find the archived project.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my projects**.
+   1. Select **Explore projects**.
+   1. In the **Sort projects** dropdown list, select **Show archived projects**.
+   1. In the **Filter by name** field, enter the project name.
+   1. Select the project link.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
+1. To confirm, select **OK**.
+
 ## View project activity
 
 To view the activity of a project:

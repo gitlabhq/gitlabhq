@@ -66,8 +66,9 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 16.8.0
 
-- Redis 6.2 or later is now required by Sidekiq. For installations that use an external Redis service, you should upgrade your Redis service to 6.2 - 7.x
-before upgrading to GitLab 16.8.
+- In GitLab 16.8.0 and 16.8.1, the Sidekiq gem was upgraded, and the newer version requires Redis 6.2 or later. If you are using Redis 6.0, upgrade
+  directly to 16.8.2, which [restores compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
+- NOTE: You should upgrade to Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
 
 ### Geo installations
 

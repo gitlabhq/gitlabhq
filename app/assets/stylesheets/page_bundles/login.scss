@@ -49,10 +49,6 @@
       color: $red-700;
     }
   }
-
-  .omniauth-divider {
-    @include omniauth-divider;
-  }
 }
 
 .html-devise-layout {

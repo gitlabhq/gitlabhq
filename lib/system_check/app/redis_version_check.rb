@@ -5,7 +5,7 @@ require 'redis'
 module SystemCheck
   module App
     class RedisVersionCheck < SystemCheck::BaseCheck
-      MIN_REDIS_VERSION = '6.2.0'
+      MIN_REDIS_VERSION = '6.0.0'
       RECOMMENDED_REDIS_VERSION = "6.2.14"
       set_name "Redis version >= #{RECOMMENDED_REDIS_VERSION}?"
 

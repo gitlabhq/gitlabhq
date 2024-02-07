@@ -1,0 +1,26 @@
+---
+key_path: counts.count_total_i_quickactions_convert_to_ticket_monthly
+description: Monthly count of executions of the /convert_to_ticket quickaction on an issue
+product_section: seg
+product_stage: service_management
+product_group: respond
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: "16.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139553
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - i_quickactions_convert_to_ticket
+events:
+- name: i_quickactions_convert_to_ticket

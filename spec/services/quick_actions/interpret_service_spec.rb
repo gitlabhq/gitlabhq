@@ -2566,6 +2566,89 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    describe 'convert_to_ticket command' do
+      shared_examples 'a failed command execution' do
+        it 'fails with message' do
+          _, _, message = convert_to_ticket
+
+          expect(message).to eq(expected_message)
+          expect(issuable).to have_attributes(
+            confidential: false,
+            author_id: original_author.id,
+            service_desk_reply_to: nil
+          )
+        end
+      end
+
+      let_it_be_with_reload(:issuable) { issue }
+      let_it_be(:original_author) { issue.author }
+
+      let(:content) { '/convert_to_ticket' }
+      let(:expected_message) do
+        s_("ServiceDesk|Cannot convert issue to ticket because no email was provided or the format was invalid.")
+      end
+
+      subject(:convert_to_ticket) { service.execute(content, issuable) }
+
+      it 'is part of the available commands' do
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :convert_to_ticket))
+      end
+
+      it_behaves_like 'a failed command execution'
+
+      context 'when parameter is not an email' do
+        let(:content) { '/convert_to_ticket no-email-at-all' }
+
+        it_behaves_like 'a failed command execution'
+      end
+
+      context 'when parameter is an email' do
+        let(:content) { '/convert_to_ticket user@example.com' }
+
+        it 'converts issue to Service Desk issue' do
+          _, _, message = convert_to_ticket
+
+          expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
+          expect(issuable).to have_attributes(
+            confidential: true,
+            author_id: Users::Internal.support_bot.id,
+            service_desk_reply_to: 'user@example.com'
+          )
+        end
+      end
+
+      context 'when issue is Service Desk issue' do
+        before do
+          issue.update!(
+            author: Users::Internal.support_bot,
+            service_desk_reply_to: 'user@example.com'
+          )
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with non-persisted issue' do
+        let(:issuable) { build(:issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with feature flag convert_to_ticket_quick_action disabled' do
+        before do
+          stub_feature_flags(convert_to_ticket_quick_action: false)
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+    end
+
     context 'severity command' do
       let_it_be_with_reload(:issuable) { create(:incident, project: project) }
 

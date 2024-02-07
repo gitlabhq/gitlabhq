@@ -23683,7 +23683,7 @@ CREATE TABLE sbom_occurrences (
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     CONSTRAINT check_3f2d2c7ffc CHECK ((char_length(package_manager) <= 255)),
     CONSTRAINT check_9b29021fa8 CHECK ((char_length(component_name) <= 255)),
-    CONSTRAINT check_bd1367d4c1 CHECK ((char_length(input_file_path) <= 255))
+    CONSTRAINT check_e6b8437cfe CHECK ((char_length(input_file_path) <= 1024))
 );
 
 CREATE SEQUENCE sbom_occurrences_id_seq

@@ -4,6 +4,10 @@ module Gitlab
   module UsageDataCounters
     module QuickActionActivityUniqueCounter
       class << self
+        # List of events that use the current internal events implementation.
+        # Only add internal events for new quick actions.
+        INTERNAL_EVENTS = %w[convert_to_ticket].freeze
+
         # Tracks the quick action with name `name`.
         # `args` is expected to be a single string, will be split internally when necessary.
         def track_unique_action(name, args:, user:)
@@ -12,7 +16,14 @@ module Gitlab
           args ||= ''
           name = prepare_name(name, args)
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:"i_quickactions_#{name}", values: user.id)
+          if INTERNAL_EVENTS.include?(name)
+            Gitlab::InternalEvents.track_event("i_quickactions_#{name}", user: user)
+          else
+            # Legacy event implementation. Migrate existing events to internal events.
+            # See implementation of `convert_to_ticket` quickaction and
+            # https://docs.gitlab.com/ee/development/internal_analytics/internal_event_instrumentation/migration.html#backend-1
+            Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:"i_quickactions_#{name}", values: user.id)
+          end
         end
 
         private

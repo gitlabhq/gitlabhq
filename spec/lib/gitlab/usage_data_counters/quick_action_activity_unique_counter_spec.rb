@@ -21,6 +21,17 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
     end
   end
 
+  shared_examples_for 'a tracked quick action internal event' do
+    it_behaves_like 'internal event tracking' do
+      let(:event) { action }
+    end
+
+    it 'tracks the internal event' do
+      expect(Gitlab::InternalEvents).to receive(:track_event).with(action, user: user).once
+      subject
+    end
+  end
+
   subject { described_class.track_unique_action(quickaction_name, args: args, user: user) }
 
   describe '.track_unique_action' do
@@ -189,10 +200,10 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
     end
   end
 
-  context 'tracking invite_email' do
+  context 'when tracking invite_email', feature_category: :service_desk do
     let(:quickaction_name) { 'invite_email' }
 
-    context 'single email' do
+    context 'with single email' do
       let(:args) { 'someone@gitlab.com' }
 
       it_behaves_like 'a tracked quick action unique event' do
@@ -200,12 +211,20 @@ RSpec.describe Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter, :cle
       end
     end
 
-    context 'multiple emails' do
+    context 'with multiple emails' do
       let(:args) { 'someone@gitlab.com another@gitlab.com' }
 
       it_behaves_like 'a tracked quick action unique event' do
         let(:action) { 'i_quickactions_invite_email_multiple' }
       end
+    end
+  end
+
+  context 'when tracking convert_to_ticket', feature_category: :service_desk do
+    let(:quickaction_name) { 'convert_to_ticket' }
+
+    it_behaves_like 'a tracked quick action internal event' do
+      let(:action) { 'i_quickactions_convert_to_ticket' }
     end
   end
 end

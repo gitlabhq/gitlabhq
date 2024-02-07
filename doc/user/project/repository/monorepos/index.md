@@ -174,7 +174,7 @@ For example, if your project contains a large number of tags that your CI/CD job
 you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags)
 to the extra flags to make your fetches faster and more compact.
 
-Also in the case where you repository does _not_ contain a lot of
+Also in the case where your repository does _not_ contain a lot of
 tags, `--no-tags` can [make a big difference in some cases](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746).
 If your CI/CD builds do not depend on Git tags, setting `--no-tags` is worth trying.
 

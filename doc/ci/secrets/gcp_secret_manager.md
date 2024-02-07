@@ -42,31 +42,35 @@ The principal is used to authorize access to the Secret Manager resources:
 1. Select **ADD PROVIDER** to add a new OIDC Provider to the Identity Pool with a unique name, for example `gitlab-provider`.
    1. Set **Issuer (URL)** to the GitLab URL, for example `https://gitlab.com`.
    1. Select **Default audience**, or select **Allowed audiences** for a custom audience, which is used in the `aud` for the GitLab CI/CD ID token.
-1. Under **Attribute Mapping**, create the following mappings, where `attribute.X` is the
-  name of the attribute you would like to be present on Google's claims, and `assertion.X`
-  is the value to extract from the [GitLab claim](../cloud_services/index.md#how-it-works):
+1. Under **Attribute Mapping**, create the following mappings, where:
 
-  | Attribute (on Google) | Assertion (from GitLab) |
-  | --- | --- |
-  | `google.subject` | `assertion.sub` |
-  | `attribute.gitlab_project_id` | `assertion.project_id` |
+   - `attribute.X` is the name of the attribute you want to be present on Google's claims.
+   - `assertion.X` is the value to extract from the [GitLab claim](../cloud_services/index.md#how-it-works).
+
+   | Attribute (on Google)         | Assertion (from GitLab) |
+   |-------------------------------|-------------------------|
+   | `google.subject`              | `assertion.sub`         |
+   | `attribute.gitlab_project_id` | `assertion.project_id`  |
 
 ## Grant access to GCP IAM principal
 
 After setting up WIF, you must grant the WIF principal access to the secrets in Secret Manager.
 
 1. In GCP Console, go to **IAM & Admin > IAM**.
-1. Select **GRANT ACCESS** to grant access to the principal set created through the WIF provider. The external identity takes the format:
+1. Select **GRANT ACCESS** to grant access to the principal set created through the WIF provider.
+   The external identity format is:
 
-    ```plaintext
-    principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.gitlab_project_id/GITLAB_PROJECT_ID
-    ```
+   ```plaintext
+   principalSet://iam.googleapis.com/projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/attribute.gitlab_project_id/GITLAB_PROJECT_ID
+   ```
 
-    where:
+   In this example:
 
-    - `PROJECT_NUMBER` is your Google Cloud project number (not ID) which can be found in the [Project's dashboard](https://console.cloud.google.com/home/dashboard)
-    - `POOL_ID` is the ID (not name) of the Workload Identity Pool created in the first section, for example `gitlab-pool`
-    - `GITLAB_PROJECT_ID` is the GitLab project ID that you can copy in your project top-right three dots (**{ellipsis_v}**) menu (click **Copy project ID: XXX**)
+   - `PROJECT_NUMBER`: Your Google Cloud project number (not ID) which can be found in the
+     [Project's dashboard](https://console.cloud.google.com/home/dashboard).
+   - `POOL_ID`: The ID (not name) of the Workload Identity Pool created in the first section,
+     for example `gitlab-pool`.
+   - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 1. Assign the role **Secret Manager Secret Accessor**.
 1. (Optional) Select **IAM condition (Optional)** to add an IAM condition.
@@ -85,13 +89,15 @@ accessing secrets with names starting with the project name.
 
 ## Configure GitLab CI/CD to use GCP Secret Manager secrets
 
-You must [add these CI/CD variables](../variables/index.md#for-a-project) to provide details about your GCP Secret Manager:
+You must [add these CI/CD variables](../variables/index.md#for-a-project) to provide details about
+your GCP Secret Manager:
 
-- `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://cloud.google.com/resource-manager/docs/creating-managing-projects)
-- `GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID`: The WIF Pool ID (e.g `gitlab-pool`)
-- `GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID`: The WIF Provider ID (e.g `gitlab-provider`)
+- `GCP_PROJECT_NUMBER`: The GCP [Project Number](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+- `GCP_WORKLOAD_IDENTITY_FEDERATION_POOL_ID`: The WIF Pool ID, for example `gitlab-pool`.
+- `GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER_ID`: The WIF Provider ID, for example `gitlab-provider`.
 
-Then you can use secrets stored in GCP Secret Manager in CI/CD jobs by defining them with the `gcp_secret_manager` keyword:
+Then you can use secrets stored in GCP Secret Manager in CI/CD jobs by defining them
+with the `gcp_secret_manager` keyword:
 
 ```yaml
 job_using_gcp_sm:
@@ -107,11 +113,18 @@ job_using_gcp_sm:
       token: $GCP_ID_TOKEN
 ```
 
-NOTE:
-A merge request branch name that's too long can fail a job with the following error if the length of [the `assertion.sub` attribute](id_token_authentication.md#token-payload) is longer than 127 characters:
+## Troubleshooting
+
+### `The size of mapped attribute google.subject exceeds the 127 bytes limit` error
+
+A long merge request branch name can cause a job to fail with the following error if
+[the `assertion.sub` attribute](id_token_authentication.md#token-payload) is more than 127 characters:
 
 ```plaintext
-ERROR: Job failed (system failure): resolving secrets: failed to exchange sts token: googleapi: got HTTP response code 400 with body: {"error":"invalid_request","error_description":"The size of mapped attribute google.subject exceeds the 127 bytes limit. Either modify your attribute mapping or the incoming assertion to produce a mapped attribute that is less than 127 bytes."}
+ERROR: Job failed (system failure): resolving secrets: failed to exchange sts token: googleapi: got HTTP response code 400 with body:
+{"error":"invalid_request","error_description":"The size of mapped attribute google.subject exceeds the 127 bytes limit.
+Either modify your attribute mapping or the incoming assertion to produce a mapped attribute that is less than 127 bytes."}
 ```
 
-For instance, for a `gitlab-org/gitlab` branch, the payload would be `project_path:gitlab-org/gitlab:ref_type:branch:ref:{branch_name}` which means the branch name shouldn't be longer than 76 characters. 
+For example, for a `gitlab-org/gitlab` branch, the payload would be `project_path:gitlab-org/gitlab:ref_type:branch:ref:{branch_name}`,
+so the branch name should be 76 characters or less.

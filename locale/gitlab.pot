@@ -45841,6 +45841,12 @@ msgstr ""
 msgid "ServiceDesk|CRAM-MD5"
 msgstr ""
 
+msgid "ServiceDesk|Cannot convert issue to ticket because no email was provided or the format was invalid."
+msgstr ""
+
+msgid "ServiceDesk|Cannot convert to ticket because it is already a ticket."
+msgstr ""
+
 msgid "ServiceDesk|Cannot create custom email"
 msgstr ""
 
@@ -45857,6 +45863,15 @@ msgid "ServiceDesk|Configure a custom email address"
 msgstr ""
 
 msgid "ServiceDesk|Connect a custom email address your customers can use to create Service Desk issues. Forward all emails from your custom email address to the Service Desk email address of this project. GitLab will send Service Desk emails from the custom address on your behalf using your SMTP credentials. %{linkStart}Learn more about prerequisites and the verification process%{linkEnd}."
+msgstr ""
+
+msgid "ServiceDesk|Convert issue to Service Desk ticket"
+msgstr ""
+
+msgid "ServiceDesk|Converted issue to Service Desk ticket."
+msgstr ""
+
+msgid "ServiceDesk|Converts this issue to a Service Desk ticket."
 msgstr ""
 
 msgid "ServiceDesk|Copy Service Desk email address"
@@ -46028,6 +46043,9 @@ msgid "ServiceDesk|The verification email wasn't received in time. There is a 30
 msgstr ""
 
 msgid "ServiceDesk|This also adds an internal comment that mentions the assignees of the issue."
+msgstr ""
+
+msgid "ServiceDesk|This issue has been converted to a Service Desk ticket. The email address `%{email}` is the new author of this issue. GitLab didn't send a `thank_you` Service Desk email. The original author of this issue was `%{original_author}`."
 msgstr ""
 
 msgid "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
@@ -57038,6 +57056,9 @@ msgid "You don't have permission to approve this deployment. Contact the project
 msgstr ""
 
 msgid "You don't have permission to manage email participants."
+msgstr ""
+
+msgid "You don't have permission to manage this issue."
 msgstr ""
 
 msgid "You don't have permission to view this epic"
