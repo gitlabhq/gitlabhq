@@ -553,14 +553,6 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
         it_behaves_like 'returning an instantiated tag'
       end
-
-      context 'when the feature fetch_tag_info_from_registry is disabled' do
-        before do
-          stub_feature_flags(fetch_tag_info_from_registry: false)
-        end
-
-        it_behaves_like 'returning an instantiated tag'
-      end
     end
 
     context 'when the repository is not migrated' do

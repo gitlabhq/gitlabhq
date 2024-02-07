@@ -29,7 +29,21 @@ module Analytics
             :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false }
           )
         end
-        scope :order_by_duration, -> (direction) do
+        scope :order_by_end_event_with_db_duration, -> (direction) do
+          # ORDER BY end_event_timestamp, merge_request_id/issue_id, start_event_timestamp
+          # start_event_timestamp must be included in the ORDER BY clause for the duration
+          # calculation to work: SELECT end_event_timestamp - start_event_timestamp
+          keyset_order(
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: false },
+            :duration_in_milliseconds => {
+              order_expression: arel_order(arel_table[:duration_in_milliseconds], direction),
+              distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
+            }
+          )
+        end
+        scope :order_by_calculated_duration, -> (direction) do
           # ORDER BY EXTRACT('epoch', end_event_timestamp - start_event_timestamp)
           duration = Arel::Nodes::Subtraction.new(
             arel_table[:end_event_timestamp],
@@ -47,6 +61,20 @@ module Analytics
             :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: true }
           )
         end
+        scope :order_by_db_duration, -> (direction) do
+          # start_event_timestamp and end_event_timestamp do not really influence the order,
+          # but are included so that they are part of the returned result, for example when
+          # using Gitlab::Analytics::CycleAnalytics::Aggregated::RecordsFetcher
+          keyset_order(
+            :duration_in_milliseconds => {
+              order_expression: arel_order(arel_table[:duration_in_milliseconds], direction),
+              distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first, sql_type: 'bigint'
+            },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), distinct: true },
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: true },
+            :start_event_timestamp => { order_expression: arel_order(arel_table[:start_event_timestamp], direction), distinct: true }
+          )
+        end
       end
 
       def issuable_id
@@ -54,6 +82,15 @@ module Analytics
       end
 
       def total_time
+        # Temporary until the vsa_duration_from_db feature flag is cleaned up. After that
+        # we can use the duration_in_milliseconds attribute.
+        #
+        # - total_time attribute: calculated from end_event_timestamp - start_event_timestamp
+        # - duration_in_milliseconds: newly introduced column in the table
+        duration_in_ms = read_attribute(:duration_in_milliseconds)
+        # cast to seconds
+        return duration_in_ms.fdiv(1000) if duration_in_ms
+
         read_attribute(:total_time) || (end_event_timestamp - start_event_timestamp).to_f
       end
 

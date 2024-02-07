@@ -5,6 +5,7 @@ query fetchEnvironment($fullPath: ID!, $name: String!) {
       id
       name
       path
+      externalUrl
     }
   }
 }

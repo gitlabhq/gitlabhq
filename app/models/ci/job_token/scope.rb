@@ -39,6 +39,10 @@ module Ci
         inbound_allowlist.projects
       end
 
+      def groups
+        inbound_allowlist.groups
+      end
+
       private
 
       def outbound_accessible?(accessed_project)

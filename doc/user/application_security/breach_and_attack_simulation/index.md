@@ -8,7 +8,8 @@ info: Breach and Attack Simulation is a GitLab Incubation Engineering program. N
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/402784) in GitLab 15.11 as an Incubating feature.
 > - [Included](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119981) in the `Security/BAS.latest.gitlab-ci.yml` in GitLab 16.0.
@@ -18,7 +19,8 @@ Breach and Attack Simulation is a set of incubating features being developed by 
 
 Breach and Attack Simulation (BAS) uses additional security testing techniques to assess the risk of detected vulnerabilities and prioritize the remediation of exploitable vulnerabilities.
 
-For feedback, bug reports, and feature requests, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/404809).
+This feature is an [Experiment](../../../policy/experiment-beta-support.md). For feedback, bug
+reports, and feature requests, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/404809).
 
 WARNING:
 Only run BAS scans against test servers. Testing attacker behavior can lead to modification or loss of data.

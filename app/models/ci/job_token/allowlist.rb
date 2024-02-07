@@ -24,11 +24,23 @@ module Ci
         Project.from_union(target_projects, remove_duplicates: false)
       end
 
+      def groups
+        ::Group.id_in(group_links.pluck(:target_group_id))
+      end
+
       def add!(target_project, user:)
         Ci::JobToken::ProjectScopeLink.create!(
           source_project: @source_project,
           direction: @direction,
           target_project: target_project,
+          added_by: user
+        )
+      end
+
+      def add_group!(target_group, user:)
+        Ci::JobToken::GroupScopeLink.create!(
+          source_project: @source_project,
+          target_group: target_group,
           added_by: user
         )
       end

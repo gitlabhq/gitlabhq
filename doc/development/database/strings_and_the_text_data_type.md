@@ -292,7 +292,7 @@ class ChangeMaintainerNoteLimitInCiRunner < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
-    add_text_limit :ci_runners, :maintainer_note, 1024, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length_1MB')
+    add_text_limit :ci_runners, :maintainer_note, 1024, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length_1K')
     remove_text_limit :ci_runners, :maintainer_note, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length')
   end
 

@@ -9,6 +9,10 @@
           = _('Group members')
         %p.gl-w-full.order-md-1
           = group_member_header_subtext(@group)
+        = render_if_exists 'groups/group_members/link_to_pending_members'
+        - if current_appearance&.member_guidelines?
+          .gl-w-full.order-md-1
+            = brand_member_guidelines
         .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-3.gl-md-w-auto.gl-w-full
           .js-invite-group-trigger{ data: { classes: 'gl-md-w-auto gl-w-full', display_text: _('Invite a group') } }
           - if can_admin_service_accounts?(@group)

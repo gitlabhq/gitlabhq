@@ -61,6 +61,10 @@ module AppearancesHelper
     ].compact_blank.join("<br>").html_safe
   end
 
+  def brand_member_guidelines
+    markdown_field(current_appearance, :member_guidelines)
+  end
+
   def brand_new_project_guidelines
     markdown_field(current_appearance, :new_project_guidelines)
   end

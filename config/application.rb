@@ -317,7 +317,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/group.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/import.css"
-    config.assets.precompile << "page_bundles/incident_management_list.css"
+    config.assets.precompile << "page_bundles/paginated_table.css"
     config.assets.precompile << "page_bundles/incidents.css"
     config.assets.precompile << "page_bundles/issues_analytics.css"
     config.assets.precompile << "page_bundles/issuable.css"

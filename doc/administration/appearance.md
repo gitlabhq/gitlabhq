@@ -126,6 +126,21 @@ To customize your Progressive Web App icon:
 1. Under **Icon**, select **Choose file**.
 1. At the bottom of the page, select **Update appearance settings**.
 
+## Member guidelines
+
+You can add member guidelines to the group and project member pages in GitLab.
+You can use [Markdown](../user/markdown.md) in the description.
+
+The member guidelines are visible to users who have the [permission](../user/permissions.md) to manage either:
+
+- Group members at the group level.
+- Project members at the project level.
+
+You should add member guidelines if you manage group and project membership using either:
+
+- Predefined groups instead of on an individual basis.
+- External tooling.
+
 ## Add guidelines to the new project page
 
 Add a guideline message to the **New project page**. You can format your message with Markdown. The guideline message shows under the **New Project** message and, on the left side of the **New project page**.

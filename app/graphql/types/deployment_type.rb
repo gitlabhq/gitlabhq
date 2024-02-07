@@ -23,6 +23,10 @@ module Types
       GraphQL::Types::String,
       description: 'Git-Ref that the deployment ran on.'
 
+    field :ref_path,
+      GraphQL::Types::String,
+      description: 'Path to the Git-Ref that the deployment ran on.'
+
     field :tag,
       GraphQL::Types::Boolean,
       description: 'True or false if the deployment ran on a Git-tag.'

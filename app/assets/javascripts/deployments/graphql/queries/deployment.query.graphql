@@ -10,7 +10,12 @@ query fetchDeployment($fullPath: ID!, $iid: ID!) {
       ...ApprovalSummary
       status
       ref
+      refPath
       tag
+      tags {
+        name
+        path
+      }
       job {
         ...DeploymentJob
         deploymentPipeline: pipeline {

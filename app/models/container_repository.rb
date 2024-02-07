@@ -439,9 +439,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tag(tag)
-    if migrated? &&
-        Feature.enabled?(:fetch_tag_info_from_registry, project, type: :gitlab_com_derisk) &&
-        ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+    if migrated? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       page = tags_page(name: tag, page_size: 1)
 
       page[:tags].first

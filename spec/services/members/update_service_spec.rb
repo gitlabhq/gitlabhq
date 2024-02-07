@@ -71,7 +71,7 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
       members.each do |member|
         expect(update_service).to receive(:after_execute).with(
           action: permission,
-          old_access_level: member.human_access,
+          old_access_level: member.human_access_labeled,
           old_expiry: member.expires_at,
           member: member
         )

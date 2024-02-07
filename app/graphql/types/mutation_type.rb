@@ -152,9 +152,11 @@ module Types
     mount_mutation Mutations::Ci::Job::Retry
     mount_mutation Mutations::Ci::Job::ArtifactsDestroy
     mount_mutation Mutations::Ci::Job::Unschedule
+    mount_mutation Mutations::Ci::JobTokenScope::AddGroupOrProject
     mount_mutation Mutations::Ci::JobTokenScope::AddProject
     mount_mutation Mutations::Ci::JobArtifact::BulkDestroy, alpha: { milestone: '15.10' }
     mount_mutation Mutations::Ci::JobArtifact::Destroy
+    mount_mutation Mutations::Ci::JobTokenScope::RemoveGroup
     mount_mutation Mutations::Ci::JobTokenScope::RemoveProject
     mount_mutation Mutations::Ci::Pipeline::Cancel
     mount_mutation Mutations::Ci::Pipeline::Destroy

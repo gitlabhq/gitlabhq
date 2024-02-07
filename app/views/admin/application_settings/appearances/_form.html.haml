@@ -28,6 +28,21 @@
   .settings-section
     .settings-sticky-header
       .settings-sticky-header-inner
+        %h4.gl-my-0= _('Member guidelines')
+
+    .form-text.text-muted
+      = _('These guidelines are displayed on the group\'s or project\'s members page, and are visible to users who can manage team member permissions.')
+
+    .form-group
+      = f.label :member_guidelines, class: 'col-form-label'
+      %p
+        = f.text_area :member_guidelines, class: "form-control gl-form-input", rows: 10
+        .form-text.text-muted
+          = parsed_with_gfm
+
+  .settings-section
+    .settings-sticky-header
+      .settings-sticky-header-inner
         %h4.gl-my-0= _('Navigation bar')
 
     .form-group

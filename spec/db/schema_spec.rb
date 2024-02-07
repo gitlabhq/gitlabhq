@@ -17,7 +17,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
-    ci_builds: [%w[partition_id stage_id]] # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_builds: [%w[partition_id stage_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds: [%w[partition_id stage_id]] # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze

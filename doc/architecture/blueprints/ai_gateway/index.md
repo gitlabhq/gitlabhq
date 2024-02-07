@@ -32,6 +32,8 @@ translate the content of the redirected request where needed.
 
 ![architecture diagram](img/architecture.png)
 
+**Currently, multi-region deployment is not supported; it's a feature under consideration. The existing diagram illustrates a potential architecture for deploying across multiple regions.**
+
 [Diagram source](https://docs.google.com/drawings/d/1PYl5Q5oWHnQAuxM-Jcw0C3eYoGw8a9w8atFpoLhhEas/edit)
 
 By using a hosted service under the control of GitLab we can ensure

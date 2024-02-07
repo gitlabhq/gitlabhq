@@ -9,6 +9,9 @@
           = _("Project members")
         %p.gl-w-full.order-md-1
           = project_member_header_subtext(@project)
+        - if current_appearance&.member_guidelines?
+          .gl-w-full.order-md-1
+            = brand_member_guidelines
         .gl-display-flex.gl-flex-wrap.gl-align-items-flex-start.gl-ml-auto.gl-md-w-auto.gl-w-full.gl-mt-3
           - invite_group_top_margin = ''
           - if can_admin_project_member?(@project)

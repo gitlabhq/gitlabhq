@@ -433,15 +433,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
             it_behaves_like 'returning the tag'
           end
-
-          context 'when the feature fetch_tag_info_from_registry is disabled' do
-            before do
-              stub_feature_flags(fetch_tag_info_from_registry: false)
-              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
-            end
-
-            it_behaves_like 'returning the tag'
-          end
         end
       end
     end

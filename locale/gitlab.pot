@@ -924,9 +924,6 @@ msgstr ""
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
-msgid "%{message} showing first %{warnings_displayed}"
-msgstr ""
-
 msgid "%{milestone} (expired)"
 msgstr ""
 
@@ -1283,9 +1280,6 @@ msgid "%{totalIssueWeight} total weight"
 msgstr ""
 
 msgid "%{totalMemory} (%{freeSpacePercentage}%{percentSymbol} free)"
-msgstr ""
-
-msgid "%{total_warnings} warning(s) found:"
 msgstr ""
 
 msgid "%{total}"
@@ -15197,6 +15191,9 @@ msgstr ""
 msgid "Custom range"
 msgstr ""
 
+msgid "Custom role"
+msgstr ""
+
 msgid "Customer experience improvement and third-party offers"
 msgstr ""
 
@@ -16380,6 +16377,9 @@ msgstr ""
 msgid "Default projects limit"
 msgstr ""
 
+msgid "Default role"
+msgstr ""
+
 msgid "Default timeout"
 msgstr ""
 
@@ -17325,6 +17325,9 @@ msgstr ""
 msgid "Deployments|You don't have any deployments right now."
 msgstr ""
 
+msgid "Deployment|Branch"
+msgstr ""
+
 msgid "Deployment|Cancelled"
 msgstr ""
 
@@ -17361,10 +17364,19 @@ msgstr ""
 msgid "Deployment|Flux sync status is unknown"
 msgstr ""
 
+msgid "Deployment|Job"
+msgstr ""
+
 msgid "Deployment|Latest Deployed"
 msgstr ""
 
 msgid "Deployment|Needs Approval"
+msgstr ""
+
+msgid "Deployment|Open URL"
+msgstr ""
+
+msgid "Deployment|Related Tags"
 msgstr ""
 
 msgid "Deployment|Running"
@@ -17380,6 +17392,9 @@ msgid "Deployment|Success"
 msgstr ""
 
 msgid "Deployment|Sync status is unknown. %{linkStart}How do I configure Flux for my deployment?%{linkEnd}"
+msgstr ""
+
+msgid "Deployment|Tag"
 msgstr ""
 
 msgid "Deployment|There was an issue fetching the deployment, please try again later."
@@ -30166,6 +30181,9 @@ msgid "Medium vulnerabilities present"
 msgstr ""
 
 msgid "Member"
+msgstr ""
+
+msgid "Member guidelines"
 msgstr ""
 
 msgid "Member since"
@@ -50420,6 +50438,9 @@ msgstr ""
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
 msgstr ""
 
+msgid "These guidelines are displayed on the group's or project's members page, and are visible to users who can manage team member permissions."
+msgstr ""
+
 msgid "These guidelines for public avatars are displayed on the user settings page."
 msgstr ""
 
@@ -57978,9 +57999,6 @@ msgstr ""
 msgid "can't be blank"
 msgstr ""
 
-msgid "can't be enabled when delayed group deletion is disabled"
-msgstr ""
-
 msgid "can't be nil"
 msgstr ""
 
@@ -59420,6 +59438,9 @@ msgid "must contain only a discord user ID."
 msgstr ""
 
 msgid "must contain only a mastodon username."
+msgstr ""
+
+msgid "must follow semantic version"
 msgstr ""
 
 msgid "must have a repository"

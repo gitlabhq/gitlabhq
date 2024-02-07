@@ -176,6 +176,10 @@ module Gitlab
       Gitlab::Access.human_access_with_none(access_field)
     end
 
+    def human_access_labeled
+      "#{s_('Default role')}: #{human_access}"
+    end
+
     def owner?
       access_field == OWNER
     end

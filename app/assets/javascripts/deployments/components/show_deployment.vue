@@ -5,12 +5,14 @@ import { s__ } from '~/locale';
 import deploymentQuery from '../graphql/queries/deployment.query.graphql';
 import environmentQuery from '../graphql/queries/environment.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
+import DeploymentAside from './deployment_aside.vue';
 
 export default {
   components: {
     GlAlert,
     GlSprintf,
     DeploymentHeader,
+    DeploymentAside,
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName'],
   apollo: {
@@ -59,17 +61,28 @@ export default {
 </script>
 <template>
   <div>
-    <h1 class="page-title gl-font-size-h-display">
-      <gl-sprintf :message="$options.i18n.header">
-        <template #iid>{{ deploymentIid }}</template>
-      </gl-sprintf>
-    </h1>
-    <gl-alert v-if="hasError" variant="danger">{{ errorMessage }}</gl-alert>
-    <deployment-header
-      v-else
-      :deployment="deployment"
-      :environment="environment"
-      :loading="$apollo.queries.deployment.loading"
-    />
+    <div class="gl-display-flex gl-justify-content-space-between">
+      <div class="gl-flex-grow-1">
+        <h1 class="page-title gl-font-size-h-display">
+          <gl-sprintf :message="$options.i18n.header">
+            <template #iid>{{ deploymentIid }}</template>
+          </gl-sprintf>
+        </h1>
+        <gl-alert v-if="hasError" variant="danger">{{ errorMessage }}</gl-alert>
+        <deployment-header
+          v-else
+          :deployment="deployment"
+          :environment="environment"
+          :loading="$apollo.queries.deployment.loading"
+        />
+      </div>
+      <deployment-aside
+        v-if="!hasError"
+        :loading="$apollo.queries.deployment.loading"
+        :deployment="deployment"
+        :environment="environment"
+        class="gl-w-20p"
+      />
+    </div>
   </div>
 </template>

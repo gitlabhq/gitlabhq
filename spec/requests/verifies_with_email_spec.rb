@@ -178,7 +178,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
       context 'when an expired verification_token param exists' do
         before do
-          user.update!(locked_at: 4.hours.ago)
+          user.update!(locked_at: 1.hour.ago)
           post(user_session_path(user: { verification_token: 'token' }))
         end
 
@@ -222,7 +222,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
         context 'when email reset has already been offered' do
           before do
-            user.update!(email_reset_offered_at: 4.hours.ago, email: 'new@email')
+            user.update!(email_reset_offered_at: 1.hour.ago, email: 'new@email')
           end
 
           it 'does not change the email_reset_offered_at field' do

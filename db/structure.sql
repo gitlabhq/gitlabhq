@@ -12082,8 +12082,11 @@ CREATE TABLE appearances (
     pwa_icon text,
     pwa_name text,
     pwa_description text,
+    member_guidelines text,
+    member_guidelines_html text,
     CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
     CONSTRAINT check_13b2165eca CHECK ((char_length(pwa_name) <= 255)),
+    CONSTRAINT check_50e9b69ab6 CHECK ((char_length(member_guidelines) <= 4096)),
     CONSTRAINT check_5c3fd63577 CHECK ((char_length(pwa_short_name) <= 255)),
     CONSTRAINT check_5e0e6f24ed CHECK ((char_length(pwa_description) <= 2048)),
     CONSTRAINT check_5e5b7ac344 CHECK ((char_length(pwa_icon) <= 1024))
@@ -19890,6 +19893,11 @@ CREATE TABLE ml_model_versions (
     package_id bigint,
     version text NOT NULL,
     description text,
+    semver_major integer,
+    semver_minor integer,
+    semver_patch integer,
+    semver_prerelease text,
+    CONSTRAINT check_246f5048b5 CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255)),
     CONSTRAINT check_caff7d000b CHECK ((char_length(description) <= 500))
 );
@@ -38548,8 +38556,8 @@ ALTER TABLE ONLY ml_model_versions
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_3a9eaa254d FOREIGN KEY (stage_id) REFERENCES ci_stages(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY ci_builds
-    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+ALTER TABLE p_ci_builds
+    ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;

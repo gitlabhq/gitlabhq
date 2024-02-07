@@ -7,7 +7,7 @@ module RuboCop
         MSG = 'Do not use GraphQL::Types::ID, use a specific GlobalIDType instead'
 
         ALLOWLISTED_ARGUMENTS = %i[
-          iid full_path project_path group_path target_project_path namespace_path
+          iid full_path project_path group_path target_project_path target_group_path target_path namespace_path
           context_namespace_path
         ].freeze
 

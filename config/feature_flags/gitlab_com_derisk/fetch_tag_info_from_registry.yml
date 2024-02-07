@@ -1,9 +1,0 @@
----
-name: fetch_tag_info_from_registry
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432472
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141838
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17395
-milestone: '16.9'
-group: group::container registry
-type: gitlab_com_derisk
-default_enabled: false

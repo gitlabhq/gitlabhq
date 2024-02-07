@@ -14,6 +14,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
+  ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

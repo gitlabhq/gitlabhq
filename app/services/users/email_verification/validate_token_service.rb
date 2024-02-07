@@ -5,7 +5,7 @@ module Users
     class ValidateTokenService < EmailVerification::BaseService
       include ActionView::Helpers::DateHelper
 
-      TOKEN_VALID_FOR_MINUTES = 240
+      TOKEN_VALID_FOR_MINUTES = 60
 
       def initialize(attr:, user:, token:)
         super(attr: attr, user: user)

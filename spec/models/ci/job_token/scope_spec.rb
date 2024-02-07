@@ -57,6 +57,28 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
     end
   end
 
+  describe '#groups' do
+    subject { scope.groups }
+
+    context 'when no groups are added to the scope' do
+      it 'returns an empty list' do
+        expect(subject).to be_empty
+      end
+    end
+
+    context 'when groups are added to the scope' do
+      let_it_be(:target_group) { create(:group) }
+
+      include_context 'with projects that are with and without groups added in allowlist'
+
+      with_them do
+        it 'returns all groups that are allowed access in the job token scope' do
+          expect(subject).to contain_exactly(target_group)
+        end
+      end
+    end
+  end
+
   describe 'accessible?' do
     subject { scope.accessible?(accessed_project) }
 
@@ -71,7 +93,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
       let(:scope) { described_class.new(target_project) }
 
-      include_context 'with accessible and inaccessible project groups'
+      include_context 'with projects that are with and without groups added in allowlist'
 
       where(:accessed_project, :result) do
         ref(:project_with_target_project_group_in_allowlist)            | true

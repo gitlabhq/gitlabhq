@@ -2229,6 +2229,26 @@ Input type: `CatalogResourcesDestroyInput`
 | <a id="mutationcatalogresourcesdestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcatalogresourcesdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.ciJobTokenScopeAddGroupOrProject`
+
+Input type: `CiJobTokenScopeAddGroupOrProjectInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscopeaddgrouporprojecttargetpath"></a>`targetPath` | [`ID!`](#id) | Group or project to be added to the CI job token scope. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscopeaddgrouporprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
+| <a id="mutationcijobtokenscopeaddgrouporprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscopeaddgrouporprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.ciJobTokenScopeAddProject`
 
 Input type: `CiJobTokenScopeAddProjectInput`
@@ -2249,6 +2269,26 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | <a id="mutationcijobtokenscopeaddprojectcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcijobtokenscopeaddprojecterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.ciJobTokenScopeRemoveGroup`
+
+Input type: `CiJobTokenScopeRemoveGroupInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscoperemovegroupclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscoperemovegroupprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
+| <a id="mutationcijobtokenscoperemovegrouptargetgrouppath"></a>`targetGroupPath` | [`ID!`](#id) | Group to be removed from the CI job token scope. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationcijobtokenscoperemovegroupcijobtokenscope"></a>`ciJobTokenScope` | [`CiJobTokenScopeType`](#cijobtokenscopetype) | CI job token's access scope. |
+| <a id="mutationcijobtokenscoperemovegroupclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcijobtokenscoperemovegrouperrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.ciJobTokenScopeRemoveProject`
 
@@ -15995,6 +16035,7 @@ CI/CD variables for a GitLab instance.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allow list of groups that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
@@ -17767,6 +17808,7 @@ The deployment of an environment.
 | <a id="deploymentjob"></a>`job` | [`CiJob`](#cijob) | Pipeline job of the deployment. |
 | <a id="deploymentpendingapprovalcount"></a>`pendingApprovalCount` | [`Int`](#int) | Number of pending unified approvals on the deployment. |
 | <a id="deploymentref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
+| <a id="deploymentrefpath"></a>`refPath` | [`String`](#string) | Path to the Git-Ref that the deployment ran on. |
 | <a id="deploymentsha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
 | <a id="deploymentstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
 | <a id="deploymenttag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
@@ -20656,7 +20698,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupworkitemtypestaskable"></a>`taskable` | [`Boolean`](#boolean) | If `true`, only taskable work item types will be returned. Argument is experimental and can be removed in the future without notice. |
+| <a id="groupworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
 
 ##### `Group.workItems`
 
@@ -26128,7 +26170,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectworkitemtypestaskable"></a>`taskable` | [`Boolean`](#boolean) | If `true`, only taskable work item types will be returned. Argument is experimental and can be removed in the future without notice. |
+| <a id="projectworkitemtypesname"></a>`name` | [`IssueType`](#issuetype) | Filter work item types by the given name. |
 
 ##### `Project.workItems`
 

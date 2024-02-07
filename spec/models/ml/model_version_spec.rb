@@ -270,4 +270,24 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
       end
     end
   end
+
+  context 'when parsing semver components' do
+    let(:model_version) { build(:ml_model_versions, model: model1, semver: semver, project: base_project) }
+
+    where(:semver, :valid, :major, :minor, :patch, :prerelease) do
+      '1'             | false | nil | nil | nil | nil
+      '1.2'           | false | nil | nil | nil | nil
+      '1.2.3'         | true  | 1   | 2   | 3   | nil
+      '1.2.3-beta'    | true  | 1   | 2   | 3   | 'beta'
+      '1.2.3.beta'    | false | nil | nil | nil | nil
+    end
+    with_them do
+      it do
+        expect(model_version.semver_major).to be major
+        expect(model_version.semver_minor).to be minor
+        expect(model_version.semver_patch).to be patch
+        expect(model_version.semver_prerelease).to eq prerelease
+      end
+    end
+  end
 end

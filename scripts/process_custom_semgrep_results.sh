@@ -14,7 +14,7 @@ jq -crM '.vulnerabilities |
   ) |
   sort |
   if length > 0 then
-    { body: ("The findings below have been detected based on the AppSec custom SAST rules. For more information about this bot and what to do with this comment head over to the [README](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/tree/main/appsec-pings). The following lines of code possibly need attention:\n\n" + join("\n") + "\n\n/cc @gitlab-com/gl-security/appsec") }
+    { body: ("The findings below have been detected based on the AppSec custom SAST rules. For more information about this bot head over to [the FAQ](https://gitlab.com/gitlab-com/gl-security/appsec/sast-custom-rules/-/tree/main/#faq).\n\n" + join("\n") + "\n\nPing `@gitlab-com/gl-security/appsec` if you need assistance regarding those findings.") }
   else
     empty
   end' gl-sast-report.json >findings.txt

@@ -16,5 +16,10 @@ module Deployments
         }
       end
     end
+
+    delegator_override :ref_path
+    def ref_path
+      project_tree_path(project, id: ref)
+    end
   end
 end

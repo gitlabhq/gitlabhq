@@ -41,6 +41,7 @@ Example response:
   "logo": "/uploads/-/system/appearance/logo/1/logo.png",
   "header_logo": "/uploads/-/system/appearance/header_logo/1/header.png",
   "favicon": "/uploads/-/system/appearance/favicon/1/favicon.png",
+  "member_guidelines": "Custom member guidelines",
   "new_project_guidelines": "Please read the FAQs for help.",
   "profile_image_guidelines": "Custom profile image guidelines",
   "header_message": "",
@@ -70,6 +71,7 @@ PUT /application/appearance
 | `logo`                            | mixed   | no       | Instance image used on the sign in / sign up page. See [Change logo](#change-logo) |
 | `header_logo`                     | mixed   | no       | Instance image used for the main navigation bar |
 | `favicon`                         | mixed   | no       | Instance favicon in `.ico` or `.png` format |
+| `member_guidelines`               | string  | no       | Markdown text shown on the group or project member page for users with permission to change members
 | `new_project_guidelines`          | string  | no       | Markdown text shown on the new project page |
 | `profile_image_guidelines`        | string  | no       | Markdown text shown on the profile page below Public Avatar |
 | `header_message`                  | string  | no       | Message in the system header bar |
@@ -95,6 +97,7 @@ Example response:
   "logo": "/uploads/-/system/appearance/logo/1/logo.png",
   "header_logo": "/uploads/-/system/appearance/header_logo/1/header.png",
   "favicon": "/uploads/-/system/appearance/favicon/1/favicon.png",
+  "member_guidelines": "Custom member guidelines",
   "new_project_guidelines": "Please read the FAQs for help.",
   "profile_image_guidelines": "Custom profile image guidelines",
   "header_message": "test",

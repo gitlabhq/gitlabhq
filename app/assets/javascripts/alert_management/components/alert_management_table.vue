@@ -299,6 +299,7 @@ export default {
       :server-error-message="serverErrorMessage"
       :filter-search-tokens="$options.filterSearchTokens"
       filter-search-key="alerts"
+      class="incident-management-list"
       @page-changed="pageChanged"
       @tabs-changed="statusChanged"
       @filters-changed="filtersChanged"

@@ -7,18 +7,17 @@ module Resolvers
 
       type Types::WorkItems::TypeType.connection_type, null: true
 
-      argument :taskable, ::GraphQL::Types::Boolean,
-               required: false,
-               description: 'If `true`, only taskable work item types will be returned.' \
-                            ' Argument is experimental and can be removed in the future without notice.'
+      argument :name, Types::IssueTypeEnum,
+               description: 'Filter work item types by the given name.',
+               required: false
 
-      def resolve_with_lookahead(taskable: nil)
+      def resolve_with_lookahead(name: nil)
         context.scoped_set!(:resource_parent, object)
 
         # This will require a finder in the future when groups/projects get their work item types
         # All groups/projects use the default types for now
         base_scope = ::WorkItems::Type.default
-        base_scope = base_scope.by_type(:task) if taskable
+        base_scope = base_scope.by_type(name) if name
 
         apply_lookahead(base_scope.order_by_name_asc)
       end

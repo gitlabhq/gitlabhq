@@ -19,6 +19,7 @@ RSpec.describe Appearance do
     it { expect(appearance.pwa_name).to eq('') }
     it { expect(appearance.pwa_short_name).to eq('') }
     it { expect(appearance.pwa_description).to eq('') }
+    it { expect(appearance.member_guidelines).to eq('') }
     it { expect(appearance.new_project_guidelines).to eq('') }
     it { expect(appearance.profile_image_guidelines).to eq('') }
     it { expect(appearance.header_message).to eq('') }

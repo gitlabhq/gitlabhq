@@ -4,6 +4,9 @@ module Ml
   class ModelVersion < ApplicationRecord
     include Presentable
     include Sortable
+    include SemanticVersionable
+
+    semver_method :semver
 
     validates :project, :model, presence: true
 
