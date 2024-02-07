@@ -23,7 +23,6 @@
 - ee/spec/features/boards/swimlanes/epics_swimlanes_spec.rb
 - ee/spec/features/ci/ci_minutes_spec.rb
 - ee/spec/features/ci_shared_runner_warnings_spec.rb
-- ee/spec/features/code_suggestions_ga_non_owner_alert_spec.rb
 - ee/spec/features/dashboards/todos_spec.rb
 - ee/spec/features/epics/gfm_autocomplete_spec.rb
 - ee/spec/features/epics/issue_promotion_spec.rb

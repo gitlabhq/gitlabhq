@@ -53,11 +53,39 @@ export const mockPipelineSchedulesResponseWithPagination = {
     currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
     project: {
       id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      projectPlanLimits: {
+        ciPipelineSchedules: 100,
+        __typename: 'ProjectPlanLimits',
+      },
       pipelineSchedules: {
         count: 3,
         nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
         pageInfo: {
           hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjQ0In0',
+          endCursor: 'eyJpZCI6IjI4In0',
+          __typename: 'PageInfo',
+        },
+      },
+    },
+  },
+};
+
+export const mockPipelineSchedulesResponsePlanLimitReached = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      projectPlanLimits: {
+        ciPipelineSchedules: 2,
+        __typename: 'ProjectPlanLimits',
+      },
+      pipelineSchedules: {
+        count: 3,
+        nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
+        pageInfo: {
+          hasNextPage: false,
           hasPreviousPage: false,
           startCursor: 'eyJpZCI6IjQ0In0',
           endCursor: 'eyJpZCI6IjI4In0',
@@ -76,6 +104,10 @@ export const emptyPipelineSchedulesResponse = {
     },
     project: {
       id: 'gid://gitlab/Project/1',
+      projectPlanLimits: {
+        ciPipelineSchedules: 100,
+        __typename: 'ProjectPlanLimits',
+      },
       pipelineSchedules: {
         count: 0,
         nodes: [],

@@ -24,6 +24,7 @@ import {
   takeOwnershipMutationResponse,
   emptyPipelineSchedulesResponse,
   mockPipelineSchedulesResponseWithPagination,
+  mockPipelineSchedulesResponsePlanLimitReached,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -40,6 +41,9 @@ describe('Pipeline schedules app', () => {
     .fn()
     .mockResolvedValue(mockPipelineSchedulesResponseWithPagination);
   const successEmptyHandler = jest.fn().mockResolvedValue(emptyPipelineSchedulesResponse);
+  const planLimitReachedHandler = jest
+    .fn()
+    .mockResolvedValue(mockPipelineSchedulesResponsePlanLimitReached);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
@@ -80,6 +84,7 @@ describe('Pipeline schedules app', () => {
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findLink = () => wrapper.findComponent(GlLink);
+  const findPlanLimitReachedAlert = () => wrapper.findByTestId('plan-limit-reached-alert');
   const findNewButton = () => wrapper.findByTestId('new-schedule-button');
   const findAllTab = () => wrapper.findByTestId('pipeline-schedules-all-tab');
   const findActiveTab = () => wrapper.findByTestId('pipeline-schedules-active-tab');
@@ -114,8 +119,11 @@ describe('Pipeline schedules app', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
 
-    it('new schedule button links to new schedule path', () => {
+    it('new schedule button links to new schedule path', async () => {
+      await waitForPromises();
+
       expect(findNewButton().attributes('href')).toBe('/root/ci-project/-/pipeline_schedules/new');
+      expect(findNewButton().props('disabled')).toBe(false);
     });
 
     it('does not display pagination when no next page exists', () => {
@@ -439,6 +447,19 @@ describe('Pipeline schedules app', () => {
       await waitForPromises();
 
       expect(findPagination().props('value')).toEqual(1);
+    });
+  });
+
+  describe('plan limit reached', () => {
+    beforeEach(async () => {
+      createComponent([[getPipelineSchedulesQuery, planLimitReachedHandler]]);
+
+      await waitForPromises();
+    });
+
+    it('shows disabled new schedule button with alert', () => {
+      expect(findNewButton().props('disabled')).toBe(true);
+      expect(findPlanLimitReachedAlert().exists()).toBe(true);
     });
   });
 });

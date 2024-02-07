@@ -69,6 +69,20 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - Redis 6.2 or later is now required by Sidekiq. For installations that use an external Redis service, you should upgrade your Redis service to 6.2 - 7.x
 before upgrading to GitLab 16.8.
 
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+
 ## 16.7.0
 
 - GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
@@ -105,6 +119,18 @@ Specific information applies to Linux package installations:
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+
 ## 16.6.0
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
@@ -121,6 +147,18 @@ Specific information applies to Linux package installations:
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
 
 ## 16.5.0
 
@@ -219,6 +257,18 @@ Specific information applies to installations using Geo:
   | 16.5                    |  All                    | None     |
   | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
   | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
 
 ## 16.4.0
 

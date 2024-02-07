@@ -873,7 +873,7 @@ was initiated, such as `1509705644.log`
 ## `sidekiq_exporter.log` and `web_exporter.log`
 
 If Prometheus metrics and the Sidekiq Exporter are both enabled, Sidekiq
-starts a Web server and listen to the defined port (default:
+starts a Web server and listens to the defined port (default:
 `8082`). By default, Sidekiq Exporter access logs are disabled but can
 be enabled:
 
@@ -886,7 +886,7 @@ When enabled, depending on your installation method, this file is located at:
 - `/home/git/gitlab/log/sidekiq_exporter.log` on self-compiled installations.
 
 If Prometheus metrics and the Web Exporter are both enabled, Puma
-starts a Web server and listen to the defined port (default: `8083`), and access logs
+starts a Web server and listens to the defined port (default: `8083`), and access logs
 are generated in a location based on your installation method:
 
 - `/var/log/gitlab/gitlab-rails/web_exporter.log` on Linux package installations.

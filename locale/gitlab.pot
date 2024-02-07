@@ -11596,6 +11596,9 @@ msgstr ""
 msgid "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods."
 msgstr ""
 
+msgid "ClusterAgents|The pull-based deployment features of the GitLab agent for Kubernetes is deprecated. If you use the agent for pull-based deployments, you should %{linkStart}migrate to Flux%{linkEnd}."
+msgstr ""
+
 msgid "ClusterAgents|This agent has no tokens"
 msgstr ""
 
@@ -12109,9 +12112,6 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
-msgid "CodeSuggestionsGAAlert| (Code Suggestions transitions to a paid feature on %{date}.)"
-msgstr ""
-
 msgid "CodeSuggestionsGAAlert|Code Suggestions is now part of Duo Pro. Free access is ending soon."
 msgstr ""
 
@@ -12122,15 +12122,6 @@ msgid "CodeSuggestionsGAAlert|Continue accelerating your development with GitLab
 msgstr ""
 
 msgid "CodeSuggestionsGAAlert|Dismiss Code Suggestions banner"
-msgstr ""
-
-msgid "CodeSuggestionsGAAlert|Learn more"
-msgstr ""
-
-msgid "CodeSuggestionsGAAlert|Quickly and securely author code by getting suggestions in %{link_start}your IDE%{link_end} while you type. Available in multiple languages. Try Code Suggestions today."
-msgstr ""
-
-msgid "CodeSuggestionsGAAlert|Try GitLab Duo Code Suggestions today"
 msgstr ""
 
 msgid "CodeSuggestionsSM|Code Suggestions"
@@ -25530,13 +25521,16 @@ msgstr ""
 msgid "InProductMarketing|%{strong_start}GitLab Inc.%{strong_end} 268 Bush Street, #350, San Francisco, CA 94104, USA"
 msgstr ""
 
-msgid "InProductMarketing|%{upper_start}Start your 30-day free trial of%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
+msgid "InProductMarketing|%{upper_start}Free 30-day trial%{upper_end} %{lower_start}GitLab Ultimate%{lower_end}"
 msgstr ""
 
-msgid "InProductMarketing|Accelerate your digital transform"
+msgid "InProductMarketing|Accelerate your digital transformation"
 msgstr ""
 
 msgid "InProductMarketing|Blog"
+msgstr ""
+
+msgid "InProductMarketing|Build in security"
 msgstr ""
 
 msgid "InProductMarketing|Built-in security"
@@ -25582,6 +25576,9 @@ msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
 msgid "InProductMarketing|To opt out of these onboarding emails, %{unsubscribe_link}."
+msgstr ""
+
+msgid "InProductMarketing|Trusted by"
 msgstr ""
 
 msgid "InProductMarketing|Twitter"
@@ -34376,7 +34373,7 @@ msgstr ""
 msgid "Options"
 msgstr ""
 
-msgid "Or create your own GitLab account:"
+msgid "Or create your own GitLab account"
 msgstr ""
 
 msgid "Ordered list"
@@ -36037,6 +36034,9 @@ msgstr ""
 msgid "PipelineSchedules|Edit pipeline schedule"
 msgstr ""
 
+msgid "PipelineSchedules|Explore plan limits"
+msgstr ""
+
 msgid "PipelineSchedules|Inactive"
 msgstr ""
 
@@ -36110,6 +36110,9 @@ msgid "PipelineSchedules|There was a problem playing the pipeline schedule."
 msgstr ""
 
 msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."
+msgstr ""
+
+msgid "PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an exisiting schedule."
 msgstr ""
 
 msgid "PipelineSource|API"
@@ -46668,10 +46671,10 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
 msgstr ""
 
-msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}"
+msgid "SignUp|By clicking %{button_text} or registering through a third party you accept the GitLab %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
 msgstr ""
 
 msgid "SignUp|By signing in you accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and Cookie Policy%{link_end}."
@@ -47491,6 +47494,9 @@ msgid "Source branch"
 msgstr ""
 
 msgid "Source branch does not exist"
+msgstr ""
+
+msgid "Source branch exists and contains commits."
 msgstr ""
 
 msgid "Source branch is protected from force push"

@@ -55,7 +55,11 @@ skinparam linetype ortho
 
 card "**External Load Balancer**" as elb #6a9be7
 
-collections "**GitLab Rails** x2" as gitlab #32CD32
+together {
+  collections "**GitLab Rails** x2" as gitlab #32CD32
+  card "**Sidekiq**" as sidekiq #ff8dd1
+}
+
 card "**Prometheus**" as monitor #7FFFD4
 card "**Gitaly**" as gitaly #FF8C00
 card "**PostgreSQL**" as postgres #4EA7FF
@@ -70,11 +74,17 @@ gitlab -[#32CD32]--> postgres
 gitlab -[#32CD32]-> object_storage
 gitlab -[#32CD32]--> redis
 
+sidekiq -[#ff8dd1]r-> object_storage
+sidekiq -[#ff8dd1]----> redis
+sidekiq .[#ff8dd1]----> postgres
+sidekiq -[hidden]-> monitor
+
 monitor .[#7FFFD4]u-> gitlab
 monitor .[#7FFFD4]-> gitaly
 monitor .[#7FFFD4]-> postgres
 monitor .[#7FFFD4,norank]--> redis
 monitor .[#7FFFD4,norank]u--> elb
+monitor .[#7FFFD4]u-> sidekiq
 
 @enduml
 ```
@@ -294,7 +304,7 @@ If you use a third party external service:
 
    - `POSTGRESQL_PASSWORD_HASH` - The value output from the previous step
    - `APPLICATION_SERVER_IP_BLOCKS` - A space delimited list of IP subnets or IP
-     addresses of the GitLab application servers that will connect to the
+     addresses of the GitLab Rails and Sidekiq servers that will connect to the
      database. Example: `%w(123.123.123.123/32 123.123.123.234/32)`
 
    ```ruby
@@ -783,6 +793,7 @@ On each node perform the following:
    roles(['application_role'])
    gitaly['enable'] = false
    nginx['enable'] = true
+   sidekiq['enable'] = false
 
    ## PostgreSQL connection details
    gitlab_rails['db_adapter'] = 'postgresql'
@@ -799,10 +810,6 @@ On each node perform the following:
    node_exporter['listen_address'] = '0.0.0.0:9100'
    gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
    puma['listen'] = '0.0.0.0'
-
-   # Configure Sidekiq with 2 workers and 20 max concurrency
-   sidekiq['max_concurrency'] = 20
-   sidekiq['queue_groups'] = ['*'] * 2
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to
    # scrape the NGINX metrics. Replace placeholder `monitoring.gitlab.example.com` with

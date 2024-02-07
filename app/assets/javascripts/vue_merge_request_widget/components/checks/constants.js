@@ -10,6 +10,7 @@ export const COMPONENTS = {
 
 export const FAILURE_REASONS = {
   broken_status: __('Cannot merge the source into the target branch, due to a conflict.'),
+  commits_status: __('Source branch exists and contains commits.'),
   ci_must_pass: __('Pipeline must succeed.'),
   conflict: __('Merge conflicts must be resolved.'),
   discussions_not_resolved: __('Unresolved discussions must be resolved.'),

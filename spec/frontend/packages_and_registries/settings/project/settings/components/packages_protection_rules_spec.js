@@ -1,4 +1,4 @@
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -60,7 +60,7 @@ describe('Packages protection rules project settings', () => {
     expect(findTable().exists()).toBe(true);
   });
 
-  describe('table package protection rules', () => {
+  describe('table "package protection rules"', () => {
     it('renders table with packages protection rules', async () => {
       createComponent({ mountFn: mountExtended });
 
@@ -68,11 +68,13 @@ describe('Packages protection rules project settings', () => {
 
       expect(findTable().exists()).toBe(true);
 
-      packagesProtectionRulesData.forEach((protectionRule, i) => {
-        expect(findTableRow(i).text()).toContain(protectionRule.packageNamePattern);
-        expect(findTableRow(i).text()).toContain(protectionRule.packageType);
-        expect(findTableRow(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
-      });
+      packagesProtectionRuleQueryPayload().data.project.packagesProtectionRules.nodes.forEach(
+        (protectionRule, i) => {
+          expect(findTableRow(i).text()).toContain(protectionRule.packageNamePattern);
+          expect(findTableRow(i).text()).toContain(protectionRule.packageType);
+          expect(findTableRow(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
+        },
+      );
     });
 
     it('displays table in busy state and shows loading icon inside table', async () => {
@@ -87,6 +89,123 @@ describe('Packages protection rules project settings', () => {
 
       expect(findTableLoadingIcon().exists()).toBe(false);
       expect(findTable().attributes('aria-busy')).toBe('false');
+    });
+
+    it('calls graphql api query', () => {
+      const resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
+      createComponent({ resolver });
+
+      expect(resolver).toHaveBeenCalledWith(
+        expect.objectContaining({ projectPath: defaultProvidedValues.projectPath }),
+      );
+    });
+
+    describe('table pagination', () => {
+      const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+
+      it('renders pagination', async () => {
+        createComponent({ mountFn: mountExtended });
+
+        await waitForPromises();
+
+        expect(findPagination().exists()).toBe(true);
+        expect(findPagination().props()).toMatchObject({
+          endCursor: '10',
+          startCursor: '0',
+          hasNextPage: true,
+          hasPreviousPage: false,
+        });
+      });
+
+      it('calls initial graphql api query with pagination information', () => {
+        const resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
+        createComponent({ resolver });
+
+        expect(resolver).toHaveBeenCalledWith(
+          expect.objectContaining({
+            projectPath: defaultProvidedValues.projectPath,
+            first: 10,
+          }),
+        );
+      });
+
+      describe('when button "Previous" is clicked', () => {
+        const resolver = jest
+          .fn()
+          .mockResolvedValueOnce(
+            packagesProtectionRuleQueryPayload({
+              nodes: packagesProtectionRulesData.slice(10),
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: true,
+                startCursor: '10',
+                endCursor: '16',
+              },
+            }),
+          )
+          .mockResolvedValueOnce(packagesProtectionRuleQueryPayload());
+
+        const findPaginationButtonPrev = () =>
+          extendedWrapper(findPagination()).findByRole('button', { name: 'Previous' });
+
+        beforeEach(async () => {
+          createComponent({ mountFn: mountExtended, resolver });
+
+          await waitForPromises();
+
+          findPaginationButtonPrev().trigger('click');
+        });
+
+        it('sends a second graphql api query with new pagination params', () => {
+          expect(resolver).toHaveBeenCalledTimes(2);
+          expect(resolver).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              before: '10',
+              last: 10,
+              projectPath: 'path',
+            }),
+          );
+        });
+      });
+
+      describe('when button "Next" is clicked', () => {
+        const resolver = jest
+          .fn()
+          .mockResolvedValueOnce(packagesProtectionRuleQueryPayload())
+          .mockResolvedValueOnce(
+            packagesProtectionRuleQueryPayload({
+              nodes: packagesProtectionRulesData.slice(10),
+              pageInfo: {
+                hasNextPage: true,
+                hasPreviousPage: false,
+                startCursor: '1',
+                endCursor: '10',
+              },
+            }),
+          );
+
+        const findPaginationButtonNext = () =>
+          extendedWrapper(findPagination()).findByRole('button', { name: 'Next' });
+
+        beforeEach(async () => {
+          createComponent({ mountFn: mountExtended, resolver });
+
+          await waitForPromises();
+
+          findPaginationButtonNext().trigger('click');
+        });
+
+        it('sends a second graphql api query with new pagination params', () => {
+          expect(resolver).toHaveBeenCalledTimes(2);
+          expect(resolver).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+              after: '10',
+              first: 10,
+              projectPath: 'path',
+            }),
+          );
+        });
+      });
     });
   });
 

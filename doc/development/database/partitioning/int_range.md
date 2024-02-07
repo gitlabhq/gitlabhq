@@ -83,13 +83,18 @@ An example migration of partitioning the `merge_request_diff_commits` table by i
 `merge_request_diff_id` column would look like:
 
 ```ruby
-class PartitionAuditEvents < Gitlab::Database::Migration[2.1]
+class PartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
-  def up
-    partition_table_by_int_range('merge_request_diff_commits', 'merge_request_diff_id', partition_size: 10000000,
-      primary_key: %w[merge_request_diff_id relative_order])
+  disable_ddl_transaction!
 
+  def up
+    partition_table_by_int_range(
+      'merge_request_diff_commits', 
+      'merge_request_diff_id', 
+      partition_size: 10_000_000,
+      primary_key: %w[merge_request_diff_id relative_order]
+    )
   end
 
   def down
@@ -112,7 +117,7 @@ into the partitioned copy.
 Continuing the above example, the migration would look like:
 
 ```ruby
-class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
+class BackfillPartitionMergeRequestDiffCommits < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   disable_ddl_transaction!
@@ -147,7 +152,7 @@ A required stop must occur between steps 2 and 3 to allow the background migrati
 Once again, continuing the example, this migration would look like:
 
 ```ruby
-class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.1]
+class CleanupPartitionMergeRequestDiffCommitsBackfill < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   disable_ddl_transaction!
@@ -184,7 +189,7 @@ Some limitations to this method MUST be handled before, or during, the swap migr
 ```ruby
 # frozen_string_literal: true
 
-class SwapPartitionedAuditEvents < ActiveRecord::Migration[6.0]
+class SwapPartitionMergeRequestDiffCommits < ActiveRecord::Migration[6.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up

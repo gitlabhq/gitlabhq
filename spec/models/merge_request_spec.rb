@@ -3438,7 +3438,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'with skip_ci_check option' do
       before do
         allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
-        allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, broken?: false)
+        allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, has_no_commits?: false)
       end
 
       where(:mergeable_ci_state, :skip_ci_check, :expected_mergeable) do
@@ -3465,7 +3465,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           mergeable_ci_state?: true,
           check_mergeability: nil,
           can_be_merged?: true,
-          broken?: false
+          has_no_commits?: false
         )
       end
 
@@ -3630,9 +3630,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    context 'when broken' do
+    context 'when has no commits' do
       before do
-        allow(subject).to receive(:broken?) { true }
+        allow(subject).to receive(:has_no_commits?) { true }
       end
 
       it 'returns false' do

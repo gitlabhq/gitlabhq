@@ -160,6 +160,7 @@ The next step is to tell all the other nodes where the monitoring node is:
 1. Edit `/etc/gitlab/gitlab.rb`, and add, or find and uncomment the following line:
 
    ```ruby
+   # can be FQDN or IP
    gitlab_rails['prometheus_address'] = '10.0.0.1:9090'
    ```
 

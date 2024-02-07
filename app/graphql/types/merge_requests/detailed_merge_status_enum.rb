@@ -18,6 +18,9 @@ module Types
       value 'BROKEN_STATUS',
             value: :broken_status,
             description: 'Can not merge the source into the target branch, potential conflict.'
+      value 'COMMITS_STATUS',
+            value: :commits_status,
+            description: 'Source branch exists and contains commits.'
       value 'CI_MUST_PASS',
             value: :ci_must_pass,
             description: 'Pipeline must succeed before merging.'

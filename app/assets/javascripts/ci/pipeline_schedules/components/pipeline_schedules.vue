@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlLink,
 } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
@@ -46,7 +47,14 @@ export default {
     playSuccess: s__(
       'PipelineSchedules|Successfully scheduled a pipeline to run. Go to the %{linkStart}Pipelines page%{linkEnd} for details. ',
     ),
+    planLimitReachedMsg: s__(
+      'PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an exisiting schedule.',
+    ),
+    planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
   },
+  docsLink: helpPagePath('administration/instance_limits', {
+    anchor: 'number-of-pipeline-schedules',
+  }),
   components: {
     DeletePipelineScheduleModal,
     GlAlert,
@@ -89,8 +97,10 @@ export default {
         };
       },
       update(data) {
-        const { pipelineSchedules: { nodes: list = [], count, pageInfo = {} } = {} } =
-          data.project || {};
+        const {
+          pipelineSchedules: { nodes: list = [], count, pageInfo = {} } = {},
+          projectPlanLimits: { ciPipelineSchedules } = {},
+        } = data.project || {};
         const currentUser = data.currentUser || {};
 
         return {
@@ -98,6 +108,7 @@ export default {
           count,
           currentUser,
           pageInfo,
+          planLimit: ciPipelineSchedules,
         };
       },
       error() {
@@ -171,6 +182,9 @@ export default {
     },
     nextPage() {
       return Number(this.schedules?.pageInfo?.hasNextPage);
+    },
+    hasReachedPlanLimit() {
+      return this.schedules?.count >= this.schedules?.planLimit;
     },
   },
   watch: {
@@ -321,6 +335,20 @@ export default {
       </gl-sprintf>
     </gl-alert>
 
+    <gl-alert
+      v-if="hasReachedPlanLimit"
+      class="gl-my-3"
+      variant="warning"
+      :dismissible="false"
+      data-testid="plan-limit-reached-alert"
+    >
+      <p>{{ $options.i18n.planLimitReachedMsg }}</p>
+
+      <gl-button :href="$options.docsLink" variant="confirm">
+        {{ $options.i18n.planLimitReachedBtnText }}
+      </gl-button>
+    </gl-alert>
+
     <pipeline-schedule-empty-state v-if="showEmptyState" />
 
     <gl-tabs
@@ -373,9 +401,11 @@ export default {
 
       <template #tabs-end>
         <gl-button
+          v-if="!isLoading"
           :href="newSchedulePath"
-          variant="confirm"
           class="gl-ml-auto"
+          variant="confirm"
+          :disabled="hasReachedPlanLimit"
           data-testid="new-schedule-button"
         >
           {{ $options.i18n.newSchedule }}

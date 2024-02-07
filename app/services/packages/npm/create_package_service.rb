@@ -11,7 +11,7 @@ module Packages
       ERROR_REASON_INVALID_PARAMETER = :invalid_parameter
       ERROR_REASON_PACKAGE_EXISTS = :package_already_exists
       ERROR_REASON_PACKAGE_LEASE_TAKEN = :package_lease_taken
-      ERROR_REASON_PACKAGE_PROTECTED = :package_attachment_data_empty
+      ERROR_REASON_PACKAGE_PROTECTED = :package_protected
 
       def execute
         return error('Version is empty.', ERROR_REASON_INVALID_PARAMETER) if version.blank?
