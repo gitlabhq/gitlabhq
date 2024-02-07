@@ -33,40 +33,16 @@ module Repositories
 
     def execute(new_version)
       tags = {}
-      versions = [new_version]
 
-      begin
-        regex = Gitlab::UntrustedRegexp.new(@regex)
-      rescue RegexpError => e
-        # The error messages produced by default are not very helpful, so we
-        # raise a better one here. We raise the specific error here so its
-        # message is displayed in the API (where we catch this specific
-        # error).
-        raise(
-          Gitlab::Changelog::Error,
-          "The regular expression to use for finding the previous tag for a version is invalid: #{e.message}"
-        )
-      end
+      requested_version = extract_version(new_version)
+      return unless requested_version
+
+      versions = [requested_version]
 
       @project.repository.tags.each do |tag|
-        matches = regex.match(tag.name)
+        version = extract_version(tag.name)
 
-        next unless matches
-
-        # When using this class for generating changelog data for a range of
-        # commits, we want to compare against the tag of the last _stable_
-        # release; not some random RC that came after that.
-        next if matches[:pre]
-
-        major = matches[:major]
-        minor = matches[:minor]
-        patch = matches[:patch]
-        build = matches[:meta]
-
-        next unless major && minor && patch
-
-        version = "#{major}.#{minor}.#{patch}"
-        version += "+#{build}" if build
+        next unless version
 
         tags[version] = tag
         versions << version
@@ -74,9 +50,47 @@ module Repositories
 
       VersionSorter.sort!(versions)
 
-      index = versions.index(new_version)
+      index = versions.index(requested_version)
 
       tags[versions[index - 1]] if index&.positive?
+    end
+
+    private
+
+    def version_matcher
+      @version_matcher ||= Gitlab::UntrustedRegexp.new(@regex)
+    rescue RegexpError => e
+      # The error messages produced by default are not very helpful, so we
+      # raise a better one here. We raise the specific error here so its
+      # message is displayed in the API (where we catch this specific
+      # error).
+      raise(
+        Gitlab::Changelog::Error,
+        "The regular expression to use for finding the previous tag for a version is invalid: #{e.message}"
+      )
+    end
+
+    def extract_version(string)
+      matches = version_matcher.match(string)
+
+      return unless matches
+
+      # When using this class for generating changelog data for a range of
+      # commits, we want to compare against the tag of the last _stable_
+      # release; not some random RC that came after that.
+      return if matches[:pre]
+
+      major = matches[:major]
+      minor = matches[:minor]
+      patch = matches[:patch]
+      build = matches[:meta]
+
+      return unless major && minor && patch
+
+      version = "#{major}.#{minor}.#{patch}"
+      version += "+#{build}" if build
+
+      version
     end
   end
 end

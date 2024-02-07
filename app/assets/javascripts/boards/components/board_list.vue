@@ -627,6 +627,7 @@ export default {
           mutation: setActiveBoardItemMutation,
           variables: {
             boardItem: issuable,
+            listId: this.list.id,
             isIssue: this.isIssueBoard,
           },
         });

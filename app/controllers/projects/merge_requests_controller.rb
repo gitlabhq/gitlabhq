@@ -12,6 +12,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include DiffHelper
   include Gitlab::Cache::Helpers
   include MergeRequestsHelper
+  include ParseCommitDate
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
@@ -638,11 +639,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       file_hash: params[:pin],
       diff_head: true
     )
-  end
-
-  def convert_date_to_epoch(date)
-    Date.strptime(date, "%Y-%m-%d")&.to_time&.to_i if date
-  rescue Date::Error, TypeError
   end
 end
 

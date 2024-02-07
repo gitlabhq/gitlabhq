@@ -1,5 +1,4 @@
-
-<-- 
+<!-- 
 
 This issue template is sourced from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/SAST%20Ruleset%20Enhancement.md and is maintained by the Secure: Vulnerability Research team (https://handbook.gitlab.com/handbook/engineering/development/sec/secure/vulnerability-research/), most of its content is based on the documentation found in the GitLab SAST Rules Project under https://gitlab.com/gitlab-org/security-products/sast-rules/-/blob/main/docs.
 
@@ -7,13 +6,13 @@ This issue template is sourced from https://gitlab.com/gitlab-org/gitlab/-/blob/
 
 ## Background and Rationale behind this Work
 
-<--
+<!--
 REPLACE: As per https://gitlab.com/gitlab-org/gitlab/-/issues/425704 and https://gitlab.com/gitlab-org/gitlab/-/issues/425704 we are continuously working towards improving the coverage and efficacy of our SAST rules.
 -->
 
 ### Desired Change 
 
-<--
+<!--
 REPLACE: This issue is aimed at creating, embedding, or enhancing a GitLab SAST rule that detects the issue seen in https://foo.example.com and https://bar.example.com
 -->
 
@@ -21,7 +20,7 @@ REPLACE: This issue is aimed at creating, embedding, or enhancing a GitLab SAST 
 
 ## Implementation Plan
 
-### Assesment 
+### Assessment 
 
 
 #### If Creating a New Rule
@@ -95,14 +94,14 @@ If the addition, inclusion or adaptation of a rule addressing the Desired Change
 - [ ] Clone our [Real World Test Projects](https://gitlab.com/gitlab-org/security-products/tests/sast-rules-apps/) and extend it with your MRE demonstrating the problem. Alternatively, discuss the creation of a new folder or repository if none fits.
 - [ ] Push the changes to [gitlab-org/security-products/tests/sast-rules-apps](https://gitlab.com/gitlab-org/security-products/tests/sast-rules-apps/) as a feature branch if you have access; otherwise push it to a personal fork of the project
 - [ ] Create a new MR and mention this issue in it so they are linked.
-- [ ] A member of the @gitlab-org/secure/vulnerability-research team will assign themselves as reviewer shortly, work with them to finalise and merge your work.
+- [ ] A member of the `@gitlab-org/secure/vulnerability-research` team will assign themselves as reviewer shortly, work with them to finalise and merge your work.
 
 
 #### Merge the Rule 
 
 - [ ] Push the changes to `sast-rules` as a feature branch to [gitlab-org/security-products/sast-rules](https://gitlab.com/gitlab-org/security-products/sast-rules/) if you have access; otherwise push it to a personal fork of the project.
 - [ ] Create the MR and mention this issue in it so they are linked.
-- [ ] A member of the @gitlab-org/secure/vulnerability-research team will assign themselves as reviewer shortly, work with them to finalise and merge your work.
+- [ ] A member of the `@gitlab-org/secure/vulnerability-research` team will assign themselves as reviewer shortly, work with them to finalise and merge your work.
 - [ ] Find the [latest sast-rules release MR](https://gitlab.com/gitlab-org/security-products/sast-rules/-/merge_requests?scope=all&state=opened&search=draft%3A+Release) and add a line to CHANGELOG.md detailing briefly the changes performed, their intent and the MR ID where this work was done.
 
 ```

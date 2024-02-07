@@ -102,6 +102,77 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         end
       end
 
+      context 'date range' do
+        let(:id) { "master/README.md" }
+        let(:base_repository_params) do
+          {
+            path: "README.md",
+            limit: described_class::COMMITS_DEFAULT_LIMIT,
+            offset: 0
+          }
+        end
+
+        let(:base_request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id
+          }
+        end
+
+        shared_examples 'repository commits call' do
+          it 'passes the correct params' do
+            expect_any_instance_of(Repository).to receive(:commits).with(
+              "master",
+              repository_params
+            ).and_call_original
+
+            get :show, params: request_params
+
+            expect(response).to be_successful
+          end
+        end
+
+        context 'when committed_before param' do
+          context 'is valid' do
+            let(:request_params) { base_request_params.merge(committed_before: '2020-01-01') }
+            let(:repository_params) { base_repository_params.merge(before: 1577836800) }
+
+            it_behaves_like 'repository commits call'
+          end
+
+          context 'is invalid' do
+            let(:request_params) { base_request_params.merge(committed_before: 'xxx') }
+            let(:repository_params) { base_repository_params }
+
+            it_behaves_like 'repository commits call'
+          end
+
+          context 'is not provided' do
+            let(:request_params) { base_request_params }
+            let(:repository_params) { base_repository_params }
+
+            it_behaves_like 'repository commits call'
+          end
+        end
+
+        context 'with committed_after param' do
+          context 'is valid' do
+            let(:request_params) { base_request_params.merge(committed_after: '2020-01-01') }
+            let(:repository_params) { base_repository_params.merge(after: 1577836800) }
+
+            it_behaves_like 'repository commits call'
+          end
+
+          context 'is invalid' do
+            let(:request_params) { base_request_params.merge(committed_after: 'xxx') }
+            let(:repository_params) { base_repository_params }
+
+            it_behaves_like 'repository commits call'
+          end
+        end
+      end
+
       it 'loads tags for commits' do
         expect_next_instance_of(CommitCollection) do |collection|
           expect(collection).to receive(:load_tags)

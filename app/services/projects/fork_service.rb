@@ -38,6 +38,10 @@ module Projects
         return ServiceResponse.error(message: _('Project already forked'), reason: :already_forked)
       end
 
+      if fork_to_project == @project
+        return ServiceResponse.error(message: _('Target project cannot be equal to source project'), reason: :self_fork)
+      end
+
       build_fork_network_member(fork_to_project)
 
       if link_fork_network(fork_to_project)

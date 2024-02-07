@@ -47,8 +47,8 @@ RSpec.describe Gitlab::Kas::Client do
 
     describe '#get_connected_agents_by_agent_ids' do
       let(:stub) { instance_double(Gitlab::Agent::AgentTracker::Rpc::AgentTracker::Stub) }
-      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest) }
-      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsResponse, agents: connected_agents) }
+      let(:request) { instance_double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest) }
+      let(:response) { double(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsResponse, agents: connected_agents) }
 
       let(:connected_agents) { [double] }
 
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::Kas::Client do
           .with('example.kas.internal', :this_channel_is_insecure, timeout: described_class::TIMEOUT)
           .and_return(stub)
 
-        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest).to receive(:new)
+        expect(Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest).to receive(:new)
           .with(agent_ids: [agent.id])
           .and_return(request)
 

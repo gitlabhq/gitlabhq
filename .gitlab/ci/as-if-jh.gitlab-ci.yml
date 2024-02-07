@@ -1,6 +1,7 @@
 .as-if-jh-sandbox-variables:
   variables:
     AS_IF_JH_BRANCH: "as-if-jh/${CI_COMMIT_REF_NAME}"
+    JH_MIRROR_REPOSITORY: "https://dummy:${ADD_JH_FILES_TOKEN}@gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab.git"
     SANDBOX_REPOSITORY: "https://dummy:${AS_IF_JH_TOKEN}@gitlab.com/gitlab-org-sandbox/gitlab-jh-validation.git"
 
 .shared-as-if-jh:
@@ -13,20 +14,12 @@
 add-jh-files:
   extends:
     - .shared-as-if-jh
-    - .with_secret
     - .as-if-jh:rules:prepare-as-if-jh
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
   stage: prepare
   needs: []
-  secrets:
-    ADD_JH_FILES_TOKEN:
-      gcp_secret_manager:
-        name: ADD_JH_FILES_TOKEN
-      token: $GCP_ID_TOKEN
   before_script:
     - source ./scripts/utils.sh
-    - export ADD_JH_FILES_TOKEN="$(cat ${ADD_JH_FILES_TOKEN})"
-    - export JH_MIRROR_REPOSITORY="https://dummy:${ADD_JH_FILES_TOKEN}@gitlab.com/gitlab-org/gitlab-jh-mirrors/gitlab.git"
     - source ./scripts/setup/as-if-jh.sh
     - install_gitlab_gem
   script:

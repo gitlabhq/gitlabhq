@@ -3,5 +3,6 @@
 query activeBoardItem {
   activeBoardItem @client {
     ...Issue
+    listId
   }
 }

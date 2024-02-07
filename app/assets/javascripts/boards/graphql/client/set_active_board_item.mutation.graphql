@@ -1,7 +1,8 @@
 #import "ee_else_ce/boards/graphql/issue.fragment.graphql"
 
-mutation setActiveBoardItem($boardItem: Issue) {
-  setActiveBoardItem(boardItem: $boardItem) @client {
+mutation setActiveBoardItem($boardItem: Issue, $listId: ListID!) {
+  setActiveBoardItem(boardItem: $boardItem, listId: $listId) @client {
     ...Issue
+    listId
   }
 }

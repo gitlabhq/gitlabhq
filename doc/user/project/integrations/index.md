@@ -132,6 +132,7 @@ To use custom settings for a project or group integration:
 | [Emails on push](emails_on_push.md)                                         | Send commits and diffs on push by email.                              | **{dotted-circle}** No |
 | [Engineering Workflow Management (EWM)](ewm.md)                             | Use EWM as an issue tracker.                                          | **{dotted-circle}** No |
 | [External wiki](../wiki/index.md#link-an-external-wiki)                     | Link an external wiki.                                                | **{dotted-circle}** No |
+| [GitGuardian](git_guardian.md)                                              | Reject commits based on GitGuardian policies.                         | **{dotted-circle}** No |
 | [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a room in Google Chat. | **{dotted-circle}** No |

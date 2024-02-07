@@ -28,7 +28,7 @@ describe('BoardApp', () => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
-        activeBoardItem: issue,
+        activeBoardItem: { ...issue, listId: 'gid://gitlab/List/1' },
       },
     });
 

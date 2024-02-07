@@ -3533,6 +3533,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
             expect(project_fork_target).not_to be_forked
           end
         end
+
+        context 'when fork target and source are the same' do
+          it 'returns an error' do
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_target.id}", admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq 'Target project cannot be equal to source project'
+          end
+        end
       end
     end
 

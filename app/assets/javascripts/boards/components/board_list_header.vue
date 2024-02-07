@@ -235,7 +235,7 @@ export default {
     openSidebarSettings() {
       this.$apollo.mutate({
         mutation: setActiveBoardItemMutation,
-        variables: { boardItem: null },
+        variables: { boardItem: null, listId: null },
       });
       this.$emit('setActiveList', this.list.id);
 

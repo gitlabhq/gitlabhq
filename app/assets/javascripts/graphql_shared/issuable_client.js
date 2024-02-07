@@ -220,12 +220,12 @@ export const resolvers = {
       });
       cache.writeQuery({ query: getIssueStateQuery, data });
     },
-    setActiveBoardItem(_, { boardItem }, { cache }) {
+    setActiveBoardItem(_, { boardItem, listId }, { cache }) {
       cache.writeQuery({
         query: activeBoardItemQuery,
-        data: { activeBoardItem: boardItem },
+        data: { activeBoardItem: { ...boardItem, listId } },
       });
-      return boardItem;
+      return { ...boardItem, listId };
     },
     setSelectedBoardItems(_, { itemId }, { cache }) {
       const sourceData = cache.readQuery({ query: selectedBoardItemsQuery });

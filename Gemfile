@@ -560,7 +560,7 @@ gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitaly', '~> 16.9.0-rc3', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'kas-grpc', '~> 0.3.0', feature_category: :deployment_management
+gem 'kas-grpc', '~> 0.4.0', feature_category: :deployment_management
 
 gem 'grpc', '~> 1.60.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

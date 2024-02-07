@@ -54,6 +54,17 @@ RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
           expect(subject[:engine_name]).to eq('rubocop')
         end
       end
+
+      context 'when severity is a non-codeclimate-standard severity' do
+        # See standard severities: https://docs.codeclimate.com/docs/issues#issue-severity
+        let(:codequality_degradation) { build(:codequality_degradation_3) }
+
+        it 'returns severity as unknown', :aggregate_failures do
+          codequality_degradation[:severity] = 'warning'
+
+          expect(subject[:severity]).to eq('unknown')
+        end
+      end
     end
   end
 end

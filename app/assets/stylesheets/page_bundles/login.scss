@@ -6,12 +6,6 @@
     max-width: 960px;
   }
 
-  .borderless {
-    .login-box {
-      box-shadow: none;
-    }
-  }
-
   .g-recaptcha {
     > div {
       margin-left: auto;
@@ -20,16 +14,11 @@
   }
 
   .new-session-tabs {
-    &.nav-links-unboxed {
-      border-color: transparent;
-      box-shadow: none;
+    display: flex;
+    border-color: transparent;
 
-      .nav-item {
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 1px solid $gray-100;
-        background-color: transparent;
-      }
+    .nav-item {
+      border-bottom: 1px solid $gray-100;
 
       .nav-link.active {
         .gl-dark & {
@@ -38,28 +27,9 @@
       }
     }
 
-    display: flex;
-    box-shadow: 0 0 0 1px $border-color;
-    border-top-right-radius: $border-radius-default;
-    border-top-left-radius: $border-radius-default;
-
     li {
       flex: 1;
       text-align: center;
-      border-left: 1px solid $border-color;
-
-      &:first-of-type {
-        border-left: 0;
-        border-top-left-radius: $border-radius-default;
-      }
-
-      &:last-of-type {
-        border-top-right-radius: $border-radius-default;
-      }
-
-      &:not(.active) {
-        background-color: $gray-light;
-      }
 
       a {
         width: 100%;

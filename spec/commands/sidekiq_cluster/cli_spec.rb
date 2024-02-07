@@ -12,7 +12,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
-    { env: 'test', directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, dryrun: false, timeout: timeout }
+    { env: 'test', directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, dryrun: false, timeout: timeout, concurrency: 0 }
   end
 
   let(:sidekiq_exporter_enabled) { false }
@@ -122,6 +122,18 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, feature_category: :gitlab_cli, stub_
                                               .and_return([])
 
           cli.run(%w[foo,bar,baz solo --min-concurrency 2])
+        end
+      end
+
+      context 'with --concurrency flag' do
+        it 'starts Sidekiq workers for specified queues with the fixed concurrency' do
+          expected_queues = [%w[foo bar baz], %w[solo]].each { |queues| queues.concat(described_class::DEFAULT_QUEUES) }
+          expect(Gitlab::SidekiqConfig::CliMethods).to receive(:worker_queues).and_return(%w[foo bar baz])
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+                                              .with(expected_queues, default_options.merge(concurrency: 2))
+                                              .and_return([])
+
+          cli.run(%w[foo,bar,baz solo -c 2])
         end
       end
 

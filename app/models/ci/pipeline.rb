@@ -581,9 +581,7 @@ module Ci
     end
 
     def self.use_partition_id_filter?
-      ::Gitlab::SafeRequestStore.fetch(:ci_builds_partition_id_query_filter) do
-        ::Feature.enabled?(:ci_builds_partition_id_query_filter)
-      end
+      true
     end
 
     def uses_needs?

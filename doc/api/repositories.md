@@ -366,6 +366,9 @@ If the `version` attribute is `2.1.0`, GitLab uses tag `v2.0.0`. And when the
 version is `1.1.1`, or `1.2.0`, GitLab uses tag v1.1.0. The tag `v1.0.0-pre1` is
 never used, because pre-release tags are ignored.
 
+The `version` attribute can start with `v`. For example: `v1.0.0`.
+The response is the same as for `version` value `1.0.0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437616) in GitLab 16.9.
+
 If `from` is unspecified and no tag to use is found, the API produces an error.
 To solve such an error, you must explicitly specify a value for the `from`
 attribute.

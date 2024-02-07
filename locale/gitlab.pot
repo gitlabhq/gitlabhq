@@ -49029,6 +49029,9 @@ msgstr ""
 msgid "Target branch: %{target_branch}"
 msgstr ""
 
+msgid "Target project cannot be equal to source project"
+msgstr ""
+
 msgid "Target roles"
 msgstr ""
 

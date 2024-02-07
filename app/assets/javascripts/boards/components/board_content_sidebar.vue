@@ -17,7 +17,7 @@ import SidebarSubscriptionsWidget from '~/sidebar/components/subscriptions/sideb
 import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import SidebarLabelsWidget from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { setError } from '../graphql/cache_updates';
+import { setError, updateListWeightCache } from '../graphql/cache_updates';
 
 export default {
   components: {
@@ -163,8 +163,13 @@ export default {
         mutation: setActiveBoardItemMutation,
         variables: {
           boardItem: null,
+          listId: null,
         },
       });
+    },
+    updateListTotalWeight({ weight }) {
+      const { cache } = this.$apollo.provider.clients.defaultClient;
+      updateListWeightCache({ weight, listId: this.activeBoardCard.listId, cache });
     },
   },
 };
@@ -280,6 +285,7 @@ export default {
           :iid="activeBoardIssuable.iid"
           :full-path="projectPathForActiveIssue"
           :issuable-type="issuableType"
+          @weightUpdated="updateListTotalWeight"
         />
         <sidebar-health-status-widget
           v-if="healthStatusFeatureAvailable"

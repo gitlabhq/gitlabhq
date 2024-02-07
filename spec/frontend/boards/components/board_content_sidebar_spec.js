@@ -34,7 +34,7 @@ describe('BoardContentSidebar', () => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
-        activeBoardItem: issuable,
+        activeBoardItem: { ...issuable, listId: 'gid://gitlab/List/1' },
       },
     });
 
@@ -142,6 +142,7 @@ describe('BoardContentSidebar', () => {
         {},
         {
           boardItem: null,
+          listId: null,
         },
         expect.anything(),
         expect.anything(),

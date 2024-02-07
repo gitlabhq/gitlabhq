@@ -108,6 +108,7 @@ export default {
         mutation: setActiveBoardItemMutation,
         variables: {
           boardItem: this.isActive ? null : this.item,
+          listId: this.list.id,
           isIssue: this.isActive ? undefined : this.isIssueBoard,
         },
       });
@@ -122,7 +123,7 @@ export default {
         });
         await this.$apollo.mutate({
           mutation: setActiveBoardItemMutation,
-          variables: { boardItem: null },
+          variables: { boardItem: null, listId: null },
         });
       }
       this.$apollo.mutate({

@@ -51,7 +51,7 @@ export default {
         };
       },
       result({ data: { activeBoardItem } }) {
-        if (activeBoardItem) {
+        if (activeBoardItem && activeBoardItem.listId !== null) {
           this.setActiveId('');
         }
       },
