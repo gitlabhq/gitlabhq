@@ -3,7 +3,7 @@ import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
 import axios from 'axios';
 import { debounce } from 'lodash';
 import { s__ } from '~/locale';
-import { getGroups, getDescendentGroups } from '~/rest_api';
+import { getGroups, getDescendentGroups, getProjectShareLocations } from '~/rest_api';
 import { normalizeHeaders, parseIntPagination } from '~/lib/utils/common_utils';
 import { SEARCH_DELAY, GROUP_FILTERS } from '../constants';
 
@@ -25,6 +25,14 @@ export default {
       type: String,
       required: false,
       default: GROUP_FILTERS.ALL,
+    },
+    isProject: {
+      type: Boolean,
+      required: true,
+    },
+    sourceId: {
+      type: String,
+      required: true,
     },
     parentGroupId: {
       type: Number,
@@ -78,7 +86,7 @@ export default {
         value: group.id,
         id: group.id,
         name: group.full_name,
-        path: group.path,
+        path: group.full_path,
         avatarUrl: group.avatar_url,
       }));
 
@@ -104,13 +112,23 @@ export default {
 
       this.activeApiRequestAbortController = new AbortController();
 
+      const axiosConfig = {
+        signal: this.activeApiRequestAbortController.signal,
+      };
+
+      if (this.isProject) {
+        return this.fetchGroupsNew(axiosConfig);
+      }
+
+      return this.fetchGroupsLegacy(options, axiosConfig);
+    },
+    fetchGroupsNew(axiosConfig) {
+      return getProjectShareLocations(this.sourceId, { search: this.searchTerm }, axiosConfig);
+    },
+    fetchGroupsLegacy(options, axiosConfig) {
       const combinedOptions = {
         ...this.$options.defaultFetchOptions,
         ...options,
-      };
-
-      const axiosConfig = {
-        signal: this.activeApiRequestAbortController.signal,
       };
 
       switch (this.groupsFilter) {

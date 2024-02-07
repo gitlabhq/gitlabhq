@@ -196,8 +196,12 @@ be disabled on the **primary** site:
 1. Select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
-1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-   This job re-enables several other cron jobs that are essential for planned
+1. Select `Enable` for the following cronjobs:
+   - `geo_metrics_update_worker`
+   - `geo_prune_event_log_worker`
+   - `geo_verification_cron_worker`
+   - `repository_check_worker`
+   This re-enables several cron jobs that are essential for planned
    failover to complete successfully.
 
 ## Finish replicating and verifying all data

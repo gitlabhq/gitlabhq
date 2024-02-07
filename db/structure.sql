@@ -17888,6 +17888,26 @@ CREATE SEQUENCE group_repository_storage_moves_id_seq
 
 ALTER SEQUENCE group_repository_storage_moves_id_seq OWNED BY group_repository_storage_moves.id;
 
+CREATE TABLE group_saved_replies (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    content text NOT NULL,
+    CONSTRAINT check_13510378d3 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_4a96378d43 CHECK ((char_length(content) <= 10000))
+);
+
+CREATE SEQUENCE group_saved_replies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE group_saved_replies_id_seq OWNED BY group_saved_replies.id;
+
 CREATE TABLE group_ssh_certificates (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -27417,6 +27437,8 @@ ALTER TABLE ONLY group_import_states ALTER COLUMN group_id SET DEFAULT nextval('
 
 ALTER TABLE ONLY group_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('group_repository_storage_moves_id_seq'::regclass);
 
+ALTER TABLE ONLY group_saved_replies ALTER COLUMN id SET DEFAULT nextval('group_saved_replies_id_seq'::regclass);
+
 ALTER TABLE ONLY group_ssh_certificates ALTER COLUMN id SET DEFAULT nextval('group_ssh_certificates_id_seq'::regclass);
 
 ALTER TABLE ONLY group_wiki_repository_states ALTER COLUMN id SET DEFAULT nextval('group_wiki_repository_states_id_seq'::regclass);
@@ -29728,6 +29750,9 @@ ALTER TABLE ONLY group_merge_request_approval_settings
 
 ALTER TABLE ONLY group_repository_storage_moves
     ADD CONSTRAINT group_repository_storage_moves_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY group_saved_replies
+    ADD CONSTRAINT group_saved_replies_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY group_ssh_certificates
     ADD CONSTRAINT group_ssh_certificates_pkey PRIMARY KEY (id);
@@ -33969,6 +33994,8 @@ CREATE INDEX index_group_import_states_on_group_id ON group_import_states USING 
 CREATE INDEX index_group_import_states_on_user_id ON group_import_states USING btree (user_id) WHERE (user_id IS NOT NULL);
 
 CREATE INDEX index_group_repository_storage_moves_on_group_id ON group_repository_storage_moves USING btree (group_id);
+
+CREATE INDEX index_group_saved_replies_on_group_id ON group_saved_replies USING btree (group_id);
 
 CREATE UNIQUE INDEX index_group_ssh_certificates_on_fingerprint ON group_ssh_certificates USING btree (fingerprint);
 
@@ -40692,6 +40719,9 @@ ALTER TABLE ONLY container_registry_protection_rules
 
 ALTER TABLE ONLY clusters
     ADD CONSTRAINT fk_rails_ac3a663d79 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY group_saved_replies
+    ADD CONSTRAINT fk_rails_acd8e1889b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_composer_metadata
     ADD CONSTRAINT fk_rails_ad48c2e5bb FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

@@ -1,0 +1,12 @@
+---
+table_name: group_saved_replies
+classes:
+- Groups::SavedReply
+feature_categories:
+- code_review_workflow
+description: Comment templates used to populate comments
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143515
+milestone: '16.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

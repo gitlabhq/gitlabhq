@@ -36,11 +36,12 @@
           - c.with_body do
             %span
               = domain_presenter.pages_domain.subject || _('missing')
-            = link_to _('Remove'),
+            = link_button_to _('Remove'),
               clean_certificate_project_pages_domain_path(@project, domain_presenter),
               data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' },
               'aria-label': s_("GitLabPages|Remove certificate"),
-              class: 'gl-button btn btn-danger btn-sm',
+              variant: :danger,
+              size: :small,
               method: :delete
   - else
     .row

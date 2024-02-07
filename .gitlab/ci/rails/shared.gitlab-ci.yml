@@ -97,7 +97,7 @@ include:
           --token "${TEST_FAILURES_PROJECT_TOKEN}" \
           --project "gitlab-org/gitlab" \
           --input-files "rspec/rspec-*.json" \
-          --exclude-labels-for-search "QA,rspec:slow test" \
+          --exclude-labels-for-search "QA,rspec:slow test,knapsack_report" \
           --system-log-files "log" \
           --related-issues-file "rspec/${CI_JOB_ID}-failed-test-issues.json";
       fi

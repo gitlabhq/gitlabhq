@@ -52,7 +52,7 @@ A deploy token's scope determines the actions it can perform.
 |--------------------------|--------------------------------------------------------------------------------------------------------------|
 | `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
 | `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/index.md). |
-| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md).       |
+| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md). You need both read and write access to push images. |
 | `read_package_registry`  | Read-only access to the project's package registry.                                                          |
 | `write_package_registry` | Write access to the project's package registry.                                                              |
 
@@ -170,7 +170,7 @@ You can use a deploy token to push images to a container registry.
 
 Prerequisites:
 
-- A deploy token with the `write_registry` scope.
+- A deploy token with the `read_registry` and `write_registry` scope.
 
 Example of using a deploy token to push an image to a container registry:
 

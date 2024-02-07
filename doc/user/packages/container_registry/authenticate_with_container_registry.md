@@ -50,7 +50,7 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 - A [deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token) with the minimum scope of:
   - For read (pull) access, `read_registry`.
-  - For write (push) access, `write_registry`.
+  - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
   docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
@@ -58,7 +58,7 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 - A [personal access token](../../profile/personal_access_tokens.md) with the minimum scope of:
   - For read (pull) access, `read_registry`.
-  - For write (push) access, `write_registry`.
+  - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
   docker login $CI_REGISTRY -u <username> -p <access_token>

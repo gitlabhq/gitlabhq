@@ -380,7 +380,8 @@
   - :who: John T Skarbek
     :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1505
     :versions:
-    - 0.8.2
+      - 0.8.2
+      - 0.9.1
     :when: 2023-04-07 09:15:33.000040000 Z
 - - :permit
   - MIT AND (BSD-2-Clause OR GPL-2.0-or-later)

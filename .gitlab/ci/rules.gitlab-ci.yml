@@ -444,7 +444,7 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_streaming/audit_event_types.md"
+  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -470,7 +470,7 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_streaming/audit_event_types.md"
+  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -503,7 +503,7 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_streaming/audit_event_types.md"
+  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -533,7 +533,7 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_streaming/audit_event_types.md"
+  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -572,7 +572,7 @@
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   # Auto-generated files
   - "doc/api/graphql/reference/*"
-  - "doc/administration/audit_event_streaming/audit_event_types.md"
+  - "doc/administration/audit_event_types.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
