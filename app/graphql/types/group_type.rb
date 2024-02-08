@@ -22,8 +22,7 @@ module Types
           type: Types::CustomEmojiType.connection_type,
           null: true,
           resolver: Resolvers::CustomEmojiResolver,
-          description: 'Custom emoji in this namespace.',
-          alpha: { milestone: '13.6' }
+          description: 'Custom emoji in this namespace.'
 
     field :share_with_group_lock,
           type: GraphQL::Types::Boolean,

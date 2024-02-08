@@ -124,7 +124,7 @@ To make sure your configuration is correct:
 1. Run in the console:
 
    ```ruby
-   redis = Redis.new(Gitlab::Redis::SharedState.params)
+   redis = Gitlab::Redis::SharedState.redis
    redis.info
    ```
 

@@ -92,7 +92,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', testcase: params[:testcase] do
+        it 'publishes a nuget package at the project endpoint and installs it from the group endpoint', :blocking, testcase: params[:testcase] do
           Flow::Login.sign_in
 
           nuget_upload_yaml = ERB.new(read_fixture('package_managers/nuget', 'nuget_upload_package.yaml.erb')).result(binding)

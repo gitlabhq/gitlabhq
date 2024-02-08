@@ -60,8 +60,8 @@ module DnsHelpers
   def permit_redis!
     # https://github.com/redis-rb/redis-client/blob/v0.11.2/lib/redis_client/ruby_connection.rb#L51 uses Socket.tcp that
     # calls Addrinfo.getaddrinfo internally.
-    hosts = Gitlab::Redis::ALL_CLASSES.map do |redis_instance|
-      redis_instance.redis_client_params[:host]
+    hosts = Gitlab::Redis::ALL_CLASSES.flat_map do |redis_instance|
+      redis_instance.params[:host] || redis_instance.params[:nodes]&.map { |n| n[:host] }
     end.uniq.compact
 
     hosts.each do |host|

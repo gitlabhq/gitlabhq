@@ -110,26 +110,26 @@ To enable and disable them, run on the GitLab Rails console:
 
 ```ruby
 # To enable it for the instance:
-Feature.enable(:<dev_flag_name>, type: :gitlab_com_derisk)
+Feature.enable(:<dev_flag_name>)
 
 # To disable it for the instance:
-Feature.disable(:<dev_flag_name>, type: :gitlab_com_derisk)
+Feature.disable(:<dev_flag_name>)
 
 # To enable for a specific project:
-Feature.enable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
+Feature.enable(:<dev_flag_name>, Project.find(<project id>))
 
 # To disable for a specific project:
-Feature.disable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
+Feature.disable(:<dev_flag_name>, Project.find(<project id>))
 ```
 
 To check a `gitlab_com_derisk` feature flag's state:
 
 ```ruby
 # Check if the feature flag is enabled
-Feature.enabled?(:dev_flag_name, type: :gitlab_com_derisk)
+Feature.enabled?(:dev_flag_name)
 
 # Check if the feature flag is disabled
-Feature.disabled?(:dev_flag_name, type: :gitlab_com_derisk)
+Feature.disabled?(:dev_flag_name)
 ```
 
 ### `wip` type
@@ -154,13 +154,13 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_wip_flag, project, type: :wip)
+Feature.enabled?(:my_wip_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_wip_flag, project, type: :wip)
+Feature.disabled?(:my_wip_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_wip_flag, project, type: :wip)
+push_frontend_feature_flag(:my_wip_flag, project)
 ```
 
 ### `beta` type
@@ -187,13 +187,13 @@ Providing a flag in this case allows engineers and customers to disable the new 
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_beta_flag, project, type: :beta)
+Feature.enabled?(:my_beta_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_beta_flag, project, type: :beta)
+Feature.disabled?(:my_beta_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_beta_flag, project, type: :beta)
+push_frontend_feature_flag(:my_beta_flag, project)
 ```
 
 ### `ops` type
@@ -219,13 +219,13 @@ instance/group/project/user setting.
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_ops_flag, project, type: :ops)
+Feature.enabled?(:my_ops_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_ops_flag, project, type: :ops)
+Feature.disabled?(:my_ops_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
+push_frontend_feature_flag(:my_ops_flag, project)
 ```
 
 ### `experiment` type
@@ -261,9 +261,9 @@ During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all f
 
 This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
 
-- Be known. Only use feature flags that are explicitly defined.
+- Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker` and `undefined`).
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
-- Use a valid and consistent `type:` across all invocations.
+- For feature flags that don't have a definition file, use a valid and consistent `type:` across all invocations.
 - Have an owner.
 
 All feature flags known to GitLab are self-documented in YAML files stored in:
@@ -302,24 +302,43 @@ Only feature flags that have a YAML definition file can be used when running the
 
 ```shell
 $ bin/feature-flag my_feature_flag
->> Specify the group introducing the feature flag, like `group::project management`:
-?> group::cloud connector
+>> Specify the feature flag type
+?> beta
+You picked the type 'beta'
 
->> URL of the MR introducing the feature flag (enter to skip):
-?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+>> Specify the group label to which the feature flag belongs, from the following list:
+1. group::group1
+2. group::group2
+?> 2
+You picked the group 'group::group2'
 
->> Open this URL and fill in the rest of the details:
-https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Btitle%5D=%5BFeature+flag%5D+Rollout+of+%60test-flag%60&issuable_template=Feature+Flag+Roll+Out
+>> URL of the original feature issue (enter to skip):
+?> https://gitlab.com/gitlab-org/gitlab/-/issues/435435
+
+>> URL of the MR introducing the feature flag (enter to skip and let Danger provide a suggestion directly in the MR):
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141023
+
+>> Username of the feature flag DRI (enter to skip):
+?> bob
+
+>> Is this an EE only feature (enter to skip):
+?> [Return]
+
+>> Press any key and paste the issue content that we copied to your clipboard! 🚀
+?> [Return automatically opens the "New issue" page where you only have to paste the issue content]
 
 >> URL of the rollout issue (enter to skip):
-?> https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-create config/feature_flags/development/my_feature_flag.yml
+?> https://gitlab.com/gitlab-org/gitlab/-/issues/437162
+
+create config/feature_flags/beta/my_feature_flag.yml
 ---
 name: my_feature_flag
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-group: group::cloud connector
-type: development
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435435
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141023
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437162
+milestone: '16.9'
+group: group::composition analysis
+type: beta
 default_enabled: false
 ```
 
@@ -405,17 +424,15 @@ by `default_enabled:` in YAML definition.
 If feature flag does not have a YAML definition an error will be raised
 in development or test environment, while returning `false` on production.
 
-If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
-is `type: development`. For all other feature flag types, you must specify the `type:`:
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+you need to pass their `type:` when calling `Feature.enabled?` and `Feature.disabled?`:
 
 ```ruby
-if Feature.enabled?(:feature_flag, project, type: :ops)
-  # execute code if ops feature flag is enabled
-else
-  # execute code if ops feature flag is disabled
+if Feature.enabled?(:experiment_feature_flag, project, type: :experiment)
+  # execute code if feature flag is enabled
 end
 
-if Feature.disabled?(:my_feature_flag, project, type: :ops)
+if Feature.disabled?(:worker_feature_flag, project, type: :worker)
   # execute code if feature flag is disabled
 end
 ```
@@ -492,12 +509,12 @@ so checking for `gon.features.vim_bindings` would not work.
 See the [Vue guide](../fe_guide/vue.md#accessing-feature-flags) for details about
 how to access feature flags in a Vue component.
 
-If not specified, the default feature flag type for `push_frontend_feature_flag`
-is `type: development`. For all other feature flag types, you must specify the `type:`:
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+you need to pass their `type:` when calling `push_frontend_feature_flag`:
 
 ```ruby
 before_action do
-  push_frontend_feature_flag(:vim_bindings, project, type: :ops)
+  push_frontend_feature_flag(:vim_bindings, project, type: :experiment)
 end
 ```
 

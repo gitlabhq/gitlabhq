@@ -14,7 +14,7 @@ module ExceedRedisCallLimitHelpers
   end
 
   def verify_commands_count(command, expected, block)
-    @actual = build_recorder(block).by_command(command).count
+    @actual = build_recorder(block).by_command(command.to_s).count
 
     @actual > expected
   end

@@ -63,28 +63,28 @@ namespace :gitlab do
       end
     end
 
-    desc 'GitLab | Cleanup | Clean orphan job artifact files stored in the @final directory in object storage'
-    task :orphan_job_artifact_final_objects, [:provider] => :gitlab_environment do |_, args|
+    desc 'GitLab | Cleanup | Generate a CSV file of orphan job artifact objects stored in the @final directory'
+    task :list_orphan_job_artifact_final_objects, [:provider] => :gitlab_environment do |_, args|
       warn_user_is_not_gitlab
 
       force_restart = ENV['FORCE_RESTART'].present?
+      filename = ENV['FILENAME']
 
       begin
-        cleaner = Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner.new(
+        generator = Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList.new(
           provider: args.provider,
           force_restart: force_restart,
-          dry_run: dry_run?,
+          filename: filename,
           logger: logger
         )
 
-        cleaner.run!
+        generator.run!
 
-        if dry_run?
-          logger.info "To clean up all orphan files that were found, run this command with DRY_RUN=false".color(:yellow)
-        end
-      rescue Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner::UnsupportedProviderError => e
+        # TODO: Add back the log message here to instruct which rake task to run to process the
+        # generated CSV file and actually delete the orphan objects.
+      rescue Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList::UnsupportedProviderError => e
         abort %(#{e.message}
-Usage: rake "gitlab:cleanup:orphan_job_artifact_final_objects[provider]")
+Usage: rake "gitlab:cleanup:list_orphan_job_artifact_final_objects[provider]")
       end
     end
 

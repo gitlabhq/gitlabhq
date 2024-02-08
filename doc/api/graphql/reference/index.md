@@ -2707,10 +2707,6 @@ Input type: `CreateContainerRegistryProtectionRuleInput`
 
 ### `Mutation.createCustomEmoji`
 
-NOTE:
-**Introduced** in 13.6.
-**Status**: Experiment.
-
 Input type: `CreateCustomEmojiInput`
 
 #### Arguments
@@ -3701,10 +3697,6 @@ Input type: `DestroyContainerRepositoryTagsInput`
 | <a id="mutationdestroycontainerrepositorytagserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.destroyCustomEmoji`
-
-NOTE:
-**Introduced** in 13.6.
-**Status**: Experiment.
 
 Input type: `DestroyCustomEmojiInput`
 
@@ -19886,10 +19878,6 @@ four standard [pagination arguments](#connection-pagination-arguments):
 ##### `Group.customEmoji`
 
 Custom emoji in this namespace.
-
-NOTE:
-**Introduced** in 13.6.
-**Status**: Experiment.
 
 Returns [`CustomEmojiConnection`](#customemojiconnection).
 

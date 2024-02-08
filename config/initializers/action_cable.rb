@@ -25,7 +25,17 @@ raise "Do not configure cable.yml with a Redis Cluster as ActionCable only works
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
 ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
   args = config.except(:adapter, :channel_prefix)
-    .merge(instrumentation_class: ::Gitlab::Instrumentation::Redis::ActionCable)
+    .merge(custom: { instrumentation_class: "ActionCable" })
+
+  if args[:url]
+    # cable.yml uses the url key but unix sockets needs to be passed into Redis
+    # under the `path` key. We do a simple reassignment to resolve that.
+    uri = URI.parse(args[:url])
+    if uri.scheme == 'unix'
+      args[:path] = uri.path
+      args.delete(:url)
+    end
+  end
 
   ::Redis.new(args)
 end

@@ -109,26 +109,31 @@ You can define URL variables directly using the REST API.
 ## Configure your webhook receiver endpoint
 
 Webhook receiver endpoints should be fast and stable.
-Slow and unstable receivers can be [disabled automatically](#failing-webhooks) to ensure system reliability. Webhooks that fail might lead to [duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
+Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability. Webhooks that fail might lead to [duplicate events](#webhook-fails-or-multiple-webhook-requests-are-triggered).
 
 Endpoints should follow these best practices:
 
 - **Respond quickly with a `200` or `201` status response.** Avoid any significant processing of webhooks in the same request.
-  Instead, implement a queue to handle webhooks after they are received. The timeout limit for webhooks is [10 seconds on GitLab.com](../../../user/gitlab_com/index.md#other-limits).
+  Instead, implement a queue to handle webhooks after they are received. Webhook receivers that do not respond before the [timeout limit](#webhook-timeout-limits) might be [disabled automatically](#auto-disabled-webhooks) on GitLab.com.
 - **Be prepared to handle duplicate events.** In [some circumstances](#webhook-fails-or-multiple-webhook-requests-are-triggered), the same event may be sent twice. To mitigate this issue, ensure your endpoint is
   reliably fast and stable.
 - **Keep the response headers and body minimal.**
   GitLab does not examine the response headers or body. GitLab stores them so you can examine them later in the logs to help diagnose problems. You should limit the number and size of headers returned. You can also respond to the webhook request with an empty body.
 - Only return client error status responses (in the `4xx` range) to
-  indicate that the webhook has been misconfigured. Responses in this range can lead to your webhooks being [automatically disabled](#failing-webhooks). For example, if your receiver
+  indicate that the webhook has been misconfigured. Responses in this range might cause your webhooks to be [disabled automatically](#auto-disabled-webhooks). For example, if your receiver
   only supports push events, you can return `400` if sent an issue
   payload, as that is an indication that the hook has been set up
   incorrectly. Alternatively, you can ignore unrecognized event
   payloads.
-- Never return `500` server error status responses if the event has been handled as this can cause the webhook to be [temporarily disabled](#failing-webhooks).
+- Never return `500` server error status responses if the event has been handled. These responses might cause the webhook to be [disabled automatically](#auto-disabled-webhooks).
 - Invalid HTTP responses are treated as failed requests.
 
-## Failing webhooks
+## Webhook timeout limits
+
+For GitLab.com, the timeout limit for webhooks is [10 seconds](../../../user/gitlab_com/index.md#other-limits).
+For GitLab self-managed, an administrator can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
+
+## Auto-disabled webhooks
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60837) for project webhooks in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) for project webhooks in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
@@ -139,9 +144,10 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
 On GitLab.com, this feature is available.
 
-Project or group webhooks that fail four consecutive times are automatically disabled.
+Project or group webhooks that fail four consecutive times are disabled automatically.
 
-Project or group webhooks that return response codes in the `5xx` range are understood to be failing
+Project or group webhooks that return response codes in the `5xx` range or experience a
+[timeout](#webhook-timeout-limits) or other HTTP errors are understood to be failing
 intermittently and are temporarily disabled. These webhooks are initially disabled
 for one minute, which is extended on each subsequent failure up to a maximum of 24 hours.
 
@@ -432,7 +438,7 @@ To view the table:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. Scroll down to the webhooks.
-1. Each [failing webhook](#failing-webhooks) has a badge listing it as:
+1. Each [auto-disabled webhook](#auto-disabled-webhooks) has a badge listing it as:
 
    - **Failed to connect** if it's misconfigured and must be manually re-enabled.
    - **Fails to connect** if it's temporarily disabled and is automatically
@@ -472,9 +478,7 @@ Missing intermediate certificates are common causes of verification failure.
 
 ### Webhook fails or multiple webhook requests are triggered
 
-If you're receiving multiple webhook requests, the webhook might have timed out.
-
-GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#other-limits). On self-managed GitLab instances, you can [change the webhook timeout limit](../../../administration/instance_limits.md#webhook-timeout).
+If you're receiving multiple webhook requests, the webhook might have [timed out](#webhook-timeout-limits).
 
 ### Webhook is not triggered
 
@@ -482,5 +486,5 @@ GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#othe
 
 If a webhook is not triggered, check that:
 
-- The webhook was not [automatically disabled](#failing-webhooks).
+- The webhook was not [disabled automatically](#auto-disabled-webhooks).
 - The GitLab instance is not in [Silent Mode](../../../administration/silent_mode/index.md).

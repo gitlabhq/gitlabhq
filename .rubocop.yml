@@ -865,12 +865,6 @@ Migration/ReferToIndexByName:
     - !ruby/regexp /\Adb\/(post_)?migrate\/20200[1-7].*\.rb\z/
     - !ruby/regexp /\Aee\/db\/geo\/(post_)?migrate\/201.*\.rb\z/
 
-Migration/CreateTableWithForeignKeys:
-  # Disable this cop for all the existing migrations
-  Exclude:
-    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
-    - !ruby/regexp /\Adb\/(post_)?migrate\/2022[1-11].*\.rb\z/
-
 Migration/PreventIndexCreation:
   Exclude:
     - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/

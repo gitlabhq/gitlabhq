@@ -20,6 +20,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
   context 'for signed in user' do
     before do
+      stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       project.add_developer(user)
       sign_in(user)
       visit work_items_path

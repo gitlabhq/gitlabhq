@@ -28,7 +28,7 @@ def enable_semi_reliable_fetch_mode?
 end
 
 # Custom Queues configuration
-queues_config_hash = Gitlab::Redis::Queues.redis_client_params
+queues_config_hash = Gitlab::Redis::Queues.params
 
 enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 

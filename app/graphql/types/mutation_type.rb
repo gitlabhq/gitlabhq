@@ -44,8 +44,8 @@ module Types
     mount_mutation Mutations::Clusters::AgentTokens::Create
     mount_mutation Mutations::Clusters::AgentTokens::Revoke
     mount_mutation Mutations::Commits::Create, calls_gitaly: true
-    mount_mutation Mutations::CustomEmoji::Create, alpha: { milestone: '13.6' }
-    mount_mutation Mutations::CustomEmoji::Destroy, alpha: { milestone: '13.6' }
+    mount_mutation Mutations::CustomEmoji::Create
+    mount_mutation Mutations::CustomEmoji::Destroy
     mount_mutation Mutations::CustomerRelations::Contacts::Create
     mount_mutation Mutations::CustomerRelations::Contacts::Update
     mount_mutation Mutations::CustomerRelations::Organizations::Create

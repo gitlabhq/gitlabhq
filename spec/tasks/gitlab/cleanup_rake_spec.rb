@@ -384,20 +384,26 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
     end
   end
 
-  describe 'cleanup:orphan_job_artifact_final_objects' do
-    subject(:rake_task) { run_rake_task('gitlab:cleanup:orphan_job_artifact_final_objects', provider) }
+  describe 'cleanup:list_orphan_job_artifact_final_objects' do
+    let(:filename) { Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList::DEFAULT_FILENAME }
+
+    subject(:rake_task) { run_rake_task('gitlab:cleanup:list_orphan_job_artifact_final_objects', provider) }
 
     before do
       stub_artifacts_object_storage
     end
 
+    after do
+      File.delete(filename) if File.file?(filename)
+    end
+
     shared_examples_for 'running the cleaner' do
       it 'runs the task without errors' do
-        expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+        expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList)
           .to receive(:new)
           .with(
-            dry_run: true,
             force_restart: false,
+            filename: nil,
             provider: provider,
             logger: anything
           )
@@ -412,11 +418,11 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
         end
 
         it 'passes force_restart correctly' do
-          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList)
             .to receive(:new)
             .with(
-              dry_run: true,
               force_restart: true,
+              filename: nil,
               provider: provider,
               logger: anything
             )
@@ -426,17 +432,19 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
         end
       end
 
-      context 'with DRY_RUN set to false' do
+      context 'with FILENAME defined' do
+        let(:filename) { 'custom_filename.csv' }
+
         before do
-          stub_env('DRY_RUN', 'false')
+          stub_env('FILENAME', filename)
         end
 
-        it 'passes dry_run correctly' do
-          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjectsCleaner)
+        it 'passes filename correctly' do
+          expect(Gitlab::Cleanup::OrphanJobArtifactFinalObjects::GenerateList)
             .to receive(:new)
             .with(
-              dry_run: false,
               force_restart: false,
+              filename: filename,
               provider: provider,
               logger: anything
             )

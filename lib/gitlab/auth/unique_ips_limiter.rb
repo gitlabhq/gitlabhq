@@ -31,7 +31,7 @@ module Gitlab
 
           Gitlab::Redis::SharedState.with do |redis|
             redis.multi do |r|
-              r.zadd(key, time, ip)
+              r.zadd(key, time, ip) if ip
               r.zremrangebyscore(key, 0, time - config.unique_ips_limit_time_window)
               r.zcard(key)
             end.last

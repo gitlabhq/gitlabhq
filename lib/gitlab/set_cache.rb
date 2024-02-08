@@ -62,7 +62,7 @@ module Gitlab
 
       with do |redis|
         redis.multi do |multi|
-          multi.sismember(full_key, value)
+          multi.sismember(full_key, value.to_s)
           multi.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
