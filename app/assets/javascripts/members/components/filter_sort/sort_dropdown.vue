@@ -79,6 +79,7 @@ export default {
   <gl-sorting
     class="gl-display-flex"
     dropdown-class="gl-w-full"
+    block
     data-testid="members-sort-dropdown"
     :text="activeOptionLabel"
     :is-ascending="isAscending"

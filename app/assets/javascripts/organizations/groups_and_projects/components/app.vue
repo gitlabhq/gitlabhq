@@ -200,6 +200,7 @@ export default {
           <gl-sorting
             class="gl-display-flex"
             dropdown-class="gl-w-full"
+            block
             :text="sortText"
             :is-ascending="isAscending"
             :sort-options="$options.sortItems"

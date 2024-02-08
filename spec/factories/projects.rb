@@ -609,15 +609,15 @@ FactoryBot.define do
     files { { 'README.md' => 'Hello World' } }
   end
 
-  trait :with_code_suggestions_enabled do
+  trait :with_duo_features_enabled do
     after(:create) do |project|
-      project.project_setting.update!(code_suggestions: true)
+      project.project_setting.update!(duo_features_enabled: true)
     end
   end
 
-  trait :with_code_suggestions_disabled do
+  trait :with_duo_features_disabled do
     after(:create) do |project|
-      project.project_setting.update!(code_suggestions: false)
+      project.project_setting.update!(duo_features_enabled: false)
     end
   end
 end

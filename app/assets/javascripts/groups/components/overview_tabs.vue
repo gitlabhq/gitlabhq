@@ -241,6 +241,7 @@ export default {
               class="gl-w-full"
               dropdown-class="gl-w-full"
               data-testid="group_sort_by_dropdown"
+              block
               :text="sort.label"
               :is-ascending="isAscending"
               :sort-options="activeTabSortOptions"

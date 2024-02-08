@@ -1,11 +1,18 @@
 <script>
 import { GlButton, GlCard, GlTable, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
+import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
+
+const ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL = {
+  DEVELOPER: __('Developer'),
+  MAINTAINER: __('Maintainer'),
+  OWNER: __('Owner'),
+};
 
 export default {
   components: {
@@ -38,9 +45,11 @@ export default {
       return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
         return {
           col_1_package_name_pattern: packagesProtectionRule.packageNamePattern,
-          col_2_package_type: packagesProtectionRule.packageType,
+          col_2_package_type: getPackageTypeLabel(packagesProtectionRule.packageType),
           col_3_push_protected_up_to_access_level:
-            packagesProtectionRule.pushProtectedUpToAccessLevel,
+            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[
+              packagesProtectionRule.pushProtectedUpToAccessLevel
+            ],
         };
       });
     },
@@ -91,7 +100,6 @@ export default {
         first: PAGINATION_DEFAULT_PER_PAGE,
       };
     },
-
     onPrevPage() {
       this.packageProtectionRulesQueryPaginationParams = {
         before: this.packageProtectionRulesQueryPageInfo.startCursor,

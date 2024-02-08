@@ -561,6 +561,7 @@ class Project < ApplicationRecord
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
       delegate :code_suggestions, :code_suggestions=
+      delegate :duo_features_enabled, :duo_features_enabled=
     end
   end
 
@@ -3246,11 +3247,6 @@ class Project < ApplicationRecord
   end
   strong_memoize_attr :instance_runner_running_jobs_count
 
-  def code_suggestions_enabled?
-    code_suggestions && (group.nil? || group.code_suggestions)
-  end
-  strong_memoize_attr :code_suggestions_enabled?
-
   # Overridden in EE
   def allows_multiple_merge_request_assignees?
     false
@@ -3263,6 +3259,11 @@ class Project < ApplicationRecord
 
   # Overridden in EE
   def on_demand_dast_available?
+    false
+  end
+
+  # Overridden in EE
+  def code_suggestions_enabled?
     false
   end
 

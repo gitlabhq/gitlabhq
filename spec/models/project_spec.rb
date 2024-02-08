@@ -9195,6 +9195,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to be_falsy }
   end
 
+  describe '#code_suggestions_enabled?' do
+    let(:project) { build_stubbed(:project) }
+
+    subject(:code_suggestions_enabled?) { project.code_suggestions_enabled? }
+
+    it { is_expected.to be_falsy }
+  end
+
   private
 
   def finish_job(export_job)

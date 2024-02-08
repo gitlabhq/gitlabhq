@@ -3103,7 +3103,7 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 **Additional details**:
 
 - The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
-  To download artifacts from a job in the current pipeline, use [`needs`](#needsartifacts).
+  To download artifacts from a job in the current pipeline, use [`needs:artifacts`](#needsartifacts).
 
 #### `needs:optional`
 

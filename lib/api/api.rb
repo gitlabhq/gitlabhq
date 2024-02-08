@@ -297,6 +297,7 @@ module API
         mount ::API::PagesDomains
         mount ::API::PersonalAccessTokens::SelfInformation
         mount ::API::PersonalAccessTokens
+        mount ::API::ProjectAvatar
         mount ::API::ProjectClusters
         mount ::API::ProjectContainerRepositories
         mount ::API::ProjectDebianDistributions

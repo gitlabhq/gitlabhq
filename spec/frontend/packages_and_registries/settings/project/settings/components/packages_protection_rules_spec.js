@@ -71,8 +71,8 @@ describe('Packages protection rules project settings', () => {
       packagesProtectionRuleQueryPayload().data.project.packagesProtectionRules.nodes.forEach(
         (protectionRule, i) => {
           expect(findTableRow(i).text()).toContain(protectionRule.packageNamePattern);
-          expect(findTableRow(i).text()).toContain(protectionRule.packageType);
-          expect(findTableRow(i).text()).toContain(protectionRule.pushProtectedUpToAccessLevel);
+          expect(findTableRow(i).text()).toContain('npm');
+          expect(findTableRow(i).text()).toContain('Maintainer');
         },
       );
     });

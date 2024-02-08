@@ -48,11 +48,7 @@ RSpec.describe Admin::AbuseReportDetailsEntity, feature_category: :insider_threa
         :notes_count
       )
 
-      expect(user_hash[:verification_state].keys).to match_array([
-        :email,
-        :phone,
-        :credit_card
-      ])
+      expect(user_hash[:verification_state].keys).to include(:email, :credit_card)
 
       expect(user_hash[:past_closed_reports][0].keys).to match_array([
         :created_at,

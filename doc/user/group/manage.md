@@ -450,7 +450,7 @@ for the ability to set merge request approval rules for groups is tracked in
 ## Enable Experiment and Beta features
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Ultimate, Premium
 **Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
@@ -459,6 +459,9 @@ WARNING:
 [Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
+
+NOTE:
+[GitLab Duo Chat](../../user/gitlab_duo_chat.md) is an only feature available in Premium tier.
 
 You can give all users in a top-level group access to Experiment and Beta features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
