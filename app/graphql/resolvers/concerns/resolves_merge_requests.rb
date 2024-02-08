@@ -64,3 +64,5 @@ module ResolvesMergeRequests
     }
   end
 end
+
+ResolvesMergeRequests.prepend_mod

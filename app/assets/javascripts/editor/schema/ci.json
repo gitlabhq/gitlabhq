@@ -91,7 +91,17 @@
         "deploy"
       ],
       "items": {
-        "type": "string"
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ]
       },
       "uniqueItems": true,
       "minItems": 1

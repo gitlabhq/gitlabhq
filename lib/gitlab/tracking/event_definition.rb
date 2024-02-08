@@ -6,7 +6,7 @@ module Gitlab
 
     class EventDefinition
       EVENT_SCHEMA_PATH = Rails.root.join('config', 'events', 'schema.json')
-      SCHEMA = ::JSONSchemer.schema(Pathname.new(EVENT_SCHEMA_PATH))
+      SCHEMA = ::JSONSchemer.schema(EVENT_SCHEMA_PATH)
 
       attr_reader :path
       attr_reader :attributes

@@ -62,8 +62,8 @@ flowchart TB
 
 ## Enable product analytics
 
-> - Introduced in GitLab 15.6 behind the [feature flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
-> - Moved to be behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
+> - Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Moved behind a [flag](../../administration/feature_flags.md) named `product_analytics_admin_settings` in GitLab 15.7. Disabled by default.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
@@ -125,37 +125,39 @@ To instrument code to collect data, use one or more of the existing SDKs:
 
 ## Product analytics dashboards
 
-> - Introduced in GitLab 15.5 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
+> - Introduced in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `product_analytics_internal_preview`. Disabled by default.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 
 Product analytics dashboards are a subset of dashboards under [Analytics dashboards](../analytics/analytics_dashboards.md).
 
-Specifically product analytics dashboards and visualizations make use of the `cube_analytics` data type.
+Specifically, product analytics dashboards and visualizations use the `cube_analytics` data type.
 The `cube_analytics` data type connects to the Cube instance defined when [product analytics was enabled](#enable-product-analytics).
-All filters and queries are sent to the Cube instance and the returned data is processed by the
+All filters and queries are sent to the Cube instance, and the returned data is processed by the
 product analytics data source to be rendered by the appropriate visualizations.
 
-Data table visualizations from `cube_analytics` have an additional configuration option for rendering `links` (array of objects, each with `text` and `href` properties to specify the dimensions to be used in links. If `href` contains multiple dimensions, values are joined into a single URL). See [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112)).
+Data table visualizations from `cube_analytics` have an additional configuration option for rendering `links`.
+This option is an array of objects, each with `text` and `href` properties to specify the dimensions to be used in links.
+If `href` contains multiple dimensions, values are joined into a single URL.
+View an [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/analytics_visualization.json?ref_type=heads#L112).
 
 ### Filling missing data
 
-> - Introduced in GitLab 16.3 behind the [feature flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
+> - Introduced in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `product_analytics_dashboards`. Disabled by default.
 
 When [exporting data](#raw-data-export) or [viewing dashboards](../analytics/analytics_dashboards.md#view-project-dashboards),
 if there is no data for a given day, the missing data is autofilled with `0`.
 
-This approach has the following benefits:
+The autofill approach has both benefits and limitations.
 
-- The visualization's day axis matches the selected date range, removing ambiguity about missing data.
-- Data exports have rows for the entire date range, making data analysis easier.
-
-However, this approach also has the following limitations:
-
-- The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
-  All other granularities are not supported at this time.
-- It only fills a date range defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter.
-  - The date selector in the UI already uses this filter.
-- The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
+- Benefits:
+  - The visualization's day axis matches the selected date range, removing ambiguity about missing data.
+  - Data exports have rows for the entire date range, making data analysis easier.
+- Limitations:
+  - The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
+  All other granularities are not supported.
+  - Only date ranges defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter are filled.
+    - The date selector in the UI already uses this filter.
+  - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
   returns 20 data points, with the missing data filled by `0`.
 
 [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
@@ -284,16 +286,19 @@ If the request is successful, the returned JSON includes an array of rows of res
 
 ## View product analytics usage quota
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 with a [flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424153) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `product_analytics_usage_quota`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/427838) in GitLab 16.7. Feature flag `product_analytics_usage_quota` removed.
 
 Product analytics usage quota is calculated from the number of events received from instrumented applications.
-The tab displays the monthly totals for the group, and a breakdown of usage per project. Current month shows events counted to date.
 
 To view product analytics usage quota:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quota** and select the **Product analytics** tab.
+1. Select **Settings > Usage quota**.
+1. Select the **Product analytics** tab.
+
+The tab displays the monthly totals for the group, and a breakdown of usage per project.
+The current month displays events counted to date.
 
 The usage quota excludes projects that are not onboarded with product analytics.
 

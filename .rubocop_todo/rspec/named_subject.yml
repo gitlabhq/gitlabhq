@@ -634,7 +634,6 @@ RSpec/NamedSubject:
     - 'ee/spec/models/geo/every_geo_event_spec.rb'
     - 'ee/spec/models/geo/package_file_registry_spec.rb'
     - 'ee/spec/models/geo/push_user_spec.rb'
-    - 'ee/spec/models/geo/repository_updated_event_spec.rb'
     - 'ee/spec/models/geo/secondary_usage_data_spec.rb'
     - 'ee/spec/models/geo_node_spec.rb'
     - 'ee/spec/models/geo_node_status_spec.rb'

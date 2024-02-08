@@ -56,10 +56,10 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
         wait_for_all_requests
       end
 
-      it 'shows search scope badge' do
+      it 'shows search scopes list' do
         fill_in 'search', with: 'text'
         within('#super-sidebar-search-modal') do
-          expect(page).to have_selector('.search-scope-help', text: scope_name)
+          expect(page).to have_selector('[data-testid="scoped-items"]', text: scope_name)
         end
       end
 
@@ -116,7 +116,7 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
   context 'when user is in a global scope' do
     include_examples 'search field examples' do
       let(:url) { root_path }
-      let(:scope_name) { 'in all GitLab' }
+      let(:scope_name) { 'all GitLab' }
     end
 
     it 'displays search options', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/251076' do
@@ -190,8 +190,9 @@ RSpec.describe 'User uses header search field', :js, :disable_rate_limiter, feat
       it 'does not display a link to project feature flags' do
         fill_in_search('Feature')
 
-        within(search_modal_results) do
-          expect(page).to have_link('in all GitLab Feature')
+        within_testid("scoped-items") do
+          expect(page).to have_content('Search for `Feature` in...')
+          expect(page).to have_link('all GitLab')
           expect(page).not_to have_link('Feature Flags')
         end
       end

@@ -191,7 +191,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
       let(:supported_widgets) do
         [
-          { klass: WorkItems::Callbacks::Description, callback: :before_update },
+          { klass: WorkItems::Callbacks::Description, callback: :after_initialize },
           { klass: WorkItems::Widgets::HierarchyService::UpdateService, callback: :before_update_in_transaction, params: { parent: parent } }
         ]
       end
@@ -215,7 +215,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         before do
           allow_next_instance_of(widget_service_class) do |instance|
             allow(instance)
-              .to receive(:before_update)
+              .to receive(:after_initialize)
               .and_return(nil)
           end
         end

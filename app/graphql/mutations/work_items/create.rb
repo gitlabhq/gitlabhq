@@ -21,7 +21,11 @@ module Mutations
                description: 'Sets the work item confidentiality.'
       argument :description, GraphQL::Types::String,
                required: false,
-               description: copy_field_description(Types::WorkItemType, :description)
+               description: copy_field_description(Types::WorkItemType, :description),
+               deprecated: { milestone: '16.9', reason: 'use description widget instead' }
+      argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
+               required: false,
+               description: 'Input for description widget.'
       argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
                required: false,
                description: 'Input for hierarchy widget.'

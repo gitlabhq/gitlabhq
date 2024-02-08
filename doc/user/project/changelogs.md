@@ -79,7 +79,7 @@ Prerequisites:
   version 1.30.0 or later.
 - Your repository's tag naming schema matches
   [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).
-- Commits include [changelog trailers](../../development/changelog.md).
+- Commits include [changelog trailers](#add-a-trailer-to-a-git-commit).
 
 To generate the changelog:
 
@@ -359,5 +359,4 @@ Commit B is skipped.
 
 ## Related topics
 
-- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API
-- Developer documentation for [changelog entries](../../development/changelog.md) in GitLab
+- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API.

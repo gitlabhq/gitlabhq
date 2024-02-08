@@ -22855,13 +22855,34 @@ msgstr ""
 msgid "GlobalSearch|Archived"
 msgstr ""
 
+msgid "GlobalSearch|Change context %{kbdStart}↵%{kbdEnd}"
+msgstr ""
+
 msgid "GlobalSearch|Command palette"
+msgstr ""
+
+msgid "GlobalSearch|Create in %{namespace} %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
+msgid "GlobalSearch|Files"
+msgstr ""
+
 msgid "GlobalSearch|Filters"
+msgstr ""
+
+msgid "GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}"
+msgstr ""
+
+msgid "GlobalSearch|Go to file %{kbdStart}↵%{kbdEnd}"
+msgstr ""
+
+msgid "GlobalSearch|Go to profile %{kbdStart}↵%{kbdEnd}"
+msgstr ""
+
+msgid "GlobalSearch|Go to project %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
 msgid "GlobalSearch|Group"
@@ -22912,10 +22933,16 @@ msgstr ""
 msgid "GlobalSearch|No labels found"
 msgstr ""
 
+msgid "GlobalSearch|No results found. Edit your search and try again."
+msgstr ""
+
 msgid "GlobalSearch|Nothing found…"
 msgstr ""
 
 msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
+msgstr ""
+
+msgid "GlobalSearch|Pages or actions"
 msgstr ""
 
 msgid "GlobalSearch|Places"
@@ -22945,6 +22972,24 @@ msgstr ""
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
 msgstr ""
 
+msgid "GlobalSearch|Search %{kbdStart}↵%{kbdEnd}"
+msgstr ""
+
+msgid "GlobalSearch|Search for `%{searchTerm}` files in..."
+msgstr ""
+
+msgid "GlobalSearch|Search for `%{searchTerm}` in..."
+msgstr ""
+
+msgid "GlobalSearch|Search for `%{searchTerm}` pages in..."
+msgstr ""
+
+msgid "GlobalSearch|Search for `%{searchTerm}` projects in..."
+msgstr ""
+
+msgid "GlobalSearch|Search for `%{searchTerm}` users in..."
+msgstr ""
+
 msgid "GlobalSearch|Search for projects, issues, etc."
 msgstr ""
 
@@ -22970,6 +23015,9 @@ msgid "GlobalSearch|The search term must be at least 3 characters long."
 msgstr ""
 
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
+msgstr ""
+
+msgid "GlobalSearch|Tip:"
 msgstr ""
 
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
@@ -58247,6 +58295,9 @@ msgstr ""
 msgid "ciReport|Dependency scanning"
 msgstr ""
 
+msgid "ciReport|Detects known vulnerabilities in your software dependencies."
+msgstr ""
+
 msgid "ciReport|Detects known vulnerabilities in your source code's dependencies."
 msgstr ""
 
@@ -58299,6 +58350,9 @@ msgid "ciReport|License Compliance failed loading results"
 msgstr ""
 
 msgid "ciReport|License Compliance test metrics results are being parsed"
+msgstr ""
+
+msgid "ciReport|License scan results"
 msgstr ""
 
 msgid "ciReport|Load Performance"

@@ -101,3 +101,16 @@ After you invite a group to your group:
 `User A` has the Developer role in `Group 2`.
 
 `User B` is an inherited member of `Group 1`. This user doesn't get access to `Group 2` when `Group 1` is invited.
+
+## Setting up a group for collaboration
+
+If you intend to collaborate with external users on projects in your group, consider the following best practices:
+
+- Structure your groups and subgroups logically based on organizational needs. Avoid creating unnecessary groups.
+- If you have a lot of users to manage, consider organizing users in groups separate from the groups organizing projects. Share these user groups into the groups and projects they need access to.
+- Carefully consider which groups you invite to your projects. Invite only groups that need access, to prevent oversharing and maintain security.
+- When you invite a group:
+  - Set the maximum role appropriately. It's better to assign the minimum permissions needed, instead of defaulting to the highest role.
+  - Inherited members from subgroups of the invited group also gain access to the project. You might prefer to invite subgroups separately instead.
+- Check the maximum role of users who belong to multiple groups with access to a project. To prevent unintended high permissions, you might want to change the users' roles.
+- Periodically review group access to shared projects and update as appropriate. If a group no longer needs access to a project, remove it.

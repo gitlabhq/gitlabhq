@@ -679,9 +679,6 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    ## Set number of Sidekiq queue processes to the same number as available CPUs
    sidekiq['queue_groups'] = ['*'] * 4
 
-   ## Set number of Sidekiq threads per queue process to the recommend number of 20
-   sidekiq['max_concurrency'] = 20
-
    ## Set the network addresses that the exporters will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
 

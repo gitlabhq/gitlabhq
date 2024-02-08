@@ -1127,6 +1127,17 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
   end
 
+  describe '.preload_tags' do
+    let_it_be(:package) { create(:npm_package) }
+    let_it_be(:tags) { create_list(:packages_tag, 2, package: package) }
+
+    subject { described_class.preload_tags }
+
+    it 'preloads tags' do
+      expect(subject.first.association(:tags)).to be_loaded
+    end
+  end
+
   describe '#versions' do
     let_it_be(:project) { create(:project) }
     let_it_be(:package) { create(:maven_package, project: project) }

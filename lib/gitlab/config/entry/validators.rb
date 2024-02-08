@@ -303,6 +303,19 @@ module Gitlab
           end
         end
 
+        class NestedArrayOfStringsValidator < ActiveModel::EachValidator
+          include LegacyValidationHelpers
+          include NestedArrayHelpers
+
+          def validate_each(record, attribute, value)
+            max_level = options.fetch(:max_level, 1)
+
+            unless validate_nested_array(value, max_level, &method(:validate_string))
+              record.errors.add(attribute, "should be an array of strings or a nested array of strings up to #{max_level} levels deep")
+            end
+          end
+        end
+
         class TypeValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             type = options[:with]

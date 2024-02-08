@@ -338,6 +338,11 @@ RSpec.configure do |config|
 
       # This is going to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/432866
       stub_feature_flags(redis_hll_property_name_tracking: false)
+
+      # The code under this flag will be removed soon
+      # We are temporarily keeping it in place while we confirm some assumptions
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/440667
+      stub_feature_flags(ci_text_interpolation: false)
     else
       unstub_all_feature_flags
     end

@@ -1,5 +1,6 @@
 $super-sidebar-transition-duration: $gl-transition-duration-medium;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
+$command-palette-spacing: px-to-rem(14px);
 
 @mixin notification-dot($color, $size, $top, $left) {
   background-color: $color;
@@ -481,6 +482,25 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     padding: 5rem 1rem 0;
   }
 
+  .vertical-align-normalization {
+    margin-top: -$gl-spacing-scale-3;
+    margin-bottom: -$gl-spacing-scale-3;
+  }
+
+
+  .show-hover-layover {
+    &:hover {
+      .show-hover-layover-hint {
+        @include gl-opacity-10;
+      }
+    }
+  }
+
+  .command-palette-px {
+    padding-left: $command-palette-spacing;
+    padding-right: $command-palette-spacing;
+  }
+
   // This is a temporary workaround!
   // the button in GitLab UI Search components need to be updated to not be the small size
   // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
@@ -491,6 +511,10 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   .search-scope-help {
     top: 1rem;
     right: 3rem;
+  }
+
+  .modal-content {
+    border-radius: $gl-border-radius-large !important;
   }
 
   .gl-search-box-by-type-input-borderless {
@@ -507,9 +531,19 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 
     // Target groups
     [id*='gl-disclosure-dropdown-group'] {
-      padding-left: $gl-spacing-scale-5;
-      padding-right: $gl-spacing-scale-5;
+      padding-left: $command-palette-spacing;
+      padding-right: $command-palette-spacing;
     }
+
+    .gl-scroll-scrim {
+      border-width: 0 !important;
+    }
+  }
+
+  &.gl-modal .modal-footer {
+    background-color: $gray-50;
+    padding: $command-palette-spacing;
+    border-top: 1px solid $gray-100;
   }
 }
 

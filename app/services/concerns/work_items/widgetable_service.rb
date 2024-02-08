@@ -4,6 +4,8 @@ module WorkItems
   module WidgetableService
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initialize_callbacks!(work_item)
+      interpret_quick_actions!(work_item, @widget_params, params)
+
       @callbacks = work_item.widgets.filter_map do |widget|
         callback_class = widget.class.try(:callback_class)
         callback_params = @widget_params[widget.class.api_symbol]
@@ -53,6 +55,26 @@ module WorkItems
       return false unless params[:work_item_type]
 
       params[:work_item_type].widgets.exclude?(widget.class)
+    end
+
+    def interpret_quick_actions!(work_item, widget_params, attributes = {})
+      return unless work_item.work_item_type.widgets.include?(::WorkItems::Widgets::Description)
+
+      description_param = widget_params[::WorkItems::Widgets::Description.api_symbol]
+      return unless description_param
+
+      original_description = description_param.fetch(:description, work_item.description)
+
+      description, command_params = QuickActions::InterpretService
+                                      .new(work_item.project, current_user, {})
+                                      .execute(original_description, work_item)
+
+      description_param[:description] = description if description && description != original_description
+
+      parsed_params = work_item.transform_quick_action_params(command_params)
+
+      widget_params.merge!(parsed_params[:widgets])
+      attributes.merge!(parsed_params[:common])
     end
   end
 end

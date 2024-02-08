@@ -1,13 +1,10 @@
-import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlToken, GlIcon } from '@gitlab/ui';
+import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { trimText } from 'helpers/text_helper';
 import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
-import { truncate } from '~/lib/utils/text_utility';
-import { SCOPE_TOKEN_MAX_LENGTH } from '~/super_sidebar/components/global_search/constants';
-import { MSG_IN_ALL_GITLAB } from '~/vue_shared/global_search/constants';
 import {
   MOCK_SEARCH,
   MOCK_SCOPED_SEARCH_GROUP,
@@ -46,10 +43,6 @@ describe('GlobalSearchScopedItems', () => {
 
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findItemsText = () => findItems().wrappers.map((w) => trimText(w.text()));
-  const findScopeTokens = () => wrapper.findAllComponents(GlToken);
-  const findScopeTokensText = () => findScopeTokens().wrappers.map((w) => trimText(w.text()));
-  const findScopeTokensIcons = () =>
-    findScopeTokens().wrappers.map((w) => w.findAllComponents(GlIcon));
   const findItemLinks = () => findItems().wrappers.map((w) => w.find('a').attributes('href'));
 
   describe('Search results scoped items', () => {
@@ -62,26 +55,11 @@ describe('GlobalSearchScopedItems', () => {
     });
 
     it('renders titles correctly', () => {
-      findItemsText().forEach((title) => expect(title).toContain(MOCK_SEARCH));
-    });
-
-    it('renders scope names correctly', () => {
-      const expectedTitles = MOCK_SCOPED_SEARCH_GROUP.items.map((o) =>
-        truncate(trimText(`in ${o.scope || o.description}`), SCOPE_TOKEN_MAX_LENGTH),
-      );
-
-      expect(findScopeTokensText()).toStrictEqual(expectedTitles);
-    });
-
-    it('renders scope icons correctly', () => {
-      findScopeTokensIcons().forEach((icon, i) => {
-        const w = icon.wrappers[0];
-        expect(w?.attributes('name')).toBe(MOCK_SCOPED_SEARCH_GROUP.items[i].icon);
+      findItemsText().forEach((title, i) => {
+        expect(title).toContain(
+          MOCK_SCOPED_SEARCH_GROUP.items[i].scope || MOCK_SCOPED_SEARCH_GROUP.items[i].description,
+        );
       });
-    });
-
-    it(`renders scope ${MSG_IN_ALL_GITLAB} correctly`, () => {
-      expect(findScopeTokens().at(-1).findComponent(GlIcon).exists()).toBe(false);
     });
 
     it('renders links correctly', () => {

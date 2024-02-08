@@ -9,9 +9,6 @@ module Gitlab
 
           attr_reader :blocks, :ctx
 
-          TooManyBlocksError = Class.new(StandardError)
-          InvalidBlockError = Class.new(StandardError)
-
           MAX_BLOCKS = 10_000
 
           def initialize(config, ctx)
@@ -43,25 +40,19 @@ module Gitlab
 
           def interpolate!
             @result = @config.replace! do |data|
+              break if @errors.any?
+
               Interpolation::Block.match(data) do |block, data|
-                evaluate_block(block, data)
+                block = (@blocks[block] ||= Interpolation::Block.new(block, data, ctx))
+
+                break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
+                break unless block.valid?
+
+                block.value
               end
             end
-          rescue TooManyBlocksError
-            @errors.push('too many interpolation blocks')
-          rescue InvalidBlockError
-            @errors.push('interpolation interrupted by errors')
           end
           strong_memoize_attr :interpolate!
-
-          def evaluate_block(block, data)
-            block = (@blocks[block] ||= Interpolation::Block.new(block, data, ctx))
-
-            raise TooManyBlocksError if @blocks.count > MAX_BLOCKS
-            raise InvalidBlockError unless block.valid?
-
-            block.value
-          end
         end
       end
     end

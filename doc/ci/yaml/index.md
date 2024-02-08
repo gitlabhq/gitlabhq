@@ -423,6 +423,8 @@ In this example:
 
 ### `stages`
 
+> - Support for nested array of strings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
+
 Use `stages` to define stages that contain groups of jobs. Use [`stage`](#stage)
 in a job to configure the job to run in a specific stage.
 

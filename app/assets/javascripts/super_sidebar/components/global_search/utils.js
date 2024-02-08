@@ -53,9 +53,9 @@ const getEntityName = (item, searchContext) => {
 };
 
 export const getFormattedItem = (item, searchContext) => {
-  const { id, category, value, label, url: href, avatar_url } = item;
+  const { id, category, value, label, url: href, avatar_url, name } = item;
   let namespace;
-  const text = value || label;
+  const text = value || label || name;
   if (value) {
     namespace = getTruncatedNamespace(label);
   }

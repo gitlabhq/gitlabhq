@@ -1855,11 +1855,8 @@ To configure the Sidekiq nodes, on each one:
    sidekiq['enable'] = true
    sidekiq['listen_address'] = "0.0.0.0"
 
-   # Set number of Sidekiq queue processes to the same number as available CPUs
+   ## Set number of Sidekiq queue processes to the same number as available CPUs
    sidekiq['queue_groups'] = ['*'] * 4
-
-   # Set number of Sidekiq threads per queue process to the recommend number of 20
-   sidekiq['max_concurrency'] = 20
 
    # Monitoring
    consul['enable'] = true

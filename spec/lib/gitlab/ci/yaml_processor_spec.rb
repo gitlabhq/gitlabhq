@@ -3293,13 +3293,13 @@ module Gitlab
         context 'returns errors if stages is not an array' do
           let(:config) { YAML.dump({ stages: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'stages config should be an array of strings'
+          it_behaves_like 'returns errors', 'stages config should be an array of strings or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if stages is not an array of strings' do
           let(:config) { YAML.dump({ stages: [true, "test"], rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'stages config should be an array of strings'
+          it_behaves_like 'returns errors', 'stages config should be an array of strings or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if variables is not a map' do

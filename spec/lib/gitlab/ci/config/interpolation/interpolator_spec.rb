@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.errors).to include 'unknown interpolation key: `abc`'
-      expect(subject.error_message).to eq 'interpolation interrupted by errors, unknown interpolation key: `abc`'
+      expect(subject.error_message).to eq 'unknown interpolation key: `abc`'
     end
   end
 
@@ -146,7 +146,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message)
-        .to eq 'interpolation interrupted by errors, unknown interpolation key: `something`'
+        .to eq 'unknown interpolation key: `something`'
     end
   end
 

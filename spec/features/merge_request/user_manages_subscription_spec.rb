@@ -22,12 +22,16 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
     find('#new-actions-header-dropdown button').click
 
     expect(page).to have_selector('.gl-toggle:not(.is-checked)')
-    find('[data-testid="notification-toggle"] .gl-toggle').click
+    within_testid('notification-toggle') do
+      find('.gl-toggle').click
+    end
 
     wait_for_requests
 
     expect(page).to have_selector('.gl-toggle.is-checked')
-    find('[data-testid="notification-toggle"] .gl-toggle').click
+    within_testid('notification-toggle') do
+      find('.gl-toggle').click
+    end
 
     wait_for_requests
 
@@ -40,10 +44,10 @@ RSpec.describe 'User manages subscription', :js, feature_category: :code_review_
     it 'toggles subscription' do
       wait_for_requests
 
-      find('[data-testid="subscribe-button"]').click
+      find_by_testid('subscribe-button').click
       expect(page).to have_selector('[data-testid="notifications-off-icon"]')
 
-      find('[data-testid="subscribe-button"]').click
+      find_by_testid('subscribe-button').click
       expect(page).to have_selector('[data-testid="notifications-icon"]')
     end
   end

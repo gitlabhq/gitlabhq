@@ -408,6 +408,10 @@ module Integrations
       ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
     end
 
+    def testable?
+      group_level? || project_level?
+    end
+
     private
 
     def jira_issue_match_regex

@@ -2,8 +2,6 @@
 import {
   GlSearchBoxByType,
   GlOutsideDirective as Outside,
-  GlIcon,
-  GlToken,
   GlTooltipDirective,
   GlResizeObserverDirective,
   GlModal,
@@ -33,6 +31,7 @@ import {
   SEARCH_RESULTS_SCOPE,
 } from '~/vue_shared/global_search/constants';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
+import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
@@ -73,8 +72,7 @@ export default {
     GlobalSearchDefaultItems,
     GlobalSearchScopedItems,
     GlobalSearchAutocompleteItems,
-    GlIcon,
-    GlToken,
+    ScrollScrim,
     GlModal,
     CommandPaletteItems,
     FakeSearchInput,
@@ -102,7 +100,7 @@ export default {
       return this.searchText?.length > SEARCH_SHORTCUTS_MIN_CHARACTERS;
     },
     showScopedSearchItems() {
-      return this.searchTermOverMin && this.scopedSearchOptions.length > 1;
+      return this.searchTermOverMin && this.scopedSearchOptions.length > 0;
     },
     searchResultsDescription() {
       if (this.showDefaultItems) {
@@ -300,9 +298,9 @@ export default {
     <form
       role="search"
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
-      class="gl-relative gl-rounded-base gl-w-full gl-pb-0"
+      class="gl-relative gl-rounded-lg gl-w-full gl-pb-0"
     >
-      <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-3">
+      <div class="gl-relative gl-bg-white gl-border-b gl-mb-n1 gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -317,22 +315,6 @@ export default {
           @keydown.enter.stop.prevent="submitSearch"
           @keydown="onKeydown"
         />
-        <gl-token
-          v-if="showScopeToken"
-          v-gl-resize-observer-directive="observeTokenWidth"
-          class="search-scope-help gl-absolute gl-sm-display-block gl-display-none"
-          view-only
-          :title="searchScope"
-        >
-          <gl-icon
-            v-if="scopeTokenIcon"
-            class="gl-mr-2"
-            :aria-label="scopeTokenText"
-            :name="scopeTokenIcon"
-            :size="16"
-          />
-          {{ truncatedSearchScope }}
-        </gl-token>
         <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
           {{ $options.i18n.SEARCH_DESCRIBED_BY_WITH_RESULTS }}
         </span>
@@ -355,22 +337,24 @@ export default {
       </span>
       <div
         ref="resultsList"
-        class="global-search-results gl-overflow-y-auto gl-w-full gl-pb-3"
+        class="global-search-results gl-overflow-y-auto gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-pb-3"
         @keydown="onKeydown"
       >
-        <command-palette-items
-          v-if="isCommandMode"
-          :search-query="commandPaletteQuery"
-          :handle="searchTextFirstChar"
-          @updated="highlightFirstCommand"
-        />
+        <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
+          <command-palette-items
+            v-if="isCommandMode"
+            :search-query="commandPaletteQuery"
+            :handle="searchTextFirstChar"
+            @updated="highlightFirstCommand"
+          />
 
-        <global-search-default-items v-else-if="showDefaultItems" />
+          <global-search-default-items v-else-if="showDefaultItems" />
 
-        <template v-else>
-          <global-search-scoped-items v-if="showScopedSearchItems" />
-          <global-search-autocomplete-items />
-        </template>
+          <template v-else>
+            <global-search-autocomplete-items />
+            <global-search-scoped-items v-if="showScopedSearchItems" />
+          </template>
+        </scroll-scrim>
       </div>
       <template v-if="searchContext">
         <input
