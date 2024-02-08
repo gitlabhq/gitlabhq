@@ -67,6 +67,7 @@ listed here that also do not work properly in FIPS mode:
   when operating in FIPS-compliant mode.
 - Advanced search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
 - [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
+- [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
 
 Additionally, these package repositories are disabled in FIPS mode:
 

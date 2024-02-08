@@ -15,9 +15,11 @@ DETAILS:
 
 ## Enable operational container scanning
 
-You can use operational container scanning to scan container images in your cluster for security vulnerabilities. You
-can enable the scanner to run on a cadence as configured via the `agent config`, or setup `scan execution policies` within a
-project that houses the agent.
+You can use operational container scanning (OCS) to scan container images in your cluster for security vulnerabilities.
+Starting from GitLab Agent release 16.9, OCS uses a [wrapper image](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) around [Trivy](https://github.com/aquasecurity/trivy) to scan images for vulnerabilities.
+Before GitLab 16.9, OCS directly used the [Trivy](https://github.com/aquasecurity/trivy) image.
+
+OCS can be configured to run on a cadence by using `agent config` or a project's scan execution policy.
 
 NOTE:
 If both `agent config` and `scan execution policies` are configured, the configuration from `scan execution policy` takes precedence.
@@ -159,6 +161,13 @@ You must have at least the Developer role.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415451) in GitLab 16.4.
 
 To scan private images, the scanner relies on the image pull secrets (direct references and from the service account) to pull the image.
+
+## Limitations
+
+From GitLab Agent 16.9, Operational Container Scanning:
+
+- handles Trivy reports of up to 100MB. For previous releases this limit is 10MB.
+- is [disabled](../../../development/fips_compliance.md#unsupported-features-in-fips-mode) when the GitLab Agent runs in `fips` mode.
 
 ## Troubleshooting
 

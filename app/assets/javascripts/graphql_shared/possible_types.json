@@ -191,6 +191,7 @@
     "WorkItemWidgetColor",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
+    "WorkItemWidgetDesigns",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",

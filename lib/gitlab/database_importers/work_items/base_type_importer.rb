@@ -26,7 +26,8 @@ module Gitlab
           color: 'Color',
           rolledup_dates: 'Rolledup dates',
           participants: 'Participants',
-          time_tracking: 'Time tracking'
+          time_tracking: 'Time tracking',
+          designs: 'Designs'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -46,7 +47,8 @@ module Gitlab
             :award_emoji,
             :linked_items,
             :participants,
-            :time_tracking
+            :time_tracking,
+            :designs
           ],
           incident: [
             :assignees,

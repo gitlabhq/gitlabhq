@@ -1099,7 +1099,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/project_feature_spec.rb'
     - 'ee/spec/models/project_import_data_spec.rb'
     - 'ee/spec/models/ee/project_member_spec.rb'
-    - 'ee/spec/models/project_repository_state_spec.rb'
     - 'ee/spec/models/project_security_setting_spec.rb'
     - 'ee/spec/models/protected_environment_spec.rb'
     - 'ee/spec/models/protected_environments/approval_rule_spec.rb'

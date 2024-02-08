@@ -36,7 +36,8 @@ module WorkItems
       color: 18, # EE-only
       rolledup_dates: 19, # EE-only
       participants: 20,
-      time_tracking: 21
+      time_tracking: 21,
+      designs: 22
     }
 
     def self.available_widgets

@@ -908,7 +908,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/path_lock.rb'
     - 'ee/app/models/productivity_analytics.rb'
     - 'ee/app/models/project_alias.rb'
-    - 'ee/app/models/project_repository_state.rb'
     - 'ee/app/models/project_security_setting.rb'
     - 'ee/app/models/protected_environment.rb'
     - 'ee/app/models/push_rule.rb'

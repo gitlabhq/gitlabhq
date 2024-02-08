@@ -181,7 +181,7 @@ You can submit your completed review in multiple ways:
   In the modal window, you can supply a **Summary comment**, approve the merge request, and
   include quick actions:
 
-  ![Finish review with comment](img/mr_summary_comment_v16_6.png)
+  ![Finish review with comment](img/mr_summary_comment_v16_9.png)
 
 When you submit your review, GitLab:
 
@@ -189,7 +189,10 @@ When you submit your review, GitLab:
 - Sends a single email to every notifiable user of the merge request, with your
   review comments attached. Replying to this email creates a new comment on the merge request.
 - Perform any quick actions you added to your review comments.
-- Optional. Approves the merge request.
+- Optional. Shows whether you have also approved or requested changes:
+  - **Comment**: Leave general feedback without explicit approval.
+  - **Approve**: Leave feedback and approve the changes.
+  - **Request changes**: Leave feedback that should be addressed before merging.
 
 ### Resolve or unresolve thread with a comment
 

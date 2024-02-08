@@ -36610,6 +36610,9 @@ msgstr ""
 msgid "Pipeline|Failed"
 msgstr ""
 
+msgid "Pipeline|File"
+msgstr ""
+
 msgid "Pipeline|Manual"
 msgstr ""
 
@@ -36725,6 +36728,9 @@ msgid "Pipeline|To see the remaining jobs, go to the %{boldStart}Jobs%{boldEnd} 
 msgstr ""
 
 msgid "Pipeline|Trigger author"
+msgstr ""
+
+msgid "Pipeline|Variable"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -40832,6 +40838,9 @@ msgstr ""
 msgid "Released"
 msgstr ""
 
+msgid "Released at"
+msgstr ""
+
 msgid "Released date"
 msgstr ""
 
@@ -42358,6 +42367,9 @@ msgstr ""
 msgid "Runners|Configuration"
 msgstr ""
 
+msgid "Runners|Configuration instructions"
+msgstr ""
+
 msgid "Runners|Containers"
 msgstr ""
 
@@ -42492,13 +42504,10 @@ msgstr ""
 msgid "Runners|Go to runners page"
 msgstr ""
 
-msgid "Runners|Google Cloud connection"
+msgid "Runners|Google Cloud"
 msgstr ""
 
 msgid "Runners|Google Cloud project ID"
-msgstr ""
-
-msgid "Runners|Google Cloud workload identity federation must be set up for secure access without accounts or keys."
 msgstr ""
 
 msgid "Runners|Group"
@@ -42513,13 +42522,13 @@ msgstr ""
 msgid "Runners|IP Address"
 msgstr ""
 
-msgid "Runners|Identity provider audience"
-msgstr ""
-
 msgid "Runners|Idle"
 msgstr ""
 
 msgid "Runners|If both settings are disabled, new runners cannot be registered."
+msgstr ""
+
+msgid "Runners|If you haven't already, configure your Google Cloud project to connect to this GitLab project and use the runner."
 msgstr ""
 
 msgid "Runners|In GitLab Runner 15.6, the use of registration tokens and runner parameters in the 'register' command was deprecated. They have been replaced by authentication tokens. %{linkStart}How does this impact my current registration workflow?%{linkEnd}"
@@ -42683,9 +42692,6 @@ msgid "Runners|Platform"
 msgstr ""
 
 msgid "Runners|Project"
-msgstr ""
-
-msgid "Runners|Project for runner"
 msgstr ""
 
 msgid "Runners|Project for the new runner."
@@ -42880,15 +42886,6 @@ msgstr ""
 msgid "Runners|Separate multiple tags with a comma. For example, %{example}."
 msgstr ""
 
-msgid "Runners|Set up google cloud project"
-msgstr ""
-
-msgid "Runners|Set up workload identity federation"
-msgstr ""
-
-msgid "Runners|Set up your Google Cloud project to use the runner. To improve security, use a dedicated Google Cloud project for CI/CD, separate from resources and identity management projects."
-msgstr ""
-
 msgid "Runners|Shared runners are disabled in the group settings."
 msgstr ""
 
@@ -42955,9 +42952,6 @@ msgstr ""
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
-msgid "Runners|The full resource name of the workload identity provider in Google Cloud."
-msgstr ""
-
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
 msgstr ""
 
@@ -42979,9 +42973,6 @@ msgid "Runners|There are no runners running jobs right now. Active runners will 
 msgstr ""
 
 msgid "Runners|These runners are assigned to this project."
-msgstr ""
-
-msgid "Runners|These workload identity federation settings are also used by the Google Artifact Registry integration."
 msgstr ""
 
 msgid "Runners|This group currently has 1 stale runner."
@@ -43014,6 +43005,9 @@ msgid "Runners|This runner is available to all projects and subgroups in a group
 msgstr ""
 
 msgid "Runners|This runner is outdated, an upgrade is recommended"
+msgstr ""
+
+msgid "Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects."
 msgstr ""
 
 msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
@@ -43103,16 +43097,13 @@ msgstr ""
 msgid "Runners|Wait time to pick a job"
 msgstr ""
 
-msgid "Runners|Where’s my identity provider audience?"
+msgid "Runners|Where’s my project ID in Google Cloud?"
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. %{percentage} spot."
 msgstr ""
 
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
-msgstr ""
-
-msgid "Runners|Workload identity federation"
 msgstr ""
 
 msgid "Runners|Yes, disable shared runners"

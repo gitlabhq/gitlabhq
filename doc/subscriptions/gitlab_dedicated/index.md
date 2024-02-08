@@ -102,6 +102,25 @@ GitLab may conduct unscheduled maintenance to address high-severity issues affec
 
 GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the [unsupported features](#features-that-are-not-available) listed below.
 
+#### GitLab Pages
+
+You can use GitLab Pages on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
+
+GitLab Pages are public by default. You can limit access to your Pages site by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+
+The following GitLab Pages features are not available:
+
+- Access control
+- Custom domains
+- PrivateLink access
+
+In addition, GitLab Pages:
+
+- Only works in the primary site if [Geo](../../administration/geo/index.md) is enabled.
+- Is not included as part of instance migrations to GitLab Dedicated.
+
+To enable GitLab Pages for GitLab Dedicated, submit a [support request](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The feature is then enabled in the next scheduled maintenance window.
+
 #### GitLab Runners
 
 ##### Hosted by GitLab (Beta)
@@ -143,7 +162,6 @@ The following GitLab application features are not available:
 
 - LDAP, smart card, or Kerberos authentication
 - Multiple login providers
-- GitLab Pages
 - FortiAuthenticator, or FortiToken 2FA
 - Reply-by email
 - Service Desk

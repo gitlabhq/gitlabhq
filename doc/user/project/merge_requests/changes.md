@@ -12,16 +12,39 @@ DETAILS:
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
-changes.
+changes. By default, the diff compares your proposed changes (the source branch) with
+the target branch. By default, only the changed portions of the files are shown.
 
-By default, the diff view compares the versions of files in the merge request source branch
-to the files in the target branch, and shows only the parts of a file that have changed.
+This example shows changes to a text file. In the default syntax highlighting theme:
 
-![Example screenshot of a source code diff](img/mr-diff-example_v15.png)
+- The _current_ version is shown in red, with a minus (`-`) sign before the line.
+- The _proposed_ version is shown in green with a plus (`+`) sign before the line.
 
-For technical details on how GitLab calculates the diff between the two revisions,
-read [Working with diffs](../../../development/merge_request_concepts/diffs/index.md)
-in our development documentation.
+![Example screenshot of a source code diff](img/mr_diff_example_v16_9.png)
+
+The header for each file in the diff contains:
+
+- **Hide file contents** (**{chevron-down}**) to hide all changes to this file.
+- **Path**: The full path to this file. To copy this path, select
+  **Copy file path** (**{copy-to-clipboard}**).
+- **Lines changed**: The number of lines added and deleted in this file, in the format `+2 -2`.
+- **Viewed**: Select this checkbox to [mark the file as viewed](#mark-files-as-viewed)
+  until more changes are added to it.
+- **Comment on this file** (**{comment}**) to leave a general comment on the file, without
+  pinning the comment to a specific line.
+- **Options**: Select (**{ellipsis_v}**) to display more file viewing options.
+
+The diff also includes navigation and comment aids to the left of the file, in the gutter:
+
+- **Show more context**: Select **Previous 20 lines** (**{expand-up}**) to display
+  the previous 20 unchanged lines, or **Next 20 lines** (**{expand-down}**) to
+  display the next 20 unchanged lines.
+- **Line numbers** are shown in two columns. Previous line numbers are shown on
+  the left, and proposed line numbers on the right. To interact with a line:
+  - To display [comment options](#add-a-comment-to-a-merge-request-file), hover over a line number.
+  - To copy a link to the line, press <kbd>Command</kbd> and select (or right-click)
+    a line number, then select **Copy link address**.
+  - To highlight a line, select the line number.
 
 ## Show all changes in a merge request
 
@@ -63,8 +86,8 @@ they are unlikely to require code reviews:
 1. Source map reference files.
 1. Generated Go files, including the generated files by protocol buffer compiler.
 
-If you want to automatically collapse additional files or file types, you can use the `gitlab-generated` attribute. To mark or unmark certain files/paths as generated if the default doesn't suit
-your preference. See [overriding syntax highlighting](../highlighting.md#override-syntax-highlighting-for-a-file-type) for more
+If you want to automatically collapse additional files or file types, you can use
+the `gitlab-generated` attribute, which marks or unmarks certain files/paths as generated. See [overriding syntax highlighting](../highlighting.md#override-syntax-highlighting-for-a-file-type) for more
 detail on how to use override attributes.
 
 #### View a collapsed file
@@ -105,10 +128,10 @@ For technical details about how generated files are detected, see the
 ## Show one file at a time
 
 For larger merge requests, you can review one file at a time. You can change this setting
-[temporarily in a merge request](#in-a-merge-request-show-only-one-file-at-a-time), or
-so it [applies to all merge requests](#in-all-merge-requests-show-only-one-file-at-a-time).
+[temporarily in a merge request](#for-this-merge-request-only), or
+so it [applies to all merge requests](#for-all-merge-requests).
 
-### In a merge request, show only one file at a time
+### For this merge request only
 
 To temporarily change your viewing preferences for a specific merge request:
 
@@ -121,7 +144,7 @@ To temporarily change your viewing preferences for a specific merge request:
 This change overrides your choice in your user preferences. It persists until you
 clear your browser's cookies or change this behavior again.
 
-### In all merge requests, show only one file at a time
+### For all merge requests
 
 To view one file at a time for all of your merge requests:
 
@@ -265,3 +288,8 @@ This comment can also be a thread.
 1. Select the location where you want to comment.
 
 An icon is displayed on the image and a comment field is displayed.
+
+## Resources
+
+- For technical details on how GitLab calculates the diff between the two revisions,
+  see [Working with diffs](../../../development/merge_request_concepts/diffs/index.md).

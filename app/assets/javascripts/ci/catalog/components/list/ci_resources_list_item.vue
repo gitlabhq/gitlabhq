@@ -142,7 +142,17 @@ export default {
       <div
         class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-justify-content-space-between gl-font-sm"
       >
-        <span class="gl-display-flex gl-flex-basis-two-thirds">{{ resource.description }}</span>
+        <div>
+          <span class="gl-display-flex gl-flex-basis-two-thirds">{{ resource.description }}</span>
+          <div
+            v-if="hasComponents"
+            data-testid="ci-resource-component-names"
+            class="gl-font-sm gl-mt-1"
+          >
+            <span class="gl-font-weight-bold"> &#8226; {{ $options.i18n.components }} </span>
+            <span class="gl-text-gray-900">{{ componentNames }}</span>
+          </div>
+        </div>
         <div class="gl-display-flex gl-justify-content-end">
           <span v-if="hasReleasedVersion">
             <gl-sprintf :message="$options.i18n.releasedMessage">
@@ -159,14 +169,6 @@ export default {
             </gl-sprintf>
           </span>
         </div>
-      </div>
-      <div
-        v-if="hasComponents"
-        data-testid="ci-resource-component-names"
-        class="gl-font-sm gl-mt-1"
-      >
-        <span class="gl-font-weight-bold"> &#8226; {{ $options.i18n.components }} </span>
-        <span class="gl-text-gray-900">{{ componentNames }}</span>
       </div>
     </div>
   </li>

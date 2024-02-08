@@ -136,36 +136,5 @@ RSpec.describe 'CI/CD Catalog', :js, feature_category: :pipeline_composition do
         end
       end
     end
-
-    context 'when sorting' do
-      context 'with the creation date option' do
-        it 'sorts resources from last to first by default' do
-          expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
-          expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(
-            public_projects_with_components[2].name
-          )
-          expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(
-            public_projects_with_components[0].name
-          )
-        end
-
-        context 'when changing the sort direction' do
-          before do
-            find('.sorting-direction-button').click
-            wait_for_requests
-          end
-
-          it 'sorts resources from first to last' do
-            expect(find_all('[data-testid="catalog-resource-item"]').length).to be(3)
-            expect(find_all('[data-testid="catalog-resource-item"]')[0]).to have_content(
-              public_projects_with_components[0].name
-            )
-            expect(find_all('[data-testid="catalog-resource-item"]')[2]).to have_content(
-              public_projects_with_components[2].name
-            )
-          end
-        end
-      end
-    end
   end
 end

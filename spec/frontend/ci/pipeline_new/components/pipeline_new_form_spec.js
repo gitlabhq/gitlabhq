@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlForm, GlDropdownItem, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
+import { GlForm, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import CreditCardValidationRequiredAlert from 'ee_component/billings/components/cc_validation_required_alert.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -58,12 +58,12 @@ describe('Pipeline New Form', () => {
   const findSubmitButton = () => wrapper.findByTestId('run-pipeline-button');
   const findVariableRows = () => wrapper.findAllByTestId('ci-variable-row-container');
   const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
-  const findVariableTypes = () => wrapper.findAllByTestId('pipeline-form-ci-variable-type');
+  const findCollapsableListsWithVariableTypes = () =>
+    wrapper.findAllByTestId('pipeline-form-ci-variable-type');
   const findKeyInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-key-field');
   const findValueInputs = () => wrapper.findAllByTestId('pipeline-form-ci-variable-value-field');
-  const findValueDropdowns = () =>
-    wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown');
-  const findValueDropdownItems = (dropdown) => dropdown.findAllComponents(GlDropdownItem);
+  const findCollapsableListWithVariableOptions = () =>
+    wrapper.findAllByTestId('pipeline-form-ci-variable-value-dropdown').at(0);
   const findErrorAlert = () => wrapper.findByTestId('run-pipeline-error-alert');
   const findPipelineConfigButton = () => wrapper.findByTestId('ci-cd-pipeline-configuration');
   const findWarningAlert = () => wrapper.findByTestId('run-pipeline-warning-alert');
@@ -137,8 +137,10 @@ describe('Pipeline New Form', () => {
     });
 
     it('displays the correct values for the provided query params', () => {
-      expect(findVariableTypes().at(0).props('text')).toBe('Variable');
-      expect(findVariableTypes().at(1).props('text')).toBe('File');
+      const collapsableLists = findCollapsableListsWithVariableTypes();
+
+      expect(collapsableLists.at(0).props('selected')).toBe('env_var');
+      expect(collapsableLists.at(1).props('selected')).toBe('file');
       expect(findRefsDropdown().props('value')).toEqual({ shortName: 'tag-1' });
       expect(findVariableRows()).toHaveLength(3);
     });
@@ -149,9 +151,11 @@ describe('Pipeline New Form', () => {
     });
 
     it('displays an empty variable for the user to fill out', () => {
+      const collapsableLists = findCollapsableListsWithVariableTypes();
+
       expect(findKeyInputs().at(2).attributes('value')).toBe('');
       expect(findValueInputs().at(2).attributes('value')).toBe('');
-      expect(findVariableTypes().at(2).props('text')).toBe('Variable');
+      expect(collapsableLists.at(2).props('selected')).toBe('env_var');
     });
 
     it('does not display remove icon for last row', () => {
@@ -359,9 +363,11 @@ describe('Pipeline New Form', () => {
       createComponentWithApollo();
       await waitForPromises();
 
+      const collapsableLists = findCollapsableListsWithVariableTypes();
+
       expect(findKeyInputs().at(0).attributes('value')).toBe('');
       expect(findValueInputs().at(0).attributes('value')).toBe('');
-      expect(findVariableTypes().at(0).props('text')).toBe('Variable');
+      expect(collapsableLists.at(0).props('selected')).toBe('env_var');
     });
   });
 
@@ -379,21 +385,21 @@ describe('Pipeline New Form', () => {
         expect(findValueInputs().at(1).attributes('value')).toBe(mockYamlVariables[1].value);
       });
 
-      it('multiple predefined values are rendered as a dropdown', () => {
-        const dropdown = findValueDropdowns().at(0);
-        const dropdownItems = findValueDropdownItems(dropdown);
-        const { valueOptions } = mockYamlVariables[2];
+      it('passes the correct data to the collapsible list, which will be displayed as items of the collapsible list', () => {
+        const collapsableList = findCollapsableListWithVariableOptions();
+        const expectedItems = mockYamlVariables[2].valueOptions.map((item) => ({
+          text: item,
+          value: item,
+        }));
 
-        expect(dropdownItems.at(0).text()).toBe(valueOptions[0]);
-        expect(dropdownItems.at(1).text()).toBe(valueOptions[1]);
-        expect(dropdownItems.at(2).text()).toBe(valueOptions[2]);
+        expect(collapsableList.props('items')).toMatchObject(expectedItems);
       });
 
-      it('variable with multiple predefined values sets value as the default', () => {
-        const dropdown = findValueDropdowns().at(0);
+      it('passes the correct default variable option value to the collapsable list', () => {
+        const collapsableList = findCollapsableListWithVariableOptions();
         const { valueOptions } = mockYamlVariables[2];
 
-        expect(dropdown.props('text')).toBe(valueOptions[1]);
+        expect(collapsableList.props('selected')).toBe(valueOptions[1]);
       });
     });
 
