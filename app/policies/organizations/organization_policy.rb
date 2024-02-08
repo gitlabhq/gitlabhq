@@ -30,3 +30,5 @@ module Organizations
     end
   end
 end
+
+Organizations::OrganizationPolicy.prepend_mod_with('Organizations::OrganizationPolicy')

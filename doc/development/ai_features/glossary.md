@@ -22,14 +22,10 @@ to AI that you think could benefit from being in this list, add it!
   two different third-party LLMs determine if the generated answer is accurate or not.
   [MVC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134610).
   [Design doc for next iteration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136127).
-- **Cloud Connector**: Today, Cloud Connector is not a system. It is an umbrella
-  term for all the projects we engage in that make existing SaaS-only features
-  available to self-managed and GitLab Dedicated customers. Today, the only
-  feature available through Cloud Connector is Code Suggestions.
-  Cloud Connector also refer to a planned GitLab-hosted edge service which would
-  act as a way for non-SaaS GitLab instances to access SaaS offerings.
-  [Cloud Connector MVC](../cloud_connector/code_suggestions_for_sm.md).
-  [Blueprint for future Cloud Connector service](../../architecture/blueprints/cloud_connector/index.md).
+- **Cloud Connector**: Cloud Connector is a way to access services common to
+multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
+  set of technical solutions and APIs used to make such services available to all GitLab customers.
+  For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
 - **Consensus Filtering**: method for LLM evaluation where you instruct an LLM
   to evaluate the output of another LLM based on the question and context that
   resulted in the output. This is the method of evaluation being used for the Chat

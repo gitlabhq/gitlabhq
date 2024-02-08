@@ -63,6 +63,16 @@ mapping:
   - source: '(ee/)?app/controllers/(.+)\.rb'
     test: '%sspec/requests/%s_spec.rb'
 
+  # EE/FOSS GraphQL resolvers map to request specs
+  - source: '(ee/)?app/graphql/resolvers/(.+)_resolver\.rb'
+    test:
+      - '%sspec/requests/api/graphql/%s_spec.rb'
+      - '%sspec/requests/api/graphql/%s_query_spec.rb'
+
+  # EE/FOSS GraphQL mutations map to request specs
+  - source: '(ee/)?app/graphql/mutations/(.+)\.rb'
+    test: '%sspec/requests/api/graphql/mutations/%s_spec.rb'
+
   # EE/FOSS spec code should map to itself
   - source: '(.+)_spec\.rb'
     test: '%s_spec.rb'

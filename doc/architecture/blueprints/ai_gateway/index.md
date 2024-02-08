@@ -450,7 +450,7 @@ in:
 - [Epic 10808](https://gitlab.com/groups/gitlab-org/-/epics/10808)
 
 The specific mechanism by which trust is delegated between end-users, GitLab instances,
-and the AI-gateway is covered in the [AI gateway access token validation documentation](../../../development/cloud_connector/code_suggestions_for_sm.md#ai-gateway-access-token-validation).
+and the AI-gateway is covered in the [Cloud Connector access control documentation](../../../development/cloud_connector/architecture.md#access-control).
 
 ## Embeddings
 

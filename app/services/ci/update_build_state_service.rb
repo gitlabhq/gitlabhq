@@ -217,8 +217,7 @@ module Ci
     end
 
     def chunks_migration_enabled?
-      ::Feature.enabled?(:ci_enable_live_trace, build.project) &&
-        ::Feature.enabled?(:ci_accept_trace, build.project, type: :ops)
+      ::Feature.enabled?(:ci_enable_live_trace, build.project)
     end
 
     def log_invalid_chunks?

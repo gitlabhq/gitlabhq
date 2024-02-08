@@ -90,6 +90,9 @@ records are always removed.
 The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
 the Admin Area.
 
+WARNING:
+User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
+
 ## Troubleshooting
 
 ### Deleting a user results in a PostgreSQL null value error

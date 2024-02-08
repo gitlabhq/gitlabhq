@@ -251,7 +251,6 @@ RSpec/ContextWording:
     - 'ee/spec/helpers/boards_helper_spec.rb'
     - 'ee/spec/helpers/compliance_management/compliance_framework/group_settings_helper_spec.rb'
     - 'ee/spec/helpers/ee/auth_helper_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/helpers/ee/gitlab_routing_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups/group_members_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'

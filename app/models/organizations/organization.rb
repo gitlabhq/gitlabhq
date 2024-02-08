@@ -72,3 +72,5 @@ module Organizations
     end
   end
 end
+
+::Organizations::Organization.prepend_mod_with('Organizations::Organization')

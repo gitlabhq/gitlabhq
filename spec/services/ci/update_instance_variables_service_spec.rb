@@ -5,13 +5,13 @@ require 'spec_helper'
 RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_management do
   let(:params) { { variables_attributes: variables_attributes } }
 
-  subject { described_class.new(params) }
+  subject(:service) { described_class.new(params) }
 
   describe '#execute' do
     context 'without variables' do
       let(:variables_attributes) { [] }
 
-      it { expect(subject.execute).to be_truthy }
+      it { expect(service.execute).to be_truthy }
     end
 
     context 'with insert only variables' do
@@ -22,16 +22,16 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect(subject.execute).to be_truthy }
+      it { expect(service.execute).to be_truthy }
 
       it 'persists all the records' do
-        expect { subject.execute }
+        expect { service.execute }
           .to change { Ci::InstanceVariable.count }
           .by variables_attributes.size
       end
 
       it 'persists attributes' do
-        subject.execute
+        service.execute
 
         expect(Ci::InstanceVariable.all).to contain_exactly(
           have_attributes(key: 'var_a', secret_value: 'dummy_value_for_a', protected: true),
@@ -61,15 +61,15 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect(subject.execute).to be_truthy }
+      it { expect(service.execute).to be_truthy }
 
       it 'does not change the count' do
-        expect { subject.execute }
+        expect { service.execute }
           .not_to change { Ci::InstanceVariable.count }
       end
 
       it 'updates the records in place', :aggregate_failures do
-        subject.execute
+        service.execute
 
         expect(var_a.reload).to have_attributes(secret_value: 'new_dummy_value_for_a')
 
@@ -97,15 +97,15 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect(subject.execute).to be_truthy }
+      it { expect(service.execute).to be_truthy }
 
       it 'inserts only one record' do
-        expect { subject.execute }
+        expect { service.execute }
           .to change { Ci::InstanceVariable.count }.by 1
       end
 
       it 'persists all the records', :aggregate_failures do
-        subject.execute
+        service.execute
         var_b = Ci::InstanceVariable.find_by(key: 'var_b')
 
         expect(var_a.reload.secret_value).to eq('new_dummy_value_for_a')
@@ -140,10 +140,10 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect(subject.execute).to be_truthy }
+      it { expect(service.execute).to be_truthy }
 
       it 'persists all the records', :aggregate_failures do
-        subject.execute
+        service.execute
         var_c = Ci::InstanceVariable.find_by(key: 'var_c')
 
         expect(var_a.reload.secret_value).to eq('new_dummy_value_for_a')
@@ -174,23 +174,23 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect(subject.execute).to be_falsey }
+      it { expect(service.execute).to be_falsey }
 
       it 'does not insert any records' do
-        expect { subject.execute }
+        expect { service.execute }
           .not_to change { Ci::InstanceVariable.count }
       end
 
       it 'does not update existing records' do
-        subject.execute
+        service.execute
 
         expect(var_a.reload.secret_value).to eq('dummy_value_for_a')
       end
 
       it 'returns errors' do
-        subject.execute
+        service.execute
 
-        expect(subject.errors).to match_array(
+        expect(service.errors).to match_array(
           [
             "Key (#{var_a.key}) has already been taken",
             "Key can contain only letters, digits and '_'."
@@ -210,7 +210,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect { subject.execute }.to raise_error(ActiveRecord::RecordNotFound) }
+      it { expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound) }
     end
 
     context 'when updating non existing variables' do
@@ -224,7 +224,7 @@ RSpec.describe Ci::UpdateInstanceVariablesService, feature_category: :secrets_ma
         ]
       end
 
-      it { expect { subject.execute }.to raise_error(ActiveRecord::RecordNotFound) }
+      it { expect { service.execute }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 end

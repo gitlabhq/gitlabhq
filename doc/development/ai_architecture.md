@@ -117,7 +117,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 Code Suggestions for self-managed users was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
 
-For more information on the technical solution for this project see the [Cloud Connector MVC documentation](cloud_connector/code_suggestions_for_sm.md).
+For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
 
 The intention is to evolve this solution to service other AI features under the Cloud Connector product umbrella.
 

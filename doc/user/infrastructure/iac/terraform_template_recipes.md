@@ -10,6 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** SaaS, self-managed
 
+WARNING:
+The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
+See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
+
 You can customize your Terraform integration by adding the recipes on
 this page to your pipeline.
 

@@ -265,7 +265,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/types/vulnerability_scanner_type_spec.rb'
     - 'ee/spec/graphql/types/vulnerability_type_spec.rb'
     - 'ee/spec/helpers/ee/ci/pipeline_editor_helper_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/pipeline_helper_spec.rb'
     - 'ee/spec/helpers/gitlab_subscriptions/upcoming_reconciliation_helper_spec.rb'

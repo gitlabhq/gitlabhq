@@ -21,7 +21,6 @@ Lint/SymbolConversion:
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/features/admin/subscriptions/admin_views_subscription_spec.rb'
     - 'ee/spec/graphql/resolvers/security_report_summary_resolver_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/lib/arkose/logger_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/common_spec.rb'

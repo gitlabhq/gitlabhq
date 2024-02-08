@@ -90,7 +90,7 @@ module API
             end
           end
           put "#{path}/#{slug}" do
-            if slug == "git-guardian" && Feature.disabled?(:git_guardian_integration, type: :wip)
+            if slug == "git-guardian" && Feature.disabled?(:git_guardian_integration)
               render_api_error!('GitGuardian feature is disabled', 400)
             end
 
@@ -128,7 +128,7 @@ module API
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
         end
         delete "#{path}/:slug" do
-          if params[:slug] == "git-guardian" && Feature.disabled?(:git_guardian_integration, type: :wip)
+          if params[:slug] == "git-guardian" && Feature.disabled?(:git_guardian_integration)
             render_api_error!('GitGuardian feature is disabled', 400)
           end
 

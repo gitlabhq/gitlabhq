@@ -425,7 +425,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/helpers/ee/ci/pipelines_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
     - 'ee/spec/helpers/ee/emails_helper_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/helpers/ee/events_helper_spec.rb'
     - 'ee/spec/helpers/ee/export_helper_spec.rb'
     - 'ee/spec/helpers/ee/feature_flags_helper_spec.rb'

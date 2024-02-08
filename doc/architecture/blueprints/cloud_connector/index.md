@@ -19,12 +19,11 @@ gateway into all features offered under the Cloud Connector umbrella.
 ## Motivation
 
 We currently serve only AI related features to Cloud Connector customers, and our
-[current architecture](../../../development/cloud_connector/code_suggestions_for_sm.md)
+[current architecture](../../../development/cloud_connector/architecture.md)
 is a direct reflection of that.
 Both SaaS and Self-managed/Dedicated GitLab instances (SM hereafter) talk to the [AI gateway](../ai_gateway/index.md)
 directly, which also implements an `Access Layer` to verify that a given request is allowed
-to access the respective AI feature endpoint. The mechanism through which this verification happens
-for SM instances is detailed in [the CustomersDot architecture documentation](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/architecture/add_ons/code_suggestions/authorization_for_self_managed.md).
+to access the respective AI feature endpoint.
 
 This approach has served us well because it:
 

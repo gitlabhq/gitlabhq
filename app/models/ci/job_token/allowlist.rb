@@ -17,7 +17,9 @@ module Ci
         allowlist_group_ids = group_links.pluck(:target_group_id)
         target_project_group_path_ids = target_project.parent_groups.map(&:id)
 
-        allowlist_group_ids.intersect?(target_project_group_path_ids)
+        allowed_target_group_ids = allowlist_group_ids & target_project_group_path_ids
+
+        allowed_target_group_ids.any?
       end
 
       def projects

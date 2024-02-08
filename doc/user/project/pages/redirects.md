@@ -128,7 +128,7 @@ rewrite the URL.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
 
-NOTE:
+FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_DOMAIN_REDIRECT`.
 On GitLab.com, this feature is available.

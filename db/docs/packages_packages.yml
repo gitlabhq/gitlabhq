@@ -3,6 +3,7 @@ table_name: packages_packages
 classes:
 - Packages::MlModel::Package
 - Packages::Package
+- Packages::Rubygems::Package
 feature_categories:
 - package_registry
 description: Information for individual packages in the package registry

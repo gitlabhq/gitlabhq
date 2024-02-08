@@ -10,6 +10,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** SaaS, self-managed
 
+WARNING:
+The Terraform CI/CD templates are deprecated and will be removed in GitLab 18.0.
+See [the deprecation announcement](../../../update/deprecations.md#deprecate-terraform-cicd-templates) for more information.
+
 GitLab provides two helpers to ease your integration with the [GitLab-managed Terraform State](terraform_state.md).
 
 - The `gitlab-terraform` script, which is a thin wrapper around the `terraform` command.

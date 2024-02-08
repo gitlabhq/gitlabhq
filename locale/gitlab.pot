@@ -5730,6 +5730,9 @@ msgstr ""
 msgid "Analytics|OS Version"
 msgstr ""
 
+msgid "Analytics|Overview"
+msgstr ""
+
 msgid "Analytics|Page Language"
 msgstr ""
 
@@ -5806,6 +5809,9 @@ msgid "Analytics|Updating dashboard %{dashboardSlug}"
 msgstr ""
 
 msgid "Analytics|Updating visualization %{visualizationName}"
+msgstr ""
+
+msgid "Analytics|Usage breakdown"
 msgstr ""
 
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
@@ -34838,9 +34844,6 @@ msgstr ""
 msgid "Package type must be RPM"
 msgstr ""
 
-msgid "Package type must be RubyGems"
-msgstr ""
-
 msgid "Package type must be Terraform Module"
 msgstr ""
 
@@ -43329,6 +43332,9 @@ msgid "Saving"
 msgstr ""
 
 msgid "Saving project."
+msgstr ""
+
+msgid "Scan pushed document contents for policy breaks. %{docs_link}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{actionType}"
