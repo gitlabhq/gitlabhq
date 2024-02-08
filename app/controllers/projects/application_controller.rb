@@ -10,6 +10,10 @@ class Projects::ApplicationController < ApplicationController
   before_action :repository
   layout 'project'
 
+  before_action do
+    push_namespace_setting(:math_rendering_limits_enabled, @project&.parent)
+  end
+
   helper_method :repository, :can_collaborate_with_project?, :user_access
 
   rescue_from Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError do |exception|

@@ -25029,6 +25029,9 @@ msgstr ""
 msgid "IdentityVerification|Phone number must contain only digits."
 msgstr ""
 
+msgid "IdentityVerification|Phone number verification is unavailable at this time. Please verify with a credit card instead."
+msgstr ""
+
 msgid "IdentityVerification|Please enter a valid code"
 msgstr ""
 

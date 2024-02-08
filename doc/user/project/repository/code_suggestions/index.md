@@ -63,7 +63,7 @@ To use Code Suggestions, use one of these editor extensions:
 | VSCode           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)|
 | [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md)  | No configuration required. |
 | Microsoft Visual Studio | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
-| JetBrains IDEs  | [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab) |
+| JetBrains IDEs  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab) |
 | Neovim           | [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) |
 
 A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, and Neovim. The Language Server supports faster iteration across more platforms. You can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.

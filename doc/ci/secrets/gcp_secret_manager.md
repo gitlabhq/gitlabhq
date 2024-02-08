@@ -28,11 +28,11 @@ The flow for using GitLab with GCP Secret Manager is:
 To use GitLab with GCP Secret Manager, you must:
 
 - Have secrets stored in [GCP Secret Manager](https://cloud.google.com/security/products/secret-manager).
-- Configure [GCP Workload Identity Federation](#configure-gcp-iam-workload-identify-federation-wif) to include GitLab as an identity provider.
+- Configure [GCP Workload Identity Federation](#configure-gcp-iam-workload-identity-federation-wif) to include GitLab as an identity provider.
 - Configure [GCP IAM](#grant-access-to-gcp-iam-principal) permissions to grant access to GCP Secret Manager.
 - Configure [GitLab CI/CD with GCP Secret Manager](#configure-gitlab-cicd-to-use-gcp-secret-manager-secrets).
 
-## Configure GCP IAM Workload Identify Federation (WIF)
+## Configure GCP IAM Workload Identity Federation (WIF)
 
 GCP IAM WIF must be configured to recognize ID tokens issued by GitLab and assign an appropriate principal to them.
 The principal is used to authorize access to the Secret Manager resources:

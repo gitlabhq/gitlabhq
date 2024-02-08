@@ -234,7 +234,6 @@ Style/GuardClause:
     - 'app/workers/container_registry/migration/guard_worker.rb'
     - 'app/workers/deployments/hooks_worker.rb'
     - 'app/workers/deployments/link_merge_request_worker.rb'
-    - 'app/workers/gitlab/github_import/refresh_import_jid_worker.rb'
     - 'app/workers/google_cloud/create_cloudsql_instance_worker.rb'
     - 'app/workers/packages/cleanup/execute_policy_worker.rb'
     - 'app/workers/packages/maven/metadata/sync_worker.rb'

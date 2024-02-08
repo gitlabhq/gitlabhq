@@ -111,6 +111,12 @@ module Gitlab
       push_to_gon_attributes(:features, name, !!enabled)
     end
 
+    def push_namespace_setting(key, object)
+      return unless object&.namespace_settings.respond_to?(key)
+
+      gon.push({ key => object.namespace_settings.public_send(key) }) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
     def push_to_gon_attributes(key, name, enabled)
       var_name = name.to_s.camelize(:lower)
       # Here the `true` argument signals gon that the value should be merged

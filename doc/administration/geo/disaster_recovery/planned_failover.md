@@ -186,6 +186,10 @@ On the **primary** site:
    takes to finish syncing.
 1. Select **Add broadcast message**.
 
+### Runner failover
+
+If you have any runners connected to your current secondary, see [how to handle them](../secondary_proxy/runners.md#handling-a-planned-failover-with-secondary-runners) during the failover.
+
 ## Prevent updates to the **primary** site
 
 To ensure that all data is replicated to a secondary site, updates (write requests) need to

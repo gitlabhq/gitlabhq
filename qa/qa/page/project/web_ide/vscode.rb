@@ -65,7 +65,11 @@ module QA
           end
 
           def click_commit_tab
-            click_element('.codicon-source-control-view-icon')
+            if has_element?('.codicon-source-control-view-icon + .badge')
+              click_element('.codicon-source-control-view-icon + .badge')
+            else
+              click_element('.codicon-source-control-view-icon')
+            end
           end
 
           def has_commit_message_box?

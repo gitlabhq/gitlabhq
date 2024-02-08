@@ -373,6 +373,8 @@
   - 1
 - - import_issues_csv
   - 2
+- - import_refresh_import_jid
+  - 1
 - - incident_management
   - 2
 - - incident_management_apply_incident_sla_exceeded_label

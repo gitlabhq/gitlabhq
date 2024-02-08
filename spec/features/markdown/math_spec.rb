@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
-  let!(:project) { create(:project, :public) }
+  let_it_be(:project) { create(:project, :public) }
 
   it 'renders inline and display math correctly' do
     description = <<~MATH
@@ -98,7 +98,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
         end
       end
 
-      it 'renders without any limits on wiki page', :js do
+      it 'renders with limits on wiki page', :js do
         wiki_page = build(:wiki_page, { container: project, content: lazy_load_description })
         wiki_page.create message: 'math test commit' # rubocop:disable Rails/SaveBang
         wiki_page = project.wiki.find_page(wiki_page.slug)
@@ -108,20 +108,26 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
         wait_for_requests
 
         page.within '.js-wiki-page-content' do
-          expect(page).not_to have_selector('.js-lazy-render-math')
+          # the find is needed to ensure the lazy container is loaded, otherwise
+          # it can be a flaky test, similar to
+          # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408
+          find('.js-lazy-render-math-container')
+
+          expect(page).to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
         end
       end
     end
 
     context 'when limits are disabled' do
-      before do
-        stub_application_setting(math_rendering_limits_enabled: false)
-      end
+      let_it_be(:namespace_settings) { create(:namespace_settings, math_rendering_limits_enabled: false) }
+      let_it_be(:group) { create(:group, namespace_settings: namespace_settings) }
+      let_it_be(:project) { create(:project, :public, group: group) }
 
       it 'does not render lazy load button' do
         create_and_visit_issue_with_description(lazy_load_description)
 
         page.within '.description > .md' do
+          expect(page).not_to have_selector('button', text: 'Display anyway')
           expect(page)
             .not_to have_selector('.js-lazy-render-math-container', text: /math block exceeds 1000 characters/)
         end
@@ -131,6 +137,7 @@ RSpec.describe 'Math rendering', :js, feature_category: :team_planning do
         create_and_visit_issue_with_description(excessive_expansion_description)
 
         page.within '.description > .md' do
+          expect(page).not_to have_selector('button', text: 'Display anyway')
           expect(page).not_to have_selector('.katex-error', text: /Too many expansions/)
         end
       end

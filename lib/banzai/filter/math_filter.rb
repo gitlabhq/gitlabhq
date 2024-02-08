@@ -11,6 +11,7 @@ module Banzai
     class MathFilter < HTML::Pipeline::Filter
       # Handle the $`...`$ and ```math syntax in this filter.
       # Also add necessary classes any existing math blocks.
+      include ::Gitlab::Utils::StrongMemoize
 
       CSS_MATH   = 'pre[data-canonical-lang="math"] > code'
       XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
@@ -88,24 +89,19 @@ module Banzai
         end
       end
 
-      def settings
-        Gitlab::CurrentSettings.current_application_settings
-      end
-
       def render_nodes_limit_reached?(count)
-        return false if wiki?
-        return false if blob?
-        return false unless settings.math_rendering_limits_enabled?
-
-        count >= RENDER_NODES_LIMIT
+        count >= RENDER_NODES_LIMIT && math_rendering_limits_enabled?
       end
 
-      def wiki?
-        context[:wiki].present?
-      end
+      def math_rendering_limits_enabled?
+        return true unless group && group.namespace_settings
 
-      def blob?
-        context[:text_source] == :blob
+        group.namespace_settings.math_rendering_limits_enabled?
+      end
+      strong_memoize_attr :math_rendering_limits_enabled?
+
+      def group
+        context[:project]&.parent || context[:group]
       end
     end
   end
