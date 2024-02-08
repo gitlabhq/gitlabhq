@@ -146,34 +146,7 @@ Consider this example:
    - GitLab adds a formatted comment to Jira, linking back to the commit that
      resolved the issue. You can [disable comments](#disable-comments-on-jira-issues).
 
-## View Jira issues
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-
-You can view and search issues from a selected Jira project directly in GitLab,
-provided your GitLab administrator [has configured the integration](configure.md#configure-the-integration).
-
-To view Jira issues:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Jira issues**.
-
-The issues are sorted by **Created date** by default, with the most recently created issues listed at the top.
-
-- To display the most recently updated issues first, select **Updated date**.
-- You can [search and filter the issue list](#search-and-filter-the-issue-list).
-- You can [select an issue from the list to view the issue in GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/299832).
-
-Issues are grouped into tabs based on their
-[Jira status](https://confluence.atlassian.com/adminjiraserver070/defining-status-field-values-749382903.html):
-
-- **Open** tab: All issues with a Jira status in any category other than Done.
-- **Closed** tab: All issues with a Jira status categorized as Done.
-- **All** tab: All issues of any status.
-
-### Search and filter the issue list
+## Search and filter the issue list
 
 DETAILS:
 **Tier:** Premium, Ultimate

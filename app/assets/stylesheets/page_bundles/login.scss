@@ -1,5 +1,23 @@
 @import 'mixins_and_variables_and_functions';
 
+.html-devise-layout {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  
+  body {
+    &.with-system-header {
+      padding-top: $system-header-height;
+    }
+    
+    &.with-system-footer {
+      .footer-container {
+        padding-bottom: $system-footer-height;
+      }
+    }
+  }
+}
+
 /* Login Page */
 .login-page {
   .container {
@@ -42,30 +60,9 @@
     }
   }
 
+
   .devise-errors {
-    h2 {
-      margin-top: 0;
-      font-size: 14px;
-      color: $red-700;
-    }
-  }
-}
-
-.html-devise-layout {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-
-  body {
-    &.with-system-header {
-      padding-top: $system-header-height;
-    }
-
-    &.with-system-footer {
-      .footer-container {
-        padding-bottom: $system-footer-height;
-      }
-    }
+    @include devise-errors;
   }
 }
 

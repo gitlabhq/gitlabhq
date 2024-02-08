@@ -217,7 +217,7 @@ end
 
 ## Jira issue list
 
-When [viewing Jira issues](issues.md#view-jira-issues) in GitLab, you might encounter the following issues.
+When [viewing Jira issues](configure.md#view-jira-issues) in GitLab, you might encounter the following issues.
 
 ### `500 We're sorry` when accessing a Jira issue in GitLab
 

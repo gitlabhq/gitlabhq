@@ -17,5 +17,5 @@ export const ACCESS_LEVEL_NONE = 0;
 
 // must match shared_runners_setting in update_service.rb
 export const CC_VALIDATION_REQUIRED_ERROR = __(
-  'Shared runners enabled cannot be enabled until a valid credit card is on file',
+  'Instance runners enabled cannot be enabled until a valid credit card is on file',
 );

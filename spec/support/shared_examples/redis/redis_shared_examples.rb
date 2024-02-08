@@ -80,17 +80,18 @@ RSpec.shared_examples "redis_shared_examples" do
 
     context 'with new format' do
       it_behaves_like 'redis store' do
-        # use new format host without sentinel details as `.to_s` checks `config` which
-        # tries to resolve master/replica details with an actual sentinel instance.
-        # https://github.com/redis-rb/redis-client/blob/v0.18.0/lib/redis_client/sentinel_config.rb#L128
-        let(:config_file_name) { "spec/fixtures/config/redis_new_format_host_standalone.yml" }
+        let(:config_file_name) { config_new_format_host }
         let(:host) { "development-host:#{redis_port}" }
       end
     end
   end
 
-  describe '.params' do
-    subject { described_class.new(rails_env).params }
+  describe '.redis_client_params' do
+    # .redis_client_params wraps over `.redis_store_options` by modifying its outputs
+    # to be compatible with `RedisClient`. We test for compatibility in this block while
+    # the contents of redis_store_options are tested in the `.params` block.
+
+    subject { described_class.new(rails_env).redis_client_params }
 
     let(:rails_env) { 'development' }
     let(:config_file_name) { config_old_format_socket }
@@ -101,6 +102,56 @@ RSpec.shared_examples "redis_shared_examples" do
         expect(subject[:instrumentation_class]).to be_nil
       end
     end
+
+    context 'when url is host based' do
+      context 'with old format' do
+        let(:config_file_name) { config_old_format_host }
+
+        it 'does not raise ArgumentError for invalid keywords' do
+          expect { RedisClient.config(**subject) }.not_to raise_error
+        end
+
+        it_behaves_like 'instrumentation_class in custom key'
+      end
+
+      context 'with new format' do
+        let(:config_file_name) { config_new_format_host }
+
+        where(:rails_env, :host) do
+          [
+            %w[development development-host],
+            %w[test test-host],
+            %w[production production-host]
+          ]
+        end
+
+        with_them do
+          it 'does not raise ArgumentError for invalid keywords in SentinelConfig' do
+            expect(subject[:name]).to eq(host)
+            expect { RedisClient.sentinel(**subject) }.not_to raise_error
+          end
+
+          it_behaves_like 'instrumentation_class in custom key'
+        end
+      end
+    end
+
+    context 'when url contains unix socket reference' do
+      let(:config_file_name) { config_old_format_socket }
+
+      it 'does not raise ArgumentError for invalid keywords' do
+        expect { RedisClient.config(**subject) }.not_to raise_error
+      end
+
+      it_behaves_like 'instrumentation_class in custom key'
+    end
+  end
+
+  describe '.params' do
+    subject { described_class.new(rails_env).params }
+
+    let(:rails_env) { 'development' }
+    let(:config_file_name) { config_old_format_socket }
 
     it 'withstands mutation' do
       params1 = described_class.params
@@ -200,16 +251,10 @@ RSpec.shared_examples "redis_shared_examples" do
 
         with_them do
           it 'returns hash with host, port, db, and password' do
-            is_expected.to include(name: host, password: 'mynewpassword', db: redis_database)
+            is_expected.to include(host: host, password: 'mynewpassword', port: redis_port, db: redis_database)
             is_expected.not_to have_key(:url)
           end
-
-          it 'does not raise ArgumentError for invalid keywords in SentinelConfig' do
-            expect { RedisClient.sentinel(**subject) }.not_to raise_error
-          end
         end
-
-        it_behaves_like 'instrumentation_class in custom key'
       end
 
       context 'with redis cluster format' do
@@ -227,19 +272,13 @@ RSpec.shared_examples "redis_shared_examples" do
           it 'returns hash with cluster and password' do
             is_expected.to include(
               password: 'myclusterpassword',
-              nodes: [
+              cluster: [
                 { host: "#{host}1", port: redis_port },
                 { host: "#{host}2", port: redis_port }
               ]
             )
             is_expected.not_to have_key(:url)
           end
-
-          it 'does not raise ArgumentError for invalid keywords in ClusterConfig' do
-            expect { RedisClient::ClusterConfig.new(**subject) }.not_to raise_error
-          end
-
-          it_behaves_like 'instrumentation_class in custom key'
         end
       end
     end

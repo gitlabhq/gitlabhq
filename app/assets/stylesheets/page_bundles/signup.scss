@@ -1,13 +1,6 @@
 @import 'mixins_and_variables_and_functions';
 
 .signup-page {
-  .devise-errors {
-    h2 {
-      font-size: $gl-font-size;
-      color: var(--red-700, $red-700);
-    }
-  }
-
   .decline-page {
     width: 350px;
   }
@@ -15,4 +8,8 @@
 
 .edit-profile {
   max-width: 460px;
+}
+
+.devise-errors {
+  @include devise-errors;
 }

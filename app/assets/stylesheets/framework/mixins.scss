@@ -442,3 +442,11 @@
     color: $gl-text-color;
   }
 }
+
+@mixin devise-errors {
+  h2 {
+    margin-top: 0;
+    font-size: $gl-font-size;
+    color: var(--red-700, $red-700);
+  }
+}

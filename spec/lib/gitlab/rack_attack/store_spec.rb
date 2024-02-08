@@ -102,7 +102,7 @@ RSpec.describe Gitlab::RackAttack::Store, :clean_gitlab_redis_rate_limiting, fea
       before do
         broken_redis = Redis.new(
           url: 'redis://127.0.0.0:0',
-          custom: { instrumentation_class: Gitlab::Redis::RateLimiting.instrumentation_class }
+          instrumentation_class: Gitlab::Redis::RateLimiting.instrumentation_class
         )
         allow(Gitlab::Redis::RateLimiting).to receive(:with).and_yield(broken_redis)
       end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails'
-require 'redis-clustering'
+require 'redis'
 
 module Gitlab
   module Instrumentation
@@ -230,7 +230,7 @@ module Gitlab
         end
 
         def key_slot(key)
-          ::RedisClient::Cluster::KeySlotConverter.convert(extract_hash_tag(key))
+          ::Redis::Cluster::KeySlotConverter.convert(extract_hash_tag(key))
         end
 
         # This is almost identical to Redis::Cluster::Command#extract_hash_tag,

@@ -29,7 +29,7 @@ class InvitesController < ApplicationController
 
   def decline
     if member.decline_invite!
-      return render layout: 'signup_onboarding' if !current_user && member.invite_to_unknown_user? && member.created_by
+      return render layout: 'minimal' if !current_user && member.invite_to_unknown_user? && member.created_by
 
       path =
         if current_user

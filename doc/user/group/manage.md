@@ -450,7 +450,7 @@ for the ability to set merge request approval rules for groups is tracked in
 ## Enable Experiment and Beta features
 
 DETAILS:
-**Tier:** Ultimate, Premium
+**Tier:** Premium, Ultimate
 **Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.

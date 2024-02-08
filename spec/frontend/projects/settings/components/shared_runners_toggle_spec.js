@@ -62,7 +62,7 @@ describe('projects/settings/components/shared_runners', () => {
 
     it('renders text explaining why the toggle is disabled', () => {
       expect(findSharedRunnersToggle().text()).toEqual(
-        'Shared runners are disabled in the group settings.',
+        'Instance runners are disabled in the group settings.',
       );
     });
 

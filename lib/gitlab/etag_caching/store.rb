@@ -17,7 +17,7 @@ module Gitlab
 
         Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
           with_redis do |redis|
-            redis.pipelined do |pipeline|
+            Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
               keys.each_with_index do |key, i|
                 pipeline.set(redis_shared_state_key(key), etags[i], ex: EXPIRY_TIME, nx: only_if_missing)
               end

@@ -275,6 +275,14 @@ Dangerfile
 /ee/spec/services/software_license_policies/**
 /spec/finders/security/license_compliance_jobs_finder_spec.rb
 
+^[Secure::Static Analysis] @gitlab-org/secure/static-analysis
+/ee/lib/gitlab/checks/secrets_check.rb
+/ee/spec/lib/gitlab/checks/secrets_check_spec.rb
+/ee/spec/support/shared_contexts/secrets_check_shared_contexts.rb
+/ee/spec/support/shared_examples/lib/gitlab/secrets_check_shared_examples.rb
+/lib/gitlab/checks/changed_blobs.rb
+/spec/lib/gitlab/checks/changed_blobs.rb
+
 ^[Code Owners] @reprazent @kerrizor @garyh
 /ee/lib/gitlab/code_owners.rb
 /ee/lib/gitlab/code_owners/

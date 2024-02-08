@@ -20,7 +20,7 @@ Watch a [video demo](https://youtu.be/yvLxtkvsFDA) of how to publish npm package
 
 ### Authentication to the package registry
 
-You need an token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
+You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
 
 - If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 - If you are publishing a package via CI/CD pipelines, you must use a CI job token.

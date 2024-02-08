@@ -74,6 +74,8 @@ module Groups
       end
 
       params.delete(:allow_mfa_for_subgroups)
+      params.delete(:math_rendering_limits_enabled)
+      params.delete(:lock_math_rendering_limits_enabled)
     end
 
     def create_chat_team?

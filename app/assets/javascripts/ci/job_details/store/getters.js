@@ -34,7 +34,7 @@ export const emptyStateIllustration = (state) => state?.job?.status?.illustratio
 export const emptyStateAction = (state) => state?.job?.status?.action || null;
 
 /**
- * Shared runners limit is only rendered when
+ * Instance/shared runners limit is only rendered when
  * used quota is bigger or equal than the limit
  *
  * @returns {Boolean}

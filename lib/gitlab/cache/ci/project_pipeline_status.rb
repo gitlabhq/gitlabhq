@@ -99,7 +99,7 @@ module Gitlab
         def store_in_cache
           with_redis do |redis|
             redis.pipelined do |p|
-              p.mapped_hmset(cache_key, { sha: sha.to_s, status: status.to_s, ref: ref.to_s })
+              p.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
               p.expire(cache_key, STATUS_KEY_TTL)
             end
           end

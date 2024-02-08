@@ -182,7 +182,7 @@ To track DORA metrics in these cases, you can [create a deployment record](../..
 ### Measure DORA metrics with Jira
 
 - Deployment frequency and lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
-- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents).
+- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents) and the [Jira incident replicator guide](https://gitlab.com/smathur/jira-incident-replicator).
 
 ### Measure DORA Time to restore service and Change failure rate with external incidents
 

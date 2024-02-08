@@ -23,7 +23,7 @@ Prerequisites:
   - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
   - If you've enabled
   [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
-  [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](issues.md#view-jira-issues) in GitLab.
+  [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).
@@ -67,7 +67,7 @@ To configure your project settings in GitLab:
    - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
    - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
 1. Optional. In the **Issues** section:
-   - To [view issues](issues.md#view-jira-issues) from a single Jira project in a GitLab project:
+   - To [view issues](#view-jira-issues) from a single Jira project in a GitLab project:
      1. Select the **Enable Jira issues** checkbox.
      1. Enter the Jira project key.
 
@@ -85,6 +85,36 @@ To configure your project settings in GitLab:
 1. Select **Save changes**.
 
 Your GitLab project can now interact with all Jira projects on your instance.
+
+## View Jira issues
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Ability to enable Jira issues at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325715) in GitLab 16.9.
+
+Prerequisites:
+
+- Ensure the Jira issue integration is [configured](#configure-the-integration)
+  and the **Enable Jira issues** checkbox is selected.
+
+To view issues from a single Jira project in a GitLab project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Jira issues**.
+
+By default, the issues are sorted by **Created date**.
+The most recently created issues appear at the top.
+You can [search and filter the issue list](issues.md#search-and-filter-the-issue-list)
+and select an issue to view that issue in GitLab.
+
+Issues are grouped into the following tabs based on their
+[Jira status](https://confluence.atlassian.com/adminjiraserver070/defining-status-field-values-749382903.html):
+
+- **Open**: issues with any Jira status other than **Done**.
+- **Closed**: issues with a **Done** Jira status.
+- **All**: issues with any Jira status.
 
 ## Create a Jira issue for a vulnerability
 

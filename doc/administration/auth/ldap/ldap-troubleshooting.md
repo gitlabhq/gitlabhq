@@ -501,7 +501,8 @@ To sync all groups manually when debugging is unnecessary,
 [use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
 The output from a manual [group sync](ldap_synchronization.md#group-sync) can show you what happens
-when GitLab syncs its LDAP group memberships against LDAP.
+when GitLab syncs its LDAP group memberships against LDAP. Enter the [rails console](#rails-console)
+and then run:
 
 ```ruby
 Rails.logger.level = Logger::DEBUG

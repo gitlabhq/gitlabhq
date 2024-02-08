@@ -2857,9 +2857,6 @@ msgstr ""
 msgid "Add a confidential internal note to this %{noteableDisplayName}."
 msgstr ""
 
-msgid "Add a custom message with details about the instance's shared runners. The message is visible when you view runners for projects and groups. Markdown is supported."
-msgstr ""
-
 msgid "Add a general comment to this %{noteableDisplayName}."
 msgstr ""
 
@@ -3475,10 +3472,13 @@ msgstr ""
 msgid "AdminSettings|A Let's Encrypt account will be configured for this GitLab instance using this email address. You will receive emails to warn of expiring certificates. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
+msgid "AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported."
+msgstr ""
+
 msgid "AdminSettings|Affects all new and existing groups."
 msgstr ""
 
-msgid "AdminSettings|All new projects can use the instance's shared runners by default."
+msgid "AdminSettings|All new projects can use instance runners by default."
 msgstr ""
 
 msgid "AdminSettings|Allow migrating GitLab groups and projects by direct transfer"
@@ -3556,6 +3556,9 @@ msgstr ""
 msgid "AdminSettings|Enable collection of application metrics. Restart required. %{link_start}Learn how to export metrics to Prometheus%{link_end}."
 msgstr ""
 
+msgid "AdminSettings|Enable instance runners for new projects"
+msgstr ""
+
 msgid "AdminSettings|Enable kuromoji custom analyzer: Indexing"
 msgstr ""
 
@@ -3566,9 +3569,6 @@ msgid "AdminSettings|Enable pipeline suggestion banner"
 msgstr ""
 
 msgid "AdminSettings|Enable product analytics"
-msgstr ""
-
-msgid "AdminSettings|Enable shared runners for new projects"
 msgstr ""
 
 msgid "AdminSettings|Enable smartcn custom analyzer: Indexing"
@@ -3632,6 +3632,9 @@ msgid "AdminSettings|Improve non-code indexing throughput by enqueuing Sidekiq j
 msgstr ""
 
 msgid "AdminSettings|Inactive project deletion"
+msgstr ""
+
+msgid "AdminSettings|Instance runners details"
 msgstr ""
 
 msgid "AdminSettings|Instance runners expiration"
@@ -3904,7 +3907,7 @@ msgstr ""
 msgid "AdminUsers|2FA Enabled"
 msgstr ""
 
-msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on shared runners."
+msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on instance runners."
 msgstr ""
 
 msgid "AdminUsers|Access"
@@ -4159,7 +4162,7 @@ msgstr ""
 msgid "AdminUsers|Stop monitoring %{username} for possible spam?"
 msgstr ""
 
-msgid "AdminUsers|The maximum compute minutes that jobs in this namespace can use on shared runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
+msgid "AdminUsers|The maximum compute minutes that jobs in this namespace can use on instance runners each month. Set 0 for unlimited. Set empty to inherit the global setting of %{minutes}"
 msgstr ""
 
 msgid "AdminUsers|The user can create issues, notes, snippets, and merge requests that appear to be spam without being blocked."
@@ -8074,19 +8077,19 @@ msgstr ""
 msgid "Billings|In a seat"
 msgstr ""
 
+msgid "Billings|Instance runners cannot be enabled until a valid credit card is on file."
+msgstr ""
+
 msgid "Billings|Seats in use / Seats available"
 msgstr ""
 
 msgid "Billings|Seats in use / Seats in subscription"
 msgstr ""
 
-msgid "Billings|Shared runners cannot be enabled until a valid credit card is on file."
+msgid "Billings|To use free compute minutes on instance runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling instance runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. If you prefer not to provide one, you can run pipelines by bringing your own runners and disabling shared runners for your project. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd} %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "Billings|To use free compute minutes on shared runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
+msgid "Billings|To use free compute minutes on instance runners, you'll need to validate your account with a credit card. This is required to discourage and reduce abuse on GitLab infrastructure. %{strongStart}GitLab will not charge your card, it will only be used for validation.%{strongEnd}"
 msgstr ""
 
 msgid "Billings|User validation required"
@@ -8098,7 +8101,7 @@ msgstr ""
 msgid "Billings|Validate user account"
 msgstr ""
 
-msgid "Billings|You'll now be able to take advantage of free compute minutes on shared runners."
+msgid "Billings|You'll now be able to take advantage of free compute minutes on instance runners."
 msgstr ""
 
 msgid "Billings|Your account has been validated"
@@ -9423,10 +9426,13 @@ msgstr ""
 msgid "CICDAnalytics|Deployment frequency"
 msgstr ""
 
-msgid "CICDAnalytics|Lead time"
+msgid "CICDAnalytics|Instance runner duration is the total runtime of all jobs that ran on instance runners"
 msgstr ""
 
-msgid "CICDAnalytics|No shared runner minute usage data available"
+msgid "CICDAnalytics|Instance runner pipeline minute duration by month"
+msgstr ""
+
+msgid "CICDAnalytics|Lead time"
 msgstr ""
 
 msgid "CICDAnalytics|Projects with releases"
@@ -9443,19 +9449,13 @@ msgstr ""
 msgid "CICDAnalytics|Releases"
 msgstr ""
 
-msgid "CICDAnalytics|Shared runner duration is the total runtime of all jobs that ran on shared runners"
-msgstr ""
-
-msgid "CICDAnalytics|Shared runner pipeline minute duration by month"
-msgstr ""
-
 msgid "CICDAnalytics|Something went wrong while fetching release statistics"
 msgstr ""
 
 msgid "CICDAnalytics|Time to restore service"
 msgstr ""
 
-msgid "CICDAnalytics|What is shared runner duration?"
+msgid "CICDAnalytics|What is instance runner duration?"
 msgstr ""
 
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
@@ -15212,7 +15212,7 @@ msgstr ""
 msgid "Customer relations organizations"
 msgstr ""
 
-msgid "Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts."
+msgid "Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts."
 msgstr ""
 
 msgid "Customize colors"
@@ -18948,6 +18948,15 @@ msgstr ""
 msgid "Enable incident management inbound alert limit"
 msgstr ""
 
+msgid "Enable instance runners for all projects and subgroups in this group."
+msgstr ""
+
+msgid "Enable instance runners for this group"
+msgstr ""
+
+msgid "Enable instance runners for this project"
+msgstr ""
+
 msgid "Enable integration"
 msgstr ""
 
@@ -18985,15 +18994,6 @@ msgid "Enable repository checks"
 msgstr ""
 
 msgid "Enable security training"
-msgstr ""
-
-msgid "Enable shared runners for all projects and subgroups in this group."
-msgstr ""
-
-msgid "Enable shared runners for this group"
-msgstr ""
-
-msgid "Enable shared runners for this project"
 msgstr ""
 
 msgid "Enable two-factor authentication"
@@ -26187,6 +26187,12 @@ msgstr[1] ""
 msgid "Instance Configuration"
 msgstr ""
 
+msgid "Instance Runners"
+msgstr ""
+
+msgid "Instance Runners:"
+msgstr ""
+
 msgid "Instance access request"
 msgstr ""
 
@@ -26200,6 +26206,12 @@ msgid "Instance audit events"
 msgstr ""
 
 msgid "Instance overview"
+msgstr ""
+
+msgid "Instance runners enabled cannot be enabled until a valid credit card is on file"
+msgstr ""
+
+msgid "Instance runners help link"
 msgstr ""
 
 msgid "Insufficient permissions"
@@ -30279,7 +30291,7 @@ msgstr ""
 msgid "MemberRole|Base role to use as template"
 msgstr ""
 
-msgid "MemberRole|Could not fetch available permissions: %{message}"
+msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
 msgid "MemberRole|Create new role"
@@ -30312,7 +30324,7 @@ msgstr ""
 msgid "MemberRole|Failed to delete role. %{message}"
 msgstr ""
 
-msgid "MemberRole|Failed to fetch roles: %{message}"
+msgid "MemberRole|Failed to fetch roles."
 msgstr ""
 
 msgid "MemberRole|ID"
@@ -42370,7 +42382,7 @@ msgstr ""
 msgid "Runners|Architecture"
 msgstr ""
 
-msgid "Runners|Are you sure you want to disable shared runners for %{groupName}?"
+msgid "Runners|Are you sure you want to disable instance runners for %{groupName}?"
 msgstr ""
 
 msgid "Runners|Assigned Group"
@@ -42388,7 +42400,7 @@ msgstr ""
 msgid "Runners|Available"
 msgstr ""
 
-msgid "Runners|Available shared runners: %{count}"
+msgid "Runners|Available instance runners: %{count}"
 msgstr ""
 
 msgid "Runners|Available to all projects"
@@ -42600,6 +42612,18 @@ msgstr ""
 msgid "Runners|Instance"
 msgstr ""
 
+msgid "Runners|Instance runners"
+msgstr ""
+
+msgid "Runners|Instance runners are disabled in the group settings."
+msgstr ""
+
+msgid "Runners|Instance runners are disabled."
+msgstr ""
+
+msgid "Runners|Instance runners will be disabled for all projects and subgroups in this group."
+msgstr ""
+
 msgid "Runners|Instance: Median job queued time"
 msgstr ""
 
@@ -42699,7 +42723,7 @@ msgstr ""
 msgid "Runners|No spot. This is the default choice for Linux Docker executor."
 msgstr ""
 
-msgid "Runners|No, keep shared runners enabled"
+msgid "Runners|No, keep instance runners enabled"
 msgstr ""
 
 msgid "Runners|Not accepting jobs"
@@ -42724,6 +42748,12 @@ msgid "Runners|Only administrators can view this."
 msgstr ""
 
 msgid "Runners|Operating systems"
+msgstr ""
+
+msgid "Runners|Other projects"
+msgstr ""
+
+msgid "Runners|Other runners"
 msgstr ""
 
 msgid "Runners|Owner"
@@ -42943,15 +42973,6 @@ msgstr ""
 msgid "Runners|Separate multiple tags with a comma. For example, %{example}."
 msgstr ""
 
-msgid "Runners|Shared runners are disabled in the group settings."
-msgstr ""
-
-msgid "Runners|Shared runners are disabled."
-msgstr ""
-
-msgid "Runners|Shared runners will be disabled for all projects and subgroups in this group."
-msgstr ""
-
 msgid "Runners|Show only inherited"
 msgstr ""
 
@@ -43000,7 +43021,7 @@ msgstr ""
 msgid "Runners|Tags"
 msgstr ""
 
-msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
+msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure runners only handle the jobs they are equipped to run."
 msgstr ""
 
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} %{token} displays here %{boldStart}for a short time only%{boldEnd}. After you register the runner, this token is stored in the %{codeStart}config.toml%{codeEnd} and cannot be accessed again from the UI."
@@ -43163,16 +43184,16 @@ msgstr ""
 msgid "Runners|Windows 2019 Shell with manual scaling and optional scheduling. Non-spot."
 msgstr ""
 
-msgid "Runners|Yes, disable shared runners"
+msgid "Runners|Yes, disable instance runners"
 msgstr ""
 
 msgid "Runners|Yes, start deleting stale runners"
 msgstr ""
 
-msgid "Runners|You can set up a project runner to be used by multiple projects but you cannot make this a shared or group runner."
+msgid "Runners|You can set up a project runner to be used by multiple projects but you cannot make this an instance or group runner."
 msgstr ""
 
-msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your shared Runners pipeline minutes."
+msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your instance runners pipeline minutes."
 msgstr ""
 
 msgid "Runners|You may lose access to the runner token if you leave this page."
@@ -46441,25 +46462,7 @@ msgstr ""
 msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with members so they can sign in to your group through your identity provider"
 msgstr ""
 
-msgid "Shared Runners"
-msgstr ""
-
-msgid "Shared Runners:"
-msgstr ""
-
 msgid "Shared projects"
-msgstr ""
-
-msgid "Shared runners"
-msgstr ""
-
-msgid "Shared runners details"
-msgstr ""
-
-msgid "Shared runners enabled cannot be enabled until a valid credit card is on file"
-msgstr ""
-
-msgid "Shared runners help link"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset compute usage"
@@ -49913,7 +49916,7 @@ msgstr ""
 msgid "The maximum amount of time users have to set up two-factor authentication before it's enforced."
 msgstr ""
 
-msgid "The maximum compute minutes that jobs in a namespace can use on shared runners each month. 0 for unlimited."
+msgid "The maximum compute minutes that jobs in a namespace can use on instance runners each month. 0 for unlimited."
 msgstr ""
 
 msgid "The maximum file size allowed is %{size}."
@@ -50561,7 +50564,7 @@ msgstr ""
 msgid "This Cron pattern is invalid"
 msgstr ""
 
-msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."
+msgid "This GitLab instance does not provide any instance runners yet. Administrators can register instance runners in the admin area."
 msgstr ""
 
 msgid "This PDF is too large to display. Please download to view."
@@ -53240,7 +53243,7 @@ msgstr ""
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr ""
 
-msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
+msgid "UsageQuota|%{linkStart}Instance runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
 msgstr ""
 
 msgid "UsageQuota|%{linkTitle} help link"
@@ -53321,6 +53324,9 @@ msgstr ""
 msgid "UsageQuota|Includes project artifacts, repositories, packages, and container registries."
 msgstr ""
 
+msgid "UsageQuota|Instance runner duration"
+msgstr ""
+
 msgid "UsageQuota|Job artifacts created by CI/CD."
 msgstr ""
 
@@ -53387,9 +53393,6 @@ msgstr ""
 msgid "UsageQuota|Shared bits of code and text."
 msgstr ""
 
-msgid "UsageQuota|Shared runner duration"
-msgstr ""
-
 msgid "UsageQuota|Something went wrong while fetching pipeline statistics"
 msgstr ""
 
@@ -53429,13 +53432,13 @@ msgstr ""
 msgid "UsageQuota|This namespace has %{planLimit} of storage."
 msgstr ""
 
-msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
+msgid "UsageQuota|This namespace has no projects which used instance runners in the current period"
 msgstr ""
 
 msgid "UsageQuota|This namespace is under project-level limits, so only repository and LFS storage usage above the limit included in the plan is counted as excess storage. You can increase excess storage limit by purchasing storage packages."
 msgstr ""
 
-msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 shared runners duration"
+msgid "UsageQuota|This table omits projects that used 0 compute minutes or 0 instance runners duration"
 msgstr ""
 
 msgid "UsageQuota|Total excess storage"
@@ -54455,13 +54458,13 @@ msgstr ""
 msgid "VerificationReminder|Pipeline failing? To keep GitLab spam and abuse free we ask that you verify your identity."
 msgstr ""
 
-msgid "VerificationReminder|Until then, shared runners will be unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
+msgid "VerificationReminder|Until then, instance runners will be unavailable. %{validateLinkStart}Validate your account%{validateLinkEnd} or %{docsLinkStart}use your own runners%{docsLinkEnd}."
 msgstr ""
 
 msgid "VerificationReminder|Your account has been validated"
 msgstr ""
 
-msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on shared runners."
+msgid "VerificationReminder|You’ll now be able to take advantage of free compute minutes on instance runners."
 msgstr ""
 
 msgid "Verifications status"

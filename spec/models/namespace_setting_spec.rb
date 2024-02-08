@@ -456,6 +456,10 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policies_policy_scope
   end
 
+  describe '#math_rendering_limits_enabled' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :math_rendering_limits_enabled
+  end
+
   describe 'default_branch_protection_defaults' do
     let(:defaults) { { name: 'main', push_access_level: 30, merge_access_level: 30, unprotect_access_level: 40 } }
 

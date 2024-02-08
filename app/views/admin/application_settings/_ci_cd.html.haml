@@ -15,14 +15,14 @@
           = link_to _('Learn more.'), help_page_path('topics/autodevops/stages', anchor: 'auto-review-apps'), target: '_blank', rel: 'noopener noreferrer'
 
       .form-group
-        = f.gitlab_ui_checkbox_component :shared_runners_enabled, s_("AdminSettings|Enable shared runners for new projects"), help_text: s_("AdminSettings|All new projects can use the instance's shared runners by default.")
+        = f.gitlab_ui_checkbox_component :shared_runners_enabled, s_("AdminSettings|Enable instance runners for new projects"), help_text: s_("AdminSettings|All new projects can use instance runners by default.")
 
       = render_if_exists 'admin/application_settings/shared_runners_minutes_setting', form: f
 
       .form-group
-        = f.label :shared_runners_text, _('Shared runners details'), class: 'label-bold'
+        = f.label :shared_runners_text, s_('AdminSettings|Instance runners details'), class: 'label-bold'
         = f.text_area :shared_runners_text, class: 'form-control gl-form-input', rows: 4
-        .form-text.text-muted= _("Add a custom message with details about the instance's shared runners. The message is visible when you view runners for projects and groups. Markdown is supported.")
+        .form-text.text-muted= s_('AdminSettings|Add a custom message with details about instance runners. The message is visible when you view runners for projects and groups. Markdown is supported.')
       .form-group
         = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
         = f.number_field :max_artifacts_size, class: 'form-control gl-form-input'

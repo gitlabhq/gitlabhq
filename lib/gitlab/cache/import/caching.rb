@@ -139,7 +139,7 @@ module Gitlab
           key = cache_key_for(raw_key)
 
           with_redis do |redis|
-            redis.sismember(key, value || value.to_s)
+            redis.sismember(key, value)
           end
         end
 
@@ -162,7 +162,7 @@ module Gitlab
         def self.write_multiple(mapping, key_prefix: nil, timeout: TIMEOUT)
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              redis.pipelined do |pipeline|
+              Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
                 mapping.each do |raw_key, value|
                   key = cache_key_for("#{key_prefix}#{raw_key}")
 

@@ -182,9 +182,9 @@ For more information, [see the forking workflow documentation](../repository/for
 
 ### Set the default target project
 
-By default, merge requests originating from a fork target your fork, not the upstream project.
-If you frequently contribute back to the upstream project, and want to target it
-by default, change the default target for your fork.
+By default, merge requests originating from a fork target the upstream project, not the forked project.
+
+You can configure your forked project to be the default target rather than the upstream project.
 
 Prerequisites:
 

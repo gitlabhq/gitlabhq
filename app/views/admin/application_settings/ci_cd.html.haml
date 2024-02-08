@@ -21,7 +21,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      = _('Customize CI/CD settings, including Auto DevOps, shared runners, and job artifacts.')
+      = _('Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts.')
   = render 'ci_cd'
 
 = render_if_exists 'admin/application_settings/required_instance_ci_setting', expanded: expanded_by_default?

@@ -288,9 +288,8 @@ gem 'js_regex', '~> 3.8' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'device_detector' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis
-gem 'redis-namespace', '~> 1.10.0', feature_category: :redis
-gem 'redis', '~> 5.0.0', feature_category: :redis
-gem 'redis-clustering', '~> 5.0.0', feature_category: :redis
+gem 'redis', '~> 4.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'redis-namespace', '~> 1.10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis session store
@@ -512,7 +511,7 @@ group :test do
 
   gem 'shoulda-matchers', '~> 5.1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'email_spec', '~> 2.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'webmock', '~> 3.19.1' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'webmock', '~> 3.20.0' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'rails-controller-testing' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'concurrent-ruby', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'test-prof', '~> 1.3.1' # rubocop:todo Gemfile/MissingFeatureCategory

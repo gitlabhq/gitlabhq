@@ -311,6 +311,18 @@ module Types
           resolver: Resolvers::AutocompleteUsersResolver,
           description: 'Search users for autocompletion'
 
+    field :lock_math_rendering_limits_enabled,
+          GraphQL::Types::Boolean,
+          null: true,
+          method: :lock_math_rendering_limits_enabled?,
+          description: 'Indicates if math rendering limits are locked for all descendant groups.'
+
+    field :math_rendering_limits_enabled,
+          GraphQL::Types::Boolean,
+          null: true,
+          method: :math_rendering_limits_enabled?,
+          description: 'Indicates if math rendering limits are used for this group.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

@@ -12,6 +12,7 @@ class NamespaceSetting < ApplicationRecord
 
   cascading_attr :toggle_security_policy_custom_ci
   cascading_attr :toggle_security_policies_policy_scope
+  cascading_attr :math_rendering_limits_enabled
 
   belongs_to :namespace, inverse_of: :namespace_settings
 
@@ -50,6 +51,8 @@ class NamespaceSetting < ApplicationRecord
     subgroup_runner_token_expiration_interval
     project_runner_token_expiration_interval
     default_branch_protection_defaults
+    math_rendering_limits_enabled
+    lock_math_rendering_limits_enabled
   ].freeze
 
   # matches the size set in the database constraint

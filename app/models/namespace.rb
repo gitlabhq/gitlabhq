@@ -157,6 +157,12 @@ class Namespace < ApplicationRecord
     :npm_package_requests_forwarding,
     to: :package_settings
   delegate :default_branch_protection_defaults, to: :namespace_settings, allow_nil: true
+  delegate :math_rendering_limits_enabled,
+    :lock_math_rendering_limits_enabled,
+    to: :namespace_settings, allow_nil: true
+  delegate :math_rendering_limits_enabled?,
+    :lock_math_rendering_limits_enabled?,
+    to: :namespace_settings
 
   before_save :update_new_emails_created_column, if: -> { emails_disabled_changed? }
   before_create :sync_share_with_group_lock_with_parent

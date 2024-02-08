@@ -104,6 +104,18 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     it_behaves_like 'creating a group'
   end
 
+  context 'with `math_rendering_limits_enabled` attribute' do
+    let(:extra_params) { { math_rendering_limits_enabled: false } }
+
+    it_behaves_like 'creating a group'
+  end
+
+  context 'with `lock_math_rendering_limits_enabled` attribute' do
+    let(:extra_params) { { lock_math_rendering_limits_enabled: false } }
+
+    it_behaves_like 'creating a group'
+  end
+
   context 'for a top level group' do
     context 'when user can create a group' do
       before do

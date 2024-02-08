@@ -43,10 +43,8 @@
   .add-review-item-modal-trigger{ data: { context_commits_empty: 'true' } }
 
 - if commits.size == 0 && context_commits.nil?
-  .commits-empty.gl-mt-6
-    .svg-content.svg-150
-      = image_tag('illustrations/empty-state/empty-search-md.svg')
-    %h4
-      = _('Your search didn\'t match any commits.')
-    %p
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+    title: _('Your search didn\'t match any commits.')) do |c|
+
+    - c.with_description do
       = _('Try changing or removing filters.')

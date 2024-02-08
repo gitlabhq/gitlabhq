@@ -544,15 +544,15 @@ end
 
 Rack::Test::UploadedFile.prepend(TouchRackUploadedFile)
 
-# Inject middleware to enable ActiveSupport::Notifications for Redis commands
+# Monkey-patch to enable ActiveSupport::Notifications for Redis commands
 module RedisCommands
   module Instrumentation
-    def call(command, redis_config)
-      ActiveSupport::Notifications.instrument('redis.process_commands', commands: command) do
-        super(command, redis_config)
+    def process(commands, &block)
+      ActiveSupport::Notifications.instrument('redis.process_commands', commands: commands) do
+        super(commands, &block)
       end
     end
   end
 end
 
-RedisClient.register(RedisCommands::Instrumentation)
+Redis::Client.prepend(RedisCommands::Instrumentation)

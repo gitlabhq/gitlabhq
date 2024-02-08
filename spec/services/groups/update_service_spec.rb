@@ -384,7 +384,41 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
 
     it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
       expect { service.execute }.not_to change { internal_group.emails_disabled }
+    end
+  end
+
+  context 'when updating #math_rendering_limits_enabled' do
+    let(:service) { described_class.new(internal_group, user, math_rendering_limits_enabled: false) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.math_rendering_limits_enabled }.to(false)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.math_rendering_limits_enabled }
+    end
+  end
+
+  context 'when updating #lock_math_rendering_limits_enabled' do
+    let(:service) { described_class.new(internal_group, user, lock_math_rendering_limits_enabled: true) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.lock_math_rendering_limits_enabled? }.to(true)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.lock_math_rendering_limits_enabled? }
     end
   end
 

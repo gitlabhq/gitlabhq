@@ -23,8 +23,8 @@ RSpec.describe 'Group CI/CD settings', feature_category: :continuous_integration
       visit group_settings_ci_cd_path(group)
     end
 
-    it 'has "Enable shared runners for this group" toggle', :js do
-      expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
+    it 'has "Enable instance runners for this group" toggle', :js do
+      expect(shared_runners_toggle).to have_content(_('Enable instance runners for this group'))
     end
 
     it 'clicks on toggle to enable setting', :js do

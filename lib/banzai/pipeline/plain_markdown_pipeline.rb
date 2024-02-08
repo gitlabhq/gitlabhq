@@ -12,6 +12,7 @@ module Banzai
         FilterArray[
           Filter::MarkdownPreEscapeFilter,
           Filter::DollarMathPreFilter,
+          Filter::BlockquoteFenceFilter,
           Filter::MarkdownFilter,
           Filter::DollarMathPostFilter,
           Filter::MarkdownPostEscapeFilter

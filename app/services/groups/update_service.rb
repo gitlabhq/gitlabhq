@@ -141,6 +141,11 @@ module Groups
         params.delete(:default_branch_protection)
         params.delete(:default_branch_protection_defaults)
       end
+
+      unless can?(current_user, :admin_namespace, group)
+        params.delete(:math_rendering_limits_enabled)
+        params.delete(:lock_math_rendering_limits_enabled)
+      end
     end
 
     def handle_changes

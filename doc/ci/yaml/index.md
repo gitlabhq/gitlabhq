@@ -2494,7 +2494,7 @@ JWTs created this way support OIDC authentication. The required `aud` sub-keywor
 job_with_id_tokens:
   id_tokens:
     ID_TOKEN_1:
-      aud: https://gitlab.com
+      aud: https://vault.example.com
     ID_TOKEN_2:
       aud:
         - https://gcp.com
@@ -2502,8 +2502,9 @@ job_with_id_tokens:
     SIGSTORE_ID_TOKEN:
       aud: sigstore
   script:
-    - command_to_authenticate_with_gitlab $ID_TOKEN_1
+    - command_to_authenticate_with_vault $ID_TOKEN_1
     - command_to_authenticate_with_aws $ID_TOKEN_2
+    - command_to_authenticate_with_gcp $ID_TOKEN_2
 ```
 
 **Related topics**:
