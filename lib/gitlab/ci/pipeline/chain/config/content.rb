@@ -31,7 +31,8 @@ module Gitlab
                 ::Gitlab::Ci::ProjectConfig.new(
                   project: project, sha: @pipeline.sha,
                   custom_content: @command.content,
-                  pipeline_source: @command.source, pipeline_source_bridge: @command.bridge
+                  pipeline_source: @command.source, pipeline_source_bridge: @command.bridge,
+                  triggered_for_branch: @pipeline.branch?
                 )
               end
             end

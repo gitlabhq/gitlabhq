@@ -3,6 +3,7 @@
 module Integrations
   class Clickup < BaseIssueTracker
     include HasIssueTrackerFields
+    include HasAvatar
 
     validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 

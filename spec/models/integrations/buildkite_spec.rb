@@ -26,6 +26,8 @@ RSpec.describe Integrations::Buildkite, :use_clean_rails_memory_store_caching, f
     let(:hook_url) { 'https://webhook.buildkite.com/deliver/{webhook_token}' }
   end
 
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     context 'when integration is active' do
       before do

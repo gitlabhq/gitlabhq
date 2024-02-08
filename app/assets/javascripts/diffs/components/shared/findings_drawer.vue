@@ -1,5 +1,13 @@
 <script>
-import { GlBadge, GlDrawer, GlLink, GlButton, GlIcon } from '@gitlab/ui';
+import {
+  GlBadge,
+  GlDrawer,
+  GlLink,
+  GlButton,
+  GlButtonGroup,
+  GlIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getSeverity } from '~/ci/reports/utils';
@@ -21,13 +29,18 @@ export const i18n = {
   sastFinding: s__('FindingsDrawer|SAST Finding'),
   codeQuality: s__('FindingsDrawer|Code Quality'),
   detected: s__('FindingsDrawer|Detected in pipeline'),
+  nextButton: s__('FindingsDrawer|Next finding'),
+  previousButton: s__('FindingsDrawer|Previous finding'),
 };
 export const codeQuality = 'codeQuality';
 
 export default {
   i18n,
   codeQuality,
-  components: { GlBadge, GlDrawer, GlLink, GlButton, GlIcon, DrawerItem },
+  components: { GlBadge, GlDrawer, GlLink, GlButton, GlButtonGroup, GlIcon, DrawerItem },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     drawer: {
       type: Object,
@@ -107,12 +120,33 @@ export default {
         {{ isCodeQuality ? $options.i18n.codeQualityFinding : $options.i18n.sastFinding }}
       </h2>
       <div v-if="drawer.findings.length > 1">
-        <gl-button data-testid="findings-drawer-prev-button" class="gl-p-1!" @click="prev">
-          <gl-icon :size="24" name="chevron-left" />
-        </gl-button>
-        <gl-button class="gl-p-1!" @click="next">
-          <gl-icon data-testid="findings-drawer-next-button" :size="24" name="chevron-right" />
-        </gl-button>
+        <gl-button-group>
+          <gl-button
+            v-gl-tooltip.bottom
+            :title="$options.i18n.previousButton"
+            :aria-label="$options.i18n.previousButton"
+            size="small"
+            data-testid="findings-drawer-prev-button"
+            @click="prev"
+          >
+            <gl-icon
+              :size="14"
+              class="gl-relative findings-drawer-nav-button"
+              name="chevron-lg-left"
+            />
+          </gl-button>
+          <gl-button size="small" @click="next">
+            <gl-icon
+              v-gl-tooltip.bottom
+              data-testid="findings-drawer-next-button"
+              :title="$options.i18n.nextButton"
+              :aria-label="$options.i18n.nextButton"
+              class="gl-relative findings-drawer-nav-button"
+              :size="14"
+              name="chevron-lg-right"
+            />
+          </gl-button>
+        </gl-button-group>
       </div>
     </template>
 

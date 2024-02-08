@@ -21289,6 +21289,12 @@ msgstr ""
 msgid "FindingsDrawer|Detected in pipeline"
 msgstr ""
 
+msgid "FindingsDrawer|Next finding"
+msgstr ""
+
+msgid "FindingsDrawer|Previous finding"
+msgstr ""
+
 msgid "FindingsDrawer|SAST Finding"
 msgstr ""
 

@@ -6,6 +6,7 @@ module Integrations
   class Buildkite < BaseCi
     include HasWebHook
     include ReactivelyCached
+    include HasAvatar
 
     ENDPOINT = "https://buildkite.com"
 
