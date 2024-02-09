@@ -294,7 +294,7 @@ Assuming the value of `inputs.test` is `0123456789`, then the output would be `3
 
 [CI/CD variable expressions](../jobs/job_control.md#cicd-variable-expressions)
 in `rules:if` expect a comparison of a CI/CD variable with a string, otherwise
-[a variety of syntax errors could be returned](../jobs/job_control.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
+[a variety of syntax errors could be returned](../jobs/job_troubleshooting.md#this-gitlab-ci-configuration-is-invalid-for-variable-expressions).
 
 You must ensure that expressions remain properly formatted after input values are
 inserted into the configuration, which might require the use of additional quote characters.

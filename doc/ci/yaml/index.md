@@ -4029,7 +4029,7 @@ docker build:
 
 **Related topics**:
 
-- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 ##### `rules:changes:paths`
 
@@ -5526,7 +5526,7 @@ docker build:
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
 - If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
   you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
-- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`
 

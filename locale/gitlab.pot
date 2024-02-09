@@ -10407,6 +10407,9 @@ msgstr ""
 msgid "Checkout|x %{quantity} %{units} per pack ="
 msgstr ""
 
+msgid "Checks"
+msgstr ""
+
 msgid "Cherry-pick this commit"
 msgstr ""
 
@@ -12975,6 +12978,12 @@ msgid "ComplianceStandardsAdherence|Check"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Failure reason"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Filter by"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Group by"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Have a valid rule that prevents author-approved merge requests from being merged"

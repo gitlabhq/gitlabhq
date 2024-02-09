@@ -58,6 +58,9 @@ pipelines, each of which may contain a security scan.
 - In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
   when enforcing merge request approval policies.
 
+If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must use the [`latest` security templates](../../../development/cicd/templates.md) so that the security scanning jobs are present in the pipeline.
+For more information see [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+
 ## Merge request approval policy editor
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
@@ -141,14 +144,14 @@ This rule enforces the defined actions based on security scan findings.
 
 This rule enforces the defined actions based on license findings.
 
-| Field      | Type | Required | Possible values | Description |
-|------------|------|----------|-----------------|-------------|
-| `type` | `string` | true | `license_finding` | The rule's type. |
-| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` |  The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
-| `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
+| Field      | Type | Required | Possible values | Description                                                                                                                                                                                                          |
+|------------|------|----------|-----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type` | `string` | true | `license_finding` | The rule's type.                                                                                                                                                                                                     |
+| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                  |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                    |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule.                                                                                                                                                                                  |
+| `match_on_inclusion` | `boolean` | true | `true`, `false` | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424513)** in GitLab 16.9. Whether the rule matches inclusion or exclusion of licenses listed in `license_types`.                          |
+| `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                      |
 | `license_states` | `array` of `string` | true | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
 
 ## `any_merge_request` rule type

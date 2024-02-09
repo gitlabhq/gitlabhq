@@ -6497,6 +6497,30 @@ Input type: `ProjectSetLockedInput`
 | <a id="mutationprojectsetlockederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationprojectsetlockedproject"></a>`project` | [`Project`](#project) | Project after mutation. |
 
+### `Mutation.projectSettingsUpdate`
+
+NOTE:
+**Introduced** in 16.9.
+**Status**: Experiment.
+
+Input type: `ProjectSettingsUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsettingsupdateduofeaturesenabled"></a>`duoFeaturesEnabled` | [`Boolean!`](#boolean) | Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="mutationprojectsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectsettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprojectsettingsupdateprojectsettings"></a>`projectSettings` | [`ProjectSetting!`](#projectsetting) | Project settings after mutation. |
+
 ### `Mutation.projectSubscriptionCreate`
 
 Input type: `ProjectSubscriptionCreateInput`
@@ -24600,6 +24624,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
+| <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
@@ -26383,6 +26408,15 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectsecuritytraininglogourl"></a>`logoUrl` | [`String`](#string) | Logo URL of the provider. |
 | <a id="projectsecuritytrainingname"></a>`name` | [`String!`](#string) | Name of the training provider. |
 | <a id="projectsecuritytrainingurl"></a>`url` | [`String!`](#string) | URL of the provider. |
+
+### `ProjectSetting`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectsettingduofeaturesenabled"></a>`duoFeaturesEnabled` | [`Boolean`](#boolean) | Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="projectsettingproject"></a>`project` | [`Project`](#project) | Project the settings belong to. |
 
 ### `ProjectStatistics`
 
