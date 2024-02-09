@@ -30,6 +30,9 @@ Most cases can be mitigated by limiting the rate of requests from a single IP ad
 Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
 
+NOTE:
+[In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/344807), the rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
+
 ## Configurable limits
 
 You can set these rate limits in the Admin Area of your instance:

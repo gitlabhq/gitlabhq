@@ -20,6 +20,8 @@ to develop a single, performant way for diffs to be rendered across the applicat
 to improve all areas of diff rendering, from the backend creation of diffs to the frontend rendering
 the diffs.
 
+All the diffs features related to this document are [listed on a dedicated page](features.md).
+
 ## Motivation
 
 ### Goals
