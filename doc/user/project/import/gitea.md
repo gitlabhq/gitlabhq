@@ -31,6 +31,11 @@ in your GitLab instance. This means the project creator (usually the user that
 started the import process) is set as the author. A reference, however, is kept
 on the issue about the original Gitea author.
 
+## Known issue
+
+Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
+in their path must be renamed for all items to be imported correctly.
+
 ## Prerequisites
 
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.

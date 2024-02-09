@@ -190,18 +190,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           pipeline.save!
         end
       end
-
-      context 'with FF track_ci_pipeline_created_event disabled' do
-        before do
-          stub_feature_flags(track_ci_pipeline_created_event: false)
-        end
-
-        it 'does not track the creation event' do
-          expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-          pipeline.save!
-        end
-      end
     end
   end
 

@@ -121,7 +121,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when transitioning to any state from running' do
       it 'removes runner_session' do
         %w[success drop cancel].each do |event|
-          build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
+          build = create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
 
           build.fire_events!(event)
 
@@ -5060,6 +5060,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when metadata has debug_trace_enabled false' do
       before do
         build.metadata.update!(debug_trace_enabled: false)
+      end
+
+      it { is_expected.to eq false }
+    end
+
+    context 'when metadata does not exist' do
+      before do
+        build.metadata.destroy!
       end
 
       it { is_expected.to eq false }

@@ -105,7 +105,6 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
-    delegate :debug_trace_enabled?, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
@@ -1018,7 +1017,7 @@ module Ci
 
     def debug_mode?
       # perform the check on both sides in case the runner version is old
-      debug_trace_enabled? ||
+      metadata&.debug_trace_enabled? ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_SERVICES']&.value, default: false) ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_TRACE']&.value, default: false)
     end

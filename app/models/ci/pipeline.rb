@@ -1468,8 +1468,6 @@ module Ci
     end
 
     def track_ci_pipeline_created_event
-      return unless Feature.enabled?(:track_ci_pipeline_created_event, project, type: :gitlab_com_derisk)
-
       Gitlab::InternalEvents.track_event('create_ci_internal_pipeline', project: project, user: user)
     end
   end

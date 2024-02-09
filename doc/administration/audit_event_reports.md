@@ -51,7 +51,7 @@ To view a group's audit events:
 1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
-Group audit events can also be accessed using the [Group Audit Events API](../api/audit_events.md#group-audit-events). Group audit event queries are limited to a maximum of 30 days.
+Group audit events can also be accessed using the [Group Audit Events API](../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
 
 ### Project audit events
 
@@ -59,7 +59,7 @@ Group audit events can also be accessed using the [Group Audit Events API](../ap
 1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
-Project audit events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events). Project audit event queries are limited to a maximum of 30 days.
+Project audit events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
 
 ### Instance audit events
 

@@ -4,12 +4,17 @@ group: Incubation
 info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# Breach and Attack Simulation
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
+
+# Breach and Attack Simulation (deprecated)
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** SaaS, self-managed
 **Status:** Experiment
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and will be removed in 17.0. This change is a breaking change.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/402784) in GitLab 15.11 as an Incubating feature.
 > - [Included](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119981) in the `Security/BAS.latest.gitlab-ci.yml` in GitLab 16.0.
@@ -147,3 +152,5 @@ You can also manually enable callback attacks by making sure to:
 1. Enable both the application being tested and callback service container using [services](../../../ci/services/index.md).
 1. Enable container-to-container networking [making the callback service accessible](../../../ci/services/index.md#connecting-services) in the job.
 1. Set `DAST_BROWSER_CALLBACK` to include `Address:$YOUR_CALLBACK_URL` key/value pair where the callback service is accessible to the Runner/DAST container.
+
+<!--- end_remove -->
