@@ -1322,7 +1322,11 @@ test:
 
 **Additional details**:
 
-- If `artifacts:paths` uses [CI/CD variables](../variables/index.md), the artifacts do not display in the UI.
+- Artifacts are saved, but do not display in the UI if the `artifacts:paths` values:
+  - Use [CI/CD variables](../variables/index.md).
+  - Define a directory, but do not end with `/`. For example, `directory/` works with `artifacts:expose_as`,
+    but `directory` does not.
+  - Start with `./`. For example, `file` works with `artifacts:expose_as`, but `./file` does not.
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
 - If a directory is specified and there is more than one file in the directory,

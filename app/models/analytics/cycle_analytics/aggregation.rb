@@ -20,7 +20,6 @@ class Analytics::CycleAnalytics::Aggregation < ApplicationRecord
     return {} if self["last_consistency_check_#{model.issuable_model.table_name}_issuable_id"].nil?
 
     {
-      :start_event_timestamp => self["last_consistency_check_#{model.issuable_model.table_name}_start_event_timestamp"],
       :end_event_timestamp => self["last_consistency_check_#{model.issuable_model.table_name}_end_event_timestamp"],
       model.issuable_id_column => self["last_consistency_check_#{model.issuable_model.table_name}_issuable_id"]
     }

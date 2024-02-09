@@ -96,8 +96,8 @@ export const storageTypeHelpPaths = {
   containerRegistry: helpPagePath(
     'user/packages/container_registry/reduce_container_registry_storage',
   ),
-  buildArtifacts: helpPagePath('ci/pipelines/job_artifacts', {
-    anchor: 'when-job-artifacts-are-deleted',
+  buildArtifacts: helpPagePath('ci/jobs/job_artifacts', {
+    anchor: 'keep-artifacts-from-most-recent-successful-jobs',
   }),
   packages: helpPagePath('user/packages/package_registry/index.md', {
     anchor: 'reduce-storage-usage',

@@ -22,6 +22,9 @@ To create a repository, you can:
 - [Create a project](../../../user/project/index.md) or
 - [Fork an existing project](forking_workflow.md).
 
+A repository cannot exist without a project. A project contains many things,
+one of which is a repository.
+
 ## Add files to a repository
 
 You can add files to a repository:

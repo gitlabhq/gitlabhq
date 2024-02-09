@@ -16,9 +16,20 @@ Application settings are stored in the `application_settings` table. Each settin
 First of all, you have to decide if it is necessary to add an application setting.
 Consider our [configuration principles](https://handbook.gitlab.com/handbook/product/product-principles/#configuration-principles) when adding a new setting.
 
+We prefer saving the related application settings in a single JSONB column to avoid making the `application_settings`
+table wider. Also, adding a new setting to an existing column won't require a database review so it saves time.
+
 To add a new setting, you have to:
 
-- Add a new column to the `application_settings` table.
+- Check if there is an existing JSONB column that you can use to store the new setting.
+- If there is an existing JSON column then:
+  - Add new setting to the JSONB column like [rate_limits](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/models/application_setting.rb#L603)
+    in the `ApplicationSetting` model.
+  - Update the JSON schema validator for the column like [rate_limits validator](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
+- If there isn't an existing JSON column which you can use then:
+  - Add a new JSON column to the `application_settings` table to store, see this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140633/diffs) for reference.
+  - Add a constraint to ensure the column always stores a hash, see this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141765/diffs) for reference.
+  - Create follow-up issues to move existing related columns to this newly created JSONB column.
 - Add the new setting to the [list of visible attributes](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/helpers/application_settings_helper.rb#L215).
 - Add the new setting to it to [`ApplicationSettingImplementation#defaults`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/app/models/application_setting_implementation.rb#L36), if the setting has a default value.
 - Add a [test for the default value](https://gitlab.com/gitlab-org/gitlab/-/blob/6f33ad46ffeac454c6c9ce92d6ba328a72f062fd/spec/models/application_setting_spec.rb#L20), if the setting has a default value.

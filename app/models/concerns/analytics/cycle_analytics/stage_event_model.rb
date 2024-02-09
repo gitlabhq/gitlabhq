@@ -19,6 +19,12 @@ module Analytics
         scope :with_milestone_id, ->(milestone_id) { where(milestone_id: milestone_id) }
         scope :without_milestone_id, -> (milestone_id) { where('milestone_id <> ? or milestone_id IS NULL', milestone_id) }
         scope :end_event_is_not_happened_yet, -> { where(end_event_timestamp: nil) }
+        scope :for_consistency_check_worker, -> (direction) do
+          keyset_order(
+            :end_event_timestamp => { order_expression: arel_order(arel_table[:end_event_timestamp], direction), distinct: false, nullable: direction == :asc ? :nulls_last : :nulls_first },
+            issuable_id_column => { order_expression: arel_order(arel_table[issuable_id_column], direction), nullable: :not_nullable, distinct: true }
+          )
+        end
         scope :order_by_end_event, -> (direction) do
           # ORDER BY end_event_timestamp, merge_request_id/issue_id, start_event_timestamp
           # start_event_timestamp must be included in the ORDER BY clause for the duration

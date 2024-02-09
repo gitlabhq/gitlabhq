@@ -199,6 +199,28 @@ Keep in mind the following observations related to this example:
 - This example illustrates only **one cycle** of the seven stages. The value stream analytics dashboard
   shows the median time for multiple cycles.
 
+#### Cumulative label event duration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. These feature flags are disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. On GitLab.com, this feature is available.
+
+With this feature, value stream analytics measures the duration of repetitive events for label-based stages. You should configure label removal or addition events for both start and end events.
+
+For example, a stage tracks when the `in progress` label is added and removed, with the following times:
+
+- 9:00: label added.
+- 10:00: label removed.
+- 12:00: label added.
+- 14:00 label removed.
+
+With the original calculation method, the duration is five hours (from 9:00 to 14:00).
+With cumulative label event duration calculation enabled, the duration is three hours (9:00 to 10:00 and 12:00 to 14:00).
+
+NOTE:
+When you upgrade your GitLab version and enable the feature flag `enable_vsa_cumulative_label_duration_calculation`, existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
+
 ### How value stream analytics identifies the production environment
 
 Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
