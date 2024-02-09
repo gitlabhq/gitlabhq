@@ -28,7 +28,7 @@ method that uses registration tokens. For more information, see
 ## Before you begin
 
 - GitLab Runner must be installed on your GitLab instance.
-- To create shared runners, you must be an administrator.
+- To create instance runners, you must be an administrator.
 - To create group runners, you must be an administrator or have the Owner role for the group.
 - To create project runners, you must be an administrator or have the Maintainer role for the project.
 
@@ -177,7 +177,7 @@ runner installation and registration.
 
 After you create a runner and its configuration, you can use the same runner
 authentication token to register multiple runners with the same configuration.
-For example, you can deploy multiple shared runners with the same executor type
+For example, you can deploy multiple instance runners with the same executor type
 and job tags to the target compute host. Each runner registered with the same runner
 authentication token has a unique `system_id`, which GitLab Runner
 generates randomly and stores in your local file system.

@@ -296,11 +296,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
     end
 
     context 'when feature flag is enabled' do
-      context 'when a group has contact relations enabled' do
-        before do
-          create(:crm_settings, group: group, enabled: true)
-        end
-
+      context 'when a group has crm enabled' do
         context 'when a user can read contacts' do
           it 'lists contacts' do
             group.add_developer(user)
@@ -321,7 +317,11 @@ RSpec.describe Projects::AutocompleteSourcesController do
         end
       end
 
-      context 'when a group has contact relations disabled' do
+      context 'when a group has crm disabled' do
+        before do
+          create(:crm_settings, group: group, enabled: false)
+        end
+
         it 'renders 404' do
           group.add_developer(user)
 

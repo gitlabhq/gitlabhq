@@ -1233,6 +1233,7 @@ ee:
       - :commit_committer_check
       - :regexp_uses_re2
       - :reject_non_dco_commits
+      - :organization
     unprotect_access_levels:
       - :access_level
       - :user_id

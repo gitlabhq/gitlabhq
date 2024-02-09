@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ResourceGroup do
+RSpec.describe Ci::ResourceGroup, feature_category: :continuous_delivery do
   let_it_be(:group) { create(:group) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
@@ -37,7 +37,7 @@ RSpec.describe Ci::ResourceGroup do
     include Ci::PartitioningHelpers
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     subject { resource_group.assign_resource_to(build) }
@@ -78,7 +78,7 @@ RSpec.describe Ci::ResourceGroup do
     include Ci::PartitioningHelpers
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     subject { resource_group.release_resource_from(build) }

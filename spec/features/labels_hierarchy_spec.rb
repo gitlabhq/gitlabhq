@@ -58,7 +58,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
             expect(card).to have_selector('a', text: labeled_issue.title)
           end
         else
-          within '[data-testid="filtered-search-input"]' do
+          within_testid('filtered-search-input') do
             click_filtered_search_bar
             click_on 'Label'
             click_on '= is'
@@ -109,7 +109,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
             expect(card).to have_selector('a', text: labeled_issue_2.title)
           end
         else
-          within '[data-testid="filtered-search-input"]' do
+          within_testid('filtered-search-input') do
             click_filtered_search_bar
             click_on 'Label'
             click_on '= is'
@@ -170,7 +170,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
 
       wait_for_all_requests
 
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid('sidebar-labels') do
         click_button grandparent_group_label.title
         click_button parent_group_label.title
         click_button project_label_1.title

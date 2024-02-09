@@ -92,7 +92,7 @@ The Docker image includes all of the `docker` tools and can run
 the job script in context of the image in privileged mode.
 
 You should use Docker-in-Docker with TLS enabled,
-which is supported by [GitLab.com shared runners](../runners/index.md).
+which is supported by [GitLab.com instance runners](../runners/index.md).
 
 You should always pin a specific version of the image, like `docker:24.0.5`.
 If you use a tag like `docker:latest`, you have no control over which version is used.
@@ -638,7 +638,7 @@ When using Docker-in-Docker, Docker downloads all layers of your image every tim
 ## Use the OverlayFS driver
 
 NOTE:
-The shared runners on GitLab.com use the `overlay2` driver by default.
+The instance runners on GitLab.com use the `overlay2` driver by default.
 
 By default, when using `docker:dind`, Docker uses the `vfs` storage driver, which
 copies the file system on every run. You can avoid this disk-intensive operation by using a different driver, for example `overlay2`.

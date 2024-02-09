@@ -32,17 +32,19 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     it 'unsubscribes from issue' do
       find('.detail-page-header-actions .gl-new-dropdown-toggle').click
 
-      subscription_button = find('[data-testid="notification-toggle"] [data-testid="toggle-wrapper"]')
+      within_testid('notification-toggle') do
+        subscription_button = find_by_testid('toggle-wrapper')
 
-      # Check we're subscribed.
-      expect(subscription_button).to have_css("button.is-checked")
+        # Check we're subscribed.
+        expect(subscription_button).to have_css("button.is-checked")
 
-      # Toggle subscription.
-      subscription_button.find('button').click
-      wait_for_requests
+        # Toggle subscription.
+        subscription_button.find('button').click
+        wait_for_requests
 
-      # Check we're unsubscribed.
-      expect(subscription_button).to have_css("button:not(.is-checked)")
+        # Check we're unsubscribed.
+        expect(subscription_button).to have_css("button:not(.is-checked)")
+      end
     end
   end
 
@@ -57,17 +59,19 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     it 'subscribes to issue' do
       find('.detail-page-header-actions .gl-new-dropdown-toggle').click
 
-      subscription_button = find('[data-testid="notification-toggle"] [data-testid="toggle-wrapper"]')
+      within_testid('notification-toggle') do
+        subscription_button = find_by_testid('toggle-wrapper')
 
-      # Check we're not subscribed.
-      expect(subscription_button).to have_css("button:not(.is-checked)")
+        # Check we're not subscribed.
+        expect(subscription_button).to have_css("button:not(.is-checked)")
 
-      # Toggle subscription.
-      subscription_button.find('button').click
-      wait_for_requests
+        # Toggle subscription.
+        subscription_button.find('button').click
+        wait_for_requests
 
-      # Check we're subscribed.
-      expect(subscription_button).to have_css("button.is-checked")
+        # Check we're subscribed.
+        expect(subscription_button).to have_css("button.is-checked")
+      end
     end
   end
 
@@ -80,7 +84,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
     end
 
     it 'toggles subscription' do
-      subscription_button = find('[data-testid="subscribe-button"]')
+      subscription_button = find_by_testid('subscribe-button')
 
       expect(page).to have_selector("button[title='Notifications off']")
       subscription_button.click

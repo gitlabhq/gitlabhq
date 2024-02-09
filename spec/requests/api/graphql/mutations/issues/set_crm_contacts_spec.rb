@@ -6,8 +6,8 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
-  let_it_be(:subgroup) { create(:group, :crm_enabled, parent: group) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: subgroup) }
   let_it_be(:contacts) { create_list(:contact, 4, group: group) }
 
@@ -129,7 +129,7 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
     end
 
     context 'when the contact belongs to a different group' do
-      let(:group2) { create(:group, :crm_enabled) }
+      let(:group2) { create(:group) }
       let(:contact) { create(:contact, group: group2) }
       let(:contact_ids) { [global_id_of(contact)] }
 
@@ -171,8 +171,10 @@ RSpec.describe 'Setting issues crm contacts', feature_category: :service_desk do
   end
 
   context 'when crm_enabled is false' do
-    let(:issue) { create(:issue) }
-    let(:initial_contacts) { [] }
+    let_it_be(:group2) { create(:group, :crm_disabled) }
+    let_it_be(:project2) { create(:project, group: group2) }
+    let_it_be(:issue) { create(:issue, project: project2) }
+    let_it_be(:initial_contacts) { [] }
 
     it 'raises expected error' do
       issue.project.add_reporter(user)

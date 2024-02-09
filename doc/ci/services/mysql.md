@@ -131,5 +131,5 @@ GitLab Runner with the Shell executor.
 ## Example project
 
 To view a MySQL example, create a fork of this [sample project](https://gitlab.com/gitlab-examples/mysql).
-This project uses publicly-available [shared runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
+This project uses publicly-available [instance runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
 Update the README.md file, commit your changes, and view the CI/CD pipeline to see it in action.

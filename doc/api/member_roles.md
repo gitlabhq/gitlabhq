@@ -75,7 +75,7 @@ Example response:
   {
     "id": 2,
     "name": "Custom + code",
-    "description: "Custom guest that can read code",
+    "description": "Custom guest that can read code",
     "group_id": 84,
     "base_access_level": 10,
     "admin_merge_request": false,
@@ -92,7 +92,7 @@ Example response:
   {
     "id": 3,
     "name": "Guest + security",
-    "description: "Custom guest that read and admin security entities",
+    "description": "Custom guest that read and admin security entities",
     "group_id": 84,
     "base_access_level": 10,
     "admin_vulnerability": true,

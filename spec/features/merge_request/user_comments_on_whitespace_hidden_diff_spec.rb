@@ -23,7 +23,7 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
   context 'when hiding whitespace changes' do
     before do
       find('.js-show-diff-settings').click
-      find('[data-testid="show-whitespace"]').click
+      find_by_testid('show-whitespace').click
       wait_for_requests
     end
 

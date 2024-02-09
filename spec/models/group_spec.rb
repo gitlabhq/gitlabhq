@@ -3260,8 +3260,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#crm_enabled?' do
-    it 'returns false where no crm_settings exist' do
-      expect(group.crm_enabled?).to be_falsey
+    it 'returns true where no crm_settings exist' do
+      expect(group.crm_enabled?).to be_truthy
     end
 
     it 'returns false where crm_settings.state is disabled' do
@@ -3277,7 +3277,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'returns true where crm_settings.state is enabled for subgroup' do
-      subgroup = create(:group, :crm_enabled, parent: group)
+      subgroup = create(:group, parent: group)
 
       expect(subgroup.crm_enabled?).to be_truthy
     end

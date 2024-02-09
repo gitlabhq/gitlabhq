@@ -18,12 +18,7 @@ other websites. The Libravatar API is
 switch to the Libravatar avatar service or even your own Libravatar
 server.
 
-You cannot use any Libravatar service including Gravatar in [FIPS mode](../development/fips_compliance.md).
-
 ## Change the Libravatar service to your own service
-
-NOTE:
-You can use only the MD5 hash in the URL for the Libravatar service. See [issue 370057](https://gitlab.com/gitlab-org/gitlab/-/issues/370057) for adding SHA-256 support.
 
 In the [`gitlab.yml` gravatar section](https://gitlab.com/gitlab-org/gitlab/-/blob/68dac188ec6b1b03d53365e7579422f44cbe7a1c/config/gitlab.yml.example#L469-476), set
 the configuration options as follows:

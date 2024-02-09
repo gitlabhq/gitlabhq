@@ -114,7 +114,7 @@ Keep in mind that restricting group access by IP address has the following impli
 
 ### GitLab.com access restrictions
 
-On GitLab.com shared runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
+On GitLab.com instance runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
 
 Artifact and Registry downloading from runners is sourced from any Google or, in the case of MacOS runners, Amazon IP address in that region.
 The download is therefore not added to the global allowlist.

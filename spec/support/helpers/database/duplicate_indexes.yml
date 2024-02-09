@@ -99,6 +99,13 @@ ml_models:
 p_ci_runner_machine_builds:
   index_p_ci_runner_machine_builds_on_runner_machine_id:
     - index_ci_runner_machine_builds_on_runner_machine_id
+p_ci_job_artifacts:
+  p_ci_job_artifacts_project_id_file_type_id_idx:
+    - p_ci_job_artifacts_project_id_idx
+  p_ci_job_artifacts_project_id_created_at_id_idx:
+    - p_ci_job_artifacts_project_id_idx
+  p_ci_job_artifacts_project_id_id_idx1:
+    - p_ci_job_artifacts_project_id_idx
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
     - index_pages_domains_on_project_id

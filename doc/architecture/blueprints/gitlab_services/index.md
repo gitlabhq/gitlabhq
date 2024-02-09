@@ -110,7 +110,7 @@ and grouping it by the **name** of the environments. For example:
 classDiagram
     Group "1" o-- "*" Project : There may be multiple projects with services in a group
     Project "1" <.. "*" Service : A service is part of a project
-    Project "1" <.. "*" Environment :
+    Project "1" <.. "*" Environment : An environment is part of project
     Environment "*" .. "*" Service : A service is linked to 1+ environments
     Service "1" <|-- "*" ReleaseArtifact : A release artifact packages a specific version of a service
     ReleaseArtifact "1" <|-- "*" Deployment : A release artifact can be deployed

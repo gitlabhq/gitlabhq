@@ -8,7 +8,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
   context 'public group with no user' do
-    let(:group) { create(:group, :public, :crm_enabled) }
+    let(:group) { create(:group, :public) }
     let(:current_user) { nil }
 
     specify do
@@ -23,7 +23,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   context 'public group with user who is not a member' do
-    let(:group) { create(:group, :public, :crm_enabled) }
+    let(:group) { create(:group, :public) }
     let(:current_user) { create(:user) }
 
     specify do
@@ -38,7 +38,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   context 'private group that has been invited to a public project and with no user' do
-    let(:project) { create(:project, :public, group: create(:group, :crm_enabled)) }
+    let(:project) { create(:project, :public, group: create(:group)) }
     let(:current_user) { nil }
 
     before do
@@ -53,7 +53,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   context 'private group that has been invited to a public project and with a foreign user' do
-    let(:project) { create(:project, :public, group: create(:group, :crm_enabled)) }
+    let(:project) { create(:project, :public, group: create(:group)) }
     let(:current_user) { create(:user) }
 
     before do
@@ -78,7 +78,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it { expect_allowed(*(public_permissions - [:read_counts])) }
 
     context 'in subgroups' do
-      let(:subgroup) { create(:group, :private, :crm_enabled, parent: group) }
+      let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
       it { expect_allowed(*(public_permissions - [:read_counts])) }
@@ -274,7 +274,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   describe 'private nested group use the highest access level from the group and inherited permissions' do
     let_it_be(:nested_group) do
-      create(:group, :private, :owner_subgroup_creation_only, :crm_enabled, parent: group)
+      create(:group, :private, :owner_subgroup_creation_only, parent: group)
     end
 
     before_all do
@@ -378,7 +378,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { owner }
 
       context 'when the group share_with_group_lock is enabled' do
-        let(:group) { create(:group, :crm_enabled, share_with_group_lock: true, parent: parent) }
+        let(:group) { create(:group, share_with_group_lock: true, parent: parent) }
 
         before do
           group.add_owner(owner)
@@ -386,10 +386,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
         context 'when the parent group share_with_group_lock is enabled' do
           context 'when the group has a grandparent' do
-            let(:parent) { create(:group, :crm_enabled, share_with_group_lock: true, parent: grandparent) }
+            let(:parent) { create(:group, share_with_group_lock: true, parent: grandparent) }
 
             context 'when the grandparent share_with_group_lock is enabled' do
-              let(:grandparent) { create(:group, :crm_enabled, share_with_group_lock: true) }
+              let(:grandparent) { create(:group, share_with_group_lock: true) }
 
               context 'when the current_user owns the parent' do
                 before do
@@ -415,7 +415,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
             end
 
             context 'when the grandparent share_with_group_lock is disabled' do
-              let(:grandparent) { create(:group, :crm_enabled) }
+              let(:grandparent) { create(:group) }
 
               context 'when the current_user owns the parent' do
                 before do
@@ -432,7 +432,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
           end
 
           context 'when the group does not have a grandparent' do
-            let(:parent) { create(:group, :crm_enabled, share_with_group_lock: true) }
+            let(:parent) { create(:group, share_with_group_lock: true) }
 
             context 'when the current_user owns the parent' do
               before do
@@ -449,7 +449,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         end
 
         context 'when the parent group share_with_group_lock is disabled' do
-          let(:parent) { create(:group, :crm_enabled) }
+          let(:parent) { create(:group) }
 
           it { expect_allowed(:change_share_with_group_lock) }
         end
@@ -905,14 +905,14 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   it_behaves_like 'clusterable policies' do
-    let(:clusterable) { create(:group, :crm_enabled) }
+    let(:clusterable) { create(:group) }
     let(:cluster) do
       create(:cluster, :provided_by_gcp, :group, groups: [clusterable])
     end
   end
 
   describe 'update_max_artifacts_size' do
-    let(:group) { create(:group, :public, :crm_enabled) }
+    let(:group) { create(:group, :public) }
 
     context 'when no user' do
       let(:current_user) { nil }
@@ -942,7 +942,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'design activity' do
-    let_it_be(:group) { create(:group, :public, :crm_enabled) }
+    let_it_be(:group) { create(:group, :public) }
 
     let(:current_user) { nil }
 
@@ -1256,7 +1256,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   it_behaves_like 'Self-managed Core resource access tokens'
 
   context 'support bot' do
-    let_it_be_with_refind(:group) { create(:group, :private, :crm_enabled) }
+    let_it_be_with_refind(:group) { create(:group, :private) }
     let_it_be(:current_user) { Users::Internal.support_bot }
 
     before do
@@ -1266,7 +1266,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     it { expect_disallowed(:read_label) }
 
     context 'when group hierarchy has a project with service desk enabled' do
-      let_it_be(:subgroup) { create(:group, :private, :crm_enabled, parent: group) }
+      let_it_be(:subgroup) { create(:group, :private, parent: group) }
       let_it_be(:project) { create(:project, group: subgroup, service_desk_enabled: true) }
 
       it { expect_allowed(:read_label) }
@@ -1635,7 +1635,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     let(:current_user) { owner }
 
     before do
-      group.crm_settings.update!(enabled: false)
+      create(:crm_settings, group: group, enabled: false)
     end
 
     it { is_expected.to be_disallowed(:read_crm_contact) }

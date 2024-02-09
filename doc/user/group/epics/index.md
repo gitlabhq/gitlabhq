@@ -35,7 +35,7 @@ Use epics:
 The possible relationships between epics and issues are:
 
 - An epic is the parent of one or more issues.
-- An epic is the parent of one or more child epics. For details see [Multi-level child epics](manage_epics.md#multi-level-child-epics).
+- An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
 
 ```mermaid
 graph TD

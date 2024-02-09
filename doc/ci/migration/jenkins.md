@@ -475,7 +475,7 @@ deploy_staging:
 #### Runners
 
 Like Jenkins agents, GitLab runners are the hosts that run jobs. If you are using GitLab.com,
-you can use the [shared runner fleet](../runners/index.md) to run jobs without provisioning
+you can use the [instance runner fleet](../runners/index.md) to run jobs without provisioning
 your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then

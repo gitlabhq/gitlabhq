@@ -35,7 +35,7 @@ If you are using [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) to hos
 
 - The domain name for GitLab Pages on GitLab.com is `gitlab.io`.
 - Custom domains and TLS support are enabled.
-- Shared runners are enabled by default, provided for free and can be used to
+- Instance runners are enabled by default, provided for free and can be used to
   build your website. If you want you can still bring your own runner.
 
 ## Example projects

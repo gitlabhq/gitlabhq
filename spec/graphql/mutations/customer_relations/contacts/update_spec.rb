@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Contacts::Update do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let(:first_name) { 'Lionel' }
   let(:last_name) { 'Smith' }

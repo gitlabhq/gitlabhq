@@ -149,6 +149,16 @@ RSpec.shared_context 'group navbar structure' do
     [_("Issues"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
   end
 
+  let(:customer_relations_nav_item) do
+    {
+      nav_item: _('Customer relations'),
+      nav_sub_items: [
+        _('Contacts'),
+        _('Organizations')
+      ]
+    }
+  end
+
   let(:structure) do
     [
       {

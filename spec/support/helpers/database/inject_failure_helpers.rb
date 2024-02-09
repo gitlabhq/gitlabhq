@@ -30,6 +30,14 @@ module Database
       end
     end
 
+    def fail_adding_concurrent_fk(from_table, to_table)
+      proc do
+        allow(migration_context).to receive(:add_concurrent_foreign_key).and_call_original
+        expect(migration_context).to receive(:add_concurrent_foreign_key).with(from_table, to_table, any_args)
+                                                                         .and_wrap_original(&fail_first_time)
+      end
+    end
+
     def fail_removing_fk(from_table, to_table)
       proc do
         allow(migration_context.connection).to receive(:remove_foreign_key).and_call_original

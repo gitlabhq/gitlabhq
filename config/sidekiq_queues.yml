@@ -753,6 +753,8 @@
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
   - 1
+- - vulnerabilities_process_transfer_events
+  - 1
 - - vulnerabilities_remove_all_vulnerabilities
   - 1
 - - vulnerabilities_statistics_adjustment

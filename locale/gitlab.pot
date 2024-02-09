@@ -2728,6 +2728,9 @@ msgstr ""
 msgid "Achievements|Awarded %{timeAgo} by a private namespace"
 msgstr ""
 
+msgid "Achievements|There are currently no achievements."
+msgstr ""
+
 msgid "Achievements|View your achievements on your %{link_start}profile%{link_end}."
 msgstr ""
 
@@ -39193,7 +39196,7 @@ msgstr ""
 msgid "ProjectSettings|Storage name:"
 msgstr ""
 
-msgid "ProjectSettings|Store custom configuration files."
+msgid "ProjectSettings|Store configuration files for custom dashboards and visualizations."
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream."
@@ -39522,13 +39525,13 @@ msgstr ""
 msgid "ProjectsNew|Create new project"
 msgstr ""
 
-msgid "ProjectsNew|Default hashing algorithm is SHA-1."
-msgstr ""
-
 msgid "ProjectsNew|Description format"
 msgstr ""
 
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
+msgstr ""
+
+msgid "ProjectsNew|Experimental settings"
 msgstr ""
 
 msgid "ProjectsNew|Group name"
@@ -39544,6 +39547,9 @@ msgid "ProjectsNew|Include a Getting Started README"
 msgstr ""
 
 msgid "ProjectsNew|Initialize repository with a README"
+msgstr ""
+
+msgid "ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm."
 msgstr ""
 
 msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
@@ -39588,7 +39594,7 @@ msgstr ""
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."
 msgstr ""
 
-msgid "ProjectsNew|Use SHA-256 as the repository hashing algorithm"
+msgid "ProjectsNew|Use SHA-256 for repository hashing algorithm"
 msgstr ""
 
 msgid "ProjectsNew|Visibility Level"
@@ -44370,6 +44376,9 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
+msgid "SecurityOrchestraation|(Formerly Scan result policy)"
+msgstr ""
+
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -44891,6 +44900,12 @@ msgstr ""
 msgid "SecurityOrchestration|Summary"
 msgstr ""
 
+msgid "SecurityOrchestration|The %{oldNameStart}Scan result policy%{oldNameEnd} is now called the %{newNameStart}Merge request approval policy%{newNameEnd} to better align with its purpose. For more details, see the release notes."
+msgstr ""
+
+msgid "SecurityOrchestration|The Scan result policy is now called the Merge request approval policy to better align with its purpose. For more details, see the release notes."
+msgstr ""
+
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
@@ -44949,6 +44964,9 @@ msgid "SecurityOrchestration|Unlinking a security project removes all policies s
 msgstr ""
 
 msgid "SecurityOrchestration|Update scan policies"
+msgstr ""
+
+msgid "SecurityOrchestration|Updated policy name"
 msgstr ""
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."

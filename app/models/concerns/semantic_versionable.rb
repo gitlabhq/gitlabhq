@@ -4,11 +4,12 @@ module SemanticVersionable
   extend ActiveSupport::Concern
 
   included do
-    # sets the default value for require_valid_semver to false
     self.require_valid_semver = false
 
     validate :semver_format, if: :require_valid_semver?
 
+    scope :order_by_semantic_version_desc, -> { order(semver_major: :desc, semver_minor: :desc, semver_patch: :desc) }
+    scope :order_by_semantic_version_asc, -> { order(semver_major: :asc, semver_minor: :asc, semver_patch: :asc) }
     private
 
     def semver_format

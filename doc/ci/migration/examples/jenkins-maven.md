@@ -159,7 +159,7 @@ It also increases flexibility for expanding and extending the functionality of t
 Prerequisites:
 
 - A GitLab Runner with the Docker executor that can be used by the project.
-  If you are using GitLab.com, you can use the public shared runners.
+  If you are using GitLab.com, you can use the public instance runners.
 
 This migrated pipeline configuration consists of three global keywords (`stages`, `default`, and `variables`)
 followed by 3 jobs. This configuration makes use of additional GitLab CI/CD features

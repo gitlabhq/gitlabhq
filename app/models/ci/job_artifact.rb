@@ -15,6 +15,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
 
     self.primary_key = :id
+    self.sequence_name = :ci_job_artifacts_id_seq
 
     enum accessibility: { public: 0, private: 1 }, _suffix: true
 

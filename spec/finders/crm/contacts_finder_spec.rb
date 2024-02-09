@@ -9,7 +9,7 @@ RSpec.describe Crm::ContactsFinder do
     subject { described_class.new(user, group: group).execute }
 
     context 'when customer relations feature is enabled for the group' do
-      let_it_be(:root_group) { create(:group, :crm_enabled) }
+      let_it_be(:root_group) { create(:group) }
       let_it_be(:group) { create(:group, parent: root_group) }
 
       let_it_be(:contact_1) { create(:contact, group: root_group) }
@@ -44,8 +44,8 @@ RSpec.describe Crm::ContactsFinder do
       end
     end
 
-    context 'when customer relations feature is disabled for the group' do
-      let_it_be(:group) { create(:group) }
+    context 'when crm feature is disabled for the group' do
+      let_it_be(:group) { create(:group, :crm_disabled) }
       let_it_be(:contact) { create(:contact, group: group) }
 
       before do
@@ -58,7 +58,7 @@ RSpec.describe Crm::ContactsFinder do
     end
 
     context 'with search informations' do
-      let_it_be(:search_test_group) { create(:group, :crm_enabled) }
+      let_it_be(:search_test_group) { create(:group) }
 
       let_it_be(:search_test_a) do
         create(
@@ -189,7 +189,7 @@ RSpec.describe Crm::ContactsFinder do
   end
 
   describe '.counts_by_state' do
-    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:active_contacts) { create_list(:contact, 3, group: group, state: :active) }
     let_it_be(:inactive_contacts) { create_list(:contact, 2, group: group, state: :inactive) }
 

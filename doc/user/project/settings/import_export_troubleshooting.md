@@ -28,12 +28,12 @@ tail /var/log/gitlab/gitlab-rails/importer.log
 
 ## Project fails to import due to mismatch
 
-If the [shared runners enablement](../../../ci/runners/runners_scope.md#enable-shared-runners-for-a-project)
+If the [instance runners enablement](../../../ci/runners/runners_scope.md#enable-instance-runners-for-a-project)
 does not match between the exported project, and the project import, the project fails to import.
 Review [issue 276930](https://gitlab.com/gitlab-org/gitlab/-/issues/276930), and either:
 
-- Ensure shared runners are enabled in both the source and destination projects.
-- Disable shared runners on the parent group when you import the project.
+- Ensure instance runners are enabled in both the source and destination projects.
+- Disable instance runners on the parent group when you import the project.
 
 ## Users missing from imported project
 

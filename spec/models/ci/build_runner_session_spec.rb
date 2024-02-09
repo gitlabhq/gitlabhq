@@ -183,11 +183,11 @@ RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuou
     let(:build_runner_session) { create(:ci_build_runner_session, build: new_build) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns the same partition id as the one that build has' do
-      expect(build_runner_session.partition_id).to eq(ci_testing_partition_id)
+      expect(build_runner_session.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

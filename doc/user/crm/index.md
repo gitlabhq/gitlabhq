@@ -34,9 +34,11 @@ For more information about what is planned for the future, see [issue 2256](http
 
 ## Enable customer relations management (CRM)
 
-Customer relations management features must be enabled at the group level. If your
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108378) in GitLab 16.9.
+
+Customer relations management features are enabled at the group level. If your
 group also contains subgroups, and you want to use CRM features in the subgroup,
-you must enable CRM features for the subgroup.
+CRM features must also be enabled for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 

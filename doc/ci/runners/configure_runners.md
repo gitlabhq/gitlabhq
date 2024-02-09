@@ -21,13 +21,13 @@ You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
 used of it is shorter than the job timeout defined in the project.
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
 - You must be an administrator.
 
-On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
+On GitLab.com, you cannot override the job timeout for instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
 To set the maximum job timeout:
 
@@ -131,28 +131,28 @@ job-artifact-upload-on-timeout:
 ## Protecting sensitive information
 
 To avoid exposing sensitive information, you can restrict the usage
-of shared runners on large GitLab instances. This ensures that you
+of instance runners on large GitLab instances. This ensures that you
 control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
 If certain executors run a job, the file system, the code the runner executes,
 and the runner authentication token may be exposed. This means that anyone who runs jobs
-on a _shared runner_ can access another user's code that runs on the runner.
+on an _instance runner_ can access another user's code that runs on the runner.
 Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
-### Using shared runners in forked projects
+### Using instance runners in forked projects
 
-When a project is forked, the job settings related to jobs are copied. If you have shared runners
-configured for a project and a user forks that project, the shared runners serve jobs of this project.
+When a project is forked, the job settings related to jobs are copied. If you have instance runners
+configured for a project and a user forks that project, the instance runners serve jobs of this project.
 
 Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), if the runner settings
 of the forked project does not match the new project namespace, the following message displays:
 `An error occurred while forking the project. Please try again.`.
 
-To work around this issue, ensure that the shared runner settings are consistent in the forked project and the new namespace.
+To work around this issue, ensure that the instance runner settings are consistent in the forked project and the new namespace.
 
-- If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
-- If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
+- If instance runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
+- If instance runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
 ### Reset the runner registration token for a project (deprecated)
 
@@ -202,11 +202,11 @@ If a runner authentication token is revealed, an attacker could use the token to
 To reset the runner authentication token:
 
 1. Delete the runner:
-   - [Delete a shared runner](runners_scope.md#delete-shared-runners).
+   - [Delete an instance runner](runners_scope.md#delete-instance-runners).
    - [Delete a group runner](runners_scope.md#delete-a-group-runner).
    - [Delete a project runner](runners_scope.md#delete-a-project-runner).
 1. Create a new runner so that it is assigned a new runner authentication token:
-   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-a-runner-authentication-token).
+   - [Create an instance runner](runners_scope.md#create-an-instance-runner-with-a-runner-authentication-token).
    - [Create a group runner](runners_scope.md#create-a-group-runner-with-a-runner-authentication-token).
    - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
@@ -238,7 +238,7 @@ on [protected branches](../../user/project/protected_branches.md), or jobs that 
 
 Runners configured to run jobs on protected branches cannot run jobs in [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
@@ -284,7 +284,7 @@ Rails test suites.
 GitLab CI/CD tags are different to Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
@@ -863,9 +863,9 @@ variables:
 
 You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
-## System calls not available on GitLab.com shared runners
+## System calls not available on GitLab.com instance runners
 
-GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
+GitLab.com instance runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
 
 ## Artifact and cache settings
 

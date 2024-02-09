@@ -7,7 +7,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
 
   let_it_be(:user) { create(:user) }
 
-  let(:group) { create(:group, :crm_enabled) }
+  let(:group) { create(:group) }
   let(:not_found_or_does_not_belong) { 'The specified organization was not found or does not belong to this group' }
   let(:valid_params) do
     attributes_for(:contact,
@@ -41,7 +41,7 @@ RSpec.describe Mutations::CustomerRelations::Contacts::Create do
       end
 
       context 'when crm_enabled is false' do
-        let(:group) { create(:group) }
+        let(:group) { create(:group, :crm_disabled) }
 
         it 'raises an error' do
           expect { resolve_mutation }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)

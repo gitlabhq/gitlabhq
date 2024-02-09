@@ -1,20 +1,6 @@
 ---
 Capybara/TestidFinders:
   Exclude:
-    - 'spec/features/issues/issue_sidebar_spec.rb'
-    - 'spec/features/issues/issue_state_spec.rb'
-    - 'spec/features/issues/user_creates_issue_spec.rb'
-    - 'spec/features/issues/user_edits_issue_spec.rb'
-    - 'spec/features/issues/user_resets_their_incoming_email_token_spec.rb'
-    - 'spec/features/issues/user_sees_sidebar_updates_in_realtime_spec.rb'
-    - 'spec/features/issues/user_toggles_subscription_spec.rb'
-    - 'spec/features/labels_hierarchy_spec.rb'
-    - 'spec/features/merge_request/merge_request_discussion_lock_spec.rb'
-    - 'spec/features/merge_request/user_accepts_merge_request_spec.rb'
-    - 'spec/features/merge_request/user_assigns_themselves_spec.rb'
-    - 'spec/features/merge_request/user_comments_on_diff_spec.rb'
-    - 'spec/features/merge_request/user_comments_on_whitespace_hidden_diff_spec.rb'
-    - 'spec/features/merge_request/user_creates_mr_spec.rb'
     - 'spec/features/merge_request/user_interacts_with_batched_mr_diffs_spec.rb'
     - 'spec/features/merge_request/user_sees_pipelines_spec.rb'
     - 'spec/features/merge_request/user_sees_suggest_pipeline_spec.rb'

@@ -4072,20 +4072,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
         it { is_expected.to eq(::Gitlab::Git::SHA256_BLANK_SHA) }
       end
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(determine_blank_ref_based_on_gitaly_object_format: false)
-        end
-
-        it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
-
-        context 'for a SHA256 repository' do
-          let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
-
-          it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
-        end
-      end
     end
 
     context 'for missing repository' do
@@ -4094,14 +4080,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
-
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(determine_blank_ref_based_on_gitaly_object_format: false)
-        end
-
-        it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
-      end
     end
   end
 

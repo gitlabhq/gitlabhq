@@ -93,12 +93,15 @@
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
   - if display_sha256_repository
-    .form-group
-      = render Pajamas::CheckboxTagComponent.new(name: 'project[use_sha256_repository]') do |c|
-        - c.with_label do
-          = s_('ProjectsNew|Use SHA-256 as the repository hashing algorithm')
-        - c.with_help_text do
-          = s_('ProjectsNew|Default hashing algorithm is SHA-1.')
+    #js-experimental-setting-accordion.form-group.gl-mb-6
+      = render Pajamas::AccordionItemComponent.new(title: s_("ProjectsNew|Experimental settings"), state: :closed) do
+        = render Pajamas::CheckboxTagComponent.new(name: 'project[use_sha256_repository]') do |c|
+          - c.with_label do
+            = s_('ProjectsNew|Use SHA-256 for repository hashing algorithm')
+            = render_if_exists 'shared/experimental_badge_tag'
+          - c.with_help_text do
+            = s_("ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm.")
+
 
 -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
 = render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label

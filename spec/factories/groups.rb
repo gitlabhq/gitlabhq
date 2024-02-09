@@ -113,9 +113,9 @@ FactoryBot.define do
       end
     end
 
-    trait :crm_enabled do
+    trait :crm_disabled do
       after(:create) do |group|
-        create(:crm_settings, group: group, enabled: true)
+        create(:crm_settings, group: group, enabled: false)
       end
     end
 

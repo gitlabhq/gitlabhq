@@ -285,7 +285,7 @@ Self-managed runners:
 - Windows
 - macOS
 
-GitLab.com shared runners:
+GitLab.com instance runners:
 
 - Linux
 - [Windows](../runners/saas/windows_saas_runner.md) ([Beta](../../policy/experiment-beta-support.md#beta)).

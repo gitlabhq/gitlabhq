@@ -5,19 +5,23 @@ require 'spec_helper'
 RSpec.describe SemanticVersionable, feature_category: :mlops do
   using RSpec::Parameterized::TableSyntax
 
+  before_all do
+    ActiveRecord::Schema.define do |_t|
+      create_table :_test_semantic_versions, force: true do |t|
+        t.integer :semver_major
+        t.integer :semver_minor
+        t.integer :semver_patch
+        t.string :semver_prerelease
+      end
+    end
+  end
+
   let(:model_class) do
     Class.new(ActiveRecord::Base) do
       include SemanticVersionable
       semver_method :semver
 
-      # we need a table for the dummy class to operate
-      self.table_name = 'ml_model_versions'
-
-      def self.name
-        'Ml::ModelVersion'
-      end
-
-      attr_accessor :major, :minor, :patch, :prerelease
+      self.table_name = '_test_semantic_versions'
     end
   end
 
@@ -92,6 +96,24 @@ RSpec.describe SemanticVersionable, feature_category: :mlops do
     it 'does not validate if the validation is not enabled' do
       model_instance.semver = '123'
       expect(model_instance.valid?).to be true
+    end
+  end
+
+  describe 'scopes' do
+    let(:first_release) { model_class.create!(semver: '1.0.1') }
+    let(:second_release) { model_class.create!(semver: '3.0.1') }
+    let(:patch) { model_class.create!(semver: '2.0.1') }
+
+    describe '.order_by_semantic_version_asc' do
+      it 'orders the versions by semantic order ascending' do
+        expect(model_class.order_by_semantic_version_asc).to eq([first_release, patch, second_release])
+      end
+    end
+
+    describe '.order_by_semantic_version_desc' do
+      it 'orders the versions by semantic order descending' do
+        expect(model_class.order_by_semantic_version_desc).to eq([second_release, patch, first_release])
+      end
     end
   end
 end

@@ -17,7 +17,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:new_parent_group) { create(:group, :public, :crm_enabled) }
+  let_it_be(:new_parent_group) { create(:group, :public) }
 
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }

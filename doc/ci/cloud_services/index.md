@@ -50,7 +50,7 @@ review for the pipeline, focusing on the additional access. For more information
 - Removes the need to store secrets in your GitLab group or project. Temporary credentials can be retrieved from your cloud provider through OIDC.
 - Provides temporary access to cloud resources with granular GitLab conditionals including a group, project, branch, or tag.
 - Enables you to define separation of duties in the CI/CD job with conditional access to environments. Historically, apps may have been deployed with a designated GitLab Runner that had only access to staging or production environments. This led to Runner sprawl as each machine had dedicated permissions.
-- Allows shared runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
+- Allows instance runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
 - Removes the need to create logic to rotate secrets by retrieving temporary credentials by default.
 
 ## How it works

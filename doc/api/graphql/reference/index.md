@@ -2064,6 +2064,29 @@ Input type: `BranchRuleCreateInput`
 | <a id="mutationbranchrulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationbranchrulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.branchRuleDelete`
+
+NOTE:
+**Introduced** in 16.9.
+**Status**: Experiment.
+
+Input type: `BranchRuleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruledeleteid"></a>`id` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationbranchruledeletebranchrule"></a>`branchRule` | [`BranchRule`](#branchrule) | Branch rule after mutation. |
+| <a id="mutationbranchruledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationbranchruledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.branchRuleUpdate`
 
 NOTE:

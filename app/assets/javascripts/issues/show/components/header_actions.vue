@@ -325,7 +325,7 @@ export default {
         :auto-close="false"
         data-testid="mobile-dropdown"
         :loading="isToggleStateButtonLoading"
-        placement="right"
+        placement="left"
       >
         <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget
@@ -336,10 +336,6 @@ export default {
           />
 
           <gl-dropdown-divider />
-        </template>
-
-        <template v-if="showLockIssueOption">
-          <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
         </template>
 
         <gl-disclosure-dropdown-item v-if="canUpdateIssue" @action="edit">
@@ -356,6 +352,9 @@ export default {
         <gl-disclosure-dropdown-item v-if="canPromoteToEpic" @action="promoteToEpic">
           <template #list-item>{{ __('Promote to epic') }}</template>
         </gl-disclosure-dropdown-item>
+        <template v-if="showLockIssueOption">
+          <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
+        </template>
         <gl-disclosure-dropdown-item
           :data-clipboard-text="issuableReference"
           class="js-copy-reference"
@@ -370,7 +369,7 @@ export default {
           :data-clipboard-text="issuableEmailAddress"
           data-testid="copy-email"
           @action="copyEmailAddress"
-          >{{ copyMailAddressText }}</gl-disclosure-dropdown-item
+          ><template #list-item>{{ copyMailAddressText }}</template></gl-disclosure-dropdown-item
         >
         <gl-disclosure-dropdown-item
           v-if="canReportSpam"

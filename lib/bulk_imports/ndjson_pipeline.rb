@@ -136,7 +136,8 @@ module BulkImports
             pipeline_class: tracker.pipeline_name,
             exception_class: 'RecordInvalid',
             exception_message: record.errors.full_messages.to_sentence,
-            correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id
+            correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+            subrelation: record.class.to_s
           )
         end
       end

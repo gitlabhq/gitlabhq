@@ -92,7 +92,7 @@ To generate the changelog:
    and append your desired options. Some options include:
 
    - `--config-file [string]`: The path to the changelog configuration file in your project's
-     Git repository. Defaults to `.gitlab/changelog_config.yml`.
+     Git repository. This file must exist in your project's Git repository. Defaults to `.gitlab/changelog_config.yml`.
    - Commit range:
      - `--from [string]`: The start of the range of commits (as a SHA) to use for
        generating the changelog. This commit itself isn't included in the changelog.
@@ -110,8 +110,8 @@ for definitions and usage.
 
 ## Customize the changelog output
 
-To customize the changelog output, edit the changelog configuration file. The default
-location for this configuration is `.gitlab/changelog_config.yml`. The file supports
+To customize the changelog output, edit the changelog configuration file, and commit these changes to your project's Git repository.
+The default location for this configuration is `.gitlab/changelog_config.yml`. The file supports
 these variables:
 
 - `date_format`: The date format, in `strftime` format, used in the title of the newly added changelog data.

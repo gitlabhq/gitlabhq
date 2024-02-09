@@ -464,7 +464,7 @@ deploy_staging:
 #### Runners
 
 Runners are the services that execute jobs. If you are using GitLab.com, you can use the
-[shared runner fleet](../runners/index.md) to run jobs without provisioning your own self-managed runners.
+[instance runner fleet](../runners/index.md) to run jobs without provisioning your own self-managed runners.
 
 Some key details about runners:
 

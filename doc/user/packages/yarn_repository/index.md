@@ -29,7 +29,7 @@ achieve. For more information, review the [guidance on tokens](../../../user/pac
 - If your organization uses two-factor authentication (2FA), you must use a
   personal access token with the scope set to `api`.
 - If you publish a package via CI/CD pipelines, you can use a CI job token in
-  private runners or you can register a variable for shared runners.
+  private runners or you can register a variable for instance runners.
 
 ### Publish configuration
 
@@ -72,9 +72,9 @@ Your package should now publish to the package registry.
 
 You can use pipeline variables when you use this method.
 
-You can use **Shared Runners** *(Default)* or **Private Runners** (Advanced).
+You can use **instance runners** *(Default)* or **Private Runners** (Advanced).
 
-#### Shared runners
+#### Instance runners
 
 To create an authentication token for your project or group:
 

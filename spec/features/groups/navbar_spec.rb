@@ -17,6 +17,10 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
     insert_after_nav_item(_('Analyze'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
     insert_infrastructure_registry_nav(_('Kubernetes'))
 
+    if group.crm_enabled? && group.parent.nil?
+      insert_customer_relations_nav(Gitlab.ee? ? _('Iterations') : _('Milestones'))
+    end
+
     stub_config(dependency_proxy: { enabled: false })
     stub_config(registry: { enabled: false })
     stub_group_wikis(false)
@@ -42,24 +46,18 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
     it_behaves_like 'verified navigation bar'
   end
 
-  context 'when customer_relations feature is enabled' do
-    let(:group) { create(:group, :crm_enabled) }
+  context 'when crm feature is disabled' do
+    let(:group) { create(:group, :crm_disabled) }
 
     before do
-      if Gitlab.ee?
-        insert_customer_relations_nav(_('Iterations'))
-      else
-        insert_customer_relations_nav(_('Milestones'))
-      end
-
       visit group_path(group)
     end
 
     it_behaves_like 'verified navigation bar'
   end
 
-  context 'when customer_relations feature is enabled but subgroup' do
-    let(:group) { create(:group, :crm_enabled, parent: create(:group)) }
+  context 'when crm feature is enabled but subgroup' do
+    let(:group) { create(:group, parent: create(:group)) }
 
     before do
       visit group_path(group)

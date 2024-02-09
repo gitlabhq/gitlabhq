@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe CustomerRelations::ContactStateCounts do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let(:counter) { described_class.new(user, group, params) }
   let(:params) { {} }

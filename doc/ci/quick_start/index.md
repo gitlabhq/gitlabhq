@@ -30,7 +30,7 @@ To create and run your first pipeline:
 
 1. [Ensure you have runners available](#ensure-you-have-runners-available) to run your jobs.
 
-   If you're using GitLab.com, you can skip this step. GitLab.com provides shared runners for you.
+   If you're using GitLab.com, you can skip this step. GitLab.com provides instance runners for you.
 
 1. [Create a `.gitlab-ci.yml` file](#create-a-gitlab-ciyml-file)
    at the root of your repository. This file is where you define the CI/CD jobs.

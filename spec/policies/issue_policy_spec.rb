@@ -489,7 +489,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
 
   describe 'crm permissions' do
     let(:user) { create(:user) }
-    let(:subgroup) { create(:group, :crm_enabled, parent: create(:group, :crm_enabled)) }
+    let(:subgroup) { create(:group, parent: create(:group)) }
     let(:project) { create(:project, group: subgroup) }
     let(:issue) { create(:issue, project: project) }
     let(:policies) { described_class.new(user, issue) }
@@ -522,7 +522,7 @@ RSpec.describe IssuePolicy, feature_category: :team_planning do
     end
 
     context 'when crm disabled on subgroup' do
-      let(:subgroup) { create(:group, parent: create(:group, :crm_enabled)) }
+      let(:subgroup) { create(:group, :crm_disabled, parent: create(:group)) }
 
       it 'is disallowed' do
         subgroup.parent.add_reporter(user)

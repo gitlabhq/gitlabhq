@@ -117,7 +117,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
           markdown_field_focused_selector = 'textarea:focus'
           click_edit_issue_description
 
-          issuable_form = find('[data-testid="issuable-form"]')
+          issuable_form = find_by_testid('issuable-form')
 
           expect(issuable_form).to have_selector(markdown_field_focused_selector)
 
@@ -220,8 +220,8 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
               click_button('Edit')
               wait_for_requests
 
-              find('[data-testid="unassign"]').click
-              find('[data-testid="title"]').click
+              find_by_testid('unassign').click
+              find_by_testid('title').click
               wait_for_requests
 
               expect(page).to have_content 'None - assign yourself'
@@ -243,7 +243,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
             end
 
             page.within('.assignee') do
-              find('[data-testid="title"]').click
+              find_by_testid('title').click
               wait_for_requests
 
               expect(page).to have_content user.name
@@ -262,7 +262,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
               wait_for_requests
               click_button user.name
 
-              find('[data-testid="title"]').click
+              find_by_testid('title').click
               wait_for_requests
 
               expect(page).to have_content "None"
@@ -314,7 +314,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
               wait_for_requests
               click_button milestone.title
 
-              page.within '[data-testid="select-milestone"]' do
+              within_testid('select-milestone') do
                 expect(page).to have_content milestone.title
               end
 
@@ -322,7 +322,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
               wait_for_requests
               click_button 'No milestone'
 
-              page.within '[data-testid="select-milestone"]' do
+              within_testid('select-milestone') do
                 expect(page).to have_content 'None'
               end
             end
@@ -376,7 +376,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
         it 'adds due date to issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '[data-testid="sidebar-due-date"]' do
+          within_testid('sidebar-due-date') do
             click_button 'Edit'
             page.within '.pika-single' do
               click_button date.day
@@ -384,14 +384,14 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
 
             wait_for_requests
 
-            expect(find('[data-testid="sidebar-date-value"]').text).to have_content date.strftime('%b %-d, %Y')
+            expect(find_by_testid('sidebar-date-value').text).to have_content date.strftime('%b %-d, %Y')
           end
         end
 
         it 'removes due date from issue' do
           date = Date.today.at_beginning_of_month + 2.days
 
-          page.within '[data-testid="sidebar-due-date"]' do
+          within_testid('sidebar-due-date') do
             click_button 'Edit'
 
             page.within '.pika-single' do

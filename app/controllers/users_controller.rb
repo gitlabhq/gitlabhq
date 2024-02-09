@@ -249,7 +249,7 @@ class UsersController < ApplicationController
   end
 
   def load_contributed_projects
-    @contributed_projects = contributed_projects.joined(user)
+    @contributed_projects = contributed_projects.with_route.joined(user).page(params[:page]).without_count
 
     prepare_projects_for_rendering(@contributed_projects)
   end

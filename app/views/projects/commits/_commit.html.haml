@@ -20,6 +20,7 @@
 - link_data_attrs   = local_assigns.fetch(:link_data_attrs, {})
 - link              = commit_path(project, commit, merge_request: merge_request)
 - show_project_name = local_assigns.fetch(:show_project_name, false)
+- toggle_commit_message = _("Toggle commit description")
 
 %li{ class: ["commit flex-row", ("js-toggle-container" if collapsible)], id: "commit-#{commit.short_id}" }
   .avatar-cell.d-none.d-sm-block
@@ -36,7 +37,7 @@
         = commit.short_id
       - if commit.description? && collapsible
         = render Pajamas::ButtonComponent.new(icon: 'ellipsis_h',
-          button_options: { class: 'button-ellipsis-horizontal text-expander js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: _("Toggle commit description"), expand_title: _("Toggle commit description") }, :title => _("Toggle commit description"), aria: { label: _("Toggle commit description") }})
+          button_options: { class: 'button-ellipsis-horizontal text-expander js-toggle-button', data: { toggle: 'tooltip', container: 'body', collapse_title: toggle_commit_message, expand_title: toggle_commit_message }, title: toggle_commit_message, aria: { label: toggle_commit_message }})
 
       .committer
         - commit_author_link = commit_author_link(commit, avatar: false, size: 24)

@@ -225,7 +225,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           stub_config_setting(https: false)
 
           expect(helper.gravatar_icon(user_email))
-            .to match('https://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
+            .to match('https://www.gravatar.com/avatar/0925f997eb0d742678f66d2da134d15d842d57722af5f7605c4785cb5358831b')
         end
 
         it 'uses HTTPs when configured' do
@@ -239,7 +239,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
 
           expect(gravatar_icon(user_email, 20))
-            .to eq('http://example.local/?s=40&hash=b58c6f14d292556214bd64909bcdb118')
+            .to eq('http://example.local/?s=40&hash=0925f997eb0d742678f66d2da134d15d842d57722af5f7605c4785cb5358831b')
         end
 
         it 'accepts a custom size argument' do
@@ -259,12 +259,6 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
           upcase = helper.gravatar_icon(' FOO@EXAMPLE.COM ')
 
           expect(normal).to eq upcase
-        end
-      end
-
-      context 'with FIPS enabled', :fips_mode do
-        it 'returns a generic avatar' do
-          expect(helper.gravatar_icon(user_email)).to match_asset_path(described_class::DEFAULT_AVATAR_PATH)
         end
       end
     end

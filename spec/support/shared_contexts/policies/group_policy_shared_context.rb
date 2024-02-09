@@ -8,7 +8,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:owner) { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_group_member) { create(:user) }
-  let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only, :crm_enabled) }
+  let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only) }
 
   let(:public_permissions) do
     %i[

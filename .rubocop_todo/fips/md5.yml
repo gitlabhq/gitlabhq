@@ -3,7 +3,6 @@ Fips/MD5:
   Exclude:
     - 'app/experiments/application_experiment.rb'
     - 'app/models/concerns/checksummable.rb'
-    - 'app/services/gravatar_service.rb'
     - 'app/services/packages/debian/generate_distribution_service.rb'
     - 'app/services/packages/go/create_package_service.rb'
     - 'app/services/packages/maven/metadata/append_package_file_service.rb'
@@ -16,4 +15,3 @@ Fips/MD5:
     - 'spec/lib/gitlab/ci/trace/archive_spec.rb'
     - 'spec/lib/gitlab/ci/trace/remote_checksum_spec.rb'
     - 'spec/models/concerns/checksummable_spec.rb'
-    - 'spec/services/gravatar_service_spec.rb'

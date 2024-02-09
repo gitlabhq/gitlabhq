@@ -5601,14 +5601,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:ci_build) { create(:ci_build, pipeline: new_pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'includes partition_id in the token prefix' do
       prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
       partition_prefix = prefix[1].to_i(16)
 
-      expect(partition_prefix).to eq(ci_testing_partition_id)
+      expect(partition_prefix).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 

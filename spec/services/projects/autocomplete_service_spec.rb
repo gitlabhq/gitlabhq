@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_projects do
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:owner) { create(:user) }
   let_it_be(:issue) { create(:issue, project: project, title: 'Issue 1') }

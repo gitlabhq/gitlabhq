@@ -31,18 +31,18 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
-## Enable shared runners for new projects
+## Enable instance runners for new projects
 
-You can set all new projects to have the instance's shared runners available by default.
+You can set all new projects to have instance runners available by default.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Select the **Enable shared runners for new projects** checkbox.
+1. Select the **Enable instance runners for new projects** checkbox.
 
-Any time a new project is created, the shared runners are available.
+Any time a new project is created, the instance runners are available.
 
-## Shared runners compute quota
+## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific
 limit on the number of [compute minutes](../../ci/pipelines/cicd_minutes.md) you can use.
@@ -62,17 +62,15 @@ To enable a project runner for more than one project:
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
 
-## Add a message for shared runners
+## Add a message for instance runners
 
-To display details about the instance's shared runners in all projects'
+To display details about the instance runners in all projects'
 runner settings:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Enter text, including Markdown if you want, in the **Shared runner details** field. For example:
-
-   ![Shared runner details input](img/continuous_integration_shared_runner_details_input_v14_10.png)
+1. Enter text, including Markdown if you want, in the **Instance runner details** field.
 
 To view the rendered details:
 
@@ -80,7 +78,7 @@ To view the rendered details:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Shared runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
+![Instance runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 

@@ -285,9 +285,11 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
           where(:case_name, :fault) do
             [
               ["creating parent table", lazy { fail_sql_matching(/CREATE/i) }],
-              ["adding the first foreign key", lazy { fail_adding_fk(parent_table_name, referenced_table_name) }],
+              ["adding the first foreign key", lazy do
+                fail_adding_concurrent_fk(parent_table_name, referenced_table_name)
+              end],
               ["adding the second foreign key", lazy do
-                fail_adding_fk(parent_table_name, other_referenced_table_name)
+                fail_adding_concurrent_fk(parent_table_name, other_referenced_table_name)
               end],
               ["attaching table", lazy { fail_sql_matching(/ATTACH/i) }]
             ]
@@ -338,8 +340,7 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
 
       it 'sets up partitioning analysis for parent table' do
         expect(migration_context).to receive(:execute).with(/CREATE TABLE/).ordered.and_call_original
-        expect(migration_context).to receive(:execute).with(/ALTER TABLE/).ordered.and_call_original
-        expect(migration_context).to receive(:disable_statement_timeout).ordered.and_call_original
+        expect(migration_context).to receive(:execute).exactly(5).with(/ALTER TABLE/).ordered.and_call_original
         expect(migration_context).to receive(:execute).with(/ANALYZE VERBOSE/).ordered.and_call_original
 
         partition

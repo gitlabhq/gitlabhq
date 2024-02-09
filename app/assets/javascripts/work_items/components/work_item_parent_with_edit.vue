@@ -224,7 +224,7 @@ export default {
         data-testid="edit-parent"
         category="tertiary"
         size="small"
-        class="gl-ml-auto gl-mr-2"
+        class="gl-ml-auto"
         :disabled="updateInProgress"
         @click="isEditing = true"
         >{{ __('Edit') }}</gl-button
@@ -237,7 +237,6 @@ export default {
           data-testid="apply-parent"
           category="tertiary"
           size="small"
-          class="gl-mr-2"
           :disabled="updateInProgress"
           @click="isEditing = false"
           >{{ __('Apply') }}</gl-button

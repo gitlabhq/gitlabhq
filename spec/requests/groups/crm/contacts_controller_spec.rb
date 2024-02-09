@@ -24,7 +24,7 @@ RSpec.describe Groups::Crm::ContactsController, feature_category: :team_planning
 
   shared_examples 'ok response with index template if authorized' do
     context 'private group' do
-      let(:group) { create(:group, :private, :crm_enabled) }
+      let(:group) { create(:group, :private) }
 
       context 'with authorized user' do
         before do
@@ -37,13 +37,13 @@ RSpec.describe Groups::Crm::ContactsController, feature_category: :team_planning
         end
 
         context 'when crm_enabled is false' do
-          let(:group) { create(:group, :private) }
+          let(:group) { create(:group, :private, :crm_disabled) }
 
           it_behaves_like 'response with 404 status'
         end
 
         context 'when subgroup' do
-          let(:group) { create(:group, :private, :crm_enabled, parent: create(:group)) }
+          let(:group) { create(:group, :private, parent: create(:group)) }
 
           it_behaves_like 'response with 404 status'
         end
@@ -68,7 +68,7 @@ RSpec.describe Groups::Crm::ContactsController, feature_category: :team_planning
     end
 
     context 'public group' do
-      let(:group) { create(:group, :public, :crm_enabled) }
+      let(:group) { create(:group, :public) }
 
       context 'with anonymous user' do
         it_behaves_like 'response with 404 status'

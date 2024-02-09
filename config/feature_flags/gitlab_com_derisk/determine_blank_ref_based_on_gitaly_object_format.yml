@@ -1,9 +1,0 @@
----
-name: determine_blank_ref_based_on_gitaly_object_format
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434693
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140395
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17317
-milestone: '16.8'
-group: group::source code
-type: gitlab_com_derisk
-default_enabled: false

@@ -390,7 +390,7 @@ To add a secondary contact for your subscription:
 ## Compute
 
 Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
-on GitLab shared runners.
+on GitLab instance runners.
 
 Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.

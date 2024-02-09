@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Organizations::Update do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let(:name) { 'GitLab' }
   let(:default_rate) { 1000.to_f }

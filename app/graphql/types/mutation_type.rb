@@ -206,6 +206,7 @@ module Types
     mount_mutation Mutations::WorkItems::Subscribe, alpha: { milestone: '16.3' }
     mount_mutation Mutations::Admin::AbuseReportLabels::Create, alpha: { milestone: '16.4' }
     mount_mutation Mutations::Ml::Models::Create, alpha: { milestone: '16.8' }
+    mount_mutation Mutations::BranchRules::Delete, alpha: { milestone: '16.9' }
   end
 end
 

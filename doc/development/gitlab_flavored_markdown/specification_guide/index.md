@@ -691,7 +691,7 @@ subgraph input
   E((GLFM static<br/>renderer implementation)) --> B
   F((GLFM WYSIWYG<br/>renderer implementation)) --> B
 end
-subgraph output:<br/>test results/output
+subgraph "output:<br/>test results/output"
   C --> G[spec_tests.py output]
 end
 ```
@@ -760,10 +760,10 @@ end
 subgraph script:
   A{run-snapshopt-tests.sh} -->|invokes| B
 end
-subgraph output:<br/>test results/output
+subgraph "output:<br/>test results/output"
   B --> H[rspec+jest output]
 end
-subgraph input:<br/>YAML
+subgraph "input:<br/>YAML"
   C[examples_index.yml] --> B
   D[markdown.yml] --> B
   E[html.yml] --> B

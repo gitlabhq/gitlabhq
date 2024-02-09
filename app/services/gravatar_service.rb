@@ -2,13 +2,12 @@
 
 class GravatarService
   def execute(email, size = nil, scale = 2, username: nil)
-    return if Gitlab::FIPS.enabled?
     return unless Gitlab::CurrentSettings.gravatar_enabled?
 
     identifier = email.presence || username.presence
     return unless identifier
 
-    hash = Digest::MD5.hexdigest(identifier.strip.downcase)
+    hash = Digest::SHA256.hexdigest(identifier.strip.downcase)
     size = Groups::GroupMembersHelper::AVATAR_SIZE unless size && size > 0
 
     sprintf gravatar_url,

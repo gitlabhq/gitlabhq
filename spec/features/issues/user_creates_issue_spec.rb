@@ -101,7 +101,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
 
         wait_for_all_requests
 
-        page.within '[data-testid="sidebar-labels"]' do
+        within_testid('sidebar-labels') do
           click_button label_titles.first
           click_button _('Close')
 

@@ -34,7 +34,7 @@ You can search, sort, filter, and [delete](delete_container_registry_images.md#u
  your container images. You can share a filtered view by copying the URL from your browser.
 
 Only members of the project or group can access the container registry for a private project.
-Container images downloaded from a private registry may be [available to other users in a shared runner](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
+Container images downloaded from a private registry may be [available to other users in an instance runner](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
 If a project is public, the container registry is also public.
 

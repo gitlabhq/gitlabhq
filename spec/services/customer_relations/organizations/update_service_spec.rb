@@ -11,7 +11,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
 
   describe '#execute' do
     context 'when the user has no permission' do
-      let_it_be(:group) { create(:group, :crm_enabled) }
+      let_it_be(:group) { create(:group) }
 
       let(:params) { { name: 'GitLab' } }
 
@@ -24,7 +24,7 @@ RSpec.describe CustomerRelations::Organizations::UpdateService, feature_category
     end
 
     context 'when user has permission' do
-      let_it_be(:group) { create(:group, :crm_enabled) }
+      let_it_be(:group) { create(:group) }
 
       before_all do
         group.add_developer(user)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Mutations::CustomerRelations::Organizations::Create do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let(:valid_params) do
     attributes_for(:crm_organization,

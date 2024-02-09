@@ -854,7 +854,7 @@ class Group < Namespace
   end
 
   def crm_enabled?
-    crm_settings&.enabled?
+    crm_settings.nil? || crm_settings.enabled?
   end
 
   def shared_with_group_links_visible_to_user(user)

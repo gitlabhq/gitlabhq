@@ -589,8 +589,6 @@ RSpec.describe UsersController, feature_category: :user_management do
       aimed_for_deletion_project.add_developer(private_user)
       create(:push_event, project: project, author: author)
       create(:push_event, project: aimed_for_deletion_project, author: author)
-
-      subject
     end
 
     shared_examples_for 'renders contributed projects' do
@@ -603,6 +601,10 @@ RSpec.describe UsersController, feature_category: :user_management do
     %i[html json].each do |format|
       context "with format: #{format}" do
         let(:format) { format }
+
+        before do
+          subject
+        end
 
         context 'with public profile' do
           let(:author) { public_user }
@@ -630,6 +632,30 @@ RSpec.describe UsersController, feature_category: :user_management do
             end
           end
         end
+      end
+    end
+
+    describe 'pagination' do
+      let(:author) { public_user }
+      let(:format) { :json }
+      let(:per_page_limit) { 2 }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(per_page_limit)
+
+        create_list(:project, per_page_limit + 1, :public, :small_repo).each do |small_project|
+          small_project.add_developer(author)
+          create(:push_event, project: small_project, author: author)
+        end
+
+        subject
+      end
+
+      it_behaves_like 'renders contributed projects'
+
+      it 'paginates without count' do
+        expect(assigns(:contributed_projects).size).to eq(per_page_limit)
+        expect(assigns(:contributed_projects)).to be_a(Kaminari::PaginatableWithoutCount)
       end
     end
   end

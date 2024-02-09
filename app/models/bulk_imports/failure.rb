@@ -12,7 +12,11 @@ class BulkImports::Failure < ApplicationRecord
   validates :entity, presence: true
 
   def relation
-    pipeline_relation || default_relation
+    importing_relation = pipeline_relation || default_relation
+
+    return importing_relation unless subrelation
+
+    "#{importing_relation}, #{subrelation}"
   end
 
   def exception_message=(message)
@@ -24,6 +28,10 @@ class BulkImports::Failure < ApplicationRecord
   end
 
   def source_url=(url)
+    super(url&.truncate(255, omission: ''))
+  end
+
+  def subrelation=(url)
     super(url&.truncate(255, omission: ''))
   end
 

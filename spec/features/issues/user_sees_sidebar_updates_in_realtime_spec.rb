@@ -8,8 +8,8 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   let_it_be(:user) { create(:user) }
   let_it_be(:label)  { create(:label, project: project, name: 'Development') }
 
-  let(:labels_widget) { find('[data-testid="sidebar-labels"]') }
-  let(:labels_value) { find('[data-testid="value-wrapper"]') }
+  let(:labels_widget) { find_by_testid('sidebar-labels') }
+  let(:labels_value) { find_by_testid('value-wrapper') }
 
   before_all do
     project.add_developer(user)

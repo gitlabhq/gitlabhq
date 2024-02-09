@@ -56,6 +56,15 @@ Depending on the use case, you may want to disable the validation during the rol
 
 Please refer to [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142228) as a reference.
 
+## Sorting
+
+The concern provides two scopes to sort by semantic versions:
+
+```ruby
+scope :order_by_semantic_version_desc, -> { order(semver_major: :desc, semver_minor: :desc, semver_patch: :desc)}
+scope :order_by_semantic_version_asc, -> { order(semver_major: :asc, semver_minor: :asc, semver_patch: :asc)}
+```
+
 ## Filtering and Searching
 
 TBD
