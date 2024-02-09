@@ -1,8 +1,0 @@
----
-name: gitlab_sidekiq_reliable_fetcher
-introduced_by_url:
-rollout_issue_url:
-milestone:
-type: ops
-group: group::scalability
-default_enabled: true

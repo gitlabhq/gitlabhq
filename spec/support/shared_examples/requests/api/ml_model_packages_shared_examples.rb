@@ -9,8 +9,14 @@ RSpec.shared_examples 'Endpoint not found if read_model_registry not available' 
                           .and_return(false)
     end
 
-    it "is not found" do
-      is_expected.to have_gitlab_http_status(:not_found)
+    context 'when file has path' do
+      let(:file_path) { 'my_dir/' }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when file does not have path' do
+      it { is_expected.to have_gitlab_http_status(:not_found) }
     end
   end
 end
@@ -24,13 +30,21 @@ RSpec.shared_examples 'Endpoint not found if write_model_registry not available'
                           .and_return(false)
     end
 
-    it { is_expected.to have_gitlab_http_status(:not_found) }
+    context 'when file has path' do
+      let(:file_path) { 'my_dir/' }
+
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
+
+    context 'when file does not have path' do
+      it { is_expected.to have_gitlab_http_status(:not_found) }
+    end
   end
 end
 
 RSpec.shared_examples 'Not found when model version does not exist' do
   context 'when model version does not exist' do
-    let(:version) { "#{non_existing_record_id}.0.0" }
+    let(:version_id) { non_existing_record_id }
 
     it { is_expected.to have_gitlab_http_status(:not_found) }
   end
@@ -43,7 +57,7 @@ RSpec.shared_examples 'creates package files for model versions' do
     expect(api_response).to have_gitlab_http_status(:created)
 
     package_file = project.packages.last.package_files.reload.last
-    expect(package_file.file_name).to eq(file_name)
+    expect(package_file.file_name).to eq(saved_file_name)
   end
 
   it 'returns bad request if package creation fails' do

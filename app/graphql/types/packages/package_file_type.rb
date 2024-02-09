@@ -31,6 +31,10 @@ module Types
           object.helm_file_metadatum
         end
       end
+
+      def file_name
+        URI.decode_uri_component(object.file_name)
+      end
     end
   end
 end

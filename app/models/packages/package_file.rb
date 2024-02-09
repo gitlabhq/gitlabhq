@@ -7,6 +7,7 @@ class Packages::PackageFile < ApplicationRecord
   include Packages::Destructible
 
   INSTALLABLE_STATUSES = [:default].freeze
+  ENCODED_SLASH = "%2F"
 
   delegate :project, :project_id, to: :package
   delegate :conan_file_type, to: :conan_file_metadatum
@@ -134,6 +135,10 @@ class Packages::PackageFile < ApplicationRecord
 
   def download_path
     Gitlab::Routing.url_helpers.download_project_package_file_path(project, self)
+  end
+
+  def file_name_for_download
+    file_name.split(ENCODED_SLASH)[-1]
   end
 
   private

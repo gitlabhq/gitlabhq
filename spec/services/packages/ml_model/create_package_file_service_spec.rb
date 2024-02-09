@@ -7,12 +7,12 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { create(:user) }
     let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project) }
-    let_it_be(:file_name) { 'myfile.tar.gz.1' }
     let_it_be(:model) { create(:ml_models, user: user, project: project) }
     let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
 
     let(:build) { instance_double(Ci::Build, pipeline: pipeline) }
 
+    let(:file_name) { 'myfile.tar.gz.1' }
     let(:sha256) { '440e5e148a25331bbd7991575f7d54933c0ebf6cc735a18ee5066ac1381bb590' }
     let(:temp_file) { Tempfile.new("test") }
     let(:file) { UploadedFile.new(temp_file.path, sha256: sha256) }
@@ -39,6 +39,23 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
 
       it 'does not create package file', :aggregate_failures do
         expect(execute_service).to be(nil)
+      end
+    end
+
+    context 'when file name has slashes' do
+      let(:file_name) { 'my_dir/myfile.tar.gz.1' }
+
+      let(:params) do
+        {
+          model_version: model_version,
+          file: file,
+          file_name: file_name,
+          status: :hidden
+        }
+      end
+
+      it 'url encodes the file name' do
+        expect(execute_service.file_name).to eq('my_dir%2Fmyfile.tar.gz.1')
       end
     end
 

@@ -1,0 +1,10 @@
+---
+table_name: audit_events_instance_external_streaming_destinations
+classes:
+- AuditEvents::Instance::ExternalStreamingDestination
+feature_categories:
+- audit_events
+description: Stores external audit event destinations configurations for instance.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141739
+milestone: '16.9'
+gitlab_schema: gitlab_main_clusterwide

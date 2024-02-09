@@ -20,10 +20,9 @@ migrate or import any types of groups or organizations from GitHub to GitLab.
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`.
 
-If you are importing from GitHub Enterprise to GitLab.com, use the
-[GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. The API allows you to
-provide a different domain to import the project from. Using the UI, the GitHub importer always imports from the
-`github.com` domain.
+Using the GitLab UI, the GitHub importer always imports from the
+`github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
+[GitLab Import API](#use-the-rest-api) GitHub endpoint.
 
 When importing projects:
 
@@ -59,24 +58,8 @@ To import projects from GitHub:
   matching email addresses are required.
 - GitHub accounts must have a GitHub public-facing email address so that all comments and contributions can be properly mapped to
   the same user in GitLab. GitHub Enterprise does not require this field to be populated so you might have to add it on existing accounts.
-
-### Importing from GitHub Enterprise to self-managed GitLab
-
-If you are importing from GitHub Enterprise to a self-managed GitLab instance:
-
-- You must first enable the [GitHub integration](../../../integration/github.md).
-- GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
-- For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
+- For self-managed GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
   [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
-
-### Importing from GitHub.com to self-managed GitLab
-
-If you are importing from GitHub.com to a self-managed GitLab instance:
-
-- You don't need to enable the [GitHub integration](../../../integration/github.md).
-- GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ### Known issues
 
@@ -98,30 +81,67 @@ If a GitHub user's public email address doesn't match any GitLab user email
 address, the user's activity is associated with the user account that is
 performing the import.
 
-### Use the GitHub integration
+You can import your GitHub repository by either:
+
+- [Using GitHub OAuth](#use-github-oauth)
+- [Using a GitHub Personal Access Token](#use-a-github-personal-access-token)
+- [Using the API](#use-the-rest-api)
+
+### Use GitHub OAuth
+
+If you are importing to GitLab.com or to a self-managed GitLab that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
+
+This method has an advantage over using a [Personal Access Token (PAT)](#use-a-github-personal-access-token) 
+because the backend exchanges the access token with the appropriate permissions.
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
-1. Now you can either:
-   - If GitHub OAuth is [configured](../../../integration/github.md) for the instance, select **Authorize with GitHub**.
-   - Use a GitHub personal access token:
-     1. Go to <https://github.com/settings/tokens/new>.
-     1. In the **Note** field, enter a token description.
-     1. Select the `repo` scope.
-     1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-     1. Select **Generate token**.
-     1. On the GitLab import page, in the **Personal Access Token** field, paste the GitHub personal access token.
-     1. Select **Authenticate**.
-1. Continue on to [selecting which repositories to import](#select-which-repositories-to-import).
+1. Select **Authorize with GitHub**.
+1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
 
-To use a different token to perform an imports after previously performing
+To use a different method to perform an import after previously performing
+these steps, sign out of your GitLab account and sign in again.
+
+### Use a GitHub Personal Access Token
+
+To import your GitHub repository using a GitHub Personal Access Token:
+
+1. Generate a GitHub Personal Access Token:
+    1. Go to <https://github.com/settings/tokens/new>.
+    1. In the **Note** field, enter a token description.
+    1. Select the `repo` scope.
+    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+    1. Select **Generate token**.
+1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Import project** and then **GitHub**.
+1. Select **Authorize with GitHub**.
+1. In the **Personal Access Token** field, paste the GitHub Personal Access Token.
+1. Select **Authenticate**.
+1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
+
+To use a different token to perform an import after previously performing
 these steps, sign out of your GitLab account and sign in again, or revoke the
 older token in GitHub.
 
 ### Use the REST API
 
-You can also import a repository from GitHub using the
-[GitLab REST API](../../../api/import.md#import-repository-from-github).
+The [GitLab REST API](../../../api/import.md#import-repository-from-github) can be used to import a GitHub repository. It has some advantages over using the GitLab UI:
+
+- Can be used to import GitHub repositories that you do not own if they are public.
+- It can be used to import from a GitHub Enterprise Server that is self-hosted.
+- Can be used to set the `timeout_strategy` option that is not available to the UI.
+
+The REST API is limited to authenticating with GitLab Personal Access Tokens.
+
+To import your GitHub repository using the GitLab REST API:
+
+1. Generate a GitHub Personal Access Token:
+    1. Go to <https://github.com/settings/tokens/new>.
+    1. In the **Note** field, enter a token description.
+    1. Select the `repo` scope.
+    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+    1. Select **Generate token**.
+1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list
 
@@ -240,25 +260,20 @@ Increasing the number of Sidekiq workers does *not* reduce the time spent clonin
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 
-You can use a personal access token to make API requests. Additionally, you can
-authorize a GitHub App or OAuth app, which can then make API requests on your
-behalf.
+If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure your self-managed GitLab instance to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/overview/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
 
-API requests to GitHub are [subject to rate limits](https://docs.github.com/en/rest/overview/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
+GitHub API requests are usually subject to a rate limit of 5,000 requests per hour. Using the steps below, you obtain a higher 15,000 requests per hour rate limit, resulting in a faster overall import time.
 
-For GitHub repositories with tens of thousands of issues, pull requests, and
-comments on those issues and pull requests, a higher rate limit results in a
-faster overall import time because the GitLab importer must pause when a
-GitHub rate limit is reached. To enable a higher rate limit for your
-self-managed or dedicated GitLab instance:
+Prerequisites:
 
-- Ensure that you have access to a
-  [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding/getting-started-with-github-enterprise-cloud)
-- [Create an OAuth app in GitHub](../../../integration/github.md#create-an-oauth-app-in-github).
-- Ensure that the OAuth app is owned by the Enterprise Cloud Organization, not
-  your personal GitHub account.
-- [Configure GitHub OAuth in GitLab](../../../integration/github.md#enable-github-oauth-in-gitlab).
-- Perform the project import using the [GitHub integration](#use-the-github-integration) and select **Authorize with GitHub** to use the OAuth authorization method.
+- You have access to a
+  [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding/getting-started-with-github-enterprise-cloud).
+- GitLab is configured to enable [GitHub OAuth](../../../integration/github.md#enable-github-oauth-in-gitlab).
+
+To enable a higher rate limit:
+
+- [Create an OAuth app in GitHub](../../../integration/github.md#create-an-oauth-app-in-github). Ensure that the OAuth app is owned by the Enterprise Cloud Organization, not your personal GitHub account.
+- Perform the project import using [GitHub OAuth](#use-github-oauth).
 - Optional. By default, sign-in is enabled for all configured OAuth providers.
   If you want to enable GitHub OAuth for imports but you want to
   prevent the ability for users to sign in to your GitLab instance with GitHub,

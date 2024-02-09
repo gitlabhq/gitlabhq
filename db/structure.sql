@@ -13226,6 +13226,27 @@ CREATE SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq
 
 ALTER SEQUENCE audit_events_instance_external_audit_event_destinations_id_seq OWNED BY audit_events_instance_external_audit_event_destinations.id;
 
+CREATE TABLE audit_events_instance_external_streaming_destinations (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    type smallint NOT NULL,
+    name text NOT NULL,
+    config jsonb NOT NULL,
+    encrypted_secret_token bytea NOT NULL,
+    encrypted_secret_token_iv bytea NOT NULL,
+    CONSTRAINT check_219decfb51 CHECK ((char_length(name) <= 72))
+);
+
+CREATE SEQUENCE audit_events_instance_external_streaming_destinations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE audit_events_instance_external_streaming_destinations_id_seq OWNED BY audit_events_instance_external_streaming_destinations.id;
+
 CREATE TABLE audit_events_instance_google_cloud_logging_configurations (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27053,6 +27074,8 @@ ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations ALTER COLUMN id 
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_audit_event_destinations_id_seq'::regclass);
 
+ALTER TABLE ONLY audit_events_instance_external_streaming_destinations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_external_streaming_destinations_id_seq'::regclass);
+
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations ALTER COLUMN id SET DEFAULT nextval('audit_events_instance_google_cloud_logging_configuration_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events_streaming_event_type_filters ALTER COLUMN id SET DEFAULT nextval('audit_events_streaming_event_type_filters_id_seq'::regclass);
@@ -29027,6 +29050,9 @@ ALTER TABLE ONLY audit_events_instance_amazon_s3_configurations
 
 ALTER TABLE ONLY audit_events_instance_external_audit_event_destinations
     ADD CONSTRAINT audit_events_instance_external_audit_event_destinations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY audit_events_instance_external_streaming_destinations
+    ADD CONSTRAINT audit_events_instance_external_streaming_destinations_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY audit_events_instance_google_cloud_logging_configurations
     ADD CONSTRAINT audit_events_instance_google_cloud_logging_configurations_pkey PRIMARY KEY (id);

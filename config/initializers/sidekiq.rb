@@ -15,18 +15,6 @@ def load_cron_jobs!
   end
 end
 
-def enable_reliable_fetch?
-  return true unless Feature::FlipperFeature.table_exists?
-
-  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, type: :ops)
-end
-
-def enable_semi_reliable_fetch_mode?
-  return true unless Feature::FlipperFeature.table_exists?
-
-  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, type: :ops)
-end
-
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.redis_client_params
 
@@ -99,10 +87,9 @@ Sidekiq.configure_server do |config|
     Gitlab::Cluster::LifecycleEvents.do_worker_stop
   end
 
-  if enable_reliable_fetch?
-    config[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
-    Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
-  end
+  config[:semi_reliable_fetch] = true # Default value is false
+
+  Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
 
   Gitlab::SidekiqVersioning.install!
 

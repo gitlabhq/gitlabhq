@@ -44613,6 +44613,9 @@ msgstr ""
 msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
 msgstr ""
 
+msgid "SecurityOrchestration|Granularly scope your policies to selected projects. Enforce custom CI with pipeline execution action for scan execution policies. %{linkStart}How do I implement these features?%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|Groups"
 msgstr ""
 
@@ -44632,6 +44635,9 @@ msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
+msgstr ""
+
+msgid "SecurityOrchestration|Introducing Policy Scoping and Pipeline Execution Policy Action experimental features"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
@@ -44844,6 +44850,9 @@ msgid "SecurityOrchestration|Select users"
 msgstr ""
 
 msgid "SecurityOrchestration|Severity is %{severity}."
+msgstr ""
+
+msgid "SecurityOrchestration|Share feedback"
 msgstr ""
 
 msgid "SecurityOrchestration|Show all included projects"

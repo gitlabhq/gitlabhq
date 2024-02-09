@@ -28,17 +28,17 @@ module API
             expose_url(model_version_uri || generic_package_uri)
           end
 
-          # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/ml_models/my-model-name-4/3.0.0
+          # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/ml_models/1/files/
           def model_version_uri
             return unless object.model_version_id
 
             model_version = object.model_version
 
-            path = api_v4_projects_packages_ml_models_model_version_path(
-              id: object.project.id, model_name: model_version.model.name, model_version: '', file_name: ''
+            path = api_v4_projects_packages_ml_models_files___path___path(
+              id: object.project.id, model_version_id: model_version.id, path: '', file_name: ''
             )
 
-            path.sub('/model_version', "/#{model_version.version}")
+            path.delete_suffix('(/path/)')
           end
 
           # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/generic/ml_experiment_1/1/

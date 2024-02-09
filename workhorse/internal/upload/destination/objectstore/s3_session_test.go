@@ -26,11 +26,17 @@ func TestS3SessionSetup(t *testing.T) {
 	require.Equal(t, "us-west-1", s3Config.SigningRegion)
 	require.True(t, aws.BoolValue(sess.Config.S3ForcePathStyle))
 
-	require.Equal(t, len(sessionCache.sessions), 1)
+	sessionCache.Lock()
+	require.Equal(t, 1, len(sessionCache.sessions))
+	sessionCache.Unlock()
+
 	anotherConfig := cfg
 	_, err = setupS3Session(credentials, anotherConfig)
 	require.NoError(t, err)
-	require.Equal(t, len(sessionCache.sessions), 1)
+
+	sessionCache.Lock()
+	require.Equal(t, 1, len(sessionCache.sessions))
+	sessionCache.Unlock()
 }
 
 func TestS3SessionEndpointSetup(t *testing.T) {
@@ -62,7 +68,7 @@ func TestS3SessionExpiry(t *testing.T) {
 	sess, err := setupS3Session(credentials, cfg)
 	require.NoError(t, err)
 
-	require.Equal(t, aws.StringValue(sess.Config.Region), "us-west-1")
+	require.Equal(t, "us-west-1", aws.StringValue(sess.Config.Region))
 	require.True(t, aws.BoolValue(sess.Config.S3ForcePathStyle))
 
 	firstSession, ok := getS3Session(cfg)
