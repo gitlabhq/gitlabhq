@@ -2954,6 +2954,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
 
       shared_examples 'an invalid request' do
+        let(:exception_class) { Gitlab::Git::CommandError }
+
         it 'returns an empty set' do
           expect(generated_files).to eq Set.new
         end
@@ -2962,11 +2964,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           expect(Gitlab::ErrorTracking)
             .to receive(:track_exception)
             .with(
-              instance_of(Gitlab::Git::CommandError),
+              instance_of(exception_class),
               gl_project_path: repository.gl_project_path,
               base: base,
               head: head,
-              paths: paths.map(&:path)
+              paths_count: paths.count,
+              paths_bytesize: paths.map(&:path).join.bytesize
             )
 
           generated_files
@@ -2988,6 +2991,26 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         end
 
         it_behaves_like 'an invalid request'
+      end
+
+      context 'when an Gitlab::Git::ResourceExhaustedError is raised' do
+        let(:exception_class) { Gitlab::Git::ResourceExhaustedError }
+
+        before do
+          allow(repository).to receive(:get_file_attributes).and_raise(exception_class)
+        end
+
+        it_behaves_like 'an invalid request'
+      end
+
+      context 'when the size of changed paths exceeds the diff_max_files limit' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:diff_max_files).and_return(2)
+        end
+
+        it 'returns an empty set' do
+          expect(generated_files).to eq Set.new
+        end
       end
     end
 

@@ -1225,6 +1225,10 @@ module Gitlab
       def detect_generated_files(base, head, changed_paths)
         return Set.new if changed_paths.blank?
 
+        # We only display diffs upto the diff_max_files size so we can avoid
+        # checking the rest if it exceeds the limit.
+        changed_paths = changed_paths.take(Gitlab::CurrentSettings.diff_max_files)
+
         # Check .gitattributes overrides first
         checked_files = get_file_attributes(
           base,
@@ -1242,14 +1246,16 @@ module Gitlab
           .pluck(:path)
           .to_set
 
-      rescue Gitlab::Git::CommandError => e
+      rescue Gitlab::Git::CommandError, Gitlab::Git::ResourceExhaustedError => e
         # An exception can be raised due to an unknown revision or paths.
+        # Gitlab::Git::ResourceExhaustedError could be raised if the request payload is too large.
         Gitlab::ErrorTracking.track_exception(
           e,
           gl_project_path: @gl_project_path,
           base: base,
           head: head,
-          paths: changed_paths.map(&:path)
+          paths_count: changed_paths.count,
+          paths_bytesize: changed_paths.map(&:path).join.bytesize
         )
 
         Set.new
