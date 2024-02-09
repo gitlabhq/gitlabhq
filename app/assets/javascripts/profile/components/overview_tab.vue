@@ -54,19 +54,19 @@ export default {
 
 <template>
   <gl-tab :title="$options.i18n.title">
-    <activity-calendar />
-    <div class="gl-mx-n5 gl-display-flex gl-flex-wrap">
-      <div class="gl-px-5 gl-w-full gl-lg-w-half" data-testid="activity-section">
+    <div class="gl-mt-5 gl-display-flex gl-flex-wrap">
+      <div class="gl-w-full" data-testid="activity-section">
         <div
           class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
         >
           <h4 class="gl-flex-grow-1">{{ $options.i18n.activity }}</h4>
           <gl-link href="">{{ $options.i18n.viewAll }}</gl-link>
         </div>
+        <activity-calendar />
         <gl-loading-icon v-if="eventsLoading" class="gl-mt-5" size="md" />
         <contribution-events v-else :events="events" />
       </div>
-      <div class="gl-px-5 gl-w-full gl-lg-w-half" data-testid="personal-projects-section">
+      <div class="gl-w-full" data-testid="personal-projects-section">
         <div
           class="gl-display-flex gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid"
         >

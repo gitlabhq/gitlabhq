@@ -668,6 +668,17 @@ export const isInFuture = (date) =>
 export const fallsBefore = (dateA, dateB) => differenceInMilliseconds(dateA, dateB) > 0;
 
 /**
+ * Checks whether date falls in the `start -> end` time period.
+ *
+ * @param {Date} date
+ * @param {Date} start
+ * @param {Date} end
+ * @return {Boolean} Returns true if date falls in the time period, otherwise false
+ */
+export const isInTimePeriod = (date, start, end) =>
+  differenceInMilliseconds(start, date) >= 0 && differenceInMilliseconds(date, end) >= 0;
+
+/**
  * Removes the time component of the date.
  *
  * @param {Date} date

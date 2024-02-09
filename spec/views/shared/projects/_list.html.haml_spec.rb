@@ -31,6 +31,20 @@ RSpec.describe 'shared/projects/_list' do
       expect(rendered).not_to have_css('a.issues')
       expect(rendered).not_to have_css('a.merge-requests')
     end
+
+    it 'renders list in list view' do
+      expect(rendered).not_to have_css('.gl-new-card')
+    end
+  end
+
+  context 'with projects in card mode' do
+    let(:projects) { build_stubbed_list(:project, 1) }
+
+    it 'renders card mode when set to true' do
+      render template: 'shared/projects/_list', locals: { card_mode: true }
+
+      expect(rendered).to have_css('.gl-new-card')
+    end
   end
 
   context 'without projects' do

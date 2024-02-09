@@ -165,7 +165,7 @@ export default {
             :id="`L${line}`"
             :key="line"
             class="gl-user-select-none gl-shadow-none! file-line-num"
-            :href="`#LC${line}`"
+            :href="`#L${line}`"
             :data-line-number="line"
             @click="scrollToLine(`#LC${line}`)"
           >

@@ -634,7 +634,7 @@ This feature is separate from Secret Detection scanning, which checks your Git r
 ### Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../index.md#debug-level-logging).
+[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
 
 ### Warning: `gl-secret-detection-report.json: no matching files`
 
@@ -652,7 +652,7 @@ For example, you could have a pipeline triggered from a merge request containing
 clone is not deep enough to contain all of the relevant commits. To verify the current value, see
 [pipeline configuration](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
-To confirm this as the cause of the error, enable [debug-level logging](../index.md#debug-level-logging),
+To confirm this as the cause of the error, enable [debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging),
 then rerun the pipeline. The logs should look similar to the following example. The text
 "object not found" is a symptom of this error.
 

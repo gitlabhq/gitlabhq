@@ -72,7 +72,7 @@ export default class ActivityCalendar {
     this.clickDay = this.clickDay.bind(this);
     this.currentSelectedDate = '';
     this.daySpace = 1;
-    this.daySize = 15;
+    this.daySize = 14;
     this.daySizeWithSpace = this.daySize + this.daySpace * 2;
     this.monthNames = [
       __('Jan'),
@@ -131,7 +131,6 @@ export default class ActivityCalendar {
     this.renderDays();
     this.renderMonths();
     this.renderDayTitles();
-    this.renderKey();
   }
 
   // Add extra padding for the last month label if it is also the last column
@@ -153,7 +152,7 @@ export default class ActivityCalendar {
       .select(container)
       .append('svg')
       .attr('width', width)
-      .attr('height', 169)
+      .attr('height', 140)
       .attr('class', 'contrib-calendar')
       .attr('data-testid', 'contrib-calendar');
   }
@@ -255,25 +254,6 @@ export default class ActivityCalendar {
       .attr('y', 10)
       .attr('class', 'user-contrib-text')
       .text((date) => this.monthNames[date.month]);
-  }
-
-  renderKey() {
-    this.svg
-      .append('g')
-      .attr('transform', `translate(18, ${this.daySizeWithSpace * 8 + 16})`)
-      .selectAll('rect')
-      .data(CONTRIB_LEGENDS)
-      .enter()
-      .append('rect')
-      .attr('width', this.daySize)
-      .attr('height', this.daySize)
-      .attr('x', (_, i) => this.daySizeWithSpace * i)
-      .attr('y', 0)
-      .attr('data-level', (_, i) => i)
-      .attr('class', 'user-contrib-cell has-tooltip contrib-legend')
-      .attr('title', (x) => x.title)
-      .attr('data-container', 'body')
-      .attr('data-html', true);
   }
 
   clickDay(stamp) {

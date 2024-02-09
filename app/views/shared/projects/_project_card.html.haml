@@ -1,0 +1,91 @@
+- avatar = local_assigns[:avatar].nil? || local_assigns[:avatar]
+- stars = local_assigns[:stars].nil? || local_assigns[:stars]
+- forks = local_assigns[:forks].nil? || local_assigns[:forks]
+- merge_requests = local_assigns[:merge_requests].nil? || local_assigns[:merge_requests]
+- issues = local_assigns[:issues].nil? || local_assigns[:issues]
+- pipeline_status = local_assigns[:pipeline_status].nil? || local_assigns[:pipeline_status]
+- skip_namespace = local_assigns[:skip_namespace]
+- compact_mode = local_assigns[:compact_mode]
+- use_creator_avatar = local_assigns[:use_creator_avatar]
+- show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
+- updated_tooltip = time_ago_with_tooltip(project.last_activity_at || project.updated_at)
+- show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+- last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
+- css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
+- css_metadata_classes = "gl-display-flex gl-align-items-center gl-ml-0! gl-reset-color! icon-wrapper has-tooltip"
+
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-justify-content-space-between gl-lg-w-25p gl-flex-grow-1 gl-shrink-0 gl-mt-0' }, header_options: { class: 'gl-new-card-header gl-flex-grow-1 gl-align-items-flex-start gl-border-b-0 gl-px-4 gl-gap-5' }, body_options: { class: 'gl-new-card-body gl-px-4 gl-py-4' }) do |c|
+  - c.with_header do
+    - if avatar
+      .project-avatar-container.gl-relative.gl-pb-4
+        = link_to project_path(project), class: dom_class(project) do
+          - if project.creator && use_creator_avatar
+            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
+          - else
+            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
+
+    .gl-w-full.gl-pt-2.gl-word-break-word
+      .gl-display-flex.gl-align-items-center.gl-flex-wrap
+        %h2.gl-font-base.gl-line-height-20.gl-my-0
+          = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document', title: project.name do
+            %span.namespace-name.gl-font-weight-normal
+              - if project.namespace && !skip_namespace
+                = project.namespace.human_name
+                \/
+            %span.project-name<
+              = project.name
+
+        = visibility_level_content(project)
+
+      - if show_last_commit_as_description
+        .description.gl-display-none.gl-sm-display-block.gl-mt-2.gl-font-sm
+          = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
+      - elsif project.description.present?
+        .description.gl-display-none.gl-sm-display-block.gl-mt-2.gl-font-sm
+          = markdown_field(project, :description)
+
+      - if project.topics.any?
+        .gl-mt-3.gl-ml-n1
+          = render "shared/projects/topics", project: project.present(current_user: current_user)
+      - if project.catalog_resource
+        = render partial: 'shared/ci_catalog_badge', locals: { href: project_ci_catalog_resource_path(project, project.catalog_resource) }
+
+      - if explore_projects_tab? && project_license_name(project)
+        %span.gl-display-inline-flex.gl-align-items-center.gl-mr-3
+          = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
+          = project_license_name(project)
+
+      - if !explore_projects_tab?
+        = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-3!'
+  - c.with_body do
+    .project-controls{ data: { testid: 'project_controls'} }
+      .gl-display-flex.gl-align-items-center.gl-gap-2.gl-mb-2.gl-justify-content-space-between.gl-flex-wrap
+        .controls.gl-display-flex.gl-align-items-center.gl-gap-4{ class: "#{css_controls_class} gl-pr-0!" }
+          - if stars
+            = link_to project_starrers_path(project), class: "#{css_metadata_classes} stars", title: _('Stars'), data: { container: 'body', placement: 'top' } do
+              = sprite_icon('star-o', size: 14, css_class: 'gl-mr-2')
+              = badge_count(project.star_count)
+          - if show_count?(disabled: !forks, compact_mode: compact_mode)
+            = link_to project_forks_path(project), class: "#{css_metadata_classes} forks", title: _('Forks'), data: { container: 'body', placement: 'top' } do
+              = sprite_icon('fork', size: 14, css_class: 'gl-mr-2')
+              = badge_count(project.forks_count)
+          - if show_count?(disabled: !merge_requests, compact_mode: compact_mode)
+            = link_to project_merge_requests_path(project), class: "#{css_metadata_classes} merge-requests", title: _('Merge requests'), data: { container: 'body', placement: 'top' } do
+              = sprite_icon('git-merge', size: 14, css_class: 'gl-mr-2')
+              = badge_count(project.open_merge_requests_count)
+          - if show_count?(disabled: !issues, compact_mode: compact_mode)
+            = link_to project_issues_path(project), class: "#{css_metadata_classes} issues", title: _('Issues'), data: { container: 'body', placement: 'top' } do
+              = sprite_icon('issues', size: 14, css_class: 'gl-mr-2')
+              = badge_count(project.open_issues_count)
+
+        .gl-display-flex.gl-align-items-center.gl-gap-2.gl-mr-n2
+          - if show_pipeline_status_icon && last_pipeline.present?
+            - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
+            %span.icon-wrapper.pipeline-status
+              = render 'ci/status/icon', status: last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
+
+          = render_if_exists 'shared/projects/archived', project: project
+      .updated-note.gl-font-sm.gl-white-space-nowrap.gl-justify-content-start
+        %span
+          = _('Updated')
+          = updated_tooltip

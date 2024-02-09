@@ -1,46 +1,46 @@
-- activity_pane_class = Feature.enabled?(:security_auto_fix) && @user.bot? ? "col-12" : "col-md-12 col-lg-6 gl-align-self-start"
+- if can?(current_user, :read_cross_project) && @user.user_readme&.rich_viewer
+  .profile-readme-wrapper.gl-relative.gl-overflow-hidden.gl-w-full.gl-pt-5
+    .profile-readme.read-more-container.gl-relative.justify-content-center.gl-border.gl-rounded-base.gl-overflow-hidden{ data: { 'read-more-height': 400 } }
+      .read-more-content.read-more-content--has-scrim.gl-py-5.gl-px-6
+        .gl-display-flex
+          = render Pajamas::BreadcrumbComponent.new(class: 'gl-mb-4') do |c|
+            - c.with_item(text: @user.username, href: project_path(@user.user_project))
+            - c.with_item(text: @user.user_readme.path, href: @user.user_project.readme_url)
 
-.row.d-none.d-sm-flex
-  .col-12.calendar-block.gl-my-3
-    .user-calendar.light{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
-      = gl_loading_icon(size: 'md', css_class: 'gl-my-8')
-      .user-calendar-error.invisible
-        = _('There was an error loading users activity calendar.')
-        %a.js-retry-load{ href: '#' }
-          = s_('UserProfile|Retry')
-- if @user.user_readme&.rich_viewer
-  .row.justify-content-center
-    .col-12.col-md-10.col-lg-8.gl-my-6
-      .gl-display-flex
-        = render Pajamas::BreadcrumbComponent.new(class: 'gl-mb-4') do |c|
-          - c.with_item(text: @user.username, href: project_path(@user.user_project))
-          - c.with_item(text: @user.user_readme.path, href: @user.user_project.readme_url)
+          - if current_user == @user
+            .gl-ml-auto
+              = link_to _('Edit file'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
+        = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
+      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-index-2.gl-bg-white.gl-px-6.gl-rounded-bottom-base
+        = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'gl-mt-4 gl-ml-n1', 'aria-label': _("Expand Readme") }) do
+          = sprite_icon('chevron-down', size: 14, css_class: 'gl-mr-1 gl-mb-n1')
+          = _("Read more")
 
-        - if current_user == @user
-          .gl-ml-auto
-            = link_to _('Edit'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
-      = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
-.row
-  .col-12.user-calendar-activities
-.row
-  %div{ class: activity_pane_class }
-    - if can?(current_user, :read_cross_project)
-      .activities-block
-        .gl-mt-5
-          .gl-display-flex.gl-align-items-center.gl-border-b-1.gl-border-b-gray-100.gl-border-b-solid
-            %h4.gl-flex-grow-1
-              = Feature.enabled?(:security_auto_fix) && @user.bot? ? s_('UserProfile|Bot activity') : s_('UserProfile|Activity')
-            = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
-          .overview-content-list.user-activity-content{ data: { href: user_activity_path, testid: 'user-activity-content' } }
-            = gl_loading_icon(size: 'md', css_class: 'loading')
+- if can?(current_user, :read_cross_project)
+  .gl-align-self-start.gl-overflow-hidden
+    .activities-block
+      .gl-display-flex.gl-align-items-baseline
+        %h2.gl-heading-3.gl-flex-grow-1{ class: 'gl-mt-5! gl-mb-3!' }
+          = Feature.enabled?(:security_auto_fix) && @user.bot? ? s_('UserProfile|Bot activity') : s_('UserProfile|Activity')
+        = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
 
-  - unless Feature.enabled?(:security_auto_fix) && @user.bot?
-    .col-md-12.col-lg-6
-      .projects-block
-        .gl-mt-5
-          .gl-display-flex.gl-align-items-center.gl-border-b-1.gl-border-b-gray-100.gl-border-b-solid
-            %h4.gl-flex-grow-1
-              = s_('UserProfile|Personal projects')
-            = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
-          .overview-content-list{ data: { href: user_projects_path } }
-            = gl_loading_icon(size: 'md', css_class: 'loading')
+      .user-calendar.gl-border.light.gl-rounded-base.gl-px-3.gl-pt-4.gl-text-center{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: local_timezone_instance(@user.timezone).now.utc_offset } }
+        = gl_loading_icon(size: 'md', css_class: 'gl-my-8')
+        .user-calendar-error.invisible
+          = _('There was an error loading users activity calendar.')
+          = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-retry-load' }) do
+            = s_('UserProfile|Retry')
+
+      .user-calendar-activities
+      .overview-content-list.user-activity-content.gl-mb-5{ data: { href: user_activity_path, testid: 'user-activity-content' } }
+        = gl_loading_icon(size: 'md', css_class: 'loading')
+
+- unless Feature.enabled?(:security_auto_fix) && @user.bot?
+  - if @user.personal_projects.any?
+    .projects-block.gl-w-full
+      .gl-display-flex.gl-align-items-baseline
+        %h2.gl-heading-3.gl-flex-grow-1{ class: 'gl-mt-5! gl-mb-3!' }
+          = s_('UserProfile|Personal projects')
+        = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
+      .overview-content-list{ data: { href: user_projects_path } }
+        = gl_loading_icon(size: 'md', css_class: 'loading')

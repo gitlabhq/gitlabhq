@@ -11,11 +11,14 @@ import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
 import { xAxisLabelFormatter, dateFormatter } from '../utils';
+import { MASTER_CHART_HEIGHT } from '../constants';
 import ContributorAreaChart from './contributor_area_chart.vue';
+import IndividualChart from './individual_chart.vue';
 
 const GRAPHS_PATH_REGEX = /^(.*?)\/-\/graphs/g;
 
 export default {
+  MASTER_CHART_HEIGHT,
   i18n: {
     history: __('History'),
     refSelectorTranslations: {
@@ -27,6 +30,7 @@ export default {
     GlButton,
     GlLoadingIcon,
     ContributorAreaChart,
+    IndividualChart,
     RefSelector,
   },
   props: {
@@ -52,9 +56,8 @@ export default {
     return {
       masterChart: null,
       individualCharts: [],
+      individualChartZoom: {},
       svgs: {},
-      masterChartHeight: 264,
-      individualChartHeight: 216,
       selectedBranch: this.branch,
     };
   },
@@ -195,23 +198,13 @@ export default {
           });
         })
         .catch(() => {});
-      this.masterChart.on('datazoom', debounce(this.setIndividualChartsZoom, 200));
-    },
-    onIndividualChartCreated(chart) {
-      this.individualCharts.push(chart);
-    },
-    setIndividualChartsZoom(options) {
-      this.charts.forEach((chart) =>
-        chart.setOption(
-          {
-            dataZoom: {
-              start: options.start,
-              end: options.end,
-              show: false,
-            },
-          },
-          { lazyUpdate: true },
-        ),
+
+      this.masterChart.on(
+        'datazoom',
+        debounce(() => {
+          const [{ startValue, endValue }] = this.masterChart.getOption().dataZoom;
+          this.individualChartZoom = { startValue, endValue };
+        }, 200),
       );
     },
     visitBranch(selected) {
@@ -230,7 +223,7 @@ export default {
     </div>
 
     <template v-else-if="showChart">
-      <div class="gl-border-b gl-border-gray-100 gl-mb-6 gl-bg-gray-10 gl-p-5">
+      <div class="gl-border-b gl-border-gray-100 gl-mb-6 gl-bg-gray-10 gl-py-5">
         <div class="gl-display-flex">
           <div class="gl-mr-3">
             <ref-selector
@@ -246,35 +239,25 @@ export default {
           </gl-button>
         </div>
       </div>
-      <div data-testid="contributors-charts">
-        <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
-        <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
-        <contributor-area-chart
-          class="gl-mb-5"
-          :data="masterChartData"
-          :option="masterChartOptions"
-          :height="masterChartHeight"
-          @created="onMasterChartCreated"
-        />
 
-        <div class="row">
-          <div
-            v-for="(contributor, index) in individualChartsData"
-            :key="index"
-            class="col-lg-6 col-12 gl-my-5"
-          >
-            <h4 class="gl-mb-2 gl-mt-0">{{ contributor.name }}</h4>
-            <p class="gl-mb-3">
-              {{ n__('%d commit', '%d commits', contributor.commits) }} ({{ contributor.email }})
-            </p>
-            <contributor-area-chart
-              :data="contributor.dates"
-              :option="individualChartOptions"
-              :height="individualChartHeight"
-              @created="onIndividualChartCreated"
-            />
-          </div>
-        </div>
+      <h4 class="gl-mb-2 gl-mt-5">{{ __('Commits to') }} {{ branch }}</h4>
+      <span>{{ __('Excluding merge commits. Limited to 6,000 commits.') }}</span>
+      <contributor-area-chart
+        class="gl-mb-5"
+        :data="masterChartData"
+        :option="masterChartOptions"
+        :height="$options.MASTER_CHART_HEIGHT"
+        @created="onMasterChartCreated"
+      />
+
+      <div class="row">
+        <individual-chart
+          v-for="(contributor, index) in individualChartsData"
+          :key="index"
+          :contributor="contributor"
+          :chart-options="individualChartOptions"
+          :zoom="individualChartZoom"
+        />
       </div>
     </template>
   </div>

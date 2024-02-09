@@ -59,7 +59,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     deny_all_requests_except_allowed: false,
     enforce_user: false,
     enforce_sanitization: false,
-    dns_rebind_protection: false
+    dns_rebind_protection: false,
+    outbound_local_requests_allowlist: []
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
@@ -112,6 +113,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
       if deny_all_requests_except_allowed?
         args[:deny_all_requests_except_allowed] = true
       end
+
+      args[:outbound_local_requests_allowlist] = ApplicationSetting.current&.outbound_local_requests_whitelist || [] # rubocop:disable Naming/InclusiveLanguage -- existing setting
     end
   end
 

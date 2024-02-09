@@ -86,22 +86,6 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
   end
 
   describe 'projects section' do
-    describe 'user has no personal projects' do
-      include_context 'visit overview tab'
-
-      it 'shows an empty project list with an info message' do
-        page.within('.projects-block') do
-          expect(page).to have_selector('.loading', visible: false)
-          expect(page).to have_content('You haven\'t created any personal projects.')
-          expect(page).not_to have_selector('.project-row')
-        end
-      end
-
-      it 'does not show a link to the project list' do
-        expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: false)
-      end
-    end
-
     describe 'user has a personal project' do
       before do
         create(:project, :private, namespace: user.namespace, creator: user) { |p| p.add_maintainer(user) }
@@ -111,7 +95,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       it 'shows one entry in the list of projects' do
         page.within('.projects-block') do
-          expect(page).to have_selector('.project-row', count: 1)
+          expect(page).to have_selector('.gl-card', count: 1)
         end
       end
 
@@ -119,9 +103,9 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
         expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
       end
 
-      it 'shows projects in "compact mode"' do
+      it 'shows projects in "card mode"' do
         page.within('#js-overview .projects-block') do
-          expect(find('.js-projects-list-holder')).to have_selector('.compact')
+          expect(find('.js-projects-list-holder')).to have_css('.gl-card')
         end
       end
     end
@@ -135,9 +119,9 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
 
       include_context 'visit overview tab'
 
-      it 'shows max. ten entries in the list of projects' do
+      it 'shows max. 3 entries in the list of projects' do
         page.within('.projects-block') do
-          expect(page).to have_selector('.project-row', count: 10)
+          expect(page).to have_selector('.gl-card', count: 3)
         end
       end
 
@@ -315,7 +299,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows projects panel' do
-        expect(page).to have_selector('.projects-block')
+        expect(page).not_to have_selector('.projects-block')
       end
     end
   end

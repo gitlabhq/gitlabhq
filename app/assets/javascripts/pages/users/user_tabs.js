@@ -1,8 +1,8 @@
 // TODO: Remove this with the removal of the old navigation.
 // See https://gitlab.com/gitlab-org/gitlab/-/issues/435899.
 
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
+import initReadMore from '~/read_more';
 import Activities from '~/activities';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
@@ -66,18 +66,35 @@ import UserOverviewBlock from './user_overview_block';
 
 const CALENDAR_TEMPLATE = `
   <div class="calendar">
-    <div class="js-contrib-calendar"></div>
-    <div class="calendar-hint"></div>
+    <div class="js-contrib-calendar gl-overflow-x-auto"></div>
+    <div class="calendar-help gl-display-flex gl-justify-content-space-between gl-ml-auto gl-mr-auto">
+      <div class="calendar-legend">
+        <svg width="80px" height="20px">
+          <g>
+            <rect width="13" height="13" x="2" y="2" data-level="0" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+              'No contributions',
+            )}" data-container="body"></rect>
+            <rect width="13" height="13" x="17" y="2" data-level="1" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+              '1-9 contributions',
+            )}" data-container="body"></rect>
+            <rect width="13" height="13" x="32" y="2" data-level="2" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+              '10-19 contributions',
+            )}" data-container="body"></rect>
+            <rect width="13" height="13" x="47" y="2" data-level="3" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+              '20-29 contributions',
+            )}" data-container="body"></rect>
+            <rect width="13" height="13" x="62" y="2" data-level="4" class="user-contrib-cell has-tooltip contrib-legend" title="${__(
+              '30+ contributions',
+            )}" data-container="body"></rect>
+          </g>
+        </svg>
+      </div>
+      <div class="calendar-hint gl-font-sm gl-text-secondary"></div>
+    </div>
   </div>
 `;
 
-const CALENDAR_PERIOD_6_MONTHS = 6;
 const CALENDAR_PERIOD_12_MONTHS = 12;
-/* computation based on
- * width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
- * (see activity_calendar.js)
- */
-const OVERVIEW_CALENDAR_BREAKPOINT = 918;
 
 export default class UserTabs {
   constructor({ defaultAction, action, parentEl }) {
@@ -105,12 +122,6 @@ export default class UserTabs {
       .off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
       .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', (event) => this.tabShown(event))
       .on('click', '.gl-pagination a', (event) => this.changeProjectsPage(event));
-
-    window.addEventListener('resize', () => this.onResize());
-  }
-
-  onResize() {
-    this.loadActivityCalendar();
   }
 
   changeProjectsPage(e) {
@@ -194,19 +205,25 @@ export default class UserTabs {
       return;
     }
 
+    initReadMore();
+
     this.loadActivityCalendar();
 
     UserTabs.renderMostRecentBlocks('#js-overview .activities-block', {
       requestParams: { limit: 15 },
     });
+
     UserTabs.renderMostRecentBlocks('#js-overview .projects-block', {
-      requestParams: { limit: 10, skip_pagination: true, skip_namespace: true, compact_mode: true },
+      requestParams: { limit: 3, skip_pagination: true, skip_namespace: true, card_mode: true },
     });
 
     this.loaded.overview = true;
   }
 
   static renderMostRecentBlocks(container, options) {
+    if ($(container).length === 0) {
+      return;
+    }
     // eslint-disable-next-line no-new
     new UserOverviewBlock({
       container,
@@ -218,8 +235,6 @@ export default class UserTabs {
 
   loadActivityCalendar() {
     const $calendarWrap = this.$parentEl.find('.tab-pane.active .user-calendar');
-    if (!$calendarWrap.length || bp.getBreakpointSize() === 'xs') return;
-
     const calendarPath = $calendarWrap.data('calendarPath');
 
     AjaxCache.retrieve(calendarPath)
@@ -240,7 +255,6 @@ export default class UserTabs {
   }
 
   static renderActivityCalendar(data, $calendarWrap) {
-    const monthsAgo = UserTabs.getVisibleCalendarPeriod($calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
     const utcOffset = $calendarWrap.data('utcOffset');
     const calendarHint = __('Issues, merge requests, pushes, and comments.');
@@ -257,8 +271,12 @@ export default class UserTabs {
       calendarActivitiesPath,
       utcOffset,
       firstDayOfWeek: gon.first_day_of_week,
-      monthsAgo,
+      CALENDAR_PERIOD_12_MONTHS,
     });
+
+    // Scroll to end
+    const calendarContainer = document.querySelector('.js-contrib-calendar');
+    calendarContainer.scrollLeft = calendarContainer.scrollWidth;
   }
 
   toggleLoading(status) {
@@ -281,12 +299,5 @@ export default class UserTabs {
 
   getCurrentAction() {
     return this.$parentEl.find('.nav-links a.active').data('action');
-  }
-
-  static getVisibleCalendarPeriod($calendarWrap) {
-    const width = $calendarWrap.width();
-    return width < OVERVIEW_CALENDAR_BREAKPOINT
-      ? CALENDAR_PERIOD_6_MONTHS
-      : CALENDAR_PERIOD_12_MONTHS;
   }
 }

@@ -18,7 +18,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         <a
           class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="1"
-          href="#LC1"
+          href="#L1"
           id="reference-0"
         >
           1
@@ -34,7 +34,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         <a
           class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="2"
-          href="#LC2"
+          href="#L2"
           id="reference-1"
         >
           2
@@ -50,7 +50,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         <a
           class="file-line-num gl-shadow-none! gl-user-select-none"
           data-line-number="3"
-          href="#LC3"
+          href="#L3"
           id="reference-2"
         >
           3

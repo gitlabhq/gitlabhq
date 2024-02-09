@@ -1,10 +1,10 @@
 ---
 status: ongoing
 creation-date: "2023-11-23"
-authors: [ "@lohrc", "@g.hickman" ]
+authors: [ "@Andysoiron", "@g.hickman" ]
 coach: "@fabiopitino"
 approvers: [ "@g.hickman" ]
-owning-stage: ~"devops::govern"
+owning-stage: "~devops::govern"
 participating-stages: ["~devops::verify"]
 ---
 

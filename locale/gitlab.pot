@@ -2722,6 +2722,9 @@ msgstr ""
 msgid "Achievements|%{namespace_link} awarded you the %{bold_start}%{achievement_name}%{bold_end} achievement!"
 msgstr ""
 
+msgid "Achievements|Achievements"
+msgstr ""
+
 msgid "Achievements|Awarded %{timeAgo} by %{namespace}"
 msgstr ""
 
@@ -18594,6 +18597,9 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
+msgid "Edit file"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -20327,6 +20333,9 @@ msgid "Expand"
 msgstr ""
 
 msgid "Expand AI-generated summary"
+msgstr ""
+
+msgid "Expand Readme"
 msgstr ""
 
 msgid "Expand all"
@@ -53968,6 +53977,9 @@ msgstr ""
 msgid "UserProfile|%{id} · created %{created} by %{author}"
 msgstr ""
 
+msgid "UserProfile|About"
+msgstr ""
+
 msgid "UserProfile|Activity"
 msgstr ""
 
@@ -53990,6 +54002,9 @@ msgid "UserProfile|Bot activity"
 msgstr ""
 
 msgid "UserProfile|Busy"
+msgstr ""
+
+msgid "UserProfile|Contact"
 msgstr ""
 
 msgid "UserProfile|Contributed projects"
@@ -54022,10 +54037,10 @@ msgstr ""
 msgid "UserProfile|Groups are the best way to manage projects and members."
 msgstr ""
 
-msgid "UserProfile|Join or create a group to start contributing by commenting on issues or submitting merge requests!"
+msgid "UserProfile|Info"
 msgstr ""
 
-msgid "UserProfile|Most Recent Activity"
+msgid "UserProfile|Join or create a group to start contributing by commenting on issues or submitting merge requests!"
 msgstr ""
 
 msgid "UserProfile|No snippets found."
@@ -54037,7 +54052,10 @@ msgstr ""
 msgid "UserProfile|Personal projects"
 msgstr ""
 
-msgid "UserProfile|Pronounced as: %{pronunciation}"
+msgid "UserProfile|Pronounced as: %{div_start}%{pronunciation}%{div_end}"
+msgstr ""
+
+msgid "UserProfile|Pronouns: %{div_start}%{pronouns}%{div_end}"
 msgstr ""
 
 msgid "UserProfile|Retry"
@@ -54100,7 +54118,13 @@ msgstr ""
 msgid "UserProfile|User profile navigation"
 msgstr ""
 
+msgid "UserProfile|User profile picture"
+msgstr ""
+
 msgid "UserProfile|View all"
+msgstr ""
+
+msgid "UserProfile|View large avatar"
 msgstr ""
 
 msgid "UserProfile|View user in admin area"

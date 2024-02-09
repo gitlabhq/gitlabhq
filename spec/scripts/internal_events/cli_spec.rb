@@ -85,6 +85,29 @@ RSpec.describe Cli, feature_category: :service_ping do
     end
   end
 
+  shared_examples 'definition fixtures are valid' do |directory, schema_path|
+    let(:schema) { ::JSONSchemer.schema(Pathname(schema_path)) }
+    # The generator can return an invalid definition if the user skips the MR link
+    let(:expected_errors) { a_hash_including('data_pointer' => '/introduced_by_url', 'data' => 'TODO') }
+
+    it "for #{directory}", :aggregate_failures do
+      Dir[Rails.root.join('spec', 'fixtures', 'scripts', 'internal_events', directory, '*.yml')].each do |filepath|
+        attributes = YAML.safe_load(File.read(filepath))
+        errors = schema.validate(attributes).to_a
+
+        error_message = <<~TEXT
+        Unexpected validation errors in: #{filepath}
+        #{errors.map { |e| JSONSchemer::Errors.pretty(e) }.join("\n")}
+        TEXT
+
+        expect(errors).to contain_exactly(expected_errors), error_message
+      end
+    end
+  end
+
+  it_behaves_like 'definition fixtures are valid', 'events', 'config/events/schema.json'
+  it_behaves_like 'definition fixtures are valid', 'metrics', 'config/metrics/schema/base.json'
+
   context 'when creating new events' do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_events.yml')).each do |test_case|
       it_behaves_like 'creates the right defintion files', test_case['description'], test_case

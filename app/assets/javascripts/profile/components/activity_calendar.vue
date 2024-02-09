@@ -1,12 +1,8 @@
 <script>
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { debounce } from 'lodash';
-
 import { __ } from '~/locale';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import ActivityCalendar from '~/pages/users/activity_calendar';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { getVisibleCalendarPeriod } from '../utils';
 
 export default {
@@ -20,26 +16,14 @@ export default {
   data() {
     return {
       isLoading: true,
-      showCalendar: true,
       hasError: false,
     };
   },
   mounted() {
     this.renderActivityCalendar();
-    window.addEventListener('resize', this.handleResize);
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.handleResize);
   },
   methods: {
     async renderActivityCalendar() {
-      if (bp.getBreakpointSize() === 'xs') {
-        this.showCalendar = false;
-
-        return;
-      }
-
-      this.showCalendar = true;
       this.isLoading = true;
       this.hasError = false;
 
@@ -66,9 +50,6 @@ export default {
         this.hasError = true;
       }
     },
-    handleResize: debounce(function debouncedHandleResize() {
-      this.renderActivityCalendar();
-    }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
     handleClickDay() {
       // Render activities for specific day.
       // Blocked by https://gitlab.com/gitlab-org/gitlab/-/issues/378695
@@ -78,8 +59,8 @@ export default {
 </script>
 
 <template>
-  <div v-if="showCalendar" ref="calendarContainer">
-    <gl-loading-icon v-if="isLoading" size="md" />
+  <div ref="calendarContainer" class="gl-pb-5 gl-border-b">
+    <gl-loading-icon v-if="isLoading" size="sm" />
     <gl-alert
       v-else-if="hasError"
       :title="$options.i18n.errorAlertTitle"
@@ -88,13 +69,11 @@ export default {
       :primary-button-text="$options.i18n.retry"
       @primaryAction="renderActivityCalendar"
     />
-    <div v-else class="gl-text-center">
-      <div class="gl-display-inline-block gl-relative">
-        <div ref="calendarSvgContainer"></div>
-        <p class="gl-absolute gl-right-0 gl-bottom-0 gl-mb-0 gl-font-sm">
-          {{ $options.i18n.calendarHint }}
-        </p>
-      </div>
+    <div v-else class="gl-display-inline-block gl-relative gl-w-full">
+      <div ref="calendarSvgContainer"></div>
+      <p class="gl-absolute gl-right-0 gl-bottom-0 gl-mb-0 gl-font-sm gl-text-secondary">
+        {{ $options.i18n.calendarHint }}
+      </p>
     </div>
   </div>
 </template>

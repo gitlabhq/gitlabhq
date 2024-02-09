@@ -85,3 +85,41 @@ describe('Read more click-to-expand functionality', () => {
     });
   });
 });
+
+describe('data-read-more-height defines when to show the read-more button', () => {
+  const findTrigger = () => document.querySelectorAll('.js-read-more-trigger');
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
+  it('if not set shows button all the time', () => {
+    setHTMLFixture(`
+      <div class="read-more-container">
+        <p class="read-more-content">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+        <button type="button" class="js-read-more-trigger">
+          Button text
+        </button>
+      </div>
+    `);
+
+    initReadMore();
+
+    expect(findTrigger().length).toBe(1);
+  });
+
+  it('if set hides button as threshold is met', () => {
+    setHTMLFixture(`
+      <div class="read-more-container" data-read-more-height="120">
+        <p class="read-more-content">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+        <button type="button" class="js-read-more-trigger">
+          Button text
+      </button>
+      </div>
+    `);
+
+    initReadMore();
+
+    expect(findTrigger().length).toBe(0);
+  });
+});

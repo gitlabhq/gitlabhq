@@ -29,97 +29,16 @@
   }
 }
 
-.calendar-block {
-  padding-left: 0;
-  padding-right: 0;
-  border-top: 0;
-
-  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
-    overflow-x: auto;
-  }
+.calendar-help {
+  // Match width of calendar
+  max-width: 864px;
 }
 
-.calendar-hint {
-  font-size: 12px;
-  direction: ltr;
-  margin-top: -23px;
-  float: right;
-}
-
-.cover-block {
-  text-align: center;
-  background: var(--gray-50, $gray-light);
-  padding-top: 44px;
-  position: relative;
-
-  .avatar-holder {
-    .avatar,
-    .identicon {
-      margin: 0 auto;
-      float: none;
-    }
-
-    .identicon {
-      border-radius: 50%;
-    }
-  }
-
-  .cover-title {
-    color: var(--gl-text-color, $gl-text-color);
-    font-size: 23px;
-
-    h1 {
-      color: var(--gl-text-color, $gl-text-color);
-      margin-bottom: 6px;
-      font-size: 23px;
-    }
-
-    .visibility-icon {
-      display: inline-block;
-      margin-left: 5px;
-      font-size: 18px;
-      color: color('gray');
-    }
-
-    p {
-      padding: 0 $gl-padding;
-      color: var(--gl-text-color, $gl-text-color);
-    }
-  }
-
-  .cover-controls {
-    @include media-breakpoint-up(sm) {
-      position: absolute;
-      top: 1rem;
-      right: 1.25rem;
-    }
-
-    &.left {
-      @include media-breakpoint-up(sm) {
-        left: 1.25rem;
-        right: auto;
-      }
-    }
-  }
-
-  &.user-cover-block {
-    padding: 24px 0 0;
-
-    .nav-links {
-      width: 100%;
-      float: none;
-
-      &.scrolling-tabs {
-        float: none;
-      }
-    }
-
-    li:first-child {
-      margin-left: auto;
-    }
-
-    li:last-child {
-      margin-right: auto;
+.user-profile-image {
+  .gl-avatar {
+    @include media-breakpoint-up(md) {
+      height: 6.5rem;
+      width: 6.5rem;
     }
   }
 }
@@ -140,13 +59,10 @@
   max-width: 600px;
 }
 
-.user-calendar {
-  text-align: center;
-  min-height: 172px;
-
-  .calendar {
-    display: inline-block;
-  }
+.profile-readme-wrapper .read-more-trigger {
+  bottom: 0;
+  left: 1px;
+  right: 1px;
 }
 
 .user-calendar-activities {
@@ -158,14 +74,17 @@
 }
 
 .user-contrib-text {
-  font-size: 12px;
+  font-size: 11px;
   fill: $calendar-user-contrib-text;
 }
 
 .user-profile {
-  .profile-header {
-    .avatar-holder {
-      margin: 0 auto 10px;
+  @include media-breakpoint-up(lg) {
+    .profile-header {
+      position: sticky;
+      top: $calc-application-header-height;
+      height: $calc-application-viewport-height;
+      padding-left: $gl-spacing-scale-2;
     }
   }
 
@@ -189,23 +108,9 @@
     .gl-label-scoped {
       --label-inset-border: inset 0 0 0 1px currentColor;
     }
-
-    @include media-breakpoint-up(lg) {
-      margin-right: 5px;
-    }
-  }
-
-  .projects-block {
-    @include media-breakpoint-up(lg) {
-      margin-left: 5px;
-    }
   }
 
   @include media-breakpoint-down(xs) {
-    .cover-block {
-      padding-top: 20px;
-    }
-
     .user-profile-nav {
       a {
         margin-right: 0;
@@ -266,5 +171,47 @@
   li {
     padding: 3px 0;
     border: 0;
+  }
+}
+
+.user-profile {
+  position: relative;
+
+  @include media-breakpoint-up(lg) {
+    display: grid;
+    grid-template-columns: 1fr $right-sidebar-width;
+    gap: 2rem;
+  }
+}
+
+.user-profile-sidebar {
+  z-index: 2;
+}
+
+.user-profile-sidebar,
+.user-profile-content {
+  min-width: 1px; // grid overflow fix
+}
+
+// Home panel show profile sidebar
+// information on top
+.user-profile {
+  @include media-breakpoint-down(md) {
+    display: flex;
+    flex-direction: column;
+
+    .user-overview-page.active {
+      display: flex;
+      flex-wrap: wrap;
+
+      .user-profile-content {
+        flex-basis: 100%;
+      }
+    }
+
+    .user-profile-sidebar {
+      order: -1;
+      flex-basis: 100%;
+    }
   }
 }

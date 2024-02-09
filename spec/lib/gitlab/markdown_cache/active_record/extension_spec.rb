@@ -229,6 +229,7 @@ RSpec.describe Gitlab::MarkdownCache::ActiveRecord::Extension do
 
     before do
       thing.note = "hello world"
+      thing.noteable_type = "Issue"
     end
 
     it 'calls store_mentions!' do

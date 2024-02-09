@@ -51,7 +51,7 @@ RSpec.describe 'User uploads avatar to profile', feature_category: :user_profile
 
       visit user_path(user)
 
-      expect(page).to have_selector(%(img[src$="/uploads/-/system/user/avatar/#{user.id}/dk.png?width=96"]))
+      expect(page).to have_selector(%(img[src$="/uploads/-/system/user/avatar/#{user.id}/dk.png?width=64"]))
 
       # Cheating here to verify something that isn't user-facing, but is important
       expect(user.reload.avatar.file).to exist

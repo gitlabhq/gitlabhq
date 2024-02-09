@@ -13,7 +13,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
     end
 
     it 'shows the RSS link with overflow menu', :js do
-      page.within('.user-cover-block') do
+      page.within('.user-profile-header') do
         find_by_testid('base-dropdown-toggle').click
       end
 
@@ -27,7 +27,7 @@ RSpec.describe 'User RSS', feature_category: :user_profile do
     end
 
     it 'has an RSS without a feed token', :js do
-      page.within('.user-cover-block') do
+      page.within('.user-profile-header') do
         find_by_testid('base-dropdown-toggle').click
       end
 

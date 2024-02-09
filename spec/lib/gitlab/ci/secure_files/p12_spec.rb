@@ -9,7 +9,10 @@ RSpec.describe Gitlab::Ci::SecureFiles::P12 do
     describe '#certificate_data' do
       it 'assigns the error message and returns nil' do
         expect(invalid_certificate.certificate_data).to be nil
-        expect(invalid_certificate.error).to eq('PKCS12_parse: mac verify failure')
+        # OpenSSL v3+ reports `PKCS12_parse: parse error` while
+        # OpenSSL v1.1 reports `PKCS12_parse: mac verify failure`. Unfortunately, we
+        # can't tell what underlying library is used, so just look for an error.
+        expect(invalid_certificate.error).to match(/PKCS12_parse:/)
       end
     end
 

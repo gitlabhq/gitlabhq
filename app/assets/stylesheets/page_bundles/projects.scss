@@ -325,14 +325,6 @@
       @include media-breakpoint-up(lg) {
         justify-content: flex-start;
         padding-right: $gl-spacing-scale-9;
-
-        &:not(.with-pipeline-status) {
-          .icon-wrapper:first-of-type {
-            @include media-breakpoint-up(lg) {
-              margin-left: $gl-spacing-scale-7;
-            }
-          }
-        }
       }
     }
 
@@ -568,4 +560,9 @@
       display: -webkit-box;
     }
   }
+}
+
+.projects-list .description p {
+  @include gl-line-clamp-2;
+  margin-bottom: 0;
 }

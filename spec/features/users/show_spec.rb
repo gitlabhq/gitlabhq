@@ -12,7 +12,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
   it 'shows copy user id action in the dropdown', :js do
     subject
 
-    page.within('.user-cover-block') do
+    page.within('.cover-controls') do
       find_by_testid('base-dropdown-toggle').click
     end
 
@@ -305,7 +305,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it 'shows user name as blocked' do
-      expect(page).to have_css(".cover-title", text: 'Blocked user')
+      expect(page).to have_css(".user-profile-header", text: 'Blocked user')
     end
 
     it 'shows no additional fields' do
@@ -343,7 +343,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       it 'shows user name as unconfirmed' do
-        expect(page).to have_css(".cover-title", text: 'Unconfirmed user')
+        expect(page).to have_css(".user-profile-header", text: 'Unconfirmed user')
       end
 
       it 'shows no tab' do
@@ -393,7 +393,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
     subject
 
-    expect(page).to have_content("(they/them)")
+    expect(page).to have_content("Pronouns: they/them")
   end
 
   it 'shows the pronunctiation of the user if there was one' do
@@ -433,12 +433,6 @@ RSpec.describe 'User page', feature_category: :user_profile do
   context 'most recent activity' do
     before do
       stub_feature_flags(profile_tabs_vue: false)
-    end
-
-    it 'shows the most recent activity' do
-      subject
-
-      expect(page).to have_content('Most Recent Activity')
     end
 
     context 'when external authorization is enabled' do

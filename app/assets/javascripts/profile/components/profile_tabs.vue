@@ -81,7 +81,7 @@ export default {
   },
   async mounted() {
     try {
-      const response = await getUserProjects(this.userId, { per_page: 10 });
+      const response = await getUserProjects(this.userId, { per_page: 3 });
       this.personalProjects = convertObjectPropsToCamelCase(response.data, { deep: true }).map(
         (project) => {
           // This API does not return the `visibility` key if user is signed out.
