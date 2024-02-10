@@ -74,9 +74,11 @@ Note the Redis node's IP address or hostname, port, and password (if required).
    sudo gitlab-ctl reconfigure
    ```
 
-### Setting the Redis Cache instance as an LRU
+### Setting the eviction policy
 
-When configuring a Redis Cache instance, it should be configured as a [Least Recently Used cache](https://redis.io/docs/manual/eviction/) (LRU) accordingly.
+When running a single Redis instance the eviction policy should be set to `noeviction`.
+
+If you are running separate Redis Cache and Persistent instances, Cache should be configured as a [Least Recently Used cache](https://redis.io/docs/manual/eviction/) (LRU) with `allkeys-lru` while Persistent should be set to `noeviction`.
 
 Configuring this depends on the cloud provider or service, but generally the following settings and values configure a cache:
 

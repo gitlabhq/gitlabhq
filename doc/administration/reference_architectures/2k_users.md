@@ -363,6 +363,7 @@ You can optionally use a [third party external service for the Redis instance](.
 
 - A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
+- You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
 For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 

@@ -8,16 +8,20 @@ toc: false
 # Deprecations and removals by version
 
 The following GitLab features are deprecated and no longer recommended for use.
-Each deprecated feature will be removed in a future release.
-Some features cause breaking changes when they are removed.
 
-On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+- Each deprecated feature will be removed in a future release.
+- Some features cause breaking changes when they are removed.
+- On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
+
+For advanced searching and filtering of this deprecation information, try
+[a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
+
+[REST API deprecations](https://docs.gitlab.com/ee/api/rest/deprecations.html)
+and [GraphQL deprecations](https://docs.gitlab.com/ee/api/graphql/removed_items.html)
+are documented separately.
 
 **{rss}** **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
-
-You can also view [REST API](https://docs.gitlab.com/ee/api/rest/deprecations.html)
-and [GraphQL](https://docs.gitlab.com/ee/api/graphql/removed_items.html) deprecations/removals.
 
 <!-- vale off -->
 
