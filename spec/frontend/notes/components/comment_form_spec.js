@@ -277,14 +277,12 @@ describe('issue_comment_form component', () => {
         expect(errorAlerts[1].text()).toBe(commandErrors[2]);
       });
 
-      it('should toggle issue state when no note', () => {
+      it('should toggle issue state when no note', async () => {
         mountComponent({ mountFunction: mount });
-
-        jest.spyOn(wrapper.vm, 'toggleIssueState');
-
-        findCloseReopenButton().trigger('click');
-
-        expect(wrapper.vm.toggleIssueState).toHaveBeenCalled();
+        jest.spyOn(eventHub, '$emit');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('toggle.issuable.state');
+        await findCloseReopenButton().trigger('click');
+        expect(eventHub.$emit).toHaveBeenCalledWith('toggle.issuable.state');
       });
 
       it('should disable action button while submitting', async () => {
@@ -521,34 +519,28 @@ describe('issue_comment_form component', () => {
           ${'epic'}          | ${'Epic'}
         `('when $type', ({ type, noteableType }) => {
           describe('when open', () => {
-            it(`makes an API call to open it`, () => {
+            it(`makes an API call to close it`, () => {
+              jest.spyOn(axios, 'put').mockResolvedValue({ data: {} });
               mountComponent({
                 noteableType,
                 noteableData: { ...noteableDataMock, state: STATUS_OPEN },
                 mountFunction: mount,
               });
-
-              jest.spyOn(wrapper.vm, 'closeIssuable').mockResolvedValue();
-
+              expect(axios.put).not.toHaveBeenCalledWith();
               findCloseReopenButton().trigger('click');
-
-              expect(wrapper.vm.closeIssuable).toHaveBeenCalled();
+              expect(axios.put).toHaveBeenCalledWith(notesDataMock.closePath);
             });
 
             it(`shows an error when the API call fails`, async () => {
+              jest.spyOn(axios, 'put').mockRejectedValue();
               mountComponent({
                 noteableType,
                 noteableData: { ...noteableDataMock, state: STATUS_OPEN },
                 mountFunction: mount,
               });
-
-              jest.spyOn(wrapper.vm, 'closeIssuable').mockRejectedValue();
-
               await findCloseReopenButton().trigger('click');
-
               await nextTick();
               await nextTick();
-
               expect(createAlert).toHaveBeenCalledWith({
                 message: `Something went wrong while closing the ${type}. Please try again later.`,
               });
@@ -557,31 +549,28 @@ describe('issue_comment_form component', () => {
 
           describe('when closed', () => {
             it('makes an API call to close it', () => {
+              jest.spyOn(axios, 'put').mockResolvedValue({ data: {} });
               mountComponent({
                 noteableType,
                 noteableData: { ...noteableDataMock, state: STATUS_CLOSED },
                 mountFunction: mount,
               });
 
-              jest.spyOn(wrapper.vm, 'reopenIssuable').mockResolvedValue();
-
+              expect(findCloseReopenButton().text()).toBe(`Reopen ${type}`);
+              expect(axios.put).not.toHaveBeenCalled();
               findCloseReopenButton().trigger('click');
-
-              expect(wrapper.vm.reopenIssuable).toHaveBeenCalled();
+              expect(axios.put).toHaveBeenCalledWith(notesDataMock.reopenPath);
             });
           });
 
           it(`shows an error when the API call fails`, async () => {
+            jest.spyOn(axios, 'put').mockRejectedValue();
             mountComponent({
               noteableType,
               noteableData: { ...noteableDataMock, state: STATUS_CLOSED },
               mountFunction: mount,
             });
-
-            jest.spyOn(wrapper.vm, 'reopenIssuable').mockRejectedValue();
-
             await findCloseReopenButton().trigger('click');
-
             await nextTick();
             await nextTick();
 
@@ -592,17 +581,15 @@ describe('issue_comment_form component', () => {
         });
 
         it('when merge request, should update MR count', async () => {
+          jest.spyOn(axios, 'put').mockResolvedValue({ data: {} });
           mountComponent({
             noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE,
             mountFunction: mount,
           });
-
-          jest.spyOn(wrapper.vm, 'closeIssuable').mockResolvedValue();
-
           await findCloseReopenButton().trigger('click');
+          await waitForPromises();
 
-          await nextTick();
-
+          expect(axios.put).toHaveBeenCalledWith(notesDataMock.closePath);
           expect(fetchUserCounts).toHaveBeenCalled();
         });
       });

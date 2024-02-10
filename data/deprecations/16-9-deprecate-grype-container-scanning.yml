@@ -1,0 +1,16 @@
+- title: "Deprecate Grype scanner for Container Scanning"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439164
+  body: |  # (required) Don't change this line.
+    Support for the Grype scanner in the GitLab Container Scanning analyzer is deprecated in
+    GitLab 16.9 and will be removed in GitLab 17.0.
+
+    You should use the default setting for `CS_ANALYZER_IMAGE`, which uses the Trivy
+    scanner.
+
+    To continue to use Grype, see the [Security scanner integration documentation](https://docs.gitlab.com/ee/development/integrations/secure.html) to learn how to
+    create your own integration with GitLab.

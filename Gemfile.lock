@@ -707,7 +707,7 @@ GEM
       mime-types
     gitlab-glfm-markdown (0.0.12)
       rb_sys (~> 0.9.86)
-    gitlab-labkit (0.35.0)
+    gitlab-labkit (0.35.1)
       actionpack (>= 5.0.0, < 8.0.0)
       activesupport (>= 5.0.0, < 8.0.0)
       grpc (>= 1.37)
@@ -1918,7 +1918,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.12)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-labkit (~> 0.35.0)
+  gitlab-labkit (~> 0.35.1)
   gitlab-license (~> 2.4)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 1.9.0)

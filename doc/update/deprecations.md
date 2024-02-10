@@ -69,6 +69,23 @@ next major release, GitLab 18.0. This gem sees very little use and its
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Deprecate License Scanning CI/CD artifact report type
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439301).
+</div>
+
+The CI/CD [artifact report](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html) type is deprecated in GitLab 16.9, and will be removed in GitLab 18.0. CI/CD configurations using this keyword will stop working in GitLab 18.0.
+
+The artifact report type is no longer used because of the removal of the legacy License Scanning CI/CD job in GitLab 16.3.
+Instead, you should use [License scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Deprecate Terraform CI/CD templates
 
 <div class="deprecation-notes">
@@ -535,6 +552,27 @@ The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageInc
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecate Grype scanner for Container Scanning
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/439164).
+</div>
+
+Support for the Grype scanner in the GitLab Container Scanning analyzer is deprecated in
+GitLab 16.9 and will be removed in GitLab 17.0.
+
+You should use the default setting for `CS_ANALYZER_IMAGE`, which uses the Trivy
+scanner.
+
+To continue to use Grype, see the [Security scanner integration documentation](https://docs.gitlab.com/ee/development/integrations/secure.html) to learn how to
+create your own integration with GitLab.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Deprecate License Scanning CI templates
 
 <div class="deprecation-notes">
@@ -568,6 +606,23 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
 
 Users are advised to upgrade to 3.8.8 or greater.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Deprecate Python 3.9 in Dependency Scanning and License Scanning
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441201).
+</div>
+
+From GitLab 16.9, Dependency Scanning and License Scanning support for Python 3.9 is deprecated. In GitLab 17.0, Python 3.10 is the default version for the Dependency Scanning CI/CD job.
+
+From GitLab 17.0, Dependency Scanning and License Scanning features won't support projects that require Python 3.9 without a
+[compatible lockfile](https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#obtaining-dependency-information-by-parsing-lockfiles).
 
 </div>
 
@@ -1735,6 +1790,24 @@ removed in 17.0.
 </div>
 
 The [`after_script`](https://docs.gitlab.com/ee/ci/yaml/#after_script) CI/CD keyword is used to run additional commands after the main `script` section of a job. This is often used for cleaning up environments or other resources that were used by the job. For many users, the fact that the `after_script` commands do not run if a job is cancelled was unexpected and undesired. In 17.0, the keyword will be updated to also run commands after job cancellation. Make sure that your CI/CD configuration that uses the `after_script` keyword is able to handle running for cancelled jobs as well.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### `dependency_files` is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/396376).
+</div>
+
+Today in GitLab, a project's dependency list is generated using content from `dependency_files` in the Dependency Scanning report. However, to maintain consistency with the group dependency list, starting with GitLab 17.0, the project's dependency list will use CycloneDX SBOM report artifacts, stored in GitLab's PostgreSQL database. As such, the `dependency_files` property of the Dependency Scanning report schema is deprecated, and will be removed in 17.0.
+
+As a part of this deprecation, the [`dependency_path`](https://docs.gitlab.com/ee/user/application_security/dependency_list/#dependency-paths) will also be deprecated and removed in 17.0. GitLab will move forward with the implementation of the [dependency graph using the CycloneDX specification](https://gitlab.com/gitlab-org/gitlab/-/issues/441118) to provide similar information.
+
+Additionally, the Container Scanning CI job [will no longer produce a Dependency Scanning report](https://gitlab.com/gitlab-org/gitlab/-/issues/439782) to provide the list of Operating System components as this is replaced with the CycloneDX SBOM report. The `CS_DISABLE_DEPENDENCY_LIST` environment variable for Container Scanning is no longer in use and will also be removed in 17.0.
 
 </div>
 

@@ -1245,9 +1245,11 @@ lib/gitlab/checks/**
 # opportunity to refine specific rules defined in this section.
 # Note that frontend, CI templates and other concerns should be kept within
 # the same section.
-/**/app/**/ci/
-/**/lib/**/ci/
-/**/app/**/merge_trains/
+/app/**/ci/
+/ee/app/**/ci/
+/lib/**/ci/
+/ee/lib/**/ci/
+/ee/app/**/merge_trains/
 /app/controllers/admin/jobs_controller.rb
 /app/controllers/admin/runner_projects_controller.rb
 /app/controllers/admin/runners_controller.rb
