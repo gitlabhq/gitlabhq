@@ -8,10 +8,17 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
-    it 'wraps gRPC not found error' do
-      expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method)
-        .and_raise(GRPC::NotFound)
-      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    context 'when commit is not found' do
+      let(:find_commits_error) { Gitaly::FindCommitsError.new }
+
+      before do
+        allow(Gitlab::GitalyClient).to receive(:decode_detailed_error).and_return(find_commits_error)
+      end
+
+      it 'wraps gRPC not found error' do
+        expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method).and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::CommitNotFound)
+      end
     end
 
     it 'wraps gRPC unknown error' do

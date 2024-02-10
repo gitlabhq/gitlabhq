@@ -19,6 +19,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
+      CommitNotFound = Class.new(::Gitlab::Git::BaseError)
       RepositoryExists = Class.new(::Gitlab::Git::BaseError)
       InvalidRepository = Class.new(::Gitlab::Git::BaseError)
       InvalidBlobName = Class.new(::Gitlab::Git::BaseError)
@@ -380,8 +381,13 @@ module Gitlab
           raise ArgumentError, "invalid Repository#log limit: #{limit.inspect}"
         end
 
-        wrapped_gitaly_errors do
-          gitaly_commit_client.find_commits(options)
+        # call Gitaly client to fetch commits, if a NotFound happens we return an empty array
+        begin
+          wrapped_gitaly_errors do
+            gitaly_commit_client.find_commits(options)
+          end
+        rescue Gitlab::Git::Repository::CommitNotFound
+          []
         end
       end
 
