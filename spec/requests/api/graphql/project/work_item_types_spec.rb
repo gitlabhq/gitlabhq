@@ -10,14 +10,6 @@ RSpec.describe 'getting a list of work item types for a project', feature_catego
 
   it_behaves_like 'graphql work item type list request spec' do
     let(:current_user) { developer }
-    let(:parent_key) { :project }
-
-    let(:query) do
-      graphql_query_for(
-        'project',
-        { 'fullPath' => project.full_path },
-        query_nodes('WorkItemTypes', work_item_type_fields)
-      )
-    end
+    let(:parent) { project }
   end
 end

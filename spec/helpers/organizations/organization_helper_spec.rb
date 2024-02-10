@@ -282,7 +282,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             Gitlab::VisibilityLevel::INTERNAL,
             Gitlab::VisibilityLevel::PUBLIC
           ],
-          'restricted_visibility_levels' => []
+          'restricted_visibility_levels' => [],
+          'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
+          'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }
       )
     end

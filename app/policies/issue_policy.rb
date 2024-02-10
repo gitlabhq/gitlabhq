@@ -26,7 +26,7 @@ class IssuePolicy < IssuablePolicy
 
   # accessing notes requires the notes widget to be available for work items(or issue)
   condition(:notes_widget_enabled, scope: :subject) do
-    @subject.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
+    @subject.has_widget?(:notes)
   end
 
   condition(:group_issue, scope: :subject) { subject_container.is_a?(Group) }

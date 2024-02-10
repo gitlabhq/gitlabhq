@@ -23985,6 +23985,9 @@ msgstr ""
 msgid "GroupSettings|Group mentions are disabled"
 msgstr ""
 
+msgid "GroupSettings|Group path cannot be longer than %{length} characters."
+msgstr ""
+
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
@@ -24295,6 +24298,9 @@ msgid "Groups|Creating README"
 msgstr ""
 
 msgid "Groups|Enter a descriptive name for your group."
+msgstr ""
+
+msgid "Groups|Enter a path for your group."
 msgstr ""
 
 msgid "Groups|Group ID"

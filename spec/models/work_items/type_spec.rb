@@ -168,12 +168,13 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
   end
 
   describe '#supports_assignee?' do
+    let(:parent) { build_stubbed(:project) }
     let_it_be_with_reload(:work_item_type) { create(:work_item_type) }
     let_it_be_with_reload(:widget_definition) do
       create(:widget_definition, work_item_type: work_item_type, widget_type: :assignees)
     end
 
-    subject(:supports_assignee) { work_item_type.supports_assignee? }
+    subject(:supports_assignee) { work_item_type.supports_assignee?(parent) }
 
     it { is_expected.to be_truthy }
 
@@ -186,13 +187,14 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
-  describe '#supports_time_tracking??' do
+  describe '#supports_time_tracking?' do
+    let(:parent) { build_stubbed(:project) }
     let_it_be_with_reload(:work_item_type) { create(:work_item_type) }
     let_it_be_with_reload(:widget_definition) do
       create(:widget_definition, work_item_type: work_item_type, widget_type: :time_tracking)
     end
 
-    subject(:supports_time_tracking) { work_item_type.supports_time_tracking? }
+    subject(:supports_time_tracking) { work_item_type.supports_time_tracking?(parent) }
 
     it { is_expected.to be_truthy }
 

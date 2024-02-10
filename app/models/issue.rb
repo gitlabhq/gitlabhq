@@ -639,7 +639,7 @@ class Issue < ApplicationRecord
   end
 
   def supports_assignee?
-    work_item_type_with_default.supports_assignee?
+    work_item_type_with_default.supports_assignee?(resource_parent)
   end
 
   def supports_time_tracking?
@@ -743,6 +743,12 @@ class Issue < ApplicationRecord
 
   def skip_metrics?
     importing?
+  end
+
+  def has_widget?(widget)
+    widget_class = WorkItems::Widgets.const_get(widget.to_s.camelize, false)
+
+    work_item_type.widgets(resource_parent).include?(widget_class)
   end
 
   private

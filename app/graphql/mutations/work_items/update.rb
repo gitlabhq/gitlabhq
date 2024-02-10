@@ -21,7 +21,7 @@ module Mutations
 
         work_item = authorized_find!(id: id)
 
-        widget_params = extract_widget_params!(work_item.work_item_type, attributes)
+        widget_params = extract_widget_params!(work_item.work_item_type, attributes, work_item.resource_parent)
 
         # Only checks permissions for base attributes because widgets define their own permissions independently
         raise_resource_not_available_error! unless attributes.empty? || can_update?(work_item)

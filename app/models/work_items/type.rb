@@ -100,16 +100,17 @@ module WorkItems
       namespace.blank?
     end
 
-    def widgets
+    # resource_parent is used in EE
+    def widgets(_resource_parent)
       enabled_widget_definitions.filter_map(&:widget_class)
     end
 
-    def supports_assignee?
-      widgets.include? ::WorkItems::Widgets::Assignees
+    def supports_assignee?(resource_parent)
+      widgets(resource_parent).include?(::WorkItems::Widgets::Assignees)
     end
 
-    def supports_time_tracking?
-      widgets.include?(::WorkItems::Widgets::TimeTracking)
+    def supports_time_tracking?(resource_parent)
+      widgets(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
     end
 
     def default_issue?
@@ -133,3 +134,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::Type.prepend_mod

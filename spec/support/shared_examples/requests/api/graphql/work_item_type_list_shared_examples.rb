@@ -1,9 +1,24 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'graphql work item type list request spec' do |context_name = nil|
+  include GraphqlHelpers
+
   include_context context_name || 'with work item types request context'
 
-  context 'when user has access to the group' do
+  let(:parent_key) { parent.to_ability_name.to_sym }
+  let(:query) do
+    graphql_query_for(
+      parent_key.to_s,
+      { 'fullPath' => parent.full_path },
+      query_nodes('WorkItemTypes', work_item_type_fields)
+    )
+  end
+
+  before do
+    post_graphql(query, current_user: current_user)
+  end
+
+  context 'when user has access to the resource parent' do
     it_behaves_like 'a working graphql query that returns data' do
       before do
         post_graphql(query, current_user: current_user)
@@ -13,7 +28,9 @@ RSpec.shared_examples 'graphql work item type list request spec' do |context_nam
     it 'returns all default work item types' do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_data_at(parent_key, :workItemTypes, :nodes)).to match_array(expected_work_item_type_response)
+      expect(graphql_data_at(parent_key, :workItemTypes, :nodes)).to match_array(
+        expected_work_item_type_response(parent)
+      )
     end
 
     it 'prevents N+1 queries' do

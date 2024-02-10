@@ -10,7 +10,7 @@ module WorkItems
         callback_class = widget.class.try(:callback_class)
         callback_params = @widget_params[widget.class.api_symbol]
 
-        if new_type_excludes_widget?(widget)
+        if new_type_excludes_widget?(widget, work_item.resource_parent)
           callback_params = {} if callback_params.nil?
           callback_params[:excluded_in_new_type] = true
         end
@@ -51,14 +51,14 @@ module WorkItems
 
     private
 
-    def new_type_excludes_widget?(widget)
+    def new_type_excludes_widget?(widget, resource_parent)
       return false unless params[:work_item_type]
 
-      params[:work_item_type].widgets.exclude?(widget.class)
+      params[:work_item_type].widgets(resource_parent).exclude?(widget.class)
     end
 
     def interpret_quick_actions!(work_item, widget_params, attributes = {})
-      return unless work_item.work_item_type.widgets.include?(::WorkItems::Widgets::Description)
+      return unless work_item.has_widget?(:description)
 
       description_param = widget_params[::WorkItems::Widgets::Description.api_symbol]
       return unless description_param

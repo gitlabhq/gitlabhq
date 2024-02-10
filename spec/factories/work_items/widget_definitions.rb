@@ -7,5 +7,9 @@ FactoryBot.define do
 
     name { 'Description' }
     widget_type { 'description' }
+
+    trait :default do
+      namespace { nil }
+    end
   end
 end

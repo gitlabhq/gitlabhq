@@ -68,7 +68,7 @@ module Mutations
 
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
         type = ::WorkItems::Type.find(attributes[:work_item_type_id])
-        widget_params = extract_widget_params!(type, params)
+        widget_params = extract_widget_params!(type, params, container)
 
         create_result = ::WorkItems::CreateService.new(
           container: container,

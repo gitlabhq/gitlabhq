@@ -20,6 +20,8 @@ export const initOrganizationsGroupsNew = () => {
     mattermostEnabled,
     availableVisibilityLevels,
     restrictedVisibilityLevels,
+    pathMaxlength,
+    pathPattern,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
@@ -37,6 +39,8 @@ export const initOrganizationsGroupsNew = () => {
       mattermostEnabled,
       availableVisibilityLevels,
       restrictedVisibilityLevels,
+      pathMaxlength,
+      pathPattern,
     },
     render(createElement) {
       return createElement(App);

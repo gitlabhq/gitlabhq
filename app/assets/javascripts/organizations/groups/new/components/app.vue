@@ -2,6 +2,7 @@
 import { GlSprintf, GlLink } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import NewGroupForm from '~/groups/components/new_group_form.vue';
 
 export default {
   name: 'OrganizationGroupsNewApp',
@@ -19,6 +20,7 @@ export default {
   components: {
     GlLink,
     GlSprintf,
+    NewGroupForm,
   },
   inject: [
     'organizationId',
@@ -27,6 +29,8 @@ export default {
     'mattermostEnabled',
     'availableVisibilityLevels',
     'restrictedVisibilityLevels',
+    'pathMaxlength',
+    'pathPattern',
   ],
 };
 </script>
@@ -48,5 +52,11 @@ export default {
         </template>
       </gl-sprintf>
     </p>
+    <new-group-form
+      :base-path="basePath"
+      :path-maxlength="pathMaxlength"
+      :path-pattern="pathPattern"
+      :cancel-path="groupsOrganizationPath"
+    />
   </div>
 </template>

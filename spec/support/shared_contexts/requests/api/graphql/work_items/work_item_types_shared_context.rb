@@ -30,7 +30,7 @@ RSpec.shared_context 'with work item types request context' do
     }
   end
 
-  def expected_work_item_type_response(work_item_type = nil)
+  def expected_work_item_type_response(resource_parent, work_item_type = nil)
     base_scope = WorkItems::Type.default
     base_scope = base_scope.id_in(work_item_type.id) if work_item_type
 
@@ -39,13 +39,13 @@ RSpec.shared_context 'with work item types request context' do
         'id' => type.to_global_id.to_s,
         'name' => type.name,
         'iconName' => type.icon_name,
-        'widgetDefinitions' => match_array(widgets_for(type))
+        'widgetDefinitions' => match_array(widgets_for(type, resource_parent))
       )
     end
   end
 
-  def widgets_for(work_item_type)
-    work_item_type.widgets.map do |widget|
+  def widgets_for(work_item_type, resource_parent)
+    work_item_type.widgets(resource_parent).map do |widget|
       base_attributes = { 'type' => widget.type.to_s.upcase }
       next hierarchy_widget_attributes(work_item_type, base_attributes) if widget == WorkItems::Widgets::Hierarchy
       next base_attributes unless widget_attributes[widget.type]

@@ -2,6 +2,7 @@ import { GlSprintf, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/groups/new/components/app.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import NewGroupForm from '~/groups/components/new_group_form.vue';
 
 describe('OrganizationGroupsNewApp', () => {
   let wrapper;
@@ -13,6 +14,8 @@ describe('OrganizationGroupsNewApp', () => {
     mattermostEnabled: false,
     availableVisibilityLevels: [0, 10, 20],
     restrictedVisibilityLevels: [],
+    pathMaxlength: 10,
+    pathPattern: 'mockPattern',
   };
 
   const createComponent = () => {
@@ -43,5 +46,16 @@ describe('OrganizationGroupsNewApp', () => {
     expect(findAllLinks().at(1).attributes('href')).toBe(
       helpPagePath('user/group/subgroups/index'),
     );
+  });
+
+  it('renders form and passes correct props', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(NewGroupForm).props()).toEqual({
+      basePath: 'https://gitlab.com',
+      cancelPath: '/-/organizations/carrot/groups_and_projects?display=groups',
+      pathMaxlength: 10,
+      pathPattern: 'mockPattern',
+    });
   });
 });
