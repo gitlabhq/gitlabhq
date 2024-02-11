@@ -43,7 +43,7 @@ module OmniAuth
           when *%w[RS256 RS384 RS512]
             OpenSSL::PKey::RSA.new(options.secret).public_key
           when *%w[ES256 ES384 ES512]
-            OpenSSL::PKey::EC.new(options.secret).tap { |key| key.private_key = nil }
+            OpenSSL::PKey::EC.new(options.secret)
           when *%w[HS256 HS384 HS512]
             options.secret
           else
