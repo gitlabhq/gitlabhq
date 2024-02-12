@@ -280,7 +280,7 @@ DETAILS:
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
-and is planned for removal in 17.0. Use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines)
+and is planned for removal in 17.0. Use [compliance pipelines](../../user/group/compliance_pipelines.md)
 instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../ci/examples/index.md#cicd-templates)

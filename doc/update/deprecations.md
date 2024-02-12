@@ -1491,6 +1491,22 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Rename the 'require_password_to_approve' field
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431346).
+</div>
+
+In GitLab 16.7, we added the ability to re-authenticate with SAML SSO for the [Require user re-authentication to approve](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/settings.html#require-user-re-authentication-to-approve) feature.
+
+For this reason, in GitLab 17.0, we are renaming the `require_password_to_approve` field to `require_reauthentication_to_approve` in the UI, API, and the database.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Required Pipeline Configuration is deprecated
 
 <div class="deprecation-notes">

@@ -14,7 +14,7 @@ This document is a work in progress and represents the current state of the visi
 
 ## Summary
 
-Users need a single solution for enforcing jobs to be run as part of a project pipeline. They want a way to combine the flexibility of [compliance framework pipelines](../../../user/group/compliance_frameworks.md#compliance-pipelines) with the simplicity of [scan execution policies](../../../user/application_security/policies/scan-execution-policies.md#scan-execution-policies-schema).
+Users need a single solution for enforcing jobs to be run as part of a project pipeline. They want a way to combine the flexibility of [compliance framework pipelines](../../../user/group/compliance_pipelines.md) with the simplicity of [scan execution policies](../../../user/application_security/policies/scan-execution-policies.md#scan-execution-policies-schema).
 
 There are many cases that could be addressed using pipeline execution policies to define policy rules, but here are a few of the most common we've heard so far:
 

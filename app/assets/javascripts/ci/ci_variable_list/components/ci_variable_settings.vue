@@ -44,6 +44,11 @@ export default {
       required: false,
       default: 0,
     },
+    mutationResponse: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     pageInfo: {
       type: Object,
       required: true,
@@ -113,9 +118,10 @@ export default {
         :hide-environment-scope="hideEnvironmentScope"
         :selected-variable="selectedVariable"
         :mode="mode"
+        :mutation-response="mutationResponse"
         @add-variable="addVariable"
-        @delete-variable="deleteVariable"
         @close-form="closeForm"
+        @delete-variable="deleteVariable"
         @update-variable="updateVariable"
         @search-environment-scope="$emit('search-environment-scope', $event)"
       />

@@ -32,7 +32,7 @@ increments the number until the name no longer conflicts with existing job names
 policy at the group level, it applies to every child project or subgroup. You cannot edit a
 group-level policy from a child project or subgroup.
 
-This feature has some overlap with [compliance framework pipelines](../../group/compliance_frameworks.md#compliance-pipelines),
+This feature has some overlap with [compliance framework pipelines](../../group/compliance_pipelines.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).

@@ -483,7 +483,7 @@ describe('CI Variable Drawer', () => {
         expect(findDeleteBtn().exists()).toBe(false);
       });
 
-      it('dispatches the add-variable event', async () => {
+      it('dispatches the add-variable event without closing the form', async () => {
         await findDescriptionField().vm.$emit('input', 'NEW_DESCRIPTION');
         await findKeyField().vm.$emit('input', 'NEW_VARIABLE');
         await findProtectedCheckbox().vm.$emit('input', false);
@@ -507,10 +507,11 @@ describe('CI Variable Drawer', () => {
             },
           ],
         ]);
+        expect(wrapper.emitted('close-form')).toBeUndefined();
       });
     });
 
-    describe('when editing a variable', () => {
+    describe('when editing a variable without closing the form', () => {
       beforeEach(() => {
         createComponent({
           props: { mode: EDIT_VARIABLE_ACTION, selectedVariable: mockProjectVariableFileType },
@@ -538,6 +539,7 @@ describe('CI Variable Drawer', () => {
             },
           ],
         ]);
+        expect(wrapper.emitted('close-form')).toBeUndefined();
       });
     });
 
@@ -549,7 +551,7 @@ describe('CI Variable Drawer', () => {
         });
       });
 
-      it('bubbles up the delete-variable event', async () => {
+      it('bubbles up the delete-variable event and closes the form', async () => {
         findDeleteBtn().vm.$emit('click');
 
         await nextTick();
@@ -557,6 +559,7 @@ describe('CI Variable Drawer', () => {
         findConfirmDeleteModal().vm.$emit('primary');
 
         expect(wrapper.emitted('delete-variable')).toEqual([[mockProjectVariableFileType]]);
+        expect(wrapper.emitted('close-form')).toHaveLength(1);
       });
     });
 

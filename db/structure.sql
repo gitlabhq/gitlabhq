@@ -278,8 +278,12 @@ CREATE TABLE users (
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,
     onboarding_in_progress boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
-    CONSTRAINT check_7bde697e8e CHECK ((char_length(static_object_token_encrypted) <= 255))
+    CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
+    CONSTRAINT check_693c6f3aab CHECK ((hide_no_ssh_key IS NOT NULL)),
+    CONSTRAINT check_7bde697e8e CHECK ((char_length(static_object_token_encrypted) <= 255)),
+    CONSTRAINT check_c737c04b87 CHECK ((notified_of_own_activity IS NOT NULL))
 );
 
 CREATE FUNCTION find_users_by_id(users_id bigint) RETURNS users
@@ -25284,8 +25288,11 @@ CREATE TABLE user_preferences (
     time_display_format smallint DEFAULT 0 NOT NULL,
     home_organization_id bigint,
     use_web_ide_extension_marketplace boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
-    CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
+    CONSTRAINT check_b22446f91a CHECK ((render_whitespace_in_code IS NOT NULL)),
+    CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7)),
+    CONSTRAINT check_d3248b1b9c CHECK ((tab_width IS NOT NULL))
 );
 
 CREATE SEQUENCE user_preferences_id_seq

@@ -192,9 +192,9 @@ In this example:
   and the message explains the other options.
 
 NOTE:
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) can have prefilled variables not appear
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_pipelines.md) can have prefilled variables not appear
 when running a pipeline manually. To workaround this issue,
-[change the compliance pipeline configuration](../../user/group/compliance_frameworks.md#prefilled-variables-are-not-shown).
+[change the compliance pipeline configuration](../../user/group/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
 #### Configure a list of selectable prefilled variable values
 

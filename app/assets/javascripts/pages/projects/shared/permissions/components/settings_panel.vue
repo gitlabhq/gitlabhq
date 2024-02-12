@@ -1021,11 +1021,6 @@ export default {
         />
       </project-setting-row>
     </div>
-    <ci-catalog-settings
-      v-if="canAddCatalogResource"
-      class="gl-mb-5"
-      :full-path="confirmationPhrase"
-    />
     <project-setting-row v-if="canDisableEmails" ref="email-settings" class="mb-3">
       <label class="js-emails-enabled">
         <input
@@ -1073,6 +1068,11 @@ export default {
         <template #help>{{ $options.i18n.pucWarningHelpText }}</template>
       </gl-form-checkbox>
     </project-setting-row>
+    <ci-catalog-settings
+      v-if="canAddCatalogResource"
+      class="gl-mb-5"
+      :full-path="confirmationPhrase"
+    />
     <other-project-settings />
     <confirm-danger
       v-if="isVisibilityReduced"

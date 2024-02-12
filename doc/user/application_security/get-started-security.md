@@ -53,7 +53,7 @@ After you've gotten familiar with how scanning works, you can then choose to:
    into your [default branch](../project/repository/branches/default.md).
 1. Enable other scan types such as [SAST](sast/index.md), [DAST](dast/index.md),
    [Fuzz testing](coverage_fuzzing/index.md), or [Container Scanning](container_scanning/index.md).
-1. Use [Compliance Pipelines](../group/compliance_frameworks.md#compliance-pipelines)
+1. Use [Compliance Pipelines](../group/compliance_pipelines.md)
    or [Scan Execution Policies](policies/scan-execution-policies.md) to enforce required scan types
    and ensure separation of duties between security and engineering.
 1. Consider enabling [Review Apps](../../development/testing_guide/review_apps.md) to allow for DAST

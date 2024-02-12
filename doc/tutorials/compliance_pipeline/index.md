@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** SaaS, self-managed
 
-You can use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) to ensure specific
+You can use [compliance pipelines](../../user/group/compliance_pipelines.md) to ensure specific
 compliance-related jobs are run on pipelines for all projects in a group. Compliance pipelines are applied
 to projects through [compliance frameworks](../../user/group/compliance_frameworks.md).
 
@@ -45,7 +45,7 @@ To create the new group:
 ## Create a new compliance pipeline project
 
 Now you're ready to create a compliance pipeline project. This project contains the
-[compliance pipeline configuration](../../user/group/compliance_frameworks.md#example-configuration) to apply to all
+[compliance pipeline configuration](../../user/group/compliance_pipelines.md#example-configuration) to apply to all
 projects with the compliance framework applied.
 
 To create the compliance pipeline project:
@@ -178,4 +178,4 @@ Notice the pipeline runs two jobs in a **test** stage:
 
 Congratulations, you've created and configured a compliance pipeline!
 
-See more [example compliance pipeline configurations](../../user/group/compliance_frameworks.md#example-configuration).
+See more [example compliance pipeline configurations](../../user/group/compliance_pipelines.md#example-configuration).

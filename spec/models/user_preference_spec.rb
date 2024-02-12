@@ -166,13 +166,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       expect(pref.tab_width).to eq(8)
     end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:tab_width, nil)
-
-      expect(pref.reload.tab_width).to eq(8)
-    end
   end
 
   describe '#tab_width=' do
@@ -200,13 +193,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(time_display_relative: nil)
 
       expect(pref.time_display_relative).to eq(true)
-    end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:time_display_relative, nil)
-
-      expect(pref.reload.time_display_relative).to eq(true)
     end
 
     it 'returns assigned value' do
@@ -269,13 +255,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(render_whitespace_in_code: nil)
 
       expect(pref.render_whitespace_in_code).to eq(false)
-    end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:render_whitespace_in_code, nil)
-
-      expect(pref.reload.render_whitespace_in_code).to eq(false)
     end
 
     it 'returns assigned value' do
