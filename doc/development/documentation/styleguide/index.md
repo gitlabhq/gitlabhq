@@ -25,13 +25,13 @@ The voice in the documentation should be conversational but brief, friendly but 
 
 ## Documentation is the single source of truth (SSoT)
 
-The GitLab documentation is the SSoT for all information related to implementation,
+The GitLab documentation is the SSoT for all product information related to implementation,
 use, and troubleshooting. The documentation evolves continuously. It is updated with
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content that
-is included in the documentation.
+about GitLab products. It also informs decisions about the kinds of content 
+included in the documentation.
 
 ## Topic types
 
