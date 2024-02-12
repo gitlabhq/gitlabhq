@@ -56,8 +56,7 @@ RSpec.describe OmniAuth::Strategies::Jwt do
               private_key_class.generate(2048)
                 .to_pem
             elsif private_key_class == OpenSSL::PKey::EC
-              private_key_class.new(ecdsa_named_curves[algorithm])
-                .tap { |key| key.generate_key! }
+              private_key_class.generate(ecdsa_named_curves[algorithm])
                 .to_pem
             else
               private_key_class.new(jwt_config.strategy.secret)

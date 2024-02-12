@@ -159,7 +159,9 @@ module Gitlab
         key_identifier = get_certificate_extension('authorityKeyIdentifier')
         return if key_identifier.nil?
 
-        key_identifier.gsub("keyid:", "").delete!("\n")
+        key_identifier.gsub!("keyid:", "")
+        key_identifier.chomp!
+        key_identifier
       end
 
       def certificate_subject_key_identifier
