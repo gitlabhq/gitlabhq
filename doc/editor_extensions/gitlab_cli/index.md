@@ -49,9 +49,12 @@ glab mr merge
 
 - [`glab alias`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/alias)
 - [`glab api`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/api)
+- [`glab ask`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ask)
 - [`glab auth`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/auth)
+- [`glab changelog`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/changelog)
 - [`glab check-update`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/check-update)
 - [`glab ci`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ci)
+- [`glab cluster`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/cluster)
 - [`glab completion`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/completion)
 - [`glab config`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/config)
 - [`glab incident`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/incident)
@@ -84,6 +87,9 @@ Installation instructions are available in the GLab
 
 To authenticate with your GitLab account, run `glab auth login`.
 `glab` respects tokens set using `GITLAB_TOKEN`.
+
+`glab` also integrates with the [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)
+for secure authentication.
 
 ## Report issues
 

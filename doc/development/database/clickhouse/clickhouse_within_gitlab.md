@@ -249,6 +249,29 @@ iterator.each_batch(column: :id, of: 10) do |scope, min, max|
 end
 ```
 
+### Min-max strategies
+
+As the first step, the iterator determines the data range which will be used as condition in the iteration database queries. The data range is
+determined using `MIN(column)` and `MAX(column)` aggregations. For some database tables this strategy causes inefficient database queries (full table scan). One example would be partitioned database tables.
+
+Example query:
+
+```sql
+SELECT MIN(id) AS min, MAX(id) AS max FROM events;
+```
+
+Alternatively a different min-max strategy can be used which uses `ORDER BY + LIMIT` for determining the data range.
+
+```ruby
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection, min_max_strategy: :order_limit)
+```
+
+Example query:
+
+```sql
+SELECT (SELECT id FROM events ORDER BY id ASC LIMIT 1) AS min, (SELECT id FROM events ORDER BY id DESC LIMIT 1) AS max;
+```
+
 ## Implementing Sidekiq workers
 
 Sidekiq workers leveraging ClickHouse databases should include the `ClickHouseWorker` module.

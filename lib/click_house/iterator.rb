@@ -22,24 +22,16 @@ module ClickHouse
   # builder = ClickHouse::QueryBuilder.new('event_authors').where(type: 'some_type')
   class Iterator
     # rubocop: disable CodeReuse/ActiveRecord -- this is a ClickHouse query builder class usin Arel
-    def initialize(query_builder:, connection:, min_value: nil)
+    def initialize(query_builder:, connection:, min_value: nil, min_max_strategy: :min_max)
       @query_builder = query_builder
       @connection = connection
       @min_value = min_value
+      @min_max_strategy = min_max_strategy
     end
 
     def each_batch(column: :id, of: 10_000)
-      min_max_query = query_builder.select(
-        table[column].minimum.as('min'),
-        table[column].maximum.as('max')
-      )
-
-      row = connection.select(min_max_query.to_sql).first
-      return if row.nil?
-
-      min = min_value || row['min']
-      max = row['max']
-      return if max == 0
+      min, max = min_max(column)
+      return if min.nil? || max == 0
 
       loop do
         break if min > max
@@ -57,7 +49,35 @@ module ClickHouse
 
     delegate :table, to: :query_builder
 
-    attr_reader :query_builder, :connection, :min_value
+    attr_reader :query_builder, :connection, :min_value, :min_max_strategy
+
+    def min_max(column)
+      case min_max_strategy
+      when :min_max
+        min_max_query = query_builder.select(
+          table[column].minimum.as('min'),
+          table[column].maximum.as('max')
+        )
+
+        row = connection.select(min_max_query.to_sql).first
+        return if row.nil?
+
+        [min_value || row['min'], row['max']]
+      when :order_limit
+        min_query = query_builder.select(table[column]).order(column, :asc).limit(1)
+        max_query = query_builder.select(table[column]).order(column, :desc).limit(1)
+
+        query = "SELECT (#{min_query.to_sql}) AS min, (#{max_query.to_sql}) AS max"
+
+        row = connection.select(query).first
+        return if row.nil?
+
+        [min_value || row['min'], row['max']]
+      else
+        raise ArgumentError, "Unknown min_max strategy is given: #{min_max_strategy}"
+      end
+    end
+
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end

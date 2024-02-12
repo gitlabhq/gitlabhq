@@ -250,7 +250,7 @@ error. The error response can include a HTML result of the GitLab URL `https://g
 
 This error is harmless and occurs because group provisioning was turned on but GitLab SCIM integration does not support
 it nor require it. To remove the error, follow the instructions in the Azure configuration guide to disable the option
-to [synchronize Azure Active Directory groups to AppName](scim_setup.md#configure-azure-active-directory).
+to [synchronize Azure Active Directory groups to AppName](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory).
 
 ## Okta
 

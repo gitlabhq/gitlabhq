@@ -777,10 +777,10 @@ lib/gitlab/checks/**
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/govern/authentication/approvers
-/doc/development/cells/ @abdwdd @alexpooley @manojmj
+/doc/development/cells/ @gitlab-org/tenant-scale-group/backend-engineers
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
-/doc/development/database/ @abdwdd @alexpooley @manojmj
+/doc/development/database/ @gitlab-org/maintainers/database
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @sselhorn
 /doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
@@ -790,11 +790,11 @@ lib/gitlab/checks/**
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
-/doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
+/doc/development/image_scaling.md @gitlab-org/tenant-scale-group/backend-engineers
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
 /doc/development/navigation_sidebar.md @gitlab-org/manage/foundations/engineering
 /doc/development/omnibus.md @gitlab-org/distribution
-/doc/development/organization/ @abdwdd @alexpooley @manojmj
+/doc/development/organization/ @gitlab-org/tenant-scale-group/backend-engineers
 /doc/development/permissions.md @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/ @gitlab-org/govern/authentication/approvers
 /doc/development/permissions/custom_roles.md @gitlab-org/govern/authorization/approvers
@@ -1330,50 +1330,51 @@ lib/gitlab/checks/**
 /**/javascripts/editor/schema/ci.json @gitlab-org/ci-cd/verify/frontend
 
 ## Verify:Runner Fleet Backend
+^[Runner Fleet Backend] @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
+/app/controllers/admin/runner*.rb
+/app/controllers/concerns/runner*.rb
+/app/controllers/groups/runner*.rb
+/app/controllers/projects/runner*.rb
+/app/controllers/runner*.rb
+/app/finders/ci/runner*.rb
+/app/graphql/mutations/ci/runner/
+/app/graphql/resolvers/ci/*_runners_resolver.rb
+/app/graphql/resolvers/ci/runner*.rb
+/app/graphql/types/ci/runner_*.rb
+/app/graphql/types/namespace/shared_runners_setting_enum.rb
+/app/graphql/types/permission_types/ci/runner*.rb
+/app/models/ci/build_runner_session.rb
+/app/models/ci/runner*.rb
+/app/models/concerns/ci/has_runner_executor.rb
+/app/models/concerns/runner*.rb
+/app/models/preloaders/runner*.rb
+/app/policies/ci/runner*.rb
+/app/presenters/ci/runner_*.rb
+/app/serializers/runner*.rb
+/app/services/groups/update_shared_runners_service.rb
+/app/services/ci/runners/
+/app/workers/ci/runners/
+/db/docs/ci_runner*.yml
+/ee/app/controllers/ee/admin/runner*.rb
+/ee/app/controllers/ee/groups/runner*.rb
+/ee/app/graphql/ee/mutations/ci/runner/
+/ee/app/graphql/ee/types/ci/runner*.rb
+/ee/app/graphql/resolvers/ci/runner*.rb
+/ee/app/models/ee/ci/runner*.rb
+/ee/app/policies/ee/ci/runner*.rb
+/ee/app/services/audit_events/*runner*.rb
+/ee/app/services/ci/runners/
+/ee/app/services/ee/ci/runners/
+/ee/app/workers/ci/runners/
+/lib/api/ci/helpers/runner.rb @gitlab-org/maintainers/cicd-verify
+/lib/api/ci/runner*.rb
+/lib/api/ci/runner.rb @gitlab-org/maintainers/cicd-verify
+/lib/api/entities/ci/runner*.rb
+/lib/gitlab/audit/ci_runner_token_author.rb
+/lib/gitlab/ci/runner*.rb
+/lib/gitlab/seeders/ci/runner/
+/lib/tasks/gitlab/seed/runner_fleet.rake
 
-/app/controllers/admin/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/controllers/concerns/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/controllers/groups/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/controllers/projects/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/controllers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/finders/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/resolvers/ci/*_runners_resolver.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/types/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/types/namespace/shared_runners_setting_enum.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/graphql/types/permission_types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/models/ci/build_runner_session.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/models/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/models/concerns/ci/has_runner_executor.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/models/concerns/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/models/preloaders/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/policies/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/presenters/ci/runner_*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/serializers/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/services/groups/update_shared_runners_service.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/db/docs/ci_runner*.yml @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/controllers/ee/admin/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/controllers/ee/groups/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/graphql/ee/mutations/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/graphql/ee/types/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/graphql/resolvers/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/models/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/policies/ee/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/services/audit_events/*runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/services/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/services/ee/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/ee/app/workers/ci/runners/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/api/ci/helpers/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/api/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/api/ci/runner.rb @gitlab-org/maintainers/cicd-verify @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/api/entities/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/gitlab/audit/ci_runner_token_author.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/gitlab/ci/runner*.rb @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/gitlab/seeders/ci/runner/ @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
-/lib/tasks/gitlab/seed/runner_fleet.rake @gitlab-org/ci-cd/runner-fleet-team/backend-approvers
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel
@@ -1394,7 +1395,7 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
 
 # Require approvals for Project API entities affecting availability
-[Data Stores::Tenant Scale] @abdwdd @alexpooley @manojmj
+[Data Stores::Tenant Scale] @gitlab-org/tenant-scale-group/backend-engineers
 lib/api/entities/basic_project_details.rb
 lib/api/entities/project_with_access.rb
 lib/api/entities/project_identity.rb

@@ -68,7 +68,7 @@ To set up SSO with Azure as your identity provider:
    group claim to match the required attribute.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-azure-active-directory) instead.
+View a demo of [SCIM provisioning on Azure using SAML SSO for groups](https://youtu.be/24-ZxmTeEBU). The `objectID` mapping is outdated in this video. Follow the [SCIM documentation](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory) instead.
 
 For more information, see an [example configuration page](example_saml_config.md#azure-active-directory).
 
