@@ -107,7 +107,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    viteCSSCompilerPlugin(),
+    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr === null }),
     viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({

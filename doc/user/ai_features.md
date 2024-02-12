@@ -212,15 +212,6 @@ Provide feedback on this experimental feature in [issue 409844](https://gitlab.c
 **Data usage**: When you use this feature, the text you enter is sent to the large
 language model referenced above.
 
-### GitLab Duo Chat
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** SaaS
-**Status:** Beta
-
-For details about this Beta feature, see [GitLab Duo Chat](gitlab_duo_chat.md).
-
 ## Language models
 
 | Feature | Large Language Model |

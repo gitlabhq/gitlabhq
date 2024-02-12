@@ -222,7 +222,7 @@ function shouldUseNewPipeline() {
   return /^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`);
 }
 
-export function viteCSSCompilerPlugin() {
+export function viteCSSCompilerPlugin({ shouldWatch = true }) {
   if (!shouldUseNewPipeline()) {
     return null;
   }
@@ -230,7 +230,7 @@ export function viteCSSCompilerPlugin() {
   return {
     name: 'gitlab-css-compiler',
     async configureServer() {
-      fileWatcher = await compileAllStyles({ shouldWatch: true });
+      fileWatcher = await compileAllStyles({ shouldWatch });
     },
     buildEnd() {
       return fileWatcher?.close();

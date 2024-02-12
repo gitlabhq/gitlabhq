@@ -1974,6 +1974,24 @@ We hope this will simplify infrastructure setup and add several improvements to 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### npm package uploads now occur asynchronously
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/433009).
+</div>
+
+The GitLab package registry supports npm and Yarn. When you upload an npm or Yarn package, the upload is synchronous. However, there are known issues with synchronous uploads. For example, GitLab doesn't support features like [overrides](https://gitlab.com/gitlab-org/gitlab/-/issues/432876).
+
+From 17.0, npm and Yarn packages will be uploaded asynchronously. This is a breaking change because you might have pipelines that expect the package to be available as soon as it's published.
+
+As a workaround, you should use the [packages API](https://docs.gitlab.com/ee/api/packages.html) to check for packages.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### project.pipeline.securityReportFindings GraphQL query
 
 <div class="deprecation-notes">

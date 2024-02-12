@@ -119,10 +119,10 @@ export default {
     },
   },
   fields: [
-    { key: 'spentAt', label: __('Spent at'), sortable: true, tdClass: 'gl-w-quarter' },
-    { key: 'user', label: __('User'), sortable: true },
-    { key: 'timeSpent', label: __('Time spent'), sortable: true, tdClass: 'gl-w-15' },
-    { key: 'summary', label: __('Summary / note'), sortable: true },
+    { key: 'spentAt', label: __('Spent at'), tdClass: 'gl-w-quarter' },
+    { key: 'user', label: __('User') },
+    { key: 'timeSpent', label: __('Time spent'), tdClass: 'gl-w-15' },
+    { key: 'summary', label: __('Summary / note') },
     { key: 'actions', label: '', tdClass: 'gl-w-10' },
   ],
 };
