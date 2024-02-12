@@ -96,7 +96,7 @@ but want to release it in the current milestone, you can change the default stat
 To do so, follow these steps:
 
 - [ ] Create a merge request with the following changes. Ask for review and merge it.
-    - [ ] If feature was enabled for various actors, ensure the feature has been enabled globally on production `/chatops run feature get <feature-flag-name>`. If the feature has not been globally enabled then enable the feature globally using: `/chatops run feature set <feature-flag-name> true` 
+    - [ ] If feature was enabled for various actors, ensure the feature has been enabled globally on production `/chatops run feature get <feature-flag-name>`. If the feature has not been globally enabled then enable the feature globally using: `/chatops run feature set <feature-flag-name> true`
     - [ ] Set the `default_enabled` attribute in [the feature flag definition](https://docs.gitlab.com/ee/development/feature_flags/#feature-flag-definition-and-validation) to `true`.
     - [ ] Decide [which changelog entry](https://docs.gitlab.com/ee/development/feature_flags/#changelog) is needed.
 - [ ] Ensure that the default-enabling MR has been included in the release package.
@@ -143,7 +143,7 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 ```
 
 /label <group-label>
-/label ~"feature flag" ~C4
+/label ~"feature flag"
 <!-- Uncomment the appropriate type label
 /label ~"type::feature" ~"feature::addition"
 /label ~"type::maintenance"

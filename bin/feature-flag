@@ -278,7 +278,7 @@ class FeatureFlagOptionParser
     def read_rollout_issue_url(options)
       return unless TYPES.dig(options.type, :rollout_issue)
 
-      issue_new_url = "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new"
+      issue_new_url = "https://gitlab.com/gitlab-org/gitlab/-/issues/new"
       issue_title = "[Feature flag] Rollout of `#{options.name}`"
       issue_new_url = issue_new_url + "?" + URI.encode_www_form('issue[title]' => issue_title)
       group_name = find_group_by_label(options.group)

@@ -303,6 +303,24 @@ From GitLab 18.0 and later, the methods to register runners introduced by the ne
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### 'repository_download_operation' audit event type for public projects
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/383218).
+</div>
+
+The audit event type `repository_download_operation` is currently saved to the database for all project downloads, both public projects and private projects. For
+public projects, this audit event is not the most useful for auditing purposes because it can be triggered by non-authenticated users.
+
+From GitLab 17.0, the `repository_download_operation` audit event type will only be triggered for private or internal projects. We will add a new audit event type
+called `public_repository_download_operation` for public project downloads. This new audit even type will be streaming only.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Agent for Kubernetes option `ca-cert-file` renamed
 
 <div class="deprecation-notes">
@@ -420,6 +438,23 @@ If you rely on the order of the returned projects to be `id_asc`, change your sc
 
 The `CiRunnerUpgradeStatusType` GraphQL type has been renamed to `CiRunnerUpgradeStatus`. In GitLab 17.0,
 the aliasing for the `CiRunnerUpgradeStatusType` type will be removed.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Compliance framework in general settings
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422783).
+</div>
+
+We moved compliance framework management to the framework and projects reports in the
+[Compliance Center](https://docs.gitlab.com/ee/user/compliance/compliance_center/).
+
+Therefore, in GitLab 17.0, we are removing the management of compliance frameworks from the **General** settings page of groups and projects.
 
 </div>
 
@@ -1503,6 +1538,18 @@ the GitLab 17.0 release:
 - DAST: version 4
 - DAST API: version 3
 - Fuzz API: version 3
+- Secret Detection: version 5
+- Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/)
+  - `brakeman`
+  - `flawfinder`
+  - `kubesec`
+  - `mobsf`
+  - `nodejs-scan`
+  - `phpcs-security-audit`
+  - `pmd-apex`
+  - `semgrep`
+  - `sobelow`
+  - `spotbugs`
 
 </div>
 
