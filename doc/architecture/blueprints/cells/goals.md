@@ -317,7 +317,7 @@ Additionally Cells may solve some issues with canaries today, for example not ha
 
 A Cell is a set of infrastructure components that contains multiple top-level Groups that belong to different Organizations. The components include both data stores (PostgreSQL, Redis, etc.) and stateless services (web, etc.). The infrastructure components provided within a Cell are shared among Organizations and their top-level Groups, but are not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 
-<img src="diagrams/term-cell.drawio.png" height="200">
+<img src="diagrams/term-cell.drawio.png" height="200" alt="Cell diagram">
 
 - Each Cell is independent from other Cells
 - Infrastructure components are shared by Organizations and their top-level Groups within a Cell
@@ -334,7 +334,7 @@ Discouraged synonyms: GitLab instance, cluster, shard, Pod
 
 A cluster is a collection of Cells.
 
-<img src="diagrams/term-cluster.drawio.png" height="300">
+<img src="diagrams/term-cluster.drawio.png" height="300" alt="Cluster diagram">
 
 - A cluster holds cluster-wide metadata, for example: Users, Routes, Settings.
 

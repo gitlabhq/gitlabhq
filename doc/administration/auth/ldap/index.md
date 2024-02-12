@@ -103,6 +103,7 @@ To configure LDAP, you edit the settings in a configuration file:
   - [Filter users](#set-up-ldap-user-filter).
   - [Automatically set LDAP usernames to lowercase](#enable-ldap-username-lowercase).
   - [Disable LDAP web sign in](#disable-ldap-web-sign-in).
+  - [Provide smart card authentication for GitLab](#provide-smart-card-authentication-for-gitlab)
   - [Use encrypted credentials](#use-encrypted-credentials).
 
 The file you edit differs depending on your GitLab setup:
@@ -1036,6 +1037,10 @@ This does not disable using LDAP credentials for Git access.
    ```
 
 ::EndTabs
+
+### Provide smart card authentication for GitLab
+
+For more information on using smart cards with LDAP servers and GitLab, see [Smart card authentication](../smartcard.md).
 
 ### Use encrypted credentials
 

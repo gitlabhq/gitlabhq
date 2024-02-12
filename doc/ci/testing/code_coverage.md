@@ -63,7 +63,7 @@ coverage in the tool's output:
 - excoveralls (Elixir). Example: `/\[TOTAL\]\s+(\d+\.\d+)%/`.
 - `mix test --cover` (Elixir). Example: `/\d+.\d+\%\s+\|\s+Total/`.
 - JaCoCo (Java/Kotlin). Example: `/Total.*?([0-9]{1,3})%/`.
-- `go test -cover` (Go). Example: `/coverage: \d+.\d+% of statements/`.
+- `go test -cover` (Go). Example: `/^coverage: (\d+.\d+)% of statements$/`.
 - .NET (OpenCover). Example: `/(Visited Points).*\((.*)\)/`.
 - .NET (`dotnet test` line coverage). Example: `/Total\s*\|\s*(\d+(?:\.\d+)?)/`.
 - tarpaulin (Rust). Example: `/^\d+.\d+% coverage/`.

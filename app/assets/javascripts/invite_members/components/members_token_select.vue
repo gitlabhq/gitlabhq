@@ -24,11 +24,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    canUseEmailToken: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     placeholder: {
       type: String,
       required: false,
@@ -78,10 +73,6 @@ export default {
   },
   computed: {
     emailIsValid() {
-      if (!this.canUseEmailToken) {
-        return false;
-      }
-
       const regex = /^\S+@\S+$/;
 
       return this.originalInput.match(regex) !== null;

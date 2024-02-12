@@ -632,4 +632,25 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       end
     end
   end
+
+  describe 'smartcard_ad_cert_format' do
+    it 'returns the value contained in options' do
+      stub_ldap_config(options: { 'smartcard_ad_cert_format' => 'issuer_and_serial_number' })
+      expect(config.smartcard_ad_cert_format).to eq('issuer_and_serial_number')
+    end
+  end
+
+  describe 'smartcard_ad_cert_field' do
+    subject(:smartcard_ad_cert_field) { config.smartcard_ad_cert_field }
+
+    it { is_expected.to eq('altSecurityIdentities') }
+
+    context 'when config value is set' do
+      before do
+        stub_ldap_config(options: { 'smartcard_ad_cert_field' => 'extensionAttribute1' })
+      end
+
+      it { is_expected.to eq('extensionAttribute1') }
+    end
+  end
 end

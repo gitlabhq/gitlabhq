@@ -861,6 +861,14 @@ production: &base
         # If your LDAP server is not AD, set this to false.
         active_directory: true
 
+        # If active_directory is true and smartcard_auth is enabled, use this
+        # attribute to authenticate users based on smart card certificates.
+        smartcard_ad_cert_field: 'altSecurityIdentites'
+
+        # If active_directory is true and smartcard_auth is enabled, search the
+        # smartcard_ad_cert_field for certificate data stored in this format.
+        smartcard_ad_cert_format: 'issuer_and_serial_number'
+
         # If allow_username_or_email_login is enabled, GitLab will ignore everything
         # after the first '@' in the LDAP username submitted by the user on login.
         #

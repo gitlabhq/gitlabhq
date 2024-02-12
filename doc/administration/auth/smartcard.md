@@ -110,10 +110,44 @@ attribute. As a prerequisite, you must use an LDAP server that:
 - Supports the `certificateExactMatch` matching rule.
 - Has the certificate stored in the `userCertificate` attribute.
 
+### Authentication against an Active Directory LDAP server
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
+
+Active Directory does not support the `certificateExactMatch` rule or the `userCertificate` attribute. Most tools for certificate-based authentication such as smart cards use the `altSecurityIdentities` attribute, which can contain multiple certificates for each user. The data in the field must match [one of the formats Microsoft recommends](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-certificate-based-authentication-certificateuserids#supported-patterns-for-certificate-user-ids).
+
+Use the following attributes to customize the field GitLab checks and the format for certificate data:
+
+- `smartcard_ad_cert_field` - specify the name of the field to search. This can be any attribute on a user object.
+- `smartcard_ad_cert_format` - specify the format of the information gathered from the certificate. This format must be one of the following values. The most common is
+  `issuer_and_serial_number` to match the behavior of non-Active Directory LDAP servers.
+
+| `smartcard_ad_cert_format` | Example data                                                 |
+| -------------------------- | ------------------------------------------------------------ |
+| `principal_name`           | `X509:<PN>alice@example.com`                                 |
+| `rfc822_name`              | `X509:<RFC822>bob@example.com`                               |
+| `issuer_and_subject`       | `X509:<I>DC=com,DC=example,CN=EXAMPLE-DC-CA<S>DC=com,DC=example,OU=UserAccounts,CN=cynthia` |
+| `subject`                  | `X509:<S>DC=com,DC=example,OU=UserAccounts,CN=dennis`        |
+| `issuer_and_serial_number` | `X509:<I>DC=com,DC=example,CN=CONTOSO-DC-CA<SR>1181914561`   |
+
+For `issuer_and_serial_number` , the `<SR>` portion is in reverse-byte-order, with the least-significant byte first. For more information, see [Microsoft's documentation on `altSecurityIdentities` formats](https://learn.microsoft.com/en-us/archive/blogs/spatdsg/howto-map-a-user-to-a-certificate-via-all-the-methods-available-in-the-altsecurityidentities-attribute).
+
 NOTE:
-Active Directory doesn't support the `certificateExactMatch` matching rule so
-[it is not supported at this time](https://gitlab.com/gitlab-org/gitlab/-/issues/327491). For
-more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328074).
+If no `smartcard_ad_cert_format` is specified, but an LDAP server is configured with `active_directory: true` and smart cards enabled, GitLab defaults to the behavior of 16.8 and earlier, and uses `certificateExactMatch` on the `userCertificate` attribute.
+
+### Authentication against Entra ID Domain Services
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/328074) in GitLab 16.9.
+
+[Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/fundamentals/whatis), formerly known as Azure Active Directory, provides a cloud-based directory for companies and organizations. [Entra Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/overview) provides a secure read-only LDAP interface to the directory, but only exposes a limited subset of the fields Entra ID has.
+
+Entra ID uses the `CertificateUserIds` field to manage client certificates for users, but this field is not exposed in LDAP / Entra ID Domain Services. With a cloud-only setup, it is not possible for GitLab to authenticate users' smart cards using LDAP.
+
+In a hybrid on-premise and cloud environment, entities are synced between the on-premise Active Directory controller and the cloud Entra ID using [Entra Connect](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/whatis-azure-ad-connect-v2). If you are [syncing your `altSecurityIdentities` attribute to `certificateUserIds` in Entra ID using Entra ID Connect](https://learn.microsoft.com/en-us/entra/identity/authentication/concept-certificate-based-authentication-certificateuserids#update-certificateuserids-using-microsoft-entra-connect), you can expose this data in LDAP / Entra ID Domain Services so it can be authenticated by GitLab:
+
+1. Add a rule to Entra ID Connect to sync the `altSecurityIdentities` to an additional attribute in Entra ID.
+1. Enable that extra attribute as an [extension attribute in Entra ID Domain Services](https://learn.microsoft.com/en-us/entra/identity/domain-services/concepts-custom-attributes).
+1. Configure the `smartcard_ad_cert_field` field in GitLab to use this extension attribute.
 
 ## Configure GitLab for smart card authentication
 
@@ -278,6 +312,14 @@ For Linux package installations:
      # Enable smart card authentication against the LDAP server. Valid values
      # are "false", "optional", and "required".
      smartcard_auth: optional
+
+     # If your LDAP server is Active Directory, you can configure these two fields.
+     # Specify which field contains certificate information, 'altSecurityIdentities' by default
+     smartcard_ad_cert_field: altSecurityIdentities
+
+     # Specify format of certificate information. Valid values are:
+     # principal_name, rfc822_name, issuer_and_subject, subject, issuer_and_serial_number
+     smartcard_ad_cert_format: issuer_and_serial_number
    EOS
    ```
 
@@ -297,6 +339,14 @@ For self-compiled installations:
            # Enable smart card authentication against the LDAP server. Valid values
            # are "false", "optional", and "required".
            smartcard_auth: optional
+
+           # If your LDAP server is Active Directory, you can configure these two fields.
+           # Specify which field contains certificate information, 'altSecurityIdentities' by default
+           smartcard_ad_cert_field: altSecurityIdentities
+
+           # Specify format of certificate information. Valid values are:
+           # principal_name, rfc822_name, issuer_and_subject, subject, issuer_and_serial_number
+           smartcard_ad_cert_format: issuer_and_serial_number
    ```
 
 1. Save the file and [restart](../restart_gitlab.md#self-compiled-installations)

@@ -28,7 +28,7 @@ Here are the examples of use cases:
 | [Ask about code](#ask-about-code)                          | I want to understand how this code works.            | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Ask about CI/CD](#ask-about-cicd)                         | I want to create a new CI/CD pipeline configuration. | GitLab, VS Code, and Web IDE <sup>1</sup> | GitLab.com, self-managed, and GitLab Dedicated |
 | [Explain code in the IDE](#explain-code-in-the-ide)        | I want to understand how this code works.            | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
-| [Refactor code in the IDE](#explain-code-in-the-ide)       | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
+| [Refactor code in the IDE](#refactor-code-in-the-ide)       | I want to write a test for this code.                | VS Code and Web IDE <sup>1</sup>          | GitLab.com, self-managed, and GitLab Dedicated |
 | [Write tests in the IDE](#write-tests-in-the-ide)          | I want to refactor this code.                        | VS Code and Web IDE <sup>1</sup>         | GitLab.com, self-managed, and GitLab Dedicated |
 
 <html>
@@ -104,6 +104,8 @@ And you can ask GitLab Duo Chat to explain code:
 
 - `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
 
+Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to explain the selected code in your editor.
+
 ### Ask about CI/CD
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for SaaS in GitLab 16.7.
@@ -134,7 +136,12 @@ NOTE:
 This feature is available in VS Code and the Web IDE only.
 
 `/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
-You can also add additional instructions to be considered, for example: `/refactor with ActiveRecord`
+You can include additional instructions to be considered. For example:
+
+- Use a specific coding pattern, for example `/refactor with ActiveRecord`.
+- Use a specific library, for example `/refactor using mysql`.
+- Refactor to a different programming language, for example `/refactor to TypeScript`.
+
 See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
 
 ### Write tests in the IDE

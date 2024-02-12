@@ -26739,9 +26739,6 @@ msgstr ""
 msgid "InviteMembersModal|Add unlimited members with your trial"
 msgstr ""
 
-msgid "InviteMembersModal|Administrators can %{linkStart}add new users by email manually%{linkEnd}. After they've been added, you can invite them to this group with their username."
-msgstr ""
-
 msgid "InviteMembersModal|Cancel"
 msgstr ""
 
@@ -26775,9 +26772,6 @@ msgstr ""
 msgid "InviteMembersModal|Inviting a group %{linkStart}adds its members to your project%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
 msgstr ""
 
-msgid "InviteMembersModal|Inviting users by email is disabled"
-msgstr ""
-
 msgid "InviteMembersModal|Manage members"
 msgstr ""
 
@@ -26797,9 +26791,6 @@ msgid "InviteMembersModal|Select a group to invite"
 msgstr ""
 
 msgid "InviteMembersModal|Select a role"
-msgstr ""
-
-msgid "InviteMembersModal|Select members"
 msgstr ""
 
 msgid "InviteMembersModal|Select members or type email addresses"
@@ -26826,9 +26817,6 @@ msgid "InviteMembersModal|To get more members an owner of the group can %{trialL
 msgstr ""
 
 msgid "InviteMembersModal|To invite new users to this top-level group, you must remove existing users. You can still add existing users from the top-level group, including any subgroups and projects."
-msgstr ""
-
-msgid "InviteMembersModal|Username or name"
 msgstr ""
 
 msgid "InviteMembersModal|Username, name or email address"
@@ -30321,6 +30309,9 @@ msgstr ""
 msgid "MemberRole|Base role to use as template"
 msgstr ""
 
+msgid "MemberRole|Cannot create a member role with no enabled permissions"
+msgstr ""
+
 msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
@@ -31485,6 +31476,9 @@ msgid "Missing arch"
 msgstr ""
 
 msgid "Missing commit signatures endpoint!"
+msgstr ""
+
+msgid "Missing or invalid configuration field: :smartcard_ad_cert_format"
 msgstr ""
 
 msgid "Missing/invalid scope"
@@ -48329,9 +48323,6 @@ msgstr ""
 msgid "SubscriptionTable|GitLab allows you to continue using your subscription even if you exceed the number of seats you purchased. You will be required to pay for these seats upon renewal."
 msgstr ""
 
-msgid "SubscriptionTable|Last invoice"
-msgstr ""
-
 msgid "SubscriptionTable|Last updated at %{seatsLastUpdated} UTC"
 msgstr ""
 
@@ -48345,6 +48336,9 @@ msgid "SubscriptionTable|Max seats used"
 msgstr ""
 
 msgid "SubscriptionTable|Next invoice"
+msgstr ""
+
+msgid "SubscriptionTable|Next subscription term start date"
 msgstr ""
 
 msgid "SubscriptionTable|Refresh Seats"
@@ -48372,9 +48366,6 @@ msgid "SubscriptionTable|Subscription end date"
 msgstr ""
 
 msgid "SubscriptionTable|Subscription start date"
-msgstr ""
-
-msgid "SubscriptionTable|This is the last time the GitLab.com team was in contact with you to settle any outstanding balances."
 msgstr ""
 
 msgid "SubscriptionTable|This is the maximum number of users that have existed at the same time since this subscription started."
@@ -52276,6 +52267,9 @@ msgid "Tracing|Error: Something went wrong while fetching the services. Try agai
 msgstr ""
 
 msgid "Tracing|Failed to load traces."
+msgstr ""
+
+msgid "Tracing|Failed to load tracing analytics."
 msgstr ""
 
 msgid "Tracing|Filter traces"

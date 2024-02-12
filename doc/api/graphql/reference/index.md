@@ -21956,7 +21956,7 @@ Represents a member role.
 | ---- | ---- | ----------- |
 | <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in 16.5. **Status**: Experiment. Base access level for the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
-| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection`](#customizablepermissionconnection) | **Introduced** in 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |
+| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection!`](#customizablepermissionconnection) | **Introduced** in 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
 | <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.7. **Status**: Experiment. Total number of members with the custom role. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |

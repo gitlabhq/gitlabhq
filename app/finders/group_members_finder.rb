@@ -32,14 +32,9 @@ class GroupMembersFinder < UnionFinder
 
   def execute(include_relations: DEFAULT_RELATIONS)
     groups = groups_by_relations(include_relations)
-    shared_from_groups = if include_relations&.include?(:shared_from_groups)
-                           Group.shared_into_ancestors(group).public_or_visible_to_user(user)
-                         end
 
-    members = all_group_members(groups, shared_from_groups)
-    if static_roles_only?
-      members = members.distinct_on_user_with_max_access_level
-    end
+    members = all_group_members(groups)
+    members = members.distinct_on_user_with_max_access_level if static_roles_only?
 
     filter_members(members)
   end
@@ -51,11 +46,20 @@ class GroupMembersFinder < UnionFinder
   def groups_by_relations(include_relations)
     check_relation_arguments!(include_relations)
 
-    related_groups = []
+    related_groups = {}
 
-    related_groups << Group.by_id(group.id) if include_relations&.include?(:direct)
-    related_groups << group.ancestors if include_relations&.include?(:inherited)
-    related_groups << group.descendants if include_relations&.include?(:descendants)
+    related_groups[:direct] = Group.by_id(group.id) if include_relations.include?(:direct)
+    related_groups[:inherited] = group.ancestors if include_relations.include?(:inherited)
+    related_groups[:descendants] = group.descendants if include_relations.include?(:descendants)
+
+    if include_relations.include?(:shared_from_groups)
+      related_groups[:shared_from_groups] =
+        if group.member?(user) && Feature.enabled?(:webui_members_inherited_users, user)
+          Group.shared_into_ancestors(group)
+        else
+          Group.shared_into_ancestors(group).public_or_visible_to_user(user)
+        end
+    end
 
     related_groups
   end
@@ -64,13 +68,8 @@ class GroupMembersFinder < UnionFinder
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
 
-    if params[:two_factor].present? && can_manage_members
-      members = members.filter_by_2fa(params[:two_factor])
-    end
-
-    if params[:access_levels].present?
-      members = members.by_access_level(params[:access_levels])
-    end
+    members = members.filter_by_2fa(params[:two_factor]) if params[:two_factor].present? && can_manage_members
+    members = members.by_access_level(params[:access_levels]) if params[:access_levels].present?
 
     members = filter_by_user_type(members)
     members = apply_additional_filters(members)
@@ -89,27 +88,30 @@ class GroupMembersFinder < UnionFinder
     group.members
   end
 
-  def all_group_members(groups, shared_from_groups)
-    members_of_groups(groups, shared_from_groups).non_minimal_access
+  def all_group_members(groups)
+    members_of_groups(groups).non_minimal_access
   end
 
-  def members_of_groups(groups, shared_from_groups)
-    members = GroupMember.non_request.of_groups(find_union(groups, Group))
+  def members_of_groups(groups)
+    groups_except_from_sharing = groups.except(:shared_from_groups).values
+    groups_as_union = find_union(groups_except_from_sharing, Group)
+    members = GroupMember.non_request.of_groups(groups_as_union)
+
+    shared_from_groups = groups[:shared_from_groups]
     return members if shared_from_groups.nil?
 
     shared_members = GroupMember.non_request.of_groups(shared_from_groups)
-    select_attributes = GroupMember.attribute_names
-    members_shared_with_group_access = members_shared_with_group_access(shared_members, select_attributes)
+    members_shared_with_group_access = members_shared_with_group_access(shared_members)
 
     # `members` and `members_shared_with_group_access` should have even select values
-    find_union([members.select(select_attributes), members_shared_with_group_access], GroupMember)
+    find_union([members.select(group_member_columns), members_shared_with_group_access], GroupMember)
   end
 
-  def members_shared_with_group_access(shared_members, select_attributes)
+  def members_shared_with_group_access(shared_members)
     group_group_link_table = GroupGroupLink.arel_table
     group_member_table = GroupMember.arel_table
 
-    member_columns = select_attributes.map do |column_name|
+    member_columns = group_member_columns.map do |column_name|
       if column_name == 'access_level'
         args = [group_group_link_table[:group_access], group_member_table[:access_level]]
         smallest_value_arel(args, 'access_level')
@@ -125,14 +127,18 @@ class GroupMembersFinder < UnionFinder
     # rubocop:enable CodeReuse/ActiveRecord
   end
 
+  def group_member_columns
+    GroupMember.column_names
+  end
+
   def smallest_value_arel(args, column_alias)
     Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
   end
 
   def check_relation_arguments!(include_relations)
-    unless include_relations & RELATIONS == include_relations
-      raise ArgumentError, "#{(include_relations - RELATIONS).first} #{INVALID_RELATION_TYPE_ERROR_MSG}"
-    end
+    return if (include_relations - RELATIONS).empty?
+
+    raise ArgumentError, "#{(include_relations - RELATIONS).first} #{INVALID_RELATION_TYPE_ERROR_MSG}"
   end
 
   def filter_by_user_type(members)

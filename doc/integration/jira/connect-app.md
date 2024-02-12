@@ -75,7 +75,7 @@ DETAILS:
 Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab group.
-- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
 To configure the GitLab for Jira Cloud app:

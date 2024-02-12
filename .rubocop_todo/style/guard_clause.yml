@@ -46,7 +46,6 @@ Style/GuardClause:
     - 'app/finders/ci/auth_job_finder.rb'
     - 'app/finders/ci/runners_finder.rb'
     - 'app/finders/deployments_finder.rb'
-    - 'app/finders/group_members_finder.rb'
     - 'app/finders/snippets_finder.rb'
     - 'app/graphql/mutations/design_management/delete.rb'
     - 'app/graphql/mutations/notes/create/note.rb'

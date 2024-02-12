@@ -34,12 +34,14 @@ to ensure coverage for all of these dependency types. To cover as much of your r
 possible, we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
 
-## Overview
-
 GitLab integrates with open-source tools for vulnerability static analysis in containers:
 
 - [Trivy](https://github.com/aquasecurity/trivy)
 - [Grype](https://github.com/anchore/grype)
+
+WARNING:
+Support for Grype was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/439164) in GitLab
+16.9 and is planned for removal in 17.0. Use Trivy instead.
 
 To integrate GitLab with security scanners other than those listed here, see
 [Security scanner integration](../../../development/integrations/secure.md).
@@ -55,7 +57,7 @@ information directly in the merge request.
 
 ![Container Scanning Widget](img/container_scanning_v13_2.png)
 
-### Capabilities
+## Capabilities
 
 | Capability | In Free and Premium | In Ultimate |
 | --- | ------ | ------ |

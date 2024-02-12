@@ -3,6 +3,7 @@ import { GlButton, GlDrawer, GlForm, GlFormGroup, GlFormRadioGroup } from '@gitl
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__, __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
+import { CATEGORY_OPTIONS } from '~/abuse_reports/components/constants';
 
 export default {
   name: 'AbuseCategorySelector',
@@ -40,19 +41,7 @@ export default {
     label: s__('ReportAbuse|Why are you reporting this user?'),
     next: __('Next'),
   },
-  categoryOptions: [
-    { value: 'spam', text: s__("ReportAbuse|They're posting spam.") },
-    { value: 'offensive', text: s__("ReportAbuse|They're being offensive or abusive.") },
-    { value: 'phishing', text: s__("ReportAbuse|They're phishing.") },
-    { value: 'crypto', text: s__("ReportAbuse|They're crypto mining.") },
-    {
-      value: 'credentials',
-      text: s__("ReportAbuse|They're posting personal information or credentials."),
-    },
-    { value: 'copyright', text: s__("ReportAbuse|They're violating a copyright or trademark.") },
-    { value: 'malware', text: s__("ReportAbuse|They're posting malware.") },
-    { value: 'other', text: s__('ReportAbuse|Something else.') },
-  ],
+  CATEGORY_OPTIONS,
   data() {
     return {
       selected: '',
@@ -109,7 +98,7 @@ export default {
         <gl-form-group :label="$options.i18n.label" label-class="gl-text-black-normal">
           <gl-form-radio-group
             v-model="selected"
-            :options="$options.categoryOptions"
+            :options="$options.CATEGORY_OPTIONS"
             name="abuse_report[category]"
             required
           />

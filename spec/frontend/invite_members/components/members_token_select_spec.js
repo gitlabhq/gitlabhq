@@ -154,21 +154,6 @@ describe('MembersTokenSelect', () => {
 
           expect(tokenSelector.props('allowUserDefinedTokens')).toBe(result);
         });
-
-        describe('when cannot use email token', () => {
-          beforeEach(() => {
-            wrapper = createComponent({ canUseEmailToken: false });
-            tokenSelector = findTokenSelector();
-
-            tokenSelector.vm.$emit('text-input', 'foo@bar.com');
-
-            return nextTick();
-          });
-
-          it('does not allow user defined tokens', () => {
-            expect(tokenSelector.props('allowUserDefinedTokens')).toBe(false);
-          });
-        });
       });
 
       describe('when API search fails', () => {
