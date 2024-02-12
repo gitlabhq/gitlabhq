@@ -67,8 +67,8 @@ module ServiceDesk
         enforce_sanitization: true,
         allow_localhost: false,
         allow_local_network: !::Gitlab.com?, # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- self-managed may also use local network
-        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?
-      )
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+        outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
     rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
       errors.add(:smtp_address, e)
     end

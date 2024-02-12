@@ -910,7 +910,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     @parsed_kroki_url ||= Gitlab::HTTP_V2::UrlBlocker.validate!(
       kroki_url, schemes: %w[http https],
       enforce_sanitization: true,
-      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?)[0]
+      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist)[0] # rubocop:disable Naming/InclusiveLanguage -- existing setting
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     self.errors.add(
       :kroki_url,
