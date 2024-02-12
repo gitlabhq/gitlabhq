@@ -11,6 +11,35 @@ RSpec.describe Projects::ImportExport::RelationExportUpload, type: :model do
     it { is_expected.to belong_to(:relation_export) }
   end
 
+  describe '.for_project_export_jobs' do
+    let_it_be(:project_export_job_1) { create(:project_export_job) }
+    let_it_be(:project_export_job_2) { create(:project_export_job) }
+
+    let_it_be(:relation_export_1) { create(:project_relation_export, project_export_job: project_export_job_1) }
+    let_it_be(:relation_export_2) { create(:project_relation_export, project_export_job: project_export_job_2) }
+    let_it_be(:relation_export_3) do
+      create(:project_relation_export, project_export_job: project_export_job_1, relation: 'milestones')
+    end
+
+    let_it_be(:relation_export_upload_1) { create(:relation_export_upload, relation_export: relation_export_1) }
+    let_it_be(:relation_export_upload_2) { create(:relation_export_upload, relation_export: relation_export_2) }
+    let_it_be(:relation_export_upload_3) { create(:relation_export_upload, relation_export: relation_export_1) }
+
+    it 'returns RelationExportUploads for a single ProjectExportUpload id' do
+      project_export_job_id = project_export_job_1.id
+
+      expect(described_class.for_project_export_jobs(project_export_job_id))
+        .to contain_exactly(relation_export_upload_1, relation_export_upload_3)
+    end
+
+    it 'returns RelationExportUploads for multiple ProjectExportUpload ids' do
+      project_export_job_ids = [project_export_job_1, project_export_job_2].map(&:id)
+
+      expect(described_class.for_project_export_jobs(project_export_job_ids))
+        .to contain_exactly(relation_export_upload_1, relation_export_upload_2, relation_export_upload_3)
+    end
+  end
+
   it 'stores export file' do
     stub_uploads_object_storage(ImportExportUploader, enabled: false)
 

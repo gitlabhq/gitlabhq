@@ -17347,8 +17347,8 @@ CREATE TABLE geo_event_log (
     hashed_storage_attachments_event_id bigint,
     reset_checksum_event_id bigint,
     cache_invalidation_event_id bigint,
-    geo_event_id integer,
-    geo_event_id_convert_to_bigint bigint
+    geo_event_id_convert_to_bigint integer,
+    geo_event_id bigint
 );
 
 CREATE SEQUENCE geo_event_log_id_seq

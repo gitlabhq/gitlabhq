@@ -61,6 +61,20 @@ RSpec.describe Upload do
     end
   end
 
+  describe 'scopes' do
+    describe '.for_model_type_and_id' do
+      let(:avatar_uploads) { create_list(:upload, 2) }
+      let(:attachment_uploads) { create_list(:upload, 2, :attachment_upload) }
+
+      it 'returns records matching the given model_type and ids' do
+        model_ids = [avatar_uploads, attachment_uploads].map { |uploads| uploads.first.model_id }
+
+        expect(described_class.for_model_type_and_id(Note, model_ids))
+          .to contain_exactly(attachment_uploads.first)
+      end
+    end
+  end
+
   describe '#absolute_path' do
     it 'returns the path directly when already absolute' do
       path = '/path/to/namespace/project/secret/file.jpg'

@@ -20,7 +20,7 @@ GitLab Dedicated will be a much better fit for that at this moment.
 ## Do we expect Organizations to have visibility settings (public/private) of their own? Will visibility remain a property of top-level Groups?
 
 Organizations are public for now but will have their own independent visibility settings.
-See also [When can Users see an Organization?](index.md#when-can-users-see-an-organization).
+See also [When can Users see an Organization?](organization-users.md#when-can-users-see-an-organization).
 
 ## What would the migration of a feature from the top-level Group to the Organization look like?
 

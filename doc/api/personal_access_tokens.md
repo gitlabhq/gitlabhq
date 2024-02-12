@@ -211,9 +211,16 @@ Example response:
 
 ## Rotate a personal access token
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week
 
-Rotate a personal access token. Revokes the previous token and creates a new token that expires in one week.
+You can either:
+
+- Use the personal access token ID.
+- Pass the personal access token to the API in a request header.
+
+### Use a personal access token ID
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
 
 In GitLab 16.6 and later, you can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
 
@@ -250,7 +257,7 @@ Example response:
 }
 ```
 
-### Responses
+#### Responses
 
 - `200: OK` if the existing token is successfully revoked and the new token successfully created.
 - `400: Bad Request` if not rotated successfully.
@@ -258,6 +265,50 @@ Example response:
   - User does not have access to the token with the specified ID.
   - Token with the specified ID does not exist.
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
+
+### Use a request header
+
+Requires:
+
+- `api` scope.
+
+You can use the `expires_at` parameter to set a different expiry date. This non-default expiry date can be up to a maximum of one year from the rotation date.
+
+```plaintext
+POST /personal_access_tokens/self/rotate
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/personal_access_tokens/self/rotate"
+```
+
+Example response:
+
+```json
+{
+    "id": 42,
+    "name": "Rotated Token",
+    "revoked": false,
+    "created_at": "2023-08-01T15:00:00.000Z",
+    "scopes": ["api"],
+    "user_id": 1337,
+    "last_used_at": null,
+    "active": true,
+    "expires_at": "2023-08-15",
+    "token": "s3cr3t"
+}
+```
+
+#### Responses
+
+- `200: OK` if the existing token is successfully revoked and the new token successfully created.
+- `400: Bad Request` if not rotated successfully.
+- `401: Unauthorized` if either:
+  - The token does not exist.
+  - The token has expired.
+  - The token has been revoked.
+- `403: Forbidden` if the token is not allowed to rotate itself.
+- `405: Method Not Allowed` if the token is not a personal access token.
 
 ### Automatic reuse detection
 

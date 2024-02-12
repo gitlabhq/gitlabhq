@@ -426,7 +426,8 @@ module Gitlab
       end
 
       def access_token_rotation_request?
-        current_request.path.match(%r{access_tokens/\d+/rotate$})
+        current_request.path.match(%r{access_tokens/\d+/rotate$}) ||
+          current_request.path.match(%r{/personal_access_tokens/self/rotate$})
       end
     end
   end

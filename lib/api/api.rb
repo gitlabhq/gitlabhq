@@ -296,6 +296,7 @@ module API
         mount ::API::Pages
         mount ::API::PagesDomains
         mount ::API::PersonalAccessTokens::SelfInformation
+        mount ::API::PersonalAccessTokens::SelfRotation
         mount ::API::PersonalAccessTokens
         mount ::API::ProjectAvatar
         mount ::API::ProjectClusters

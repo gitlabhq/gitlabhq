@@ -33,6 +33,18 @@ module API
 
         service.success? ? no_content! : bad_request!(nil)
       end
+
+      def rotate_token(token, params)
+        service = ::PersonalAccessTokens::RotateService.new(current_user, token).execute(params)
+
+        if service.success?
+          status :ok
+
+          service.payload[:personal_access_token]
+        else
+          bad_request!(service.message)
+        end
+      end
     end
   end
 end

@@ -5,6 +5,13 @@ require 'spec_helper'
 RSpec.describe ClickHouse::Connection, click_house: :without_migrations, feature_category: :database do
   let(:connection) { described_class.new(:main) }
 
+  describe '#database_name' do
+    it 'returns the configured database name' do
+      name = ClickHouse::Client.configuration.databases[:main].database
+      expect(connection.database_name).to eq(name)
+    end
+  end
+
   describe '#select' do
     it 'proxies select to client' do
       expect(

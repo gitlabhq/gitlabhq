@@ -37,12 +37,4 @@ class ProjectExportJob < ApplicationRecord
     state :finished, value: STATUS[:finished]
     state :failed, value: STATUS[:failed]
   end
-
-  class << self
-    def prune_expired_jobs
-      prunable.each_batch do |relation|
-        relation.delete_all
-      end
-    end
-  end
 end

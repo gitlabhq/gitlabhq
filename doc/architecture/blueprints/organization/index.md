@@ -21,7 +21,7 @@ This document is a work in progress and represents the current state of the Orga
 - Cell: A Cell is a set of infrastructure components that contains multiple Organizations. The infrastructure components provided in a Cell are shared among Organizations, but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
 - User: An Organization has many Users. Joining an Organization makes someone a User of that Organization.
 - Member: Adding a User to a Group or Project within an Organization makes them a Member. Members are always Users, but Users are not necessarily Members of a Group or Project within an Organization. For instance, a User could just have accepted the invitation to join an Organization, but not be a Member of any Group or Project it contains.
-- Non-User: A Non-User of an Organization means a User is not part of that specific Organization.
+- Non-User: A Non-User of an Organization means a User is not part of that specific Organization. Non-Users are able to interact with public Groups and Projects of an Organization, and can raise issues and comment on them.
 
 ## Summary
 
@@ -33,16 +33,16 @@ Organizations solve the following problems:
 1. Allows different Organizations to be isolated. Top-level Groups of the same Organization can interact with each other but not with Groups in other Organizations, providing clear boundaries for an Organization, similar to a self-managed instance. Isolation should have a positive impact on performance and availability as things like User dashboards can be scoped to Organizations.
 1. Allows integration with Cells. Isolating Organizations makes it possible to allocate and distribute them across different Cells.
 1. Removes the need to define hierarchies. An Organization is a container that could be filled with whatever hierarchy/entity set makes sense (Organization, top-level Groups, etc.)
-1. Enables centralized control of user profiles. With an Organization-specific user profile, administrators can control the user's role in a company, enforce user emails, or show a graphical indicator that a user as part of the Organization. An example could be adding a "GitLab employee" stamp on comments.
-1. Organizations bring an on-premise-like experience to SaaS (GitLab.com). The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled at the Organization level.
+1. Enables centralized control of user profiles. With an Organization-specific user profile, administrators can control the user's role in a company, enforce user emails, or show a graphical indicator that a user is part of the Organization. An example could be adding a "GitLab employee" stamp on comments.
+1. Organizations bring an on-premise-like experience to GitLab.com. The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled at the Organization level.
 
 ## Motivation
 
 ### Goals
 
-The Organization focuses on creating a better experience for Organizations to manage their GitLab experience. By introducing Organizations and [Cells](../cells/index.md) we can improve the reliability, performance and availability of our SaaS Platforms.
+The Organization focuses on creating a better experience for Organizations to manage their GitLab experience. By introducing Organizations and [Cells](../cells/index.md) we can improve the reliability, performance and availability of GitLab.com.
 
-- Wider audience: Many instance-level features are admin only. We do not want to lock out users of GitLab.com in that way. We want to make administrative capabilities that previously only existed for self-managed users available to our SaaS users as well. This also means we would give users of GitLab.com more independence from GitLab.com admins in the long run. Today, there are actions that self-managed admins can perform that GitLab.com users have to request from GitLab.com admins.
+- Wider audience: Many instance-level features are admin only. We do not want to lock out users of GitLab.com in that way. We want to make administrative capabilities that previously only existed for self-managed users available to our GitLab.com users as well. This also means we would give users of GitLab.com more independence from GitLab.com admins in the long run. Today, there are actions that self-managed admins can perform that GitLab.com users have to request from GitLab.com admins, for instance banning malicious actors.
 - Improved UX: Inconsistencies between the features available at the Project and Group levels create navigation and usability issues. Moreover, there isn't a dedicated place for Organization-level features.
 - Aggregation: Data from all Groups and Projects in an Organization can be aggregated.
 - An Organization includes settings, data, and features from all Groups and Projects under the same owner (including personal Namespaces).
@@ -55,7 +55,7 @@ Due to urgency of delivering Organizations as a prerequisite for Cells, it is cu
 
 ## Proposal
 
-We create Organizations as a new lightweight entity, with just the features and workflows which it requires. We already have much of the functionality present in Groups and Projects, and Groups themselves are essentially already the top-level entity. It is unlikely that we need to add significant features to Organizations outside of some key settings, as top-level Groups can continue to serve this purpose at least on SaaS. From an infrastructure perspective, cluster-wide shared data must be both minimal (small in volume) and infrequently written.
+We create Organizations as a new lightweight entity, with just the features and workflows which it requires. We already have much of the functionality present in Groups and Projects, and Groups themselves are essentially already the top-level entity. It is unlikely that we need to add significant features to Organizations outside of some key settings, as top-level Groups can continue to serve this purpose at least on GitLab.com. From an infrastructure perspective, cluster-wide shared data must be both minimal (small in volume) and infrequently written.
 
 ```mermaid
 graph TD
@@ -74,12 +74,12 @@ All instances would set a default Organization.
 
 - No changes to URL's for Groups moving under an Organization, which makes moving around top-level Groups very easy.
 - Low risk rollout strategy, as there is no conversion process for existing top-level Groups.
-- Organization becomes the key for identifying what is part of an Organization, which is on its own table for performance and clarity.
+- The Organization becomes the key for identifying what is part of an Organization, which is on its own table for performance and clarity.
 
 ### Drawbacks
 
-- It is unclear right now how we would avoid continuing to spend effort to build instance (or not Organization) features, in particular much of the reporting. This is not an issue on SaaS as top-level Groups already have this capability, however it is a challenge on self-managed. If we introduce a built-in Organization (or just none at all) for self-managed, it seems like we would need to continue to build instance/Organization level reporting features as we would not get that for free along with the work to add to Groups.
-- Billing may need to be moved from top-level Groups to Organization level.
+- It is unclear right now how we would avoid continuing to spend effort to build instance (or not Organization) features, in particular much of the reporting. This is not an issue on GitLab.com as top-level Groups already have this capability, however, it is a challenge on self-managed. If we introduce a built-in Organization (or just none at all) for self-managed, it seems like we would need to continue to build instance/Organization level reporting features as we would not get that for free along with the work to add to Groups.
+- Billing may need to be moved from top-level Groups to the Organization level.
 
 ## Data Exploration
 
@@ -99,138 +99,39 @@ Based on this analysis we expect to see similar behavior when rolling out Organi
 
 ## Design and Implementation Details
 
+Cells will be rolled out in three phases: Cells 1.0, Cells 1.5 and Cells 2.0.
+The Organization functionality available in each phase is described below.
+
 ### Organization MVC
 
-The Organization MVC will contain the following functionality:
+#### Organizations on Cells 1.0
+
+The Organization MVC for Cells 1.0 will contain the following functionality:
 
 - Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
 - Every instance will have a default Organization named `Default Organization`. Initially, all Users will be managed by this default Organization.
 - Organization Owner. The creation of an Organization appoints that User as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
-- Organization Users. A User is managed by one Organization, but can be part of multiple Organizations. Users are able to navigate between the different Organizations they are part of.
-- Setup settings. Containing the Organization name, ID, description, and avatar. Settings are editable by the Organization Owner.
-- Setup flow. Users are able to build new Organizations. They can also create new top-level Groups in an Organization.
-- Visibility. Initially, Organizations can only be `public`. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
+- Organization Users. A User can only be part of one Organization for Cells 1.0. A new account needs to be created for each Organization a User wants to be part of.
+- Setup settings. Containing the Organization name, ID, description, and avatar. Organization settings are editable by the Organization Owner.
+- Setup flow. New Users are able to create new Organizations. They can also create new top-level Groups in an Organization.
+- Visibility. Initially, Organizations can only be `private`. Private Organizations can only be seen by the Users that are part of the private Organization. They can only contain private Groups and Projects.
 - Organization settings page with the added ability to remove an Organization. Deletion of the default Organization is prevented.
 - Groups. This includes the ability to create, edit, and delete Groups, as well as a Groups overview that can be accessed by the Organization Owner and Users.
 - Projects. This includes the ability to create, edit, and delete Projects, as well as a Projects overview that can be accessed by the Organization Owner and Users.
-- Personal Namespaces. Users get [a personal Namespace in each Organization](../cells/impacted_features/personal-namespaces.md) they interact with.
+- Personal Namespaces. Users get [a personal Namespace in each Organization](../cells/impacted_features/personal-namespaces.md) they are associated with.
 - User Profile. Each [User Profile will be scoped to the Organization](../cells/impacted_features/user-profile.md).
+
+#### Organizations on Cells 1.5
+
+Organizations in the context of Cells 1.5 will contain the following functionality:
+
+#### Organizations on Cells 2.0
+
+Organizations in the context of Cells 2.0 will contain the following functionality:
 
 ### Organization Access
 
-#### Organization Users
-
-Organization Users can get access to Groups and Projects as:
-
-- A Group Member: this grants access to the Group and all its Projects, regardless of their visibility.
-- A Project Member: this grants access to the Project, and limited access to parent Groups, regardless of their visibility.
-- A Non-Member: this grants access to public and internal Groups and Projects of that Organization. To access a private Group or Project in an Organization, a User must become a Member.
-
-Organization Users can be managed in the following ways:
-
-- As [Enterprise Users](../../../user/enterprise_user/index.md), managed by the Organization. This includes control over their User account and the ability to block the User.
-- As Non-Enterprise Users, managed by the default Organization. Non-Enterprise Users can be removed from an Organization, but the User keeps ownership of their User account.
-
-Enterprise Users are only available to Organizations with a Premium or Ultimate subscription. Organizations on the free tier will only be able to host Non-Enterprise Users.
-
-##### How do Users join an Organization?
-
-Users are visible across all Organizations. This allows Users to move between Organizations. Users can join an Organization by:
-
-1. Becoming a Member of a Namespace (Group, Subgroup, or Project) contained within an Organization. A User can become a Member of a Namespace by:
-
-   - Being invited by username
-   - Being invited by email address
-   - Requesting access. This requires visibility of the Organization and Namespace and must be accepted by the owner of the Namespace. Access cannot be requested to private Groups or Projects.
-
-1. Becoming an Enterprise User of an Organization. Bringing Enterprise Users to the Organization level is planned post MVC. For the Organization MVC Enterprise Users will remain at the top-level Group.
-
-The creator of an Organization automatically becomes the Organization Owner. It is not necessary to become a User of a specific Organization to comment on or create public issues, for example. All existing Users can create and comment on all public issues.
-
-##### When can Users see an Organization?
-
-For the MVC, an Organization can only be public. Public Organizations can be seen by everyone. They can contain public and private Groups and Projects.
-
-In the future, Organizations will get an additional internal visibility setting for Groups and Projects. This will allow us to introduce internal Organizations that can only be seen by the Users it contains. This would mean that only Users that are part of the Organization will see:
-
-- The Organization front page, instead of a 404 when navigating the Organization URL
-- Name of the organization
-- Description of the organization
-- Organization pages, such as the Activity page, Groups, Projects and Users overview
-
-Content of these pages will be determined by each User's access to specific Groups and Projects. For instance, private Projects would only be seen by the members of this Project in the Project overview.
-
-As an end goal, we plan to offer the following scenarios:
-
-| Organization visibility | Group/Project visibility | Who sees the Organization? | Who sees Groups/Projects? |
-| ------ | ------ | ------ | ------ |
-| public | public | Everyone | Everyone |
-| public | internal | Everyone | Organization Users |
-| public | private | Everyone | Group/Project members |
-| internal | internal | Organization Users | Organization Users |
-| internal | private | Organization Users | Group/Project members |
-
-##### What can Users see in an Organization?
-
-Users can see the things that they have access to in an Organization. For instance, an Organization User would be able to access only the private Groups and Projects that they are a Member of, but could see all public Groups and Projects. Actionable items such as issues, merge requests and the to-do list are seen in the context of the Organization. This means that a User might see 10 merge requests they created in `Organization A`, and 7 in `Organization B`, when in total they have created 17 merge requests across both Organizations.
-
-##### What is a Billable Member?
-
-How Billable Members are defined differs between GitLabs two main offerings:
-
-- Self-managed (SM): [Billable Members are Users who consume seats against the SM License](../../../subscriptions/self_managed/index.md#subscription-seats). Custom roles elevated above the Guest role are consuming seats.
-- GitLab.com (SaaS): [Billable Members are Users who are Members of a Namespace (Group or Project) that consume a seat against the SaaS subscription for the top-level Group](../../../subscriptions/gitlab_com/index.md#how-seat-usage-is-determined). Currently, [Users with Minimal Access](../../../user/permissions.md#users-with-minimal-access) and Users without a Group count towards a licensed seat, but [that's changing](https://gitlab.com/gitlab-org/gitlab/-/issues/330663#note_1133361094).
-
-These differences and how they are calculated and displayed often cause confusion. For both SM and SaaS, we evaluate whether a User consumes a seat against the same core rule set:
-
-1. They are active users
-1. They are not bot users
-1. For the Ultimate tier, they are not a Guest
-
-For (1) this is determined differently per offering, in terms of both what classifies as active and also due to the underlying model that we refer to (User vs Member).
-To help demonstrate the various associations used in GitLab relating to Billable Members, here is a relationship diagram:
-
-```mermaid
-graph TD
-        A[Group] <-.type of.- B[Namespace]
-        C[Project] -.belongs to.-> A
-
-        E[GroupMember] <-.type of.- D[Member]
-        G[User] -.has many.-> F
-        F -.belongs to.-> C
-        F[ProjectMember] <-.type of.- D
-        G -.has many.-> E -.belongs to.-> A
-
-        GGL[GroupGroupLink] -.belongs to.->A
-        PGL[ProjectGroupLink] -.belongs to.->A
-        PGL -.belongs to.->C
-```
-
-GroupGroupLink is the join table between two Group records, indicating that one Group has invited the other.
-ProjectGroupLink is the join table between a Group and a Project, indicating the Group has been invited to the Project.
-
-SaaS has some additional complexity when it comes to the relationships that determine whether or not a User is considered a Billable Member, particularly relating to Group/Project membership that can often lead to confusion. An example of that are Members of a Group that have been invited into another Group or Project and therewith become billable.
-There are two charts as the flow is different for each: [SaaS](https://mermaid.live/view#pako:eNqNVl1v2jAU_StXeS5M-3hCU6N2aB3SqKbSPkyAhkkuxFsSs9hpVUX899mxYxsnlOWFcH1877nnfkATJSzFaBLtcvaSZKQS8DhdlWCeijGxXBCygCeOFdzSPCfbHOGrRK9Ho2tlvUkEfcZmo97HXBCBG6AcSGuOj86ZA8No_BP5eHQNMz7HYovV8kuGyR-gOx1I3Qd9Ap-31btrtgORITxIPnBXsfoAGcWKVEn2uj4T4Z6pAPdMdKyX8t2mIG-5ex0LkCnBdO4OOrOhO-O3TDQzrkkSkN9izW-BCCUTCB-8hGU866Bl45FxKJ-GdGiDDYI7SOtOp7o0GW90rA20NYjXQxE6cWSaGr1Q2BnX9hCnIbZWc1reJAly3pisMsJ19vKEFiQHfQw5PmMenwqhPQ5Uxa-DjeAa5IJk_g3t-hvdZ8jFA8vxrpYvccfWHIA6aVmrLtMQj2rvuqPynSZYcnx8PWDzlAuZsay3MfouPJxl1c9hKFCIPedzSBuH5fV2X5FDBrT8Zadk2bbszJur_xsp9UznzZRWmIizV-Njx346X9TbPpwoVqO9xobebUZmF3gse0yk9wA-jDBkflTst2TS-EyMTcrTZmGz7hPrkG8HdChdv1n5TAWmGuxHLmXI9qgTza9aO93-TVfnobAh1M6V0VDtuk7E0w313tMUy3Swc_Tyll9VLUwMPcFxUJGBNdKYTTTwY-ByesC_qusx1Yk0bXtao9kk8Snzj8eLsX0lwqV2ujnUE5Bw7FT4g7QbQGM-4YWoXPRZ2C7BnT4TXZPSiAHFUIP3nVhGbiN3G9-OyKWsTvpSS60yMYZA5U_HtyQzdy7p7GCBon65OyXNWJwT9DSNMwF7YB3Xly1o--gqKrAqCE3l359GHa4iuQ8KXEUT-ZrijtS5WEWr8iihpBZs8Vom0WRHco5XUX1IZd9NKZETUxjr8R82ROYl) and [SM](https://mermaid.live/view#pako:eNqFk1FvwiAQx7_KhefVD-CDZo2JNdmcWe3DYpeI7alsLRgKLob0u48qtqxRx9Plz4-7-3NgSCZyJEOyLcRPtqdSwXKScnBLVyhXswrUHiGxMYSsKOimwPHnXwiCYNQAsaIKzXOm2BFh3ShrOGvjujvQghAMPrAaBCOITKRLyu9Rc9FAc6Gu9VPegVELLEKzkOILMwWhUH6yRdhCcWJilEeWXSz5VJzcqrWycWvc830rOmdwnmZ8KoU-vEnXU6-bf6noPmResdzYWxdboHDeAiHBbfqOuqifonX6Ym-CV7g8HfAhfZ0U2-2xUu-iwKm2wdg4BRoJWAUXufZH5JnqH-8ye42YpFCsbGbvRN-Tx7UmunfxqFCfvZfTNeS9AfJESpQlZbn9K6Y5lxL7KUpMydCGOZXfKUl5bTmqlYhPPCNDJTU-EX3IrZEJoztJy4tY_wJJwxFj).
-
-##### How can Users switch between different Organizations?
-
-Users can utilize a [context switcher](https://gitlab.com/gitlab-org/gitlab/-/issues/411637). This feature allows easy navigation and access to different Organizations' content and settings. By clicking on the context switcher and selecting a specific Organization from the provided list, Users can seamlessly transition their view and permissions, enabling them to interact with the resources and functionalities of the chosen Organization.
-
-##### What happens when a User is deleted?
-
-We've identified three different scenarios where a User can be removed from an Organization:
-
-1. Removal: The User is removed from the organization_users table. This is similar to the User leaving a company, but the User can join the Organization again after access approval.
-1. Banning: The User is banned. This can happen in case of misconduct but the User cannot be added again to the Organization until they are unbanned. In this case, we keep the organization_users entry and change the permission to none.
-1. Deleting: The User is deleted. We assign everything the User has authored to the Ghost User and delete the entry from the organization_users table.
-
-As part of the Organization MVC, Organization Owners can remove Organization Users. This means that the User's membership entries are deleted from all Groups and Projects that are contained within the Organization. In addition, the User entry is removed from the `organization_users` table.
-
-Actions such as banning and deleting a User will be added to the Organization at a later point.
-
-#### Organization Non-Users
-
-Non-Users are external to the Organization and can only access the public resources of an Organization, such as public Projects.
+See [Organization Users](organization-users.md). 
 
 ### Roles and Permissions
 
@@ -309,9 +210,10 @@ In iteration 1, we introduce the concept of an Organization as a way to group to
 - The creator of the Organization is assigned as the Organization Owner.
 - Groups can be created in an Organization. Groups are listed in the Groups overview. Every Organization User can access the Groups overview and see the Groups they have access to.
 - Projects can be created in a Group. Projects are listed in the Projects overview. Every Organization User can access the Projects overview and see the Projects they have access to.
+- Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
 - Both Enterprise and Non-Enterprise Users can be part of an Organization.
 - Enterprise Users are still managed by top-level Groups.
-- A User can be part of multiple Organizations.
+- A User can be part of one Organization.
 - Users can navigate between the different Organizations they are part of.
 - Any User within or outside of an Organization can be invited to Groups and Projects contained by the Organization.
 - Organizations are not fully isolated. We aim to complete [phase 1 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11837), with the goal to `define sharding_key` and `desired_sharding_key` rules.
@@ -320,11 +222,10 @@ In iteration 1, we introduce the concept of an Organization as a way to group to
 
 In iteration 2, an Organization MVC Experiment will be released. We will test the functionality with a select set of customers and improve the MVC based on these learnings. The MVC Experiment contains the following functionality:
 
-- Users are listed in the User overview. Every Organization User can access the User overview and see Users that are part of the Groups and Projects they have access to.
 - Organizations can be deleted.
 - Organization Owners can access the Activity page for the Organization.
 - Forking across Organizations will be defined.
-- [Organization Isolation](isolation.md) will be finished to meet the requirements of the initial set of customers
+- [Organization Isolation](isolation.md) meets the requirements of the initial set of customers
 
 ### Iteration 3: [Organization MVC Beta](https://gitlab.com/groups/gitlab-org/-/epics/10651) (FY25Q3)
 
