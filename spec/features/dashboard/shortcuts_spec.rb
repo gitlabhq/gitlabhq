@@ -28,7 +28,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
       find('body').send_keys([:shift, 'T'])
 
-      check_page_title('To-Do List')
+      expect(page).to have_selector('.js-todos-all')
 
       find('body').send_keys([:shift, 'G'])
 

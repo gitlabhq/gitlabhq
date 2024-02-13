@@ -1958,31 +1958,13 @@ msgstr ""
 msgid "AISummary|View summary"
 msgstr ""
 
-msgid "AI|%{tool} is %{transition} an answer"
-msgstr ""
-
-msgid "AI|AI generated explanations will appear here."
-msgstr ""
-
-msgid "AI|An %{linkStart}Experiment%{linkEnd} is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback. An Experiment: %{bullets}"
+msgid "AI|An error occurred while explaining the code."
 msgstr ""
 
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
-msgid "AI|Ask a question"
-msgstr ""
-
 msgid "AI|Autocomplete"
-msgstr ""
-
-msgid "AI|Can be removed at any time"
-msgstr ""
-
-msgid "AI|Close the Code Explanation"
-msgstr ""
-
-msgid "AI|Code Explanation"
 msgstr ""
 
 msgid "AI|Creates issue description based on a short prompt"
@@ -1992,9 +1974,6 @@ msgid "AI|Description is required"
 msgstr ""
 
 msgid "AI|Experiment"
-msgstr ""
-
-msgid "AI|Explain the code from %{filePath} in human understandable language presented in Markdown format. In the response add neither original code snippet nor any title. `%{text}`. If it is not programming code, say `The selected text is not code. I am afraid this feature is for explaining code only. Would you like to ask a different question about the selected text?` and wait for another question."
 msgstr ""
 
 msgid "AI|Explain your rating to help us improve! (optional)"
@@ -2009,16 +1988,10 @@ msgstr ""
 msgid "AI|GitLab Duo"
 msgstr ""
 
-msgid "AI|GitLab Duo Chat"
-msgstr ""
-
 msgid "AI|Give feedback on AI content"
 msgstr ""
 
 msgid "AI|Give feedback to improve this answer."
-msgstr ""
-
-msgid "AI|Has no support and might not be documented"
 msgstr ""
 
 msgid "AI|Helpful"
@@ -2033,15 +2006,6 @@ msgstr ""
 msgid "AI|I don't see how I can help. Please give better instructions!"
 msgstr ""
 
-msgid "AI|May be unstable"
-msgstr ""
-
-msgid "AI|May provide inappropriate responses not representative of GitLab's views. Do not input personal data."
-msgstr ""
-
-msgid "AI|New chat"
-msgstr ""
-
 msgid "AI|Populate issue description"
 msgstr ""
 
@@ -2054,11 +2018,6 @@ msgstr ""
 msgid "AI|Something went wrong. Please try again later"
 msgstr ""
 
-msgid "AI|Source"
-msgid_plural "AI|Sources"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "AI|Thank you for your feedback."
 msgstr ""
 
@@ -2066,9 +2025,6 @@ msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
 msgid "AI|The existing description will be replaced when you submit."
-msgstr ""
-
-msgid "AI|There is too much text in the chat. Please try again with a shorter text."
 msgstr ""
 
 msgid "AI|This is an experiment feature that uses AI to provide recommendations for resolving this vulnerability. Use this feature with caution."
@@ -2083,9 +2039,6 @@ msgstr ""
 msgid "AI|What does the selected code mean?"
 msgstr ""
 
-msgid "AI|What's an Experiment?"
-msgstr ""
-
 msgid "AI|Write a brief description and have AI fill in the details."
 msgstr ""
 
@@ -2093,21 +2046,6 @@ msgid "AI|Write a summary to fill out the selected issue template"
 msgstr ""
 
 msgid "AI|Wrong"
-msgstr ""
-
-msgid "AI|You are not allowed to copy any part of this output into issues, comments, GitLab source code, commit messages, merge requests or any other user interface in the %{gitlabOrg} or %{gitlabCom} groups."
-msgstr ""
-
-msgid "AI|finding"
-msgstr ""
-
-msgid "AI|generating"
-msgstr ""
-
-msgid "AI|producing"
-msgstr ""
-
-msgid "AI|working on"
 msgstr ""
 
 msgid "API"
@@ -4484,6 +4422,9 @@ msgid "After you enable the integration, the following protected variables are c
 msgstr ""
 
 msgid "After you've reviewed these contribution guidelines, you'll be all set to"
+msgstr ""
+
+msgid "Agent not found for provided id."
 msgstr ""
 
 msgid "AiAgents|AI Agents"
@@ -10728,6 +10669,11 @@ msgstr ""
 msgid "CiStatusText|Warning"
 msgstr ""
 
+msgid "CiVariables|%d value found"
+msgid_plural "CiVariables|%d values found"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "CiVariables|%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
 msgstr ""
 
@@ -10800,6 +10746,9 @@ msgstr ""
 msgid "CiVariables|Maximum number of variables reached."
 msgstr ""
 
+msgid "CiVariables|No matching values"
+msgstr ""
+
 msgid "CiVariables|Protect variable"
 msgstr ""
 
@@ -10819,6 +10768,9 @@ msgid "CiVariables|Run job again"
 msgstr ""
 
 msgid "CiVariables|Scope"
+msgstr ""
+
+msgid "CiVariables|Search values"
 msgstr ""
 
 msgid "CiVariables|Specify variable values to be used in this run. The variables specified in the configuration file and %{linkStart}CI/CD settings%{linkEnd} are used by default."
@@ -53875,6 +53827,9 @@ msgstr ""
 msgid "User does not have permission to create a Security Policy project."
 msgstr ""
 
+msgid "User does not have permission to modify agent."
+msgstr ""
+
 msgid "User doesn't exist or you don't have permission to change namespace commit emails."
 msgstr ""
 
@@ -59863,9 +59818,6 @@ msgid "projects"
 msgstr ""
 
 msgid "protected"
-msgstr ""
-
-msgid "random"
 msgstr ""
 
 msgid "reCAPTCHA"

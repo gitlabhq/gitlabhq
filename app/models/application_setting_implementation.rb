@@ -279,7 +279,8 @@ module ApplicationSettingImplementation
         project_jobs_api_rate_limit: 600,
         security_txt_content: nil,
         allow_project_creation_for_guest_and_below: true,
-        enable_member_promotion_management: false
+        enable_member_promotion_management: false,
+        security_approval_policies_limit: 5
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

@@ -594,7 +594,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
 
           it 'updates that a developer cannot push or merge' do
             put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
-                params: { developers_can_push: false, developers_can_merge: false }
+              params: { developers_can_push: false, developers_can_merge: false }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/branch')
@@ -612,7 +612,7 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
 
           it 'updates that a developer can push and merge' do
             put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
-                params: { developers_can_push: true, developers_can_merge: true }
+              params: { developers_can_push: true, developers_can_merge: true }
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('public_api/v4/branch')

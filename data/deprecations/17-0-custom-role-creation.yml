@@ -1,4 +1,4 @@
-- title: "Deprecate custom role creation for group owners"
+- title: "Deprecate custom role creation for group owners on self-managed"
   removal_milestone: "17.0"
   announcement_milestone: "16.9"
   breaking_change: true
@@ -8,3 +8,5 @@
   body: |  # (required) Don't change this line.
     In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
     Group Owners will be able to assign custom roles at the group level.
+
+    Group owners on GitLab.com can continue to manage custom roles and assign at the group level.

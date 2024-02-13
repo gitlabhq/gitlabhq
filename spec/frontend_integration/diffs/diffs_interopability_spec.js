@@ -77,6 +77,7 @@ const startDiffsApp = () => {
     getCurrentAction: () => 'diffs',
     eventHub: {
       $on() {},
+      $off() {},
     },
   };
   const store = createStore();

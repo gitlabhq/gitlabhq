@@ -135,7 +135,7 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
     context 'when the sha is nil' do
       it 'returns nil' do
-        v1_0.release.update!(sha: nil)
+        v1_0.release.update_column(:sha, nil)
 
         is_expected.to be_nil
       end

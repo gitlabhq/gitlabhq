@@ -147,6 +147,7 @@ these parameters:
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
+- `security_approval_policies_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
 

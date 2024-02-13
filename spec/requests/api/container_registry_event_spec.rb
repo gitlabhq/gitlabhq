@@ -14,8 +14,8 @@ RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registr
 
     subject(:post_events) do
       post api('/container_registry_event/events'),
-           params: { events: events }.to_json,
-           headers: registry_headers.merge('Authorization' => secret_token)
+        params: { events: events }.to_json,
+        headers: registry_headers.merge('Authorization' => secret_token)
     end
 
     it 'returns 200 status and events are passed to event handler' do
@@ -33,8 +33,8 @@ RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registr
 
     it 'returns 401 error status when token is invalid' do
       post api('/container_registry_event/events'),
-           params: { events: events }.to_json,
-           headers: registry_headers.merge('Authorization' => 'invalid_token')
+        params: { events: events }.to_json,
+        headers: registry_headers.merge('Authorization' => 'invalid_token')
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end

@@ -96,6 +96,12 @@ module Gitlab
           puts
         end
 
+        if change.reviewers.present?
+          puts '=> Reviewers:'
+          puts "Reviewers: #{change.reviewers.join(', ')}"
+          puts
+        end
+
         puts '=> Diff:'
         puts Shell.execute('git', '--no-pager', 'diff', '--color=always', 'master', branch_name, '--',
           *change.changed_files)

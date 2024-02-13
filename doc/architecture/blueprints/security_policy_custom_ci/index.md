@@ -58,7 +58,7 @@ approach to provide the same flexibility that [compliance framework](../../../us
 means that security policies can be scope to compliance frameworks and enforce the presence of custom CI jobs.
 
 Like scan execution policies, custom CI jobs can be scoped to certain branch names, branch types or compliance frameworks applied to the project.
-Users will be able to define custom stages and be able to place jobs to run before or after certain CI stages of the project pipeline.
+Users can leverage one of the predefined security-policy stages to position jobs in the pipeline according to their needs.
 Transitioning from compliance pipelines to the new feature should be as smooth as possible.
 
 ## Design and Implementation Details
@@ -75,10 +75,19 @@ The Pipeline Execution Policy MVC will allow the transition from compliance pipe
 - Users should be able to define the stage in which their job will run, and scan execution policies will have a method to handle precedence. For example, a security/compliance team may define want to enforce jobs that run commonly after a build stage. They would be able to use build_after (for example) and scan execution policies would inject the build_after stage after the build stage and enforce the custom CI YAML defined in the pipeline execution policy within this stage. The stage and job cannot be interfered with by development teams once enforced by a scan execution policy. We should define the rules that allow for injecting stages cleanly into all enforced projects but be minimal invasive as to the project CI.
 - Pipeline execution policies should execute custom CI YAML in projects that do not contain an existing CI configuration, the same as standard scan execution policies work today.
 
-### Stages definitions
+### Stages management strategy
 
-We want users to be able to place jobs to run before or after certain CI stages of the project pipeline. But we haven't decided about a strategy to archive this.
-We discussed the following strategies:
+We want users to be able to place jobs to run before or after certain CI stages of the project pipeline.
+To achieve this, we want to introduce 3 reserved stages that can be used only by pipeline execution policies and injected into the project pipeline:
+
+1. `.pipeline-policy-pre` stage will run at the very beginning of the pipeline, before the `.pre` stage.
+1. `.pipeline-policy` stage will be injected after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
+1. `.pipeline-policy-post` stage will run at the very end of the pipeline, after the `.post` stage.
+
+Injecting jobs in any of these 3 stages is guaranteed to always work. Execution policy jobs can also be assigned to any stage that exists in the project pipeline. In this case, however, it's not guaranteed that the injection always works as it depends whether the project pipeline has declared such stage.
+It will not be possible to create custom stages in a pipeline execution policy.
+
+We will try this approach as part of the experiment phase. We also discussed the following strategies that we might want to try:
 
 #### 1. Make security policy stages order take precedence
 

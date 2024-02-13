@@ -784,7 +784,7 @@ The ability for Developers to change the status of vulnerabilities is now deprec
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Deprecate custom role creation for group owners
+### Deprecate custom role creation for group owners on self-managed
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.9</span>
@@ -794,6 +794,8 @@ The ability for Developers to change the status of vulnerabilities is now deprec
 
 In self-managed GitLab 17.0, custom role creation will be removed for group Owners. This functionality will move to the instance level for administrators only.
 Group Owners will be able to assign custom roles at the group level.
+
+Group owners on GitLab.com can continue to manage custom roles and assign at the group level.
 
 </div>
 

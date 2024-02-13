@@ -129,11 +129,12 @@ export default {
       return this.sortOrder === DESC;
     },
     markdownPreviewPath() {
-      return markdownPreviewPath(this.fullPath, this.workItemIid);
+      const { fullPath, isGroup, workItemIid: iid } = this;
+      return markdownPreviewPath({ fullPath, iid, isGroup });
     },
     autocompleteDataSources() {
       const { fullPath, isGroup, workItemIid: iid } = this;
-      return autocompleteDataSources({ fullPath, isGroup, iid });
+      return autocompleteDataSources({ fullPath, iid, isGroup });
     },
     workItemCommentFormProps() {
       return {

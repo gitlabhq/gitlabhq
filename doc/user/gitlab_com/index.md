@@ -181,6 +181,24 @@ which is part of [GitLab CI/CD](#gitlab-cicd).
 
 [Rate limits](#gitlabcom-specific-rate-limits) also exist for GitLab Pages.
 
+## GitLab container registry
+
+| Setting          | GitLab.com                        |
+|:-----------------|:----------------------------------|
+| Domain name      | `registry.gitlab.com`             |
+| IP address       | `35.227.35.254`                   |
+| CDN domain name  | `cdn.registry.gitlab-static.net`  |
+| CDN IP address   | `34.149.22.116`                   |
+
+To use the GitLab container registry, Docker clients must have access to:
+
+- The registry endpoint and GitLab.com for authorization.
+- Google Cloud Storage or Google Cloud Content Delivery Network to download images.
+
+GitLab.com is fronted by Cloudflare.
+For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
+([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
+
 ## GitLab CI/CD
 
 Below are the current settings regarding [GitLab CI/CD](../../ci/index.md).

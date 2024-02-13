@@ -246,7 +246,10 @@ describe('WorkItemNotes component', () => {
           fullPath: 'test-path',
           iid: mockWorkItemIid,
         }),
-        markdownPreviewPath: markdownPreviewPath('test-path', mockWorkItemIid),
+        markdownPreviewPath: markdownPreviewPath({
+          fullPath: 'test-path',
+          iid: mockWorkItemIid,
+        }),
       });
     });
   });

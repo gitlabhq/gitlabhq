@@ -99,8 +99,7 @@ RSpec.describe API::Clusters::Agents, feature_category: :deployment_management d
   describe 'POST /projects/:id/cluster_agents' do
     it 'adds agent to project' do
       expect do
-        post(api("/projects/#{project.id}/cluster_agents", user),
-             params: { name: 'some-agent' })
+        post(api("/projects/#{project.id}/cluster_agents", user), params: { name: 'some-agent' })
       end.to change { project.cluster_agents.count }.by(1)
 
       aggregate_failures "testing response" do

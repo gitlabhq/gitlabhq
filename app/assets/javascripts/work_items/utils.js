@@ -42,22 +42,23 @@ export const formatAncestors = (workItem) =>
 export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
   widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
 
-const autocompleteSourcesPath = ({ autocompleteType, fullPath, isGroup, iid }) => {
+const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, isGroup }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
   return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&type_id=${iid}`;
 };
 
-export const autocompleteDataSources = ({ fullPath, isGroup = false, iid }) => ({
-  labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, isGroup, iid }),
-  members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, isGroup, iid }),
-  commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, isGroup, iid }),
+export const autocompleteDataSources = ({ fullPath, iid, isGroup = false }) => ({
+  labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, iid, isGroup }),
+  members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, iid, isGroup }),
+  commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, iid, isGroup }),
 });
 
-export const markdownPreviewPath = (fullPath, iid) =>
-  `${
-    gon.relative_url_root || ''
-  }/${fullPath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
+  const domain = gon.relative_url_root || '';
+  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
+  return `${domain}/${basePath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+};
 
 export const isReference = (input) => {
   /**

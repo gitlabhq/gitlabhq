@@ -8,9 +8,7 @@ RSpec.describe ::API::Admin::InstanceClusters, feature_category: :deployment_man
   let_it_be(:admin_user) { create(:admin) }
   let_it_be(:project) { create(:project) }
   let_it_be(:project_cluster) do
-    create(:cluster, :project, :provided_by_gcp,
-           user: admin_user,
-           projects: [project])
+    create(:cluster, :project, :provided_by_gcp, user: admin_user, projects: [project])
   end
 
   let(:project_cluster_id) { project_cluster.id }

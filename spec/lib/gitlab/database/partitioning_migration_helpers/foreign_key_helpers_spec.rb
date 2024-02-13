@@ -227,16 +227,68 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::ForeignKeyHelpers
         )
       end
 
-      it 'validates FK for each partition' do
-        allow(migration).to receive(:statement_timeout_disabled?).and_return(false)
-        expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/).twice
-        expect(migration).to receive(:execute).with(/RESET statement_timeout/).twice
-        expect(migration).to receive(:execute)
-          .with(/ALTER TABLE #{partition1_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
-        expect(migration).to receive(:execute)
-          .with(/ALTER TABLE #{partition2_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+      context 'when name is provided' do
+        it 'validates FK for each partition', :aggregate_failures do
+          expect(migration).to receive(:foreign_key_exists?)
+            .with(partition1_name, name: foreign_key_name)
+            .and_return(true).twice
+          expect(migration).to receive(:foreign_key_exists?)
+            .with(partition2_name, name: foreign_key_name)
+            .and_return(true).twice
 
-        migration.validate_partitioned_foreign_key(source_table_name, column_name, name: foreign_key_name)
+          allow(migration).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/).twice
+          expect(migration).to receive(:execute).with(/RESET statement_timeout/).twice
+          expect(migration).to receive(:execute)
+            .with(/ALTER TABLE #{partition1_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+          expect(migration).to receive(:execute)
+            .with(/ALTER TABLE #{partition2_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+
+          migration.validate_partitioned_foreign_key(source_table_name, column_name, name: foreign_key_name)
+        end
+      end
+
+      context 'when name is not provided' do
+        it 'validates FK for each partition', :aggregate_failures do
+          expect(migration).to receive(:foreign_key_exists?)
+            .with(partition1_name, name: anything)
+            .and_return(true).twice
+          expect(migration).to receive(:foreign_key_exists?)
+            .with(partition2_name, name: anything)
+            .and_return(true).twice
+
+          allow(migration).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/).twice
+          expect(migration).to receive(:execute).with(/RESET statement_timeout/).twice
+          expect(migration).to receive(:execute).with(/ALTER TABLE #{partition1_name} VALIDATE CONSTRAINT/).ordered
+          expect(migration).to receive(:execute).with(/ALTER TABLE #{partition2_name} VALIDATE CONSTRAINT/).ordered
+
+          migration.validate_partitioned_foreign_key(source_table_name, column_name)
+        end
+      end
+
+      context 'when FK does not exist for a given partition' do
+        before do
+          allow(migration).to receive(:foreign_key_exists?)
+            .with(partition1_name, name: foreign_key_name)
+            .and_return(true)
+          allow(migration).to receive(:foreign_key_exists?)
+            .with(partition2_name, name: foreign_key_name)
+            .and_return(false)
+        end
+
+        it 'does not validate missing FK', :aggregate_failures do
+          allow(migration).to receive(:statement_timeout_disabled?).and_return(false)
+          expect(migration).to receive(:execute).with(/SET statement_timeout TO 0/)
+          expect(migration).to receive(:execute).with(/RESET statement_timeout/)
+          expect(migration).to receive(:execute)
+            .with(/ALTER TABLE #{partition1_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+          expect(migration).not_to receive(:execute)
+            .with(/ALTER TABLE #{partition2_name} VALIDATE CONSTRAINT #{foreign_key_name}/).ordered
+          expect(Gitlab::AppLogger).to receive(:warn).with("Missing #{foreign_key_name} on #{partition2_name}")
+
+          migration.validate_partitioned_foreign_key(source_table_name, column_name, name: foreign_key_name)
+        end
       end
     end
   end

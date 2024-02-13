@@ -107,6 +107,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryaimessagesagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent to answer the chat. |
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
 | <a id="queryaimessagesroles"></a>`roles` | [`[AiMessageRole!]`](#aimessagerole) | Array of roles to fetch. |
 
@@ -14713,6 +14714,7 @@ AI features communication message.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aimessageagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent version to answer the message. |
 | <a id="aimessagechunkid"></a>`chunkId` | [`Int`](#int) | Incremental ID for a chunk from a streamed message. Null when it is not a streamed message. |
 | <a id="aimessagecontent"></a>`content` | [`String`](#string) | Raw response content. |
 | <a id="aimessagecontenthtml"></a>`contentHtml` | [`String`](#string) | Response content as HTML. |
@@ -32896,6 +32898,12 @@ A `AchievementsUserAchievementID` is a global ID. It is encoded as a string.
 
 An example `AchievementsUserAchievementID` is: `"gid://gitlab/Achievements::UserAchievement/1"`.
 
+### `AiAgentVersionID`
+
+A `AiAgentVersionID` is a global ID. It is encoded as a string.
+
+An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
+
 ### `AiModelID`
 
 A `AiModelID` is a global ID. It is encoded as a string.
@@ -34599,6 +34607,7 @@ see the associated mutation type above.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aichatinputagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent version to answer the chat. |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
 | <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** **Status**: Experiment. Introduced in 16.6. |
 | <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |

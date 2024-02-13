@@ -827,7 +827,7 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
   describe 'DELETE /projects/:id/feature_flags/:name' do
     subject do
       delete api("/projects/#{project.id}/feature_flags/#{feature_flag.name}", user),
-             params: params
+        params: params
     end
 
     let!(:feature_flag) { create(:operations_feature_flag, project: project) }

@@ -94,8 +94,15 @@ module Gitlab
         def validate_partitioned_foreign_key(source, column, name: nil)
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
 
+          fk_name = name || concurrent_partitioned_foreign_key_name(source, column)
+
           Gitlab::Database::PostgresPartitionedTable.each_partition(source) do |partition|
-            validate_foreign_key(partition.identifier, column, name: name)
+            unless foreign_key_exists?(partition.identifier, name: fk_name)
+              Gitlab::AppLogger.warn("Missing #{fk_name} on #{partition.identifier}")
+              next
+            end
+
+            validate_foreign_key(partition.identifier, column, name: fk_name)
           end
         end
 
