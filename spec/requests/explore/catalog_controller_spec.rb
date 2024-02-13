@@ -36,11 +36,11 @@ RSpec.describe Explore::CatalogController, feature_category: :pipeline_compositi
 
     it_behaves_like 'basic get requests', :show
 
-    context 'when rendering a draft catalog resource' do
+    context 'when rendering an unpublished catalog resource' do
       it 'returns not found error' do
-        draft_catalog_resource = create(:ci_catalog_resource, state: :draft)
+        unpublished_catalog_resource = create(:ci_catalog_resource, state: :unpublished)
 
-        get explore_catalog_path(draft_catalog_resource)
+        get explore_catalog_path(unpublished_catalog_resource)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

@@ -48,41 +48,13 @@ module Gitlab
         attr_reader :version, :component_name
 
         def find_project_by_component_path(path)
-          if Feature.enabled?(:ci_redirect_component_project, Feature.current_request)
-            project_full_path = extract_project_path(path)
+          project_full_path = extract_project_path(path)
 
-            Project.find_by_full_path(project_full_path, follow_redirects: true).tap do |project|
-              next unless project
+          Project.find_by_full_path(project_full_path, follow_redirects: true).tap do |project|
+            next unless project
 
-              @component_name = extract_component_name(project_full_path)
-            end
-          else
-            legacy_finder(path).tap do |project|
-              next unless project
-
-              @component_name = extract_component_name(project.full_path)
-            end
+            @component_name = extract_component_name(project_full_path)
           end
-        end
-
-        def legacy_finder(path)
-          return if path.start_with?('/') # exit early if path starts with `/` or it will loop forever.
-
-          possible_paths = [path]
-
-          index = nil
-
-          loop_until(limit: 20) do
-            index = path.rindex('/') # find index of last `/` in a path
-            break unless index
-
-            possible_paths << (path = path[0..index - 1])
-          end
-
-          # remove shortest path as it is group
-          possible_paths.pop
-
-          ::Project.where_full_path_in(possible_paths).take # rubocop: disable CodeReuse/ActiveRecord
         end
 
         # Given a path like "my-org/sub-group/the-project/the-component"

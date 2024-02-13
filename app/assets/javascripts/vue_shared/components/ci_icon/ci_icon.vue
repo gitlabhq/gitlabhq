@@ -11,6 +11,9 @@ import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
  *   detailsPath: '/project1/jobs/1' // can also be details_path
  * }
  *
+ * You may use ~/graphql_shared/fragments/ci_icon.fragment.graphql to fetch this
+ * from the GraphQL API.
+ *
  */
 
 export default {

@@ -1,0 +1,6 @@
+fragment CiIcon on DetailedStatus {
+  id
+  icon
+  text
+  detailsPath
+}

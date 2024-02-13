@@ -161,7 +161,9 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   describe '#find_resource' do
     let_it_be(:accessible_resource) { create(:ci_catalog_resource, :published, project: public_project) }
     let_it_be(:inaccessible_resource) { create(:ci_catalog_resource, :published, project: project_noaccess) }
-    let_it_be(:draft_resource) { create(:ci_catalog_resource, project: public_namespace_project, state: :draft) }
+    let_it_be(:unpublished_resource) do
+      create(:ci_catalog_resource, project: public_namespace_project, state: :unpublished)
+    end
 
     context 'when using the ID argument' do
       subject { list.find_resource(id: id) }
@@ -183,7 +185,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the resource is not published' do
-        let(:id) { draft_resource.id }
+        let(:id) { unpublished_resource.id }
 
         it 'returns nil' do
           is_expected.to be_nil
@@ -219,7 +221,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       end
 
       context 'when the resource is not published' do
-        let(:full_path) { draft_resource.project.full_path }
+        let(:full_path) { unpublished_resource.project.full_path }
 
         it 'returns nil' do
           is_expected.to be_nil

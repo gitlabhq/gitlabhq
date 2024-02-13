@@ -34,7 +34,7 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
         let!(:version) { create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: release) }
 
         it 'does not update the catalog resources if there are still releases' do
-          second_release = create(:release, project: project, tag: 'v1.2.0')
+          second_release = create(:release, project: project, tag: '1.2.0')
           create(:ci_catalog_resource_version, catalog_resource: catalog_resource, release: second_release)
 
           subject
@@ -45,7 +45,7 @@ RSpec.describe Releases::DestroyService, feature_category: :release_orchestratio
         it 'updates the catalog resource if there are no more releases' do
           subject
 
-          expect(catalog_resource.reload.state).to eq('draft')
+          expect(catalog_resource.reload.state).to eq('unpublished')
         end
       end
     end

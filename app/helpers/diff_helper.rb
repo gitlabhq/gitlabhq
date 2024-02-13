@@ -254,7 +254,7 @@ module DiffHelper
     # Always use HTML to handle case where JSON diff rendered this button
     params_copy.delete(:format)
 
-    link_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'btn gl-button btn-default selected' : 'btn gl-button btn-default'), data: { view_type: name } do
+    link_button_to url_for(params_copy), id: "#{name}-diff-btn", class: (selected ? 'selected' : ''), data: { view_type: name } do
       title
     end
   end

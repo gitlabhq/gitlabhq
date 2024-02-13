@@ -142,7 +142,7 @@ export default class Diff {
   }
   viewTypeSwitch(event) {
     const click = event.originalEvent;
-    const diffSource = new URL(click.target.getAttribute('href'), document.location.href);
+    const diffSource = new URL(event.currentTarget.getAttribute('href'), document.location.href);
 
     if (this.mrHub) {
       click.preventDefault();

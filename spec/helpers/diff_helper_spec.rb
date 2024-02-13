@@ -195,6 +195,30 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#parallel_diff_btn' do
+    let(:params) do
+      ActionController::Parameters.new({
+        controller: "projects/commit",
+        action: "show",
+        namespace_id: "foo",
+        project_id: "bar",
+        id: commit.sha,
+        view: 'parallel'
+      }).permit!
+    end
+
+    before do
+      allow(helper).to receive(:params).and_return(params)
+    end
+
+    subject(:diff_btn) { helper.parallel_diff_btn }
+
+    it 'renders button' do
+      expect(diff_btn).to include('Side-by-side')
+      expect(diff_btn).to include('gl-button btn btn-md btn-default selected')
+    end
+  end
+
   describe "#mark_inline_diffs" do
     let(:old_line) { %(abc 'def') }
     let(:new_line) { %(abc "def") }

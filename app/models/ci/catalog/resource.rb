@@ -38,7 +38,7 @@ module Ci
 
       delegate :avatar_path, :star_count, :full_path, to: :project
 
-      enum state: { draft: 0, published: 1 }
+      enum state: { unpublished: 0, published: 1 }
 
       before_create :sync_with_project
 

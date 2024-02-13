@@ -14677,21 +14677,11 @@ An AI agent.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiagent_links"></a>`_links` | [`AiAgentLinks!`](#aiagentlinks) | Map of links to perform actions on the agent. |
 | <a id="aiagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="aiagentid"></a>`id` | [`ID!`](#id) | ID of the agent. |
 | <a id="aiagentname"></a>`name` | [`String!`](#string) | Name of the agent. |
+| <a id="aiagentrouteid"></a>`routeId` | [`Int!`](#int) | Route ID of the agent. |
 | <a id="aiagentversions"></a>`versions` | [`[AiAgentVersion!]`](#aiagentversion) | Versions of the agent. |
-
-### `AiAgentLinks`
-
-Represents links to perform actions on the agent.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aiagentlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the agent. |
 
 ### `AiAgentVersion`
 

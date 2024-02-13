@@ -142,9 +142,9 @@ export const mockPipelineStatusResponse = {
         id: 'gid://gitlab/Ci::Pipeline/320',
         detailedStatus: {
           id: 'pending-320-320',
-          detailsPath: '/root/ci-project/-/pipelines/320',
           icon: 'status_pending',
-          group: 'pending',
+          text: 'Pending',
+          detailsPath: '/root/ci-project/-/pipelines/320',
           __typename: 'DetailedStatus',
         },
         __typename: 'Pipeline',

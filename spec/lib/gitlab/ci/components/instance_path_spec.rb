@@ -63,27 +63,11 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         it_behaves_like 'fetches the component content'
 
-        context 'when feature flag ci_redirect_component_project is disabled' do
-          before do
-            stub_feature_flags(ci_redirect_component_project: false)
-          end
-
-          it_behaves_like 'fetches the component content'
-        end
-
         context 'when the there is a redirect set for the project' do
           let!(:redirect_route) { project.redirect_routes.create!(path: 'another-group/new-project') }
           let(:project_path) { redirect_route.path }
 
           it_behaves_like 'fetches the component content'
-
-          context 'when feature flag ci_redirect_component_project is disabled' do
-            before do
-              stub_feature_flags(ci_redirect_component_project: false)
-            end
-
-            it_behaves_like 'does not find the component'
-          end
         end
       end
 
@@ -120,21 +104,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         it_behaves_like 'does not find the component'
       end
-
-      # TODO: remove when deleting the feature flag `ci_redirect_component_project`
-      shared_examples 'prevents infinite loop' do |prefix|
-        context "when the project path starts with '#{prefix}'" do
-          let(:project_path) { "#{prefix}#{project.full_path}" }
-
-          it 'returns nil' do
-            result = path.fetch_content!(current_user: user)
-            expect(result).to be_nil
-          end
-        end
-      end
-
-      it_behaves_like 'prevents infinite loop', '/'
-      it_behaves_like 'prevents infinite loop', '//'
 
       context 'when fetching the latest version of a component' do
         let_it_be(:project) do

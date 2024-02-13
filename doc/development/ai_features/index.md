@@ -126,7 +126,7 @@ used in specs.
    ```
 
 1. Run `gdk reconfigure`
-1. Run database migrations to create the embedding database
+1. Run database migrations to create the embedding database in the `gitlab` folder of the GDK
 
    ```shell
      RAILS_ENV=development bin/rails db:migrate

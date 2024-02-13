@@ -21,10 +21,10 @@ RSpec.describe 'CI/CD Catalog details page', :js, feature_category: :pipeline_co
     end
 
     context 'when the resource is not published' do
-      let(:draft_catalog_resource) { create(:ci_catalog_resource, project: project, state: :draft) }
+      let(:unpublished_catalog_resource) { create(:ci_catalog_resource, project: project, state: :unpublished) }
 
       before do
-        visit explore_catalog_path(draft_catalog_resource)
+        visit explore_catalog_path(unpublished_catalog_resource)
       end
 
       it 'returns a 404' do

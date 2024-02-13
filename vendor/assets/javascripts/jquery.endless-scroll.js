@@ -62,6 +62,7 @@
     };
 
     var options       = $.extend({}, defaults, options),
+        data          = false,
         firing        = true,
         fired         = false,
         fireSequence  = 0,

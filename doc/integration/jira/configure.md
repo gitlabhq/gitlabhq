@@ -67,7 +67,7 @@ To configure your project settings in GitLab:
    - For **Jira issue regex**, [enter a regex pattern](issues.md#define-a-regex-pattern).
    - For **Jira issue prefix**, [enter a prefix](issues.md#define-a-prefix).
 1. Optional. In the **Issues** section:
-   - To [view issues](#view-jira-issues) from a single Jira project in a GitLab project:
+   - To [view Jira issues](#view-jira-issues) in GitLab:
      1. Select the **Enable Jira issues** checkbox.
      1. Enter the Jira project key.
 
@@ -106,8 +106,7 @@ To view issues from a single Jira project in a GitLab project:
 
 By default, the issues are sorted by **Created date**.
 The most recently created issues appear at the top.
-You can [search and filter the issue list](issues.md#search-and-filter-the-issue-list)
-and select an issue to view that issue in GitLab.
+You can [filter issues](#filter-jira-issues) and select an issue to view that issue in GitLab.
 
 Issues are grouped into the following tabs based on their
 [Jira status](https://confluence.atlassian.com/adminjiraserver070/defining-status-field-values-749382903.html):
@@ -115,6 +114,31 @@ Issues are grouped into the following tabs based on their
 - **Open**: issues with any Jira status other than **Done**.
 - **Closed**: issues with a **Done** Jira status.
 - **All**: issues with any Jira status.
+
+### Filter Jira issues
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+Prerequisites:
+
+- Ensure the Jira issue integration is [configured](#configure-the-integration)
+  and the **Enable Jira issues** checkbox is selected.
+
+When you [view Jira issues](#view-jira-issues) in GitLab,
+you can filter the issues by text in summaries and descriptions.
+You can also filter the issues by:
+
+- **Label**: specify one or more Jira issue labels in the `labels[]` parameter in the URL.
+  When you specify multiple labels, only the issues that have all the specified labels appear
+  (for example, `/-/integrations/jira/issues?labels[]=backend&labels[]=feature&labels[]=QA`).
+- **Status**: specify the Jira issue status in the `status` parameter in the URL
+  (for example, `/-/integrations/jira/issues?status=In Progress`).
+- **Reporter**: specify the Jira display name of the `author_username` parameter in the URL
+  (for example, `/-/integrations/jira/issues?author_username=John Smith`).
+- **Assignee**: specify the Jira display name of the `assignee_username` parameter in the URL
+  (for example, `/-/integrations/jira/issues?assignee_username=John Smith`).
 
 ## Create a Jira issue for a vulnerability
 

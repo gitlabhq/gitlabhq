@@ -4,7 +4,7 @@ key_path: counts.projects_jira_server_active
 description: Count of active integrations with Jira Software (server)
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: removed
 time_frame: all

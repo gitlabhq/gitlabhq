@@ -41,3 +41,6 @@ module WorkItems
     end
   end
 end
+
+WorkItems::Widgets::Base.prepend_mod
+WorkItems::Widgets::Base.prepend_mod_with('WorkItems::Widgets::Base::ClassMethods')

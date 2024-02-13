@@ -39,7 +39,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:star_count).to(:project) }
 
-  it { is_expected.to define_enum_for(:state).with_values({ draft: 0, published: 1 }) }
+  it { is_expected.to define_enum_for(:state).with_values({ unpublished: 0, published: 1 }) }
 
   it do
     is_expected.to define_enum_for(:verification_level)
@@ -199,15 +199,15 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   end
 
   describe '#state' do
-    it 'defaults to draft' do
-      expect(resource_a.state).to eq('draft')
+    it 'defaults to unpublished' do
+      expect(resource_a.state).to eq('unpublished')
     end
   end
 
   describe '#publish!' do
-    context 'when the catalog resource is in draft state' do
+    context 'when the catalog resource is in an unpublished state' do
       it 'updates the state of the catalog resource to published' do
-        expect(resource_a.state).to eq('draft')
+        expect(resource_a.state).to eq('unpublished')
 
         resource_a.publish!
 
