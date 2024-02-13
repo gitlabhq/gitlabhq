@@ -1434,7 +1434,6 @@ RSpec/NamedSubject:
     - 'spec/finders/deploy_tokens/tokens_finder_spec.rb'
     - 'spec/finders/deployments_finder_spec.rb'
     - 'spec/finders/feature_flags_finder_spec.rb'
-    - 'spec/finders/group_descendants_finder_spec.rb'
     - 'spec/finders/group_members_finder_spec.rb'
     - 'spec/finders/group_projects_finder_spec.rb'
     - 'spec/finders/groups/environment_scopes_finder_spec.rb'

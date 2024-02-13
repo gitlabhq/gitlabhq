@@ -40,6 +40,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         updated_at
         updated_by_id
         draft
+        prepared_at
       ].freeze
 
       expect(safe_attribute_keys).to match_array(expected_safe_attribute_keys)

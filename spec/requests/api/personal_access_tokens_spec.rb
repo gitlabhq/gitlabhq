@@ -210,7 +210,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         with_them do
           it "returns all valid tokens" do
             get api(path, personal_access_token: current_users_token),
-            params: { created_before: created_before, created_after: created_after }
+              params: { created_before: created_before, created_after: created_after }
 
             expect(response).to have_gitlab_http_status(status)
 
@@ -233,7 +233,7 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
         with_them do
           it "returns all valid tokens" do
             get api(path, personal_access_token: current_users_token),
-             params: { last_used_before: last_used_before, last_used_after: last_used_after }
+              params: { last_used_before: last_used_before, last_used_after: last_used_after }
 
             expect(response).to have_gitlab_http_status(status)
 

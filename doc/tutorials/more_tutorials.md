@@ -8,8 +8,7 @@ info: For assistance with this tutorials page, see https://handbook.gitlab.com/h
 
 If you're learning about GitLab, to find more tutorial content:
 
-- Find learning tracks and certification options at [Level Up](https://levelup.gitlab.com/).
-  GitLab learning platform login required (email and password for non-GitLab team members).
+- Find learning tracks and certification options at [GitLab University](https://university.gitlab.com/).
 
 - Find recent tutorials on the [GitLab blog](https://about.gitlab.com/blog/).
 

@@ -222,6 +222,10 @@ export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
 export const GOOGLE_CLOUD_PLATFORM = 'google';
 
+// Stages for the google cloud setup
+export const GOOGLE_CLOUD_SETUP_START = 'google_cloud_setup_start';
+export const GOOGLE_CLOUD_SETUP_END = 'google_cloud_setup_end';
+
 // About Gitlab Runner Package host
 export const RUNNER_PACKAGE_HOST = 'gitlab-runner-downloads.s3.amazonaws.com';
 

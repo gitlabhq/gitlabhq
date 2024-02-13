@@ -88,10 +88,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         merge_request = create(:merge_request, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: 'Test', created_at: base_time)
 
-        merge_request.metrics.update!(merged_by: user,
-                                      latest_closed_by: user,
-                                      latest_closed_at: 1.hour.ago,
-                                      merged_at: 2.hours.ago)
+        merge_request.metrics.update!(
+          merged_by: user,
+          latest_closed_by: user,
+          latest_closed_at: 1.hour.ago,
+          merged_at: 2.hours.ago
+        )
 
         expect do
           get api(endpoint_path, user)
@@ -1341,11 +1343,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         context 'when project is public with private merge requests' do
           let(:group_project) do
-            create(:project,
-                   :public,
-                   :repository,
-                   group: group,
-                   merge_requests_access_level: ProjectFeature::DISABLED)
+            create(
+              :project,
+              :public,
+              :repository,
+              group: group,
+              merge_requests_access_level: ProjectFeature::DISABLED
+            )
           end
 
           it_behaves_like 'user cannot view merge requests'
@@ -1532,14 +1536,16 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:pipeline) { create(:ci_empty_pipeline) }
 
       before do
-        merge_request.metrics.update!(merged_by: user,
-                                      latest_closed_by: user,
-                                      latest_closed_at: 1.hour.ago,
-                                      merged_at: 2.hours.ago,
-                                      pipeline: pipeline,
-                                      latest_build_started_at: 3.hours.ago,
-                                      latest_build_finished_at: 1.hour.ago,
-                                      first_deployed_to_production_at: 3.minutes.ago)
+        merge_request.metrics.update!(
+          merged_by: user,
+          latest_closed_by: user,
+          latest_closed_at: 1.hour.ago,
+          merged_at: 2.hours.ago,
+          pipeline: pipeline,
+          latest_build_started_at: 3.hours.ago,
+          latest_build_finished_at: 1.hour.ago,
+          first_deployed_to_production_at: 3.minutes.ago
+        )
       end
 
       it 'has fields from merge request metrics' do
@@ -1670,13 +1676,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       it "returns a string indicating that more changes were made" do
         allow(Commit).to receive(:diff_max_files).and_return(5)
 
-        merge_request_overflow = create(:merge_request, :simple,
-                                        author: user,
-                                        assignees: [user],
-                                        source_project: project,
-                                        source_branch: 'expand-collapse-files',
-                                        target_project: project,
-                                        target_branch: 'master')
+        merge_request_overflow = create(
+          :merge_request, :simple,
+          author: user,
+          assignees: [user],
+          source_project: project,
+          source_branch: 'expand-collapse-files',
+          target_project: project,
+          target_branch: 'master'
+        )
 
         get api("/projects/#{project.id}/merge_requests/#{merge_request_overflow.iid}", user)
 
@@ -1690,11 +1698,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:project) { create(:project, :public, :repository) }
       let(:forked_project) { fork_project(project, user2, repository: true) }
       let(:merge_request) do
-        create(:merge_request,
-               source_project: forked_project,
-               target_project: project,
-               source_branch: 'fixes',
-               allow_collaboration: true)
+        create(
+          :merge_request,
+          source_project: forked_project,
+          target_project: project,
+          source_branch: 'fixes',
+          allow_collaboration: true
+        )
       end
 
       it 'includes the `allow_collaboration` field', :sidekiq_might_not_need_inline do
@@ -2346,7 +2356,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns 422 when source_branch equals target_branch" do
         post api("/projects/#{project.id}/merge_requests", user),
-        params: { title: "Test merge_request", source_branch: "master", target_branch: "master", author: user }
+          params: { title: "Test merge_request", source_branch: "master", target_branch: "master", author: user }
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq(["You can't use same project/branch for source and target"])
@@ -2354,7 +2364,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns 400 when source_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
-        params: { title: "Test merge_request", target_branch: "master", author: user }
+          params: { title: "Test merge_request", target_branch: "master", author: user }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('source_branch is missing')
@@ -2362,7 +2372,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns 400 when target_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
-        params: { title: "Test merge_request", source_branch: "markdown", author: user }
+          params: { title: "Test merge_request", source_branch: "markdown", author: user }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('target_branch is missing')
@@ -2370,7 +2380,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns 400 when title is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
-        params: { target_branch: 'master', source_branch: 'markdown' }
+          params: { target_branch: 'master', source_branch: 'markdown' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('title is missing')
@@ -2379,24 +2389,24 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       context 'with existing MR' do
         before do
           post api("/projects/#{project.id}/merge_requests", user),
-               params: {
-                 title: 'Test merge_request',
-                 source_branch: 'feature_conflict',
-                 target_branch: 'master',
-                 author: user
-               }
+            params: {
+              title: 'Test merge_request',
+              source_branch: 'feature_conflict',
+              target_branch: 'master',
+              author: user
+            }
           @mr = MergeRequest.all.last
         end
 
         it 'returns 409 when MR already exists for source/target' do
           expect do
             post api("/projects/#{project.id}/merge_requests", user),
-                 params: {
-                   title: 'New test merge_request',
-                   source_branch: 'feature_conflict',
-                   target_branch: 'master',
-                   author: user
-                 }
+              params: {
+                title: 'New test merge_request',
+                source_branch: 'feature_conflict',
+                target_branch: 'master',
+                author: user
+              }
           end.to change { MergeRequest.count }.by(0)
 
           expect(response).to have_gitlab_http_status(:conflict)
@@ -2439,7 +2449,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns merge_request" do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-          params: { title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master", author: user2, target_project_id: project.id, description: 'Test description for Test merge_request' }
+          params: {
+            title: 'Test merge_request',
+            source_branch: "feature_conflict",
+            target_branch: "master",
+            author: user2,
+            target_project_id: project.id,
+            description: 'Test description for Test merge_request'
+          }
+
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['description']).to eq('Test description for Test merge_request')
@@ -2450,7 +2468,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(forked_project.forked?).to be_truthy
         expect(forked_project.forked_from_project).to eq(project)
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { title: 'Test merge_request', source_branch: "master", target_branch: "master", author: user2, target_project_id: project.id }
+          params: {
+            title: 'Test merge_request',
+            source_branch: "master",
+            target_branch: "master",
+            author: user2,
+            target_project_id: project.id
+          }
+
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['title']).to eq('Test merge_request')
       end
@@ -2459,38 +2484,49 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         project.project_feature.update!(merge_requests_access_level: 0)
 
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-             params: {
-               title: 'Test',
-               target_branch: 'master',
-               source_branch: 'markdown',
-               author: user2,
-               target_project_id: project.id
-             }
+          params: {
+            title: 'Test',
+            target_branch: 'master',
+            source_branch: 'markdown',
+            author: user2,
+            target_project_id: project.id
+          }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
 
       it "returns 400 when source_branch is missing" do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id }
+          params: { title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id }
+
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it "returns 400 when target_branch is missing" do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { title: 'Test merge_request', source_branch: "master", author: user2, target_project_id: project.id }
+          params: { title: 'Test merge_request', source_branch: "master", author: user2, target_project_id: project.id }
+
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it "returns 400 when title is missing" do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id }
+          params: { target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id }
+
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'allows setting `allow_collaboration`', :sidekiq_might_not_need_inline do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-             params: { title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master", author: user2, target_project_id: project.id, allow_collaboration: true }
+          params: {
+            title: 'Test merge_request',
+            source_branch: "feature_conflict",
+            target_branch: "master",
+            author: user2,
+            target_project_id: project.id,
+            allow_collaboration: true
+          }
+
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response['allow_collaboration']).to be_truthy
         expect(json_response['allow_maintainer_to_push']).to be_truthy
@@ -2498,11 +2534,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       context 'when target_branch and target_project_id is specified' do
         let(:params) do
-          { title: 'Test merge_request',
+          {
+            title: 'Test merge_request',
             target_branch: 'master',
             source_branch: 'markdown',
             author: user2,
-            target_project_id: unrelated_project.id }
+            target_project_id: unrelated_project.id
+          }
         end
 
         it 'returns 422 if targeting a different fork' do
@@ -2522,7 +2560,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
       it "returns 201 when target_branch is specified and for the same project", :sidekiq_might_not_need_inline do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-        params: { title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: forked_project.id }
+          params: {
+            title: 'Test merge_request',
+            target_branch: 'master',
+            source_branch: 'markdown',
+            author: user2,
+            target_project_id: forked_project.id
+          }
+
         expect(response).to have_gitlab_http_status(:created)
       end
     end
@@ -2555,12 +2600,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         context 'when project is public with private merge requests' do
           let(:group_project) do
-            create(:project,
-                   :public,
-                   :repository,
-                   group: group,
-                   merge_requests_access_level: ProjectFeature::DISABLED,
-                   only_allow_merge_if_pipeline_succeeds: false)
+            create(
+              :project,
+              :public,
+              :repository,
+              group: group,
+              merge_requests_access_level: ProjectFeature::DISABLED,
+              only_allow_merge_if_pipeline_succeeds: false
+            )
           end
 
           it_behaves_like 'user cannot create merge requests'
@@ -2568,11 +2615,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         context 'when project is private' do
           let(:group_project) do
-            create(:project,
-                   :private,
-                   :repository,
-                   group: group,
-                   only_allow_merge_if_pipeline_succeeds: false)
+            create(
+              :project,
+              :private,
+              :repository,
+              group: group,
+              only_allow_merge_if_pipeline_succeeds: false
+            )
           end
 
           it_behaves_like 'user cannot create merge requests'
@@ -2987,10 +3036,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     it 'returns 405 if the build failed for a merge request that requires success' do
       project.update!(only_allow_merge_if_pipeline_succeeds: true)
 
-      create(:ci_pipeline,
-             :failed,
-             sha: merge_request.diff_head_sha,
-             merge_requests_as_head_pipeline: [merge_request])
+      create(
+        :ci_pipeline,
+        :failed,
+        sha: merge_request.diff_head_sha,
+        merge_requests_as_head_pipeline: [merge_request]
+      )
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
@@ -3276,15 +3327,18 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         let(:target_project) { project }
 
         let(:merge_request) do
-          create(:merge_request,
-                 source_project: source_project,
-                 target_project: target_project,
-                 source_branch: 'fixes',
-                 merge_params: { 'force_remove_source_branch' => false })
+          create(
+            :merge_request,
+            source_project: source_project,
+            target_project: target_project,
+            source_branch: 'fixes',
+            merge_params: { 'force_remove_source_branch' => false }
+          )
         end
 
         it 'is true for an authorized user' do
-          put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", fork_owner), params: { state_event: 'close', remove_source_branch: true }
+          put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", fork_owner),
+            params: { state_event: 'close', remove_source_branch: true }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['state']).to eq('closed')
@@ -3293,7 +3347,8 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
         it 'is false for an unauthorized user' do
           expect do
-            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.first_owner), params: { state_event: 'close', remove_source_branch: true }
+            put api("/projects/#{target_project.id}/merge_requests/#{merge_request.iid}", target_project.first_owner),
+              params: { state_event: 'close', remove_source_branch: true }
           end.not_to change { merge_request.reload.merge_params }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -3349,10 +3404,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       let(:project) { create(:project, :public, :repository) }
       let!(:forked_project) { fork_project(project, user2, repository: true) }
       let(:merge_request) do
-        create(:merge_request,
-               source_project: forked_project,
-               target_project: project,
-               source_branch: "fixes")
+        create(
+          :merge_request,
+          source_project: forked_project,
+          target_project: project,
+          source_branch: "fixes"
+        )
       end
 
       shared_examples "update of allow_collaboration and allow_maintainer_to_push" do |request_value, expected_value|

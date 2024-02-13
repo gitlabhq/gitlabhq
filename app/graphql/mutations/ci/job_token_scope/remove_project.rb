@@ -21,6 +21,10 @@ module Mutations
         argument :direction,
                  ::Types::Ci::JobTokenScope::DirectionEnum,
                  required: false,
+                 deprecated: {
+                   reason: 'Outbound job token scope is being removed. This field can now only be set to INBOUND',
+                   milestone: '16.9'
+                 },
                  description: 'Direction of access, which defaults to outbound.'
 
         field :ci_job_token_scope,

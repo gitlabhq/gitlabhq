@@ -42597,6 +42597,9 @@ msgstr ""
 msgid "Runners|Environment"
 msgstr ""
 
+msgid "Runners|Execution environment"
+msgstr ""
+
 msgid "Runners|Executor"
 msgstr ""
 
@@ -42687,6 +42690,9 @@ msgstr ""
 msgid "Runners|Instance: Median job queued time"
 msgstr ""
 
+msgid "Runners|Isolated location within a region. The zone determines what computing resources are available and where your data is stored and used."
+msgstr ""
+
 msgid "Runners|Jobs"
 msgstr ""
 
@@ -42699,7 +42705,16 @@ msgstr ""
 msgid "Runners|Last contact: %{timeAgo}"
 msgstr ""
 
+msgid "Runners|Learn more in the %{linkStart}Google Cloud documentation%{linkEnd}."
+msgstr ""
+
 msgid "Runners|Locked to this project"
+msgstr ""
+
+msgid "Runners|Machine type"
+msgstr ""
+
+msgid "Runners|Machine type with preset amounts of virtual machines processors (vCPUs) and memory"
 msgstr ""
 
 msgid "Runners|Maintenance note"
@@ -42859,6 +42874,9 @@ msgstr ""
 msgid "Runners|Recommended"
 msgstr ""
 
+msgid "Runners|Region"
+msgstr ""
+
 msgid "Runners|Register"
 msgstr ""
 
@@ -42988,6 +43006,9 @@ msgstr ""
 msgid "Runners|Runners"
 msgstr ""
 
+msgid "Runners|Runners are created based on demand, in temporary virtual machine (VM) instances. The VMs use the Google Container-Optimized OS and Docker Engine with support for auto-scaling"
+msgstr ""
+
 msgid "Runners|Runners are either:"
 msgstr ""
 
@@ -43046,6 +43067,9 @@ msgid "Runners|Something went wrong while fetching runner data."
 msgstr ""
 
 msgid "Runners|Something went wrong while fetching the tags suggestions"
+msgstr ""
+
+msgid "Runners|Specific geographical location where you can run your resources."
 msgstr ""
 
 msgid "Runners|Stale"
@@ -43260,6 +43284,9 @@ msgid "Runners|You may lose access to the runner token if you leave this page."
 msgstr ""
 
 msgid "Runners|You've created a new runner!"
+msgstr ""
+
+msgid "Runners|Zone"
 msgstr ""
 
 msgid "Runners|active"

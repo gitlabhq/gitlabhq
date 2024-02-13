@@ -33,6 +33,7 @@ module Gitlab
           title
           updated_at
           updated_by_id
+          prepared_at
         ].freeze
       end
 

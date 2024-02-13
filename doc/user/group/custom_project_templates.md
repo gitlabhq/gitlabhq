@@ -84,7 +84,7 @@ The entire custom instance-level project templates repository is copied, includi
 If the user:
 
 - Has the Owner role on the custom instance-level project templates project or is a GitLab administrator,
-  all project settings are copied over to the new project.
+  all project settings, including project members, are copied over to the new project.
 - Doesn't have the Owner role or is not a GitLab administrator,
   project deploy keys and project webhooks aren't copied over because they contain sensitive data.
 
@@ -108,4 +108,4 @@ and tags. For example, if the template contains a protected branch:
 
 Custom group-level project templates are only available to group members.
 If the administrator account you are using is not a member of a group,
-you can't access the templates. 
+you can't access the templates.

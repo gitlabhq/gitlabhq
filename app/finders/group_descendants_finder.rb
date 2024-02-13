@@ -20,8 +20,6 @@
 #                        `non_archived` is passed to the `ProjectFinder`s if none
 #                        was given.
 class GroupDescendantsFinder
-  include Gitlab::Utils::StrongMemoize
-
   attr_reader :current_user, :parent_group, :params
 
   def initialize(parent_group:, current_user: nil, params: {})
@@ -61,20 +59,17 @@ class GroupDescendantsFinder
   end
 
   def direct_child_groups
-    # rubocop: disable CodeReuse/Finder
-    GroupsFinder.new(current_user, parent: parent_group, all_available: true).execute
-    # rubocop: enable CodeReuse/Finder
+    GroupsFinder.new(current_user, parent: parent_group, all_available: true).execute # rubocop: disable CodeReuse/Finder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def all_visible_descendant_groups
-    # rubocop: disable CodeReuse/Finder
     groups_table = Group.arel_table
     visible_to_user = groups_table[:visibility_level]
                       .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
 
     if current_user
-      authorized_groups = GroupsFinder.new(current_user, all_available: false)
+      authorized_groups = GroupsFinder.new(current_user, all_available: false) # rubocop: disable CodeReuse/Finder
         .execute.arel.as('authorized')
       authorized_to_user = groups_table.project(1).from(authorized_groups)
         .where(authorized_groups[:id].eq(groups_table[:id]))
@@ -83,7 +78,6 @@ class GroupDescendantsFinder
     end
 
     parent_group.descendants.where(visible_to_user)
-    # rubocop: enable CodeReuse/Finder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -102,41 +96,20 @@ class GroupDescendantsFinder
   #
   # So when searching 'project', on the 'subgroup' page we want to preload
   # 'nested-group' but not 'subgroup' or 'root'
-  # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_groups(base_for_ancestors)
-    group_ids = if select_ancestors_of_paginated_items_feature_enabled?
-                  base_for_ancestors
-                else
-                  base_for_ancestors.except(:select, :sort).select(:id)
-                end
-
-    Group.where(id: group_ids).self_and_ancestors(upto: parent_group.id)
+    Group.id_in(base_for_ancestors).self_and_ancestors(upto: parent_group.id)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_filtered_projects
-    # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- Limit of 100 max per page is defined in kaminari config
-    groups_to_load_ancestors_of = if select_ancestors_of_paginated_items_feature_enabled?
-                                    paginated_projects_without_direct_descendents.pluck(:namespace_id)
-                                  else
-                                    projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
-                                    Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
-                                  end
-    # rubocop:enable Database/AvoidUsingPluckWithoutLimit
+    # rubocop:disable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord -- Limit of 100 max per page is defined in kaminari config
+    groups_to_load_ancestors_of = paginated_projects_without_direct_descendents.pluck(:namespace_id)
+    # rubocop:enable Database/AvoidUsingPluckWithoutLimit, CodeReuse/ActiveRecord
     ancestors_of_groups(groups_to_load_ancestors_of)
       .with_selects_for_list(archived: params[:archived])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def ancestors_of_filtered_subgroups
-    subgroups_to_find_ancestors = if select_ancestors_of_paginated_items_feature_enabled?
-                                    paginated_subgroups_without_direct_descendents
-                                  else
-                                    subgroups
-                                  end
-
-    ancestors_of_groups(subgroups_to_find_ancestors)
+    ancestors_of_groups(paginated_subgroups_without_direct_descendents)
       .with_selects_for_list(archived: params[:archived])
   end
 
@@ -152,30 +125,24 @@ class GroupDescendantsFinder
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
 
-  # rubocop: disable CodeReuse/Finder
   def direct_child_projects
-    GroupProjectsFinder
+    GroupProjectsFinder # rubocop:disable CodeReuse/Finder
       .new(group: parent_group, current_user: current_user, params: params, options: { exclude_shared: true })
       .execute
   end
-  # rubocop: enable CodeReuse/Finder
 
   # Finds all projects nested under `parent_group` or any of its descendant
   # groups
-  # rubocop: disable CodeReuse/ActiveRecord
   def projects_matching_filter
-    # rubocop: disable CodeReuse/Finder
-    projects_nested_in_group = Project.where(namespace_id: parent_group.self_and_descendants.as_ids)
+    projects_nested_in_group = Project.in_namespace(parent_group.self_and_descendants.as_ids)
     params_with_search = params.merge(search: params[:filter])
 
-    ProjectsFinder.new(
+    ProjectsFinder.new( # rubocop:disable CodeReuse/Finder
       params: params_with_search,
       current_user: current_user,
       project_ids_relation: projects_nested_in_group
     ).execute
-    # rubocop: enable CodeReuse/Finder
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
     projects = if params[:filter]
@@ -210,9 +177,4 @@ class GroupDescendantsFinder
   def page
     params[:page].to_i
   end
-
-  def select_ancestors_of_paginated_items_feature_enabled?
-    Feature.enabled?(:select_ancestors_of_paginated_items, parent_group.root_ancestor, type: :gitlab_com_derisk)
-  end
-  strong_memoize_attr :select_ancestors_of_paginated_items_feature_enabled?
 end

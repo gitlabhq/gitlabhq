@@ -3,7 +3,7 @@ key_path: counts.projects_inheriting_zentao_active
 description: Count of projects that inherit active Zentao integrations
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: active
 milestone: "14.4"

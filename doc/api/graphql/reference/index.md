@@ -2322,7 +2322,7 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | Direction of access, which defaults to outbound. |
+| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` **{warning-solid}** | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in 16.9. |
 | <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be removed from the CI job token scope. |
 

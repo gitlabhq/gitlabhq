@@ -18,8 +18,8 @@ RSpec.describe API::Internal::ContainerRegistry::Migration, :aggregate_failures,
   describe 'PUT /internal/registry/repositories/:path/migration/status' do
     subject do
       put api("/internal/registry/repositories/#{repository_path}/migration/status"),
-          params: params,
-          headers: { 'Authorization' => sent_token }
+        params: params,
+        headers: { 'Authorization' => sent_token }
     end
 
     shared_examples 'returning an error' do |with_message: nil, returning_status: :bad_request|

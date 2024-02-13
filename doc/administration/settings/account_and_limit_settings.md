@@ -73,6 +73,7 @@ through the web UI, the maximum **attachment** size is the limiting factor,
 because the [web server](../../development/architecture.md#components)
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../topics/git/lfs/index.md) to add large files to a repository.
+This setting does not apply when pushing Git LFS objects.
 
 ## Personal access token prefix
 

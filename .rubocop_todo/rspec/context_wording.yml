@@ -1270,7 +1270,6 @@ RSpec/ContextWording:
     - 'spec/finders/environments/environments_by_deployments_finder_spec.rb'
     - 'spec/finders/environments/environments_finder_spec.rb'
     - 'spec/finders/events_finder_spec.rb'
-    - 'spec/finders/group_descendants_finder_spec.rb'
     - 'spec/finders/group_members_finder_spec.rb'
     - 'spec/finders/group_projects_finder_spec.rb'
     - 'spec/finders/groups/projects_requiring_authorizations_refresh/on_direct_membership_finder_spec.rb'

@@ -401,7 +401,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).and_return(true)
 
         post api("/projects/#{project.id}/issues", user),
-        params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
+          params: { title: 'new issue', labels: 'label, label2', weight: 3, assignee_ids: [user2.id] }
 
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
 

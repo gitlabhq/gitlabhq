@@ -68,21 +68,25 @@ RSpec.describe API::Issues, feature_category: :team_planning do
   let_it_be(:note) { create(:note_on_issue, author: user, project: project, noteable: issue) }
 
   let_it_be(:merge_request1) do
-    create(:merge_request,
-           :simple,
-           author: user,
-           source_project: project,
-           target_project: project,
-           description: "closes #{issue.to_reference}")
+    create(
+      :merge_request,
+      :simple,
+      author: user,
+      source_project: project,
+      target_project: project,
+      description: "closes #{issue.to_reference}"
+    )
   end
 
   let_it_be(:merge_request2) do
-    create(:merge_request,
-           :simple,
-           author: user,
-           source_project: private_mrs_project,
-           target_project: private_mrs_project,
-           description: "closes #{issue.to_reference(private_mrs_project)}")
+    create(
+      :merge_request,
+      :simple,
+      author: user,
+      source_project: private_mrs_project,
+      target_project: private_mrs_project,
+      description: "closes #{issue.to_reference(private_mrs_project)}"
+    )
   end
 
   before_all do

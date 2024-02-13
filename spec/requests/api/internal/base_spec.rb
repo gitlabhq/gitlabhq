@@ -90,8 +90,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_recovery_codes'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -137,8 +137,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/personal_access_token'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -156,8 +156,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when given an non existent user' do
       post api('/internal/personal_access_token'),
-           params: { user_id: 0 },
-           headers: gitlab_shell_internal_api_request_header
+        params: { user_id: 0 },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Could not find the given user")
@@ -165,8 +165,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when no name parameter is received' do
       post api('/internal/personal_access_token'),
-           params: { key_id: key.id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key.id },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token name specified")
@@ -174,8 +174,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when no scopes parameter is received' do
       post api('/internal/personal_access_token'),
-           params: { key_id: key.id, name: 'newtoken' },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key.id, name: 'newtoken' },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("No token scopes specified")
@@ -183,13 +183,13 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when expires_at contains an invalid date' do
       post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: ['api'],
-             expires_at: 'invalid-date'
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          key_id: key.id,
+          name: 'newtoken',
+          scopes: ['api'],
+          expires_at: 'invalid-date'
+        },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to eq("Invalid token expiry date: 'invalid-date'")
@@ -197,12 +197,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     it 'returns an error message when it receives an invalid scope' do
       post api('/internal/personal_access_token'),
-           params: {
-             key_id: key.id,
-             name: 'newtoken',
-             scopes: %w[read_api badscope read_repository]
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          key_id: key.id,
+          name: 'newtoken',
+          scopes: %w[read_api badscope read_repository]
+        },
+        headers: gitlab_shell_internal_api_request_header
 
       expect(json_response['success']).to be_falsey
       expect(json_response['message']).to match(/\AInvalid scope: 'badscope'. Valid scopes are: /)
@@ -1311,13 +1311,13 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
       it 'does not allow access' do
         post(api('/internal/allowed'),
-             params: {
-               key_id: key.id,
-               project: project.full_path,
-               gl_repository: gl_repository,
-               protocol: 'ssh'
-             }, headers: gitlab_shell_internal_api_request_header
-            )
+          params: {
+            key_id: key.id,
+            project: project.full_path,
+            gl_repository: gl_repository,
+            protocol: 'ssh'
+          }, headers: gitlab_shell_internal_api_request_header
+        )
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1570,8 +1570,8 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_config'),
-           params: { key_id: key_id },
-           headers: gitlab_shell_internal_api_request_header
+        params: { key_id: key_id },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it_behaves_like 'actor key validations'
@@ -1632,12 +1632,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1654,12 +1654,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_push_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1676,12 +1676,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_manual_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do
@@ -1697,12 +1697,12 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
 
     subject do
       post api('/internal/two_factor_push_otp_check'),
-           params: {
-             secret_token: secret_token,
-             key_id: key_id,
-             otp_attempt: otp
-           },
-           headers: gitlab_shell_internal_api_request_header
+        params: {
+          secret_token: secret_token,
+          key_id: key_id,
+          otp_attempt: otp
+        },
+        headers: gitlab_shell_internal_api_request_header
     end
 
     it 'is not available' do

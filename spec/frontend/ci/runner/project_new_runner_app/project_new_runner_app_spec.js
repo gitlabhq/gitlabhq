@@ -17,6 +17,7 @@ import {
   GOOGLE_CLOUD_PLATFORM,
 } from '~/ci/runner/constants';
 import RunnerCloudConnectionForm from '~/ci/runner/components/runner_cloud_connection_form.vue';
+import RunnerCloudExecutionEnvironment from '~/ci/runner/components/runner_cloud_execution_environment.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { runnerCreateResult, mockRegistrationToken } from '../mock_data';
@@ -40,6 +41,8 @@ describe('ProjectRunnerRunnerApp', () => {
     wrapper.findComponent(RegistrationCompatibilityAlert);
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
   const findRunnerCloudForm = () => wrapper.findComponent(RunnerCloudConnectionForm);
+  const findRunnerCloudExecutionEnvironment = () =>
+    wrapper.findComponent(RunnerCloudExecutionEnvironment);
 
   const createComponent = (gcpRunner = false) => {
     wrapper = shallowMountExtended(ProjectRunnerRunnerApp, {
@@ -145,5 +148,23 @@ describe('ProjectRunnerRunnerApp', () => {
         expect(findRunnerCloudForm().exists()).toBe(visible);
       },
     );
+
+    describe('Execution environment', () => {
+      beforeEach(async () => {
+        createComponent(true);
+
+        findRunnerPlatformsRadioGroup().vm.$emit('input', GOOGLE_CLOUD_PLATFORM);
+
+        await nextTick();
+      });
+
+      it('should display the cloud execution environment form', async () => {
+        findRunnerCloudForm().vm.$emit('continue');
+
+        await nextTick();
+
+        expect(findRunnerCloudExecutionEnvironment().exists()).toBe(true);
+      });
+    });
   });
 });
