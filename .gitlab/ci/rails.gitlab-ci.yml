@@ -46,6 +46,16 @@ setup-test-env:
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
     when: always
 
+setup-test-env-fips:
+  extends:
+    - setup-test-env
+  before_script:
+    - yum install -y libpq libpq-devel
+    - source scripts/prepare_build.sh
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ubi-${UBI_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-exiftool-12.60
+  variables:
+    DEBIAN_VERSION: ubi-${UBI_VERSION}
+
 update-setup-test-env-cache:
   extends:
     - setup-test-env
