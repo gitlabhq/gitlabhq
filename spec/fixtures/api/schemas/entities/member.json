@@ -50,7 +50,8 @@
       "required": [
         "integer_value",
         "string_value",
-        "member_role_id"
+        "member_role_id",
+        "description"
       ],
       "properties": {
         "integer_value": {
@@ -62,6 +63,12 @@
         "member_role_id": {
           "type": [
             "integer",
+            "null"
+          ]
+        },
+        "description": {
+          "type": [
+            "string",
             "null"
           ]
         }
@@ -160,6 +167,9 @@
               "type": "integer"
             },
             "name": {
+              "type": "string"
+            },
+            "description": {
               "type": "string"
             }
           },

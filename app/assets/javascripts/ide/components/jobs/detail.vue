@@ -78,7 +78,7 @@ export default {
 
 <template>
   <div class="ide-pipeline build-page d-flex flex-column flex-fill">
-    <header class="ide-job-header d-flex align-items-center">
+    <header class="ide-job-header d-flex gl-align-items-center">
       <gl-button category="secondary" icon="chevron-left" size="small" @click="setDetailJob(null)">
         {{ __('View jobs') }}
       </gl-button>
@@ -101,7 +101,7 @@ export default {
         <scroll-button :disabled="isScrolledToBottom" direction="down" @click="scrollDown" />
       </div>
     </div>
-    <pre ref="buildJobLog" class="build-log mb-0 h-100 mr-3" @scroll="scrollBuildLog">
+    <pre ref="buildJobLog" class="build-log mb-0 gl-h-full mr-3" @scroll="scrollBuildLog">
       <code
         v-show="!detailJob.isLoading"
         v-safe-html="jobOutput"

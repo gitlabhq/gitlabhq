@@ -99,15 +99,28 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
     end
 
     describe '#refresh' do
+      let(:project_service) { described_class.new(project, user) }
+
       it 'clears cached values' do
         expect(service.fetch('main') { true }).to eq(true)
         expect(service.fetch('not-found') { false }).to eq(false)
+
+        if entity.is_a?(Group)
+          expect(project_service.fetch('main') { true }).to eq(true)
+          expect(project_service.fetch('not-found') { false }).to eq(false)
+        end
 
         service.refresh
 
         # Recreates cache
         expect(service.fetch('main') { false }).to eq(false)
         expect(service.fetch('not-found') { true }).to eq(true)
+
+        # Refreshes caches for each project in the group
+        if entity.is_a?(Group)
+          expect(project_service.fetch('main') { false }).to eq(false)
+          expect(project_service.fetch('not-found') { true }).to eq(true)
+        end
       end
     end
 
@@ -125,13 +138,15 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache, featu
 
   context 'with entity project' do
     let_it_be_with_reload(:entity) { create(:project) }
+    let(:project) { entity }
     let(:user) { entity.first_owner }
 
     it_behaves_like 'execute with entity'
   end
 
   context 'with entity group' do
-    let_it_be_with_reload(:entity) { create(:group) }
+    let_it_be_with_reload(:project) { create(:project, :in_group) }
+    let_it_be_with_reload(:entity) { project.group }
     let_it_be_with_reload(:user) { create(:user) }
 
     before do

@@ -7,10 +7,6 @@ module Gitlab
       ERROR_MESSAGE = 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
 
       def validate!
-        # This feature flag is used for disabling integrity check on some envs
-        # because these costy calculations may cause performance issues
-        return unless Feature.enabled?(:lfs_check, project)
-
         return unless project.lfs_enabled?
 
         logger.log_timed(LOG_MESSAGE) do

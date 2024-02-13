@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL replication and failover for Linux package installations **(PREMIUM SELF)**
+# PostgreSQL replication and failover for Linux package installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 If you're a Free user of GitLab self-managed, consider using a cloud-hosted solution.
 This document doesn't cover self-compiled installations.
@@ -336,7 +340,7 @@ If you choose an arbitrary order, you do not have any predetermined leader.
 
 #### Enable Monitoring
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 If you enable Monitoring, it must be enabled on **all** database servers.
 
@@ -428,8 +432,8 @@ authentication mode (`patroni['tls_client_mode']`), must each have the same valu
 
    # START user configuration
    # Set the real values as explained in Required Information section
-   # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
-   # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
+   # Replace CONSUL_PASSWORD_HASH with a generated md5 value
+   # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
    pgbouncer['users'] = {
      'gitlab-consul': {
        password: 'CONSUL_PASSWORD_HASH'
@@ -1090,7 +1094,10 @@ Reverting the PostgreSQL upgrade with `gitlab-ctl revert-pg-upgrade` has the sam
 `gitlab-ctl pg-upgrade`. You should follow the same procedure by first stopping the replicas,
 then reverting the leader, and finally reverting the replicas.
 
-### Near zero downtime upgrade of PostgreSQL in a Patroni cluster **(EXPERIMENT)**
+### Near zero downtime upgrade of PostgreSQL in a Patroni cluster
+
+DETAILS:
+**Status:** Experiment
 
 Patroni enables you to run a major PostgreSQL upgrade without shutting down the cluster. However, this
 requires additional resources to host the new Patroni nodes with the upgraded PostgreSQL. In practice, with this
@@ -1242,7 +1249,7 @@ What happens here:
 - The application still uses the existing leader as its database backend.
 - The logical replication ensures that the new leader keeps in sync.
 - When other nodes are added to the new cluster, Patroni handles
-  the replication to the these nodes.
+  the replication to the nodes.
 
 It is a good idea to wait until the replica nodes of the new cluster are initialized and caught up on the replication
 lag.

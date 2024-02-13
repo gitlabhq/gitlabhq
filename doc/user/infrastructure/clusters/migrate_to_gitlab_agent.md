@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrate to the GitLab agent for Kubernetes **(FREE ALL)**
+# Migrate to the GitLab agent for Kubernetes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To connect your Kubernetes cluster with GitLab, you can use:
 

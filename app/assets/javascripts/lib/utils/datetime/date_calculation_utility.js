@@ -401,6 +401,8 @@ export const nWeeksBefore = (date, numberOfWeeks, options) =>
 
 /**
  * Returns the date `n` years after the date provided.
+ * When Feb 29 is the specified date, the default behaviour is to return March 1.
+ * But to align with the equivalent rails code, moment JS and datefns we should return Feb 28 instead.
  *
  * @param {Date} date the initial date
  * @param {Number} numberOfYears number of years after
@@ -408,7 +410,16 @@ export const nWeeksBefore = (date, numberOfWeeks, options) =>
  */
 export const nYearsAfter = (date, numberOfYears) => {
   const clone = newDate(date);
-  clone.setFullYear(clone.getFullYear() + numberOfYears);
+  clone.setUTCMonth(clone.getUTCMonth());
+
+  // If the date we are calculating from is Feb 29, return the equivalent result for Feb 28
+  if (clone.getUTCMonth() === 1 && clone.getUTCDate() === 29) {
+    clone.setUTCDate(28);
+  } else {
+    clone.setUTCDate(clone.getUTCDate());
+  }
+
+  clone.setUTCFullYear(clone.getUTCFullYear() + numberOfYears);
   return clone;
 };
 
@@ -655,6 +666,17 @@ export const isInFuture = (date) =>
  * @return {Boolean} Returns true if dateA falls before dateB, otherwise false
  */
 export const fallsBefore = (dateA, dateB) => differenceInMilliseconds(dateA, dateB) > 0;
+
+/**
+ * Checks whether date falls in the `start -> end` time period.
+ *
+ * @param {Date} date
+ * @param {Date} start
+ * @param {Date} end
+ * @return {Boolean} Returns true if date falls in the time period, otherwise false
+ */
+export const isInTimePeriod = (date, start, end) =>
+  differenceInMilliseconds(start, date) >= 0 && differenceInMilliseconds(date, end) >= 0;
 
 /**
  * Removes the time component of the date.

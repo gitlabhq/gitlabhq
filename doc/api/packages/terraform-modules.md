@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform Module Registry API **(FREE ALL)**
+# Terraform Module Registry API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for the [Terraform Module Registry](../../user/packages/terraform_module_registry/index.md).
 

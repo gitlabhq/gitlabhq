@@ -2,11 +2,11 @@
 
 class CodequalityDegradationEntity < Grape::Entity
   expose :description
-  expose :fingerprint, if: ->(_, options) do
-    Feature.enabled?(:sast_reports_in_inline_diff, options[:request]&.project)
-  end
+  expose :fingerprint
   expose :severity do |degradation|
-    degradation.dig(:severity)&.downcase
+    severity = degradation.dig(:severity)&.downcase
+
+    ::Gitlab::Ci::Reports::CodequalityReports::SEVERITY_PRIORITIES.key?(severity) ? severity : 'unknown'
   end
 
   expose :file_path do |degradation|

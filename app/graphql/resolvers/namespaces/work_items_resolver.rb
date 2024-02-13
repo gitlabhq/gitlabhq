@@ -10,20 +10,13 @@ module Resolvers
         super
       end
 
-      override :resolve_with_lookahead
-      def resolve_with_lookahead(...)
-        super
-      rescue ::WorkItems::NamespaceWorkItemsFinder::FilterNotAvailableError => e
-        raise Gitlab::Graphql::Errors::ArgumentError, e.message
-      end
-
       private
 
       override :finder
       def finder(args)
-        ::WorkItems::NamespaceWorkItemsFinder.new(
+        ::WorkItems::WorkItemsFinder.new(
           current_user,
-          args.merge(namespace_id: resource_parent)
+          args.merge(group_id: resource_parent)
         )
       end
     end

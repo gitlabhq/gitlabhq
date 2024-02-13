@@ -1,0 +1,47 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getProjectListStorageStatistics(
+  $fullPath: ID!
+  $searchTerm: String = ""
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $sortKey: NamespaceProjectSort
+) {
+  namespace(fullPath: $fullPath) {
+    id
+    projects(
+      includeSubgroups: true
+      notAimedForDeletion: true
+      search: $searchTerm
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+      sort: $sortKey
+    ) {
+      nodes {
+        id
+        fullPath
+        nameWithNamespace
+        avatarUrl
+        webUrl
+        name
+        statistics {
+          storageSize
+          repositorySize
+          lfsObjectsSize
+          containerRegistrySize
+          buildArtifactsSize
+          packagesSize
+          wikiSize
+          snippetsSize
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

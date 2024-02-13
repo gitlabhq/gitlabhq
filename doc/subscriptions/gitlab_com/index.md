@@ -5,7 +5,11 @@ description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab SaaS subscription **(PREMIUM SAAS)**
+# GitLab SaaS subscription
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 GitLab SaaS is the GitLab software-as-a-service offering, which is available at GitLab.com.
 You don't need to install anything to use GitLab SaaS, you only need to
@@ -64,10 +68,6 @@ The following information is displayed:
 
 ## How seat usage is determined
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216899) in GitLab 13.5.
-> - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/292086) in GitLab 13.8 to include public
-    email address.
-
 A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
 add and remove users during the subscription period without incurring additional charges, as long as the total users
@@ -124,8 +124,6 @@ a difference between the information in the **Usage Quotas** page and the **Bill
 
 ### Search seat usage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262875) in GitLab 13.8.
-
 To search users in the **Seat usage** page, enter a string in the search field. A minimum of 3
 characters are required.
 
@@ -140,7 +138,7 @@ For example:
 
 ### Export seat usage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262877) in GitLab 14.2.
 
 To export seat usage data as a CSV file:
 
@@ -169,7 +167,11 @@ For example, if you purchase a subscription for 10 users:
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
 
-### Free Guest users **(ULTIMATE ALL)**
+### Free Guest users
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.
@@ -232,13 +234,13 @@ After you dismiss the alert, it doesn't display until another seat is used.
 The alert displays based on the following seat usage. You cannot configure the
 amounts at which the alert displays.
 
-| Seats in subscription | Seat usage |
-|-----------------------|------------|
-| 0-15                  | One seat remaining in the subscription. |
-| 16-25                 | Two seats remaining in the subscription. |
-| 26-99                 | 10% of seats have been used. |
-| 100-999               | 8% of seats have been used. |
-| 1000+                 | 5% of seats have been used |
+| Seats in subscription | Alert displays when           |
+|-----------------------|----------------------|
+| 0-15                  | One seat remains.     |
+| 16-25                 | Two seats remain.    |
+| 26-99                 | 10% of seats remain. |
+| 100-999               | 8% of seats remain.  |
+| 1000+                 | 5% of seats remain.  |
 
 ## Change the linked namespace
 
@@ -388,7 +390,7 @@ To add a secondary contact for your subscription:
 ## Compute
 
 Compute is the resource consumed when running [pipelines](../../ci/pipelines/index.md)
-on GitLab shared runners.
+on GitLab instance runners.
 
 Refer to [Compute usage](../../ci/pipelines/cicd_minutes.md)
 for more information.
@@ -445,7 +447,7 @@ state for all projects is removed, and their excess usage is deducted from the a
 
 #### For your group namespace
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
 
 If you're using GitLab SaaS, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your

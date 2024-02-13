@@ -54,11 +54,6 @@ export default {
     compareButtonLabel: __('Compare submodule commit revisions'),
     fileModeTooltip: __('File permissions'),
   },
-  inject: {
-    showGenerateTestFileButton: {
-      default: false,
-    },
-  },
   props: {
     discussionPath: {
       type: String,
@@ -225,7 +220,6 @@ export default {
       'reviewFile',
       'setFileCollapsedByUser',
       'setFileForcedOpen',
-      'setGenerateTestFilePath',
       'toggleFileCommentForm',
       'unpinFile',
     ]),
@@ -292,7 +286,6 @@ export default {
     ref="header"
     :class="{
       'gl-z-dropdown-menu!': idState.moreActionsShown,
-      'is-sidebar-moved': glFeatures.movedMrSidebar,
     }"
     class="js-file-title file-title file-title-flex-parent gl-border"
     data-testid="file-title-container"
@@ -386,7 +379,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-flex align-items-center gl-ml-auto gl-align-self-start"
+      class="file-actions d-flex gl-align-items-center gl-ml-auto gl-align-self-start"
     >
       <diff-stats
         :diff-file="diffFile"
@@ -470,15 +463,6 @@ export default {
               {{ __('Open in Web IDE') }}
             </gl-dropdown-item>
             <gl-dropdown-item
-              v-if="showGenerateTestFileButton"
-              @click="setGenerateTestFilePath(diffFile.new_path)"
-            >
-              <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-                {{ __('Suggest test cases') }}
-                <gl-icon name="tanuki-ai" class="gl-text-purple-600 gl-mr-n3" />
-              </span>
-            </gl-dropdown-item>
-            <gl-dropdown-item
               v-if="diffFile.replaced_view_path"
               ref="replacedFileButton"
               :href="diffFile.replaced_view_path"
@@ -522,7 +506,7 @@ export default {
 
     <div
       v-if="diffFile.submodule_compare"
-      class="file-actions d-none d-sm-flex align-items-center flex-wrap"
+      class="file-actions d-none d-sm-flex gl-align-items-center gl-flex-wrap"
     >
       <gl-button
         v-gl-tooltip.hover

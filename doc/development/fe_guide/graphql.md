@@ -1301,7 +1301,7 @@ If we need to test a query error, we need to mock a rejected value as request ha
 ```javascript
 it('renders error if query fails', async () => {
   const wrapper = createComponent({
-    designListHandler: jest.fn.mockRejectedValue('Houston, we have a problem!')
+    designListHandler: jest.fn().mockRejectedValue('Houston, we have a problem!')
   });
 
   await waitForPromises()

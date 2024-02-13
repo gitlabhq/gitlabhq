@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to AWS from GitLab CI/CD **(FREE ALL)**
+# Deploy to AWS from GitLab CI/CD
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides Docker images with the libraries and tools you need to deploy
 to AWS. You can reference these images in your CI/CD pipeline.
@@ -101,7 +105,7 @@ To deploy to your ECS cluster:
    | `CI_AWS_ECS_CLUSTER`           | The name of the AWS ECS cluster that you're targeting for your deployments. |
    | `CI_AWS_ECS_SERVICE`           | The name of the targeted service tied to your AWS ECS cluster. Ensure that this variable is scoped to the appropriate environment (`production`, `staging`, `review/*`). |
    | `CI_AWS_ECS_TASK_DEFINITION`   | If the task definition is in ECS, the name of the task definition tied to the service. |
-   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the file name, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
+   | `CI_AWS_ECS_TASK_DEFINITION_FILE` | If the task definition is a JSON file in GitLab, the filename, including the path. For example, `ci/aws/my_task_definition.json`. If the name of the task definition in your JSON file is the same name as an existing task definition in ECS, then a new revision is created when CI/CD runs. Otherwise, a brand new task definition is created, starting at revision 1. |
 
    WARNING:
    If you define both `CI_AWS_ECS_TASK_DEFINITION_FILE` and `CI_AWS_ECS_TASK_DEFINITION`,
@@ -145,7 +149,7 @@ because the override stops working when the name changes.
 
 ## Deploy your application to EC2
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
 
 GitLab provides a template, called `AWS/CF-Provision-and-Deploy-EC2`,
 to assist you in deploying to Amazon EC2.

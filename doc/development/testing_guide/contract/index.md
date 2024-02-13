@@ -42,7 +42,7 @@ rake contracts:merge_requests:test:merge_requests[contract_merge_requests]      
 
 #### Verify the contracts in Pact Broker
 
-By default, the Rake tasks will verify the locally stored contracts. In order to verify the contracts published in the Pact Broker, we need to set the `PACT_BROKER` environment variable to `true` and the `QA_PACT_BROKER_HOST` to the URL of the Pact Broker. It is important to point out here that the file path and file name of the provider test is what is used to find the contract in the Pact Broker which is why it is important to make sure the [provider test naming conventions](#provider-naming) are followed.
+By default, the Rake tasks will verify the locally stored contracts. In order to verify the contracts published in the Pact Broker, we need to set the `PACT_BROKER` environment variable to `true` and the `QA_PACT_BROKER_HOST` to the URL of the Pact Broker. It is important to point out here that the file path and filename of the provider test is what is used to find the contract in the Pact Broker which is why it is important to make sure the [provider test naming conventions](#provider-naming) are followed.
 
 ## Publish contracts to Pact Broker
 
@@ -70,7 +70,7 @@ The provider tests are grouped similarly to our controllers. Each of these tests
 
 ### Naming conventions
 
-When writing the consumer and provider tests, there are parts where a name is required for the consumer and provider. Since there are no restrictions imposed by Pact on how these should be named, a naming convention is important to keep it easy for us to figure out which consumer and provider tests are involved during debugging. Pact also uses the consumer and provider names to create the locally stored contract file names in the `#{consumer_name}-#{provider_name}` format.
+When writing the consumer and provider tests, there are parts where a name is required for the consumer and provider. Since there are no restrictions imposed by Pact on how these should be named, a naming convention is important to keep it easy for us to figure out which consumer and provider tests are involved during debugging. Pact also uses the consumer and provider names to create the locally stored contract filenames in the `#{consumer_name}-#{provider_name}` format.
 
 #### Consumer naming
 
@@ -80,7 +80,7 @@ As mentioned in the [folder structure section](#consumer-tests), consumer tests 
 
 These are the API endpoints that provide the data to the consumer so they are named according to the API endpoint they pertain to. Be mindful that this begins with the HTTP request method and the rest of the name is as descriptive as possible. For example, if we're writing a test for the `GET /groups/:id/projects` endpoint, we don't want to name it "GET projects endpoint" as there is a `GET /projects` endpoint as well that also fetches a list of projects the user has access to across all of GitLab.
 
-To choose an appropriate name, we can start by checking out our [API documentation](../../../api/api_resources.md) and naming it the same way it is named in there while making sure to keep the name in sentence case. So [`GET /groups/:id/projects`](../../../api/groups.md#list-a-groups-projects) would be called `GET list a group's projects` and the test file name is `get_list_a_groups_projects_helper.rb`. [`GET /projects`](../../../api/projects.md#list-all-projects) would be called `GET list all projects`, and the test file name `get_list_all_projects_helper.rb`.
+To choose an appropriate name, we can start by checking out our [API documentation](../../../api/api_resources.md) and naming it the same way it is named in there while making sure to keep the name in sentence case. So [`GET /groups/:id/projects`](../../../api/groups.md#list-a-groups-projects) would be called `GET list a group's projects` and the test filename is `get_list_a_groups_projects_helper.rb`. [`GET /projects`](../../../api/projects.md#list-all-projects) would be called `GET list all projects`, and the test filename `get_list_all_projects_helper.rb`.
 
 There are some cases where the provider being tested may not be documented so, in those cases, fall back to starting with the HTTP request method followed by a name that is as descriptive as possible to ensure it's easy to tell what the provider is for.
 

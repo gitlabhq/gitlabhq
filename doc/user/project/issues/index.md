@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issues **(FREE ALL)**
+# Issues
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use issues to collaborate on ideas, solve problems, and plan work.
 Share and discuss proposals with your team and with outside collaborators.

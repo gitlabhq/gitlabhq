@@ -5,7 +5,14 @@ require 'spec_helper'
 RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database do
   let(:query_builder) { ClickHouse::QueryBuilder.new('event_authors') }
   let(:connection) { ClickHouse::Connection.new(:main) }
-  let(:iterator) { described_class.new(query_builder: query_builder, connection: connection) }
+  let(:min_max_strategy) { :min_max }
+  let(:iterator) do
+    described_class.new(
+      query_builder: query_builder,
+      connection: connection,
+      min_max_strategy: min_max_strategy
+    )
+  end
 
   before do
     connection.execute('INSERT INTO event_authors (author_id) SELECT number + 1 FROM numbers(10)')
@@ -27,6 +34,40 @@ RSpec.describe ClickHouse::Iterator, :click_house, feature_category: :database d
     expect(collect_ids_with_batch_size(5)).to match_array(expected_values)
     expect(collect_ids_with_batch_size(10)).to match_array(expected_values)
     expect(collect_ids_with_batch_size(15)).to match_array(expected_values)
+  end
+
+  context 'when invalid min_max_strategy is given' do
+    let(:min_max_strategy) { :unknown }
+
+    it 'raises ArgumentError' do
+      expect { collect_ids_with_batch_size(3) }.to raise_error(ArgumentError, /Unknown min_max/)
+    end
+  end
+
+  context 'when order_limit min_max_strategy is given' do
+    let(:min_max_strategy) { :order_limit }
+
+    it 'iterates correctly' do
+      expected_values = (1..10).to_a
+
+      expect(collect_ids_with_batch_size(3)).to match_array(expected_values)
+      expect(collect_ids_with_batch_size(5)).to match_array(expected_values)
+      expect(collect_ids_with_batch_size(10)).to match_array(expected_values)
+      expect(collect_ids_with_batch_size(15)).to match_array(expected_values)
+    end
+  end
+
+  it 'yields the boundary values' do
+    min_values = []
+    max_values = []
+
+    iterator.each_batch(column: :author_id, of: 2) do |_scope, min, max|
+      min_values << min
+      max_values << max
+    end
+
+    expect(min_values).to eq([1, 3, 5, 7, 9])
+    expect(max_values).to eq([2, 4, 6, 8, 10])
   end
 
   context 'when min value is given' do

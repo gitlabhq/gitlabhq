@@ -1,0 +1,21 @@
+---
+table_name: zoekt_indexed_namespaces
+classes:
+- Zoekt::IndexedNamespace
+feature_categories:
+- global_search
+description: Describes a namespace that is configured to use a specific Zoekt shard
+  for code search
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049
+milestone: '15.9'
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  namespace_id: namespaces
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142829
+removed_in_milestone: '16.9'

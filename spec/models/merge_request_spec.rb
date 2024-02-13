@@ -258,6 +258,101 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#squash_commit' do
+    subject { merge_request.squash_commit }
+
+    let(:merge_request) { build(:merge_request, target_project: project, squash: true, squash_commit_sha: sha) }
+    let(:commit) { project.repository.commit }
+
+    context 'when a commit is present in the repository' do
+      let(:sha) { commit.sha }
+
+      it { is_expected.to eq(commit) }
+    end
+
+    context 'when a commit is not found' do
+      let(:sha) { 'abc123' }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#commit_to_revert' do
+    subject { merge_request.commit_to_revert }
+
+    context 'when a merge request is not merged' do
+      let(:merge_request) { build(:merge_request, :opened, target_project: project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'when a merge request is merged' do
+      let_it_be(:commit) { project.repository.commit }
+
+      let(:merge_request) do
+        build(
+          :merge_request,
+          :merged,
+          target_project: project,
+          merge_commit_sha: merge_commit_sha,
+          squash_commit_sha: squash_commit_sha
+        )
+      end
+
+      let(:merge_commit_sha) { nil }
+      let(:squash_commit_sha) { nil }
+
+      context 'when merge request has a merge commit' do
+        let(:merge_commit_sha) { commit.sha }
+
+        it { is_expected.to eq(commit) }
+      end
+
+      context 'when merge request has a squash commit' do
+        let(:squash_commit_sha) { commit.sha }
+
+        it { is_expected.to eq(commit) }
+      end
+
+      context 'when merge request does not have merge and squash commits' do
+        let(:merge_request) { create(:merge_request, :merged, target_project: project) }
+        let(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request, head_commit_sha: commit.sha) }
+
+        context 'when the diff has only one commit' do
+          before do
+            create(:merge_request_diff_commit, merge_request_diff: merge_request_diff, sha: 'abc123')
+            merge_request_diff.save_git_content
+          end
+
+          it { is_expected.to eq(commit) }
+        end
+
+        context 'when the diff has more than one commit' do
+          before do
+            create(:merge_request_diff_commit, merge_request_diff: merge_request_diff, sha: 'abc456')
+            create(:merge_request_diff_commit, merge_request_diff: merge_request_diff, sha: 'abc123', relative_order: 1)
+            merge_request_diff.save_git_content
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+    end
+  end
+
+  describe '#commit_to_cherry_pick' do
+    subject { merge_request.commit_to_cherry_pick }
+
+    let(:merge_request) { build(:merge_request) }
+    let(:commit_to_revert_result) { double }
+
+    it 'delegates the call to #commit_to_revert' do
+      expect(merge_request).to receive(:commit_to_revert).and_return(commit_to_revert_result)
+
+      is_expected.to eq(commit_to_revert_result)
+    end
+  end
+
   describe '#default_squash_commit_message' do
     let(:project) { subject.project }
     let(:is_multiline) { -> (c) { c.description.present? } }
@@ -3343,7 +3438,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'with skip_ci_check option' do
       before do
         allow(subject.project).to receive(:only_allow_merge_if_pipeline_succeeds?).and_return(true)
-        allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, broken?: false)
+        allow(subject).to receive_messages(check_mergeability: nil, can_be_merged?: true, has_no_commits?: false)
       end
 
       where(:mergeable_ci_state, :skip_ci_check, :expected_mergeable) do
@@ -3370,7 +3465,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           mergeable_ci_state?: true,
           check_mergeability: nil,
           can_be_merged?: true,
-          broken?: false
+          has_no_commits?: false
         )
       end
 
@@ -3535,9 +3630,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
-    context 'when broken' do
+    context 'when has no commits' do
       before do
-        allow(subject).to receive(:broken?) { true }
+        allow(subject).to receive(:has_no_commits?) { true }
       end
 
       it 'returns false' do

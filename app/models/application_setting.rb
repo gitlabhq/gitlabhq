@@ -14,6 +14,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
+  ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -36,10 +37,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
   enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }, _prefix: true
 
-  add_authentication_token_field :runners_registration_token, encrypted: :required
-  add_authentication_token_field :health_check_access_token
-  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required
-  add_authentication_token_field :error_tracking_access_token, encrypted: :required
+  # We won't add a prefix here as this token is deprecated and being
+  # disabled in 17.0
+  # https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html
+  add_authentication_token_field :runners_registration_token, encrypted: :required # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix
+  add_authentication_token_field :health_check_access_token # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/376751
+  add_authentication_token_field :static_objects_external_storage_auth_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
+  add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
   belongs_to :push_rule
   belongs_to :web_ide_oauth_application, class_name: 'Doorkeeper::Application'
@@ -240,7 +244,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     if: :auto_devops_enabled?
 
   validates :enabled_git_access_protocol,
-    inclusion: { in: ->(_) { enabled_git_access_protocol_values }, allow_blank: true }
+    inclusion: { in: %w[ssh http], allow_blank: true }
 
   validates :domain_denylist,
     presence: { message: 'Domain denylist cannot be empty if denylist is enabled.' },
@@ -379,6 +383,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     :can_create_organization,
     :allow_project_creation_for_guest_and_below,
     :user_defaults_to_private_profile,
+    :enable_member_promotion_management,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
@@ -896,10 +901,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
 
   def self.human_attribute_name(attribute, *options)
     HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
-  end
-
-  def self.enabled_git_access_protocol_values
-    %w[ssh http]
   end
 
   def parsed_grafana_url

@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Authenticate with the container registry **(FREE ALL)**
+# Authenticate with the container registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To authenticate with the container registry, you can use a:
 
@@ -21,7 +25,8 @@ All of these authentication methods require the minimum scope:
 To authenticate, run the `docker login` command. For example:
 
 ```shell
-docker login registry.example.com -u <username> -p <token>
+TOKEN=<token>
+docker login registry.example.com -u <username> --password-stdin <<<$TOKEN
 ```
 
 ## Use GitLab CI/CD to authenticate
@@ -30,31 +35,31 @@ To use CI/CD to authenticate with the container registry, you can use:
 
 - The `CI_REGISTRY_USER` CI/CD variable.
 
-  This variable has read-write access to the container registry and is valid for
-  one job only. Its password is also automatically created and assigned to `CI_REGISTRY_PASSWORD`.
+  This variable holds a per-job user with read-write access to the container registry.
+  Its password is also automatically created and available in `CI_REGISTRY_PASSWORD`.
 
   ```shell
-  docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin <<<$CI_REGISTRY_PASSWORD
   ```
 
 - A [CI job token](../../../ci/jobs/ci_job_token.md).
 
   ```shell
-  docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin <<<$CI_JOB_TOKEN
   ```
 
 - A [deploy token](../../project/deploy_tokens/index.md#gitlab-deploy-token) with the minimum scope of:
   - For read (pull) access, `read_registry`.
-  - For write (push) access, `write_registry`.
+  - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
-  docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+  docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
   ```
 
 - A [personal access token](../../profile/personal_access_tokens.md) with the minimum scope of:
   - For read (pull) access, `read_registry`.
-  - For write (push) access, `write_registry`.
+  - For write (push) access, `read_registry` and `write_registry`.
 
   ```shell
-  docker login -u <username> -p <access_token> $CI_REGISTRY
+  docker login $CI_REGISTRY -u <username> -p <access_token>
   ```

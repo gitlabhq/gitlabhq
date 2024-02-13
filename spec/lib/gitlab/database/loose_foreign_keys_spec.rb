@@ -143,6 +143,10 @@ RSpec.describe Gitlab::Database::LooseForeignKeys do
         described_class.instance_variable_set(:@loose_foreign_keys_yaml, loose_foreign_keys_yaml)
       end
 
+      after do
+        described_class.instance_variable_set(:@loose_foreign_keys_yaml, nil)
+      end
+
       it 'raises Gitlab::Database::GitlabSchema::UnknownSchemaError error' do
         expect { subject }.to raise_error(Gitlab::Database::GitlabSchema::UnknownSchemaError)
       end

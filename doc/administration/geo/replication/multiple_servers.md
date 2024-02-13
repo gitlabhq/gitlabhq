@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo for multiple nodes **(PREMIUM SELF)**
+# Geo for multiple nodes
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This document describes a minimal reference architecture for running Geo
 in a multi-node configuration. If your multi-node setup differs from the one
@@ -60,6 +64,9 @@ wiped out as part of the process of replicating from the **primary** site.
 The following steps enable a GitLab site to serve as the Geo **primary** site.
 
 ### Step 1: Configure the **primary** frontend nodes
+
+NOTE:
+Avoid using [`geo_primary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
@@ -126,20 +133,12 @@ NOTE:
 [NFS](../../nfs.md) can be used in place of Gitaly but is not
 recommended.
 
-### Step 2: Configure PostgreSQL streaming replication
+### Step 2: Configure the Geo tracking database on the Geo **secondary** site
 
-Follow the [Geo database replication instructions](../setup/database.md).
+The Geo tracking database cannot be run in a multi-node PostgreSQL cluster,
+see [Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database).
 
-If using an external PostgreSQL instance, refer also to
-[Geo with external PostgreSQL instances](../setup/external_database.md).
-
-### Step 3: Configure the Geo tracking database on the Geo **secondary** site
-
-If you want to run the Geo tracking database in a multi-node PostgreSQL cluster,
-then follow [Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database).
-
-If you want to run the Geo tracking database on a single node, then follow
-the instructions below.
+You can run the Geo tracking database on a single node as follows:
 
 1. Generate an MD5 hash of the desired password for the database user that the
    GitLab application uses to access the tracking database:
@@ -183,7 +182,19 @@ After making these changes, [reconfigure GitLab](../../restart_gitlab.md#reconfi
 If using an external PostgreSQL instance, refer also to
 [Geo with external PostgreSQL instances](../setup/external_database.md).
 
+### Step 3: Configure PostgreSQL streaming replication
+
+Follow the [Geo database replication instructions](../setup/database.md).
+
+If using an external PostgreSQL instance, refer also to
+[Geo with external PostgreSQL instances](../setup/external_database.md).
+
+After streaming replication is enabled in the secondary Geo site's read-replica database, then commands such as `gitlab-rake db:migrate:status:geo` will fail, until [configuration of the secondary site is complete](#step-7-copy-secrets-and-add-the-secondary-site-in-the-application), specifically [Geo configuration - Step 3. Add the secondary site](configuration.md#step-3-add-the-secondary-site).
+
 ### Step 4: Configure the frontend application nodes on the Geo **secondary** site
+
+NOTE:
+Avoid using [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-geo-roles) because it is intended for a single-node site.
 
 In the minimal [architecture diagram](#architecture-overview) above, there are two
 machines running the GitLab application services. These services are enabled
@@ -364,3 +375,7 @@ application nodes above, with some changes to run only the `sidekiq` service:
    `sidekiq['enable'] = false`.
 
    These nodes do not need to be attached to the load balancer.
+
+### Step 7: Copy secrets and add the secondary site in the application
+
+1. [Configure GitLab](configuration.md) to set the **primary** and **secondary** sites.

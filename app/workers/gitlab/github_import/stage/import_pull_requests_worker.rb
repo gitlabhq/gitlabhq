@@ -26,11 +26,7 @@ module Gitlab
             .new(project, client)
             .execute
 
-          AdvanceStageWorker.perform_async(
-            project.id,
-            { waiter.key => waiter.jobs_remaining },
-            'collaborators'
-          )
+          move_to_next_stage(project, { waiter.key => waiter.jobs_remaining })
         end
 
         private
@@ -44,6 +40,22 @@ module Gitlab
           return unless last_github_pull_request
 
           MergeRequest.track_target_project_iid!(project, last_github_pull_request[:number])
+        end
+
+        def move_to_next_stage(project, waiters = {})
+          AdvanceStageWorker.perform_async(
+            project.id, waiters.deep_stringify_keys, next_stage(project)
+          )
+        end
+
+        def next_stage(project)
+          if import_settings(project).prioritize_collaborators?
+            return 'issues_and_diff_notes' if import_settings(project).extended_events?
+
+            'pull_requests_merged_by'
+          else
+            'collaborators'
+          end
         end
       end
     end

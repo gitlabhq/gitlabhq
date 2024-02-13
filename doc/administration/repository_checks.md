@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository checks **(FREE SELF)**
+# Repository checks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can use [`git fsck`](https://git-scm.com/docs/git-fsck) to verify the integrity of all data
 committed to a repository. GitLab administrators can:
@@ -15,6 +19,10 @@ committed to a repository. GitLab administrators can:
 - Run a [Rake task](raketasks/check.md#repository-integrity) for checking Git repositories, which can be used to run
   `git fsck` against all repositories and generate repository checksums, as a way to compare repositories on different
   servers.
+
+Checks that aren't manually run on the command line are executed through a Gitaly node. For information on Gitaly
+repository consistency checks, some disabled checks, and how to configure consistency checks, see
+[Repository consistency checks](gitaly/consistency_checks.md).
 
 ## Check a project's repository using GitLab UI
 

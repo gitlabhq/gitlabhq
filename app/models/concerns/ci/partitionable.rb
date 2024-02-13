@@ -75,7 +75,7 @@ module Ci
         partitioned_by :partition_id,
           strategy: :ci_sliding_list,
           next_partition_if: ->(latest_partition) do
-            latest_partition.blank? || Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.value
+            latest_partition.blank? || Ci::Pipeline::NEXT_PARTITION_VALUE > latest_partition.values.max
           end,
           detach_partition_if: proc { false },
           # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.

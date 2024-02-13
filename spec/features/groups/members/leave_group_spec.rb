@@ -28,7 +28,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
-    expect(group.users).not_to include(user)
+    expect(group).not_to have_user(user)
   end
 
   it 'guest leaves the group by url param', :js do
@@ -39,7 +39,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
     accept_gl_confirm(button_text: 'Leave group')
 
     expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
-    expect(group.users).not_to include(user)
+    expect(group).not_to have_user(user)
   end
 
   it 'guest leaves the group as last member', :js do
@@ -52,7 +52,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
-    expect(group.users).not_to include(user)
+    expect(group).not_to have_user(user)
   end
 
   it 'owner leaves the group if they are not the last owner', :js do
@@ -66,7 +66,7 @@ RSpec.describe 'Groups > Members > Leave group', feature_category: :groups_and_p
 
     expect(page).to have_current_path(dashboard_groups_path, ignore_query: true)
     expect(page).to have_content left_group_message(group)
-    expect(group.users).not_to include(user)
+    expect(group).not_to have_user(user)
   end
 
   it 'owner can not leave the group if they are the last owner', :js do

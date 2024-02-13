@@ -39,7 +39,7 @@ description, note the following:
   They are not meant to give you precise numbers of a discrete event.
 
   If you need a higher level of accuracy, use another monitoring tool, such as
-  [logs](https://about.gitlab.com/handbook/engineering/monitoring/#logs).
+  [logs](https://handbook.gitlab.com/handbook/engineering/monitoring/#logs).
   Read the following examples for more explanations.
 - All the rate metrics' units are `requests per second`. The default aggregate time frame is 1 minute.
 

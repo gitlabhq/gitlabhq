@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Dependency Proxy administration **(FREE SELF)**
+# GitLab Dependency Proxy administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.11.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/273655) from GitLab Premium to GitLab Free in 13.6.
@@ -78,9 +82,8 @@ Follow the steps for Linux package installations for each Web and Sidekiq node.
 ## Turn on the Dependency Proxy
 
 The Dependency Proxy is turned on by default, but can be turned off by an
-administrator. To turn on the Dependency Proxy, follow the instructions in
-[Turn off the Dependency Proxy](#turn-off-the-dependency-proxy),
-but set the `enabled` fields to `true`.
+administrator. To turn it off manually, follow the instructions in
+[Turn off the Dependency Proxy](#turn-off-the-dependency-proxy).
 
 ## Changing the storage path
 
@@ -199,7 +202,7 @@ This section describes the earlier configuration format. [Migration steps still 
 
 #### Migrate local Dependency Proxy blobs and manifests to object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79663) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79663) in GitLab 14.8.
 
 After [configuring object storage](#using-object-storage),
 use the following task to migrate existing Dependency Proxy blobs and manifests from local storage

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD examples **(FREE ALL)**
+# GitLab CI/CD examples
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page contains links to a variety of examples that can help you understand how to
 implement [GitLab CI/CD](../index.md) for your specific use case.
@@ -98,7 +102,11 @@ If a programming language or framework template is not in this list, you can con
 one. To create a template, submit a merge request
 to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-### Adding templates to your GitLab installation **(PREMIUM SELF)**
+### Adding templates to your GitLab installation
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can add custom examples and templates to your self-managed GitLab instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)
@@ -118,7 +126,7 @@ For examples of setting up GitLab CI/CD for cloud-based environments, see:
 - [How to autoscale continuous deployment with GitLab Runner on DigitalOcean](https://about.gitlab.com/blog/2018/06/19/autoscale-continuous-deployment-gitlab-runner-digital-ocean/)
 - [How to create a CI/CD pipeline with Auto Deploy to Kubernetes using GitLab and Helm](https://about.gitlab.com/blog/2017/09/21/how-to-create-ci-cd-pipeline-with-autodeploy-to-kubernetes-using-gitlab-and-helm/)
 - Video: [Demo - Deploying from GitLab to OpenShift Container Cluster](https://youtu.be/EwbhA53Jpp4)
-- Tutorial: [Set up a GitLab.com Civo Kubernetes integration with GitPod](https://gitlab.com/k33g_org/k33g_org.gitlab.io/-/issues/82)
+- Tutorial: [Set up a GitLab.com Civo Kubernetes integration with Gitpod](https://gitlab.com/k33g_org/k33g_org.gitlab.io/-/issues/82)
 
 See also the following video overviews:
 

@@ -92,7 +92,7 @@ In Prometheus, look for the following metrics:
 
 ## Monitor Gitaly adaptive concurrency limiting
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
 
 You can observe specific behavior of [adaptive concurrency limiting](concurrency_limiting.md#adaptive-concurrency-limiting) using Gitaly logs and Prometheus.
 
@@ -178,7 +178,7 @@ gitaly_streamcache_index_entries{dir="/var/opt/gitlab/git-data/repositories/+git
 
 ## Monitor Gitaly server-side backups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5358) in GitLab 16.7.
 
 Monitor [server-side repository backups](configure_gitaly.md#configure-server-side-backups) with the following metrics:
 
@@ -288,7 +288,7 @@ You can also monitor the [Praefect logs](../logs/index.md#praefect-logs).
 
 ### Database metrics `/db_metrics` endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/3286) in GitLab 14.5.
 
 The following metrics are available from the `/db_metrics` endpoint:
 

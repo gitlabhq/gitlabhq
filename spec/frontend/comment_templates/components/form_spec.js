@@ -8,8 +8,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Form from '~/comment_templates/components/form.vue';
-import createSavedReplyMutation from '~/comment_templates/queries/create_saved_reply.mutation.graphql';
-import updateSavedReplyMutation from '~/comment_templates/queries/update_saved_reply.mutation.graphql';
+import createSavedReplyMutation from '~/pages/profiles/comment_templates/queries/create_saved_reply.mutation.graphql';
+import updateSavedReplyMutation from '~/pages/profiles/comment_templates/queries/update_saved_reply.mutation.graphql';
 
 let wrapper;
 let createSavedReplyResponseSpy;
@@ -35,6 +35,10 @@ function createComponent(id = null, response = createdSavedReplyResponse) {
   return mount(Form, {
     propsData: {
       id,
+    },
+    provide: {
+      createMutation: createSavedReplyMutation,
+      updateMutation: updateSavedReplyMutation,
     },
     apolloProvider: mockApollo,
   });

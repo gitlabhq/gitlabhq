@@ -11,7 +11,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
   let(:parallel) { true }
   let(:issue_event) do
     struct = Struct.new(
-      :id, :node_id, :url, :actor, :event, :commit_id, :commit_url, :label, :rename, :milestone, :source,
+      :id, :node_id, :url, :actor, :user, :event, :commit_id, :commit_url, :label, :rename, :milestone, :source,
       :assignee, :assigner, :review_requester, :requested_reviewer, :issue, :created_at, :performed_via_github_app,
       :body, :updated_at, :submitted_at, :state, keyword_init: true
     )
@@ -73,11 +73,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueEventsImporter, feature_cate
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
-    before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
-    end
-
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     it 'imports each note in parallel' do
       allow(importer).to receive(:each_object_to_import).and_yield(issue_event)
 

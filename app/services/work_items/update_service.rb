@@ -6,6 +6,7 @@ module WorkItems
     include WidgetableService
 
     def initialize(container:, current_user: nil, params: {}, perform_spam_check: false, widget_params: {})
+      @extra_params = params.delete(:extra_params) || {}
       params[:widget_params] = true if widget_params.present?
 
       super(container: container, current_user: current_user, params: params, perform_spam_check: perform_spam_check)
@@ -26,6 +27,8 @@ module WorkItems
     end
 
     private
+
+    attr_reader :extra_params
 
     override :handle_quick_actions
     def handle_quick_actions(work_item)
@@ -79,3 +82,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::UpdateService.prepend_mod

@@ -28,6 +28,12 @@ module Types
             null: false,
             description: "Allow list of projects that can access the current project through its CI Job tokens.",
             method: :inbound_projects
+
+      field :groups_allowlist,
+            Types::GroupType.connection_type,
+            null: false,
+            description: "Allow list of groups that can access the current project through its CI Job tokens.",
+            method: :groups
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

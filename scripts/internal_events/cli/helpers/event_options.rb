@@ -62,6 +62,8 @@ module InternalEventsCli
           fields = InternalEventsCli::NEW_EVENT_FIELDS.map(&:to_s)
 
           events[filepath] = Event.new(**details.slice(*fields))
+        rescue StandardError => e
+          cli.say format_error "Encountered an error while loading #{filepath}: #{e.message}"
         end
       end
 

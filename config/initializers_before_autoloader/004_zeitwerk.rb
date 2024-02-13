@@ -35,7 +35,6 @@ Rails.autoloaders.each do |autoloader|
     'html_parser' => 'HTMLParser',
     'html_gitlab' => 'HTMLGitlab',
     'http' => 'HTTP',
-    'http_connection_adapter' => 'HTTPConnectionAdapter',
     'http_clone_enabled_check' => 'HTTPCloneEnabledCheck',
     'hangouts_chat_http_override' => 'HangoutsChatHTTPOverride',
     'chunked_io' => 'ChunkedIO',

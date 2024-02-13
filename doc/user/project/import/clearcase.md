@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating from ClearCase **(FREE ALL)**
+# Migrating from ClearCase
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [ClearCase](https://www.ibm.com/products/rational-clearcase) is a set of
 tools developed by IBM which also include a centralized version control system

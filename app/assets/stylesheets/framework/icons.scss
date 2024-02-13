@@ -47,8 +47,8 @@
   // - app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue
   // - app/helpers/ci/status_helper.rb
   .ci-icon-gl-icon-wrapper {
-    @include gl-rounded-full;
-    @include gl-line-height-0;
+    border-radius: $gl-border-radius-full;
+    line-height: 0;
   }
 
   // Makes the borderless CI icons appear slightly bigger than the default 16px.

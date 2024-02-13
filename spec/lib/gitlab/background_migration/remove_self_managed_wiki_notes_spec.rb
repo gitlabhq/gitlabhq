@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::RemoveSelfManagedWikiNotes, :migration, schema: 20221111123146 do
+RSpec.describe Gitlab::BackgroundMigration::RemoveSelfManagedWikiNotes, :migration, schema: 20230216060333 do
   let(:notes) { table(:notes) }
 
   subject(:perform_migration) do

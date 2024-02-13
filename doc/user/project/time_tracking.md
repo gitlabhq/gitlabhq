@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Time tracking **(FREE ALL)**
+# Time tracking
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can estimate and track the time you spend on [issues](issues/index.md)
 and [merge requests](merge_requests/index.md).
@@ -78,7 +82,7 @@ Prerequisites:
 
 #### Using the user interface
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101563) in GitLab 15.7.
 
 To add a time entry using the user interface:
 
@@ -165,7 +169,10 @@ To view a time tracking report of time spent on an issue or merge request:
 
 The breakdown of spent time displayed is limited to a maximum of 100 entries.
 
-### Global time tracking report **(EXPERIMENT)**
+### Global time tracking report
+
+DETAILS:
+**Status**: Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344002) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `global_time_tracking_report`. Disabled by default.
 > - Enabled on GitLab.com in GitLab 16.5.
@@ -203,7 +210,11 @@ The following time units are available:
 | Hour      | `h`, `hour`, or `hours`     | 60 m            |
 | Minute    | `m`, `minute`, or `minutes` |                 |
 
-### Limit displayed units to hours **(FREE SELF)**
+### Limit displayed units to hours
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 In GitLab self-managed instances, you can limit the display of time units to hours.
 To do so:

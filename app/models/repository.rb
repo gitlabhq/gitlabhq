@@ -674,6 +674,7 @@ class Repository
   end
   cache_method :gitignore
 
+  # Deprecated, use `project.has_ci_config_file?` instead.
   def gitlab_ci_yml
     file_on_head(:gitlab_ci)
   end
@@ -1279,13 +1280,28 @@ class Repository
   end
 
   def object_format
-    return unless exists?
+    cache_key = "object_format:#{full_path}"
 
-    case raw.object_format
-    when :OBJECT_FORMAT_SHA1
-      FORMAT_SHA1
-    when :OBJECT_FORMAT_SHA256
-      FORMAT_SHA256
+    request_store_cache.fetch(cache_key) do
+      case raw.object_format
+      when :OBJECT_FORMAT_SHA1
+        FORMAT_SHA1
+      when :OBJECT_FORMAT_SHA256
+        FORMAT_SHA256
+      end
+    end
+  rescue Gitlab::Git::Repository::NoRepository
+    nil
+  end
+
+  def blank_ref
+    return Gitlab::Git::SHA1_BLANK_SHA unless exists?
+
+    case object_format
+    when FORMAT_SHA1
+      Gitlab::Git::SHA1_BLANK_SHA
+    when FORMAT_SHA256
+      Gitlab::Git::SHA256_BLANK_SHA
     end
   end
 

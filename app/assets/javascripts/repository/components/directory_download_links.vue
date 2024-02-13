@@ -31,7 +31,7 @@ export default {
   <section class="border-top pt-1 mt-1">
     <h5 class="m-0 dropdown-bold-header">{{ __('Download this directory') }}</h5>
     <div class="dropdown-menu-content">
-      <div class="btn-group ml-0 w-100">
+      <div class="btn-group ml-0 gl-w-full">
         <gl-button
           v-for="(link, index) in normalizedLinks"
           :key="index"

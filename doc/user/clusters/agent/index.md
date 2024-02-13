@@ -63,9 +63,9 @@ GitLab in a Kubernetes cluster, you might need a different version of Kubernetes
 You can upgrade your
 Kubernetes version to a supported version at any time:
 
+- 1.29 (support ends when GitLab version 17.10 is released or when 1.32 becomes supported)
 - 1.28 (support ends when GitLab version 17.5 is released or when 1.31 becomes supported)
 - 1.27 (support ends when GitLab version 17.2 is released or when 1.30 becomes supported)
-- 1.26 (support ends when GitLab version 16.10 is released or when 1.29 becomes supported)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
@@ -98,6 +98,21 @@ This channel is used for all communication between the agent and KAS:
   - A proxy in front of KAS might influence the maximum lifetime of connections. On GitLab.com, this is [two hours](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/-/blob/68df3484087f0af368d074215e17056d8ab69f1c/attributes/default.rb#L217). The grace period is 50% of the maximum lifetime.
 
 For detailed information about channel routing, see [Routing KAS requests in the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kas_request_routing.md).
+
+## Kubernetes integration glossary
+
+This glossary provides definitions for terms related to the GitLab Kubernetes integration.
+
+| Term | Definition | Scope |
+| --- | --- | --- |
+| GitLab agent for Kubernetes | The overall offering, including related features and the underlying components `agentk` and `kas`. | GitLab, Kubernetes, Flux |
+| `agentk` | The cluster-side component that maintains a secure connection to GitLab for Kubernetes management and deployment automation. | GitLab |
+| GitLab agent server for Kubernetes (`kas`) | The GitLab-side component of GitLab that handles operations and logic for the Kubernetes agent integration. Manages the connection and communication between GitLab and Kubernetes clusters. | GitLab |
+| Pull-based deployment | A deployment method where Flux checks for changes in a Git repository and automatically applies these changes to the cluster. | GitLab, Kubernetes |
+| Push-based deployment | A deployment method where updates are sent from GitLab CI/CD pipelines to the Kubernetes cluster. | GitLab |
+| Flux | An open-source GitOps tool that integrates with the agent for pull-based deployments. | GitOps, Kubernetes |
+| GitOps | A set of practices that involve using Git for version control and collaboration in the management and automation of cloud and Kubernetes resources. | DevOps, Kubernetes |
+| Kubernetes namespace | A logical partition in a Kubernetes cluster that divides cluster resources between multiple users or environments. | Kubernetes |
 
 ## Related topics
 

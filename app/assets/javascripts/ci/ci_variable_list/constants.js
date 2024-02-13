@@ -19,6 +19,7 @@ export const variableOptions = [
 ];
 
 export const defaultVariableState = {
+  description: null,
   environmentScope: '*',
   key: '',
   masked: false,

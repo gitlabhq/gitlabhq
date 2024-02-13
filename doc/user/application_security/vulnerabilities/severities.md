@@ -4,7 +4,11 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vulnerability severity levels **(ULTIMATE ALL)**
+# Vulnerability severity levels
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 GitLab vulnerability analyzers attempt to return vulnerability severity level values whenever
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from

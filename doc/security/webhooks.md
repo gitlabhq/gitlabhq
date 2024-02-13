@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Filtering outbound requests **(FREE SELF)**
+# Filtering outbound requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To protect against the risk of data loss and exposure, GitLab administrators can now use outbound request filtering controls to restrict certain outbound requests made by the GitLab instance.
 
@@ -67,9 +71,22 @@ Prerequisites:
 1. Expand **Outbound requests**.
 1. Clear the **Allow requests to the local network from system hooks** checkbox.
 
+### Enforce DNS rebinding attack protection
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+[DNS rebinding](https://en.wikipedia.org/wiki/DNS_rebinding) is a technique to make a malicious domain name resolve to an internal network resource to bypass local network access restrictions. GitLab has protection against this attack enabled by default. To disable this protection:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Network**.
+1. Expand **Outbound requests**.
+1. Clear the **Enforce DNS-rebinding attack protection** checkbox.
+
 ## Filter requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377371) in GitLab 15.10.
 
 Prerequisites:
 
@@ -94,7 +111,7 @@ rules.
 
 ## Allow outbound requests to certain IP addresses and domains
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/44496) in GitLab 12.2.
 
 Prerequisites:
 

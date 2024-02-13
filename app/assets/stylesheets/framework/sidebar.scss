@@ -69,7 +69,7 @@
   }
 
   .inline-block {
-    @include gl-display-inline-block;
+    display: inline-block;
   }
 
   &.right-sidebar-merge-requests {
@@ -463,10 +463,6 @@
     }
   }
 
-  .btn-clipboard:hover {
-    color: $gl-text-color;
-  }
-
   .issuable-sidebar {
     height: 100%;
 
@@ -491,7 +487,8 @@
     }
 
     .issuable-sidebar-header {
-      @include gl-py-5;
+      padding-top: $gl-spacing-scale-5;
+      padding-bottom: $gl-spacing-scale-5;
     }
 
     .value {
@@ -653,26 +650,6 @@
         display: none;
       }
 
-      .btn-clipboard {
-        /*
-          This change should be temporary, because the DOM currently gets
-          generated from a ruby definition in `app/helpers/button_helper.rb`.
-          As soon as the `copy to clipboard` button will be transferred to
-          Vue this should be adjusted as well.
-        */
-        flex: 1;
-        align-self: stretch;
-        padding: 0;
-
-        border: 0;
-        background: transparent;
-        color: $gl-text-color-secondary;
-
-        &:hover {
-          color: $gl-text-color;
-        }
-      }
-
       &.multiple-users {
         display: flex;
         justify-content: center;
@@ -804,16 +781,6 @@
     bottom: -3px;
     right: -3px;
     filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
-  }
-}
-
-.participants-author {
-  &:nth-of-type(8n) {
-    margin-right: 0;
-  }
-
-  .avatar.avatar-inline {
-    margin: 0;
   }
 }
 

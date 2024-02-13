@@ -10,7 +10,11 @@ RSpec.describe 'Instance integrations', :js, feature_category: :integrations do
   end
 
   it_behaves_like 'integration settings form' do
-    let(:integrations) { Integration.find_or_initialize_all_non_project_specific(Integration.for_instance) }
+    let(:integrations) do
+      Integration.find_or_initialize_all_non_project_specific(
+        Integration.for_instance, include_instance_specific: true
+      )
+    end
 
     def navigate_to_integration(integration)
       visit_instance_integration(integration.title)

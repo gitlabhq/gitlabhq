@@ -102,7 +102,9 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
             data: "GR134894112312312312312312312\nglft-12312312312312312312"), # gitleaks:allow
           new_blob(id: 555, data: "data with no secret"),
           new_blob(id: 666, data: "data with no secret"),
-          new_blob(id: 777, data: "\nglptt-1231231231231231231212312312312312312312") # gitleaks:allow
+          new_blob(id: 777, data: "\nglptt-1231231231231231231212312312312312312312"), # gitleaks:allow
+          new_blob(id: 888,
+            data: "glpat-12312312312312312312;GR134894112312312312312312312") # gitleaks:allow
         ]
       end
 
@@ -144,9 +146,33 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
               2,
               ruleset['rules'][1]['id'],
               ruleset['rules'][1]['description']
+            ),
+            Gitlab::SecretDetection::Finding.new(
+              blobs[7].id,
+              Gitlab::SecretDetection::Status::FOUND,
+              1,
+              ruleset['rules'][0]['id'],
+              ruleset['rules'][0]['description']
+            ),
+            Gitlab::SecretDetection::Finding.new(
+              blobs[7].id,
+              Gitlab::SecretDetection::Status::FOUND,
+              1,
+              ruleset['rules'][2]['id'],
+              ruleset['rules'][2]['description']
             )
           ]
         )
+      end
+
+      it "attempts to keyword match returning only filtered blobs for further scan" do
+        expected = blobs.filter { |b| b.data != "data with no secret" }
+
+        expect(scan).to receive(:filter_by_keywords)
+                          .with(blobs)
+                          .and_return(expected)
+
+        scan.secrets_scan(blobs)
       end
 
       it "matches multiple rules when running in main process" do

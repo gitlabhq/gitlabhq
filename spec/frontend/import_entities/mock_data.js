@@ -2,6 +2,7 @@ const mockGroupFactory = (fullPath) => ({
   id: `gid://gitlab/Group/${fullPath}`,
   fullPath,
   name: fullPath,
+  projectCreationLevel: 'maintainer',
   visibility: 'public',
   webUrl: `http://gdk.test:3000/groups/${fullPath}`,
   __typename: 'Group',

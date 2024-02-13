@@ -8,7 +8,6 @@ module Banzai
           Filter::NormalizeSourceFilter,
           Filter::TruncateSourceFilter,
           Filter::FrontMatterFilter,
-          Filter::BlockquoteFenceFilter,
         ]
       end
 

@@ -77,7 +77,7 @@ RSpec.describe API::Entities::Ml::Mlflow::RunInfo, feature_category: :mlops do
       let!(:candidate) { version.candidate }
 
       it 'returns the model version format of the artifact_uri' do
-        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/ml_models/#{version.model.name}/#{version.version}")
+        expect(subject[:artifact_uri]).to eq("http://localhost/api/v4/projects/#{candidate.project_id}/packages/ml_models/#{version.id}/files/")
       end
     end
   end

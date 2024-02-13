@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multiple assignees for issues **(PREMIUM ALL)**
+# Multiple assignees for issues
 
-> Moved from Starter to Premium in GitLab 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved from Starter to Premium in GitLab 13.9.
 
 In large teams with shared ownership, it can be difficult
 to track who is working on an issue, who's already done, or who hasn't started yet.

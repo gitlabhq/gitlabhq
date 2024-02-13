@@ -25,13 +25,13 @@ The voice in the documentation should be conversational but brief, friendly but 
 
 ## Documentation is the single source of truth (SSoT)
 
-The GitLab documentation is the SSoT for all information related to implementation,
+The GitLab documentation is the SSoT for all product information related to implementation,
 use, and troubleshooting. The documentation evolves continuously. It is updated with
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content that
-is included in the documentation.
+about GitLab products. It also informs decisions about the kinds of content 
+included in the documentation.
 
 ## Topic types
 
@@ -112,7 +112,7 @@ features is limited by our linters, so, use regular Markdown and follow the rule
 linked style guide. You can't use Kramdown-specific markup (for example, `{:.class}`).
 
 For a complete Kramdown reference, see the
-[GitLab Markdown Guide](https://about.gitlab.com/handbook/markdown-guide/).
+[GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
 
 The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
 
@@ -399,7 +399,7 @@ Follow these guidelines for punctuation.
 
 <!-- vale gitlab.Repetition = NO -->
 
-- End full sentences with a period.
+- End full sentences with a period, including full sentences in tables.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
 
 <!-- vale gitlab.Repetition = YES -->
@@ -735,6 +735,10 @@ For example:
 ```
 
 For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+
+NOTE:
+To format text in footnotes (for example, to use emphasis or links), you must use HTML rather than Markdown.
+
 For example:
 
 ```html
@@ -814,10 +818,6 @@ Each topic title has an anchor link. For example, a topic with the title
 
 The first topic title on a page (the `h1`) has an anchor link,
 but do not use it. Link to the page instead.
-
-If a topic title has a [product tier badge](#product-tier-badges),
-do not include it in the anchor link. For example, for the topic
-`## This is an example **(FREE ALL)**`, use the anchor `#this-is-an-example`.
 
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.
@@ -1304,7 +1304,7 @@ the Markdown rendering engine used for GitLab documentation.
 
 ## GitLab SVG icons
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/384) in GitLab 12.7.
 
 You can use icons from the [GitLab SVG library](https://gitlab-org.gitlab.io/gitlab-svgs/)
 directly in the documentation. For example, `**{tanuki}**` renders as: **{tanuki}**.
@@ -1362,7 +1362,7 @@ You can link any up-to-date video that's useful to the GitLab user.
 
 ### Embed videos
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/472) in GitLab 12.1.
 
 The [GitLab documentation site](https://docs.gitlab.com) supports embedded
 videos.
@@ -1409,15 +1409,25 @@ This is how it renders on the GitLab documentation site:
   <iframe src="https://www.youtube-nocookie.com/embed/MqL6BMOySIQ" frameborder="0" allowfullscreen> </iframe>
 </figure>
 
-> Notes:
->
-> - The `figure` tag is required for semantic SEO and the `video-container`
-class is necessary to make sure the video is responsive and displays on
-different mobile devices.
-> - The `<div class="video-fallback">` is a fallback necessary for
-`/help`, because the GitLab Markdown processor doesn't support iframes. It's
-hidden on the documentation site, but is displayed by `/help`.
-> - The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode) of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
+With this formatting:
+
+- The `figure` tag is required for semantic SEO and the `video-container`
+  class is necessary to make sure the video is responsive and displays on
+  different mobile devices.
+- The `<div class="video-fallback">` is a fallback necessary for
+  `/help`, because the GitLab Markdown processor doesn't support iframes. It's
+  hidden on the documentation site, but is displayed by `/help`.
+- The `www.youtube-nocookie.com` domain enables the [Privacy Enhanced Mode](https://support.google.com/youtube/answer/171780?hl=en#zippy=%2Cturn-on-privacy-enhanced-mode)
+  of the YouTube embedded player. This mode allows users with restricted cookie preferences to view embedded videos.
+
+## Link to click-through demos
+
+Linking to click-through demos should follow similar guidelines to [videos](#videos).
+
+```markdown
+For a click-through demo, see [Demo Title](link-to-demo).
+<!-- Demo published on YYYY-MM-DD -->
+```
 
 ## Alert boxes
 
@@ -1430,6 +1440,7 @@ Alert boxes are generated when one of these words is followed by a line break:
 - `WARNING:`
 - `INFO:` (Marketing only)
 - `DISCLAIMER:`
+- `DETAILS:`
 
 For example:
 
@@ -1538,6 +1549,10 @@ you don't need to supply your username and password each time.
 Use to describe future functionality only.
 For more information, see [Legal disclaimer for future features](../versions.md#legal-disclaimer-for-future-features).
 
+### Details
+
+`DETAILS:` alert boxes are used for [tier badges](#product-tier-badges).
+
 ## Blockquotes
 
 For highlighting a text inside a blockquote, use this format:
@@ -1638,13 +1653,13 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges provide information about a feature and are displayed next to the topic title.
+Tier badges provide information about a feature and are displayed under the topic title.
 
 #### When to add tier badges
 
-Assign tier badges to:
+Assign tier badges under:
 
-- All H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
+- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
 - Topic titles that don't apply to the same tier as the H1.
 
 The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
@@ -1659,8 +1674,8 @@ Do not assign tier badges:
 In this case, do any or all of the following:
 
 - Use a `NOTE` in an alert box to describe the tiers.
-- Add tier badges to other topic titles where this information makes more sense.
-- Do not add tier badges to the H1.
+- Add tier badges under other topic titles where this information makes more sense.
+- Do not add tier badges under the H1.
 
 ##### Pages that don't need a tier badge
 
@@ -1673,64 +1688,70 @@ Some pages won't have a tier badge, because no obvious tier badge applies. For e
 
 #### Available product tier badges
 
-Tier badges should include two components, in this order: a subscription tier and an offering.
-These components are surrounded by bold and parentheses, for example `**(ULTIMATE SAAS)**`.
+Tier badges are how we refer to the information that's displayed under a topic title.
 
-Subscription tiers:
+Tier badges include the tier, offering, status, and history.
 
-- `FREE` - Applies to all tiers.
-- `PREMIUM` - Applies to Premium and Ultimate tiers.
-- `ULTIMATE` - Applies to Ultimate tier only.
+The Markdown for tier badges should look like the following:
 
-Offerings:
+```markdown
+# Topic title
 
-- `SELF`
-- `SAAS`
-- `ALL` - Applies to both self-managed and SaaS.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
-You can also add a third component for the feature's status:
+> - [Introduced](<link-to-issue>) in GitLab 16.3.
+> - Updated in GitLab 16.4.
+```
 
-- `EXPERIMENT`
-- `BETA`
+For offering, use any combination of these words, in this order, separated by commas:
 
-For example, `**(FREE ALL EXPERIMENT)**`.
+- SaaS
+- Self-managed (lowercase when not the first item)
 
-- A tier or status can stand alone.
-- An offering should always have a tier.
-- Do not add more than one offering, tier, or status. Multiples do not render properly in the documentation.
-
-#### Add a tier badge
-
-To add a tier badge to a topic title, add the two relevant components
-after the title text. You should include the subscription tier first, and then the offering.
 For example:
 
-```markdown
-# Topic title **(FREE ALL)**
-```
+- SaaS
+- SaaS, self-managed
+- Self-managed
 
-Optionally, you can add the feature status as the last part of the badge:
+NOTE:
+SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We will update this page when the change occurs.
 
-```markdown
-# Topic title **(FREE ALL EXPERIMENT)**
-```
+For tier, choose one:
 
-Or add the status by itself:
+- Free, Premium, Ultimate
+- Premium, Ultimate
+- Ultimate
 
-```markdown
-# Topic title **(EXPERIMENT)**
-```
+For status, choose one:
+
+- Beta
+- Experiment
+
+Generally available features should not have a status.
 
 ##### Inline tier badges
 
-Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
+Do not add tier badges inline with other text.
 The single source of truth for a feature should be the topic where the
 functionality is described.
 
+If you need to mention a tier inline, write it in plain text. For example,
+for an API topic:
+
+```markdown
+IDs of the users to assign the issue to. Ultimate only.
+```
+
+For more examples, see the [REST API style guide](../restful_api_styleguide.md).
+
 ##### Administrator documentation tier badges
 
-Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
-administrator documentation often includes sections that mention:
+Topics that are only for instance administrators should have the `Self-managed` tier.
+Instance administrator documentation often includes sections that mention:
 
 - Changing the `gitlab.rb` or `gitlab.yml` files.
 - Accessing the rails console or running Rake tasks.
@@ -1988,7 +2009,11 @@ For an example, see [GitLab 16 changes](../../../update/versions/gitlab_16_chang
 Use the following template to add information to the page.
 
 ```markdown
-# GitLab X changes **(FREE SELF)**
+# GitLab X changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
 
@@ -2012,7 +2037,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - Information specific to self-compiled installations.
 - ...
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
  - Information specific to Geo.
  - ...

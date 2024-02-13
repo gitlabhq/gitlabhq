@@ -145,7 +145,7 @@ export default {
     <img
       v-show="!imageError"
       ref="contentImg"
-      class="mh-100"
+      class="gl-max-h-full"
       :src="image"
       :alt="name"
       :style="imageStyle"

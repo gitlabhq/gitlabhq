@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationSetting, type: :model, feature_category: :cell do
   let_it_be(:organization) { create(:organization) }
+  let_it_be(:organization_setting) { create(:organization_setting, organization: organization) }
 
   describe 'associations' do
     it { is_expected.to belong_to :organization }
@@ -51,6 +52,43 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
         setting.restricted_visibility_levels = [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE,
           Gitlab::VisibilityLevel::INTERNAL]
         expect(setting.valid?).to be true
+      end
+    end
+  end
+
+  describe '.for_current_organization' do
+    let(:dummy_class) { Class.new { extend Organization::CurrentOrganization } }
+
+    subject(:settings) { described_class.for_current_organization }
+
+    context 'when there is no current organization' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'when there is a current organization' do
+      before do
+        dummy_class.current_organization = organization
+      end
+
+      after do
+        dummy_class.current_organization = nil
+      end
+
+      it 'returns current organization' do
+        expect(settings).to eq(organization_setting)
+      end
+
+      context 'when current organization does not have settings' do
+        before do
+          allow(organization).to receive(:settings).and_return(nil)
+        end
+
+        it 'returns new settings record' do
+          new_settings = settings
+
+          expect(new_settings.organization).to eq(organization)
+          expect(new_settings.new_record?).to eq(true)
+        end
       end
     end
   end

@@ -8,3 +8,5 @@ description: Keeps track of fork relations between projects.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
 milestone: '10.1'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

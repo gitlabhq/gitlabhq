@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tags **(FREE ALL)**
+# Tags
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
@@ -49,7 +53,7 @@ To view all existing tags for a project:
 
 ## View tagged commits in the commits list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Commits**.
@@ -110,7 +114,11 @@ GitLab enforces these additional rules on all tags:
 - Tag names cannot start with `-`, `refs/heads`, `refs/tags`, or `refs/remotes`
 - Tag names are case-sensitive.
 
-## Prevent tag deletion **(PREMIUM ALL)**
+## Prevent tag deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To prevent users from removing a tag with `git push`, create a [push rule](../push_rules.md).
 

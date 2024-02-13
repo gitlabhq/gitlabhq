@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group and project migration by direct transfer API **(FREE ALL)**
+# Group and project migration by direct transfer API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64335) in GitLab 14.1.
 > - Project migration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
@@ -152,7 +156,19 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "project_id": null,
         "created_at": "2021-06-18T09:47:37.390Z",
         "updated_at": "2021-06-18T09:47:51.867Z",
-        "failures": []
+        "failures": [],
+        "stats": {
+            "labels": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            },
+            "milestones": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            }
+        }
     },
     {
         "id": 2,
@@ -233,7 +249,19 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "status": "finished",
         "source_type": "gitlab",
         "created_at": "2021-06-18T09:45:55.358Z",
-        "updated_at": "2021-06-18T09:46:27.003Z"
+        "updated_at": "2021-06-18T09:46:27.003Z",
+        "stats": {
+            "labels": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            },
+            "milestones": {
+                "source": 10,
+                "fetched": 10,
+                "imported": 10
+            }
+        }
     }
 ]
 ```
@@ -260,7 +288,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ## Get list of failed import records for group or project migration entity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428016) in GitLab 16.6.
 
 ```plaintext
 GET /bulk_imports/:id/entities/:entity_id/failures

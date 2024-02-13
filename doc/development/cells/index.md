@@ -11,7 +11,7 @@ For background of GitLab Cells, refer to the [blueprint](../../architecture/blue
 ## Essential and additional workflows
 
 To make the application work within the GitLab Cells architecture, we need to fix various
-[workflows](../../architecture/blueprints/cells/index.md#2-essential-workflows).
+[workflows](../../architecture/blueprints/cells/index.md#2-workflows).
 
 Here is the suggested approach:
 

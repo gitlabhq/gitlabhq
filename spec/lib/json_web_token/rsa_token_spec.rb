@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe JSONWebToken::RSAToken do
-  let(:rsa_key) do
+  let_it_be(:rsa_key) do
     OpenSSL::PKey::RSA.new <<-eos.strip_heredoc
       -----BEGIN RSA PRIVATE KEY-----
       MIIBOgIBAAJBAMA5sXIBE0HwgIB40iNidN4PGWzOyLQK0bsdOBNgpEXkDlZBvnak
@@ -47,6 +47,54 @@ RSpec.describe JSONWebToken::RSAToken do
       subject { JWT.decode(rsa_encoded, new_key, true, { algorithm: 'RS256' }) }
 
       it { expect { subject }.to raise_error(JWT::DecodeError) }
+    end
+  end
+
+  describe '.decode' do
+    let(:decoded_token) { described_class.decode(rsa_encoded, rsa_key) }
+
+    context 'with an invalid token' do
+      context 'that is junk' do
+        let(:rsa_encoded) { 'junk' }
+
+        it "raises exception saying 'Not enough or too many segments'" do
+          expect { decoded_token }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+        end
+      end
+
+      context 'that has been fiddled with' do
+        let(:rsa_encoded) { rsa_token.encoded.tap { |token| token[0] = 'E' } }
+
+        it "raises exception saying 'Invalid segment encoding'" do
+          expect { decoded_token }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+        end
+      end
+
+      context 'that was generated using a different key' do
+        let_it_be(:rsa_key_2) { OpenSSL::PKey::RSA.new 2048 }
+
+        before do
+          # rsa_key is returned for encoding, and rsa_key_2 for decoding
+          allow_any_instance_of(described_class).to receive(:key).and_return(rsa_key, rsa_key_2)
+        end
+
+        it "raises exception saying 'Signature verification failed" do
+          expect { decoded_token }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+        end
+      end
+
+      context 'that is expired' do
+        # Needs the ! so freeze_time() is effective
+        let!(:rsa_encoded) { rsa_token.encoded }
+
+        it "raises exception saying 'Signature has expired'" do
+          # Needs to be 120 seconds, because the default expiry is 60 seconds
+          # with an additional 60 second leeway.
+          travel_to(Time.current + 120) do
+            expect { decoded_token }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+          end
+        end
+      end
     end
   end
 end

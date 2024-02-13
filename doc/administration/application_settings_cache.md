@@ -1,10 +1,14 @@
 ---
-stage: Data Stores
+stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Application cache interval **(FREE SELF)**
+# Application cache interval
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 By default, GitLab caches application settings for 60 seconds. Occasionally,
 you may need to increase that interval to have more delay between application

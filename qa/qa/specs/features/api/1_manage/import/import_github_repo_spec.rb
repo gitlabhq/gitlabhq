@@ -34,7 +34,6 @@ module QA
             issue_event: 10,
             pull_request: 1,
             pull_request_review: 2,
-            pull_request_review_request: 1,
             diff_note: 1,
             label: 9,
             milestone: 1,

@@ -1,17 +1,28 @@
 <script>
-import { GlCard, GlTable, GlLoadingIcon } from '@gitlab/ui';
+import { GlButton, GlCard, GlTable, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
+import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
-import { s__ } from '~/locale';
+import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
+import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
+
+const ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL = {
+  DEVELOPER: __('Developer'),
+  MAINTAINER: __('Maintainer'),
+  OWNER: __('Owner'),
+};
 
 export default {
   components: {
     SettingsBlock,
+    GlButton,
     GlCard,
     GlTable,
     GlLoadingIcon,
+    PackagesProtectionRuleForm,
+    GlKeysetPagination,
   },
   inject: ['projectPath'],
   i18n: {
@@ -24,41 +35,76 @@ export default {
     return {
       fetchSettingsError: false,
       packageProtectionRules: [],
+      protectionRuleFormVisibility: false,
+      packageProtectionRulesQueryPayload: { nodes: [], pageInfo: {} },
+      packageProtectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
     };
   },
   computed: {
     tableItems() {
-      return this.packageProtectionRules.map((packagesProtectionRule) => {
+      return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
         return {
           col_1_package_name_pattern: packagesProtectionRule.packageNamePattern,
-          col_2_package_type: packagesProtectionRule.packageType,
+          col_2_package_type: getPackageTypeLabel(packagesProtectionRule.packageType),
           col_3_push_protected_up_to_access_level:
-            packagesProtectionRule.pushProtectedUpToAccessLevel,
+            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[
+              packagesProtectionRule.pushProtectedUpToAccessLevel
+            ],
         };
       });
     },
-    totalItems() {
-      return this.packageProtectionRules.length;
+    packageProtectionRulesQueryPageInfo() {
+      return this.packageProtectionRulesQueryPayload.pageInfo;
+    },
+    packageProtectionRulesQueryResult() {
+      return this.packageProtectionRulesQueryPayload.nodes;
     },
     isLoadingPackageProtectionRules() {
-      return this.$apollo.queries.packageProtectionRules.loading;
+      return this.$apollo.queries.packageProtectionRulesQueryPayload.loading;
+    },
+    isAddProtectionRuleButtonDisabled() {
+      return this.protectionRuleFormVisibility;
     },
   },
   apollo: {
-    packageProtectionRules: {
+    packageProtectionRulesQueryPayload: {
       query: packagesProtectionRuleQuery,
       variables() {
         return {
           projectPath: this.projectPath,
-          first: PAGINATION_DEFAULT_PER_PAGE,
+          ...this.packageProtectionRulesQueryPaginationParams,
         };
       },
-      update: (data) => {
-        return data.project?.packagesProtectionRules?.nodes || [];
+      update(data) {
+        return data.project?.packagesProtectionRules ?? this.packageProtectionRulesQueryPayload;
       },
       error(e) {
         this.fetchSettingsError = e;
       },
+    },
+  },
+  methods: {
+    showProtectionRuleForm() {
+      this.protectionRuleFormVisibility = true;
+    },
+    hideProtectionRuleForm() {
+      this.protectionRuleFormVisibility = false;
+    },
+    refetchProtectionRules() {
+      this.$apollo.queries.packageProtectionRulesQueryPayload.refetch();
+      this.hideProtectionRuleForm();
+    },
+    onNextPage() {
+      this.packageProtectionRulesQueryPaginationParams = {
+        after: this.packageProtectionRulesQueryPageInfo.endCursor,
+        first: PAGINATION_DEFAULT_PER_PAGE,
+      };
+    },
+    onPrevPage() {
+      this.packageProtectionRulesQueryPaginationParams = {
+        before: this.packageProtectionRulesQueryPageInfo.startCursor,
+        last: PAGINATION_DEFAULT_PER_PAGE,
+      };
     },
   },
   fields: [
@@ -92,22 +138,48 @@ export default {
         <template #header>
           <div class="gl-new-card-title-wrapper gl-justify-content-space-between">
             <h3 class="gl-new-card-title">{{ $options.i18n.settingBlockTitle }}</h3>
+            <div class="gl-new-card-actions">
+              <gl-button
+                size="small"
+                :disabled="isAddProtectionRuleButtonDisabled"
+                @click="showProtectionRuleForm"
+              >
+                {{ s__('PackageRegistry|Add package protection rule') }}
+              </gl-button>
+            </div>
           </div>
         </template>
 
         <template #default>
+          <packages-protection-rule-form
+            v-if="protectionRuleFormVisibility"
+            @cancel="hideProtectionRuleForm"
+            @submit="refetchProtectionRules"
+          />
+
           <gl-table
             :items="tableItems"
             :fields="$options.fields"
             show-empty
             stacked="md"
-            class="mb-3"
+            class="gl-mb-5!"
+            :aria-label="$options.i18n.settingBlockTitle"
             :busy="isLoadingPackageProtectionRules"
           >
             <template #table-busy>
               <gl-loading-icon size="sm" class="gl-my-5" />
             </template>
           </gl-table>
+
+          <div class="gl-display-flex gl-justify-content-center gl-mb-3">
+            <gl-keyset-pagination
+              v-bind="packageProtectionRulesQueryPageInfo"
+              :prev-text="__('Previous')"
+              :next-text="__('Next')"
+              @prev="onPrevPage"
+              @next="onNextPage"
+            />
+          </div>
         </template>
       </gl-card>
     </template>

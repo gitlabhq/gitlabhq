@@ -4,9 +4,13 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Topics API **(FREE ALL)**
+# Topics API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.5.
 
 Interact with project topics using the REST API.
 
@@ -200,7 +204,7 @@ curl --request PUT \
 
 ### Remove a topic avatar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348148) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348148) in GitLab 14.6.
 
 To remove a topic avatar, use a blank value for the `avatar` attribute.
 
@@ -215,7 +219,7 @@ curl --request PUT \
 
 ## Delete a project topic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80725) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80725) in GitLab 14.9.
 
 You must be an administrator to delete a project topic.
 When you delete a project topic, you also delete the topic assignment for projects.
@@ -240,7 +244,7 @@ curl --request DELETE \
 
 ## Merge topics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95501) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95501) in GitLab 15.4.
 
 You must be an administrator to merge a source topic into a target topic.
 When you merge topics, you delete the source topic and move all assigned projects to the target topic.

@@ -295,7 +295,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'when manual action was played' do
           before do
-            find('[data-testid="pipelines-manual-actions-dropdown"]').click
+            find('[data-testid="pipelines-manual-actions-dropdown"] button').click
 
             wait_for_requests
 
@@ -326,7 +326,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         it "has link to the delayed job's action" do
-          find('[data-testid="pipelines-manual-actions-dropdown"]').click
+          find('[data-testid="pipelines-manual-actions-dropdown"] button').click
 
           wait_for_requests
 
@@ -345,7 +345,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it "shows 00:00:00 as the remaining time" do
-            find('[data-testid="pipelines-manual-actions-dropdown"]').click
+            find('[data-testid="pipelines-manual-actions-dropdown"] button').click
 
             wait_for_requests
 
@@ -354,7 +354,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         context 'when user played a delayed job immediately' do
-          let(:manual_action_selector) { '[data-testid="pipelines-manual-actions-dropdown"]' }
+          let(:manual_action_selector) { '[data-testid="pipelines-manual-actions-dropdown"] button' }
+          let(:manual_action_dropdown) { '[data-testid="pipelines-manual-actions-dropdown"]' }
 
           before do
             find(manual_action_selector).click
@@ -363,8 +364,8 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             end
 
             # Wait for UI to transition to ensure a request has been made
-            within(manual_action_selector) { find('.gl-spinner') }
-            within(manual_action_selector) { find('[data-testid="play-icon"]') }
+            within(manual_action_dropdown) { find('.gl-spinner') }
+            within(manual_action_dropdown) { find('[data-testid="play-icon"]') }
 
             wait_for_requests
           end
@@ -841,11 +842,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'when gitlab ci file is present' do
-        before do
-          allow_next_instance_of(Repository) do |instance|
-            allow(instance).to receive(:gitlab_ci_yml).and_return(true)
-          end
-        end
+        let_it_be(:project) { create(:project, :small_repo, files: { '.gitlab-ci.yml' => 'test' }) }
 
         it 'does not show migration prompt' do
           expect_not_to_show_prompt(project)

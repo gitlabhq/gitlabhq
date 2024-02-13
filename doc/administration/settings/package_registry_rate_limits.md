@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package registry rate limits **(FREE SELF)**
+# Package registry rate limits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 With the [GitLab package registry](../../user/packages/package_registry/index.md),
 you can use GitLab as a private or public registry for a variety of common package managers. You can

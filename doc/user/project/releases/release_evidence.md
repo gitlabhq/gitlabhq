@@ -4,9 +4,13 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Release evidence **(FREE ALL)**
+# Release evidence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26019) in GitLab 12.6.
 
 Each time a release is created, GitLab takes a snapshot of data that's related to it.
 This data is saved in a JSON file and called *release evidence*. The feature
@@ -83,17 +87,25 @@ Here is an example of a release evidence object:
 }
 ```
 
-## Collect release evidence **(PREMIUM SELF)**
+## Collect release evidence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199065) in GitLab 12.10.
 
 When a release is created, release evidence is automatically collected. To initiate evidence collection any other time, use an [API call](../../../api/releases/index.md#collect-release-evidence). You can collect release evidence multiple times for one release.
 
 Evidence collection snapshots are visible on the Releases page, along with the timestamp the evidence was collected.
 
-## Include report artifacts as release evidence **(ULTIMATE ALL)**
+## Include report artifacts as release evidence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
 
 When you create a release, if [job artifacts](../../../ci/yaml/index.md#artifactsreports) are included in the last pipeline that ran, they are automatically included in the release as release evidence.
 
@@ -127,7 +139,7 @@ keyword. For more information, see [issue 222351](https://gitlab.com/gitlab-org/
 
 ## Schedule release evidence collection
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23697) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23697) in GitLab 12.8.
 
 In the API:
 

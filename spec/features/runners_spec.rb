@@ -139,14 +139,14 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
           end
         end
 
-        context 'when multiple shared runners are configured' do
+        context 'when multiple instance runners are configured' do
           let_it_be(:shared_runner_2) { create(:ci_runner, :instance) }
 
           it 'shows the runner count' do
             visit project_runners_path(project)
 
             within '[data-testid="available-shared-runners"]' do
-              expect(page).to have_content format(_('Available shared runners: %{count}'), { count: 2 })
+              expect(page).to have_content format(_('Available instance runners: %{count}'), { count: 2 })
             end
           end
 

@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/cmd/gitlab-zip-metadata/limit"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
@@ -16,6 +17,7 @@ const progName = "gitlab-zip-metadata"
 var Version = "unknown"
 
 var printVersion = flag.Bool("version", false, "Print version and exit")
+var zipReaderLimitBytes = flag.Int64("zip-reader-limit", config.DefaultMetadataConfig.ZipReaderLimitBytes, "The optional number of bytes to limit the zip reader to")
 
 func main() {
 	flag.Parse()
@@ -26,15 +28,15 @@ func main() {
 		os.Exit(0)
 	}
 
-	if len(os.Args) != 2 {
+	if len(flag.Args()) != 1 {
 		fmt.Fprintf(os.Stderr, "Usage: %s FILE.ZIP\n", progName)
 		os.Exit(1)
 	}
 
 	readerFunc := func(reader io.ReaderAt, size int64) io.ReaderAt {
-		readLimit := limit.SizeToLimit(size)
+		zipReaderLimit := sizeToLimit(size, *zipReaderLimitBytes)
 
-		return limit.NewLimitedReaderAt(reader, readLimit, func(read int64) {
+		return limit.NewLimitedReaderAt(reader, zipReaderLimit, func(read int64) {
 			fmt.Fprintf(os.Stderr, "%s: zip archive limit exceeded after reading %d bytes\n", progName, read)
 
 			fatalError(zipartifacts.ErrorCode[zipartifacts.CodeLimitsReached])
@@ -44,7 +46,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	archive, err := zipartifacts.OpenArchiveWithReaderFunc(ctx, os.Args[1], readerFunc)
+	archive, err := zipartifacts.OpenArchiveWithReaderFunc(ctx, flag.Args()[0], readerFunc)
 	if err != nil {
 		fatalError(err)
 	}
@@ -64,4 +66,15 @@ func fatalError(err error) {
 	} else {
 		os.Exit(1)
 	}
+}
+
+// sizeToLimit tries to dermine an appropriate limit in bytes for an archive of
+// a given size. If the size is less than 1 gigabyte we always limit a reader
+// to 100 megabytes, otherwise the limit is 10% of a given size.
+func sizeToLimit(size, defaultSize int64) int64 {
+	if size <= 1024*config.Megabyte {
+		return defaultSize
+	}
+
+	return size / 10
 }

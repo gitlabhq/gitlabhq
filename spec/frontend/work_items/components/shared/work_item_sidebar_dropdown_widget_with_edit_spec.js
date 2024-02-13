@@ -21,6 +21,11 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
     canUpdate = true,
     isEditing = false,
     updateInProgress = false,
+    showFooter = false,
+    slots = {},
+    multiSelect = false,
+    infiniteScroll = false,
+    infiniteScrollLoading = false,
   } = {}) => {
     wrapper = mountExtended(WorkItemSidebarDropdownWidgetWithEdit, {
       propsData: {
@@ -31,7 +36,12 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
         canUpdate,
         updateInProgress,
         headerText: __('Select iteration'),
+        showFooter,
+        multiSelect,
+        infiniteScroll,
+        infiniteScrollLoading,
       },
+      slots,
     });
 
     if (isEditing) {
@@ -152,10 +162,41 @@ describe('WorkItemSidebarDropdownWidgetWithEdit component', () => {
         searching: false,
         infiniteScroll: false,
         noResultsText: 'No matching results',
-        toggleText: 'None',
         searchPlaceholder: 'Search',
         resetButtonLabel: 'Clear',
       });
+    });
+
+    it('renders the footer when enabled', async () => {
+      const FOOTER_SLOT_HTML = 'Test message';
+      createComponent({ isEditing: true, showFooter: true, slots: { footer: FOOTER_SLOT_HTML } });
+
+      await nextTick();
+      expect(wrapper.text()).toContain(FOOTER_SLOT_HTML);
+    });
+
+    it('supports multiselect', async () => {
+      createComponent({ isEditing: true, multiSelect: true });
+
+      await nextTick();
+
+      expect(findCollapsibleListbox().props('multiple')).toBe(true);
+    });
+
+    it('supports infinite scrolling', async () => {
+      createComponent({ isEditing: true, infiniteScroll: true });
+
+      await nextTick();
+
+      expect(findCollapsibleListbox().props('infiniteScroll')).toBe(true);
+    });
+
+    it('shows loader when bottom reached', async () => {
+      createComponent({ isEditing: true, infiniteScroll: true, infiniteScrollLoading: true });
+
+      await nextTick();
+
+      expect(findCollapsibleListbox().props('infiniteScrollLoading')).toBe(true);
     });
   });
 });

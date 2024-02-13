@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Where variables can be used **(FREE ALL)**
+# Where variables can be used
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As it's described in the [CI/CD variables](index.md) documentation, you can
 define many different variables. Some of them can be used for all GitLab CI/CD
@@ -21,7 +25,7 @@ There are two places defined variables can be used. On the:
 
 ### `.gitlab-ci.yml` file
 
-> Support for `CI_ENVIRONMENT_*` variables except `CI_ENVIRONMENT_SLUG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694) in GitLab 16.4.
+> - Support for `CI_ENVIRONMENT_*` variables except `CI_ENVIRONMENT_SLUG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128694) in GitLab 16.4.
 
 | Definition                                                            | Can be expanded? | Expansion place        | Description |
 |:----------------------------------------------------------------------|:-----------------|:-----------------------|:------------|

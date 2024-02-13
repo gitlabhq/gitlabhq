@@ -216,6 +216,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         expect_allowed(:update_pipeline)
         expect_allowed(:cancel_pipeline)
         expect_allowed(:create_pipeline_schedule)
+        expect_allowed(:read_ci_pipeline_schedules_plan_limit)
       end
     end
 
@@ -228,6 +229,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         expect_disallowed(:cancel_pipeline)
         expect_disallowed(:destroy_pipeline)
         expect_disallowed(:create_pipeline_schedule)
+        expect_disallowed(:read_ci_pipeline_schedules_plan_limit)
       end
     end
 

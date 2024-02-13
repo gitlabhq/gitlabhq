@@ -3,6 +3,8 @@
 module Gitlab
   module Import
     module AdvanceStage
+      extend ActiveSupport::Concern
+
       INTERVAL = 30.seconds.to_i
       TIMEOUT_DURATION = 2.hours
 
@@ -11,6 +13,11 @@ module Gitlab
       # The number of seconds to wait (while blocking the thread) before
       # continuing to the next waiter.
       BLOCKING_WAIT_TIME = 5
+
+      included do
+        sidekiq_options dead: false, retry: 6
+        feature_category :importers
+      end
 
       # project_id - The ID of the project being imported.
       # waiters - A Hash mapping Gitlab::JobWaiter keys to the number of

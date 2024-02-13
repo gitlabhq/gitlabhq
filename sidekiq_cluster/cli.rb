@@ -40,6 +40,8 @@ module Gitlab
         # https://ruby.social/@getajobmike/109326475545816363
         @max_concurrency = 20
         @min_concurrency = 0
+        # TODO: to be set to 20 once max_concurrency and min_concurrency is removed https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2760
+        @concurrency = 0
         @environment = ENV['RAILS_ENV'] || 'development'
         @metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/sidekiq")
         @pid = nil
@@ -143,6 +145,7 @@ module Gitlab
           directory: @rails_path,
           max_concurrency: @max_concurrency,
           min_concurrency: @min_concurrency,
+          concurrency: @concurrency,
           dryrun: @dryrun,
           timeout: @soft_timeout_seconds
         )
@@ -218,6 +221,10 @@ module Gitlab
 
           opt.on('-h', '--help', 'Shows this help message') do
             abort opt.to_s
+          end
+
+          opt.on('-c', '--concurrency INT', 'Number of threads to use with Sidekiq (default: 0)') do |int|
+            @concurrency = int.to_i
           end
 
           opt.on('-m', '--max-concurrency INT', 'Maximum threads to use with Sidekiq (default: 20, 0 to disable)') do |int|

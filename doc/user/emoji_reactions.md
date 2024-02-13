@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Emoji reactions **(FREE ALL)**
+# Emoji reactions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 > - Reacting with emoji on work items (such as tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393599) in GitLab 16.0.
@@ -48,11 +52,7 @@ To remove an emoji reaction, select the emoji again.
 > - Enabled on GitLab.com in GitLab 14.0.
 > - UI to add emoji [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333095) in GitLab 16.2.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138969) in GitLab 16.7.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `custom_emoji`.
-On GitLab.com, this feature is available.
-This feature is ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 16.9. Feature flag `custom_emoji` removed.
 
 Custom emoji show in the emoji picker everywhere you can react with emoji.
 
@@ -75,7 +75,7 @@ For a list of custom emoji available for GitLab.com, see
 
 ### Upload custom emoji to a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128355) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128355) in GitLab 16.5.
 
 Upload your custom emoji to a group to use them in all its subgroups and projects.
 

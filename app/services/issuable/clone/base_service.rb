@@ -13,7 +13,7 @@ module Issuable
 
         # Using transaction because of a high resources footprint
         # on rewriting notes (unfolding references)
-        #
+
         ApplicationRecord.transaction do
           @new_entity = create_new_entity
           @new_entity.system_note_timestamp = nil
@@ -21,12 +21,16 @@ module Issuable
           update_new_entity
           update_old_entity
           create_notes
+          after_clone_actions
         end
       end
 
       private
 
       attr_reader :target_parent
+
+      # Overwritten in child class
+      def after_clone_actions; end
 
       def rewritten_old_entity_attributes(include_milestone: true)
         Gitlab::Issuable::Clone::AttributesRewriter.new(

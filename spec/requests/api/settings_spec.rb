@@ -75,6 +75,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(1)
       expect(json_response['can_create_group']).to eq(true)
       expect(json_response['jira_connect_application_key']).to eq(nil)
+      expect(json_response['jira_connect_public_key_storage_enabled']).to eq(false)
       expect(json_response['jira_connect_proxy_url']).to eq(nil)
       expect(json_response['user_defaults_to_private_profile']).to eq(false)
       expect(json_response['default_syntax_highlighting_theme']).to eq(1)
@@ -200,6 +201,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             inactive_projects_send_warning_email_after_months: 12,
             can_create_group: false,
             jira_connect_application_key: '123',
+            jira_connect_public_key_storage_enabled: true,
             jira_connect_proxy_url: 'http://example.com',
             bulk_import_enabled: false,
             bulk_import_max_download_file_size: 1,
@@ -284,6 +286,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['inactive_projects_send_warning_email_after_months']).to eq(12)
         expect(json_response['can_create_group']).to eq(false)
         expect(json_response['jira_connect_application_key']).to eq('123')
+        expect(json_response['jira_connect_public_key_storage_enabled']).to eq(true)
         expect(json_response['jira_connect_proxy_url']).to eq('http://example.com')
         expect(json_response['bulk_import_enabled']).to be(false)
         expect(json_response['allow_runner_registration_token']).to be(true)
@@ -306,7 +309,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expected_update = ::Gitlab::Access::BranchProtection.protected_against_developer_pushes.stringify_keys
 
       put api("/application/settings", admin),
-          params: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE }
+        params: { default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
@@ -334,7 +337,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports legacy allow_local_requests_from_hooks_and_services' do
       put api("/application/settings", admin),
-          params: { allow_local_requests_from_hooks_and_services: true }
+        params: { allow_local_requests_from_hooks_and_services: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
@@ -388,8 +391,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
     end
 
     it 'disables ability to switch to legacy storage' do
-      put api("/application/settings", admin),
-          params: { hashed_storage_enabled: false }
+      put api("/application/settings", admin), params: { hashed_storage_enabled: false }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['hashed_storage_enabled']).to eq(true)
@@ -748,7 +750,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports legacy admin_notification_email' do
       put api('/application/settings', admin),
-          params: { admin_notification_email: 'test@example.com' }
+        params: { admin_notification_email: 'test@example.com' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['abuse_notification_email']).to eq('test@example.com')
@@ -756,7 +758,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
     it 'supports setting require_admin_approval_after_user_signup' do
       put api('/application/settings', admin),
-          params: { require_admin_approval_after_user_signup: true }
+        params: { require_admin_approval_after_user_signup: true }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['require_admin_approval_after_user_signup']).to eq(true)
@@ -826,20 +828,14 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
       it 'updates setting' do
         new_value = 'all_tiers'
-        put api("/application/settings", admin),
-        params: {
-          whats_new_variant: new_value
-        }
+        put api("/application/settings", admin), params: { whats_new_variant: new_value }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['whats_new_variant']).to eq(new_value)
       end
 
       it 'fails to update setting with invalid value' do
-        put api("/application/settings", admin),
-        params: {
-          whats_new_variant: 'invalid_value'
-        }
+        put api("/application/settings", admin), params: { whats_new_variant: 'invalid_value' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('whats_new_variant does not have a valid value')
@@ -900,6 +896,30 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
           message = json_response['message']
           expect(message["sentry_dsn"]).to include(a_string_matching("can't be blank"))
         end
+      end
+    end
+
+    context 'with enabled_git_access_protocol' do
+      %w[ssh http].each do |protocol|
+        it "allows #{protocol}" do
+          put api('/application/settings', admin), params: {
+            enabled_git_access_protocol: protocol
+          }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['enabled_git_access_protocol']).to eq(protocol)
+          expect(ApplicationSetting.current.enabled_git_access_protocol).to eq(protocol)
+        end
+      end
+
+      it 'allows "all"' do
+        put api('/application/settings', admin), params: {
+          enabled_git_access_protocol: 'all'
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['enabled_git_access_protocol']).to eq('')
+        expect(ApplicationSetting.current.enabled_git_access_protocol).to eq('')
       end
     end
 

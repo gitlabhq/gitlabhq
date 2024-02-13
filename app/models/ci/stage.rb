@@ -8,6 +8,8 @@ module Ci
     include Gitlab::OptimisticLocking
     include Presentable
 
+    self.primary_key = :id
+
     partitionable scope: :pipeline
 
     enum status: Ci::HasStatus::STATUSES_ENUM

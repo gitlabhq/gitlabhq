@@ -135,10 +135,10 @@ ul.related-merge-requests > li gl-emoji {
 
     @include media-breakpoint-down(xs) {
       .btn.btn-confirm {
-        @include gl-justify-content-start;
+        justify-content: flex-start;
 
         &.dropdown-toggle {
-          @include gl-flex-grow-0;
+          flex-grow: 0;
         }
       }
     }
@@ -198,7 +198,7 @@ ul.related-merge-requests > li gl-emoji {
     display: flex;
 
     .new-branch-col {
-      @include gl-pb-0;
+      padding-bottom: 0;
       align-self: flex-end;
     }
   }

@@ -100,4 +100,21 @@ RSpec.describe 'admin/dashboard/index.html.haml' do
       end
     end
   end
+
+  context 'with "jh transition banner" part' do
+    let(:user) { build(:user, preferred_language: 'uk') }
+
+    before do
+      allow(view).to receive(:show_transition_to_jihu_callout?).and_return(true)
+      allow(view).to receive(:current_user).and_return(user)
+    end
+
+    it 'renders the banner class ".js-jh-transition-banner"' do
+      render
+
+      expect(rendered).to have_selector('.js-jh-transition-banner')
+      expect(rendered).to have_selector("[data-feature-name='transition_to_jihu_callout']")
+      expect(rendered).to have_selector("[data-user-preferred-language='uk']")
+    end
+  end
 end

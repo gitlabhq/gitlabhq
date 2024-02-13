@@ -91,7 +91,8 @@ table.pipeline-project-metrics tr td {
 }
 
 .user-access-role {
-  @include gl-px-3;
+  padding-left: $gl-spacing-scale-3;
+  padding-right: $gl-spacing-scale-3;
   display: inline-block;
   color: $gl-text-color-secondary;
   font-size: 12px;
@@ -120,12 +121,6 @@ table.pipeline-project-metrics tr td {
   .item-type-icon {
     margin-top: 2px;
     width: 20px;
-  }
-
-  > .group-row:not(.has-children) {
-    .folder-caret {
-      opacity: 0;
-    }
   }
 
   .group-list-tree {

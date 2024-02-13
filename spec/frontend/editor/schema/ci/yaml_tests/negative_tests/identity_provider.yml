@@ -1,0 +1,5 @@
+id_token_with_missing_identity_value:
+  identity: ""
+
+id_token_with_unknown_identity_value:
+  identity: unknown

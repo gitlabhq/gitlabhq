@@ -5,7 +5,11 @@ description: Programmatic interaction with GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GraphQL API **(FREE ALL)**
+# GraphQL API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [GraphQL](https://graphql.org/) is a query language for APIs. You can use it to
 request the exact data you need, and therefore limit the number of requests you need.
@@ -46,17 +50,19 @@ The [get started](getting_started.md) page includes different methods to customi
 
 ### Authentication
 
-Some queries can be accessed anonymously without the request needing to be authenticated,
-but others require it. Mutations always require authentication.
+You can access some queries without authentication, but others require authentication. Mutations always require
+authentication.
 
-Authentication can happen by:
+You can authenticate by using either a:
 
 - [Token](#token-authentication)
 - [Session cookie](#session-cookie-authentication)
 
-If the authentication information is not valid, GitLab returns an error message with a status code of 401:
+If the authentication information is not valid, GitLab returns an error message with a status code of `401`:
 
+```json
 {"errors":[{"message":"Invalid token"}]}
+```
 
 #### Token authentication
 
@@ -83,7 +89,7 @@ curl "https://gitlab.com/api/graphql" --header "Authorization: Bearer <token>" \
 
 ##### Parameter authentication
 
-Alternatively, OAuth 2.0 tokens can be passed in using the `access_token` parameter:
+Example of using an OAuth 2.0 token in the `access_token` parameter:
 
 ```shell
 curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
@@ -91,7 +97,7 @@ curl "https://gitlab.com/api/graphql?access_token=<oauth_token>" \
      --data "{\"query\": \"query {currentUser {name}}\"}"
 ```
 
-Personal, project, or group access tokens can be passed in using the `private_token` parameter:
+You can pass in personal, project, or group access tokens using the `private_token` parameter:
 
 ```shell
 curl "https://gitlab.com/api/graphql?private_token=<access_token>" \
@@ -169,7 +175,7 @@ process would pose significant risk.
 
 ### Verify against the future breaking-change schema
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
 
 You can make calls against the GraphQL API as if all deprecated items were already removed.
 This way, you can verify API calls ahead of a [breaking-change release](#deprecation-and-removal-process)
@@ -182,12 +188,11 @@ To make these calls, add a
 ### Deprecation and removal process
 
 The deprecation and removal process for the GitLab GraphQL API aligns with the wider GitLab
-[deprecation process](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes).
+[deprecation process](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes).
 
 Parts of the schema marked for removal from the GitLab GraphQL API are first
-[deprecated](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecation)
-but still available for at least six releases. They are then [removed](https://about.gitlab.com/handbook/product/gitlab-the-product/#removal)
-entirely during the next `XX.0` major release.
+deprecated but still available for at least six releases. They are then
+removed entirely during the next `XX.0` major release.
 
 Items are marked as deprecated in:
 

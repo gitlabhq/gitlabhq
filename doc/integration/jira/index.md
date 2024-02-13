@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jira **(FREE ALL)**
+# Jira
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can [import your Jira issues to GitLab](../../user/project/import/jira.md).
 If you want to continue to use Jira, you can integrate Jira with GitLab instead.
@@ -44,7 +48,7 @@ This table shows the features available with the Jira issue integration and the 
 | Mention a Jira issue ID in a GitLab branch name, and the Jira issue shows the branch name. | **{dotted-circle}** No | **{check-circle}** Yes, in the Jira issue's development panel. |
 | Add time tracking to a Jira issue. | **{dotted-circle}** No | **{check-circle}** Yes, with Jira Smart Commits. |
 | Use a GitLab commit or merge request to transition a Jira issue. |**{check-circle}** Yes, only a single transition. Typically used to close the Jira issue. | **{check-circle}** Yes, transition the Jira issue to any state with Jira Smart Commits. |
-| [View a list of Jira issues](issues.md#view-jira-issues). | **{check-circle}** Yes | **{dotted-circle}** No |
+| [View a list of Jira issues](configure.md#view-jira-issues). | **{check-circle}** Yes | **{dotted-circle}** No |
 | [Create a Jira issue for a vulnerability](configure.md#create-a-jira-issue-for-a-vulnerability). | **{check-circle}** Yes | **{dotted-circle}** No |
 | Create a GitLab branch from a Jira issue. | **{dotted-circle}** No | **{check-circle}** Yes, in the Jira issue's development panel. |
 | Mention a Jira issue ID in a GitLab merge request, branch name, or any of the last 5,000 commits to the branch after the last successful deployment to the environment to sync a GitLab deployment to a Jira issue. | **{dotted-circle}** No | **{check-circle}** Yes, in the Jira issue's development panel. |

@@ -4,12 +4,16 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SAST **(FREE ALL)**
+# Troubleshooting SAST
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../index.md#debug-level-logging).
+[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
 
 ## Pipeline errors related to changes in the GitLab-managed CI/CD template
 
@@ -54,7 +58,7 @@ For information on this, see the [general Application Security troubleshooting s
 
 ## Error: `sast is used for configuration only, and its script should not be executed`
 
-For information on this, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information on this, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## SAST jobs are running unexpectedly
 

@@ -5,6 +5,71 @@ require 'spec_helper'
 RSpec.describe API::UsageData, feature_category: :service_ping do
   let_it_be(:user) { create(:user) }
 
+  describe 'GET /usage_data/service_ping' do
+    let(:endpoint) { '/usage_data/service_ping' }
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(usage_data_api: false)
+      end
+
+      it 'returns not_found' do
+        get api(endpoint)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'without authentication' do
+      it 'returns 401 response' do
+        get api(endpoint)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'when authenticated as non-admin' do
+      let(:user) { create(:user) }
+
+      it 'returns 403' do
+        get api(endpoint, user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when authenticated as an admin using read_service_ping access token' do
+      let(:scopes) { [Gitlab::Auth::READ_SERVICE_PING_SCOPE] }
+      let(:personal_access_token) { create(:personal_access_token, user: user, scopes: scopes) }
+
+      before do
+        allow(Ability).to receive(:allowed?).and_return(true)
+      end
+
+      it 'returns 200' do
+        get api(endpoint, personal_access_token: personal_access_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns service ping payload' do
+        usage_data = { 'key' => 'value' }
+        allow(Rails.cache).to receive(:fetch).and_return(usage_data)
+
+        get api(endpoint, personal_access_token: personal_access_token)
+
+        expect(response.body).to eq(usage_data.to_json)
+      end
+
+      it 'tracks an internal event' do
+        expect(Gitlab::InternalEvents).to receive(:track_event)
+          .with('request_service_ping_via_rest', user: user)
+
+        get api(endpoint, personal_access_token: personal_access_token)
+      end
+    end
+  end
+
   describe 'POST /usage_data/increment_counter' do
     let(:endpoint) { '/usage_data/increment_counter' }
     let(:known_event) { "diff_searches" }
@@ -72,7 +137,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with unknown event' do
         before do
-          skip_feature_flags_yaml_validation
           skip_default_enabled_yaml_check
         end
 
@@ -149,10 +213,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
 
       context 'with unknown event' do
-        before do
-          skip_feature_flags_yaml_validation
-        end
-
         it 'returns status ok' do
           expect(Gitlab::Redis::HLL).not_to receive(:add)
 

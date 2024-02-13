@@ -4,14 +4,18 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on Windows **(FREE SAAS BETA)**
+# SaaS runners on Windows
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+**Status:** Beta
 
 SaaS runner on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
 [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-
-These SaaS runners are in [Beta](../../../policy/experiment-beta-support.md#beta)
+SaaS runners on Windows are in [Beta](../../../policy/experiment-beta-support.md#beta)
 and aren't recommended for production workloads.
 
 We want to keep iterating to get Windows runners in a stable state and
@@ -21,27 +25,27 @@ You can follow our work towards this goal in the
 
 ## Machine types available for Windows
 
-| Runner Tag             | vCPUs | Memory | Storage |
-| ---------------------- | ----- | ------ | ------- |
-| `shared-windows`       | 2     | 7.5 GB | 75 GB   |
+| Runner Tag                  | vCPUs | Memory | Storage |
+| --------------------------- | ----- | ------ | ------- |
+| `saas-windows-medium-amd64` | 2     | 7.5 GB | 75 GB   |
 
 ## Supported Windows versions
 
 The Windows runner virtual machine instances do not use the GitLab Docker executor. This means that you can't specify
 [`image`](../../../ci/yaml/index.md#image) or [`services`](../../../ci/yaml/index.md#services) in your pipeline configuration.
-Instead you have to select the [`tags`](../../../ci/yaml/index.md#tags) for the desired Windows version.
 
 You can execute your job in one of the following Windows versions:
 
-| Version tag    | Status        |
-|----------------|---------------|
-| `windows-1809` | `Beta`        |
+| Version      | Status        |
+|--------------|---------------|
+| Windows 2022 | `Beta`        |
+| Windows 2019 | `Deprecated` (Removal in 17.0) |
 
 You can find a full list of available pre-installed software in
 the [pre-installed software documentation](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers/blob/main/cookbooks/preinstalled-software/README.md).
 
 NOTE:
-Each time you run a job that requires tooling or dependencies not available in the base image, those components must be installed to the newly provisioned VM increasing the total job duration.
+We are only supporting a single version of Windows at this time.
 
 ## Supported shell
 
@@ -53,29 +57,24 @@ The `script` section of your `.gitlab-ci.yml` file therefore requires PowerShell
 Below is a sample `.gitlab-ci.yml` file that shows how to start using the runners for Windows:
 
 ```yaml
-.shared_windows_runners:
+.windows_job:
   tags:
-    - shared-windows
-    - windows-1809
+    - saas-windows-medium-amd64
   before_script:
     - Set-Variable -Name "time" -Value (date -Format "%H:%m")
     - echo ${time}
     - echo "started by ${GITLAB_USER_NAME}"
 
-stages:
-  - build
-  - test
-
 build:
   extends:
-    - .shared_windows_runners
+    - .windows_job
   stage: build
   script:
     - echo "running scripts in the build job"
 
 test:
   extends:
-    - .shared_windows_runners
+    - .windows_job
   stage: test
   script:
     - echo "running scripts in the test job"

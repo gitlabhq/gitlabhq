@@ -48,7 +48,7 @@ describe('Design note component', () => {
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
   const findEditButton = () => wrapper.findByTestId('note-edit');
   const findNoteContent = () => wrapper.findByTestId('note-text');
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdown = () => wrapper.findByTestId('more-actions');
   const findDropdownItems = () => findDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findEditDropdownItem = () => findDropdownItems().at(0);
   const findCopyLinkDropdownItem = () => findDropdownItems().at(1);
@@ -146,6 +146,31 @@ describe('Design note component', () => {
 
     it('should not display a dropdown if user does not have a permission to delete note', () => {
       expect(findDropdown().exists()).toBe(false);
+    });
+
+    it('should not have a `Deleted user` header', () => {
+      expect(wrapper.text()).not.toContain('A deleted user');
+    });
+  });
+
+  describe('when note has no author', () => {
+    beforeEach(() => {
+      createComponent({
+        props: {
+          note: {
+            ...note,
+            author: null,
+          },
+        },
+      });
+    });
+
+    it('should not render author details', () => {
+      expect(findUserLink().exists()).toBe(false);
+    });
+
+    it('should render a `Deleted user` header', () => {
+      expect(wrapper.text()).toContain('A deleted user');
     });
   });
 
@@ -280,6 +305,7 @@ describe('Design note component', () => {
           ...note,
           userPermissions: {
             adminNote: true,
+            awardEmoji: false,
           },
         },
       },
@@ -297,6 +323,7 @@ describe('Design note component', () => {
           ...note,
           userPermissions: {
             adminNote: true,
+            awardEmoji: false,
           },
         },
       },
@@ -326,7 +353,6 @@ describe('Design note component', () => {
 
       expect(emojiPicker.exists()).toBe(true);
       expect(emojiPicker.props()).toMatchObject({
-        boundary: 'viewport',
         right: false,
       });
     });

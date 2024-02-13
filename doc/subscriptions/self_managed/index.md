@@ -5,7 +5,11 @@ description: Billable users, renewal and upgrade info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab self-managed subscription **(PREMIUM SELF)**
+# GitLab self-managed subscription
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 After you subscribe to GitLab, you can manage the details of your self-managed subscription.
 
@@ -87,7 +91,11 @@ If you add more users to your GitLab instance than you are licensed for, payment
 
 If you do not add these users during the renewal process, your license key will not work.
 
-### Free Guest users **(ULTIMATE ALL)**
+### Free Guest users
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
 The user must not be assigned any other role, anywhere in the instance.
@@ -125,7 +133,7 @@ GitLab has several features which can help you manage the number of users:
 
 ## Subscription data synchronization
 
-> Introduced in GitLab 14.1.
+> - Introduced in GitLab 14.1.
 
 Subscription data can be automatically synchronized between your self-managed instance and GitLab.
 To enable subscription data synchronization you must have:
@@ -247,7 +255,7 @@ It also displays the following information:
 
 ## Export your license usage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66826) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66826) in GitLab 14.2.
 
 If you are an administrator, you can export your license usage into a CSV:
 
@@ -273,6 +281,9 @@ NOTES:
 
 - All date timestamps are displayed in UTC.
 - A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
+
+WARNING:
+Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../../administration/license_file.md#submit-license-usage-data).
 
 ## Renew your subscription
 

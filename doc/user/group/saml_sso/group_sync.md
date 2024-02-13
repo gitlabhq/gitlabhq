@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML Group Sync **(PREMIUM ALL)**
+# SAML Group Sync
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
 WARNING:
 Adding or changing Group Sync configuration can remove users from the mapped GitLab group.
@@ -18,65 +22,13 @@ or that all groups are removed from GitLab to disable Group Sync.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.be/Iqvo2tJfXjg).
 
-## Configure SAML Group Sync
-
-NOTE:
-You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you use SAML Group Sync and have multiple GitLab nodes, for example in a distributed or highly available architecture.
-
-WARNING:
-To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
-enabling Group Sync in GitLab.
-
-To configure SAML Group Sync for self-managed GitLab instances:
-
-1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following attribute statement example for reference:
-
-   ```ruby
-   gitlab_rails['omniauth_providers'] = [
-     {
-       name: "saml",
-       label: "Provider name", # optional label for login button, defaults to "Saml",
-       groups_attribute: 'Groups',
-       args: {
-         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
-         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
-         idp_sso_target_url: "https://login.example.com/idp",
-         issuer: "https://gitlab.example.com",
-         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
-       }
-     }
-   ]
-   ```
-
-To configure SAML Group Sync for GitLab.com instances:
-
-1. See [SAML SSO for GitLab.com groups](index.md).
-1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
-
-NOTE:
-The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.
-For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring [SAML Group Links](#configure-saml-group-links).
-
-```xml
-<saml:AttributeStatement>
-  <saml:Attribute Name="Groups">
-    <saml:AttributeValue xsi:type="xs:string">Developers</saml:AttributeValue>
-    <saml:AttributeValue xsi:type="xs:string">Product Managers</saml:AttributeValue>
-  </saml:Attribute>
-</saml:AttributeStatement>
-```
-
-Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
-are not accepted as a source of groups.
-
-For more information on configuring the
-required group attribute name in the SAML identity provider's settings, see
-example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_config.md#group-sync) and [Okta](../../../user/group/saml_sso/example_saml_config.md#group-sync-1).
-
 ## Configure SAML Group Links
 
-When SAML is enabled, users with the Maintainer or Owner role see a new menu
+SAML Group Sync only manages a group if that group has one or more SAML group links.
+
+You must configure the SAML group links before you configure SAML Group Sync.
+
+When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
 - You can configure one or more **SAML Group Links** to map a SAML identity
@@ -85,8 +37,7 @@ item in group **Settings > SAML Group Links**.
   group on their next SAML sign-in.
 - Group membership is evaluated each time a user signs in using SAML.
 - SAML Group Links can be configured for a top-level group or any subgroup.
-- SAML Group Sync only manages a group if that group has one or more SAML group
-  links. If a SAML group link is created then removed, and there are:
+- If a SAML group link is created then removed, and there are:
   - Other SAML group links configured, users that were in the removed group
     link are automatically removed from the group during sync.
   - No other SAML group links configured, users remain in the group during sync.
@@ -120,13 +71,69 @@ Users granted:
 
 ### Use the API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.
 
 You can use the GitLab API to [list, add, and delete](../../../api/groups.md#saml-group-links) SAML group links.
 
+## Configure SAML Group Sync
+
+NOTE:
+You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you use SAML Group Sync and have multiple GitLab nodes, for example in a distributed or highly available architecture.
+
+WARNING:
+To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
+enabling Group Sync in GitLab.
+
+To configure SAML Group Sync for **self-managed GitLab instances**:
+
+1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following attribute statement example for reference:
+
+   ```ruby
+   gitlab_rails['omniauth_providers'] = [
+     {
+       name: "saml",
+       label: "Provider name", # optional label for login button, defaults to "Saml",
+       groups_attribute: 'Groups',
+       args: {
+         assertion_consumer_service_url: "https://gitlab.example.com/users/auth/saml/callback",
+         idp_cert_fingerprint: "43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8",
+         idp_sso_target_url: "https://login.example.com/idp",
+         issuer: "https://gitlab.example.com",
+         name_identifier_format: "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"
+       }
+     }
+   ]
+   ```
+
+To configure SAML Group Sync for **GitLab.com instances**:
+
+1. See [SAML SSO for GitLab.com groups](index.md).
+1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
+
+NOTE:
+The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.
+For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring [SAML Group Links](#configure-saml-group-links).
+
+```xml
+<saml:AttributeStatement>
+  <saml:Attribute Name="Groups">
+    <saml:AttributeValue xsi:type="xs:string">Developers</saml:AttributeValue>
+    <saml:AttributeValue xsi:type="xs:string">Product Managers</saml:AttributeValue>
+  </saml:Attribute>
+</saml:AttributeStatement>
+```
+
+Other attribute names such as `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`
+are not accepted as a source of groups.
+
+For more information on configuring the
+required group attribute name in the SAML identity provider's settings, see
+example configurations for [Azure AD](../../../user/group/saml_sso/example_saml_config.md#group-sync) and [Okta](../../../user/group/saml_sso/example_saml_config.md#group-sync-1).
+
 ## Microsoft Azure Active Directory integration
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10507) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10507) in GitLab 16.3.
 
 NOTE:
 Microsoft has [announced](https://azure.microsoft.com/en-us/updates/azure-ad-is-becoming-microsoft-entra-id/) that Azure Active Directory (AD) is being renamed to Entra ID.
@@ -194,9 +201,13 @@ With this configuration, if a user signs in with SAML and Azure sends a group ov
 GitLab initiates a Group Sync job to call the Microsoft Graph API and retrieve the user's group membership.
 Then the GitLab Group membership is updated according to SAML Group Links.
 
-## Global SAML group memberships lock **(PREMIUM SELF)**
+## Global SAML group memberships lock
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386390) in GitLab 15.10.
 
 GitLab administrators can use the global SAML group memberships lock to prevent group members from inviting new members to subgroups that have their membership synchronized with SAML Group Links.
 

@@ -1,0 +1,85 @@
+- name: GCP Secret Manager support
+  description: |
+    Secrets stored in GCP Secrets Manager can now be easily retrieved and used in CI/CD jobs. Our new integration simplifies the process of interacting with GCP Secrets Manager through GitLab CI/CD, helping you streamline your build and deploy processes! This is just one of the many ways [GitLab and Google Cloud are better together](https://about.gitlab.com/blog/2023/08/29/gitlab-google-partnership-s3c/)!
+  stage: Verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/secrets/gcp_secret_manager.html
+  image_url: https://about.gitlab.com/images/16_8/gcp_secrets_mgr.png
+  published_at: 2024-01-18
+  release: 16.8
+
+- name: Speed up your builds with the Maven dependency proxy
+  description: |
+    A typical software project relies on a variety of dependencies, which we call packages. Packages can be internally built and maintained, or sourced from a public repository. Based on our user research, we've learned that most projects use a 50/50 mix of public and private packages. Package installation order is very important, as using an incorrect package version can introduce breaking changes and security vulnerabilities into your pipelines.
+
+    Now you can add one external Java repository to your GitLab project. After adding it, when you install a package using the dependency proxy, GitLab first checks for the package in the project. If it's not found, GitLab then attempts to pull the package from the external repository.
+
+    When a package is pulled from the external repository, it's imported into the GitLab project. The next time that particular package is pulled, it's pulled from GitLab and not the external repository. Even if the external repository is having connectivity issues and the package is present in the dependency proxy, pulling the package still works, making your pipelines faster and more reliable.
+
+    If the package changes in the external repository (for example, a user deletes a version and publishes a new one with different files) the dependency proxy detects it. It invalidates the package, so GitLab pulls the newer one. This ensures the correct packages are downloaded, and helps reduce security vulnerabilities.
+  stage: Package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/packages/package_registry/dependency_proxy/
+  image_url: https://img.youtube.com/vi/9NPTXObsSrE/hqdefault.jpg
+  published_at: 2024-01-18
+  release: 16.8
+
+- name: Workspaces are now generally available
+  description: |
+    We're thrilled to share that workspaces are now generally available and ready to improve your developer efficiency!
+
+    By creating secure, on-demand remote development environments, you can reduce the time you spend managing dependencies and onboarding new developers and focus on delivering value faster. With our platform-agnostic approach, you can use your existing cloud infrastructure to host your workspaces and keep your data private and secure.
+
+    Since their introduction in GitLab 16.0, workspaces have received improvements to error handling and reconciliation, support for private projects and SSH connections, additional configuration options, and a new administrator interface. These improvements mean that workspaces are now more flexible, more resilient, and more easily managed at scale.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/workspace/
+  image_url: https://about.gitlab.com/images/16_8/workspaces-ga.png
+  published_at: 2024-01-18
+  release: 16.8
+
+- name: Enforce 2FA for GitLab administrators
+  description: |
+    You can now enforce whether GitLab administrators are required to use two-factor authentication (2FA) in their self-managed instance. It is good security practice to use 2FA for all accounts, especially for privileged accounts like administrators. If this setting is enforced, and an administrator does not already use 2FA, they must set 2FA up on their next sign-in.
+  stage: Govern
+  self-managed: true
+  gitlab-com: false
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/security/two_factor_authentication.html#enforce-2fa-for-administrator-users
+  image_url: https://img.youtube.com/vi/fHleeXzoB6k/hqdefault.jpg
+  published_at: 2024-01-18
+  release: 16.8
+
+- name: Deeper insights into velocity in the Issue Analytics report
+  description: |
+    The **Issue Analytics** report now contains information on the number of closed issues in a month to allow for a detailed velocity analysis. With this valuable addition, GitLab users can now gain insights into trends associated with their projects, and improve the overall turn-around time and value delivered to their customers. The **Issue Analytics** visualization contains a bar chart with the number of issues for each month, with a default time span of 13 months. You can access this chart from the drill-down in the [Value Streams Dashboard](https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#dashboard-metrics-and-drill-down-reports).
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/group/issues_analytics/index.html
+  image_url: https://about.gitlab.com/images/16_8/closed_issues_analytics.png
+  published_at: 2024-01-18
+  release: 16.8
+
+- name: New organization-level DevOps view with DORA-based industry benchmarks
+  description: |
+    We added a new **DORA Performers score** panel to the [Value Streams Dashboard](https://www.youtube.com/watch?v=EA9Sbks27g4) to visualize the status of the organization's DevOps performance across different projects. This new visualization displays a breakdown of the DORA score (high, medium, or low) so that executives can understand the organization's DevOps health top to bottom.
+
+    The [four DORA metrics](https://about.gitlab.com/solutions/value-stream-management/dora/#overview) are available out-of-the-box in GitLab, and now with the new DORA scores organizations can compare their DevOps performance against [industry benchmarks](https://dora.dev/) or peers. This benchmarking helps executives understand where they stand in relation to others, and identify best practices or areas where they might be lagging behind.
+
+    To help us improve the Value Streams Dashboard, please share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
+  stage: Plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#dora-performers-score-panel
+  image_url: https://about.gitlab.com/images/16_8/16.8_vsd_dora.png
+  published_at: 2024-01-18
+  release: 16.8

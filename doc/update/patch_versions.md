@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Universal update guide for patch versions for self-compiled installations **(FREE SELF)**
+# Universal update guide for patch versions for self-compiled installations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 ## Select Version to Install
 
@@ -99,7 +103,11 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
 sudo -u git -H make
 ```
 
-### 8. Install/Update `gitlab-elasticsearch-indexer` **(PREMIUM SELF)**
+### 8. Install/Update `gitlab-elasticsearch-indexer`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 

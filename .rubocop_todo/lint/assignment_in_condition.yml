@@ -152,7 +152,6 @@ Lint/AssignmentInCondition:
     - 'lib/gitlab/authorized_keys.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
     - 'lib/gitlab/blob_helper.rb'
-    - 'lib/gitlab/buffered_io.rb'
     - 'lib/gitlab/changelog/config.rb'
     - 'lib/gitlab/changelog/generator.rb'
     - 'lib/gitlab/chat/output.rb'

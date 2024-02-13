@@ -94,7 +94,14 @@ module LoginHelpers
     visit new_user_session_path if visit
 
     fill_in "user_login", with: user.email
+
+    # When JavaScript is enabled, wait for the password field, with class `.js-password`,
+    # to be replaced by the Vue passsword component,
+    # `app/assets/javascripts/authentication/password/components/password_input.vue`.
+    expect(page).not_to have_selector('.js-password') if javascript_test?
+
     fill_in "user_password", with: (password || user.password)
+
     check 'user_remember_me' if remember
 
     wait_for_all_requests
@@ -112,9 +119,9 @@ module LoginHelpers
     visit new_user_session_path
     expect(page).to have_css('.js-oauth-login')
 
-    check 'remember_me_omniauth' if remember_me
+    check 'js-remember-me-omniauth' if remember_me
 
-    click_button "oauth-login-#{provider}"
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   def sign_in_using_ldap!(user, ldap_tab, ldap_name)
@@ -132,7 +139,7 @@ module LoginHelpers
     visit new_user_registration_path
     expect(page).to have_content('Create an account using').or(have_content('Register with'))
 
-    click_link_or_button "oauth-login-#{provider}"
+    click_button Gitlab::Auth::OAuth::Provider.label_for(provider)
   end
 
   def fake_successful_webauthn_authentication

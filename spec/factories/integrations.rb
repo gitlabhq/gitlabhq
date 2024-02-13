@@ -292,6 +292,13 @@ FactoryBot.define do
     active { true }
   end
 
+  factory :beyond_identity_integration, class: 'Integrations::BeyondIdentity' do
+    type { 'Integrations::BeyondIdentity' }
+    active { true }
+    instance { true }
+    token { 'api-token' }
+  end
+
   factory :assembla_integration, class: 'Integrations::Assembla' do
     project
     token { 'secrettoken' }

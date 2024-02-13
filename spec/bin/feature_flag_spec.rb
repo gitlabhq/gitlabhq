@@ -21,20 +21,20 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
   end
 
   describe FeatureFlagCreator do
-    let(:argv) { %w[feature-flag-name -t gitlab_com_derisk -g group::geo -a https://url -i https://url -m http://url -u username -M 16.6] }
+    let(:argv) { %w[feature-flag-name -t gitlab_com_derisk -g group::geo -a https://url -i https://url -m http://url -u username -M 16.6 -ee] }
     let(:options) { FeatureFlagOptionParser.parse(argv) }
     let(:creator) { described_class.new(options) }
     let(:existing_flags) do
       {
         'existing_feature_flag' =>
-          File.join('config', 'feature_flags', 'gitlab_com_derisk', 'existing_feature_flag.yml')
+          File.join('ee', 'config', 'feature_flags', 'gitlab_com_derisk', 'existing_feature_flag.yml')
       }
     end
 
     before do
       allow(creator).to receive(:all_feature_flag_names) { existing_flags }
-      allow(creator).to receive(:branch_name) { 'feature-branch' }
-      allow(creator).to receive(:editor) { nil }
+      allow(creator).to receive(:branch_name).and_return('feature-branch')
+      allow(creator).to receive(:editor).and_return(nil)
 
       # ignore writes
       allow(File).to receive(:write).and_return(true)
@@ -47,7 +47,7 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
 
     it 'properly creates a feature flag' do
       expect(File).to receive(:write).with(
-        File.join('config', 'feature_flags', 'gitlab_com_derisk', 'feature_flag_name.yml'),
+        File.join('ee', 'config', 'feature_flags', 'gitlab_com_derisk', 'feature_flag_name.yml'),
         anything)
 
       expect do
@@ -57,7 +57,7 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
 
     context 'when running on master' do
       it 'requires feature branch' do
-        expect(creator).to receive(:branch_name) { 'master' }
+        expect(creator).to receive(:branch_name).and_return('master')
 
         expect { subject }.to raise_error(FeatureFlagHelpers::Abort, /Create a branch first/)
       end
@@ -366,6 +366,19 @@ RSpec.describe 'bin/feature-flag', feature_category: :feature_flags do
             expect { described_class.read_rollout_issue_url(options) }.to raise_error(/EOF/)
           end.to output(/URL of the rollout issue/).to_stdout
             .and output(/URL needs to start/).to_stderr
+        end
+      end
+    end
+
+    describe '.read_ee' do
+      context 'with valid ee setting is given' do
+        let(:ee) { '1' }
+
+        it 'reads ee from stdin' do
+          expect(Readline).to receive(:readline).and_return(ee)
+          expect do
+            expect(described_class.read_ee).to eq(true)
+          end.to output(/Is this an EE only feature/).to_stdout
         end
       end
     end

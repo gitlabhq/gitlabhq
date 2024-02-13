@@ -1,10 +1,14 @@
 ---
 stage: Deploy
 group: Environments
-info: A tutorial for deploying an OCI artifact using Flux
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Deploy an OCI artifact using Flux **(FREE ALL)**
+# Tutorial: Deploy an OCI artifact using Flux
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial teaches you how to package your Kubernetes manifests into an [OCI](https://opencontainers.org/)
 artifact and deploy them to your cluster using Flux. You'll set up a sample manifest project, configure it to
@@ -106,7 +110,7 @@ To configure, create an [`OCIRepository`](https://fluxcd.io/flux/components/sour
    with the following contents:
 
    ```yaml
-   apiVersion: source.toolkit.fluxcd.io/v1
+   apiVersion: source.toolkit.fluxcd.io/v1beta2
    kind: OCIRepository
    metadata:
      name: web-app-manifests

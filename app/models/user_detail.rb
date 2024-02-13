@@ -39,6 +39,7 @@ class UserDetail < MainClusterwide::ApplicationRecord
   validates :skype, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :twitter, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :website_url, length: { maximum: DEFAULT_FIELD_LENGTH }, url: true, allow_blank: true, if: :website_url_changed?
+  validates :onboarding_status, json_schema: { filename: 'user_detail_onboarding_status' }
 
   before_validation :sanitize_attrs
   before_save :prevent_nil_fields

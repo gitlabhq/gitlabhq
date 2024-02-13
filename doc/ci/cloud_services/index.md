@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect to cloud services **(FREE ALL)**
+# Connect to cloud services
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - `CI_JOB_JWT` variable for reading secrets from Vault [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207125) in GitLab 12.10.
 > - `CI_JOB_JWT_V2` variable to support additional OIDC providers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346737) in GitLab 14.7.
@@ -46,7 +50,7 @@ review for the pipeline, focusing on the additional access. For more information
 - Removes the need to store secrets in your GitLab group or project. Temporary credentials can be retrieved from your cloud provider through OIDC.
 - Provides temporary access to cloud resources with granular GitLab conditionals including a group, project, branch, or tag.
 - Enables you to define separation of duties in the CI/CD job with conditional access to environments. Historically, apps may have been deployed with a designated GitLab Runner that had only access to staging or production environments. This led to Runner sprawl as each machine had dedicated permissions.
-- Allows shared runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
+- Allows instance runners to securely access multiple cloud accounts. The access is determined by the JWT token, which is specific to the user running the pipeline.
 - Removes the need to create logic to rotate secrets by retrieving temporary credentials by default.
 
 ## How it works

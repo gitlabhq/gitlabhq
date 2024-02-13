@@ -43,8 +43,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/1180',
           illustration: {
-            image: 'illustrations/pending_job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-pending-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job has not started yet',
             content: 'This job is in pending state and is waiting to be picked by a runner',
           },
@@ -76,8 +76,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/1180',
               illustration: {
-                image: 'illustrations/pending_job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-pending-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job has not started yet',
                 content: 'This job is in pending state and is waiting to be picked by a runner',
               },
@@ -105,8 +105,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/444',
           illustration: {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job does not have a trace.',
           },
           favicon:
@@ -137,8 +137,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/444',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -246,8 +246,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/445',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -278,8 +278,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/446',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -310,8 +310,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/447',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -338,8 +338,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/452',
           illustration: {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job does not have a trace.',
           },
           favicon:
@@ -370,8 +370,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/452',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -420,8 +420,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/448',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -452,8 +452,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/449',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -484,8 +484,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/451',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -512,8 +512,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/453',
           illustration: {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job does not have a trace.',
           },
           favicon:
@@ -544,8 +544,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/453',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -572,8 +572,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/454',
           illustration: {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job does not have a trace.',
           },
           favicon:
@@ -604,8 +604,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/454',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -654,8 +654,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/457',
           illustration: {
-            image: 'illustrations/job_not_triggered.svg',
-            size: 'svg-306',
+            image: 'illustrations/empty-state/empty-job-not-triggered-md.svg',
+            size: '',
             title: 'This job has not been triggered yet',
             content:
               'This job depends on upstream jobs that need to succeed in order for this job to be triggered',
@@ -688,8 +688,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/457',
               illustration: {
-                image: 'illustrations/job_not_triggered.svg',
-                size: 'svg-306',
+                image: 'illustrations/empty-state/empty-job-not-triggered-md.svg',
+                size: '',
                 title: 'This job has not been triggered yet',
                 content:
                   'This job depends on upstream jobs that need to succeed in order for this job to be triggered',
@@ -718,8 +718,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/455',
           illustration: {
-            image: 'illustrations/skipped-job_empty.svg',
-            size: 'svg-430',
+            image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+            size: 'svg-content svg-430',
             title: 'This job does not have a trace.',
           },
           favicon:
@@ -750,8 +750,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/455',
               illustration: {
-                image: 'illustrations/skipped-job_empty.svg',
-                size: 'svg-430',
+                image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+                size: 'svg-content svg-430',
                 title: 'This job does not have a trace.',
               },
               favicon:
@@ -778,8 +778,8 @@ export const stages = [
           has_details: true,
           details_path: '/gitlab-org/gitlab-shell/-/jobs/456',
           illustration: {
-            image: 'illustrations/job_not_triggered.svg',
-            size: 'svg-306',
+            image: 'illustrations/empty-state/empty-job-not-triggered-md.svg',
+            size: '',
             title: 'This job has not been triggered yet',
             content:
               'This job depends on upstream jobs that need to succeed in order for this job to be triggered',
@@ -812,8 +812,8 @@ export const stages = [
               has_details: true,
               details_path: '/gitlab-org/gitlab-shell/-/jobs/456',
               illustration: {
-                image: 'illustrations/job_not_triggered.svg',
-                size: 'svg-306',
+                image: 'illustrations/empty-state/empty-job-not-triggered-md.svg',
+                size: '',
                 title: 'This job has not been triggered yet',
                 content:
                   'This job depends on upstream jobs that need to succeed in order for this job to be triggered',
@@ -863,7 +863,7 @@ export const stages = [
           details_path: '/gitlab-org/gitlab-shell/-/jobs/458',
           illustration: {
             image: 'illustrations/manual_action.svg',
-            size: 'svg-394',
+            size: 'svg-content svg-394',
             title: 'This job requires a manual action',
             content:
               'This job depends on a user to trigger its process. Often they are used to deploy code to production environments',
@@ -897,7 +897,7 @@ export const stages = [
               details_path: '/gitlab-org/gitlab-shell/-/jobs/458',
               illustration: {
                 image: 'illustrations/manual_action.svg',
-                size: 'svg-394',
+                size: 'svg-content svg-394',
                 title: 'This job requires a manual action',
                 content:
                   'This job depends on a user to trigger its process. Often they are used to deploy code to production environments',
@@ -1117,8 +1117,8 @@ export const failedJobStatus = {
   has_details: true,
   details_path: '/gitlab-org/gitlab-shell/-/jobs/454',
   illustration: {
-    image: 'illustrations/skipped-job_empty.svg',
-    size: 'svg-430',
+    image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+    size: 'svg-content svg-430',
     title: 'This job does not have a trace.',
   },
   favicon:
@@ -1153,8 +1153,8 @@ export const jobsInStage = {
         has_details: true,
         details_path: '/gitlab-org/gitlab-shell/-/jobs/1180',
         illustration: {
-          image: 'illustrations/pending_job_empty.svg',
-          size: 'svg-430',
+          image: 'illustrations/empty-state/empty-job-pending-md.svg',
+          size: 'svg-content svg-430',
           title: 'This job has not started yet',
           content: 'This job is in pending state and is waiting to be picked by a runner',
         },
@@ -1186,8 +1186,8 @@ export const jobsInStage = {
         has_details: true,
         details_path: '/gitlab-org/gitlab-shell/-/jobs/444',
         illustration: {
-          image: 'illustrations/skipped-job_empty.svg',
-          size: 'svg-430',
+          image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+          size: 'svg-content svg-430',
           title: 'This job does not have a trace.',
         },
         favicon:
@@ -1220,8 +1220,8 @@ export const jobsInStage = {
         has_details: true,
         details_path: '/gitlab-org/gitlab-shell/-/jobs/443',
         illustration: {
-          image: 'illustrations/skipped-job_empty.svg',
-          size: 'svg-430',
+          image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+          size: 'svg-content svg-430',
           title: 'This job does not have a trace.',
         },
         favicon:

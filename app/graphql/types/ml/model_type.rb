@@ -27,7 +27,8 @@ module Types
         description: 'Map of links to perform actions on the model.'
 
       field :versions, ::Types::Ml::ModelVersionType.connection_type, null: true,
-        description: 'Versions of the model.'
+        description: 'Versions of the model.',
+        resolver: ::Resolvers::Ml::FindModelVersionsResolver
 
       field :candidates, ::Types::Ml::CandidateType.connection_type, null: true,
         description: 'Version candidates of the model.'

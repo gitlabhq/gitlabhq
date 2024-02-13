@@ -181,7 +181,11 @@ export default {
   },
   mounted() {
     if (this.item.is_active) {
-      this.$el.scrollIntoView(false);
+      this.$el.scrollIntoView({
+        behavior: 'instant',
+        block: 'center',
+        inline: 'nearest',
+      });
     }
 
     eventHub.$on('updatePillValue', this.updatePillValue);
@@ -226,6 +230,7 @@ export default {
       class="super-sidebar-nav-item gl-relative gl-display-flex gl-align-items-center gl-min-h-7 gl-gap-3 gl-mb-1 gl-py-2 gl-text-black-normal! gl-text-decoration-none! gl-focus--focus show-on-focus-or-hover--control hide-on-focus-or-hover--control"
       :class="computedLinkClasses"
       data-testid="nav-item-link"
+      @nav-link-click="$emit('nav-link-click')"
     >
       <div
         :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
@@ -244,7 +249,7 @@ export default {
           <gl-icon
             v-else-if="isInPinnedSection"
             name="grip"
-            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target"
+            class="gl-m-auto gl-text-gray-400 js-draggable-icon gl-cursor-grab show-on-focus-or-hover--target super-sidebar-mix-blend-mode"
           />
           <gl-avatar
             v-else-if="hasAvatar"
@@ -263,7 +268,10 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasEndSpace" class="gl-text-right gl-relative gl-min-w-6">
+      <span
+        v-if="hasEndSpace"
+        class="gl-display-flex gl-align-items-start gl-justify-content-end gl-min-w-6"
+      >
         <gl-badge
           v-if="hasPill"
           size="sm"

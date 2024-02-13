@@ -13,6 +13,10 @@ class Groups::ApplicationController < ApplicationController
   before_action :set_sorting
   requires_cross_project_access
 
+  before_action do
+    push_namespace_setting(:math_rendering_limits_enabled, @group)
+  end
+
   private
 
   def group

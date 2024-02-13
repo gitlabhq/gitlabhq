@@ -34,7 +34,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewsImporter, fe
     it { expect(subject.id_for_already_imported_cache({ id: 1 })).to eq(1) }
   end
 
-  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:merge_request) do
       create(
         :merged_merge_request,
@@ -45,10 +45,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewsImporter, fe
     end
 
     let(:review) { { id: 1 } }
-
-    before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
-    end
 
     it 'fetches the pull requests reviews data' do
       page = Struct.new(:objects, :number).new([review], 1)

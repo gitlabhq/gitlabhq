@@ -23,6 +23,7 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
     File.write(lfs_json_file_path, { oid => [0, 1, 2, nil] }.to_json )
 
     allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   after do

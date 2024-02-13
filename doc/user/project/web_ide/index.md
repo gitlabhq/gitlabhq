@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Web IDE **(FREE ALL)**
+# Web IDE
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -46,7 +50,7 @@ The Web IDE opens new and modified files in separate tabs and displays changes s
 To reduce load time, only 10 files with the most lines changed are opened automatically.
 
 On the left **Explorer** sidebar, any new or modified file is indicated
-by the merge request icon (**{merge-request}**) next to the file name.
+by the merge request icon (**{merge-request}**) next to the filename.
 To view changes to a file, right-click the file and select **Compare with merge request base**.
 
 ## Open a file
@@ -54,7 +58,7 @@ To view changes to a file, right-click the file and select **Compare with merge 
 To open a file by name in the Web IDE:
 
 1. Press <kbd>Command</kbd>+<kbd>P</kbd>.
-1. In the search box, enter the file name.
+1. In the search box, enter the filename.
 
 ## Search open files
 
@@ -212,7 +216,10 @@ To protect your privacy and data:
 - Carefully review the permissions requested by an extension before you install the extension.
 - Keep your extensions up to date to ensure that any security or privacy vulnerabilities are addressed promptly. -->
 
-## Interactive web terminals **(BETA)**
+## Interactive web terminals
+
+DETAILS:
+**Status**: Beta
 
 WARNING:
 This feature is in [Beta](../../../policy/experiment-beta-support.md#beta) and subject to change without notice.

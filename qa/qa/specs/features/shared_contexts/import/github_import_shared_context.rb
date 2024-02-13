@@ -70,8 +70,10 @@ module QA
     def set_mocks
       return Runtime::Logger.warn("Mock host is not set, skipping github response setup") unless smocker_host
 
+      mock_definition = ENV["QA_PROXY_GITHUB_REQUESTS"] == "true" ? "github_proxy.yml" : "github_import.yml"
+
       smocker.reset
-      smocker.register(File.read(File.join(mocks_path, "github.yml")))
+      smocker.register(File.read(File.join(mocks_path, mock_definition)))
     end
 
     # Verify mock session

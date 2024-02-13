@@ -41,7 +41,8 @@ module Enums
           secrets_provider_not_found: 1_008,
           reached_max_descendant_pipelines_depth: 1_009,
           ip_restriction_failure: 1_010,
-          reached_max_pipeline_hierarchy_size: 1_011
+          reached_max_pipeline_hierarchy_size: 1_011,
+          reached_downstream_pipeline_trigger_rate_limit: 1_012
         }
       end
     end

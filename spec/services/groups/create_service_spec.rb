@@ -104,6 +104,18 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
     it_behaves_like 'creating a group'
   end
 
+  context 'with `math_rendering_limits_enabled` attribute' do
+    let(:extra_params) { { math_rendering_limits_enabled: false } }
+
+    it_behaves_like 'creating a group'
+  end
+
+  context 'with `lock_math_rendering_limits_enabled` attribute' do
+    let(:extra_params) { { lock_math_rendering_limits_enabled: false } }
+
+    it_behaves_like 'creating a group'
+  end
+
   context 'for a top level group' do
     context 'when user can create a group' do
       before do
@@ -127,6 +139,8 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   end
 
   context 'when creating a group within an organization' do
+    let_it_be(:other_organization) { create(:organization, name: 'Other Organization') }
+
     context 'when organization is provided' do
       let_it_be(:organization) { create(:organization) }
       let(:extra_params) { { organization_id: organization.id } }
@@ -154,14 +168,58 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
           expect(created_group.organization_id).to be_nil
         end
       end
+
+      context 'when parent group is different from provided group' do
+        let_it_be(:parent_group) { create(:group, organization: other_organization) }
+        let(:extra_params) { { parent_id: parent_group.id, organization_id: organization.id } }
+
+        before_all do
+          create(:organization_user, user: user, organization: organization)
+          create(:organization_user, user: user, organization: other_organization)
+          parent_group.add_owner(user)
+        end
+
+        it_behaves_like 'does not create a group'
+
+        it 'returns an error and does not set organization_id' do
+          expect(created_group.errors[:organization_id].first)
+            .to eq(s_("CreateGroup|You can't create a group in a different organization than the parent group."))
+          expect(created_group.organization_id).to be_nil
+        end
+      end
     end
 
-    context 'when organization is the default organization and not set by params' do
-      before do
-        create(:organization, :default)
+    context 'when organization is not set by params' do
+      let_it_be(:default_organization) { create(:organization, :default) }
+      let_it_be(:current_organization) { create(:organization, name: 'Current Organization') }
+
+      context 'and the parent of the group has an organization' do
+        let_it_be(:parent_group) { create(:group, organization: other_organization) }
+
+        let(:extra_params) { { parent_id: parent_group.id } }
+
+        it 'creates group with the parent group organization' do
+          expect(created_group.organization).to eq(other_organization)
+        end
       end
 
-      it_behaves_like 'creating a group'
+      context 'and current_organization is known' do
+        before do
+          allow_next_instance_of(Groups::CreateService) do |instance|
+            allow(instance).to receive(:current_organization).and_return(current_organization)
+          end
+        end
+
+        it 'creates group with the current organization' do
+          expect(created_group.organization).to eq(current_organization)
+        end
+      end
+
+      context 'and no group can be found' do
+        it 'creates group with the default organization' do
+          expect(created_group.organization).to eq(default_organization)
+        end
+      end
     end
   end
 

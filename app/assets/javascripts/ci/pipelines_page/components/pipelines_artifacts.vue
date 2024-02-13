@@ -68,6 +68,7 @@ export default {
     placement="right"
     text-sr-only
     :items="items"
+    data-testid="artifacts-dropdown"
   />
 </template>
 

@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform state administration **(FREE SELF)**
+# Terraform state administration
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 12.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 12.10.
 
 GitLab can be used as a backend for [Terraform](../user/infrastructure/index.md) state
 files. The files are encrypted before being stored. This feature is enabled by default.
@@ -90,7 +94,11 @@ For self-compiled installations:
 
 1. Save the file and [restart GitLab](restart_gitlab.md#self-compiled-installations) for the changes to take effect.
 
-## Using object storage **(FREE SELF)**
+## Using object storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Instead of storing Terraform state files on disk, we recommend the use of
 [one of the supported object storage options](object_storage.md#supported-object-storage-providers).
@@ -113,7 +121,7 @@ The following settings are:
 
 ### Migrate to object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247042) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247042) in GitLab 13.9.
 
 WARNING:
 It's not possible to migrate Terraform state files from object storage back to local storage,

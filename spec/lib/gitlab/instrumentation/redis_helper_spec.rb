@@ -37,20 +37,27 @@ RSpec.describe Gitlab::Instrumentation::RedisHelper, :request_store, feature_cat
   subject(:minimal_test_class_instance) { MinimalTestClass.new }
 
   describe '.instrument_call' do
+    let(:pipelined) { false }
+    let(:command) { [[:set, 'foo', 'bar']] }
+
+    subject(:instrumented_command) { minimal_test_class_instance.check_command(command, pipelined) }
+
     it 'instruments request count' do
       expect(Gitlab::Instrumentation::Redis::Cache).to receive(:instance_count_request).with(1)
       expect(Gitlab::Instrumentation::Redis::Cache).not_to receive(:instance_count_pipelined_request)
 
-      minimal_test_class_instance.check_command([[:set, 'foo', 'bar']], false)
+      instrumented_command
     end
 
     it 'performs cluster validation' do
       expect(Gitlab::Instrumentation::Redis::Cache).to receive(:redis_cluster_validate!).once
 
-      minimal_test_class_instance.check_command([[:set, 'foo', 'bar']], false)
+      instrumented_command
     end
 
     context 'when command is not valid for Redis Cluster' do
+      let(:command) { [[:mget, 'foo', 'bar']] }
+
       before do
         allow(Gitlab::Instrumentation::Redis::Cache).to receive(:redis_cluster_validate!).and_return(false)
       end
@@ -58,7 +65,7 @@ RSpec.describe Gitlab::Instrumentation::RedisHelper, :request_store, feature_cat
       it 'reports cross slot request' do
         expect(Gitlab::Instrumentation::Redis::Cache).to receive(:increment_cross_slot_request_count).once
 
-        minimal_test_class_instance.check_command([[:mget, 'foo', 'bar']], false)
+        instrumented_command
       end
     end
 
@@ -71,21 +78,52 @@ RSpec.describe Gitlab::Instrumentation::RedisHelper, :request_store, feature_cat
       end
 
       it 'ensures duration is tracked' do
-        commands = [[:set, 'foo', 'bar']]
         allow(Gitlab::Instrumentation::Redis::Cache).to receive(:instance_observe_duration).once
         allow(Gitlab::Instrumentation::Redis::Cache).to receive(:increment_request_count).with(1).once
         allow(Gitlab::Instrumentation::Redis::Cache).to receive(:add_duration).once
-        allow(Gitlab::Instrumentation::Redis::Cache).to receive(:add_call_details).with(anything, commands).once
+        allow(Gitlab::Instrumentation::Redis::Cache).to receive(:add_call_details).with(anything, command).once
 
-        expect { minimal_test_class_instance.check_command(commands, false) }.to raise_error(StandardError)
+        expect { instrumented_command }.to raise_error(StandardError)
+      end
+    end
+
+    context 'when a RedisClient::ConnectionError is raised' do
+      before do
+        allow(Gitlab::Instrumentation::Redis::Cache).to receive(:instance_count_request)
+          .and_raise(RedisClient::ConnectionError)
+      end
+
+      it 'silences connection errors raised during the first attempt' do
+        expect(Gitlab::Instrumentation::Redis::Cache).not_to receive(:log_exception).with(RedisClient::ConnectionError)
+
+        expect { instrumented_command }.to raise_error(StandardError)
+
+        expect(Thread.current[:redis_client_error_count]).to eq(1)
+      end
+
+      context 'when error is raised on the second attempt' do
+        before do
+          Thread.current[:redis_client_error_count] = 1
+        end
+
+        it 'instruments errors on second attempt' do
+          expect(Gitlab::Instrumentation::Redis::Cache).to receive(:log_exception).with(RedisClient::ConnectionError)
+
+          expect { instrumented_command }.to raise_error(StandardError)
+
+          expect(Thread.current[:redis_client_error_count]).to eq(2)
+        end
       end
     end
 
     context 'when pipelined' do
+      let(:command) { [[:get, '{user1}:bar'], [:get, '{user1}:foo']] }
+      let(:pipelined) { true }
+
       it 'instruments pipelined request count' do
         expect(Gitlab::Instrumentation::Redis::Cache).to receive(:instance_count_pipelined_request)
 
-        minimal_test_class_instance.check_command([[:get, '{user1}:bar'], [:get, '{user1}:foo']], true)
+        instrumented_command
       end
     end
   end

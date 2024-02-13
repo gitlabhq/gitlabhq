@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SentNotificationsController do
+RSpec.describe SentNotificationsController, feature_category: :shared do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let(:private_project) { create(:project, :private) }
@@ -235,7 +235,9 @@ RSpec.describe SentNotificationsController do
           end
         end
 
-        let(:sent_notification) { create(:sent_notification, project: project, noteable: merge_request, recipient: user) }
+        let(:sent_notification) do
+          create(:sent_notification, project: project, noteable: merge_request, recipient: user)
+        end
 
         before do
           unsubscribe
@@ -299,10 +301,34 @@ RSpec.describe SentNotificationsController do
       end
 
       context 'when support bot is the notification recipient' do
-        let(:sent_notification) { create(:sent_notification, project: target_project, noteable: noteable, recipient: Users::Internal.support_bot) }
+        let(:sent_notification) do
+          create(:sent_notification,
+            project: target_project, noteable: noteable, recipient: Users::Internal.support_bot)
+        end
 
         it 'deletes the external author on the issue' do
           expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)
+        end
+
+        context 'when sent_notification contains issue_email_participant' do
+          let!(:other_issue_email_participant) do
+            create(:issue_email_participant, issue: issue, email: 'other@example.com')
+          end
+
+          let(:sent_notification) do
+            create(:sent_notification,
+              project: target_project,
+              noteable: noteable,
+              recipient: Users::Internal.support_bot,
+              issue_email_participant: other_issue_email_participant
+            )
+          end
+
+          it 'deletes the connected issue email participant' do
+            expect { unsubscribe }.to change { issue.issue_email_participants.count }.by(-1)
+            # Ensure external author is still present
+            expect(issue.email_participants_emails).to contain_exactly(email)
+          end
         end
 
         context 'when noteable is not an issue' do

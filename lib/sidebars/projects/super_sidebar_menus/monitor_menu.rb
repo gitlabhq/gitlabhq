@@ -19,6 +19,7 @@ module Sidebars
           [
             :tracing,
             :metrics,
+            :logs,
             :error_tracking,
             :alert_management,
             :incidents,

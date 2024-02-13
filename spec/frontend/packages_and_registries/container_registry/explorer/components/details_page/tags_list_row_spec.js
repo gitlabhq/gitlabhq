@@ -242,10 +242,20 @@ describe('tags list row', () => {
       expect(findTimeAgoTooltip().exists()).toBe(true);
     });
 
-    it('pass the correct props to time ago tooltip', () => {
+    it('passes publishedAt value to time ago tooltip', () => {
       mountComponent();
 
-      expect(findTimeAgoTooltip().attributes()).toMatchObject({ time: tag.createdAt });
+      expect(findTimeAgoTooltip().attributes()).toMatchObject({ time: tag.publishedAt });
+    });
+
+    describe('when publishedAt is missing', () => {
+      beforeEach(() => {
+        mountComponent({ ...defaultProps, tag: { ...tag, publishedAt: null } });
+      });
+
+      it('passes createdAt value to time ago tooltip', () => {
+        expect(findTimeAgoTooltip().attributes()).toMatchObject({ time: tag.createdAt });
+      });
     });
   });
 
@@ -351,7 +361,7 @@ describe('tags list row', () => {
 
       describe.each`
         name                       | finderFunction             | text                                                                                                    | icon            | clipboard
-        ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the gitlab-org/gitlab-test/rails-12009 image repository at 13:29:38 UTC on 2020-11-03'} | ${'clock'}      | ${false}
+        ${'published date detail'} | ${findPublishedDateDetail} | ${'Published to the gitlab-org/gitlab-test/rails-12009 image repository at 13:29:38 UTC on 2020-11-05'} | ${'clock'}      | ${false}
         ${'manifest detail'}       | ${findManifestDetail}      | ${'Manifest digest: sha256:2cf3d2fdac1b04a14301d47d51cb88dcd26714c74f91440eeee99ce399089062'}           | ${'log'}        | ${true}
         ${'configuration detail'}  | ${findConfigurationDetail} | ${'Configuration digest: sha256:c2613843ab33aabf847965442b13a8b55a56ae28837ce182627c0716eb08c02b'}      | ${'cloud-gear'} | ${true}
       `('$name details row', ({ finderFunction, text, icon, clipboard }) => {
@@ -386,6 +396,18 @@ describe('tags list row', () => {
             );
           });
         }
+      });
+
+      describe('when publishedAt is missing', () => {
+        beforeEach(() => {
+          mountComponent({ ...defaultProps, tag: { ...tag, publishedAt: null } });
+        });
+
+        it('name details row has correct text', () => {
+          expect(findPublishedDateDetail().text()).toMatchInterpolatedText(
+            'Published to the gitlab-org/gitlab-test/rails-12009 image repository at 13:29:38 UTC on 2020-11-03',
+          );
+        });
       });
     });
 

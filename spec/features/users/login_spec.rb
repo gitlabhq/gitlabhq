@@ -56,9 +56,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       expect(page).to have_current_path new_user_session_path, ignore_query: true
       expect(page).to have_content(I18n.t('devise.passwords.updated_not_active'))
 
-      fill_in 'user_login',    with: user.username
-      fill_in 'user_password', with: user.password
-      click_button 'Sign in'
+      gitlab_sign_in(user)
 
       expect_single_session_with_authenticated_ttl
       expect(page).to have_current_path root_path, ignore_query: true
@@ -209,10 +207,14 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
   describe 'with two-factor authentication', :js do
     def enter_code(code, only_two_factor_webauthn_enabled: false)
-      click_on("Sign in via 2FA code") if only_two_factor_webauthn_enabled
+      if only_two_factor_webauthn_enabled
+        # When this button is visible we know that the JavaScript functionality is ready.
+        find_button(_('Try again?'))
+        click_button _("Sign in via 2FA code")
+      end
 
-      fill_in 'user_otp_attempt', with: code
-      click_button 'Verify code'
+      fill_in _('Enter verification code'), with: code
+      click_button _('Verify code')
     end
 
     shared_examples_for 'can login with recovery codes' do |only_two_factor_webauthn_enabled: false|
@@ -402,7 +404,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
       it 'displays the remember me checkbox' do
         visit new_user_session_path
 
-        expect(page).to have_field('remember_me_omniauth')
+        expect(page).to have_field('js-remember-me-omniauth')
       end
 
       context 'when remember me is not enabled' do
@@ -413,7 +415,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
         it 'does not display the remember me checkbox' do
           visit new_user_session_path
 
-          expect(page).not_to have_field('remember_me_omniauth')
+          expect(page).not_to have_field('js-remember-me-omniauth')
         end
       end
 
@@ -574,9 +576,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
           visit new_user_session_path
 
-          fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: user.password
-          click_button 'Sign in'
+          gitlab_sign_in(user)
 
           expect(page).to have_current_path(new_user_settings_password_path, ignore_query: true)
         end
@@ -938,13 +938,9 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
       visit new_user_session_path
 
-      fill_in 'user_login', with: user.email
-      fill_in 'user_password', with: user.password
-
-      click_button 'Sign in'
+      gitlab_sign_in(user)
 
       expect_to_be_on_terms_page
-
       click_button 'Accept terms'
 
       expect(page).to have_current_path(root_path, ignore_query: true)
@@ -959,10 +955,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
       visit new_user_session_path
 
-      fill_in 'user_login', with: user.email
-      fill_in 'user_password', with: user.password
-
-      click_button 'Sign in'
+      gitlab_sign_in(user)
 
       expect(page).to have_current_path(root_path, ignore_query: true)
     end
@@ -980,10 +973,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
           visit new_user_session_path
 
-          fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: user.password
-
-          click_button 'Sign in'
+          gitlab_sign_in(user)
 
           expect_to_be_on_terms_page
           click_button 'Accept terms'
@@ -1022,12 +1012,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
           visit new_user_session_path
 
-          fill_in 'user_login', with: user.email
-          fill_in 'user_password', with: user.password
-          click_button 'Sign in'
-
-          fill_in 'user_otp_attempt', with: user.reload.current_otp
-          click_button 'Verify code'
+          gitlab_sign_in(user, two_factor_auth: true)
 
           expect_to_be_on_terms_page
           click_button 'Accept terms'
@@ -1048,9 +1033,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
 
         visit new_user_session_path
 
-        fill_in 'user_login', with: user.email
-        fill_in 'user_password', with: user.password
-        click_button 'Sign in'
+        gitlab_sign_in(user)
 
         expect_to_be_on_terms_page
         click_button 'Accept terms'
@@ -1085,7 +1068,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
           expect_to_be_on_terms_page
           click_button 'Accept terms'
 
-          expect(page).to have_current_path(profile_path, ignore_query: true)
+          expect(page).to have_current_path(user_settings_profile_path, ignore_query: true)
 
           fill_in 'Email', with: 'hello@world.com'
 

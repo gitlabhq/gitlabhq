@@ -276,9 +276,6 @@ export default {
     },
     openCommentForm(annotationCoordinates) {
       this.annotationCoordinates = annotationCoordinates;
-      if (this.$refs.newDiscussionForm) {
-        this.$refs.newDiscussionForm.focusInput();
-      }
     },
     closeCommentForm(data) {
       this.annotationCoordinates = null;

@@ -1,20 +1,31 @@
-- show_password_form = local_assigns.fetch(:show_password_form, password_authentication_enabled_for_web?)
-- render_signup_link = local_assigns.fetch(:render_signup_link, true)
+- render_standard_signin = admin_mode ? allow_admin_mode_password_authentication_for_web? : password_authentication_enabled_for_web?
 
 %ul.nav-links.new-session-tabs.nav-tabs.nav.nav-links-unboxed
   - if crowd_enabled?
     %li.nav-item
       = link_to _("Crowd"), "#crowd", class: "nav-link #{active_when(form_based_auth_provider_has_active_class?(:crowd))}", 'data-toggle' => 'tab', role: 'tab'
-  = render_if_exists "devise/shared/kerberos_tab"
+
   - ldap_servers.each_with_index do |server, i|
     %li.nav-item
       = link_to server['label'], "##{server['provider_name']}", class: "nav-link #{active_when(i == 0 && form_based_auth_provider_has_active_class?(:ldapmain))}", data: { toggle: 'tab', testid: 'ldap-tab' }, role: 'tab'
 
   = render_if_exists 'devise/shared/tab_smartcard'
 
-  - if show_password_form
+  - if render_standard_signin
     %li.nav-item
       = link_to _('Standard'), '#login-pane', class: 'nav-link', data: { toggle: 'tab', testid: 'standard-tab' }, role: 'tab'
-  - if render_signup_link && allow_signup?
-    %li.nav-item
-      = link_to _('Register'), '#register-pane', class: 'nav-link', data: { toggle: 'tab', testid: 'register-tab' }, role: 'tab'
+
+.tab-content
+  - if crowd_enabled?
+    .login-box.tab-pane{ id: "crowd", role: 'tabpanel', class: active_when(form_based_auth_provider_has_active_class?(:crowd)) }
+      = render 'devise/sessions/new_crowd', admin_mode: admin_mode
+
+  - ldap_servers.each_with_index do |server, i|
+    .login-box.tab-pane{ id: server['provider_name'], role: 'tabpanel', class: active_when(i == 0 && form_based_auth_provider_has_active_class?(:ldapmain)) }
+      = render 'devise/sessions/new_ldap', server: server, admin_mode: admin_mode
+
+  = render_if_exists 'devise/sessions/new_smartcard'
+
+  - if render_standard_signin
+    .login-box.tab-pane{ id: 'login-pane', role: 'tabpanel' }
+      = render 'devise/sessions/new_base', admin_mode: admin_mode

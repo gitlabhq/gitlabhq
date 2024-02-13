@@ -4,8 +4,10 @@ import { isEqual } from 'lodash';
 import { s__, __ } from '~/locale';
 import GroupsView from '../../shared/components/groups_view.vue';
 import ProjectsView from '../../shared/components/projects_view.vue';
+import { onPageChange } from '../../shared/utils';
+import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '../../shared/constants';
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '../../constants';
-import { FILTER_FREQUENTLY_VISITED } from '../constants';
+import { FILTER_FREQUENTLY_VISITED, GROUPS_AND_PROJECTS_PER_PAGE } from '../constants';
 import { buildDisplayListboxItem } from '../utils';
 
 export default {
@@ -28,6 +30,7 @@ export default {
       text: s__('Organization|Frequently visited groups'),
     }),
   ],
+  PER_PAGE: GROUPS_AND_PROJECTS_PER_PAGE,
   props: {
     groupsAndProjectsOrganizationPath: {
       type: String,
@@ -43,6 +46,12 @@ export default {
         this.$options.displayListboxItems.find(({ value }) => value === display)?.value ||
         fallbackSelected
       );
+    },
+    startCursor() {
+      return this.$route.query[QUERY_PARAM_START_CURSOR] || null;
+    },
+    endCursor() {
+      return this.$route.query[QUERY_PARAM_END_CURSOR] || null;
     },
     resourceTypeSelected() {
       return [RESOURCE_TYPE_PROJECTS, RESOURCE_TYPE_GROUPS].find((resourceType) =>
@@ -78,6 +87,9 @@ export default {
     onDisplayListboxSelect(display) {
       this.pushQuery({ display });
     },
+    onPageChange(pagination) {
+      this.pushQuery(onPageChange({ ...pagination, routeQuery: this.$route.query }));
+    },
   },
 };
 </script>
@@ -105,6 +117,14 @@ export default {
         $options.i18n.viewAll
       }}</gl-link>
     </div>
-    <component :is="routerView" should-show-empty-state-buttons class="gl-mt-5" />
+    <component
+      :is="routerView"
+      should-show-empty-state-buttons
+      class="gl-mt-5"
+      :start-cursor="startCursor"
+      :end-cursor="endCursor"
+      :per-page="$options.PER_PAGE"
+      @page-change="onPageChange"
+    />
   </div>
 </template>

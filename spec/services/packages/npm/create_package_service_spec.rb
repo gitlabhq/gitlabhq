@@ -203,7 +203,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let!(:existing_package) { create(:npm_package, project: project, name: package_name, version: '1.0.1') }
 
       it { is_expected.to be_error }
-      it { is_expected.to have_attributes message: 'Package already exists.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_EXISTS }
+      it { is_expected.to have_attributes message: 'Package already exists.', reason: :package_already_exists }
 
       context 'marked as pending_destruction' do
         before do
@@ -225,7 +225,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       shared_examples_for 'max file size validation failure' do
         it { is_expected.to be_error }
-        it { is_expected.to have_attributes message: 'File is too large.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
+        it { is_expected.to have_attributes message: 'File is too large.', reason: :invalid_parameter }
       end
 
       before do
@@ -286,7 +286,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:params) { super().merge!({ versions: {} }) }
 
       it { is_expected.to be_error }
-      it { is_expected.to have_attributes message: 'Version is empty.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
+      it { is_expected.to have_attributes message: 'Version is empty.', reason: :invalid_parameter }
     end
 
     context 'with invalid versions' do
@@ -309,7 +309,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       let(:params) { super().merge({ _attachments: { "#{package_name}-#{version}.tgz" => { data: '' } } }) }
 
       it { is_expected.to be_error }
-      it { is_expected.to have_attributes message: 'Attachment data is empty.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_INVALID_PARAMETER }
+      it { is_expected.to have_attributes message: 'Attachment data is empty.', reason: :invalid_parameter }
     end
 
     it 'obtains a lease to create a new package' do
@@ -324,7 +324,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       it { is_expected.to be_error }
-      it { is_expected.to have_attributes message: 'Could not obtain package lease. Please try again.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_LEASE_TAKEN }
+      it { is_expected.to have_attributes message: 'Could not obtain package lease. Please try again.', reason: :package_lease_taken }
     end
 
     context 'when feature flag :packages_protected_packages disabled' do
@@ -370,7 +370,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       shared_examples 'protected package' do
         it { is_expected.to be_error }
-        it { is_expected.to have_attributes message: 'Package protected.', reason: ::Packages::Npm::CreatePackageService::ERROR_REASON_PACKAGE_PROTECTED }
+        it { is_expected.to have_attributes message: 'Package protected.', reason: :package_protected }
 
         it 'does not create any npm-related package records' do
           expect { subject }

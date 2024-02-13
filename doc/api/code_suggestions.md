@@ -10,7 +10,7 @@ Use the Code Suggestions API to access the Code Suggestions feature.
 
 ## Create an access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404427) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404427) in GitLab 16.1.
 
 Creates an access token to access Code Suggestions.
 
@@ -34,7 +34,10 @@ Example response:
 }
 ```
 
-## Generate code completions **(EXPERIMENT)**
+## Generate code completions
+
+DETAILS:
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an Experiment.
 > - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.

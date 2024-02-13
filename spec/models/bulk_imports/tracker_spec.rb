@@ -110,4 +110,100 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
       end
     end
   end
+
+  describe '#checksums' do
+    let(:tracker) { create(:bulk_import_tracker) }
+    let(:checksums) { { source: 1, fetched: 1, imported: 1 } }
+
+    before do
+      allow(tracker).to receive(:file_extraction_pipeline?).and_return(true)
+      allow(tracker).to receive_message_chain(:pipeline_class, :relation, :to_sym).and_return(:labels)
+    end
+
+    context 'when checksums are cached' do
+      it 'returns the cached checksums' do
+        allow(BulkImports::ObjectCounter).to receive(:summary).and_return(checksums)
+
+        expect(tracker.checksums).to eq({ labels: checksums })
+      end
+    end
+
+    context 'when checksums are persisted' do
+      it 'returns the persisted checksums' do
+        allow(BulkImports::ObjectCounter).to receive(:summary).and_return(nil)
+
+        tracker.update!(
+          source_objects_count: checksums[:source],
+          fetched_objects_count: checksums[:fetched],
+          imported_objects_count: checksums[:imported]
+        )
+
+        expect(tracker.checksums).to eq({ labels: checksums })
+      end
+    end
+
+    context 'when pipeline is not a file extraction pipeline' do
+      it 'returns nil' do
+        allow(tracker).to receive(:file_extraction_pipeline?).and_return(false)
+
+        expect(tracker.checksums).to be_nil
+      end
+    end
+  end
+
+  describe '#checksums_empty?' do
+    let(:tracker) { create(:bulk_import_tracker) }
+
+    before do
+      allow(tracker).to receive_message_chain(:pipeline_class, :relation, :to_sym).and_return(:labels)
+    end
+
+    context 'when checksums are missing' do
+      it 'returns true' do
+        allow(tracker).to receive(:checksums).and_return(nil)
+
+        expect(tracker.checksums_empty?).to eq(true)
+      end
+    end
+
+    context 'when checksums are present' do
+      it 'returns false' do
+        allow(tracker)
+          .to receive(:checksums)
+          .and_return({ labels: { source: 1, fetched: 1, imported: 1 } })
+
+        expect(tracker.checksums_empty?).to eq(false)
+      end
+    end
+
+    context 'when checksums are all zeros' do
+      it 'returns true' do
+        allow(tracker)
+          .to receive(:checksums)
+          .and_return({ labels: { source: 0, fetched: 0, imported: 0 } })
+
+        expect(tracker.checksums_empty?).to eq(true)
+      end
+    end
+  end
+
+  describe 'checksums persistence' do
+    let(:tracker) { create(:bulk_import_tracker, :started) }
+
+    context 'when transitioned to finished' do
+      it 'persists the checksums' do
+        expect(BulkImports::ObjectCounter).to receive(:persist!).with(tracker)
+
+        tracker.finish!
+      end
+    end
+
+    context 'when transitioned to failed' do
+      it 'persists the checksums' do
+        expect(BulkImports::ObjectCounter).to receive(:persist!).with(tracker)
+
+        tracker.fail_op!
+      end
+    end
+  end
 end

@@ -1,5 +1,6 @@
 $super-sidebar-transition-duration: $gl-transition-duration-medium;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
+$command-palette-spacing: px-to-rem(14px);
 
 @mixin notification-dot($color, $size, $top, $left) {
   background-color: $color;
@@ -231,9 +232,21 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   .user-bar {
     background-color: var(--super-sidebar-user-bar-bg);
 
+    .organization-switcher-button {
+      background-color: transparent;
+      color: var(--super-sidebar-user-bar-button-color);
+
+      &:active,
+      &:hover,
+      &:focus {
+        background-color: var(--super-sidebar-user-bar-button-hover-bg);
+        color: var(--super-sidebar-user-bar-button-hover-color);
+      }
+    }
+
     .user-bar-dropdown-toggle {
-      @include gl-p-2;
-      @include gl-border-none;
+      padding: $gl-spacing-scale-2;
+      border-style: none;
 
       &[aria-expanded='true'] {
         background-color: var(--super-sidebar-user-bar-button-hover-bg);
@@ -269,6 +282,14 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
       &:active {
         @include gl-focus;
       }
+    }
+
+    /**
+     * Add transition to align with GlButton :hover/:focus transition
+     */
+    .brand-logo,
+    .user-bar-button {
+      @include transition(background-color, border-color, color, box-shadow);
     }
 
     .btn-default-tertiary {
@@ -461,6 +482,25 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     padding: 5rem 1rem 0;
   }
 
+  .vertical-align-normalization {
+    margin-top: -$gl-spacing-scale-3;
+    margin-bottom: -$gl-spacing-scale-3;
+  }
+
+
+  .show-hover-layover {
+    &:hover {
+      .show-hover-layover-hint {
+        @include gl-opacity-10;
+      }
+    }
+  }
+
+  .command-palette-px {
+    padding-left: $command-palette-spacing;
+    padding-right: $command-palette-spacing;
+  }
+
   // This is a temporary workaround!
   // the button in GitLab UI Search components need to be updated to not be the small size
   // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
@@ -473,21 +513,37 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
     right: 3rem;
   }
 
+  .modal-content {
+    border-radius: $gl-border-radius-large !important;
+  }
+
   .gl-search-box-by-type-input-borderless {
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
   }
 
   .global-search-results {
     max-height: 30rem;
 
     .gl-new-dropdown-item {
-      @include gl-px-3;
+      padding-left: $gl-spacing-scale-3;
+      padding-right: $gl-spacing-scale-3;
     }
 
     // Target groups
     [id*='gl-disclosure-dropdown-group'] {
-      @include gl-px-5;
+      padding-left: $command-palette-spacing;
+      padding-right: $command-palette-spacing;
     }
+
+    .gl-scroll-scrim {
+      border-width: 0 !important;
+    }
+  }
+
+  &.gl-modal .modal-footer {
+    background-color: $gray-50;
+    padding: $command-palette-spacing;
+    border-top: 1px solid $gray-100;
   }
 }
 
@@ -560,7 +616,7 @@ $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
   }
 }
 
-.super-sidebar-empty-pinned-text {
+.super-sidebar-mix-blend-mode {
   mix-blend-mode: multiply;
 
   .gl-dark & {

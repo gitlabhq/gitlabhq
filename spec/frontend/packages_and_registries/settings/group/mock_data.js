@@ -5,6 +5,8 @@ const packageDuplicateSettings = {
   genericDuplicateExceptionRegex: '',
   nugetDuplicatesAllowed: true,
   nugetDuplicateExceptionRegex: '',
+  terraformModuleDuplicatesAllowed: true,
+  terraformModuleDuplicateExceptionRegex: '',
 };
 
 export const packageForwardingSettings = {

@@ -40,5 +40,14 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_categor
          { remote: 'https://example.com/.gitlab-ci.yml' }]
       )
     end
+
+    context 'when the location value is an invalid type' do
+      let(:locations) { [123] }
+
+      it 'raises an error' do
+        expect { process }.to raise_error(
+          Gitlab::Ci::Config::External::Mapper::InvalidTypeError, /Each include must be a hash or a string/)
+      end
+    end
   end
 end

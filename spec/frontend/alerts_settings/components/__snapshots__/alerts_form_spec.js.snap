@@ -62,6 +62,7 @@ exports[`Alert integration settings form default state should match the default 
         selected="selecte_tmpl"
         showselectallbuttonlabel=""
         size="medium"
+        sronlyresultslabel="[Function]"
         toggletext=""
         variant="default"
       />

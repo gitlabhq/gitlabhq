@@ -222,6 +222,7 @@ module API
       def translate_params_for_compatibility(params)
         params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
         params[:emails_enabled] = !params.delete(:emails_disabled) if params.key?(:emails_disabled)
+        params[:public_builds] = params.delete(:public_jobs) if params.key?(:public_jobs)
 
         params
       end
@@ -494,16 +495,16 @@ module API
         not_found!('Source Branch') if fork_params[:branches].present? && !service.valid_fork_branch?(fork_params[:branches])
         not_found!('Target Namespace') unless service.valid_fork_target?
 
-        forked_project = service.execute
+        result = service.execute
 
-        if forked_project.errors.any?
-          conflict!(forked_project.errors.messages)
-        else
-          present_project forked_project, {
+        if result.success?
+          present_project result[:project], {
             with: Entities::Project,
-            user_can_admin_project: can?(current_user, :admin_project, forked_project),
+            user_can_admin_project: can?(current_user, :admin_project, result[:project]),
             current_user: current_user
           }
+        else
+          conflict!(result.message)
         end
       end
 
@@ -718,10 +719,12 @@ module API
 
         result = service.execute(user_project)
 
-        if result
+        if result.success?
           present_project user_project.reset, with: Entities::Project, current_user: current_user
-        elsif user_project.forked?
-          render_api_error!("Project already forked", 409)
+        elsif result.reason == :already_forked
+          conflict!(result.message)
+        else
+          render_api_error!(result.message, 400)
         end
       end
 

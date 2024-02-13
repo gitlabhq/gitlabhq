@@ -12,7 +12,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
   end
 
   it 'shows profile info' do
-    visit(profile_path)
+    visit(user_settings_profile_path)
 
     expect(page).to have_content "This information will appear on your profile"
   end
@@ -48,7 +48,7 @@ RSpec.describe 'User visits their profile', feature_category: :user_profile do
       it 'shows expected content', :js do
         visit(user_path(user))
 
-        page.within ".cover-block" do
+        page.within ".user-profile-header" do
           expect(page).to have_content user.name
           expect(page).to have_content user.username
         end

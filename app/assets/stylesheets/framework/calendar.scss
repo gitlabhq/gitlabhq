@@ -5,7 +5,7 @@
   }
 
   &:focus {
-    @include gl-outline-none;
+    outline: none;
     stroke: $white;
     filter: drop-shadow(1px 0 0.5px $blue-400) drop-shadow(0 1px 0.5px $blue-400) drop-shadow(-1px 0 0.5px $blue-400) drop-shadow(0 -1px 0.5px $blue-400);
   }

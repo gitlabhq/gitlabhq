@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Licenses API **(FREE ALL)**
+# Licenses API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In GitLab, there is an API endpoint available for working with various open
 source license templates. For more information on the terms of various

@@ -17,14 +17,10 @@ module QA
       end
 
       let(:group_deploy_token) do
-        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'dp-group-deploy-token'
-          deploy_token.group = project.group
-          deploy_token.scopes = %w[
-            read_registry
-            write_registry
-          ]
-        end
+        create(:group_deploy_token,
+          name: 'dp-group-deploy-token',
+          group: project.group,
+          scopes: %w[read_registry write_registry])
       end
 
       let(:personal_access_token) { Runtime::Env.personal_access_token }

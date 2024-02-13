@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy tokens **(FREE ALL)**
+# Deploy tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use a deploy token to enable authentication of deployment tasks, independent of a user
 account. In most cases you use a deploy token from an external host, like a build server or CI/CD
@@ -48,7 +52,7 @@ A deploy token's scope determines the actions it can perform.
 |--------------------------|--------------------------------------------------------------------------------------------------------------|
 | `read_repository`        | Read-only access to the repository using `git clone`.                                                        |
 | `read_registry`          | Read-only access to the images in the project's [container registry](../../packages/container_registry/index.md). |
-| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md).       |
+| `write_registry`         | Write access (push) to the project's [container registry](../../packages/container_registry/index.md). You need both read and write access to push images. |
 | `read_package_registry`  | Read-only access to the project's package registry.                                                          |
 | `write_package_registry` | Write access to the project's package registry.                                                              |
 
@@ -67,7 +71,7 @@ use in a CI/CD pipeline:
 For example, to use a GitLab token to log in to your GitLab container registry:
 
 ```shell
-docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
+docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin <<<$CI_DEPLOY_PASSWORD
 ```
 
 NOTE:
@@ -75,6 +79,20 @@ In GitLab 15.0 and earlier, the special handling for the `gitlab-deploy-token` d
 work for group deploy tokens. To make a group deploy token available for CI/CD jobs, set the
 `CI_DEPLOY_USER` and `CI_DEPLOY_PASSWORD` CI/CD variables in **Settings > CI/CD > Variables** to the
 name and token of the group deploy token.
+
+### GitLab deploy token security
+
+GitLab deploy tokens are long-lived, making them attractive for attackers.
+
+To prevent leaking the deploy token, you should also configure your
+[runners](../../../ci/runners/index.md) to be secure:
+
+- Avoid using Docker `privileged` mode if the machines are re-used.
+- Avoid using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
+  run on the same machine.
+
+An insecure GitLab Runner configuration increases the risk that someone can steal tokens from other
+jobs.
 
 ### GitLab public API
 
@@ -152,7 +170,7 @@ You can use a deploy token to push images to a container registry.
 
 Prerequisites:
 
-- A deploy token with the `write_registry` scope.
+- A deploy token with the `read_registry` and `write_registry` scope.
 
 Example of using a deploy token to push an image to a container registry:
 
@@ -163,7 +181,7 @@ docker push $CONTAINER_TEST_IMAGE
 
 ## Pull packages from a package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
 You can use a deploy token to pull packages from a package registry.
 
@@ -183,7 +201,7 @@ nuget install mypkg.nupkg
 
 ## Push packages to a package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213566) in GitLab 13.0.
 
 You can use a deploy token to push packages to a GitLab package registry.
 
@@ -203,7 +221,7 @@ nuget push mypkg.nupkg -Source GitLab
 
 ## Pull images from the dependency proxy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/280586) in GitLab 14.2.
 
 You can use a deploy token to pull images from the dependency proxy.
 

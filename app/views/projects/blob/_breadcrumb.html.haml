@@ -28,5 +28,11 @@
 
     = link_button_to _('History'), project_commits_path(@project, @id, ref_type: @ref_type)
 
+    - permalink_description = _('Go to permalink')
+    - permalink_shortcut = 'y'
+    - permalink_title = "#{permalink_description} <kbd class='flat ml-1' aria-hidden=true>#{permalink_shortcut}</kbd>"
     = link_button_to _('Permalink'), project_blob_path(@project, tree_join(@commit.sha, @path)),
-        class: 'js-data-file-blob-permalink-url'
+        'aria-keyshortcuts': permalink_shortcut,
+        class: 'has-tooltip js-data-file-blob-permalink-url',
+        'data-html': true,
+        title: permalink_title

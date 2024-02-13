@@ -14,7 +14,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
   let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
   def click_expand_button
-    find('[data-testid="toggle-button"]').click
+    find_by_testid('toggle-button').click
   end
 
   before do
@@ -76,8 +76,6 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     end
 
     it 'allows me to merge, see cherry-pick modal and load branches list', :sidekiq_might_not_need_inline do
-      modal_selector = '[data-testid="modal-commit"]'
-
       wait_for_requests
       click_button 'Merge'
 
@@ -87,16 +85,18 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
       click_button 'Cherry-pick'
 
-      page.within(modal_selector) do
+      within_testid('modal-commit') do
         click_button 'master'
       end
 
-      page.within("#{modal_selector} [data-testid=\"base-dropdown-menu\"]") do
-        fill_in 'Search branches', with: ''
+      within_testid('modal-commit') do
+        within_testid('base-dropdown-menu') do
+          fill_in 'Search branches', with: ''
 
-        wait_for_requests
+          wait_for_requests
 
-        expect(page).to have_selector('[data-testid="listbox-item-master"]', visible: true)
+          expect(page).to have_selector('[data-testid="listbox-item-master"]', visible: true)
+        end
       end
     end
   end
@@ -143,17 +143,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
     end
 
     it 'allows me to merge with a failed pipeline' do
-      modal_selector = '[data-testid="merge-failed-pipeline-confirmation-dialog"]'
-
       wait_for_requests
 
       click_button 'Merge...'
 
-      page.within(modal_selector) do
+      within_testid('merge-failed-pipeline-confirmation-dialog') do
         click_button 'Merge unverified changes'
       end
 
-      expect(find('[data-testid="merging-state"]')).to have_content('Merging!')
+      expect(find_by_testid('merging-state')).to have_content('Merging!')
     end
   end
 
@@ -625,11 +623,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the new failure' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 failed, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: no changed test results, 1 total test')
               expect(page).to have_content('junit: 1 failed, 1 total test')
               expect(page).to have_content('New')
@@ -640,15 +638,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the new failure' do
           it 'shows the test report detail' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('addTest')
               expect(page).to have_content('6.66')
               expect(page).to have_content(sample_java_failed_message.gsub(/\s+/, ' ').strip)
@@ -673,11 +671,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the existing failure' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 failed, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: 1 failed, 1 total test')
               expect(page).to have_content('junit: no changed test results, 1 total test')
               expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary')
@@ -687,15 +685,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the existing failure' do
           it 'shows test report detail of it' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('Test#sum when a is 1 and b is 3 returns summary')
               expect(page).to have_content('2.22')
               expect(page).to have_content(sample_rspec_failed_message.gsub(/\s+/, ' ').strip)
@@ -720,11 +718,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the resolved failure' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 fixed test result, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: no changed test results, 1 total test')
               expect(page).to have_content('junit: 1 fixed test result, 1 total test')
               expect(page).to have_content('Fixed')
@@ -735,15 +733,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the resolved failure' do
           it 'shows test report detail of it' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('addTest')
               expect(page).to have_content('5.55')
             end
@@ -767,11 +765,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the new error' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 error, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: no changed test results, 1 total test')
               expect(page).to have_content('junit: 1 error, 1 total test')
               expect(page).to have_content('New')
@@ -782,15 +780,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the new error' do
           it 'shows the test report detail' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('addTest')
               expect(page).to have_content('8.88')
             end
@@ -814,11 +812,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the existing error' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 error, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: 1 error, 1 total test')
               expect(page).to have_content('junit: no changed test results, 1 total test')
               expect(page).to have_content('Test#sum when a is 4 and b is 4 returns summary')
@@ -828,15 +826,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the existing error' do
           it 'shows test report detail of it' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('Test#sum when a is 4 and b is 4 returns summary')
               expect(page).to have_content('4.44')
             end
@@ -860,11 +858,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the resolved error' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 1 fixed test result, 2 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: no changed test results, 1 total test')
               expect(page).to have_content('junit: 1 fixed test result, 1 total test')
               expect(page).to have_content('Fixed')
@@ -875,15 +873,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
 
         context 'when user clicks the resolved error' do
           it 'shows test report detail of it' do
-            within('[data-testid="widget-extension"]') do
+            within_testid('widget-extension') do
               click_expand_button
 
-              within('[data-testid="widget-extension-collapsed-section"]') do
+              within_testid('widget-extension-collapsed-section') do
                 click_button 'View details'
               end
             end
 
-            within('[data-testid="test-case-details-modal"]') do
+            within_testid('test-case-details-modal') do
               expect(page).to have_content('addTest')
               expect(page).to have_content('5.55')
             end
@@ -915,11 +913,11 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         end
 
         it 'shows test reports summary which includes the resolved failure' do
-          within('[data-testid="widget-extension"]') do
+          within_testid('widget-extension') do
             click_expand_button
 
             expect(page).to have_content('Test summary: 20 failed, 20 total tests')
-            within('[data-testid="widget-extension-collapsed-section"]') do
+            within_testid('widget-extension-collapsed-section') do
               expect(page).to have_content('rspec: 10 failed, 10 total tests')
               expect(page).to have_content('junit: 10 failed, 10 total tests')
 

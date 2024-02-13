@@ -12,7 +12,8 @@ jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
-const readmeHtml = '<h1>This is a readme file</h1>';
+const versionedReadmeHtml = '<h1>This is version one readme</h1>';
+const latestReadmeHtml = '<h1>This is the lastest version readme</h1>';
 const resourceId = 'gid://gitlab/Ci::Catalog::Resource/1';
 
 describe('CiResourceReadme', () => {
@@ -24,20 +25,38 @@ describe('CiResourceReadme', () => {
       ciCatalogResource: {
         id: resourceId,
         webPath: 'twitter/project-1',
-        readmeHtml,
+        versions: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Ci::Catalog::Resources::Version/1',
+              name: '1.0.1',
+              readmeHtml: versionedReadmeHtml,
+            },
+          ],
+        },
+        latestVersion: {
+          id: 'gid://gitlab/Ci::Catalog::Resources::Version/2',
+          readmeHtml: latestReadmeHtml,
+        },
       },
     },
   };
 
   const defaultProps = { resourcePath: readmeMockData.data.ciCatalogResource.webPath };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, data = {} } = {}) => {
     const handlers = [[getCiCatalogResourceReadme, mockReadmeResponse]];
 
     wrapper = shallowMountExtended(CiResourceReadme, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      data() {
+        return {
+          useLatestVersion: true,
+          ...data,
+        };
       },
       apolloProvider: createMockApollo(handlers),
     });
@@ -57,7 +76,7 @@ describe('CiResourceReadme', () => {
 
     it('renders only a loading icon', () => {
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(wrapper.html()).not.toContain(readmeHtml);
+      expect(wrapper.html()).not.toContain(latestReadmeHtml);
     });
   });
 
@@ -69,13 +88,22 @@ describe('CiResourceReadme', () => {
       await waitForPromises();
     });
 
-    it('renders only the received HTML', () => {
+    it('renders the latest version readme', () => {
       expect(findLoadingIcon().exists()).toBe(false);
-      expect(wrapper.html()).toContain(readmeHtml);
+      expect(wrapper.html()).toContain(latestReadmeHtml);
     });
 
     it('does not render an error', () => {
       expect(createAlert).not.toHaveBeenCalled();
+    });
+
+    describe('versioned readme', () => {
+      it('renders a versioned readme', async () => {
+        createComponent({ data: { useLatestVersion: false, version: '1.0.1' } });
+        await waitForPromises();
+
+        expect(wrapper.html()).toContain(versionedReadmeHtml);
+      });
     });
   });
 

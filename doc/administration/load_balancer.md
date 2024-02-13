@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Load Balancer for multi-node GitLab **(FREE SELF)**
+# Load Balancer for multi-node GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 In a multi-node GitLab configuration, you need a load balancer to route
 traffic to the application servers. The specifics on which load balancer to use

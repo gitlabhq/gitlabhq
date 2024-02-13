@@ -4,7 +4,11 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab container registry administration **(FREE SELF)**
+# GitLab container registry administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 With the GitLab container registry, every project can have its
 own space to store Docker images.
@@ -645,7 +649,7 @@ you can pull from the container registry, but you cannot push.
 
 #### Moving to Azure Object Storage
 
-> The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
+> - The default configuration for the storage driver is scheduled to be [changed](https://gitlab.com/gitlab-org/container-registry/-/issues/854) in GitLab 16.0.
 
 When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
 Configure it by setting [`trimlegacyrootprefix: true`](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/upstream-differences.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
@@ -834,9 +838,9 @@ project, you can [disable it from your project's settings](../../user/project/se
 ## Use an external container registry with GitLab as an auth endpoint
 
 WARNING:
-Using external container registries in GitLab is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
-in GitLab 15.8 and the end of support is scheduled for GitLab 16.0.
-If you need to use external container registries instead of the GitLab container registry,
+Using third-party container registries in GitLab was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/376217)
+in GitLab 15.8 and support ended in GitLab 16.0.
+If you need to use third-party container registries instead of the GitLab container registry,
 tell us about your use cases in [feedback issue 958](https://gitlab.com/gitlab-org/container-registry/-/issues/958).
 
 If you use an external container registry, some features associated with the
@@ -1069,6 +1073,17 @@ end
 
 You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
 
+## Container registry metadata database
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Beta
+
+The metadata database enables many new registry features, including
+online garbage collection, and increases the efficiency of many registry operations.
+See the [Container registry metadata database](container_registry_metadata_database.md) page for details.
+
 ## Container registry garbage collection
 
 NOTE:
@@ -1257,14 +1272,17 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
-### Continuous Zero Downtime Garbage Collection **(BETA)**
+### Continuous Zero Downtime Garbage Collection
+
+DETAILS:
+**Status:** Beta
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
-if you migrate to the [metadata database (beta)](#use-a-postgresql-database-for-metadata).
+if you migrate to the [metadata database (beta)](container_registry_metadata_database.md).
 
 NOTE:
 If you would like to try this [beta feature](../../policy/experiment-beta-support.md#beta),
-you should review the [known limitations](#known-limitations). If you have any feedback,
+you should review the [known limitations](container_registry_metadata_database.md#known-limitations). If you have any feedback,
 you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 
 ## Configure GitLab and Registry to run on separate nodes (Linux package installations)
@@ -1367,42 +1385,6 @@ The GitLab container registry is compatible with the basic functionality provide
 including all the supported storage backends. To migrate to the GitLab container registry
 you can follow the instructions on this page, and use the same storage backend as the Distribution Registry.
 The GitLab container registry should accept the same configuration that you are using for the Distribution Registry.
-
-## Use a PostgreSQL database for metadata **(FREE SELF BETA)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
-
-WARNING:
-While the metadata database is already in use on GitLab.com, it is in early beta for self-managed GitLab instances.
-
-By default, the container registry uses object storage to persist metadata
-related to container images. This method to store metadata limits how efficiently
-the data can be accessed, especially data spanning multiple images, such as when listing tags.
-By using a database to store this data, many new features are possible, including
-[online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)
-which removes old data automatically with zero downtime.
-
-This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
-You must continue to maintain an object storage solution even after migrating to a metadata database.
-
-### Known Limitations
-
-- No support for online migrations.
-- Geo Support is not confirmed.
-- Registry database migrations must be ran manually when upgrading versions.
-
-### Migration Instructions and Feedback
-
-Instructions on how to migrate to the database may be found in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) for the beta period.
-This issue also serves as a place to report issues and to get an overview of the beta status.
-
-### Metadata database feature support
-
-You can migrate existing registries to the metadata database, and use online garbage collection.
-
-Some database-enabled features are only enabled for GitLab.com and automatic database provisioning for
-the registry database is not available. Review the feature support table in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459#supported-feature-status)
-for the status of features related to the container registry database.
 
 ## Troubleshooting
 

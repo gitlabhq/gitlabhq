@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limits **(FREE SELF)**
+# Rate limits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 For GitLab.com, see
@@ -25,6 +29,9 @@ Most cases can be mitigated by limiting the rate of requests from a single IP ad
 
 Most [brute-force attacks](https://en.wikipedia.org/wiki/Brute-force_attack) are
 similarly mitigated by a rate limit.
+
+NOTE:
+[In GitLab 14.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/344807), the rate limits for API requests do not affect requests made by the frontend, because these requests are always counted as web traffic.
 
 ## Configurable limits
 
@@ -75,7 +82,7 @@ For configuration information, see
 
 ### Repository archives
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25750) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25750) in GitLab 12.9.
 
 A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
 available. The limit applies to the project and to the user initiating the download either through
@@ -85,7 +92,7 @@ The **rate limit** is 5 requests per minute per user.
 
 ### Webhook Testing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/35bc85c3ca093fee58d60dacdc9ed1fd9a15adec) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/commit/35bc85c3ca093fee58d60dacdc9ed1fd9a15adec) in GitLab 13.4.
 
 There is a rate limit for [testing webhooks](../user/project/integrations/webhooks.md#test-a-webhook), which prevents abuse of the webhook functionality.
 
@@ -93,7 +100,7 @@ The **rate limit** is 5 requests per minute per user.
 
 ### Users sign up
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339151) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339151) in GitLab 14.7.
 
 There is a rate limit per IP address on the `/users/sign_up` endpoint. This is to mitigate attempts to misuse the endpoint. For example, to mass
 discover usernames or email addresses in use.
@@ -102,7 +109,7 @@ The **rate limit** is 20 calls per minute per IP address.
 
 ### Update username
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339152) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339152) in GitLab 14.7.
 
 There is a rate limit on how frequently a username can be changed. This is enforced to mitigate misuse of the feature. For example, to mass discover
 which usernames are in use.
@@ -111,7 +118,7 @@ The **rate limit** is 10 calls per minute per authenticated user.
 
 ### Username exists
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29040) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29040) in GitLab 14.7.
 
 There is a rate limit for the internal endpoint `/users/:username/exists`, used upon sign up to check if a chosen username has already been taken.
 This is to mitigate the risk of misuses, such as mass discovery of usernames in use.
@@ -129,7 +136,7 @@ The **rate limit** defaults to 600 calls per authenticated user. You can [config
 
 ### AI action
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118010) in GitLab 16.0.
 
 There is a rate limit for the GraphQL `aiAction` mutation, which is enforced to prevent from abusing this endpoint.
 
@@ -137,7 +144,7 @@ The **rate limit** is 160 calls per 8 hours per authenticated user.
 
 ### Delete a member using the API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118296) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118296) in GitLab 16.0.
 
 There is a rate limit for [removing project or group members using the API endpoints](../api/members.md#remove-a-member-from-a-group-or-project) `/groups/:id/members` or `/project/:id/members`.
 

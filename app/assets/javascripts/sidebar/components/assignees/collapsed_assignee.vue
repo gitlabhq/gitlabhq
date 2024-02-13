@@ -1,10 +1,12 @@
 <script>
+import { GlButton } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import AssigneeAvatar from './assignee_avatar.vue';
 import UserNameWithStatus from './user_name_with_status.vue';
 
 export default {
   components: {
+    GlButton,
     AssigneeAvatar,
     UserNameWithStatus,
   },
@@ -27,12 +29,12 @@ export default {
 };
 </script>
 <template>
-  <button type="button" class="gl-button btn-link">
+  <gl-button variant="link" class="gl-bg-transparent!">
     <assignee-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
     <user-name-with-status
       :name="user.name"
       :availability="availability"
       container-classes="author"
     />
-  </button>
+  </gl-button>
 </template>

@@ -36,3 +36,5 @@ module WorkItems
     end
   end
 end
+
+WorkItems::ParentLinks::DestroyService.prepend_mod

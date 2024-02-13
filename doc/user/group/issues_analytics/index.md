@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue analytics **(PREMIUM ALL)**
+# Issue analytics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Issue analytics for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/7478) in GitLab 11.5.
 > - Issue analytics for projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196561) in GitLab 12.9.
@@ -38,7 +42,11 @@ shows a total of 15 months for the chart in the GitLab.org group.
 
 ![Issues created per month](img/issues_created_per_month_v12_8_a.png)
 
-## Enhanced issue analytics **(ULTIMATE ALL)**
+## Enhanced issue analytics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437542) in GitLab 16.8.
@@ -53,7 +61,7 @@ You can use this metric to improve the overall turn-around time and value delive
 
 ## Drill into the information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196547) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196547) in GitLab 13.1.
 
 You can examine details of individual issues by browsing the table
 located below the chart.

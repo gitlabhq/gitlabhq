@@ -1,6 +1,6 @@
 - milestone_url = @milestone.project_milestone? ? project_milestone_path(@project, @milestone) : group_milestone_path(@group, @milestone)
 
-%button.gl-button.btn.btn-link.menu-item.js-delete-milestone-button{ data: { milestone_id: @milestone.id, milestone_title: markdown_field(@milestone, :title), milestone_url: milestone_url, milestone_issue_count: @milestone.issues.count, milestone_merge_request_count: @milestone.merge_requests.count }, disabled: true }
+= render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: 'menu-item js-delete-milestone-button', data: { milestone_id: @milestone.id, milestone_title: markdown_field(@milestone, :title), milestone_url: milestone_url, milestone_issue_count: @milestone.issues.count, milestone_merge_request_count: @milestone.merge_requests.count }, disabled: true }) do
   .gl-dropdown-item-text-wrapper.gl-text-red-500
     = _('Delete')
 #js-delete-milestone-modal

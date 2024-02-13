@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Flavored Markdown (GLFM) **(FREE ALL)**
+# GitLab Flavored Markdown (GLFM)
 
-> The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - The abbreviation [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/24592) from `GFM` to `GLFM` in GitLab 14.10.
 
 When you enter text in the GitLab UI, GitLab assumes the text is in the Markdown language.
 The text is rendered with a set of styles. These styles are called *GitLab Flavored Markdown*.
@@ -164,6 +168,8 @@ You can generate diagrams from text by using:
 In wikis, you can also add and edit diagrams created with the [diagrams.net editor](#diagramsnet-editor).
 
 ### Mermaid
+
+> - Support for Entity Relationship diagrams and mindmaps [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384386) in GitLab 16.0.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#mermaid).
 
@@ -451,7 +457,7 @@ $$
 
 ## Task lists
 
-> Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
+> - Inapplicable checkboxes [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85982) in GitLab 15.3.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#task-lists).
 
@@ -614,7 +620,7 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 ### diagrams.net editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
 In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
@@ -697,6 +703,9 @@ GitLab Flavored Markdown recognizes the following:
 | Snippet                                                        | `$123`                         | `namespace/project$123`                 | `project$123`                      |
 | [Epic](group/epics/index.md)                                   | `&123`                         | `group1/subgroup&123`                   |                                    |
 | [Iteration](group/iterations/index.md)                         | `*iteration:"iteration title"` |                                         |                                    |
+| [Iteration cadence](group/iterations/index.md) by ID<sup>1</sup>                     | `[cadence:123]`      |                             |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (one word)<sup>1</sup>       | `[cadence:plan]`     |                             |                                    |
+| [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]` |                             |                                    |
 | [Vulnerability](application_security/vulnerabilities/index.md) | `[vulnerability:123]`          | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
 | Feature flag                                                   | `[feature_flag:123]`           | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
 | Label by ID                                                    | `~123`                         | `namespace/project~123`                 | `project~123`                      |
@@ -712,6 +721,15 @@ GitLab Flavored Markdown recognizes the following:
 | Repository file reference (specific line)                      | `[README](doc/README.md#L13)`  |                                         |                                    |
 | [Alert](../operations/incident_management/alerts.md)           | `^alert#123`                   | `namespace/project^alert#123`           | `project^alert#123`                |
 | [Contact](crm/index.md#contacts)                               | `[contact:test@example.com]`   |                                         |                                    |
+
+<ol>
+  <li>
+    <small>
+      <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/384885">Introduced</a> in GitLab 16.9. Iteration cadence references are always rendered following the format <code>[cadence:&lt;ID>]</code>.
+    For example, the text reference <code>[cadence:"plan"]</code> renders as <code>[cadence:1]</code> if the referenced iterations cadence's ID is <code>1</code>.
+    </small>
+  </li>
+</ol>
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is
@@ -1035,6 +1053,8 @@ the note content.
 Regardless of the tag names, the relative order of the reference tags determines the rendered
 numbering.
 
+Regardless where you put the note, it's always shown at the bottom of the file.
+
 <!--
 The following codeblock uses HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblock.
@@ -1249,7 +1269,7 @@ Here's an example audio clip:
 
 ## Inline HTML
 
-> Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
+> - Allowing `rel="license"` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20857) in GitLab 14.6.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#inline-html).
 
@@ -1847,7 +1867,7 @@ entry and paste the spreadsheet:
 
 ### JSON
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86353) in GitLab 15.3.
 
 To render tables with JSON code blocks, use the following syntax:
 

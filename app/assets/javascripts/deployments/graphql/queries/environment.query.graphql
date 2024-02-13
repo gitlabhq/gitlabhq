@@ -1,0 +1,11 @@
+query fetchEnvironment($fullPath: ID!, $name: String!) {
+  project(fullPath: $fullPath) {
+    id
+    environment(name: $name) {
+      id
+      name
+      path
+      externalUrl
+    }
+  }
+}

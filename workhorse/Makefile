@@ -21,6 +21,13 @@ EXE_ALL := gitlab-resize-image gitlab-zip-cat gitlab-zip-metadata gitlab-workhor
 INSTALL := install
 BUILD_TAGS := tracer_static tracer_static_jaeger continuous_profiler_stackdriver
 
+OS := $(shell uname | tr A-Z a-z)
+ARCH ?= $(shell uname -m | sed -e 's/x86_64/amd64/' | sed -e 's/aarch64/arm64/')
+
+GOLANGCI_LINT_VERSION := 1.55.2
+GOLANGCI_LINT_ARCH ?= ${ARCH}
+GOLANGCI_LINT_FILE := _support/bin/golangci-lint-${GOLANGCI_LINT_VERSION}
+
 ifeq (${FIPS_MODE}, 1)
     # boringcrypto tag is added automatically by golang-fips compiler
     BUILD_TAGS += fips
@@ -154,6 +161,14 @@ lint:
 	$(call message,Verify: $@)
 	go install golang.org/x/lint/golint
 	@_support/lint.sh ./...
+
+.PHONY: golangci
+golangci: ${GOLANGCI_LINT_FILE}
+	${GOLANGCI_LINT_FILE} run --issues-exit-code 0 --print-issued-lines=false ${GOLANGCI_LINT_ARGS}
+
+${GOLANGCI_LINT_FILE}:
+	mkdir -p $(shell dirname ${GOLANGCI_LINT_FILE})
+	curl -L https://github.com/golangci/golangci-lint/releases/download/v${GOLANGCI_LINT_VERSION}/golangci-lint-${GOLANGCI_LINT_VERSION}-${OS}-${GOLANGCI_LINT_ARCH}.tar.gz | tar --strip-components 1 -zOxf - golangci-lint-${GOLANGCI_LINT_VERSION}-${OS}-${GOLANGCI_LINT_ARCH}/golangci-lint > ${GOLANGCI_LINT_FILE} && chmod +x ${GOLANGCI_LINT_FILE}
 
 .PHONY: vet
 vet:

@@ -18,7 +18,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
     it 'imports the merge request correctly' do
       expect_next(Gitlab::Import::MergeRequestCreator, project).to receive(:execute).and_call_original
       expect_next(Gitlab::BitbucketServerImport::UserFinder, project).to receive(:author_id).and_call_original
-      expect_next(Gitlab::BitbucketServerImport::MentionsConverter, project.id).to receive(:convert).and_call_original
+      expect_next(Gitlab::Import::MentionsConverter, 'bitbucket_server',
+        project.id).to receive(:convert).and_call_original
 
       expect { importer.execute }.to change { MergeRequest.count }.by(1)
 
@@ -34,18 +35,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         author_id: project.creator_id,
         description: "*Created by: #{pull_request.author}*\n\n#{pull_request.description}"
       )
-    end
-
-    context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-      end
-
-      it 'does not convert mentions' do
-        expect_next(Gitlab::BitbucketServerImport::MentionsConverter, project.id).not_to receive(:convert)
-
-        importer.execute
-      end
     end
 
     context 'when the `bitbucket_server_user_mapping_by_username` flag is disabled' do

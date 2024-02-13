@@ -10,6 +10,7 @@ FactoryBot.define do
     transient do
       purl_type { 'npm' }
       namespace { nil }
+      source_package_name { nil }
     end
 
     purl do
@@ -18,7 +19,23 @@ FactoryBot.define do
         name: name,
         namespace: namespace,
         version: version
-      ).to_s
+      )
+    end
+
+    trait :with_source_package_name do
+      sequence(:source_package_name) { |n| "source-package-name-#{n}" }
+    end
+
+    properties { nil }
+
+    trait :with_trivy_properties do
+      properties do
+        Gitlab::Ci::Parsers::Sbom::CyclonedxProperties.parse_trivy_source([
+          { 'name' => 'aquasecurity:trivy:PkgType', 'value' => 'node-pkg' },
+          { 'name' => 'aquasecurity:trivy:FilePath',
+            'value' => 'usr/local/lib/node_modules/npm/node_modules/@colors/colors/package.json' }
+        ])
+      end
     end
 
     skip_create
@@ -28,7 +45,8 @@ FactoryBot.define do
         type: type,
         name: name,
         purl: purl,
-        version: version
+        version: version,
+        source_package_name: source_package_name
       )
     end
   end

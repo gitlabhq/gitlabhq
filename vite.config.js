@@ -14,6 +14,9 @@ import {
   SOURCEGRAPH_PUBLIC_PATH,
   GITLAB_WEB_IDE_PUBLIC_PATH,
 } from './config/webpack.constants';
+/* eslint-disable import/extensions */
+import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
+/* eslint-enable import/extensions */
 
 let viteGDKConfig;
 try {
@@ -104,6 +107,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr === null }),
     viteGDKConfig.enabled ? autoRestartPlugin : null,
     fixedRubyPlugin,
     vue({
@@ -143,21 +147,24 @@ export default defineConfig({
           }
         : viteGDKConfig.hmr,
     https: false,
-    watch: {
-      ignored: [
-        '**/*.stories.js',
-        function ignoreRootFolder(x) {
-          /*
-           `vite` watches the root folder of gitlab and all of its sub folders
-           This is not what we want, because we have temp files, and all kind
-           of other stuff. As vite starts its watchers recursively, we just
-           ignore if the path matches exactly the root folder
+    watch:
+      viteGDKConfig.hmr === null
+        ? null
+        : {
+            ignored: [
+              '**/*.stories.js',
+              function ignoreRootFolder(x) {
+                /*
+             `vite` watches the root folder of gitlab and all of its sub folders
+             This is not what we want, because we have temp files, and all kind
+             of other stuff. As vite starts its watchers recursively, we just
+             ignore if the path matches exactly the root folder
 
-           Additional folders like `ee/app/assets` are defined in
-           */
-          return x === __dirname;
-        },
-      ],
-    },
+             Additional folders like `ee/app/assets` are defined in
+             */
+                return x === __dirname;
+              },
+            ],
+          },
   },
 });

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrate your server with GitLab.com **(FREE SELF)**
+# Integrate your server with GitLab.com
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Import projects from GitLab.com and login to your GitLab instance with your GitLab.com account.
 

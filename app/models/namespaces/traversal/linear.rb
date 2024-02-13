@@ -5,7 +5,7 @@
 #
 # Namespace is a nested hierarchy of one parent to many children. A search
 # using only the parent-child relationships is a slow operation. This process
-# was previously optimized using Postgresql recursive common table expressions
+# was previously optimized using PostgreSQL recursive common table expressions
 # (CTE) with acceptable performance. However, it lead to slower than possible
 # performance, and resulted in complicated queries that were difficult to make
 # performant.
@@ -31,7 +31,7 @@
 # Note that this search method works so long as the IDs are unique and the
 # traversal path is ordered from root to leaf nodes.
 #
-# We implement this in the database using Postgresql arrays, indexed by a
+# We implement this in the database using PostgreSQL arrays, indexed by a
 # generalized inverted index (gin).
 module Namespaces
   module Traversal
@@ -55,8 +55,8 @@ module Namespaces
       end
 
       class_methods do
-        # This method looks into a list of namespaces trying to optimise a returned traversal_ids
-        # into a list of shortest prefixes, due to fact that the shortest prefixes include all childrens.
+        # This method looks into a list of namespaces trying to optimize a returned traversal_ids
+        # into a list of shortest prefixes, due to fact that the shortest prefixes include all children.
         # Example:
         # INPUT: [[4909902], [4909902,51065789], [4909902,51065793], [7135830], [15599674, 1], [15599674, 1, 3], [15599674, 2]]
         # RESULT: [[4909902], [7135830], [15599674, 1], [15599674, 2]]
@@ -106,6 +106,10 @@ module Namespaces
         end
       end
 
+      def all_project_ids
+        all_projects.select(:id)
+      end
+
       def self_and_descendants
         return super unless use_traversal_ids?
 
@@ -144,7 +148,7 @@ module Namespaces
         hierarchy_order == :desc ? traversal_ids[0..-2] : traversal_ids[0..-2].reverse
       end
 
-      # Returns all ancestors upto but excluding the top.
+      # Returns all ancestors up to but excluding the top.
       # When no top is given, all ancestors are returned.
       # When top is not found, returns all ancestors.
       #

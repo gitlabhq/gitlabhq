@@ -52,7 +52,7 @@ RSpec.describe BulkImports::Projects::Pipelines::CommitNotesPipeline, feature_ca
   subject(:pipeline) { described_class.new(context) }
 
   describe '#run' do
-    before do
+    it 'imports ci pipeline notes into destination project' do
       group.add_owner(user)
 
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
@@ -60,9 +60,9 @@ RSpec.describe BulkImports::Projects::Pipelines::CommitNotesPipeline, feature_ca
           BulkImports::Pipeline::ExtractedData.new(data: [ci_pipeline_note])
         )
       end
-    end
 
-    it 'imports ci pipeline notes into destination project' do
+      allow(pipeline).to receive(:set_source_objects_counter)
+
       expect { pipeline.run }.to change { project.notes.for_commit_id("sha-notes").count }.from(0).to(1)
     end
   end

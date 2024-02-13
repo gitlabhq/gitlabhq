@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Forks **(FREE ALL)**
+# Forks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Whenever possible, it's recommended to work in a common Git repository and use
 branching strategies to manage your work. However,
@@ -150,7 +154,11 @@ an `upstream` remote repository for your fork:
    git push origin main
    ```
 
-### With repository mirroring **(PREMIUM ALL)**
+### With repository mirroring
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A fork can be configured as a mirror of the upstream if all these conditions are met:
 
@@ -217,8 +225,8 @@ to share objects with another repository:
 
 ### Error: `An error occurred while forking the project. Please try again`
 
-This error can be due to a mismatch in shared runner settings between the forked project
-and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#using-shared-runners-in-forked-projects)
+This error can be due to a mismatch in instance runner settings between the forked project
+and the new namespace. See [Forks](../../../ci/runners/configure_runners.md#using-instance-runners-in-forked-projects)
 in the Runner documentation for more information.
 
 ### Removing fork relationship fails

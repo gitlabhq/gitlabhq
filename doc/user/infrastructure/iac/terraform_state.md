@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab-managed Terraform state **(FREE ALL)**
+# GitLab-managed Terraform state
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2673) in GitLab 13.0.
 > - Support for state names that contain periods introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `allow_dots_on_tf_state_names`. Disabled by default.
@@ -290,7 +294,7 @@ To read the Terraform state in the target project, you need at least the Develop
 
 ## Manage Terraform state files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/273592) in GitLab 13.8.
 
 To view Terraform state files:
 
@@ -301,7 +305,7 @@ To view Terraform state files:
 
 ### Manage individual Terraform state versions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207347) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207347) in GitLab 13.4.
 
 Individual state versions can be managed using the GitLab REST API.
 

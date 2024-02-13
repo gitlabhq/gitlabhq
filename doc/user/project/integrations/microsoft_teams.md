@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Microsoft Teams notifications **(FREE ALL)**
+# Microsoft Teams notifications
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can integrate Microsoft Teams notifications with GitLab and display notifications about GitLab projects
 in Microsoft Teams. To integrate the services, you must:

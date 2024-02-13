@@ -89,6 +89,7 @@
     "MergeRequest"
   ],
   "OrchestrationPolicy": [
+    "ApprovalPolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy"
   ],
@@ -190,6 +191,7 @@
     "WorkItemWidgetColor",
     "WorkItemWidgetCurrentUserTodos",
     "WorkItemWidgetDescription",
+    "WorkItemWidgetDesigns",
     "WorkItemWidgetHealthStatus",
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
@@ -198,12 +200,14 @@
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
     "WorkItemWidgetNotifications",
+    "WorkItemWidgetParticipants",
     "WorkItemWidgetProgress",
     "WorkItemWidgetRequirementLegacy",
     "WorkItemWidgetRolledupDates",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetTestReports",
+    "WorkItemWidgetTimeTracking",
     "WorkItemWidgetWeight"
   ],
   "WorkItemWidgetDefinition": [

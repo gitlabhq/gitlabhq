@@ -14,6 +14,7 @@ import { STATUSES } from '~/import_entities/constants';
 import { ROOT_NAMESPACE } from '~/import_entities/import_groups/constants';
 import ImportTable from '~/import_entities/import_groups/components/import_table.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
+import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
 import ImportHistoryLink from '~/import_entities/import_groups/components//import_history_link.vue';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
@@ -60,15 +61,19 @@ describe('import table', () => {
       idx
     ];
   const findPaginationDropdown = () => wrapper.findByTestId('page-size');
-  const findTargetNamespaceDropdown = (rowWrapper) =>
-    extendedWrapper(rowWrapper).findByTestId('target-namespace-dropdown');
   const findTargetNamespaceInput = (rowWrapper) =>
     extendedWrapper(rowWrapper).findByTestId('target-namespace-input');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
   const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
+  const findHistoryLink = () => wrapper.findByTestId('history-link');
   const findUnavailableFeaturesWarning = () => wrapper.findByTestId('unavailable-features-alert');
+  const findImportProjectsWarning = () => wrapper.findByTestId('import-projects-warning');
   const findAllImportStatuses = () => wrapper.findAllComponents(ImportStatus);
+
+  const findFirstImportTargetCell = () => wrapper.findAllComponents(ImportTargetCell).at(0);
+  const findFirstImportTargetNamespaceText = () =>
+    findFirstImportTargetCell().find('[aria-haspopup]').text();
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
@@ -100,6 +105,7 @@ describe('import table', () => {
         jobsPath: '/fake_job_path',
         sourceUrl: SOURCE_URL,
         historyPath: '/fake_history_path',
+        historyShowPath: '/:id/fake_history_path',
         defaultTargetNamespace,
       },
       directives: {
@@ -153,6 +159,12 @@ describe('import table', () => {
     });
   });
 
+  it('renders "History" link', () => {
+    createComponent({ bulkImportSourceGroups: () => [] });
+
+    expect(findHistoryLink().attributes('href')).toBe('/fake_history_path');
+  });
+
   it('renders import row for each group in response', async () => {
     createComponent({
       bulkImportSourceGroups: () => ({
@@ -196,53 +208,118 @@ describe('import table', () => {
     expect(importHistoryLinks).toHaveLength(2);
     expect(importHistoryLinks.at(0).props('id')).toBe(FAKE_GROUPS[1].id);
     expect(importHistoryLinks.at(1).props('id')).toBe(FAKE_GROUPS[3].id);
+
+    expect(importHistoryLinks.at(0).attributes('href')).toBe(
+      `/${FAKE_GROUPS[1].id}/fake_history_path`,
+    );
+    expect(importHistoryLinks.at(1).attributes('href')).toBe(
+      `/${FAKE_GROUPS[3].id}/fake_history_path`,
+    );
   });
 
-  it('correctly maintains root namespace as last import target', async () => {
-    createComponent({
-      bulkImportSourceGroups: () => ({
-        nodes: [
-          {
-            ...generateFakeEntry({ id: 1, status: STATUSES.FINISHED }),
-            lastImportTarget: {
-              id: 1,
-              targetNamespace: ROOT_NAMESPACE.fullPath,
-              newName: 'does-not-matter',
+  describe('selecting import target namespace', () => {
+    describe('when lastImportTarget is not defined', () => {
+      beforeEach(async () => {
+        createComponent({
+          bulkImportSourceGroups: () => ({
+            nodes: [
+              {
+                ...generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+                lastImportTarget: null,
+              },
+            ],
+            pageInfo: FAKE_PAGE_INFO,
+            versionValidation: FAKE_VERSION_VALIDATION,
+          }),
+        });
+
+        await waitForPromises();
+      });
+
+      it('does not pre-select target namespace', () => {
+        expect(findFirstImportTargetNamespaceText()).toBe('Select parent group');
+      });
+
+      it('does not validate by default', () => {
+        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+      });
+
+      it('triggers validations when import button is clicked', async () => {
+        await findRowImportDropdownAtIndex(0).trigger('click');
+
+        expect(wrapper.find('tbody tr').text()).toContain('Please select a parent group.');
+      });
+
+      it('is valid when root namespace is selected', async () => {
+        findFirstImportTargetCell().vm.$emit('update-target-namespace', {
+          fullPath: '',
+        });
+        await findRowImportDropdownAtIndex(0).trigger('click');
+
+        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(findFirstImportTargetNamespaceText()).toBe('No parent');
+      });
+
+      it('is valid when target namespace is selected', async () => {
+        findFirstImportTargetCell().vm.$emit('update-target-namespace', {
+          fullPath: 'gitlab-org',
+        });
+        await findRowImportDropdownAtIndex(0).trigger('click');
+
+        expect(wrapper.find('tbody tr').text()).not.toContain('Please select a parent group.');
+        expect(findFirstImportTargetNamespaceText()).toBe('gitlab-org');
+      });
+    });
+
+    describe('when lastImportTarget is set', () => {
+      it('correctly maintains root namespace as last import target', async () => {
+        createComponent({
+          bulkImportSourceGroups: () => ({
+            nodes: [
+              {
+                ...generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+                lastImportTarget: {
+                  id: 1,
+                  targetNamespace: ROOT_NAMESPACE.fullPath,
+                  newName: 'does-not-matter',
+                },
+              },
+            ],
+            pageInfo: FAKE_PAGE_INFO,
+            versionValidation: FAKE_VERSION_VALIDATION,
+          }),
+        });
+
+        await waitForPromises();
+
+        expect(findFirstImportTargetNamespaceText()).toBe('No parent');
+      });
+    });
+
+    it('correctly maintains target namespace as last import target', async () => {
+      const targetNamespace = AVAILABLE_NAMESPACES[1];
+
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [
+            {
+              ...generateFakeEntry({ id: 1, status: STATUSES.FINISHED }),
+              lastImportTarget: {
+                id: 1,
+                targetNamespace: targetNamespace.fullPath,
+                newName: 'does-not-matter',
+              },
             },
-          },
-        ],
-        pageInfo: FAKE_PAGE_INFO,
-        versionValidation: FAKE_VERSION_VALIDATION,
-      }),
+          ],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+
+      await waitForPromises();
+
+      expect(findFirstImportTargetNamespaceText()).toBe(targetNamespace.fullPath);
     });
-
-    await waitForPromises();
-    const firstRow = wrapper.find('tbody tr');
-    const targetNamespaceDropdownButton = findTargetNamespaceDropdown(firstRow).find(
-      '[aria-haspopup]',
-    );
-    expect(targetNamespaceDropdownButton.text()).toBe('No parent');
-  });
-
-  it('respects default namespace if provided', async () => {
-    const targetNamespace = AVAILABLE_NAMESPACES[1];
-
-    createComponent({
-      bulkImportSourceGroups: () => ({
-        nodes: FAKE_GROUPS,
-        pageInfo: FAKE_PAGE_INFO,
-        versionValidation: FAKE_VERSION_VALIDATION,
-      }),
-      defaultTargetNamespace: targetNamespace.id,
-    });
-
-    await waitForPromises();
-
-    const firstRow = wrapper.find('tbody tr');
-    const targetNamespaceDropdownButton = findTargetNamespaceDropdown(firstRow).find(
-      '[aria-haspopup]',
-    );
-    expect(targetNamespaceDropdownButton.text()).toBe(targetNamespace.fullPath);
   });
 
   it('does not render status string when result list is empty', async () => {
@@ -626,6 +703,50 @@ describe('import table', () => {
       await selectRow(0);
 
       expect(findImportSelectedDropdown().props().disabled).toBe(false);
+    });
+
+    it('does not render import projects warning when target with isProjectCreationAllowed = true is selected', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: FAKE_GROUPS,
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      await selectRow(0);
+      await nextTick();
+
+      expect(findImportProjectsWarning().exists()).toBe(false);
+    });
+
+    it('renders import projects warning when target with isProjectCreationAllowed = false is selected', async () => {
+      createComponent({
+        bulkImportSourceGroups: () => ({
+          nodes: [
+            {
+              ...generateFakeEntry({ id: 1, status: STATUSES.NONE }),
+              lastImportTarget: {
+                id: 1,
+                targetNamespace: AVAILABLE_NAMESPACES[2].fullPath,
+                newName: 'does-not-matter',
+              },
+            },
+          ],
+          pageInfo: FAKE_PAGE_INFO,
+          versionValidation: FAKE_VERSION_VALIDATION,
+        }),
+      });
+      await waitForPromises();
+
+      await selectRow(0);
+      await nextTick();
+
+      expect(findImportProjectsWarning().props('name')).toBe('warning');
+      expect(findImportProjectsWarning().attributes('title')).toBe(
+        'Some groups will be imported without projects.',
+      );
     });
 
     it('does not allow selecting already started groups', async () => {

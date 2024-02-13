@@ -8,6 +8,8 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:group) }
+    it { is_expected.to have_many(:merge_access_levels).inverse_of(:protected_branch) }
+    it { is_expected.to have_many(:push_access_levels).inverse_of(:protected_branch) }
   end
 
   describe 'Validation' do

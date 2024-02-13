@@ -595,6 +595,8 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
   end
 
+  rule { can?(:admin_build) }.enable :manage_trigger
+
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard
   end
@@ -989,6 +991,10 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { ~private_project & guest & external_user }.enable :read_container_image
+
+  rule { can?(:create_pipeline_schedule) }.policy do
+    enable :read_ci_pipeline_schedules_plan_limit
+  end
 
   private
 

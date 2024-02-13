@@ -118,8 +118,10 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     project.send("add_#{user_role}", user) if member && user_role != :anonymous
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_name/:model_version/:file_name/authorize' do
+  describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/files/(*path)/:file_name/authorize' do
     include_context 'ml model authorize permissions table'
+
+    let_it_be(:file_name) { 'model.md5' }
 
     let(:token) { tokens[:personal_access_token] }
     let(:user_headers) { { 'Authorization' => "Bearer #{token}" } }
@@ -127,10 +129,12 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     let(:request) { authorize_upload_file(headers) }
     let(:model_name) { model_version.name }
     let(:version) { model_version.version }
-    let(:file_name) { 'myfile.tar.gz' }
+
+    let(:file_path) { '' }
+    let(:full_path) { "#{file_path}#{file_name}" }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}/authorize"
+      url = "/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/#{full_path}/authorize"
 
       put api(url), headers: headers
 
@@ -150,21 +154,32 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
         end
 
-        it { is_expected.to have_gitlab_http_status(expected_status) }
+        context 'when file does not have path' do
+          it { is_expected.to have_gitlab_http_status(expected_status) }
+        end
+
+        context 'when file has path' do
+          let(:file_path) { 'my_dir' }
+
+          it { is_expected.to have_gitlab_http_status(expected_status) }
+        end
       end
 
       it_behaves_like 'Endpoint not found if read_model_registry not available'
     end
 
     describe 'application security' do
-      where(:model_name, :file_name) do
-        'my-package/../'         | 'myfile.tar.gz'
-        'my-package%2f%2e%2e%2f' | 'myfile.tar.gz'
-        'my_package'             | '../.ssh%2fauthorized_keys'
-        'my_package'             | '%2e%2e%2f.ssh%2fauthorized_keys'
+      context 'when path has back directory' do
+        let(:file_name) { '../.ssh%2fauthorized_keys' }
+
+        it 'rejects malicious request' do
+          is_expected.to have_gitlab_http_status(:bad_request)
+        end
       end
 
-      with_them do
+      context 'when path has invalid characters' do
+        let(:file_name) { '%2e%2e%2f.ssh%2fauthorized_keys' }
+
         it 'rejects malicious request' do
           is_expected.to have_gitlab_http_status(:bad_request)
         end
@@ -172,7 +187,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     end
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_name/:model_version/:file_name' do
+  describe 'PUT /api/v4/projects/:id/packages/ml_models/:model_version_id/(*path)/files/:file_name' do
     include_context 'ml model authorize permissions table'
 
     let_it_be(:file_name) { 'model.md5' }
@@ -183,11 +198,14 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     let(:params) { { file: temp_file(file_name) } }
     let(:file_key) { :file }
     let(:send_rewritten_field) { true }
-    let(:model_name) { model_version.name }
-    let(:version) { model_version.version }
+    let(:version_id) { model_version.id }
+
+    let(:file_path) { '' }
+    let(:full_path) { "#{file_path}#{file_name}" }
+    let(:saved_file_name) { file_name }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}"
+      url = "/projects/#{project.id}/packages/ml_models/#{version_id}/files/#{full_path}"
 
       workhorse_finalize(
         api(url),
@@ -199,13 +217,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       )
 
       response
-    end
-
-    describe 'success' do
-      it 'creates a new package' do
-        expect { api_response }.to change { Packages::PackageFile.count }.by(1)
-        expect(api_response).to have_gitlab_http_status(:created)
-      end
     end
 
     describe 'user access' do
@@ -222,9 +233,26 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
         end
 
         if params[:expected_status] == :success
-          it_behaves_like 'process ml model package upload'
+          context 'when file does not have path' do
+            it_behaves_like 'process ml model package upload'
+          end
+
+          context 'when file has path' do
+            let(:file_path) { 'my_dir/' }
+            let(:saved_file_name) { "my_dir%2F#{file_name}" }
+
+            it_behaves_like 'process ml model package upload'
+          end
         else
-          it { is_expected.to have_gitlab_http_status(expected_status) }
+          context 'when file does not have path' do
+            it { is_expected.to have_gitlab_http_status(expected_status) }
+          end
+
+          context 'when file has path' do
+            let(:file_path) { 'my_dir/' }
+
+            it { is_expected.to have_gitlab_http_status(expected_status) }
+          end
         end
       end
 
@@ -234,22 +262,26 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
     end
   end
 
-  describe 'GET /api/v4/projects/:project_id/packages/ml_models/:model_name/:model_version/:file_name' do
+  describe 'GET /api/v4/projects/:project_id/packages/ml_models/:model_version_id/files/(*path)/:file_name' do
     include_context 'ml model authorize permissions table'
 
+    let_it_be(:file_name) { 'model.md5' }
     let_it_be(:package) { model_version.package }
-    let_it_be(:package_file) { create(:package_file, :generic, package: package, file_name: 'model.md5') }
+    let_it_be(:package_file_1) { create(:package_file, :generic, package: package, file_name: 'model.md5') }
+    let_it_be(:package_file_2) { create(:package_file, :generic, package: package, file_name: 'my_dir%2Fmodel.md5') }
 
-    let(:model_name) { model_version.name }
-    let(:version) { model_version.version }
-    let(:file_name) { package_file.file_name }
+    let(:file_path) { '' }
+    let(:full_path) { "#{file_path}#{file_name}" }
+    let(:saved_file_name) { file_name }
+
+    let(:version_id) { model_version.id }
 
     let(:token) { tokens[:personal_access_token] }
     let(:user_headers) { { 'Authorization' => "Bearer #{token}" } }
     let(:headers) { user_headers.merge(workhorse_headers) }
 
     subject(:api_response) do
-      url = "/projects/#{project.id}/packages/ml_models/#{model_name}/#{version}/#{file_name}"
+      url = "/projects/#{project.id}/packages/ml_models/#{version_id}/files/#{full_path}"
 
       get api(url), headers: headers
 
@@ -269,10 +301,22 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
         end
 
-        if params[:expected_status] == :success
-          it_behaves_like 'process ml model package download'
-        else
-          it { is_expected.to have_gitlab_http_status(expected_status) }
+        context 'when file does not have path' do
+          if params[:expected_status] == :success
+            it_behaves_like 'process ml model package download'
+          else
+            it { is_expected.to have_gitlab_http_status(expected_status) }
+          end
+        end
+
+        context 'when file has path' do
+          let(:file_path) { 'my_dir/' }
+
+          if params[:expected_status] == :success
+            it_behaves_like 'process ml model package download'
+          else
+            it { is_expected.to have_gitlab_http_status(expected_status) }
+          end
         end
       end
 

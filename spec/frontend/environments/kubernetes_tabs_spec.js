@@ -1,18 +1,9 @@
-import Vue from 'vue';
-import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTabs, GlTab, GlTable, GlPagination, GlBadge } from '@gitlab/ui';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stubComponent } from 'helpers/stub_component';
-import { useFakeDate } from 'helpers/fake_date';
-import waitForPromises from 'helpers/wait_for_promises';
-import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMount } from '@vue/test-utils';
+import { GlTabs } from '@gitlab/ui';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
-import KubernetesSummary from '~/environments/components/kubernetes_summary.vue';
-import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
+import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
+import KubernetesServices from '~/environments/components/kubernetes_services.vue';
 import { mockKasTunnelUrl } from './mock_data';
-import { k8sServicesMock } from './graphql/mock_data';
-
-Vue.use(VueApollo);
 
 describe('~/environments/components/kubernetes_tabs.vue', () => {
   let wrapper;
@@ -24,165 +15,69 @@ describe('~/environments/components/kubernetes_tabs.vue', () => {
       headers: { 'GitLab-Agent-Id': '1' },
     },
   };
-
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findTabs = () => wrapper.findComponent(GlTabs);
-  const findTab = () => wrapper.findComponent(GlTab);
-  const findTable = () => wrapper.findComponent(GlTable);
-  const findPagination = () => wrapper.findComponent(GlPagination);
-  const findKubernetesSummary = () => wrapper.findComponent(KubernetesSummary);
+  const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
+  const findKubernetesServices = () => wrapper.findComponent(KubernetesServices);
 
-  const createApolloProvider = () => {
-    const mockResolvers = {
-      Query: {
-        k8sServices: jest.fn().mockReturnValue(k8sServicesMock),
-      },
-    };
-
-    return createMockApollo([], mockResolvers);
-  };
-
-  const createWrapper = (apolloProvider = createApolloProvider()) => {
-    wrapper = shallowMountExtended(KubernetesTabs, {
+  const createWrapper = () => {
+    wrapper = shallowMount(KubernetesTabs, {
       propsData: { configuration, namespace },
-      apolloProvider,
-      stubs: {
-        GlTab,
-        GlTable: stubComponent(GlTable, {
-          props: ['items', 'per-page'],
-        }),
-        GlBadge,
-      },
     });
   };
 
   describe('mounted', () => {
-    it('shows tabs', () => {
+    beforeEach(() => {
       createWrapper();
+    });
 
+    it('shows tabs', () => {
       expect(findTabs().exists()).toBe(true);
     });
 
-    it('renders summary tab', () => {
-      createWrapper();
-
-      expect(findKubernetesSummary().props()).toEqual({ namespace, configuration });
+    it('renders pods tab', () => {
+      expect(findKubernetesPods().props()).toEqual({ namespace, configuration });
     });
 
     it('renders services tab', () => {
-      createWrapper();
-
-      expect(findTab().text()).toMatchInterpolatedText(`${KubernetesTabs.i18n.servicesTitle} 0`);
+      expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
     });
   });
 
   describe('services tab', () => {
-    useFakeDate(2020, 6, 6);
-    it('shows the loading icon', () => {
+    beforeEach(() => {
       createWrapper();
-
-      expect(findLoadingIcon().exists()).toBe(true);
     });
 
-    describe('when services data is loaded', () => {
-      beforeEach(async () => {
-        createWrapper();
-        await waitForPromises();
-      });
-
-      it('hides the loading icon when the list of services loaded', () => {
-        expect(findLoadingIcon().exists()).toBe(false);
-      });
-
-      it('renders services table when gets services data', () => {
-        expect(findTable().props('perPage')).toBe(SERVICES_LIMIT_PER_PAGE);
-        expect(findTable().props('items')).toMatchObject([
-          {
-            name: 'my-first-service',
-            namespace: 'default',
-            type: 'ClusterIP',
-            clusterIP: '10.96.0.1',
-            externalIP: '-',
-            ports: '443/TCP',
-            age: '0s',
-          },
-          {
-            name: 'my-second-service',
-            namespace: 'default',
-            type: 'NodePort',
-            clusterIP: '10.105.219.238',
-            externalIP: '-',
-            ports: '80:31989/TCP, 443:32679/TCP',
-            age: '2d',
-          },
-        ]);
-      });
-
-      it("doesn't render pagination when services are less then SERVICES_LIMIT_PER_PAGE", async () => {
-        createWrapper();
-        await waitForPromises();
-
-        expect(findPagination().exists()).toBe(false);
-      });
-    });
-
-    it('shows pagination when services are more then SERVICES_LIMIT_PER_PAGE', async () => {
-      const createApolloProviderWithPagination = () => {
-        const mockResolvers = {
-          Query: {
-            k8sServices: jest
-              .fn()
-              .mockReturnValue(
-                Array.from({ length: 6 }, () => k8sServicesMock).flatMap((array) => array),
-              ),
-          },
-        };
-
-        return createMockApollo([], mockResolvers);
-      };
-
-      createWrapper(createApolloProviderWithPagination());
-      await waitForPromises();
-
-      expect(findPagination().exists()).toBe(true);
-    });
-
-    it('emits an error message when gets an error from the cluster_client API', async () => {
-      const error = new Error('Error from the cluster_client API');
-      const createErroredApolloProvider = () => {
-        const mockResolvers = {
-          Query: {
-            k8sServices: jest.fn().mockRejectedValueOnce(error),
-          },
-        };
-
-        return createMockApollo([], mockResolvers);
-      };
-
-      createWrapper(createErroredApolloProvider());
-      await waitForPromises();
-
-      expect(wrapper.emitted('cluster-error')).toEqual([[error.message]]);
+    it('emits a cluster error event when gets it from the component', () => {
+      const errorMessage = 'Error from the cluster_client API';
+      findKubernetesServices().vm.$emit('cluster-error', errorMessage);
+      expect(wrapper.emitted('cluster-error')).toEqual([[errorMessage]]);
     });
   });
 
-  describe('summary tab', () => {
+  describe('pods tab', () => {
     beforeEach(() => {
       createWrapper();
     });
 
     it('emits loading event when gets it from the component', () => {
-      findKubernetesSummary().vm.$emit('loading', true);
+      findKubernetesPods().vm.$emit('loading', true);
       expect(wrapper.emitted('loading')[0]).toEqual([true]);
 
-      findKubernetesSummary().vm.$emit('loading', false);
+      findKubernetesPods().vm.$emit('loading', false);
       expect(wrapper.emitted('loading')[1]).toEqual([false]);
     });
 
     it('emits a state update event when gets it from the component', () => {
-      const eventData = { summary: true };
-      findKubernetesSummary().vm.$emit('update-failed-state', eventData);
+      const eventData = { pods: true };
+      findKubernetesPods().vm.$emit('update-failed-state', eventData);
       expect(wrapper.emitted('update-failed-state')).toEqual([[eventData]]);
+    });
+
+    it('emits a cluster error event when gets it from the component', () => {
+      const errorMessage = 'Error from the cluster_client API';
+      findKubernetesPods().vm.$emit('cluster-error', errorMessage);
+      expect(wrapper.emitted('cluster-error')).toEqual([[errorMessage]]);
     });
   });
 });

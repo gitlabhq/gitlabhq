@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Resource label events API **(FREE ALL)**
+# Resource label events API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Resource label events keep track about who, when, and which label was added to (or removed from)
 an issue, merge request, or epic.
@@ -95,7 +99,11 @@ Parameters:
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/issues/11/resource_label_events/1"
 ```
 
-## Epics **(PREMIUM ALL)**
+## Epics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ### List group epic label events
 

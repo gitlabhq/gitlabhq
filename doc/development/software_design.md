@@ -8,11 +8,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Use ubiquitous language instead of CRUD terminology
 
-The code should use the same [ubiquitous language](https://about.gitlab.com/handbook/communication/#ubiquitous-language)
+The code should use the same [ubiquitous language](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
 as used in the product and user documentation. Failure to use ubiquitous language correctly
 can be a major cause of confusion for contributors and customers when there is constant translation
 or use of multiple terms.
-This also goes against our [communication strategy](https://about.gitlab.com/handbook/communication/#mecefu-terms).
+This also goes against our [communication strategy](https://handbook.gitlab.com/handbook/communication/#mecefu-terms).
 
 In the example below, [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete)
 terminology introduces ambiguity. The name says we are creating an `epic_issues`
@@ -94,7 +94,7 @@ for example `Project::CreateService` or `Groups::TransferService`.
 For controllers we allow `app/controllers/projects` and `app/controllers/groups` to be exceptions.
 We use this convention to indicate the scope of a given web endpoint.
 
-Do not use the [stage or group name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+Do not use the [stage or group name](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
 because a feature category could be reassigned to a different group in the future.
 
 ```ruby
@@ -262,12 +262,12 @@ user_score.telesign
 user_score.arkose_global
 ```
 
-See a real example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117853#note_1423070054).  
+See a real example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117853#note_1423070054).
 
 ### Example: Use Dependency Inversion to extract a domain concept
 
 ```ruby
-## 
+##
 # BAD: methods related to integrations defined in Project.
 class Project
   has_many :integrations

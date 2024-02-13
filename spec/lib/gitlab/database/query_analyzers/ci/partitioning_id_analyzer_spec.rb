@@ -115,7 +115,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::Ci::PartitioningIdAnalyzer, que
   def process_sql(model, sql)
     Gitlab::Database::QueryAnalyzer.instance.within do
       # Skip load balancer and retrieve connection assigned to model
-      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection)
+      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection, 'load')
     end
   end
 end

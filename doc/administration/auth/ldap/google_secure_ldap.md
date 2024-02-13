@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Google Secure LDAP **(FREE SELF)**
+# Google Secure LDAP
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46391) in GitLab 11.9.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46391) in GitLab 11.9.
 
 [Google Cloud Identity](https://cloud.google.com/identity/) provides a Secure
 LDAP service that can be configured with GitLab for authentication and group sync.

@@ -141,7 +141,7 @@ If you already know the file you are going to work on and now you want to find w
 1. You can also examine the file path (or folder structure) to gain insights into where the file might be rendered.
    A lot of routing in GitLab is very similar to the folder structure.
 1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to navigate to the feature page.
-1. Follow the component hierarchy, do a global search for the file name to identify the parent component that renders the component.
+1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.
    Most MR’s have a "How to validate" section that you can follow, if the MR doesn't have one, look for the previous change and until you find one that have validation steps.
@@ -169,7 +169,7 @@ When writing a merge request there are some important things to be aware of:
 - The MRs that you create on GitLab are available to the public. This means you can add a link to MRs you are particularly proud of to your portfolio page when looking for a job.
 - Since an MR is a technical document, you should try to implement a technical writing style.
   If you don’t know what that is, here is a highly recommended short course from [Google on Technical writing](https://developers.google.com/tech-writing/one).
-  If you are also contributing to the documentation at GitLab, there is a [Technical Writing Fundamentals course available here from GitLab](https://about.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
+  If you are also contributing to the documentation at GitLab, there is a [Technical Writing Fundamentals course available here from GitLab](https://handbook.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
 
 ## Live coding
 

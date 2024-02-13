@@ -68,4 +68,20 @@ RSpec.describe Gitlab::Git do
       end
     end
   end
+
+  describe '.blank_ref?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:sha, :result) do
+      '4b825dc642cb6eb9a060e54bf8d69288fbee4904'                         | false
+      '0000000000000000000000000000000000000000'                         | true
+      '0000000000000000000000000000000000000000000000000000000000000000' | true
+    end
+
+    with_them do
+      it 'returns the expected result' do
+        expect(described_class.blank_ref?(sha)).to eq(result)
+      end
+    end
+  end
 end

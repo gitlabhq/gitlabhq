@@ -2,6 +2,8 @@
 
 module WorkItems
   class DatesSource < ApplicationRecord
+    include FromUnion
+
     self.table_name = 'work_item_dates_sources'
 
     # namespace is required as the sharding key

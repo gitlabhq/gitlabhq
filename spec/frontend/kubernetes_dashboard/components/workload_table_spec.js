@@ -1,14 +1,24 @@
-import { mount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
+import { nextTick } from 'vue';
+import { stubComponent } from 'helpers/stub_component';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { PAGE_SIZE } from '~/kubernetes_dashboard/constants';
 import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
 
-const createWrapper = (propsData = {}) => {
-  wrapper = mount(WorkloadTable, {
+const tableProps = ['perPage', 'currentPage', 'hover', 'selectable', 'noSelectOnClick'];
+
+const createWrapper = (propsData = {}, shallow = false) => {
+  const mountFn = shallow ? shallowMount : mount;
+  wrapper = mountFn(WorkloadTable, {
     propsData,
+    stubs: shallow
+      ? {
+          GlTable: stubComponent(GlTable, { props: tableProps }),
+        }
+      : {},
   });
 };
 
@@ -78,14 +88,6 @@ describe('Workload table component', () => {
       expect(findAllRows()).toHaveLength(mockPodsTableItems.length);
     });
 
-    it('emits an event on row click', () => {
-      mockPodsTableItems.forEach((data, index) => {
-        findRow(index).trigger('click');
-
-        expect(wrapper.emitted('select-item')[index]).toEqual([data]);
-      });
-    });
-
     it('renders correct data for each row', () => {
       mockPodsTableItems.forEach((data, index) => {
         expect(findRow(index).text()).toContain(data.name);
@@ -114,12 +116,122 @@ describe('Workload table component', () => {
         expect(findBadge(index).props('variant')).toBe(variant);
       },
     );
+  });
 
-    it('renders pagination', () => {
-      expect(findPagination().props()).toMatchObject({
-        totalItems: mockPodsTableItems.length,
-        perPage: PAGE_SIZE,
+  describe('pagination', () => {
+    describe('when page size is not provided in props', () => {
+      it('renders pagination with the default page size', () => {
+        createWrapper({ items: mockPodsTableItems });
+
+        expect(findPagination().props('perPage')).toBe(PAGE_SIZE);
       });
+
+      it('shows the default number of items in the table', () => {
+        createWrapper({ items: mockPodsTableItems }, true);
+
+        expect(findTable().props('perPage')).toBe(PAGE_SIZE);
+      });
+    });
+
+    describe('when page size is provided in props', () => {
+      it('renders pagination with the specified page size', () => {
+        createWrapper({ items: mockPodsTableItems, pageSize: 5 });
+
+        expect(findPagination().props('perPage')).toBe(5);
+      });
+
+      it('shows the specified number of items in the table', () => {
+        createWrapper({ items: mockPodsTableItems, pageSize: 5 }, true);
+
+        expect(findTable().props('perPage')).toBe(5);
+      });
+    });
+
+    it('updates the table with the current page', async () => {
+      createWrapper({ items: mockPodsTableItems }, true);
+
+      expect(findTable().props('currentPage')).toBe(1);
+
+      findPagination().vm.$emit('input', 2);
+      await nextTick();
+
+      expect(findTable().props('currentPage')).toBe(2);
+    });
+  });
+
+  describe('on row click', () => {
+    it('emits an event on row click', () => {
+      createWrapper({ items: mockPodsTableItems });
+
+      mockPodsTableItems.forEach((data, index) => {
+        findTable().vm.$emit('row-selected', [data]);
+
+        expect(wrapper.emitted('select-item')[index]).toEqual([data]);
+      });
+    });
+
+    describe('be default', () => {
+      it('row has hover styles by default', () => {
+        createWrapper({ items: mockPodsTableItems });
+
+        expect(findRow(0).attributes('class')).toContain('gl-hover-cursor-pointer');
+      });
+
+      it('table has hover state enabled by default', () => {
+        createWrapper({ items: mockPodsTableItems }, true);
+
+        expect(findTable().props('hover')).toBe(true);
+      });
+
+      it('table is selectable by default', () => {
+        createWrapper({ items: mockPodsTableItems }, true);
+
+        expect(findTable().props('selectable')).toBe(true);
+      });
+
+      it('table row is selectable on click', () => {
+        createWrapper({ items: mockPodsTableItems }, true);
+
+        expect(findTable().props('noSelectOnClick')).toBe(false);
+      });
+    });
+
+    describe('when rowClickable is false', () => {
+      it('row has no hover styles', () => {
+        createWrapper({ items: mockPodsTableItems, rowClickable: false });
+
+        expect(findRow(0).attributes('class')).not.toContain('gl-hover-cursor-pointer');
+      });
+
+      it('table has no hover state enabled', () => {
+        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
+
+        expect(findTable().props('hover')).toBe(false);
+      });
+
+      it('table is not selectable', () => {
+        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
+
+        expect(findTable().props('selectable')).toBe(false);
+      });
+
+      it('table row is not selectable on click', () => {
+        createWrapper({ items: mockPodsTableItems, rowClickable: false }, true);
+
+        expect(findTable().props('noSelectOnClick')).toBe(true);
+      });
+    });
+
+    it('row has hover styles by default', () => {
+      createWrapper({ items: mockPodsTableItems });
+
+      expect(findRow(0).attributes('class')).toContain('gl-hover-cursor-pointer');
+    });
+
+    it('row has no hover styles if rowClickable is false', () => {
+      createWrapper({ items: mockPodsTableItems, rowClickable: false });
+
+      expect(findRow(0).attributes('class')).not.toContain('gl-hover-cursor-pointer');
     });
   });
 });

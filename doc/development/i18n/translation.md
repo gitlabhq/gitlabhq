@@ -82,7 +82,7 @@ level of formality.
 
 ### Inclusive language
 
-[Diversity, inclusion, and belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion)
+[Diversity, inclusion, and belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion)
 are GitLab values. We ask you to avoid translations that exclude people based on their gender or
 ethnicity. In languages that distinguish between a male and female form, use both or choose a
 neutral formulation.

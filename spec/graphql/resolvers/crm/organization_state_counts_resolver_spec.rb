@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Crm::OrganizationStateCountsResolver do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   before_all do
     create(:crm_organization, group: group, name: "ABC Corp")

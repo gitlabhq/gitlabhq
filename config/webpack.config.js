@@ -369,6 +369,7 @@ module.exports = {
           {
             loader: 'worker-loader',
             options: {
+              publicPath: './',
               filename: '[name].[contenthash:8].worker.js',
             },
           },
@@ -431,21 +432,29 @@ module.exports = {
         loader: 'graphql-tag/loader',
       },
       {
-        test: /@gitlab\/svgs\/.+\.svg$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[contenthash:8].[ext]',
-        },
-      },
-      {
         test: /\.svg$/,
-        exclude: /@gitlab\/svgs\/.+\.svg$/,
-        resourceQuery: /url/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[contenthash:8].[ext]',
-          esModule: false,
-        },
+        oneOf: [
+          {
+            resourceQuery: /raw/,
+            loader: 'raw-loader',
+          },
+          {
+            exclude: /@gitlab\/svgs\/.+\.svg$/,
+            resourceQuery: /url/,
+            loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash:8].[ext]',
+              esModule: false,
+            },
+          },
+          {
+            test: /@gitlab\/svgs\/.+\.svg$/,
+            loader: 'file-loader',
+            options: {
+              name: '[name].[contenthash:8].[ext]',
+            },
+          },
+        ],
       },
       {
         test: /\.(gif|png|mp4)$/,
@@ -491,6 +500,7 @@ module.exports = {
         },
       },
       {
+        exclude: /\.svg$/,
         resourceQuery: /raw/,
         loader: 'raw-loader',
       },
@@ -542,14 +552,6 @@ module.exports = {
           name: 'echarts',
           chunks: 'all',
           test: /[\\/]node_modules[\\/](echarts|zrender)[\\/]/,
-          minChunks: 2,
-          reuseExistingChunk: true,
-        },
-        security_reports: {
-          priority: 13,
-          name: 'security_reports',
-          chunks: 'initial',
-          test: /[\\/](vue_shared[\\/](security_reports|license_compliance)|security_dashboard)[\\/]/,
           minChunks: 2,
           reuseExistingChunk: true,
         },

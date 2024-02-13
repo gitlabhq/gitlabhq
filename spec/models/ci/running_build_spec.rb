@@ -54,21 +54,20 @@ RSpec.describe Ci::RunningBuild, feature_category: :continuous_integration do
     include Ci::PartitioningHelpers
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     let(:new_pipeline ) { create(:ci_pipeline, project: pipeline.project) }
     let(:new_build) { create(:ci_build, :running, pipeline: new_pipeline, runner: runner) }
 
     it 'assigns the same partition id as the one that build has', :aggregate_failures do
-      expect(new_build.partition_id).to eq ci_testing_partition_id
-      expect(new_build.partition_id).not_to eq pipeline.partition_id
+      expect(new_build.partition_id).to eq ci_testing_partition_id_for_check_constraints
 
       described_class.upsert_shared_runner_build!(build)
       described_class.upsert_shared_runner_build!(new_build)
 
       expect(build.reload.runtime_metadata.partition_id).to eq pipeline.partition_id
-      expect(new_build.reload.runtime_metadata.partition_id).to eq ci_testing_partition_id
+      expect(new_build.reload.runtime_metadata.partition_id).to eq ci_testing_partition_id_for_check_constraints
     end
   end
 

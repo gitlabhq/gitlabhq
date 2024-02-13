@@ -31,7 +31,9 @@ const translations = {
   ),
   readRepositoryHelp: s__('DeployTokens|Allows read-only access to the repository.'),
   readRegistryHelp: s__('DeployTokens|Allows read-only access to registry images.'),
-  writeRegistryHelp: s__('DeployTokens|Allows read and write access to registry images.'),
+  writeRegistryHelp: s__(
+    'DeployTokens|Allows write access to registry images. You need both read and write access to push images.',
+  ),
   readPackageRegistryHelp: s__('DeployTokens|Allows read-only access to the package registry.'),
   groupWritePackageRegistryHelp: s__(
     'DeployTokens|Allows read and write access to the package registry.',

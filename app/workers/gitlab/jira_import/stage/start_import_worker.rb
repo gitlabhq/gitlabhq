@@ -8,10 +8,11 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options retry: 3
         include ProjectStartImport
         include ProjectImportOptions
         include Gitlab::JiraImport::QueueOptions
+
+        sidekiq_options retry: 6
 
         attr_reader :project
 

@@ -12,6 +12,7 @@ module QA
       include Support::API
 
       RELIABLE_REPORT_LABEL = "reliable test report"
+      PROMOTION_BATCH_LIMIT = 10
 
       ALLOWED_EXCEPTION_PATTERNS = [
         /Couldn't find option named/,
@@ -132,8 +133,10 @@ module QA
       end
 
       def write_specs_json
-        File.write('tmp/unstable_specs.json', JSON.pretty_generate(specs_attributes(stable: false)))
-        File.write('tmp/stable_specs.json', JSON.pretty_generate(specs_attributes(stable: true)))
+        # 'unstable_specs.json' contain unstable specs tagged reliable
+        # 'stable_specs.json' contain stable specs not tagged reliable
+        File.write('tmp/unstable_specs.json', JSON.pretty_generate(specs_attributes(reliable: true)))
+        File.write('tmp/stable_specs.json', JSON.pretty_generate(specs_attributes(reliable: false)))
       end
 
       private
@@ -180,13 +183,19 @@ module QA
 
         issue = []
         issue << "[[_TOC_]]"
-        issue << "# Candidates for promotion to reliable #{execution_interval}"
+        issue << "# Candidates for promotion to reliable/blocking #{execution_interval}"
+        issue << "**Note: MRs will be auto-created for promoting the top #{PROMOTION_BATCH_LIMIT} " \
+                 "specs sorted by most number of successful runs**"
         issue << "Total amount: **#{test_count(stable_test_runs)}**"
         issue << summary_table(markdown: true, stable: true).to_s
         issue << results_markdown(:stable)
         return issue.join("\n\n") if unstable_reliable_test_runs.empty?
 
         issue << "# Reliable specs with failures #{execution_interval}"
+        issue << "**Note:**"
+        issue << "* Only failures from the nightly, e2e-package-and-test and e2e-test-on-gdk pipelines are considered"
+        issue << "* Only specs that have a failure rate of equal or greater than 1 percent are considered"
+        issue << "* Quarantine MRs will be created for all specs listed below"
         issue << "Total amount: **#{test_count(unstable_reliable_test_runs)}**"
         issue << summary_table(markdown: true, stable: false).to_s
         issue << results_markdown(:unstable)
@@ -396,8 +405,8 @@ module QA
         puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
       end
 
-      def specs_attributes(stable:)
-        all_runs = stable ? api_query_unreliable : api_query_reliable
+      def specs_attributes(reliable:)
+        all_runs = query_for(reliable: reliable)
 
         specs_array = all_runs.each_with_object([]) do |table, arr|
           records = table.records.sort_by { |record| record.values["_time"] }
@@ -406,29 +415,45 @@ module QA
 
           result = spec_attributes_per_run(records)
 
-          next if !stable && result[:failed] == 0
+          # When collecting specs not in reliable bucket for promotion, skip specs with failures
+          next if !reliable && result[:failed] != 0
 
-          next if stable && result[:failed] != 0
-
-          # A failure issue does not exist
-          next if !stable && result[:failure_issue].exclude?('issues')
+          next if reliable && skip_reliable_spec_record?(failed_count: result[:failed],
+            failure_issue: result[:failure_issue],
+            failed_run_type: result[:failed_run_type],
+            failure_rate: result[:failure_rate])
 
           arr << result
         end
 
+        specs_array = specs_array.sort_by { |item| item[:runs] }.reverse.first(PROMOTION_BATCH_LIMIT) unless reliable
+
         {
-          type: stable ? 'Stable Specs' : 'Unstable Specs',
+          type: reliable ? 'Unstable Specs' : 'Stable Specs',
           report_issue: report_web_url,
           specs: specs_array
         }
       end
 
+      def skip_reliable_spec_record?(failed_count:, failure_issue:, failed_run_type:, failure_rate:)
+        # For unstable reliable specs, skip if no failures or
+        return true if failed_count == 0 ||
+          # skip if a failure issue does not exist or
+          failure_issue&.exclude?('issues') ||
+          # skip if run type is other than nightly and non-MR e2e-package-and-test pipeline or
+          (failed_run_type & %w[e2e-package-and-test e2e-test-on-gdk nightly]).empty? ||
+          # skip if failure rate of tests is less than or equal to 1 percent
+          failure_rate <= 1
+
+        false
+      end
+
       def spec_attributes_per_run(records)
-        failed = records.count do |r|
+        failed_records = records.select do |r|
           r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
         end
 
-        failure_issue = exceptions_and_related_urls(records).values.last
+        failure_issue = issue_for_most_failures(failed_records)
         last_record = records.last.values
         name = last_record["name"]
         file = last_record["file_path"].split("/").last
@@ -436,10 +461,11 @@ module QA
         file_path = FEATURES_DIR + last_record["file_path"]
         stage = last_record["stage"] || "unknown"
         testcase = last_record["testcase"]
-        run_type = last_record["run_type"]
+        run_type = records.map { |record| record.values['run_type'] }.uniq
+        failed_run_type = failed_records.map { |record| record.values['run_type'] }.uniq
         product_group = last_record["product_group"] || "unknown"
         runs = records.count
-        failure_rate = (failed.to_f / runs) * 100
+        failure_rate = (failed_records.count.to_f / runs) * 100
 
         {
           stage: stage,
@@ -448,13 +474,18 @@ module QA
           file: file,
           link: link,
           runs: runs,
-          failed: failed,
+          failed: failed_records.count,
           failure_issue: failure_issue || '',
           failure_rate: failure_rate == 0 ? failure_rate.round(0) : failure_rate.round(2),
           testcase: testcase,
           file_path: file_path,
-          run_type: run_type
+          all_run_type: run_type,
+          failed_run_type: failed_run_type
         }
+      end
+
+      def query_for(reliable:)
+        reliable ? api_query_reliable : api_query_unreliable
       end
 
       # rubocop:disable Metrics/AbcSize
@@ -463,7 +494,7 @@ module QA
       # @param [Boolean] reliable
       # @return [Hash<String, Hash>]
       def test_runs(reliable:)
-        all_runs = reliable ? api_query_reliable : api_query_unreliable
+        all_runs = query_for(reliable: reliable)
 
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
@@ -480,18 +511,25 @@ module QA
 
           runs = records.count
 
-          failed = records.count do |r|
+          failed_records = records.select do |r|
             r.values["status"] == "failed" && !allowed_failure?(r.values["failure_exception"])
           end
 
-          failure_rate = (failed.to_f / runs) * 100
+          failure_issue = issue_for_most_failures(failed_records)
+
+          failed_run_type = failed_records.map { |record| record.values['run_type'] }.uniq
+
+          failure_rate = (failed_records.count.to_f / runs) * 100
+
+          next if reliable && skip_reliable_spec_record?(failed_count: failed_records.count,
+            failure_issue: failure_issue, failed_run_type: failed_run_type, failure_rate: failure_rate)
 
           result[stage][product_group] ||= {}
           result[stage][product_group][name] = {
             file: file,
             link: link,
             runs: runs,
-            failed: failed,
+            failed: failed_records.count,
             exceptions_and_related_urls: exceptions_and_related_urls(records),
             failure_rate: failure_rate == 0 ? failure_rate.round(0) : failure_rate.round(2)
           }
@@ -511,6 +549,19 @@ module QA
         records_with_exception.to_h do |r|
           [r.values["failure_exception"], r.values["failure_issue"] || r.values["job_url"]]
         end
+      end
+
+      # Return the failure that has the most occurrence
+      #
+      # @param [Array<InfluxDB2::FluxRecord>] records
+      # @return [String] the failure with most occurrence
+      def issue_for_most_failures(records)
+        return '' if records.empty?
+
+        issues = records.filter_map { |r| r.values["failure_issue"] }
+        return '' if issues.empty?
+
+        issues.tally.max_by { |_, count| count }&.first
       end
 
       # Check if failure is allowed
@@ -544,18 +595,18 @@ module QA
               r.run_type == "staging-sanity" or
               r.run_type == "production-full" or
               r.run_type == "production-sanity" or
-              r.run_type == "package-and-qa" or
+              r.run_type == "e2e-package-and-test" or
+              r.run_type == "e2e-test-on-gdk" or
               r.run_type == "nightly"
             )
             |> filter(fn: (r) => r.job_name != "airgapped" and
-              r.job_name != "instance-image-slow-network" and
               r.job_name != "nplus1-instance-image"
             )
             |> filter(fn: (r) => r.status != "pending" and
               r.merge_request == "false" and
               r.quarantined == "false" and
               r.smoke == "false" and
-              r.reliable == "#{reliable}"
+              (r.reliable == "#{reliable}" #{reliable ? 'or' : 'and'} r.blocking == "#{reliable}")
             )
             |> filter(fn: (r) => r["_field"] == "job_url" or
               r["_field"] == "failure_exception" or

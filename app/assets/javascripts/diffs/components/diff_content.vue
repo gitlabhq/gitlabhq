@@ -47,16 +47,20 @@ export default {
       required: false,
       default: '',
     },
+    codequalityData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    sastData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     ...mapState('diffs', ['projectPath']),
-    ...mapGetters('diffs', [
-      'isInlineView',
-      'getCommentFormForDiffFile',
-      'diffLines',
-      'fileLineCodequality',
-      'fileLineSast',
-    ]),
+    ...mapGetters('diffs', ['isInlineView', 'getCommentFormForDiffFile', 'diffLines']),
     ...mapGetters(['getNoteableData', 'noteableType', 'getUserData']),
     diffMode() {
       return getDiffMode(this.diffFile);
@@ -92,7 +96,10 @@ export default {
       return this.getUserData;
     },
     mappedLines() {
-      return this.diffLines(this.diffFile).map(mapParallel(this)) || [];
+      return (
+        this.diffLines(this.diffFile).map(mapParallel(this, this.codequalityData, this.sastData)) ||
+        []
+      );
     },
     imageDiscussions() {
       return this.diffFile.discussions.filter(
@@ -145,6 +152,8 @@ export default {
       <template v-if="isTextFile">
         <diff-view
           :diff-file="diffFile"
+          :codequality-data="codequalityData"
+          :sast-data="sastData"
           :diff-lines="mappedLines"
           :help-page-path="helpPagePath"
           :inline="isInlineView"

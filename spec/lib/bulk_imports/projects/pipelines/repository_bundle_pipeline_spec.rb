@@ -21,6 +21,7 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryBundlePipeline, featu
     source.repository.bundle_to_disk(bundle_path)
 
     allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   after do

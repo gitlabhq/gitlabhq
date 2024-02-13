@@ -32,12 +32,12 @@ RSpec.describe 'Merge request > User edits MR', feature_category: :code_review_w
 
       click_button _('Select label')
       wait_for_all_requests
-      page.within '[data-testid="sidebar-labels"]' do
+      within_testid('sidebar-labels') do
         click_button label.title
         click_button label2.title
         click_button _('Close')
         wait_for_requests
-        page.within('[data-testid="embedded-labels-list"]') do
+        within_testid('embedded-labels-list') do
           expect(page).to have_content(label.title)
           expect(page).to have_content(label2.title)
         end

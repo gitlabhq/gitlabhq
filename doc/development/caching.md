@@ -306,7 +306,7 @@ In short: the oldest stuff is replaced with new stuff:
 - You probably want `allkeys-lru`, which is functionally similar to Memcached.
 - In Redis 4.0 and later, [allkeys-lfu is available](https://redis.io/docs/manual/eviction/#the-new-lfu-mode),
   which is similar but different.
-- We handle all explicit deletes using UNLINK instead of DEL now, which allows Redis to
+- We handle all explicit deletes using `UNLINK` instead of `DEL` now, which allows Redis to
   reclaim memory in its own time, rather than immediately.
   - This marks a key as deleted and returns a successful value quickly,
     but actually deletes it later.

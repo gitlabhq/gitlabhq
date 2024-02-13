@@ -16,13 +16,17 @@ module Gitlab
 
         yield
       rescue ::Redis::BaseError, ::RedisClient::Error => ex
-        if ex.message.start_with?('MOVED', 'ASK')
-          instrumentation_class.instance_count_cluster_redirection(ex)
-        else
-          instrumentation_class.instance_count_exception(ex)
+        Thread.current[:redis_client_error_count] ||= 0
+
+        # skip instrumentation if the error is a connection error happening for the first time as instrumentation
+        # middlewares are called within `ensure_connected` blocks. Connection retries are not known to the middleware.
+        # Refer to https://github.com/redis-rb/redis-client/issues/119#issuecomment-1829703792
+        unless ex.is_a?(::RedisClient::ConnectionError) && Thread.current[:redis_client_error_count] == 0
+          instrument_errors(instrumentation_class, ex)
         end
 
-        instrumentation_class.log_exception(ex)
+        Thread.current[:redis_client_error_count] += 1 if ex.is_a?(::RedisClient::Error)
+
         raise ex
       ensure
         duration = Gitlab::Metrics::System.monotonic_time - start
@@ -79,6 +83,18 @@ module Gitlab
 
       def exclude_from_apdex?(commands)
         commands.any? { |command| APDEX_EXCLUDE.include?(command.first.to_s.downcase) }
+      end
+
+      private
+
+      def instrument_errors(instrumentation_class, error)
+        if error.message.start_with?('MOVED', 'ASK')
+          instrumentation_class.instance_count_cluster_redirection(error)
+        else
+          instrumentation_class.instance_count_exception(error)
+        end
+
+        instrumentation_class.log_exception(error)
       end
     end
   end

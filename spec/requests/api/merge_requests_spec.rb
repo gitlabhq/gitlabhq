@@ -27,7 +27,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   shared_context 'with merge requests' do
     let_it_be(:milestone1) { create(:milestone, title: '0.9', project: project) }
-    let_it_be(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, updated_at: base_time + 1.hour, merge_commit_sha: '9999999999999999999999999999999999999999') }
+    let_it_be(:merge_request_merged) { create(:merge_request, :with_merged_metrics, state: "merged", author: user, assignees: [user], source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, updated_at: base_time + 1.hour, merge_commit_sha: '9999999999999999999999999999999999999999', merged_by: user) }
     let_it_be(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time, updated_at: base_time + 3.hours) }
     let_it_be(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second, updated_at: base_time) }
     let_it_be(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignees: [user], source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second, updated_at: base_time + 2.hours) }
@@ -927,6 +927,85 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
             expect(response).to have_gitlab_http_status(:bad_request)
             expect(json_response['error']).to eq('reviewer_id, reviewer_username are mutually exclusive')
+          end
+        end
+      end
+
+      context 'filter by merge_user' do
+        let(:params) { { scope: :all } }
+
+        context 'when flag `mr_merge_user_filter` is disabled' do
+          before do
+            stub_feature_flags(mr_merge_user_filter: false)
+          end
+
+          context 'with merge_user_id' do
+            let(:params) { super().merge(merge_user_id: user.id) }
+
+            it 'returns merged merge requests for the given user' do
+              get api('/merge_requests', user), params: params
+
+              expect_response_contain_exactly(
+                merge_request.id,
+                merge_request_closed.id,
+                merge_request_merged.id,
+                merge_request_locked.id,
+                merge_request2.id
+              )
+            end
+          end
+
+          context 'with merge_user_username' do
+            let(:params) { super().merge(merge_user_username: user.username) }
+
+            it 'returns merged merge requests for the given user' do
+              get api('/merge_requests', user), params: params
+
+              expect_response_contain_exactly(
+                merge_request.id,
+                merge_request_closed.id,
+                merge_request_merged.id,
+                merge_request_locked.id,
+                merge_request2.id
+              )
+            end
+          end
+        end
+
+        context 'when flag `mr_merge_user_filter` is enabled' do
+          before do
+            stub_feature_flags(mr_merge_user_filter: true)
+          end
+
+          context 'with merge_user_id' do
+            let(:params) { super().merge(merge_user_id: user.id) }
+
+            it 'returns merged merge requests for the given user' do
+              get api('/merge_requests', user), params: params
+
+              expect_response_contain_exactly(merge_request_merged.id)
+            end
+          end
+
+          context 'with merge_user_username' do
+            let(:params) { super().merge(merge_user_username: user.username) }
+
+            it 'returns merged merge requests for the given user' do
+              get api('/merge_requests', user), params: params
+
+              expect_response_contain_exactly(merge_request_merged.id)
+            end
+          end
+
+          context 'with both merge_user_id and merge_user_username' do
+            let(:params) { super().merge(merge_user_id: user.id, merge_user_username: user.username) }
+
+            it 'returns a 400' do
+              get api('/merge_requests', user), params: params
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response['error']).to eq('merge_user_id, merge_user_username are mutually exclusive')
+            end
           end
         end
       end

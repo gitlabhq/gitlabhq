@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::ProtectedBranchesPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::ProtectedBranchesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:bulk_import) { create(:bulk_import, user: user) }
@@ -38,6 +38,8 @@ RSpec.describe BulkImports::Projects::Pipelines::ProtectedBranchesPipeline do
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [protected_branch, 0]))
       end
+
+      allow(pipeline).to receive(:set_source_objects_counter)
 
       pipeline.run
 

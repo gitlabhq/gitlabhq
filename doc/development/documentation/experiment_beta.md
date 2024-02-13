@@ -13,7 +13,7 @@ When you document a feature in one of these three statuses:
 
 - Add the tier badge after the page or topic title.
 - Do not include `(Experiment)` or `(Beta)` in the left nav.
-- Ensure the version history lists the feature's status.
+- Ensure the history lists the feature's status.
 
 These features are usually behind a feature flag, which follow [these documentation guidelines](feature_flags.md).
 
@@ -23,9 +23,12 @@ the `FLAG:` note should be above these details.
 For example:
 
 ```markdown
-## Great new feature **(EXPERIMENT)**
+## Great new feature
 
-> [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -46,4 +49,4 @@ When the feature is ready for production, remove:
   description.
 - The feature flag information if available.
 
-Ensure the version history is up-to-date by adding a note about the production release.
+Ensure the history is up-to-date by adding a note about the production release.

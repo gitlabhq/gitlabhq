@@ -19,6 +19,8 @@ export default {
   data() {
     return {
       readmeHtml: null,
+      version: '',
+      useLatestVersion: true,
     };
   },
   apollo: {
@@ -27,10 +29,14 @@ export default {
       variables() {
         return {
           fullPath: this.resourcePath,
+          latest_version: this.useLatestVersion,
+          version: this.version,
         };
       },
       update(data) {
-        return data?.ciCatalogResource?.readmeHtml || null;
+        return this.useLatestVersion
+          ? data?.ciCatalogResource?.latestVersion?.readmeHtml
+          : data?.ciCatalogResource?.versions?.nodes[0]?.readmeHtml || null;
       },
       error() {
         createAlert({ message: this.$options.i18n.loadingError });
@@ -39,7 +45,7 @@ export default {
   },
   computed: {
     isLoading() {
-      return this.$apollo.queries.readmeHtml.loading;
+      return this.$apollo?.queries.readmeHtml.loading;
     },
   },
   i18n: {

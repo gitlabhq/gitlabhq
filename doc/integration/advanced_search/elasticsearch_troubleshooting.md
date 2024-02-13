@@ -4,7 +4,11 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Elasticsearch **(PREMIUM SELF)**
+# Troubleshooting Elasticsearch
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Use the following information to troubleshoot Elasticsearch issues.
 
@@ -479,7 +483,7 @@ Improvements to the `code_analyzer` pattern and filters are being discussed in [
 
 ## Some binary files may not be searchable by name
 
-In GitLab 13.9, a change was made where [binary file names are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
+In GitLab 13.9, a change was made where [binary filenames are being indexed](https://gitlab.com/gitlab-org/gitlab/-/issues/301083). However, without indexing all projects' data from scratch, only binary files that are added or updated after the GitLab 13.9 release are searchable.
 
 ## How does advanced search handle private projects?
 

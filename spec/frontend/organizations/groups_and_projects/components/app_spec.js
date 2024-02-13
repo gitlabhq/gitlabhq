@@ -1,12 +1,17 @@
-import { GlCollapsibleListbox, GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSorting } from '@gitlab/ui';
 import App from '~/organizations/groups_and_projects/components/app.vue';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
+import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
+import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
 import { RESOURCE_TYPE_GROUPS, RESOURCE_TYPE_PROJECTS } from '~/organizations/constants';
+import { SORT_ITEMS } from '~/organizations/groups_and_projects/constants';
 import {
-  SORT_ITEM_CREATED,
+  SORT_ITEM_NAME,
+  SORT_ITEM_CREATED_AT,
   SORT_DIRECTION_DESC,
-} from '~/organizations/groups_and_projects/constants';
+  SORT_DIRECTION_ASC,
+} from '~/organizations/shared/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
   FILTERED_SEARCH_TERM,
@@ -20,6 +25,9 @@ describe('GroupsAndProjectsApp', () => {
   const routerMock = {
     push: jest.fn(),
   };
+  const mockEndCursor = 'mockEndCursor';
+  const mockStartCursor = 'mockStartCursor';
+
   let wrapper;
 
   const createComponent = ({ routeQuery = { search: 'foo' } } = {}) => {
@@ -29,9 +37,19 @@ describe('GroupsAndProjectsApp', () => {
     });
   };
 
+  const findPageTitle = () => wrapper.findByText('Groups and projects');
   const findFilteredSearchBar = () => wrapper.findComponent(FilteredSearchBar);
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSort = () => wrapper.findComponent(GlSorting);
+  const findProjectsView = () => wrapper.findComponent(ProjectsView);
+  const findNewGroupButton = () => wrapper.findComponent(NewGroupButton);
+  const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
+
+  it('renders page title as Groups and projects', () => {
+    createComponent();
+
+    expect(findPageTitle().exists()).toBe(true);
+  });
 
   describe.each`
     display                   | expectedComponent | expectedDisplayListboxSelectedProp
@@ -43,11 +61,24 @@ describe('GroupsAndProjectsApp', () => {
     'when `display` query string is $display',
     ({ display, expectedComponent, expectedDisplayListboxSelectedProp }) => {
       beforeEach(() => {
-        createComponent({ routeQuery: { display } });
+        createComponent({
+          routeQuery: {
+            display,
+            search: 'foo',
+            start_cursor: mockStartCursor,
+            end_cursor: mockEndCursor,
+          },
+        });
       });
 
-      it('renders expected component', () => {
-        expect(wrapper.findComponent(expectedComponent).exists()).toBe(true);
+      it('renders expected component with correct props', () => {
+        expect(wrapper.findComponent(expectedComponent).props()).toMatchObject({
+          startCursor: mockStartCursor,
+          endCursor: mockEndCursor,
+          search: 'foo',
+          sortName: SORT_ITEM_NAME.value,
+          sortDirection: SORT_DIRECTION_ASC,
+        });
       });
 
       it('renders display listbox with correct props', () => {
@@ -81,24 +112,29 @@ describe('GroupsAndProjectsApp', () => {
     });
   });
 
+  describe('actions', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders NewProjectButton', () => {
+      expect(findNewProjectButton().exists()).toBe(true);
+    });
+
+    it('renders NewGroupButton with correct props', () => {
+      expect(findNewGroupButton().props()).toStrictEqual({ category: 'secondary' });
+    });
+  });
+
   it('renders sort dropdown with sort items and correct props', () => {
     createComponent();
 
-    const sortItems = wrapper.findAllComponents(GlSortingItem).wrappers.map((sortItemWrapper) => ({
-      active: sortItemWrapper.attributes('active'),
-      text: sortItemWrapper.text(),
-    }));
-
     expect(findSort().props()).toMatchObject({
       isAscending: true,
-      text: SORT_ITEM_CREATED.text,
+      text: 'Name',
+      sortBy: SORT_ITEM_NAME.value,
+      sortOptions: SORT_ITEMS,
     });
-    expect(sortItems).toEqual([
-      {
-        active: 'true',
-        text: SORT_ITEM_CREATED.text,
-      },
-    ]);
   });
 
   describe('when filtered search bar is submitted', () => {
@@ -131,28 +167,50 @@ describe('GroupsAndProjectsApp', () => {
 
   describe('when sort item is changed', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        routeQuery: {
+          display: RESOURCE_TYPE_PROJECTS,
+          start_cursor: mockStartCursor,
+          end_cursor: mockEndCursor,
+          search: 'foo',
+        },
+      });
 
-      wrapper.findComponent(GlSortingItem).trigger('click', SORT_ITEM_CREATED);
+      findSort().vm.$emit('sortByChange', SORT_ITEM_CREATED_AT.value);
     });
 
     it('updates `sort_name` query string', () => {
       expect(routerMock.push).toHaveBeenCalledWith({
-        query: { sort_name: SORT_ITEM_CREATED.name, search: 'foo' },
+        query: {
+          display: RESOURCE_TYPE_PROJECTS,
+          sort_name: SORT_ITEM_CREATED_AT.value,
+          search: 'foo',
+        },
       });
     });
   });
 
   describe('when sort direction is changed', () => {
     beforeEach(() => {
-      createComponent();
+      createComponent({
+        routeQuery: {
+          display: RESOURCE_TYPE_PROJECTS,
+          start_cursor: mockStartCursor,
+          end_cursor: mockEndCursor,
+          search: 'foo',
+        },
+      });
 
       findSort().vm.$emit('sortDirectionChange', false);
     });
 
     it('updates `sort_direction` query string', () => {
       expect(routerMock.push).toHaveBeenCalledWith({
-        query: { sort_direction: SORT_DIRECTION_DESC, search: 'foo' },
+        query: {
+          display: RESOURCE_TYPE_PROJECTS,
+          sort_direction: SORT_DIRECTION_DESC,
+          search: 'foo',
+        },
       });
     });
   });
@@ -166,6 +224,47 @@ describe('GroupsAndProjectsApp', () => {
       expect(findFilteredSearchBar().props('initialFilterValue')).toEqual([
         TOKEN_EMPTY_SEARCH_TERM,
       ]);
+    });
+  });
+
+  describe('when page is changed', () => {
+    describe('when going to next page', () => {
+      beforeEach(() => {
+        createComponent({ routeQuery: { display: RESOURCE_TYPE_PROJECTS } });
+        findProjectsView().vm.$emit('page-change', {
+          endCursor: mockEndCursor,
+          startCursor: null,
+          hasPreviousPage: true,
+        });
+      });
+
+      it('sets `end_cursor` query string', () => {
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { display: RESOURCE_TYPE_PROJECTS, end_cursor: mockEndCursor },
+        });
+      });
+    });
+
+    describe('when going to previous page', () => {
+      it('sets `start_cursor` query string', () => {
+        createComponent({
+          routeQuery: {
+            display: RESOURCE_TYPE_PROJECTS,
+            start_cursor: mockStartCursor,
+            end_cursor: mockEndCursor,
+          },
+        });
+
+        findProjectsView().vm.$emit('page-change', {
+          endCursor: null,
+          startCursor: mockStartCursor,
+          hasPreviousPage: true,
+        });
+
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { display: RESOURCE_TYPE_PROJECTS, start_cursor: mockStartCursor },
+        });
+      });
     });
   });
 });

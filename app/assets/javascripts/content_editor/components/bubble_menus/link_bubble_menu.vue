@@ -267,7 +267,7 @@ export default {
           @click="removeLink"
         />
       </gl-button-group>
-      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-100" @submit.prevent="saveEditedLink">
+      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-full" @submit.prevent="saveEditedLink">
         <gl-form-group :label="__('Text')" label-for="link-text">
           <gl-form-input id="link-text" v-model="linkText" data-testid="link-text" />
         </gl-form-group>

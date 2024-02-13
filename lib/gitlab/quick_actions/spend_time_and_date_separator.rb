@@ -12,6 +12,7 @@ module Gitlab
     # in other cases return nil
     class SpendTimeAndDateSeparator
       DATE_REGEX = %r{(\d{2,4}[/\-.]\d{1,2}[/\-.]\d{1,2})}
+      CATEGORY_REGEX = %r{\[timecategory:(.*)\]}
 
       def initialize(spend_command_arg)
         @spend_arg = spend_command_arg
@@ -19,20 +20,23 @@ module Gitlab
 
       def execute
         return if @spend_arg.blank?
-        return [get_time, DateTime.current] unless date_present?
-        return unless valid_date?
+        return if date_present? && !valid_date?
 
-        [get_time, get_date]
+        [time_spent, spent_at, category]
       end
 
       private
 
-      def get_time
+      def time_spent
         raw_time = @spend_arg.gsub(DATE_REGEX, '')
+        raw_time = raw_time.gsub(CATEGORY_REGEX, '')
+
         Gitlab::TimeTrackingFormatter.parse(raw_time)
       end
 
-      def get_date
+      def spent_at
+        return DateTime.current unless date_present?
+
         string_date = @spend_arg.match(DATE_REGEX)[0]
         Date.parse(string_date)
       end
@@ -54,6 +58,12 @@ module Gitlab
 
       def date_past_or_today?(date)
         date&.past? || date&.today?
+      end
+
+      def category
+        return unless @spend_arg.match?(CATEGORY_REGEX)
+
+        @spend_arg.match(CATEGORY_REGEX)[1]
       end
     end
   end

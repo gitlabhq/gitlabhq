@@ -57,7 +57,7 @@ describe('Merge request discussion filter component', () => {
 
   describe('local sync sort filters', () => {
     it('calls setDiscussionSortDirection when mounted', () => {
-      localStorage.setItem('mr_activity_filters', '["comments"]');
+      localStorage.setItem('mr_activity_filters_2', '["comments"]');
 
       createComponent();
 
@@ -82,6 +82,7 @@ describe('Merge request discussion filter component', () => {
 
     expect(updateMergeRequestFilters).toHaveBeenCalledWith(expect.anything(), [
       'assignees_reviewers',
+      'bot_comments',
       'comments',
       'commit_branches',
       'edits',
@@ -126,12 +127,12 @@ describe('Merge request discussion filter component', () => {
 
     await nextTick();
 
-    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(9);
+    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(10);
 
     wrapper.find('[data-testid="listbox-select-all-button"]').vm.$emit('click');
 
     await nextTick();
 
-    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(10);
+    expect(wrapper.findAll('[aria-selected="true"]')).toHaveLength(11);
   });
 });

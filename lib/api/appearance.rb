@@ -35,6 +35,7 @@ module API
       optional :pwa_icon, type: File, desc: 'Icon used for Progressive Web App' # rubocop:todo Scalability/FileUploads
       optional :header_logo, type: File, desc: 'Instance image used for the main navigation bar' # rubocop:todo Scalability/FileUploads
       optional :favicon, type: File, desc: 'Instance favicon in .ico/.png format' # rubocop:todo Scalability/FileUploads
+      optional :member_guidelines, type: String, desc: 'Markdown text shown on the members page of a group or project'
       optional :new_project_guidelines, type: String, desc: 'Markdown text shown on the new project page'
       optional :profile_image_guidelines, type: String, desc: 'Markdown text shown on the profile page below Public Avatar'
       optional :header_message, type: String, desc: 'Message within the system header bar'

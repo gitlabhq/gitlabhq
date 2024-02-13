@@ -46,7 +46,7 @@
   &:last-child {
     &::before {
       top: - #{$gl-spacing-scale-5} !important; // Override default positioning
-      @include gl-h-8;
+      height: $gl-spacing-scale-8;
     }
 
     &::after {
@@ -57,10 +57,10 @@
 
 .timeline-entry:not(:last-child) {
   .timeline-event-border {
-    @include gl-pb-3;
-    @include gl-border-gray-50;
-    @include gl-border-1;
-    @include gl-border-b-solid;
+    padding-bottom: $gl-spacing-scale-3;
+    border-color: $gray-50;
+    border-width: $gl-border-size-1;
+    border-bottom-style: solid;
   }
 }
 
@@ -68,14 +68,14 @@
   .timeline-entry:last-child,
   .create-timeline-event {
     .timeline-event-bottom-border {
-      @include gl-border-b;
-      @include gl-pt-5;
+      border-bottom: solid $gl-border-size-1 $border-color;
+      padding-top: $gl-spacing-scale-5;
     }
   }
 }
 
 .timeline-event-note .md p {
-  @include gl-text-gray-700;
+  color: $gray-700;
 }
 
 .timeline-event-note-date {

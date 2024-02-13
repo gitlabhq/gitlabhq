@@ -215,7 +215,7 @@ export default {
   <div class="detail-page-header">
     <div class="detail-page-header-body gl-align-items-baseline">
       <div
-        class="snippet-box has-tooltip d-flex align-items-center gl-mr-2 mb-1"
+        class="snippet-box has-tooltip d-flex gl-align-items-center gl-mr-2 mb-1"
         data-testid="snippet-container"
         :title="snippetVisibilityLevelDescription"
         data-container="body"

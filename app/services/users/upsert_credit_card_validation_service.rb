@@ -16,13 +16,14 @@ module Users
         last_digits: last_digits,
         holder_name: holder_name,
         network: network,
-        expiration_date: expiration_date
+        expiration_date: expiration_date,
+        zuora_payment_method_xid: zuora_payment_method_xid
       }
 
-      credit_card.update(credit_card_params)
+      credit_card.update!(credit_card_params)
 
       success
-    rescue ActiveRecord::InvalidForeignKey, ActiveRecord::NotNullViolation
+    rescue ActiveRecord::InvalidForeignKey, ActiveRecord::NotNullViolation, ActiveRecord::RecordInvalid
       error
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e)
@@ -49,6 +50,10 @@ module Users
 
     def network
       params.fetch(:credit_card_type)
+    end
+
+    def zuora_payment_method_xid
+      params[:zuora_payment_method_xid]
     end
 
     def expiration_date

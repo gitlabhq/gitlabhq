@@ -10,6 +10,38 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   let_it_be(:entity_2) { create(:bulk_import_entity, bulk_import: import_1) }
   let_it_be(:entity_3) { create(:bulk_import_entity, bulk_import: import_2) }
   let_it_be(:failure_3) { create(:bulk_import_failure, entity: entity_3) }
+  let_it_be(:tracker_1) do
+    create(
+      :bulk_import_tracker,
+      entity: entity_1,
+      relation: 'BulkImports::Common::Pipelines::LabelsPipeline',
+      source_objects_count: 3,
+      fetched_objects_count: 2,
+      imported_objects_count: 1
+    )
+  end
+
+  let_it_be(:tracker_2) do
+    create(
+      :bulk_import_tracker,
+      entity: entity_2,
+      relation: 'BulkImports::Common::Pipelines::MilestonesPipeline',
+      source_objects_count: 5,
+      fetched_objects_count: 4,
+      imported_objects_count: 3
+    )
+  end
+
+  let_it_be(:tracker_3) do
+    create(
+      :bulk_import_tracker,
+      entity: entity_3,
+      relation: 'BulkImports::Common::Pipelines::BoardsPipeline',
+      source_objects_count: 10,
+      fetched_objects_count: 9,
+      imported_objects_count: 8
+    )
+  end
 
   before do
     stub_application_setting(bulk_import_enabled: true)
@@ -370,6 +402,16 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response.pluck('id')).to contain_exactly(entity_1.id, entity_2.id, entity_3.id)
     end
 
+    it 'includes entity stats' do
+      request
+
+      expect(json_response.pluck('stats')).to contain_exactly(
+        { 'labels' => { 'source' => 3, 'fetched' => 2, 'imported' => 1 } },
+        { 'milestones' => { 'source' => 5, 'fetched' => 4, 'imported' => 3 } },
+        { 'boards' => { 'source' => 10, 'fetched' => 9, 'imported' => 8 } }
+      )
+    end
+
     it_behaves_like 'disabled feature'
   end
 
@@ -397,6 +439,14 @@ RSpec.describe API::BulkImports, feature_category: :importers do
       expect(json_response.first['failures'].first['exception_message']).to eq(failure_3.exception_message)
     end
 
+    it 'includes entity stats' do
+      request
+
+      expect(json_response.pluck('stats')).to contain_exactly(
+        { 'boards' => { 'source' => 10, 'fetched' => 9, 'imported' => 8 } }
+      )
+    end
+
     it_behaves_like 'disabled feature'
   end
 
@@ -408,6 +458,12 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['id']).to eq(entity_2.id)
+    end
+
+    it 'includes entity stats' do
+      request
+
+      expect(json_response['stats']).to eq({ 'milestones' => { 'source' => 5, 'fetched' => 4, 'imported' => 3 } })
     end
 
     it_behaves_like 'disabled feature'

@@ -320,12 +320,14 @@ export default {
       );
     },
     handleAddToReview() {
+      const clickType = this.hasDrafts ? 'noteFormAddToReview' : 'noteFormStartReview';
       // check if draft should resolve thread
       const shouldResolve =
         (this.discussionResolved && !this.isUnresolving) ||
         (!this.discussionResolved && this.isResolving);
       this.isSubmitting = true;
 
+      eventHub.$emit(clickType, { name: clickType });
       this.$emit(
         'handleFormUpdateAddToReview',
         this.updatedNoteBody,

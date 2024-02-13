@@ -3,7 +3,6 @@ import { shallowMount } from '@vue/test-utils';
 import { GlCollapse, GlButton, GlAlert } from '@gitlab/ui';
 import KubernetesOverview from '~/environments/components/kubernetes_overview.vue';
 import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
-import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
 import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
 import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
 import {
@@ -41,7 +40,6 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
   const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findCollapseButton = () => wrapper.findComponent(GlButton);
   const findAgentInfo = () => wrapper.findComponent(KubernetesAgentInfo);
-  const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
   const findKubernetesTabs = () => wrapper.findComponent(KubernetesTabs);
   const findKubernetesStatusBar = () => wrapper.findComponent(KubernetesStatusBar);
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -81,7 +79,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
 
     it("doesn't render components when the collapse is not visible", () => {
       expect(findAgentInfo().exists()).toBe(false);
-      expect(findKubernetesPods().exists()).toBe(false);
+      expect(findKubernetesTabs().exists()).toBe(false);
     });
 
     it('opens on click', async () => {
@@ -102,13 +100,6 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
 
     it('renders kubernetes agent info', () => {
       expect(findAgentInfo().props('clusterAgent')).toEqual(agent);
-    });
-
-    it('renders kubernetes pods', () => {
-      expect(findKubernetesPods().props()).toEqual({
-        namespace: kubernetesNamespace,
-        configuration,
-      });
     });
 
     it('renders kubernetes tabs', () => {
@@ -135,13 +126,6 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it("doesn't set `clusterHealthStatus` when pods are still loading", async () => {
-      findKubernetesPods().vm.$emit('loading', true);
-      await nextTick();
-
-      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('');
-    });
-
-    it("doesn't set `clusterHealthStatus` when workload types are still loading", async () => {
       findKubernetesTabs().vm.$emit('loading', true);
       await nextTick();
 
@@ -149,14 +133,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('sets `clusterHealthStatus` as error when pods emitted a failure', async () => {
-      findKubernetesPods().vm.$emit('update-failed-state', { pods: true });
-      await nextTick();
-
-      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
-    });
-
-    it('sets `clusterHealthStatus` as error when workload types emitted a failure', async () => {
-      findKubernetesTabs().vm.$emit('update-failed-state', { summary: true });
+      findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
       await nextTick();
 
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
@@ -167,12 +144,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     });
 
     it('sets `clusterHealthStatus` as success after state update if there are no failures', async () => {
-      findKubernetesTabs().vm.$emit('update-failed-state', { summary: true });
       findKubernetesTabs().vm.$emit('update-failed-state', { pods: true });
-      await nextTick();
-      expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
-
-      findKubernetesTabs().vm.$emit('update-failed-state', { summary: false });
       await nextTick();
       expect(findKubernetesStatusBar().props('clusterHealthStatus')).toBe('error');
 
@@ -191,7 +163,7 @@ describe('~/environments/components/kubernetes_overview.vue', () => {
     it('shows alert with the error message', async () => {
       const error = 'Error message from pods';
 
-      findKubernetesPods().vm.$emit('cluster-error', error);
+      findKubernetesTabs().vm.$emit('cluster-error', error);
       await nextTick();
 
       expect(findAlert().text()).toBe(error);

@@ -9,13 +9,9 @@ module Gitlab
         private
 
         def import(project)
-          jira_client = if Feature.enabled?(:increase_jira_import_issues_timeout)
-                          project.jira_integration.client(read_timeout: 2.minutes)
-                        end
-
           jobs_waiter = Gitlab::JiraImport::IssuesImporter.new(
             project,
-            jira_client
+            project.jira_integration.client(read_timeout: 2.minutes)
           ).execute
 
           project.latest_jira_import.refresh_jid_expiration

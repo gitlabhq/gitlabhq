@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
@@ -28,7 +29,7 @@ func (s *SavedFileTracker) Count() int {
 	return len(s.rewrittenFields)
 }
 
-func (s *SavedFileTracker) ProcessFile(_ context.Context, fieldName string, file *destination.FileHandler, _ *multipart.Writer) error {
+func (s *SavedFileTracker) ProcessFile(_ context.Context, fieldName string, file *destination.FileHandler, _ *multipart.Writer, _ *config.Config) error {
 	if _, ok := s.rewrittenFields[fieldName]; ok {
 		return fmt.Errorf("the %v field has already been processed", fieldName)
 	}

@@ -220,6 +220,7 @@ export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
 export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
+export const GOOGLE_CLOUD_PLATFORM = 'google';
 
 // About Gitlab Runner Package host
 export const RUNNER_PACKAGE_HOST = 'gitlab-runner-downloads.s3.amazonaws.com';

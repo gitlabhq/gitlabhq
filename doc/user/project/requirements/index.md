@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements management **(ULTIMATE ALL)**
+# Requirements management
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 NOTE:
 In 14.4, Requirements was moved under **Issues**.
@@ -68,7 +72,7 @@ next to the requirement title.
 
 ## Edit a requirement
 
-> The ability to mark a requirement as Satisfied [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) in GitLab 13.5.
+> - The ability to mark a requirement as Satisfied [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218607) in GitLab 13.5.
 
 You can edit a requirement from the requirements list page.
 
@@ -219,7 +223,7 @@ requirements_confirmation:
 
 ## Import requirements from a CSV file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246857) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/246857) in GitLab 13.7.
 
 You must have at least the Reporter role.
 

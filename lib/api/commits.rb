@@ -32,7 +32,8 @@ module API
         return unless find_user_from_warden
 
         Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
-        Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
+        Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)
+
         namespace = user_project.namespace
 
         Gitlab::Tracking.event(
@@ -306,6 +307,27 @@ module API
         notes = commit.notes.with_api_entity_associations.fresh
 
         present paginate(notes), with: Entities::CommitNote
+      end
+
+      desc 'Get the sequence count of a commit SHA' do
+        success code: 200, model: Entities::CommitSequence
+        tags %w[commits]
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit SHA'
+        optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges', default: false
+      end
+      get ':id/repository/commits/:sha/sequence', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+
+        not_found! 'Commit' unless commit
+        count = user_project.repository.count_commits(ref: params[:sha], first_parent: params[:first_parent])
+        count_hash = { count: count }
+
+        present count_hash, with: Entities::CommitSequence
       end
 
       desc 'Cherry pick commit into a branch' do

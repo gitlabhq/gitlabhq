@@ -45,6 +45,7 @@ class GroupsController < Groups::ApplicationController
 
   before_action only: :merge_requests do
     push_frontend_feature_flag(:mr_approved_filter, type: :ops)
+    push_frontend_feature_flag(:mr_merge_user_filter, type: :development)
   end
 
   helper_method :captcha_required?
@@ -388,9 +389,9 @@ class GroupsController < Groups::ApplicationController
     end
   end
 
-  override :markdown_service_params
-  def markdown_service_params
-    params.merge(group: group)
+  override :resource_parent
+  def resource_parent
+    group
   end
 
   override :has_project_list?
@@ -411,4 +412,4 @@ class GroupsController < Groups::ApplicationController
   end
 end
 
-GroupsController.prepend_mod_with('GroupsController')
+GroupsController.prepend_mod

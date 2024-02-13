@@ -13,7 +13,7 @@ module Gitlab
         # status code to ensure adequate coverage of error cases.
         case e.code
         when GRPC::Core::StatusCodes::NOT_FOUND
-          raise Gitlab::Git::Repository::NoRepository, e
+          handle_not_found(e)
         when GRPC::Core::StatusCodes::INVALID_ARGUMENT
           raise ArgumentError, e
         when GRPC::Core::StatusCodes::DEADLINE_EXCEEDED
@@ -39,6 +39,38 @@ module Gitlab
         else
           raise ResourceExhaustedError, _("Upstream Gitaly has been exhausted. Try again later")
         end
+      end
+
+      def handle_not_found(exception)
+        detail = Gitlab::GitalyClient.decode_detailed_error(exception)
+
+        handle_find_commits_error(detail, exception) if detail.is_a?(Gitaly::FindCommitsError)
+
+        case detail.class.name
+        when Gitaly::ReferenceNotFoundError.name
+          raise Gitlab::Git::ReferenceNotFoundError.new(
+            exception, detail.reference_name
+          )
+        else
+          raise Gitlab::Git::Repository::NoRepository, exception
+        end
+      end
+
+      def handle_find_commits_error(detail, exception)
+        if detail.ambiguous_ref
+          raise Gitlab::Git::Repository::CommitNotFound, "ambiguous reference:#{detail.ambiguous_ref.reference}"
+        end
+
+        if detail.bad_object
+          raise Gitlab::Git::Repository::CommitNotFound,
+            "bad object:#{detail.bad_object.to_h[:bad_oid]}"
+        end
+
+        if detail.invalid_range
+          raise Gitlab::Git::Repository::CommitNotFound, "invalid range:#{detail.invalid_range.range}"
+        end
+
+        raise Gitlab::Git::Repository::CommitNotFound, exception
       end
     end
   end

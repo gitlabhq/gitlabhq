@@ -18,7 +18,7 @@ RSpec.describe 'Project navbar', :with_license, :js, feature_category: :groups_a
     stub_feature_flags(ml_experiment_tracking: false)
     stub_feature_flags(model_registry: false)
     insert_package_nav
-    insert_infrastructure_registry_nav
+    insert_infrastructure_registry_nav(s_('Terraform|Terraform states'))
     insert_infrastructure_google_cloud_nav
     insert_infrastructure_aws_nav
   end

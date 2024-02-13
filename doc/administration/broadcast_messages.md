@@ -4,7 +4,11 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Broadcast messages **(FREE SELF)**
+# Broadcast messages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - Target roles [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
 > - Theme [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83251) and background color removed in GitLab 14.10.

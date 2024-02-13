@@ -15,7 +15,7 @@ module DashboardHelper
     tag.p(aria: { label: label }) do
       concat(link_or_title)
 
-      concat(tag.span(class: %w[light float-right]) do
+      concat(tag.span(class: %w[light gl-float-right]) do
         boolean_to_icon(enabled)
       end)
 
@@ -32,6 +32,10 @@ module DashboardHelper
         concat(link_to_doc)
       end
     end
+  end
+
+  def user_groups_requiring_reauth
+    []
   end
 end
 

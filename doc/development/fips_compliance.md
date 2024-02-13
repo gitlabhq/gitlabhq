@@ -40,7 +40,7 @@ when FIPS mode is enabled.
 | Ubuntu 20.04 Libgcrypt Cryptographic Module              | [3902](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3902) | EC2 instances | `gpg`, `sshd` |
 | Amazon Linux 2 Kernel Crypto API Cryptographic Module    | [3709](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3709) | EKS nodes     | Linux kernel |
 | Amazon Linux 2 OpenSSL Cryptographic Module              | [3553](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3553) | EKS nodes     | NGINX |
-| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, container registry, Rails (Puma/Sidekiq), Security Analyzers |
+| RedHat Enterprise Linux 8 OpenSSL Cryptographic Module   | [4271](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/4271) | EKS nodes     | UBI containers: Workhorse, Pages, container registry, Rails (Puma/Sidekiq), Security Analyzers, `gitlab-sshd` |
 | RedHat Enterprise Linux 8 Libgcrypt Cryptographic Module | [3784](https://csrc.nist.gov/projects/cryptographic-module-validation-program/certificate/3784) | EKS nodes     | UBI containers: GitLab Shell, `gpg` |
 
 ### Supported Operating Systems
@@ -66,7 +66,7 @@ listed here that also do not work properly in FIPS mode:
   supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - Advanced search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
-- [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
+- [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
 
 Additionally, these package repositories are disabled in FIPS mode:
 

@@ -43,6 +43,7 @@ RSpec.describe 'Robots.txt Requests', :aggregate_failures, feature_category: :bu
       '/help',
       '/s/',
       '/-/profile',
+      '/-/user_settings/profile',
       '/-/ide/project',
       '/foo/bar/new',
       '/foo/bar/edit',

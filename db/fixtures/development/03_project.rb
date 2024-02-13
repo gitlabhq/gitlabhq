@@ -128,7 +128,15 @@ class Gitlab::Seeder::Projects
       project = Project.find_by_full_path(project_name)
 
       User.offset(1).first(5).each do |user|
-        new_project = ::Projects::ForkService.new(project, user).execute
+        response = ::Projects::ForkService.new(project, user).execute
+
+        if response.error?
+          print 'F'
+          puts response.errors
+          next
+        end
+
+        new_project = response[:project]
 
         if new_project.valid? && (new_project.valid_repo? || new_project.import_state.scheduled?)
           print '.'

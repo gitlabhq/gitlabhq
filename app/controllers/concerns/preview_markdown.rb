@@ -5,7 +5,11 @@ module PreviewMarkdown
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, markdown_service_params).execute
+    result = PreviewMarkdownService.new(
+      container: resource_parent,
+      current_user: current_user,
+      params: markdown_service_params
+    ).execute
 
     render json: {
       body: view_context.markdown(result[:text], markdown_context_params),
@@ -18,6 +22,10 @@ module PreviewMarkdown
   end
 
   private
+
+  def resource_parent
+    @project
+  end
 
   def projects_filter_params
     {

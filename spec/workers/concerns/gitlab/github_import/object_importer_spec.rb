@@ -65,9 +65,8 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
     stub_const('MockRepresentation', stubbed_representation)
   end
 
-  describe '#import', :clean_gitlab_redis_cache do
+  describe '#import', :clean_gitlab_redis_shared_state do
     before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       expect(worker).to receive(:importer_class).at_least(:once).and_return(importer_class)
     end
 

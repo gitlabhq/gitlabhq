@@ -20,8 +20,8 @@ RSpec.describe 'Merge request > User creates custom emoji', :js, feature_categor
       wait_for_requests
     end
 
-    it 'shows link to create custom emoji' do
-      first('.add-reaction-button').click
+    it 'shows link to create custom emoji', :js do
+      find_by_testid('add-reaction-button').click
 
       wait_for_requests
 
@@ -48,8 +48,8 @@ RSpec.describe 'Merge request > User creates custom emoji', :js, feature_categor
       wait_for_requests
     end
 
-    it 'shows link to create custom emoji' do
-      first('.add-reaction-button').click
+    it 'shows link to create custom emoji', :js do
+      find_by_testid('add-reaction-button').click
 
       wait_for_requests
 

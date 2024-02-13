@@ -1,5 +1,5 @@
-- render_remember_me = remember_me_enabled? && local_assigns.fetch(:render_remember_me, true)
-- submit_message = local_assigns.fetch(:submit_message, _('Sign in'))
+- render_remember_me = admin_mode ? false : remember_me_enabled?
+- submit_message = admin_mode ? _('Enter admin mode') : _('Sign in')
 
 = gitlab_ui_form_for(:crowd, url: omniauth_authorize_path(:user, :crowd), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_crowd_user' }}) do |f|
   .form-group
@@ -10,7 +10,8 @@
     %input.form-control.gl-form-input.js-password{ data: { id: 'crowd_password', name: 'password' } }
 
   - if render_remember_me
-    = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
+    .gl-mb-3
+      = f.gitlab_ui_checkbox_component :remember_me, _('Remember me'), checkbox_options: { name: :remember_me, autocomplete: 'off' }
 
   = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true) do
     = submit_message

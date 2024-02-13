@@ -337,7 +337,7 @@ RSpec.describe Groups::GroupMembersController do
 
           expect(controller).to set_flash.to "You left the \"#{group.name}\" group."
           expect(response).to redirect_to(dashboard_groups_path)
-          expect(group.users).not_to include user
+          expect(group).not_to have_user(user)
         end
 
         it 'supports json request', :aggregate_failures do
@@ -401,7 +401,7 @@ RSpec.describe Groups::GroupMembersController do
 
               expect(controller).to set_flash.to "You left the \"#{subgroup.human_name}\" group."
               expect(response).to redirect_to(dashboard_groups_path)
-              expect(subgroup.users).not_to include user
+              expect(subgroup).not_to have_user(user)
             end
           end
         end
@@ -416,7 +416,7 @@ RSpec.describe Groups::GroupMembersController do
 
             expect(controller).to set_flash.to "You left the \"#{group.name}\" group."
             expect(response).to redirect_to(dashboard_groups_path)
-            expect(group.users).not_to include user
+            expect(group).not_to have_user(user)
           end
         end
       end
@@ -434,7 +434,7 @@ RSpec.describe Groups::GroupMembersController do
           expect(controller).to set_flash.to 'Your access request to the group has been withdrawn.'
           expect(response).to redirect_to(group_path(group))
           expect(group.requesters).to be_empty
-          expect(group.users).not_to include user
+          expect(group).not_to have_user(user)
         end
       end
     end
@@ -451,7 +451,7 @@ RSpec.describe Groups::GroupMembersController do
       expect(controller).to set_flash.to 'Your request for access has been queued for review.'
       expect(response).to redirect_to(group_path(group))
       expect(group.requesters.exists?(user_id: user)).to be_truthy
-      expect(group.users).not_to include user
+      expect(group).not_to have_user(user)
     end
   end
 

@@ -180,13 +180,13 @@ export default {
             {{ s__('FeatureFlags|Environment Specs') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left d-flex flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
+            class="table-mobile-content gl-text-left d-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
           >
             <strategy-label
               v-for="strategy in featureFlag.strategies"
               :key="strategy.id"
               data-testid="strategy-label"
-              class="w-100 gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left"
+              class="gl-w-full gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left"
               v-bind="strategyBadgeText(strategy)"
             />
           </div>

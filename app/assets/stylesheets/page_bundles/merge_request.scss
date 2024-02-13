@@ -127,12 +127,6 @@ $comparison-empty-state-height: 62px;
       top: 2px;
     }
   }
-
-  .btn-clipboard {
-    margin-right: 5px;
-    padding: 0;
-    background: transparent;
-  }
 }
 
 .merge-request-select {
@@ -151,7 +145,7 @@ $comparison-empty-state-height: 62px;
   }
 
   .gl-dropdown-custom-toggle {
-    @include gl-w-full;
+    width: 100%;
   }
 }
 
@@ -343,13 +337,13 @@ $comparison-empty-state-height: 62px;
 }
 
 .survey-slide-up-enter-active {
-  @include gl-transition-slow;
+  transition: all $gl-transition-duration-slow ease;
 }
 
 .mr-compare-dropdown {
-  @include gl-w-full;
+  width: 100%;
 
   .gl-button-text {
-    @include gl-w-full;
+    width: 100%;
   }
 }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GonHelper do
+RSpec.describe Gitlab::GonHelper, feature_category: :shared do
   let(:helper) do
     Class.new do
       include Gitlab::GonHelper
@@ -107,9 +107,24 @@ RSpec.describe Gitlab::GonHelper do
     end
   end
 
+  describe '#push_frontend_ability' do
+    it 'pushes an ability to the frontend' do
+      user = create(:user)
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ abilities: { 'logIn' => true } }, true)
+
+      helper.push_frontend_ability(ability: :log_in, user: user)
+    end
+  end
+
   describe '#push_frontend_feature_flag' do
     before do
-      skip_feature_flags_yaml_validation
       skip_default_enabled_yaml_check
     end
 
@@ -136,8 +151,6 @@ RSpec.describe Gitlab::GonHelper do
     let(:gon) { class_double('Gon') }
 
     before do
-      skip_feature_flags_yaml_validation
-
       allow(helper)
         .to receive(:gon)
         .and_return(gon)
@@ -157,6 +170,39 @@ RSpec.describe Gitlab::GonHelper do
         .with({ features: { 'myFeatureFlag' => false } }, true)
 
       helper.push_force_frontend_feature_flag(:my_feature_flag, nil)
+    end
+  end
+
+  describe '#push_namespace_setting' do
+    it 'pushes a namespace setting to the frontend' do
+      namespace_settings = create(:namespace_settings, math_rendering_limits_enabled: false)
+      group = create(:group, namespace_settings: namespace_settings)
+
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .to receive(:push)
+        .with({ math_rendering_limits_enabled: false })
+
+      helper.push_namespace_setting(:math_rendering_limits_enabled, group)
+    end
+
+    it 'does not push if missing namespace setting entry' do
+      group = create(:group)
+
+      gon = class_double('Gon')
+      allow(helper)
+        .to receive(:gon)
+        .and_return(gon)
+
+      expect(gon)
+        .not_to receive(:push)
+        .with({ math_rendering_limits_enabled: false })
+
+      helper.push_namespace_setting(:math_rendering_limits_enabled, group)
     end
   end
 
@@ -194,19 +240,6 @@ RSpec.describe Gitlab::GonHelper do
 
       context 'when Gitlab.com? is false' do
         let(:is_gitlab_com) { false }
-
-        it "doesn't set the analytics_url and analytics_id" do
-          expect(gon).not_to receive(:analytics_url=)
-          expect(gon).not_to receive(:analytics_id=)
-
-          helper.add_browsersdk_tracking
-        end
-      end
-
-      context 'when feature flag is false' do
-        before do
-          stub_feature_flags(gl_analytics_tracking: false)
-        end
 
         it "doesn't set the analytics_url and analytics_id" do
           expect(gon).not_to receive(:analytics_url=)

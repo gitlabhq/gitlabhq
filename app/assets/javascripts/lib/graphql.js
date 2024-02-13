@@ -62,6 +62,15 @@ export const typePolicies = {
       },
     },
   },
+  Dora: {
+    merge: true,
+  },
+  GroupValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
+  ProjectValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
 };
 
 export const stripWhitespaceFromQuery = (url, path) => {
@@ -129,6 +138,10 @@ function createApolloClient(resolvers = {}, config = {}) {
   if (baseUrl) {
     // Prepend baseUrl and ensure that `///` are replaced with `/`
     uri = `${baseUrl}${uri}`.replace(/\/{3,}/g, '/');
+  }
+
+  if (gon.version) {
+    httpHeaders['x-gitlab-version'] = gon.version;
   }
 
   const httpOptions = {

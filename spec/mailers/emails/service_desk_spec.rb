@@ -19,12 +19,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
   let_it_be(:credential) { create(:service_desk_custom_email_credential, project: project) }
   let_it_be(:verification) { create(:service_desk_custom_email_verification, project: project) }
   let_it_be(:service_desk_setting) { create(:service_desk_setting, project: project, custom_email: 'user@example.com') }
+  let_it_be(:issue_email_participant) { create(:issue_email_participant, issue: issue, email: email) }
 
   let(:template) { double(content: template_content) }
-
-  before_all do
-    issue.issue_email_participants.create!(email: email)
-  end
 
   before do
     # Because we use global project and custom email instances, make sure
@@ -50,6 +47,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
         expect(subject.parts[1].body.to_s).to include(expected_html)
         expect(subject.parts[1].content_type).to include('text/html')
+
+        # Sets issue email participant in sent notification
+        expect(issue.reset.sent_notifications.first.issue_email_participant).to eq(issue_email_participant)
       end
     end
 
@@ -209,6 +209,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     let_it_be(:expected_html) { expected_text }
 
+    before do
+      issue.update!(external_author: email)
+    end
+
     subject { ServiceEmailClass.service_desk_thank_you_email(issue.id) }
 
     it_behaves_like 'a service desk notification email'
@@ -272,9 +276,9 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           let(:other_issue) { create(:issue, project: project, description: full_issue_reference) }
 
           let(:template_content) { '%{ISSUE_DESCRIPTION}' }
-          let(:expected_template_html) { "<p data-sourcepos=\"1:1-1:22\" dir=\"auto\">#{full_issue_reference}</p>" }
+          let(:expected_template_html) { full_issue_reference }
 
-          subject { ServiceEmailClass.service_desk_thank_you_email(other_issue.id) }
+          subject(:message) { ServiceEmailClass.service_desk_thank_you_email(other_issue.id) }
 
           before do
             expect(Gitlab::Template::ServiceDeskTemplate).to receive(:find)
@@ -285,7 +289,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           end
 
           it 'does not render GitLab-specific-reference links with title attribute' do
-            is_expected.to have_body_text(expected_template_html)
+            expect(message.body.to_s).to include(expected_template_html)
           end
         end
       end
@@ -326,7 +330,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     let_it_be(:expected_html) { 'My <strong>note</strong>' }
     let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: expected_text) }
 
-    subject { ServiceEmailClass.service_desk_new_note_email(issue.id, note.id, email) }
+    subject { ServiceEmailClass.service_desk_new_note_email(issue.id, note.id, issue_email_participant) }
 
     it_behaves_like 'a service desk notification email'
     it_behaves_like 'read template from repository', 'new_note'
@@ -466,7 +470,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           let_it_be(:upload_path_1) { "/uploads/#{path_1}" }
           let_it_be(:note) { create(:note_on_issue, noteable: issue, project: project, note: "a new comment with [#{filename}](#{upload_path}) [#{filename_1}](#{upload_path_1})") }
 
-          context 'when all uploads processed correct' do
+          context 'when all uploads processed correct' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Avoid duplication with heavy use of helpers
             before do
               allow_next_instance_of(FileUploader) do |instance|
                 allow(instance).to receive(:size).and_return(5.megabytes)
@@ -521,7 +525,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
     end
 
     context 'when custom email is enabled' do
-      subject { Notify.service_desk_new_note_email(issue.id, note.id, email) }
+      subject { Notify.service_desk_new_note_email(issue.id, note.id, issue_email_participant) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
     end

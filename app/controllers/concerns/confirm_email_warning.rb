@@ -22,7 +22,7 @@ module ConfirmEmailWarning
       confirm_warning_message,
       email: email_to_display,
       resend_link: view_context.link_to(_('Resend it'), user_confirmation_path(user: { email: email }), method: :post),
-      update_link: view_context.link_to(_('Update it'), profile_path)
+      update_link: view_context.link_to(_('Update it'), user_settings_profile_path)
     ).html_safe
   end
 

@@ -31,6 +31,16 @@ module Issues
       Issues::RebalancingWorker.perform_async(nil, *issue.project.self_or_root_group_ids)
     end
 
+    def execute_hooks(issue, action = 'open', old_associations: {})
+      issue_data  = Gitlab::Lazy.new { hook_data(issue, action, old_associations: old_associations) }
+      hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
+      issue.namespace.execute_hooks(issue_data, hooks_scope)
+      issue.namespace.execute_integrations(issue_data, hooks_scope)
+
+      execute_incident_hooks(issue, issue_data) if issue.work_item_type&.incident?
+      execute_group_mention_hooks(issue, issue_data) if action == 'open'
+    end
+
     private
 
     # overriding this because IssuableBaseService#constructor_container_arg returns { project: value }
@@ -103,16 +113,6 @@ module Issues
     def create_assignee_note(issue, old_assignees)
       SystemNoteService.change_issuable_assignees(
         issue, issue.project, current_user, old_assignees)
-    end
-
-    def execute_hooks(issue, action = 'open', old_associations: {})
-      issue_data  = Gitlab::Lazy.new { hook_data(issue, action, old_associations: old_associations) }
-      hooks_scope = issue.confidential? ? :confidential_issue_hooks : :issue_hooks
-      issue.namespace.execute_hooks(issue_data, hooks_scope)
-      issue.namespace.execute_integrations(issue_data, hooks_scope)
-
-      execute_incident_hooks(issue, issue_data) if issue.work_item_type&.incident?
-      execute_group_mention_hooks(issue, issue_data) if action == 'open'
     end
 
     # We can remove this code after proposal in

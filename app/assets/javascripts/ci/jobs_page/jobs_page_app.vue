@@ -167,7 +167,7 @@ export default {
         if (!filter.type) {
           createAlert({
             message: RAW_TEXT_WARNING,
-            type: 'warning',
+            variant: 'warning',
           });
         }
 

@@ -237,16 +237,14 @@ module Types
       null: true,
       description: 'List of emoji reactions associated with the merge request.'
 
-    field :prepared_at, Types::TimeType, null: true,
-                                         description: 'Timestamp of when the merge request was prepared.'
-
     field :codequality_reports_comparer,
       type: ::Types::Security::CodequalityReportsComparerType,
       null: true,
-      alpha: { milestone: '16.4' },
-      description: 'Code quality reports comparison reported on the merge request. Returns `null` ' \
-                   'if `sast_reports_in_inline_diff` feature flag is disabled.',
+      description: 'Code quality reports comparison reported on the merge request.',
       resolver: ::Resolvers::CodequalityReportsComparerResolver
+
+    field :prepared_at, Types::TimeType, null: true,
+                                         description: 'Timestamp of when the merge request was prepared.'
 
     field :allows_multiple_assignees,
       GraphQL::Types::Boolean,

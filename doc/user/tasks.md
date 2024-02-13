@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tasks **(FREE ALL)**
+# Tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334812) in GitLab 14.5 [with a flag](../administration/feature_flags.md) named `work_items`. Disabled by default.
 > - [Creating, editing, and deleting tasks](https://gitlab.com/groups/gitlab-org/-/epics/7169) introduced in GitLab 15.0.
@@ -62,7 +66,7 @@ To create a task:
 
 ### From a task list item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377307) in GitLab 15.9.
 
 Prerequisites:
 
@@ -78,7 +82,7 @@ Any nested task list items are moved up a nested level.
 
 ## Add existing tasks to an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.
 
 Prerequisites:
 
@@ -140,7 +144,7 @@ To edit the description of a task:
 
 ## Promote a task to an issue
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412534) in GitLab 16.1.
 
 Prerequisites:
 
@@ -183,7 +187,7 @@ To delete a task:
 
 ## Reorder tasks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
 
 Prerequisites:
 
@@ -194,7 +198,7 @@ To reorder them, drag them around.
 
 ## Assign users to a task
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
 
 To show who is responsible for a task, you can assign users to it.
 
@@ -218,7 +222,7 @@ To change the assignee on a task:
 
 ## Assign labels to a task
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339756) in GitLab 15.5.
 
 Prerequisites:
 
@@ -290,7 +294,11 @@ To add a task to a milestone:
    If a task already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the task.
 
-## Set task weight **(PREMIUM ALL)**
+## Set task weight
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362550) in GitLab 15.3.
 > - Edit button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429137) in GitLab 16.7.
@@ -312,7 +320,11 @@ To set issue weight of a task:
 1. Enter a whole, positive number.
 1. Select **Apply** or press <kbd>Enter</kbd>.
 
-## Add a task to an iteration **(PREMIUM ALL)**
+## Add a task to an iteration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
@@ -356,7 +368,7 @@ You can add [comments](discussions/index.md) and reply to threads in tasks.
 
 ## Copy task reference
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
 
 To refer to a task elsewhere in GitLab, you can use its full URL or a short reference, which looks like
 `namespace/project-name#123`, where `namespace` is either a group or a username.
@@ -374,7 +386,7 @@ For more information about task references, see [GitLab-Flavored Markdown](markd
 
 ## Copy task email address
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
 
 You can create a comment in a task by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -390,7 +402,7 @@ To copy the task's email address:
 
 ## Set an issue as a parent
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.5.
 
 Prerequisites:
 
@@ -411,7 +423,7 @@ next to **Parent**, select the dropdown list and then select **Unassign**.
 
 ## Confidential tasks
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
 
 Confidential tasks are tasks visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-tasks).
@@ -478,9 +490,34 @@ system note in the task's comments, for example:
 > - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
 > - **{eye}** Jo Garcia made the issue visible to everyone just now
 
+## Lock discussion
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+You can prevent public comments in a task.
+When you do, only project members can add and edit comments.
+
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+To lock a task:
+
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Lock discussion**.
+
+A system note is added to the page details.
+
+If a task is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
+
 ## Two-column layout
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.

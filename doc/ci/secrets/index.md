@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using external secrets in CI **(FREE ALL)**
+# Using external secrets in CI
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218746) in GitLab 13.4 and GitLab Runner 13.4.
 > - `file` setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
@@ -33,7 +37,7 @@ The [Authenticating and Reading Secrets With HashiCorp Vault](../examples/authen
 tutorial has more details about authenticating with ID tokens.
 
 You must [configure your Vault server](#configure-your-vault-server) before you
-can use [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
+can [use Vault secrets in a CI job](#use-vault-secrets-in-a-ci-job).
 
 The flow for using GitLab with HashiCorp Vault
 is summarized by this diagram:
@@ -102,9 +106,13 @@ To configure your Vault server:
    NOTE:
    Support for providing these values in the user interface [is tracked in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/218677).
 
-## Use Vault secrets in a CI job **(PREMIUM ALL)**
+## Use Vault secrets in a CI job
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 
 After [configuring your Vault server](#configure-your-vault-server), you can use
 the secrets stored in Vault by defining them with the `vault` keyword:

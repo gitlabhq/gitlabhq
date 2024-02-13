@@ -4,7 +4,11 @@ group: Threat Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Vulnerability Page **(ULTIMATE ALL)**
+# Vulnerability Page
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 Each vulnerability in a project has a vulnerability page containing details of the vulnerability,
 including:
@@ -24,7 +28,12 @@ change its status to **Resolved**. This ensures that if it is accidentally reint
 merge, it is reported again as a new record. To change the status of multiple vulnerabilities, use
 the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#activity-filter).
 
-## Explaining a vulnerability **(ULTIMATE SAAS BETA)**
+## Explaining a vulnerability
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
@@ -77,9 +86,14 @@ The following data is shared with third-party AI APIs:
   record).
 - Filename.
 
-## Vulnerability resolution **(ULTIMATE SAAS EXPERIMENT)**
+## Vulnerability resolution
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability.
@@ -113,7 +127,7 @@ then process the merge request according to your standard workflow.
 
 The following data is shared with third-party AI APIs:
 
-- Vulnerability title (which might contain the file name, depending on which scanner is used).
+- Vulnerability title (which might contain the filename, depending on which scanner is used).
 - Vulnerability identifiers.
 - Code block.
 - File name.
@@ -147,7 +161,7 @@ When dismissing a vulnerability, one of the following reasons must be chosen to 
 
 ## Change the status of a vulnerability
 
-> In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../../../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
+> - In GitLab 16.4 the ability for `Developers` to change the status of a vulnerability (`admin_vulnerability`) was [deprecated](../../../update/deprecations.md#deprecate-change-vulnerability-status-from-the-developer-role). The `admin_vulnerability` permission will be removed, by default, from all `Developer` roles in GitLab 17.0.
 
 Prerequisites:
 
@@ -221,7 +235,8 @@ Be aware of the following conditions between a vulnerability and a linked GitLab
 
 Prerequisites:
 
-- [Jira issue integration](../../../integration/jira/configure.md) must be enabled, with option **Enable Jira issue creation from vulnerabilities** also enabled.
+- Ensure the Jira issue integration is [configured](../../../integration/jira/configure.md#configure-the-integration) and the
+  **Enable Jira issues** and **Enable Jira issue creation from vulnerabilities** checkboxes are selected.
 
 To link a vulnerability to existing Jira issues, add the following line to the Jira issue's description:
 
@@ -289,7 +304,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 ## Enable security training for vulnerabilities
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 NOTE:
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
@@ -309,7 +324,7 @@ Each integration submits the Vulnerability identifier, for example CWE or OWASP,
 
 ## View security training for a vulnerability
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6176) in GitLab 14.9.
 
 The vulnerability page may include a training link relevant to the detected vulnerability if security training is enabled.
 The availability of training depends on whether the enabled training vendor has content matching the particular vulnerability.

@@ -5,7 +5,7 @@ description: Whether Background Upload for Object Storage is enabled for Externa
   Diffs
 product_section: enablement
 product_stage: enablement
-product_group: memory
+product_group: application_performance
 value_type: boolean
 status: broken
 repair_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382900

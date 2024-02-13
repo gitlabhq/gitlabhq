@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs artifacts administration **(FREE SELF)**
+# Jobs artifacts administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the administration documentation. To learn how to use job artifacts in your GitLab CI/CD pipeline,
 see the [job artifacts configuration documentation](../ci/jobs/job_artifacts.md).

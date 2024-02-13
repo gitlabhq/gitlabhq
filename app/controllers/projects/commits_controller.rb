@@ -5,6 +5,7 @@ require "base64"
 class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
+  include ParseCommitDate
 
   COMMITS_DEFAULT_LIMIT = 40
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
@@ -75,6 +76,8 @@ class Projects::CommitsController < Projects::ApplicationController
     @offset = (permitted_params[:offset] || 0).to_i
     search = permitted_params[:search]
     author = permitted_params[:author]
+    committed_before = convert_date_to_epoch(permitted_params[:committed_before])
+    committed_after = convert_date_to_epoch(permitted_params[:committed_after])
 
     # fully_qualified_ref is available in some situations from ExtractsRef
     ref = @fully_qualified_ref || @ref
@@ -89,6 +92,8 @@ class Projects::CommitsController < Projects::ApplicationController
           offset: @offset
         }
         options[:author] = author if author.present?
+        options[:before] = committed_before if committed_before.present?
+        options[:after] = committed_after if committed_after.present?
 
         @repository.commits(ref, **options)
       end
@@ -101,6 +106,6 @@ class Projects::CommitsController < Projects::ApplicationController
   end
 
   def permitted_params
-    params.permit(:limit, :offset, :search, :author)
+    params.permit(:limit, :offset, :search, :author, :committed_before, :committed_after)
   end
 end

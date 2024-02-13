@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import API **(FREE ALL)**
+# Import API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
@@ -13,6 +17,8 @@ Use the Import API to import repositories from GitHub or Bitbucket Server.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups if the namespace or group name specified in `target_namespace` doesn't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken or `target_namespace` is blank.
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 > - `collaborators_import` key in `optional_stages` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
+> - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but disables the `single_endpoint_issue_events_import` optional stage.
+> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
 
 Import your projects from GitHub to GitLab using the API.
 
@@ -58,7 +64,8 @@ curl --request POST \
 
 The following keys are available for `optional_stages`:
 
-- `single_endpoint_issue_events_import`, for issue and pull request events import.
+- `single_endpoint_issue_events_import`, for issue and pull request events import. If the `github_import_extended_events` feature flag is enabled, this optional stage
+  is unavailable.
 - `single_endpoint_notes_import`, for an alternative and more thorough comments import.
 - `attachments_import`, for Markdown attachments import.
 - `collaborators_import`, for importing direct repository collaborators who are not outside collaborators.
@@ -78,7 +85,7 @@ Example response:
 
 ### Import a public project through the API using a group access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
 
 When you import a project from GitHub to GitLab through the API using a group access
 token:
@@ -88,7 +95,7 @@ token:
 
 ### Cancel GitHub project import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364783) in GitLab 15.5.
 
 Cancel an in-progress GitHub project import using the API.
 
@@ -207,11 +214,6 @@ curl --request POST \
     "bitbucket_server_repo": "my-repo"
 }'
 ```
-
-## Automate group and project import **(PREMIUM ALL)**
-
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](../user/project/import/index.md#automate-group-and-project-import).
 
 ## Related topics
 

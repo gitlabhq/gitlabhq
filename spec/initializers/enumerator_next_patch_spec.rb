@@ -2,18 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Enumerator#next patch fix' do
+RSpec.describe 'Enumerator#next patch fix', feature_category: :shared do
   describe 'Enumerator' do
     RSpec::Matchers.define :contain_unique_method_calls_in_order do |expected|
       attr_reader :actual
 
       match do |actual|
         @actual_err = actual
-        regexps = expected.map { |method_name| { name: method_name, regexp: make_regexp(method_name) } }
         @actual = actual.backtrace.filter_map do |line|
-          regexp = regexps.find { |r| r[:regexp].match? line }
+          match = source_regexp.match(line)
 
-          regexp[:name] if regexp
+          match[1] if match
         end
 
         expected == @actual
@@ -27,8 +26,8 @@ RSpec.describe 'Enumerator#next patch fix' do
 
       private
 
-      def make_regexp(method_name)
-        Regexp.new("/spec/initializers/enumerator_next_patch_spec\\.rb:[0-9]+:in `#{method_name}'$")
+      def source_regexp
+        @source_regexp ||= Regexp.new("/spec/initializers/enumerator_next_patch_spec\\.rb:[0-9]+:in `([a-zA-Z_]*)'$")
       end
     end
 
@@ -38,6 +37,10 @@ RSpec.describe 'Enumerator#next patch fix' do
 
     def have_been_raised_by_enum_object_and_fixed_up
       contain_unique_method_calls_in_order %w[make_error call_enum_method]
+    end
+
+    def have_been_raised_by_enum_object_and_not_fixed_up
+      contain_unique_method_calls_in_order %w[make_error]
     end
 
     def have_been_raised_by_nested_next_and_fixed_up
@@ -90,22 +93,6 @@ RSpec.describe 'Enumerator#next patch fix' do
               expect(err).to have_been_raised_by_next_and_not_fixed_up
             end
           end
-
-          context 'nested enum object' do
-            def call_nested_next
-              nested_enumerator.next
-            end
-
-            let(:nested_enumerator) { Enumerator.new { |_| } }
-            let(:enumerator) { Enumerator.new { |yielder| yielder << call_nested_next } }
-
-            it 'fixes up StopIteration thrown by another instance of #next' do
-              expect { subject }.to raise_error do |err|
-                expect(err).to be_a(StopIteration)
-                expect(err).to have_been_raised_by_nested_next_and_fixed_up
-              end
-            end
-          end
         end
 
         describe 'arguments error' do
@@ -127,14 +114,14 @@ RSpec.describe 'Enumerator#next patch fix' do
           let(:enumerator) { Enumerator.new { |_| raise error } }
           let(:error) { make_error }
 
-          it 'fixes up StopIteration' do
+          it 'does not fix up StopIteration' do
             def make_error
               StopIteration.new.tap { |err| err.set_backtrace(caller) }
             end
 
             expect { subject }.to raise_error do |err|
               expect(err).to be(error)
-              expect(err).to have_been_raised_by_enum_object_and_fixed_up
+              expect(err).to have_been_raised_by_enum_object_and_not_fixed_up
             end
           end
 

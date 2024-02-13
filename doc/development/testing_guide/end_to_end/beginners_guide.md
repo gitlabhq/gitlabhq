@@ -65,7 +65,7 @@ end-to-end flows, and is easiest to understand.
 The GitLab QA end-to-end tests are organized by the different
 [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui).
 Determine where the test should be placed by
-[stage](https://about.gitlab.com/handbook/product/categories/#devops-stages),
+[stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages),
 determine which feature the test belongs to, and then place it in a subdirectory
 under the stage.
 
@@ -321,22 +321,22 @@ the **Issue Show** page already exists, add the `closed?` method.
 module Page::Project::Issue
   class Show
     view 'app/views/projects/issues/show.html.haml' do
-      element :closed_status_box
+      element 'closed-status-box'
     end
 
     def closed?
-      has_element?(:closed_status_box)
+      has_element?('closed-status-box')
     end
   end
 end
 ```
 
-Next, define the element `closed_status_box` within your view, so your Page Object
+Next, define the element `closed-status-box` within your view, so your Page Object
 can see it.
 
 ```haml
 -#=> app/views/projects/issues/show.html.haml
-.issuable-status-box.status-box.status-box-issue-closed{ ..., data: { qa_selector: 'closed_status_box' } }
+.issuable-status-box.status-box.status-box-issue-closed{ ..., data: { testid: 'closed-status-box' } }
 ```
 
 ## Run the spec

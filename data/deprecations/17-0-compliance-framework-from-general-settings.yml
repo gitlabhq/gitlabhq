@@ -1,0 +1,16 @@
+- title: "Compliance framework in general settings"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: nrosandich
+  stage: Govern
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/422783
+  body: |  # (required) Don't change this line.
+    We moved compliance framework management to the framework and projects reports in the
+    [Compliance Center](https://docs.gitlab.com/ee/user/compliance/compliance_center/).
+
+    Therefore, in GitLab 17.0, we are removing the management of compliance frameworks from the **General** settings page of groups and projects.

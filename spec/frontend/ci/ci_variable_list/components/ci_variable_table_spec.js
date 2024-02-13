@@ -47,6 +47,8 @@ describe('Ci variable table', () => {
   const findAttributeByIndex = (rowIndex, attributeIndex) =>
     findAttributesRow(rowIndex).findAllComponents(GlBadge).at(attributeIndex).text();
   const findTableColumnText = (index) => wrapper.findAll('th').at(index).text();
+  const findVariableRow = (rowIndex) =>
+    wrapper.findAllByTestId('ci-variable-table-row-variable').at(rowIndex);
   const findGroupCiCdSettingsLink = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
   const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
@@ -132,6 +134,10 @@ describe('Ci variable table', () => {
         },
       );
 
+      it('renders description if variable has one', () => {
+        expect(findVariableRow(0).text()).toContain('This variable has a description.');
+      });
+
       it('renders action buttons', () => {
         expect(findRevealButton().exists()).toBe(true);
         expect(findAddButton().exists()).toBe(true);
@@ -185,6 +191,10 @@ describe('Ci variable table', () => {
           expect(findAttributeByIndex(rowIndex, attributeIndex)).toBe(text);
         },
       );
+
+      it('renders description if variable has one', () => {
+        expect(findVariableRow(1).text()).toContain('This inherited variable has a description.');
+      });
 
       it('displays link to the group settings', () => {
         expect(findGroupCiCdSettingsLink(0)).toBe(mockInheritedVariables[0].groupCiCdSettingsPath);

@@ -110,6 +110,10 @@ module Types
       null: true,
       description: 'Indicates if the project has Large File Storage (LFS) enabled.'
 
+    field :max_access_level, Types::AccessLevelType,
+      null: false,
+      description: 'The maximum access level of the current user in the project.'
+
     field :merge_requests_ff_only_enabled, GraphQL::Types::Boolean,
       null: true,
       description: 'Indicates if no merge commits should be created and all merges should instead be ' \
@@ -681,6 +685,29 @@ module Types
       description: 'Project allows assigning multiple reviewers to a merge request.',
       null: false
 
+    field :is_forked,
+      GraphQL::Types::Boolean,
+      resolver: Resolvers::Projects::IsForkedResolver,
+      description: 'Project is forked.',
+      null: false
+
+    field :protectable_branches,
+      [GraphQL::Types::String],
+      description: 'List of unprotected branches, ignoring any wildcard branch rules',
+      null: true,
+      calls_gitaly: true,
+      alpha: { milestone: '16.9' }
+
+    field :project_plan_limits, Types::ProjectPlanLimitsType,
+      resolver: Resolvers::Projects::PlanLimitsResolver,
+      description: 'Plan limits for the current project.',
+      alpha: { milestone: '16.9' },
+      null: true
+
+    def protectable_branches
+      ProtectableDropdown.new(project, :branches).protectable_ref_names
+    end
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end
@@ -821,6 +848,16 @@ module Types
         snippets: Gitlab::Routing.url_helpers.project_snippets_url(project),
         container_registry: Gitlab::Routing.url_helpers.project_container_registry_index_url(project)
       }
+    end
+
+    def max_access_level
+      return Gitlab::Access::NO_ACCESS if current_user.nil?
+
+      BatchLoader::GraphQL.for(object.id).batch do |project_ids, loader|
+        current_user.max_member_access_for_project_ids(project_ids).each do |project_id, max_access_level|
+          loader.call(project_id, max_access_level)
+        end
+      end
     end
 
     private

@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Desk **(FREE ALL)**
+# Service Desk
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With Service Desk, your customers
 can email you bug reports, feature requests, or general feedback.
@@ -58,6 +62,7 @@ Meanwhile:
   - [As an end user (issue creator)](using_service_desk.md#as-an-end-user-issue-creator)
   - [As a responder to the issue](using_service_desk.md#as-a-responder-to-the-issue)
   - [Email contents and formatting](using_service_desk.md#email-contents-and-formatting)
+  - [Convert a regular issue to a Service Desk ticket](using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket)
   - [Privacy considerations](using_service_desk.md#privacy-considerations)
 
 ## Troubleshooting Service Desk

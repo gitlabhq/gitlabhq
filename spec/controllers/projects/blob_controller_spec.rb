@@ -14,12 +14,6 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       get(:show, params: params)
     end
 
-    let(:redirect_with_ref_type) { true }
-
-    before do
-      stub_feature_flags(redirect_with_ref_type: redirect_with_ref_type)
-    end
-
     render_views
 
     context 'with file path' do
@@ -34,40 +28,27 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         let(:path) { 'README.md' }
         let(:id) { "#{ref}/#{path}" }
 
-        context 'and the redirect_with_ref_type flag is disabled' do
-          let(:redirect_with_ref_type) { false }
+        it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
 
-          it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
+        context 'and explicitly requesting a branch' do
+          let(:ref_type) { 'heads' }
 
-          context 'and explicitly requesting a branch' do
-            let(:ref_type) { 'heads' }
-
-            it 'redirects to blob#show with sha for the branch' do
-              expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
-            end
-          end
-
-          context 'and explicitly requesting a tag' do
-            let(:ref_type) { 'tags' }
-
-            it 'responds with success' do
-              expect(response).to be_ok
-            end
+          it 'redirects to blob#show with sha for the branch' do
+            expect(response).to redirect_to(project_blob_path(project, "#{RepoHelpers.another_sample_commit.id}/#{path}"))
           end
         end
 
-        context 'and the redirect_with_ref_type flag is enabled' do
-          let(:ref_type) { nil }
+        context 'and explicitly requesting a tag' do
+          let(:ref_type) { 'tags' }
 
-          it 'redirects to the tag' do
-            expect(response).to redirect_to(project_blob_path(project, id, ref_type: 'tags'))
+          it 'responds with success' do
+            expect(response).to be_ok
           end
         end
       end
 
       describe '#set_is_ambiguous_ref with no ambiguous ref' do
         let(:id) { 'master/invalid-path.rb' }
-        let(:redirect_with_ref_type) { false }
         let(:ambiguous_ref_modal) { true }
 
         it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
@@ -403,16 +384,9 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
       subject(:request) { put :update, params: default_params }
 
-      it_behaves_like 'tracking unique hll events' do
-        let(:expected_value) { instance_of(Integer) }
-      end
-
-      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        let(:action) { 'perform_sfe_action' }
-        let(:category) { described_class.to_s }
+      it_behaves_like 'internal event tracking' do
         let(:namespace) { project.namespace.reload }
-        let(:property) { target_event }
-        let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
+        let(:event) { target_event }
       end
     end
   end
@@ -566,16 +540,9 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
     subject(:request) { post :create, params: default_params }
 
-    it_behaves_like 'tracking unique hll events' do
-      let(:expected_value) { instance_of(Integer) }
-    end
-
-    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-      let(:action) { 'perform_sfe_action' }
-      let(:category) { described_class.to_s }
-      let(:namespace) { project.namespace }
-      let(:property) { target_event }
-      let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit' }
+    it_behaves_like 'internal event tracking' do
+      let(:namespace) { project.namespace.reload }
+      let(:event) { target_event }
     end
 
     it 'redirects to blob' do

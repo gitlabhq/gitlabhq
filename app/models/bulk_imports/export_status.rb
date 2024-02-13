@@ -46,26 +46,31 @@ module BulkImports
       status['batches'].find { |item| item['batch_number'] == batch_number }
     end
 
+    def total_objects_count
+      return 0 if empty?
+
+      status['total_objects_count']
+    end
+
     private
 
     attr_reader :client, :entity, :relation, :pipeline_tracker
 
     def status
-      strong_memoize(:status) do
-        # As an optimization, once an export status has finished or failed it will
-        # be cached, so we do not fetch from the remote source again.
-        status = status_from_cache
-        next status if status
+      # As an optimization, once an export status has finished or failed it will
+      # be cached, so we do not fetch from the remote source again.
+      cached_status = status_from_cache
+      return cached_status if cached_status
 
-        status_from_remote
-      rescue BulkImports::NetworkError => e
-        raise BulkImports::RetryPipelineError.new(e.message, 2.seconds) if e.retriable?(pipeline_tracker)
+      status_from_remote
+    rescue BulkImports::NetworkError => e
+      raise BulkImports::RetryPipelineError.new(e.message, 2.seconds) if e.retriable?(pipeline_tracker)
 
-        default_error_response(e.message)
-      rescue StandardError => e
-        default_error_response(e.message)
-      end
+      default_error_response(e.message)
+    rescue StandardError => e
+      default_error_response(e.message)
     end
+    strong_memoize_attr :status
 
     def status_from_cache
       status = Gitlab::Cache::Import::Caching.read(cache_key)

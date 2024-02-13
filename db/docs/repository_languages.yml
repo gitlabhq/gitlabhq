@@ -8,3 +8,5 @@ description: Keeps relation between projects and repository languages
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/19480
 milestone: '11.2'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

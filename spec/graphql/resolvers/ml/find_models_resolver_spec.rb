@@ -9,20 +9,21 @@ RSpec.describe Resolvers::Ml::FindModelsResolver, feature_category: :mlops do
     let_it_be(:project) { create(:project) }
     let_it_be(:models) { create_list(:ml_models, 2, project: project) }
     let_it_be(:model_in_another_project) { create(:ml_models) }
-    let_it_be(:user) { project.owner }
+    let_it_be(:owner) { project.owner }
 
+    let(:current_user) { owner }
     let(:args) { { name: 'model', orderBy: 'CREATED_AT', sort: 'desc', invalid: 'blah' } }
     let(:read_model_registry) { true }
 
     before do
       allow(Ability).to receive(:allowed?).and_call_original
       allow(Ability).to receive(:allowed?)
-                          .with(user, :read_model_registry, project)
+                          .with(current_user, :read_model_registry, project)
                           .and_return(read_model_registry)
     end
 
     subject(:resolve_models) do
-      force(resolve(described_class, obj: project, ctx: { current_user: user }, args: args))&.to_a
+      force(resolve(described_class, obj: project, ctx: { current_user: current_user }, args: args))&.to_a
     end
 
     context 'when user is allowed and model exists' do
@@ -35,6 +36,19 @@ sort: 'desc' })
                                                  .and_call_original
 
         resolve_models
+      end
+
+      context 'when user is nil' do
+        let(:current_user) { nil }
+
+        it 'processes the request' do
+          expect(::Projects::Ml::ModelFinder).to receive(:new)
+                                                   .with(project, { name: 'model', order_by: 'created_at',
+                                                                    sort: 'desc' })
+                                                   .and_call_original
+
+          resolve_models
+        end
       end
     end
 

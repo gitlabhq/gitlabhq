@@ -150,8 +150,6 @@ RSpec.describe Gitlab::Ci::Trace::Checksum do
   end
 
   def create_chunk(index:, data:)
-    create(:ci_build_trace_chunk, :persisted, build: build,
-                                              chunk_index: index,
-                                              initial_data: data)
+    create(:ci_build_trace_chunk, :persisted, build: build, chunk_index: index, initial_data: data)
   end
 end

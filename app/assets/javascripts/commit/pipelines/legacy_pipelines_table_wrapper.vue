@@ -197,13 +197,17 @@ export default {
   i18n: {
     runPipelinePopoverTitle: s__('Pipeline|Run merge request pipeline'),
     runPipelinePopoverDescription: s__(
-      'Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{linkStart}must be configured%{linkEnd} to run in merge request pipelines.',
+      `Pipeline|To run a merge request pipeline, the jobs in the CI/CD configuration file %{ciDocsLinkStart}must be configured%{ciDocsLinkEnd} to run in merge request pipelines
+      and you must have %{permissionDocsLinkStart}sufficient permissions%{permissionDocsLinkEnd} in the source project.`,
     ),
     runPipelineText: s__('Pipeline|Run pipeline'),
     emptyStateTitle: s__('Pipelines|There are currently no pipelines.'),
   },
   mrPipelinesDocsPath: helpPagePath('ci/pipelines/merge_request_pipelines.md', {
     anchor: 'prerequisites',
+  }),
+  userPermissionsDocsPath: helpPagePath('user/permissions.md', {
+    anchor: 'gitlab-cicd-permissions',
   }),
   runPipelinesInTheParentProjectHelpPath: helpPagePath(
     '/ci/pipelines/merge_request_pipelines.html',
@@ -241,11 +245,19 @@ export default {
       >
         <template #description>
           <gl-sprintf :message="$options.i18n.runPipelinePopoverDescription">
-            <template #link="{ content }">
+            <template #ciDocsLink="{ content }">
               <gl-link
                 :href="$options.mrPipelinesDocsPath"
                 target="_blank"
                 data-testid="mr-pipelines-docs-link"
+                >{{ content }}</gl-link
+              >
+            </template>
+            <template #permissionDocsLink="{ content }">
+              <gl-link
+                :href="$options.userPermissionsDocsPath"
+                target="_blank"
+                data-testid="user-permissions-docs-link"
                 >{{ content }}</gl-link
               >
             </template>

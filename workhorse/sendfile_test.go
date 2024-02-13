@@ -44,8 +44,7 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 		w.WriteHeader(200)
 	}))
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	contentBytes := []byte("content")
 	require.NoError(t, os.WriteFile(contentPath, contentBytes, 0644))
@@ -74,8 +73,7 @@ func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath stri
 		fmt.Fprint(w, "Denied")
 	}))
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resp, err := http.Get(fmt.Sprintf("%s/%s", ws.URL, filePath))
 	require.NoError(t, err)

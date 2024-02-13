@@ -207,6 +207,16 @@ class BulkImports::Entity < ApplicationRecord
     @source_version ||= bulk_import.source_version_info
   end
 
+  def checksums
+    trackers.each_with_object({}) do |tracker, checksums|
+      next unless tracker.file_extraction_pipeline?
+      next if tracker.skipped?
+      next if tracker.checksums_empty?
+
+      checksums.merge!(tracker.checksums)
+    end
+  end
+
   private
 
   def validate_parent_is_a_group

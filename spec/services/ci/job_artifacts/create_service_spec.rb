@@ -452,7 +452,8 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
     shared_examples_for 'handling partitioning' do
       context 'with job partitioned', :ci_partitionable do
-        let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+        let(:partition_id) { ci_testing_partition_id_for_check_constraints }
+        let(:pipeline) { create(:ci_pipeline, project: project, partition_id: partition_id) }
         let(:job) { create(:ci_build, pipeline: pipeline) }
 
         it 'sets partition_id on artifacts' do
@@ -460,7 +461,7 @@ RSpec.describe Ci::JobArtifacts::CreateService, :clean_gitlab_redis_shared_state
 
           artifacts_partitions = job.job_artifacts.map(&:partition_id).uniq
 
-          expect(artifacts_partitions).to eq([ci_testing_partition_id])
+          expect(artifacts_partitions).to eq([partition_id])
         end
       end
     end

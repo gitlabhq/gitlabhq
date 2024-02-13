@@ -357,7 +357,7 @@ class Event < ApplicationRecord
   end
 
   def reset_project_activity
-    return unless project
+    return unless project_id.present?
 
     # Don't bother updating if we know the project was updated recently.
     return if recent_update?
@@ -369,7 +369,7 @@ class Event < ApplicationRecord
       .where('last_activity_at <= ?', RESET_PROJECT_ACTIVITY_INTERVAL.ago)
       .touch_all(:last_activity_at, time: created_at)
 
-    Gitlab::InactiveProjectsDeletionWarningTracker.new(project.id).reset
+    Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).reset
   end
 
   def authored_by?(user)

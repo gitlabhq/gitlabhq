@@ -12,7 +12,7 @@ RSpec.describe CustomerRelations::Contacts::CreateService, feature_category: :se
     subject(:response) { described_class.new(group: group, current_user: user, params: params).execute }
 
     context 'when user does not have permission' do
-      let_it_be(:group) { create(:group, :crm_enabled) }
+      let_it_be(:group) { create(:group) }
 
       before_all do
         group.add_reporter(user)
@@ -25,7 +25,7 @@ RSpec.describe CustomerRelations::Contacts::CreateService, feature_category: :se
     end
 
     context 'when user has permission' do
-      let_it_be(:group) { create(:group, :crm_enabled) }
+      let_it_be(:group) { create(:group) }
 
       before_all do
         group.add_developer(user)

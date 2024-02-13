@@ -3,13 +3,16 @@ stage: Secure
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
 
-# DAST proxy-based analyzer **(ULTIMATE ALL)**
+# DAST proxy-based analyzer (deprecated)
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 WARNING:
-Proxy-based DAST is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966).
-We plan to [remove support for Proxy-based DAST](../../../update/deprecations.md#proxy-based-dast-deprecated). Migrate to [Browser-based DAST](browser_based.md)
-to continue analyzing your projects for security findings via dynamic analysis.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and will be removed in 17.0. Use [browser-based DAST](browser_based.md) instead. This change is a breaking change.
 
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
@@ -19,8 +22,9 @@ see the [DAST browser-based analyzer](browser_based.md).
 For a video walkthrough, see [How to set up Dynamic Application Security Testing (DAST) with GitLab](https://youtu.be/EiFE1QrUQfk?si=6rpgwgUpalw3ByiV).
 
 WARNING:
-Do not run DAST scans against a production server. Not only can it perform *any* function that
-a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.
+Do not run DAST scans against a production server. Not only can it perform *any* function that a
+user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
+modification, or loss of production data. Only run DAST scans against a test server.
 
 The analyzer uses the [Software Security Project Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) to scan in two different ways:
 
@@ -98,7 +102,8 @@ To include the DAST template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    To use the DAST stable template:
 
@@ -206,7 +211,7 @@ URLs to scan can be specified by either of the following methods:
 
 ##### Use `DAST_PATHS_FILE` CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258825) in GitLab 13.6.
 
 To define the URLs to scan in a file, create a plain text file with one path per line.
 
@@ -235,7 +240,7 @@ variables:
 
 ##### Use `DAST_PATHS` CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214120) in GitLab 13.4.
 
 To specify the paths to scan in a CI/CD variable, add a comma-separated list of the paths to the `DAST_PATHS`
 variable. You can only scan paths of a single host.
@@ -317,7 +322,7 @@ quotes (`"`), otherwise they are interpreted as numeric values.
 
 #### Hide sensitive information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 HTTP request and response headers may contain sensitive information, including cookies and
 authorization credentials. By default, the following headers are masked:
@@ -333,7 +338,7 @@ headers whose values you want masked. For details on how to mask headers, see
 
 #### Use Mutual TLS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299596) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299596) in GitLab 14.8.
 
 Mutual TLS allows a target application server to verify that requests are from a known source. Browser-based scans do not support Mutual TLS.
 
@@ -368,8 +373,8 @@ including a large number of false positives.
 | `DAST_ADVERTISE_SCAN`                           | boolean       | Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. |
 | `DAST_AGGREGATE_VULNERABILITIES`                | boolean       | Vulnerability aggregation is set to `true` by default. To disable this feature and see each vulnerability individually set to `false`. |
 | `DAST_ALLOWED_HOSTS`                            | Comma-separated list of strings | Hostnames included in this variable are considered in scope when crawled. By default the `DAST_WEBSITE` hostname is included in the allowed hosts list. Headers set using `DAST_REQUEST_HEADERS` are added to every request made to these hostnames. Example, `site.com,another.com`. |
-| `DAST_API_HOST_OVERRIDE` <sup>1</sup>           | string        | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/index.md#available-cicd-variables). |
-| `DAST_API_SPECIFICATION` <sup>1</sup>           | URL or string | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/index.md#available-cicd-variables). |
+| `DAST_API_HOST_OVERRIDE` <sup>1</sup>           | string        | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/configuration/variables.md). |
+| `DAST_API_SPECIFICATION` <sup>1</sup>           | URL or string | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 16.0. Replaced by [DAST API scan](../dast_api/configuration/variables.md). |
 | `DAST_AUTH_EXCLUDE_URLS`                        | URLs          | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289959)** in GitLab 14.0. Replaced by `DAST_EXCLUDE_URLS`. The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. |
 | `DAST_AUTO_UPDATE_ADDONS`                       | boolean       | ZAP add-ons are pinned to specific versions in the DAST Docker image. Set to `true` to download the latest versions when the scan starts. Default: `false`. |
 | `DAST_DEBUG` <sup>1</sup>                       | boolean       | Enable debug message output. Default: `false`. |
@@ -485,3 +490,5 @@ future.
 ### `unable to get local issuer certificate` when trying to validate a site profile
 
 The use of self-signed certificates is not supported and may cause the job to fail with an error message: `unable to get local issuer certificate`. For more information, see [issue 416670](https://gitlab.com/gitlab-org/gitlab/-/issues/416670).
+
+<!--- end_remove -->

@@ -36,7 +36,7 @@ RSpec.describe 'Merge requests > User merges immediately', :js, feature_category
     it 'enables merge immediately' do
       wait_for_requests
 
-      page.within '[data-testid="ready_to_merge_state"]' do
+      within_testid('ready_to_merge_state') do
         find('.gl-new-dropdown-toggle').click
 
         Sidekiq::Testing.fake! do
@@ -44,7 +44,7 @@ RSpec.describe 'Merge requests > User merges immediately', :js, feature_category
         end
       end
 
-      expect(find('[data-testid="merging-state"]')).to have_content('Merging!')
+      expect(find_by_testid('merging-state')).to have_content('Merging!')
 
       wait_for_requests
     end

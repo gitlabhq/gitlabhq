@@ -2,7 +2,6 @@ import { GlModal, GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
-import { sprintf } from '~/locale';
 import SecurityPatchUpgradeAlertModal from '~/gitlab_version_check/components/security_patch_upgrade_alert_modal.vue';
 import * as utils from '~/gitlab_version_check/utils';
 import {
@@ -16,7 +15,6 @@ describe('SecurityPatchUpgradeAlertModal', () => {
   let wrapper;
   let trackingSpy;
   const hideMock = jest.fn();
-  const { i18n } = SecurityPatchUpgradeAlertModal;
 
   const defaultProps = {
     currentVersion: '11.1.1',
@@ -72,14 +70,12 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     it('renders the modal title correctly', () => {
-      expect(findGlModalTitle().text()).toBe(i18n.modalTitle);
+      expect(findGlModalTitle().text()).toBe('Important notice - Critical security release');
     });
 
     it('renders modal body without suggested versions', () => {
       expect(findGlModalBody().text()).toBe(
-        sprintf(i18n.modalBodyNoStableVersions, {
-          currentVersion: defaultProps.currentVersion,
-        }),
+        `You are currently on version ${defaultProps.currentVersion}! We strongly recommend upgrading your GitLab installation immediately.`,
       );
     });
 
@@ -99,7 +95,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     describe('Learn more link', () => {
       it('renders with correct text and link', () => {
-        expect(findGlLink().text()).toBe(i18n.learnMore);
+        expect(findGlLink().text()).toBe('Learn more about this critical security release.');
         expect(findGlLink().attributes('href')).toBe(ABOUT_RELEASES_PAGE);
       });
 
@@ -112,7 +108,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     describe('Remind me button', () => {
       it('renders with correct text', () => {
-        expect(findGlRemindButton().text()).toBe(i18n.secondaryButtonText);
+        expect(findGlRemindButton().text()).toBe('Remind me again in 3 days');
       });
 
       it(`tracks click ${TRACKING_LABELS.REMIND_ME_BTN} when clicked`, async () => {
@@ -137,7 +133,7 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     describe('Upgrade button', () => {
       it('renders with correct text and link', () => {
-        expect(findGlUpgradeButton().text()).toBe(i18n.primaryButtonText);
+        expect(findGlUpgradeButton().text()).toBe('Upgrade now');
         expect(findGlUpgradeButton().attributes('href')).toBe(UPGRADE_DOCS_URL);
       });
 
@@ -165,10 +161,11 @@ describe('SecurityPatchUpgradeAlertModal', () => {
 
     it('renders modal body with suggested versions', () => {
       expect(findGlModalBody().text()).toBe(
-        sprintf(i18n.modalBodyStableVersions, {
-          currentVersion: defaultProps.currentVersion,
-          latestStableVersions: latestStableVersions.join(', '),
-        }),
+        `You are currently on version ${
+          defaultProps.currentVersion
+        }! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: ${latestStableVersions.join(
+          ', ',
+        )}.`,
       );
     });
   });
@@ -181,7 +178,53 @@ describe('SecurityPatchUpgradeAlertModal', () => {
     });
 
     it('renders modal details', () => {
-      expect(findGlModalDetails().text()).toBe(sprintf(i18n.modalDetails, { details }));
+      expect(findGlModalDetails().text()).toBe(details);
+    });
+  });
+
+  describe('template with latestStableVersionOfMinor', () => {
+    describe('when value is null', () => {
+      const latestStableVersionOfMinor = null;
+
+      beforeEach(() => {
+        createComponent({ latestStableVersionOfMinor });
+      });
+
+      it('does not render the additional text', () => {
+        expect(findGlModalBody().text()).not.toContain(
+          `Additionally, there is an available stable patch for your current GitLab minor version: ${latestStableVersionOfMinor}`,
+        );
+      });
+    });
+
+    describe('when value is already included in latestStableVersions', () => {
+      const latestStableVersionOfMinor = '11.1.2';
+      const latestStableVersions = ['11.3.1', '11.2.1', '11.1.2'];
+
+      beforeEach(() => {
+        createComponent({ latestStableVersionOfMinor, latestStableVersions });
+      });
+
+      it('does not render the additional text', () => {
+        expect(findGlModalBody().text()).not.toContain(
+          `Additionally, there is an available stable patch for your current GitLab minor version: ${latestStableVersionOfMinor}`,
+        );
+      });
+    });
+
+    describe('when value is not already included in latestStableVersions', () => {
+      const latestStableVersionOfMinor = '11.1.2';
+      const latestStableVersions = ['11.4.1', '11.3.1', '11.2.1'];
+
+      beforeEach(() => {
+        createComponent({ latestStableVersionOfMinor, latestStableVersions });
+      });
+
+      it('does render the additional text', () => {
+        expect(findGlModalBody().text()).toContain(
+          `Additionally, there is an available stable patch for your current GitLab minor version: ${latestStableVersionOfMinor}`,
+        );
+      });
     });
   });
 

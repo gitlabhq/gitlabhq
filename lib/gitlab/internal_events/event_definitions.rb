@@ -13,16 +13,20 @@ module Gitlab
           nil
         end
 
-        def unique_property(event_name)
-          unique_value = events[event_name]&.to_s
+        def unique_properties(event_name)
+          unique_values = events.fetch(event_name, [])
 
-          return unless unique_value
+          unique_values.filter_map do |unique_value|
+            next unless unique_value # legacy events include `nil` unique_value
 
-          unless VALID_UNIQUE_VALUES.include?(unique_value)
-            raise(InvalidMetricConfiguration, "Invalid unique value '#{unique_value}' for #{event_name}")
+            unique_value = unique_value.to_s
+
+            unless VALID_UNIQUE_VALUES.include?(unique_value)
+              raise(InvalidMetricConfiguration, "Invalid unique value '#{unique_value}' for #{event_name}")
+            end
+
+            unique_value.split('.').first.to_sym
           end
-
-          unique_value.split('.').first.to_sym
         end
 
         def known_event?(event_name)
@@ -52,17 +56,12 @@ module Gitlab
         end
 
         def process_events(all_events, metric_events)
-          metric_events.each do |event_name, event_unique_attribute|
-            unless all_events[event_name]
-              all_events[event_name] = event_unique_attribute
-              next
-            end
+          metric_events.each do |event_name, event_unique_property|
+            all_events[event_name] ||= []
 
-            next if event_unique_attribute.nil? || event_unique_attribute == all_events[event_name]
+            next if all_events[event_name].include?(event_unique_property)
 
-            raise InvalidMetricConfiguration,
-              "The same event cannot have several unique properties defined. " \
-              "Event: #{event_name}, unique values: #{event_unique_attribute}, #{all_events[event_name]}"
+            all_events[event_name] << event_unique_property
           end
         end
       end

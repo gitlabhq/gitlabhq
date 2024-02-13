@@ -262,16 +262,6 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
       it { is_expected.to be_nil }
     end
 
-    context 'when sms_send_wait_time feature flag is disabled' do
-      let_it_be(:record) { create(:phone_number_validation, sms_send_count: 1) }
-
-      before do
-        stub_feature_flags(sms_send_wait_time: false)
-      end
-
-      it { is_expected.to be_nil }
-    end
-
     where(:attempt_number, :expected_delay) do
       2 | 1.minute
       3 | 3.minutes

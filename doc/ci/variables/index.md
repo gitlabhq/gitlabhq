@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD variables **(FREE ALL)**
+# GitLab CI/CD variables
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 CI/CD variables are a type of environment variable. You can use them to:
 
@@ -169,7 +173,7 @@ To add a group variable:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
    - **Type**: `Variable` (default) or [`File`](#use-file-type-cicd-variables).
-   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable). **(PREMIUM ALL)**
+   - **Environment scope** Optional. `All`, or specific [environments](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
    - **Protect variable** Optional. If selected, the variable is only available
      in pipelines that run on protected branches or tags.
    - **Mask variable** Optional. If selected, the variable's **Value** is masked
@@ -180,7 +184,11 @@ The group variables that are available in a project are listed in the project's
 **Settings > CI/CD > Variables** section. Variables from [subgroups](../../user/group/subgroups/index.md)
 are recursively inherited.
 
-### For an instance **(FREE SELF)**
+### For an instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14108) in GitLab 13.0.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299879) in GitLab 13.11.
@@ -248,7 +256,7 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 
 ### Mask a CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330650) in GitLab 13.12, the `~` character can be used in masked variables.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330650) in GitLab 13.12, the `~` character can be used in masked variables.
 
 WARNING:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
@@ -299,10 +307,7 @@ You can configure a project, group, or instance CI/CD variable to be available
 only to pipelines that run on [protected branches](../../user/project/protected_branches.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Merged results pipelines](../pipelines/merged_results_pipelines.md), which run on a
-temporary merge commit, not a branch or tag, do not have access to these variables.
-[Merge request pipelines](../pipelines/merge_request_pipelines.md), which do not use
-a temporary merge commit, can access these variables if the branch is a protected branch.
+[Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md) do not have access to these variables.
 
 Prerequisites:
 
@@ -618,7 +623,7 @@ job:
 
 ### Prevent CI/CD variable expansion
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
 
 Expanded variables treat values with the `$` character as a reference to another variable.
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,
@@ -638,7 +643,7 @@ To disable variable expansion for the variable:
 
 ## CI/CD variable precedence
 
-> Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+> - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
 
 You can use CI/CD variables with the same name in different places, but the values
 can overwrite each other. The type of variable and where they are defined determines
@@ -696,7 +701,7 @@ can cause the pipeline to behave unexpectedly.
 
 ### Restrict who can override variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
 
 You can limit the ability to override variables to only users with the Maintainer role.
 When other users try to run a pipeline with overridden variables, they receive the

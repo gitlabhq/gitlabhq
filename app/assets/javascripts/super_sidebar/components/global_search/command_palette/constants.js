@@ -60,3 +60,17 @@ export const GROUP_TITLES = {
 };
 
 export const MAX_ROWS = 20;
+
+export const OVERLAY_CHANGE_CONTEXT = s__('GlobalSearch|Change context %{kbdStart}↵%{kbdEnd}');
+export const OVERLAY_SEARCH = s__('GlobalSearch|Search %{kbdStart}↵%{kbdEnd}');
+export const OVERLAY_CREATE_IN_SHELL_UI = s__(
+  'GlobalSearch|Create in %{namespace} %{kbdStart}↵%{kbdEnd}',
+);
+
+export const OVERLAY_PROFILE = s__('GlobalSearch|Go to profile %{kbdStart}↵%{kbdEnd}');
+
+export const OVERLAY_PROJECT = s__('GlobalSearch|Go to project %{kbdStart}↵%{kbdEnd}');
+
+export const OVERLAY_FILE = s__('GlobalSearch|Go to file %{kbdStart}↵%{kbdEnd}');
+
+export const OVERLAY_GOTO = s__('GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}');

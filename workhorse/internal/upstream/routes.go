@@ -47,7 +47,6 @@ type routeOptions struct {
 
 const (
 	apiPattern           = `^/api/`
-	ciAPIPattern         = `^/ci/api/`
 	gitProjectPattern    = `^/.+\.git/`
 	geoGitProjectPattern = `^/[^-].+\.git/` // Prevent matching routes like /-/push_from_secondary
 	projectPattern       = `^/([^/]+/){1,}[^/]+/`
@@ -220,9 +219,9 @@ func configureRoutes(u *upstream) {
 
 	preparer := upload.NewObjectStoragePreparer(u.Config)
 	requestBodyUploader := upload.RequestBody(api, signingProxy, preparer)
-	mimeMultipartUploader := upload.Multipart(api, signingProxy, preparer)
+	mimeMultipartUploader := upload.Multipart(api, signingProxy, preparer, &u.Config)
 
-	tempfileMultipartProxy := upload.FixedPreAuthMultipart(api, proxy, preparer)
+	tempfileMultipartProxy := upload.FixedPreAuthMultipart(api, proxy, preparer, &u.Config)
 	ciAPIProxyQueue := queueing.QueueRequests("ci_api_job_requests", tempfileMultipartProxy, u.APILimit, u.APIQueueLimit, u.APIQueueTimeout, prometheus.DefaultRegisterer)
 	ciAPILongPolling := builds.RegisterHandler(ciAPIProxyQueue, u.watchKeyHandler, u.APICILongPollingDuration)
 
@@ -245,8 +244,7 @@ func configureRoutes(u *upstream) {
 		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, requestBodyUploader, withMatcher(isContentType("application/octet-stream"))),
 
 		// CI Artifacts
-		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer))),
-		u.route("POST", ciAPIPattern+`v1/builds/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer))),
+		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer, &u.Config))),
 
 		// ActionCable websocket
 		u.wsRoute(`^/-/cable\z`, cableProxy),
@@ -260,7 +258,6 @@ func configureRoutes(u *upstream) {
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("", apiPattern+`v4/jobs/request\z`, ciAPILongPolling),
-		u.route("", ciAPIPattern+`v1/builds/register.json\z`, ciAPILongPolling),
 
 		// Not all API endpoints support encoded project IDs
 		// (e.g. `group%2Fproject`), but for the sake of consistency we
@@ -351,7 +348,6 @@ func configureRoutes(u *upstream) {
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),
-		u.route("", ciAPIPattern, proxy),
 
 		// Serve assets
 		u.route(

@@ -381,4 +381,14 @@ RSpec.describe API::API, feature_category: :system_access do
       )
     end
   end
+
+  describe 'Grape::Exceptions::Base handler' do
+    it 'returns 400 on JSON parse errors' do
+      post api('/projects'),
+        params: '{"test":"random_\$escaped/symbols\;here"}',
+        headers: { 'content-type' => 'application/json' }
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+    end
+  end
 end

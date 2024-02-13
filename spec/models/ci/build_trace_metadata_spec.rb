@@ -169,11 +169,11 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     let(:metadata) { create(:ci_build_trace_metadata, build: new_build) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns the same partition id as the one that build has' do
-      expect(metadata.partition_id).to eq(ci_testing_partition_id)
+      expect(metadata.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

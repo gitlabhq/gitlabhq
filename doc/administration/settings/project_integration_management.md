@@ -4,10 +4,14 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integration administration **(FREE SELF)**
+# Project integration administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
-This page contains information about administering project integrations for self-managed instances. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
+This page contains administrator documentation for project integrations. For user documentation, see [Project integrations](../../user/project/integrations/index.md).
 
 Project integrations can be configured and enabled by project administrators. As a GitLab instance
 administrator, you can set default configuration parameters for a given integration that all projects
@@ -79,7 +83,7 @@ Resetting an instance-level default setting removes the integration from all pro
 
 ### View projects that use custom settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218252) in GitLab 14.2.
 
 Prerequisites:
 

@@ -12,4 +12,10 @@ RSpec.describe Deployments::DeploymentPresenter do
       expect(presenter.tags).to eq([{ name: 'test', path: 'tags/test' }])
     end
   end
+
+  describe '#ref_path' do
+    it do
+      expect(presenter.ref_path).to eq("/#{deployment.project.full_path}/-/tree/#{deployment.ref}")
+    end
+  end
 end

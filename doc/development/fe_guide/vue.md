@@ -265,7 +265,7 @@ This enables us to integrate Vue components without changing how the form submit
     = form.text_field :email, class: 'form-control gl-form-input', data: { js_name: 'email' }
 ```
 
-> The `js_name` data attribute is used as the key in the resulting JavaScript object.
+The `js_name` data attribute is used as the key in the resulting JavaScript object.
 For example `= form.text_field :email, data: { js_name: 'fooBarBaz' }` would be translated
 to `{ fooBarBaz: { name: 'user[email]', id: 'user_email', value: '' } }`
 
@@ -349,6 +349,31 @@ return new Vue({
     });
   },
 });
+```
+
+#### Accessing abilities
+
+After pushing an ability to the [frontend](../permissions/authorizations.md#frontend),
+use the [`provide` and `inject`](https://v2.vuejs.org/v2/api/#provide-inject)
+mechanisms in Vue to make abilities available to any descendant components
+in a Vue application. The `glAbilties` object is already provided in
+`commons/vue.js`, so only the mixin is required to use the flags:
+
+```javascript
+// An arbitrary descendant component
+
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
+
+export default {
+  // ...
+  mixins: [glAbilitiesMixin()],
+  // ...
+  created() {
+    if (this.glAbilities.someAbility) {
+      // ...
+    }
+  },
+}
 ```
 
 #### Accessing feature flags
@@ -641,7 +666,7 @@ export default {
 }
 ```
 
-#### Prefix function and file names with `use`
+#### Prefix function and filenames with `use`
 
 Common naming convention in Vue for composables is to prefix them with `use` and then refer to composable functionality briefly (`useBreakpoints`, `useGeolocation` etc). The same rule applies to the `.js` files containing composables - they should start with `use_` even if the file contains more than one composable.
 
@@ -918,7 +943,7 @@ You should only apply to be a Vue.js expert when your own merge requests and you
 
 ## Vue 2 -> Vue 3 Migration
 
-> This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
+> - This section is added temporarily to support the efforts to migrate the codebase from Vue 2.x to Vue 3.x
 
 We recommend to minimize adding certain features to the codebase to prevent increasing
 the tech debt for the eventual migration:

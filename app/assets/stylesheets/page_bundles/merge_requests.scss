@@ -257,17 +257,13 @@ $tabs-holder-z-index: 250;
   $diff-file-header-top: 11px;
 
   position: sticky;
-  top: calc(#{$calc-application-header-height} + #{$mr-tabs-height} + #{$diff-file-header-top});
+  top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   // height calc is fully delegated to the tree_list_height.vue component
   height: 100%;
   min-height: 300px;
 
   .drag-handle {
     bottom: 16px;
-  }
-
-  &.is-sidebar-moved {
-    top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} + #{$diff-file-header-top});
   }
 }
 
@@ -331,7 +327,7 @@ $tabs-holder-z-index: 250;
       width: 100% !important;
       // avoid sticky elements overlap header and other elements
       z-index: 1;
-      @include gl-mb-3;
+      margin-bottom: $gl-spacing-scale-3;
     }
 
     .tree-list-holder {
@@ -585,10 +581,6 @@ $tabs-holder-z-index: 250;
 
   .mr-report {
     padding: 0;
-
-    > .media {
-      padding: $gl-padding;
-    }
   }
 
   form {
@@ -816,8 +808,9 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-body-ready-merge {
   @include media-breakpoint-down(sm) {
-    @include gl-py-3;
-    @include gl-pr-3;
+    padding-top: $gl-spacing-scale-3;
+    padding-bottom: $gl-spacing-scale-3;
+    padding-right: $gl-spacing-scale-3;
   }
 }
 
@@ -844,8 +837,8 @@ $tabs-holder-z-index: 250;
   container-type: inline-size;
   // Adds a fix for the view app dropdown not showing up
   // correctly.
-  @include gl-relative;
-  @include gl-z-index-1;
+  position: relative;
+  z-index: 1;
 
   &.clickable:hover {
     background-color: var(--gray-50, $gray-50);
@@ -854,14 +847,14 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-extension-icon::before {
-  @include gl-content-empty;
-  @include gl-absolute;
-  @include gl-left-50p;
-  @include gl-top-half;
-  @include gl-opacity-3;
-  @include gl-border-solid;
-  @include gl-border-4;
-  @include gl-rounded-full;
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  opacity: 0.3;
+  border-style: solid;
+  border-width: $gl-border-size-4;
+  border-radius: $gl-border-radius-full;
 
   width: 24px;
   height: 24px;
@@ -869,11 +862,11 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-extension-icon::after {
-  @include gl-content-empty;
-  @include gl-absolute;
-  @include gl-rounded-full;
-  @include gl-left-50p;
-  @include gl-top-half;
+  content: '';
+  position: absolute;
+  border-radius: $gl-border-radius-full;
+  left: 50%;
+  top: 50%;
 
   width: 16px;
   height: 16px;
@@ -940,6 +933,7 @@ $tabs-holder-z-index: 250;
 
   .mr-version-dropdown,
   .mr-version-compare-dropdown {
+    top: 1px;
     margin: 0 $gl-spacing-scale-1;
 
     .dropdown-toggle.gl-button {
@@ -987,7 +981,8 @@ $tabs-holder-z-index: 250;
   .detail-page-description,
   .merge-request-tabs-container {
     &.is-merge-request {
-      @include gl-mx-auto;
+      margin-left: auto;
+      margin-right: auto;
       max-width: $fixed-layout-width - ($container-margin-xl * 2);
     }
   }
@@ -995,9 +990,11 @@ $tabs-holder-z-index: 250;
 
 .container-fluid.diffs-container-limited {
   .flash-container {
-    @include gl-mx-auto;
-    @include gl-max-w-container-xl;
-    @include gl-px-5;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: $container-xl;
+    padding-left: $gl-spacing-scale-5;
+    padding-right: $gl-spacing-scale-5;
   }
 }
 
@@ -1032,26 +1029,26 @@ $tabs-holder-z-index: 250;
 .mr-widget-merge-details {
   *,
   & {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
   }
 
   p {
-    @include gl-font-base;
+    font-size: $gl-font-size;
   }
 
   li:not(:last-child) {
-    @include gl-mb-2;
+    margin-bottom: $gl-spacing-scale-2;
   }
 }
 
 .mr-ready-merge-related-links a,
 .mr-widget-merge-details a,
 .mr-widget-author {
-  @include gl-text-decoration-underline;
+  text-decoration: underline;
 
   &:hover,
   &:focus {
-    @include gl-text-decoration-none;
+    text-decoration: none;
   }
 }
 
@@ -1062,37 +1059,37 @@ $tabs-holder-z-index: 250;
 
 .merge-request-notification-toggle {
   .gl-toggle {
-    @include gl-ml-auto;
+    margin-left: auto;
   }
 
   .gl-toggle-label {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
 .mr-widget-status-icon-level-1::before {
-  @include gl-content-empty;
-  @include gl-absolute;
-  @include gl-left-0;
-  @include gl-top-0;
-  @include gl-bottom-0;
-  @include gl-right-0;
-  @include gl-opacity-3;
-  @include gl-rounded-full;
-  @include gl-border-solid;
-  @include gl-border-4;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0.3;
+  border-radius: $gl-border-radius-full;
+  border-style: solid;
+  border-width: $gl-border-size-4;
 }
 
 .mr-widget-status-icon-level-1::after {
-  @include gl-content-empty;
-  @include gl-absolute;
-  @include gl-rounded-full;
-  @include gl-border-solid;
-  @include gl-border-4;
-  @include gl-left-2;
-  @include gl-right-2;
-  @include gl-top-2;
-  @include gl-bottom-2;
+  content: '';
+  position: absolute;
+  border-radius: $gl-border-radius-full;
+  border-style: solid;
+  border-width: $gl-border-size-4;
+  left: $gl-spacing-scale-2;
+  right: $gl-spacing-scale-2;
+  top: $gl-spacing-scale-2;
+  bottom: $gl-spacing-scale-2;
 }
 
 .memory-graph-container {
@@ -1195,10 +1192,10 @@ $tabs-holder-z-index: 250;
 }
 
 .diff-file-discussions-wrapper {
-  @include gl-w-full;
+  width: 100%;
 
   .diff-discussions:not(:first-child) >.notes {
-    @include gl-pt-0;
+    padding-top: 0;
   }
 
   .note-discussion {
@@ -1206,12 +1203,12 @@ $tabs-holder-z-index: 250;
   }
 
   .discussion-collapsible {
-    @include gl-m-0;
-    @include gl-border-l-0;
-    @include gl-border-r-0;
-    @include gl-border-b-0;
-    @include gl-rounded-top-left-none;
-    @include gl-rounded-top-right-none;
+    margin: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 

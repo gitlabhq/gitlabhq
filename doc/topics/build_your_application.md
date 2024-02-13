@@ -5,7 +5,11 @@ description: Runners, jobs, pipelines, variables.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use CI/CD to build your application **(FREE ALL)**
+# Use CI/CD to build your application
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use CI/CD to generate your application.
 

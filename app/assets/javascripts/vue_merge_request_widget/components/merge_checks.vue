@@ -3,7 +3,10 @@ import { GlSkeletonLoader } from '@gitlab/ui';
 import { __, n__, sprintf } from '~/locale';
 import { TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { COMPONENTS } from '~/vue_merge_request_widget/components/checks/constants';
+import {
+  COMPONENTS,
+  FAILURE_REASONS,
+} from '~/vue_merge_request_widget/components/checks/constants';
 import mergeRequestQueryVariablesMixin from '../mixins/merge_request_query_variables';
 import mergeChecksQuery from '../queries/merge_checks.query.graphql';
 import mergeChecksSubscription from '../queries/merge_checks.subscription.graphql';
@@ -67,6 +70,7 @@ export default {
   data() {
     return {
       collapsed: true,
+      collapsedCount: 0,
       state: {},
     };
   },
@@ -98,16 +102,43 @@ export default {
     checks() {
       return this.state.mergeabilityChecks || [];
     },
+    sortedChecks() {
+      const order = ['FAILED', 'SUCCESS'];
+
+      return [...this.checks]
+        .filter((s) => {
+          if (this.isStatusInactive(s) || !this.hasMessage(s)) return false;
+          if (this.collapsedCount > 0 && this.collapsed) return false;
+
+          return this.collapsed ? this.isStatusFailed(s) : true;
+        })
+        .sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
+    },
     failedChecks() {
-      return this.checks.filter((c) => c.status.toLowerCase() === 'failed');
+      return this.checks.filter((c) => this.isStatusFailed(c));
+    },
+    showChecks() {
+      if (this.collapsed && this.collapsedCount > 0) return false;
+
+      return this.failedChecks.length > 0 || !this.collapsed;
     },
   },
   methods: {
     toggleCollapsed() {
       this.collapsed = !this.collapsed;
+      this.collapsedCount += 1;
     },
     checkComponent(check) {
       return COMPONENTS[check.identifier.toLowerCase()] || COMPONENTS.default;
+    },
+    hasMessage(check) {
+      return Boolean(FAILURE_REASONS[check.identifier.toLowerCase()]);
+    },
+    isStatusInactive(check) {
+      return check.status === 'INACTIVE';
+    },
+    isStatusFailed(check) {
+      return check.status === 'FAILED';
     },
   },
 };
@@ -136,21 +167,22 @@ export default {
       </template>
     </state-container>
     <div
-      v-if="!collapsed"
+      v-if="showChecks"
       class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-relative gl-bg-gray-10"
       data-testid="merge-checks-full"
     >
       <div class="gl-px-5">
         <component
           :is="checkComponent(check)"
-          v-for="(check, index) in checks"
+          v-for="(check, index) in sortedChecks"
           :key="index"
           :class="{
-            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== checks.length - 1,
+            'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== sortedChecks.length - 1,
           }"
           :check="check"
           :mr="mr"
           :service="service"
+          data-testid="merge-check"
         />
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:relation) { 'labels' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }
@@ -27,7 +27,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
     )
   end
 
-  subject { described_class.new(tracker, relation) }
+  subject(:export_status) { described_class.new(tracker, relation) }
 
   before do
     allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
@@ -40,7 +40,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       let(:status) { BulkImports::Export::STARTED }
 
       it 'returns true' do
-        expect(subject.started?).to eq(true)
+        expect(export_status.started?).to eq(true)
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       let(:status) { BulkImports::Export::FAILED }
 
       it 'returns false' do
-        expect(subject.started?).to eq(false)
+        expect(export_status.started?).to eq(false)
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns false' do
-        expect(subject.started?).to eq(false)
+        expect(export_status.started?).to eq(false)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns false' do
-        expect(subject.started?).to eq(false)
+        expect(export_status.started?).to eq(false)
       end
     end
   end
@@ -82,7 +82,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       let(:status) { BulkImports::Export::FAILED }
 
       it 'returns true' do
-        expect(subject.failed?).to eq(true)
+        expect(export_status.failed?).to eq(true)
       end
     end
 
@@ -90,7 +90,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       let(:status) { BulkImports::Export::STARTED }
 
       it 'returns false' do
-        expect(subject.failed?).to eq(false)
+        expect(export_status.failed?).to eq(false)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns false' do
-        expect(subject.failed?).to eq(false)
+        expect(export_status.failed?).to eq(false)
       end
     end
 
@@ -114,7 +114,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns true' do
-        expect(subject.failed?).to eq(true)
+        expect(export_status.failed?).to eq(true)
       end
     end
   end
@@ -123,7 +123,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
     context 'when export status is present' do
       let(:status) { 'any status' }
 
-      it { expect(subject.empty?).to eq(false) }
+      it { expect(export_status.empty?).to eq(false) }
     end
 
     context 'when export status is not present' do
@@ -132,7 +132,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns true' do
-        expect(subject.empty?).to eq(true)
+        expect(export_status.empty?).to eq(true)
       end
     end
 
@@ -142,7 +142,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns true' do
-        expect(subject.empty?).to eq(true)
+        expect(export_status.empty?).to eq(true)
       end
     end
 
@@ -156,7 +156,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'returns false' do
-        expect(subject.empty?).to eq(false)
+        expect(export_status.empty?).to eq(false)
       end
     end
   end
@@ -165,7 +165,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
     let(:status) { BulkImports::Export::FAILED }
 
     it 'returns error message' do
-      expect(subject.error).to eq('error!')
+      expect(export_status.error).to eq('error!')
     end
 
     context 'when something goes wrong during export status fetch' do
@@ -180,13 +180,13 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       it 'raises RetryPipelineError' do
         allow(exception).to receive(:retriable?).with(tracker).and_return(true)
 
-        expect { subject.failed? }.to raise_error(BulkImports::RetryPipelineError)
+        expect { export_status.failed? }.to raise_error(BulkImports::RetryPipelineError)
       end
 
       context 'when error is not retriable' do
         it 'returns exception class as error' do
-          expect(subject.error).to eq('Error!')
-          expect(subject.failed?).to eq(true)
+          expect(export_status.error).to eq('Error!')
+          expect(export_status.failed?).to eq(true)
         end
       end
 
@@ -196,8 +196,8 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
             allow(client).to receive(:get).once.and_raise(StandardError, 'Standard Error!')
           end
 
-          expect(subject.error).to eq('Standard Error!')
-          expect(subject.failed?).to eq(true)
+          expect(export_status.error).to eq('Standard Error!')
+          expect(export_status.failed?).to eq(true)
         end
       end
     end
@@ -211,13 +211,13 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
         let(:batched) { true }
 
         it 'returns true' do
-          expect(subject.batched?).to eq(true)
+          expect(export_status.batched?).to eq(true)
         end
       end
 
       context 'when export is not batched' do
         it 'returns false' do
-          expect(subject.batched?).to eq(false)
+          expect(export_status.batched?).to eq(false)
         end
       end
 
@@ -227,7 +227,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
         end
 
         it 'returns false' do
-          expect(subject.batched?).to eq(false)
+          expect(export_status.batched?).to eq(false)
         end
       end
     end
@@ -235,7 +235,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
     describe '#batches_count' do
       context 'when batches count is present' do
         it 'returns batches count' do
-          expect(subject.batches_count).to eq(1)
+          expect(export_status.batches_count).to eq(1)
         end
       end
 
@@ -245,7 +245,7 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
         end
 
         it 'returns 0' do
-          expect(subject.batches_count).to eq(0)
+          expect(export_status.batches_count).to eq(0)
         end
       end
     end
@@ -262,22 +262,22 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
 
         context 'when batch number is in range' do
           it 'returns batch information' do
-            expect(subject.batch(1)['relation']).to eq('labels')
-            expect(subject.batch(2)['relation']).to eq('milestones')
-            expect(subject.batch(3)).to eq(nil)
+            expect(export_status.batch(1)['relation']).to eq('labels')
+            expect(export_status.batch(2)['relation']).to eq('milestones')
+            expect(export_status.batch(3)).to eq(nil)
           end
         end
       end
 
       context 'when batch number is less than 1' do
         it 'raises error' do
-          expect { subject.batch(0) }.to raise_error(ArgumentError)
+          expect { export_status.batch(0) }.to raise_error(ArgumentError)
         end
       end
 
       context 'when export is not batched' do
         it 'returns nil' do
-          expect(subject.batch(1)).to eq(nil)
+          expect(export_status.batch(1)).to eq(nil)
         end
       end
     end
@@ -285,8 +285,8 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
 
   describe 'caching' do
     let(:cached_status) do
-      subject.send(:status)
-      subject.send(:status_from_cache)
+      export_status.send(:status)
+      export_status.send(:status_from_cache)
     end
 
     shared_examples 'does not result in a cached status' do
@@ -341,8 +341,8 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       let(:status) { BulkImports::Export::FAILED }
 
       it 'fetches the status from the remote' do
-        expect(subject).to receive(:status_from_remote).and_call_original
-        expect(subject.send(:status)).to include('status' => status)
+        expect(export_status).to receive(:status_from_remote).and_call_original
+        expect(export_status.send(:status)).to include('status' => status)
       end
     end
 
@@ -357,8 +357,8 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
       end
 
       it 'does not fetch the status from the remote' do
-        expect(subject).not_to receive(:status_from_remote)
-        expect(subject.send(:status)).to eq({ 'status' => 'mock status' })
+        expect(export_status).not_to receive(:status_from_remote)
+        expect(export_status.send(:status)).to eq({ 'status' => 'mock status' })
       end
 
       context 'with a different entity' do
@@ -367,8 +367,8 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
         end
 
         it 'fetches the status from the remote' do
-          expect(subject).to receive(:status_from_remote).and_call_original
-          expect(subject.send(:status)).to include('status' => status)
+          expect(export_status).to receive(:status_from_remote).and_call_original
+          expect(export_status.send(:status)).to include('status' => status)
         end
       end
 
@@ -383,9 +383,29 @@ RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, feature_cat
         end
 
         it 'fetches the status from the remote' do
-          expect(subject).to receive(:status_from_remote).and_call_original
-          expect(subject.send(:status)).to include('status' => status)
+          expect(export_status).to receive(:status_from_remote).and_call_original
+          expect(export_status.send(:status)).to include('status' => status)
         end
+      end
+    end
+  end
+
+  describe '#total_objects_count' do
+    context 'when status is present' do
+      let(:status) { BulkImports::Export::FINISHED }
+
+      it 'returns total objects count' do
+        expect(export_status.total_objects_count).to eq(1)
+      end
+    end
+
+    context 'when status is not present due to an error' do
+      let(:response_double) do
+        instance_double(HTTParty::Response, parsed_response: [])
+      end
+
+      it 'returns 0' do
+        expect(export_status.total_objects_count).to eq(0)
       end
     end
   end

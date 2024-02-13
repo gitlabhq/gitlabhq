@@ -1,0 +1,4 @@
+stages: # The expected value should be an array of strings or a nested array of strings up to 10 levels deep, not an array of integers 
+  - 1
+  - 2
+  - 3

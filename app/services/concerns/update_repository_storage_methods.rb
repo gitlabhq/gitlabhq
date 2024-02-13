@@ -28,10 +28,7 @@ module UpdateRepositoryStorageMethods
 
     unless same_filesystem?
       mirror_repositories
-
-      repository_storage_move.transaction do
-        mirror_object_pool(destination_storage_name)
-      end
+      mirror_object_pool(destination_storage_name)
     end
 
     repository_storage_move.finish_replication!

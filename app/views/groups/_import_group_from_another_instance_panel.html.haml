@@ -13,7 +13,7 @@
           = s_('GroupsNew|Importing groups by direct transfer is currently disabled.')
 
           - if current_user.admin?
-            - admin_link = link_to('', general_admin_application_settings_path(anchor: 'js-visibility-settings'))
+            - admin_link = link_to('', general_admin_application_settings_path(anchor: 'js-import-export-settings'))
 
             = safe_format(s_('GroupsNew|Please %{admin_link_start}enable it in the Admin settings%{admin_link_end}.'), tag_pair(admin_link, :admin_link_start, :admin_link_end))
           - else

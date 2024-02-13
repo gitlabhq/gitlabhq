@@ -66,3 +66,5 @@ module Projects
     end
   end
 end
+
+Projects::DetectRepositoryLanguagesService.prepend_mod_with('Projects::DetectRepositoryLanguagesService')

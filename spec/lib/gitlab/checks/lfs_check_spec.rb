@@ -31,18 +31,6 @@ RSpec.describe Gitlab::Checks::LfsCheck, feature_category: :source_code_manageme
         allow(project).to receive(:lfs_enabled?).and_return(true)
       end
 
-      context 'with lfs_check feature disabled' do
-        before do
-          stub_feature_flags(lfs_check: false)
-        end
-
-        it 'skips integrity check' do
-          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
-
-          subject.validate!
-        end
-      end
-
       context 'with deletion' do
         shared_examples 'a skipped integrity check' do
           it 'skips integrity check' do

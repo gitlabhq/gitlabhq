@@ -37,7 +37,6 @@ import { mockCreateImageNoteDiffResponse } from '../../mock_data/apollo_mock';
 jest.mock('~/alert');
 jest.mock('~/api.js');
 
-const focusInput = jest.fn();
 const mockCacheObject = {
   readQuery: jest.fn().mockReturnValue(mockProject),
   writeQuery: jest.fn(),
@@ -51,9 +50,6 @@ const mockPageLayoutElement = {
 };
 const DesignReplyForm = {
   template: '<div><textarea ref="textarea"></textarea></div>',
-  methods: {
-    focusInput,
-  },
 };
 const mockDesignNoDiscussions = {
   ...design,
@@ -217,22 +213,6 @@ describe('Design management design index page', () => {
 
     await nextTick();
     expect(findDesignReplyForm().exists()).toBe(true);
-  });
-
-  it('keeps new discussion form focused', () => {
-    createComponent(
-      { loading: false },
-      {
-        data: {
-          design,
-          annotationCoordinates,
-        },
-      },
-    );
-
-    findDesignPresentation().vm.$emit('openCommentForm', { x: 10, y: 10 });
-
-    expect(focusInput).toHaveBeenCalled();
   });
 
   it('sends a update and closes the form when mutation is completed', async () => {

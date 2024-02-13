@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab agent configuration **(PREMIUM ALL)**
+# GitLab agent configuration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
@@ -28,6 +32,8 @@ provided that the agent is properly configured for remote development.
 | [`network_policy`](#network_policy)                                                       | Firewall rules for workspaces.                                                                                                      |
 | [`default_resources_per_workspace_container`](#default_resources_per_workspace_container) | Default requests and limits for CPU and memory per workspace container.                                                             |
 | [`max_resources_per_workspace`](#max_resources_per_workspace)                             | Maximum requests and limits for CPU and memory per workspace.                                                                       |
+| [`workspaces_quota`](#workspaces_quota)                                                   | Maximum number of workspaces for the GitLab agent.                                                                                  |
+| [`workspaces_per_user_quota`](#workspaces_per_user_quota)                                 | Maximum number of workspaces per user.                                                                                              |
 
 NOTE:
 If a setting has an invalid value, it's not possible to update any setting until you fix that value.
@@ -112,7 +118,7 @@ The default value for `network_policy.enabled` is `true`.
 
 #### `network_policy.egress`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11629) in GitLab 16.7.
 
 Use this setting to define a list of IP CIDR ranges to allow as egress destinations from a workspace.
 
@@ -146,7 +152,7 @@ In this example, traffic from the workspace is allowed if:
 
 ### `default_resources_per_workspace_container`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
 
 Use this setting to define the default [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace container.
@@ -172,7 +178,7 @@ remote_development:
 
 ### `max_resources_per_workspace`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11625) in GitLab 16.8.
 
 Use this setting to define the maximum [requests and limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#requests-and-limits)
 for CPU and memory per workspace.
@@ -201,6 +207,52 @@ remote_development:
 
 The maximum resources you define must include any resources required for init containers
 to perform bootstrapping operations such as cloning the project repository.
+
+### `workspaces_quota`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+
+Use this setting to set the maximum number of workspaces for the GitLab agent.
+
+You cannot create new workspaces for an agent when:
+
+- The number of workspaces for the agent has reached the defined `workspaces_quota`.
+- `workspaces_quota` is set to `0`.
+
+This setting does not affect existing workspaces for the agent.
+
+The default value is `-1` (unlimited).
+Possible values are greater than or equal to `-1`.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  workspaces_quota: 10
+```
+
+### `workspaces_per_user_quota`
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11586) in GitLab 16.9.
+
+Use this setting to set the maximum number of workspaces per user.
+
+You cannot create new workspaces for a user when:
+
+- The number of workspaces for the user has reached the defined `workspaces_per_user_quota`.
+- `workspaces_per_user_quota` is set to `0`.
+
+This setting does not affect existing workspaces for the user.
+
+The default value is `-1` (unlimited).
+Possible values are greater than or equal to `-1`.
+
+**Example configuration:**
+
+```yaml
+remote_development:
+  workspaces_per_user_quota: 3
+```
 
 ## Configuring user access with remote development
 

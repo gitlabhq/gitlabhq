@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# List branch rules for a project **(FREE ALL)**
+# List branch rules for a project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
 
 This guide demonstrates how to use [GraphiQL explorer](getting_started.md#graphiql)
 to query for branch rules in a given project.

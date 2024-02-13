@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# System hooks **(FREE SELF)**
+# System hooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
 requests and are triggered on the following events:
@@ -55,7 +59,8 @@ To create a system hook:
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **System Hooks**.
 1. Select **Add new webhook**.
-1. Provide the **URL** and **Secret Token**.
+1. Enter the **URL**.
+1. Optional. Enter a [**Secret Token**](../user/project/integrations/webhooks.md#validate-payloads-by-using-a-secret-token).
 1. Select the checkbox next to each optional **Trigger** you want to enable.
 1. Select **Enable SSL verification**, if desired.
 1. Select **Add system hook**.

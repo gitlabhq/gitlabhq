@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting **(ULTIMATE ALL)**
+# Troubleshooting
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 The [logs](#read-the-logs) provide insight into what DAST is doing and expecting during the authentication process. For more detailed
 information, configure the [authentication report](#configure-the-authentication-report).

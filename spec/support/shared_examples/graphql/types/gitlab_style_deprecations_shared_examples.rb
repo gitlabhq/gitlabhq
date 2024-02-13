@@ -65,7 +65,7 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
     deprecable = subject(alpha: { milestone: '1.10' })
 
     expect(deprecable.deprecation_reason).to eq(
-      'This feature is an Experiment. It can be changed or removed at any time. Introduced in 1.10.'
+      '**Status**: Experiment. Introduced in 1.10.'
     )
   end
 

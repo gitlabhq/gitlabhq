@@ -1,0 +1,4 @@
+development:
+  config_command: '/opt/redis-config.sh'
+  url: 'redis://redis.example.com'
+  password: 'dummy-password'

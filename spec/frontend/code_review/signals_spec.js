@@ -1,7 +1,8 @@
 import { start } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
-import { EVT_MR_PREPARED } from '~/diffs/constants';
+import { EVT_MR_PREPARED, EVT_MR_DIFF_GENERATED } from '~/diffs/constants';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 
 jest.mock('~/diffs/utils/merge_request');
 
@@ -151,6 +152,87 @@ describe('~/code_review', () => {
               expect(emitSpy).toHaveBeenCalledWith(EVT_MR_PREPARED);
             });
           });
+        });
+      });
+    });
+
+    describe('observeMergeRequestDiffGenerated', () => {
+      const callArgs = {};
+      const apollo = {};
+      let apolloSubscribeSpy;
+      let subscribeSpy;
+      let nextSpy;
+      let observable;
+      let emitSpy;
+      let behavior;
+
+      beforeEach(() => {
+        apolloSubscribeSpy = jest.fn();
+        subscribeSpy = jest.fn();
+        nextSpy = jest.fn();
+        observable = {
+          next: nextSpy,
+          subscribe: subscribeSpy.mockReturnValue(),
+        };
+        emitSpy = jest.spyOn(diffsEventHub, '$emit');
+        nextSpy.mockImplementation((data) => behavior?.(data));
+        subscribeSpy.mockImplementation((handler) => {
+          behavior = handler;
+        });
+
+        apolloSubscribeSpy.mockReturnValue(observable);
+
+        apollo.subscribe = apolloSubscribeSpy;
+
+        callArgs.signalBus = io;
+        callArgs.apolloClient = apollo;
+
+        getDerivedMergeRequestInformation.mockImplementationOnce(() => ({}));
+      });
+
+      it('does not subscribe if the feature flag mergeRequestDiffGeneratedSubscription is disabled', async () => {
+        await start(callArgs);
+
+        expect(apolloSubscribeSpy).not.toHaveBeenCalled();
+      });
+
+      describe('with mergeRequestDiffGeneratedSubscription feature flag enabled', () => {
+        beforeEach(() => {
+          setHTMLFixture('<div class="js-changes-tab-count" data-gid="1"></div>');
+
+          window.gon.features = {
+            mergeRequestDiffGeneratedSubscription: true,
+          };
+        });
+
+        afterEach(() => {
+          window.gon.features = {};
+          resetHTMLFixture();
+        });
+
+        it('does not subscribe if the page is not a merge request', async () => {
+          await start(callArgs);
+
+          expect(apolloSubscribeSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ variables: { issuableId: '1' } }),
+          );
+          expect(observable.subscribe).toHaveBeenCalled();
+        });
+
+        it('does not emit an event when mergeRequestDiffGenerated is null', async () => {
+          await start(callArgs);
+
+          observable.next({ data: { mergeRequestDiffGenerated: null } });
+
+          expect(emitSpy).not.toHaveBeenCalled();
+        });
+
+        it('emits an event', async () => {
+          await start(callArgs);
+
+          observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
+
+          expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, { totalCount: 1 });
         });
       });
     });

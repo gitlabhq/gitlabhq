@@ -12,7 +12,7 @@ This is a guide for how to get a Windows development virtual machine on Google C
 
 ## Why Windows in Google Cloud?
 
-Use of Microsoft Windows operating systems on company laptops is banned under the GitLab [Approved Operating Systems policy](https://about.gitlab.com/handbook/it/operating-systems/#windows).
+Use of Microsoft Windows operating systems on company laptops is banned under the GitLab [Approved Operating Systems policy](https://handbook.gitlab.com/handbook/business-technology/end-user-services/onboarding-access-requests/endpoint-management/jamf/#windows-laptops).
 
 This can make it difficult to develop features for the Windows platforms. Using GCP allows us to have a temporary Windows machine that can be removed once we're done with it.
 

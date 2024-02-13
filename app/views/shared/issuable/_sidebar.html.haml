@@ -2,30 +2,27 @@
   This should be removed when this sidebar is converted to Vue since assignee data is also available in the `issuable_sidebar` hash
 
 - issuable_type = issuable_sidebar[:type]
-- show_forwarding_email = !issuable_sidebar[:create_note_email].nil?
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
 - can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 - add_page_startup_api_call "#{issuable_sidebar[:issuable_json_path]}?serializer=sidebar_extras"
 - reviewers = local_assigns.fetch(:reviewers, nil)
 - in_group_context_with_iterations = @project.group.present? && issuable_sidebar[:supports_iterations]
 - is_merge_request = issuable_type === 'merge_request'
-- moved_sidebar_enabled = moved_mr_sidebar_enabled?
-- is_merge_request_with_flag = is_merge_request && moved_sidebar_enabled
 - add_page_specific_style 'page_bundles/labels'
 
-%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request_with_flag)} #{'right-sidebar-merge-requests' if is_merge_request_with_flag}", 'aria-live' => 'polite', 'aria-label': issuable_type }
-  .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request_with_flag}" }
-    .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if is_merge_request_with_flag}" }
-      = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle float-right js-sidebar-toggle has-tooltip gl-shadow-none! #{'gl-display-block' if moved_sidebar_enabled} #{'gl-mt-2' if notifications_todos_buttons_enabled?}" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
+%aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request)} #{'right-sidebar-merge-requests' if is_merge_request}", 'aria-live' => 'polite', 'aria-label': issuable_type }
+  .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request}" }
+    .issuable-sidebar-header{ class: "#{'gl-pb-2! gl-md-display-flex gl-justify-content-end gl-lg-display-none!' if is_merge_request}" }
+      = render Pajamas::ButtonComponent.new(button_options: { class: "gutter-toggle gl-float-right js-sidebar-toggle has-tooltip gl-shadow-none! gl-display-block #{'gl-mt-2' if notifications_todos_buttons_enabled?}" , type: 'button', 'aria-label' => _('Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }) do
         = sidebar_gutter_toggle_icon
       - if signed_in
-        - if !is_merge_request_with_flag
+        - if !is_merge_request
           .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
         - if notifications_todos_buttons_enabled?
           .js-sidebar-subscriptions-widget-root
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { testid: 'assignee-block-container' } }
+      .block.assignee{ class: "#{'gl-mt-3' if !signed_in}", data: { testid: 'assignee-block-container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]
@@ -79,28 +76,8 @@
 
         = render_if_exists 'shared/issuable/sidebar_cve_id_request', issuable_sidebar: issuable_sidebar
 
-      - if !moved_sidebar_enabled
-        .js-sidebar-lock-root
-        - if signed_in
-          .js-sidebar-subscriptions-widget-root
-
       .js-sidebar-participants-widget-root
 
-      - if !moved_sidebar_enabled
-        .block.with-sub-blocks
-          .js-sidebar-reference-widget-root
-          - if is_merge_request && !moved_sidebar_enabled
-            .sub-block.js-sidebar-source-branch
-              .sidebar-collapsed-icon.js-dont-change-state
-                = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'js-source-branch-copy')
-              .gl-display-flex.gl-align-items-center.gl-justify-content-space-between.gl-mb-2.hide-collapsed
-                %span.gl-overflow-hidden.gl-text-overflow-ellipsis.gl-white-space-nowrap
-                  = _('Source branch: %{source_branch_open}%{source_branch}%{source_branch_close}').html_safe % { source_branch_open: "<span class='gl-font-monospace' data-testid='ref-name' title='#{html_escape(source_branch)}'>".html_safe, source_branch_close: "</span>".html_safe, source_branch: html_escape(source_branch) }
-                = clipboard_button(text: source_branch, title: _('Copy branch name'), placement: "left", boundary: 'viewport', class: 'js-source-branch-copy')
-
-      - if show_forwarding_email && !moved_sidebar_enabled
-        .block
-          .js-sidebar-copy-email-root
       - if issuable_sidebar.dig(:current_user, :can_move)
         .block
           .js-sidebar-move-issue-block{ data: { project_full_path: issuable_sidebar[:project_full_path], issue_iid: issuable_sidebar[:iid] } }

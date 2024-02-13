@@ -71,67 +71,6 @@ module ButtonHelper
     end
   end
 
-  # Output a "Copy to Clipboard" button
-  # Note: This is being replaced by a Pajamas-compliant helper that renders the button
-  # via ::Pajamas::ButtonComponent. Please use clipboard_button instead.
-  #
-  # data  - Data attributes passed to `content_tag` (default: {}):
-  #         :text   - Text to copy (optional)
-  #         :gfm    - GitLab Flavored Markdown to copy, if different from `text` (optional)
-  #         :target - Selector for target element to copy from (optional)
-  #
-  # Examples:
-  #
-  #   # Define the clipboard's text
-  #   clipboard_button(text: "Foo")
-  #   # => "<button class='...' data-clipboard-text='Foo'>...</button>"
-  #
-  #   # Define the target element
-  #   clipboard_button(target: "div#foo")
-  #   # => "<button class='...' data-clipboard-target='div#foo'>...</button>"
-  #
-  # See http://clipboardjs.com/#usage
-  def deprecated_clipboard_button(data = {})
-    css_class = data.delete(:class) || 'btn-clipboard gl-button btn-default-tertiary btn-icon btn-sm'
-    title = data.delete(:title) || _('Copy')
-    button_text = data[:button_text] || nil
-    hide_tooltip = data[:hide_tooltip] || false
-    hide_button_icon = data[:hide_button_icon] || false
-    item_prop = data[:itemprop] || nil
-
-    # This supports code in app/assets/javascripts/copy_to_clipboard.js that
-    # works around ClipboardJS limitations to allow the context-specific copy/pasting of plain text or GFM.
-    if text = data.delete(:text)
-      data[:clipboard_text] =
-        if gfm = data.delete(:gfm)
-          { text: text, gfm: gfm }
-        else
-          text
-        end
-    end
-
-    target = data.delete(:target)
-    data[:clipboard_target] = target if target
-
-    unless hide_tooltip
-      data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
-    end
-
-    button_attributes = {
-      class: "btn #{css_class}",
-      data: data,
-      type: :button,
-      title: title,
-      aria: { label: title, live: 'polite' },
-      itemprop: item_prop
-    }
-
-    content_tag :button, button_attributes do
-      concat(sprite_icon('copy-to-clipboard', css_class: ['gl-icon', *('gl-button-icon' unless button_text.nil?)].join(' '))) unless hide_button_icon
-      concat(content_tag(:span, button_text, class: 'gl-button-text')) unless button_text.nil?
-    end
-  end
-
   def http_clone_button(container, append_link: true)
     protocol = gitlab_config.protocol.upcase
     dropdown_description = http_dropdown_description(protocol)

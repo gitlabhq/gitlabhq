@@ -374,6 +374,7 @@ Flycheck
 focusable
 Forgerock
 formatters
+Fortanix
 Fortinet
 FQDNs
 FreshBooks

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::Bugzilla, feature_category: :integrations do
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     context 'when integration is active' do
       before do

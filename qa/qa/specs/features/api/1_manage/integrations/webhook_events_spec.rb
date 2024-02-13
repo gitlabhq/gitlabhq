@@ -106,7 +106,10 @@ module QA
         end
 
         it 'hook is auto-disabled',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595' do
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/389595', quarantine: {
+            type: :flaky,
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/431976'
+          } do
           Resource::ProjectWebHook.setup(fail_mock, session: session, issues: true) do |webhook, smocker|
             hook_trigger_times.times do
               create(:issue, project: webhook.project)

@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request reviews **(FREE ALL)**
+# Merge request reviews
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Merge requests](../index.md) are the primary method of making changes to files in a
 GitLab project. [Create and submit a merge request](../creating_merge_requests.md)
@@ -21,7 +25,11 @@ review merge requests in Visual Studio Code.
 For an overview, see [Merge request review](https://www.youtube.com/watch?v=2MayfXKpU08&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED&index=183).
 <!-- Video published on 2023-04-29 -->
 
-## GitLab Duo Suggested Reviewers **(ULTIMATE SAAS)**
+## GitLab Duo Suggested Reviewers
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
@@ -98,9 +106,13 @@ the merge request, use the `/assign_reviewer @user`
 
 The merge request is added to the user's review requests.
 
-#### From multiple users **(PREMIUM ALL)**
+#### From multiple users
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 To assign multiple reviewers to a merge request, in a text area in
 the merge request, use the `/assign_reviewer @user`
@@ -169,7 +181,7 @@ You can submit your completed review in multiple ways:
   In the modal window, you can supply a **Summary comment**, approve the merge request, and
   include quick actions:
 
-  ![Finish review with comment](img/mr_summary_comment_v16_6.png)
+  ![Finish review with comment](img/mr_summary_comment_v16_9.png)
 
 When you submit your review, GitLab:
 
@@ -177,7 +189,10 @@ When you submit your review, GitLab:
 - Sends a single email to every notifiable user of the merge request, with your
   review comments attached. Replying to this email creates a new comment on the merge request.
 - Perform any quick actions you added to your review comments.
-- Optional. Approves the merge request.
+- Optional. Shows whether you have also approved or requested changes:
+  - **Comment**: Leave general feedback without explicit approval.
+  - **Approve**: Leave feedback and approve the changes.
+  - **Request changes**: Leave feedback that should be addressed before merging.
 
 ### Resolve or unresolve thread with a comment
 
@@ -200,7 +215,11 @@ If you have a review in progress, you can also add a comment from the **Overview
 
 ![New thread](img/mr_review_new_comment_v16_6.png)
 
-### Approval Rule information for Reviewers **(PREMIUM ALL)**
+### Approval Rule information for Reviewers
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When editing the **Reviewers** field in a new or existing merge request, GitLab
 displays the name of the matching [approval rule](../approvals/rules.md)
@@ -266,7 +285,11 @@ To update multiple project merge requests at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update all**.
 
-## Bulk edit merge requests at the group level **(PREMIUM ALL)**
+## Bulk edit merge requests at the group level
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Users with at least the Developer role can manage merge requests.
 
@@ -302,145 +325,6 @@ These features are associated with merge requests:
   Revert changes from any commit from a merge request.
 - [Keyboard shortcuts](../../../shortcuts.md#merge-requests):
   Access and modify specific parts of a merge request with keyboard commands.
-
-## Troubleshooting
-
-Sometimes things don't go as expected in a merge request. Here are some
-troubleshooting steps.
-
-### Merge request cannot retrieve the pipeline status
-
-This can occur if Sidekiq doesn't pick up the changes fast enough.
-
-#### Sidekiq
-
-Sidekiq didn't process the CI state change fast enough. Wait a few
-seconds and the status should update automatically.
-
-#### Bug
-
-Merge request pipeline statuses can't be retrieved when the following occurs:
-
-1. A merge request is created
-1. The merge request is closed
-1. Changes are made in the project
-1. The merge request is reopened
-
-To enable the pipeline status to be properly retrieved, close and reopen the
-merge request again.
-
-## Tips
-
-Here are some tips to help you be more efficient with merge requests in
-the command line.
-
-### Copy the branch name for local checkout
-
-The merge request sidebar contains the branch reference for the source branch
-used to contribute changes for this merge request.
-
-To copy the branch reference into your clipboard, select the **Copy branch name** button
-(**{copy-to-clipboard}**) in the right sidebar. Use it to check out the branch locally
-from the command line by running `git checkout <branch-name>`.
-
-### Checkout merge requests locally through the `head` ref
-
-> - Deleting `head` refs 14 days after a merge request closes or merges [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130098) in GitLab 16.4.
-> - Deleting `head` refs 14 days after a merge request closes or merges [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/336070) in GitLab 16.6. Feature flag `merge_request_refs_cleanup` removed.
-
-A merge request contains all the history from a repository, plus the additional
-commits added to the branch associated with the merge request. Here's a few
-ways to check out a merge request locally.
-
-You can check out a merge request locally even if the source
-project is a fork (even a private fork) of the target project.
-
-This relies on the merge request `head` ref (`refs/merge-requests/:iid/head`)
-that is available for each merge request. It allows checking out a merge
-request by using its ID instead of its branch.
-
-In GitLab 16.6 and later, the merge request `head` ref is deleted 14 days after
-a merge request is closed or merged. The merge request is then no longer available
-for local checkout from the merge request `head` ref anymore. The merge request
-can still be re-opened. If the merge request's branch
-exists, you can still check out the branch, as it isn't affected.
-
-#### Checkout locally by adding a Git alias
-
-Add the following alias to your `~/.gitconfig`:
-
-```plaintext
-[alias]
-    mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
-```
-
-Now you can check out a particular merge request from any repository and any
-remote. For example, to check out the merge request with ID 5 as shown in GitLab
-from the `origin` remote, do:
-
-```shell
-git mr origin 5
-```
-
-This fetches the merge request into a local `mr-origin-5` branch and check
-it out.
-
-#### Checkout locally by modifying `.git/config` for a given repository
-
-Locate the section for your GitLab remote in the `.git/config` file. It looks
-like this:
-
-```plaintext
-[remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-foss.git
-  fetch = +refs/heads/*:refs/remotes/origin/*
-```
-
-You can open the file with:
-
-```shell
-git config -e
-```
-
-Now add the following line to the above section:
-
-```plaintext
-fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
-```
-
-In the end, it should look like this:
-
-```plaintext
-[remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-foss.git
-  fetch = +refs/heads/*:refs/remotes/origin/*
-  fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
-```
-
-Now you can fetch all the merge requests:
-
-```shell
-git fetch origin
-
-...
-From https://gitlab.com/gitlab-org/gitlab-foss.git
- * [new ref]         refs/merge-requests/1/head -> origin/merge-requests/1
- * [new ref]         refs/merge-requests/2/head -> origin/merge-requests/2
-...
-```
-
-And to check out a particular merge request:
-
-```shell
-git checkout origin/merge-requests/1
-```
-
-All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
-
-## Cached merge request count
-
-In a group, the sidebar displays the total count of open merge requests. This value is cached if it's greater than
-than 1000. The cached value is rounded to thousands (or millions) and updated every 24 hours.
 
 ## Related topics
 

@@ -17,7 +17,7 @@
     = render 'projects/find_file_link'
     = render 'shared/web_ide_button', blob: nil, css_classes: 'gl-w-full gl-sm-w-auto'
 
-    .project-code-holder.d-none.d-sm-inline-block
+    .project-code-holder.gl-display-none.gl-sm-display-inline-block
       = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref
 
   .project-code-holder.gl-display-flex.gl-gap-3{ class: 'gl-sm-display-none!' }

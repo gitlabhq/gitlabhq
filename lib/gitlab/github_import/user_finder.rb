@@ -130,20 +130,32 @@ module Gitlab
         email = read_email_from_cache(username)
 
         if email.blank? && !email_fetched_for_project?(username)
-          # If an ETAG is available, make an API call with the ETAG.
-          # Only make a rate-limited API call if the ETAG is not available and the email is nil.
-          etag = read_etag_from_cache(username)
-          email = fetch_email_from_github(username, etag: etag) || email
+          feature_flag_in_lock(lease_key, ttl: 3.minutes, sleep_sec: 1.second, retries: 30) do |retried|
+            # when retried, check the cache again as the other process that had the lease may have fetched the email
+            if retried
+              email = read_email_from_cache(username)
 
-          cache_email!(username, email)
-          cache_etag!(username) if email.blank? && etag.nil?
+              # early return if the other process fetched a non-empty email. If the email is empty, we'll attempt to
+              # fetch it again in the lines below, but using the ETAG cached by the other process which won't count to
+              # the rate limit.
+              next email if email.present?
+            end
 
-          # If a non-blank email is cached, we don't need the ETAG or project check caches.
-          # Otherwise, indicate that the project has been checked.
-          if email.present?
-            clear_caches!(username)
-          else
-            set_project_as_checked!(username)
+            # If an ETAG is available, make an API call with the ETAG.
+            # Only make a rate-limited API call if the ETAG is not available and the email is nil.
+            etag = read_etag_from_cache(username)
+            email = fetch_email_from_github(username, etag: etag) || email
+
+            cache_email!(username, email)
+            cache_etag!(username) if email.blank? && etag.nil?
+
+            # If a non-blank email is cached, we don't need the ETAG or project check caches.
+            # Otherwise, indicate that the project has been checked.
+            if email.present?
+              clear_caches!(username)
+            else
+              set_project_as_checked!(username)
+            end
           end
         end
 
@@ -240,20 +252,11 @@ module Gitlab
       end
 
       def fetch_email_from_github(username, etag: nil)
-        in_lock(lease_key, ttl: 3.minutes, sleep_sec: 1.second, retries: 30) do |retried|
-          # when retried, check the cache again as the other process that had the lease may have fetched the email
-          if retried
-            email = read_email_from_cache(username)
+        log(EMAIL_API_CALL_LOGGING_MESSAGE[etag.present?], username: username)
 
-            next email if email.present?
-          end
-
-          log(EMAIL_API_CALL_LOGGING_MESSAGE[etag.present?], username: username)
-
-          # Only make a rate-limited API call if the ETAG is not available })
-          user = client.user(username, { headers: { 'If-None-Match' => etag }.compact })
-          user[:email] || '' if user
-        end
+        # Only make a rate-limited API call if the ETAG is not available })
+        user = client.user(username, { headers: { 'If-None-Match' => etag }.compact })
+        user[:email] || '' if user
       end
 
       # Caches the email associated to the username
@@ -302,6 +305,14 @@ module Gitlab
           username: username,
           message: message
         )
+      end
+
+      def feature_flag_in_lock(lease_key, ttl: 3.minutes, sleep_sec: 1.second, retries: 30)
+        return yield(false) if Feature.disabled?(:github_import_lock_user_finder, project.creator)
+
+        in_lock(lease_key, ttl: ttl, sleep_sec: sleep_sec, retries: retries) do |retried|
+          yield(retried)
+        end
       end
     end
   end

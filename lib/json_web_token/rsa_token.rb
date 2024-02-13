@@ -2,6 +2,8 @@
 
 module JSONWebToken
   class RSAToken < Token
+    ALGORITHM = 'RS256'
+
     attr_reader :key_file
 
     def initialize(key_file)
@@ -14,7 +16,11 @@ module JSONWebToken
         kid: kid,
         typ: 'JWT'
       }
-      JWT.encode(payload, key, 'RS256', headers)
+      JWT.encode(payload, key, ALGORITHM, headers)
+    end
+
+    def self.decode(token, key)
+      JWT.decode(token, key, true, { algorithm: ALGORITHM })
     end
 
     private

@@ -40,9 +40,7 @@ func TestFailedCloneNoGitaly(t *testing.T) {
 
 	// Prepare test server and backend
 	ts := testAuthServer(t, nil, nil, 200, authBody)
-	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	// Do the git clone
 	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), t.TempDir())
@@ -92,10 +90,8 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 			apiResponse.ShowAllRefs = tc.showAllRefs
 
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			gitProtocol := "fake git protocol"
 			resource := "/gitlab-org/gitlab-test.git/info/refs?service=" + tc.gitRpc
@@ -144,10 +140,8 @@ func TestGetInfoRefsProxiedToGitalyInterruptedStream(t *testing.T) {
 	apiResponse.GitalyServer.Address = gitalyAddress
 
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resource := "/gitlab-org/gitlab-test.git/info/refs?service=git-upload-pack"
 	resp, err := http.Get(ws.URL + resource)
@@ -172,10 +166,8 @@ func TestGetInfoRefsRouting(t *testing.T) {
 	apiResponse := gitOkBody(t)
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, url.Values{"service": {"git-receive-pack"}}, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
 		method string
@@ -240,10 +232,8 @@ func TestPostReceivePackProxiedToGitalySuccessfully(t *testing.T) {
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	apiResponse.GitConfigOptions = []string{"git-config-hello=world"}
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	gitProtocol := "fake Git protocol"
 	resource := "/gitlab-org/gitlab-test.git/git-receive-pack"
@@ -285,10 +275,8 @@ func TestPostReceivePackProxiedToGitalyInterrupted(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resource := "/gitlab-org/gitlab-test.git/git-receive-pack"
 	resp, err := http.Post(
@@ -318,10 +306,8 @@ func TestPostReceivePackRouting(t *testing.T) {
 	apiResponse := gitOkBody(t)
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
 		method      string
@@ -395,10 +381,8 @@ func TestPostUploadPackProxiedToGitalySuccessfully(t *testing.T) {
 
 			apiResponse.GitalyServer.Address = "unix:" + socketPath
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
 
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			gitProtocol := "fake git protocol"
 			resource := "/gitlab-org/gitlab-test.git/git-upload-pack"
@@ -462,10 +446,8 @@ func TestPostUploadPackProxiedToGitalyInterrupted(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resource := "/gitlab-org/gitlab-test.git/git-upload-pack"
 	resp, err := http.Post(
@@ -495,10 +477,8 @@ func TestPostUploadPackRouting(t *testing.T) {
 
 	apiResponse.GitalyServer.Address = "unix:" + socketPath
 	ts := testAuthServer(t, nil, nil, 200, apiResponse)
-	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
 		method      string
@@ -560,7 +540,7 @@ func TestGetDiffProxiedToGitalySuccessfully(t *testing.T) {
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 	expectedBody := testhelper.GitalyGetDiffResponseMock
 
-	resp, body, err := doSendDataRequest("/something", "git-diff", jsonParams)
+	resp, body, err := doSendDataRequest(t, "/something", "git-diff", jsonParams)
 	require.NoError(t, err)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -580,7 +560,7 @@ func TestGetPatchProxiedToGitalySuccessfully(t *testing.T) {
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 	expectedBody := testhelper.GitalyGetPatchResponseMock
 
-	resp, body, err := doSendDataRequest("/something", "git-format-patch", jsonParams)
+	resp, body, err := doSendDataRequest(t, "/something", "git-format-patch", jsonParams)
 	require.NoError(t, err)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -598,7 +578,7 @@ func TestGetBlobProxiedToGitalyInterruptedStream(t *testing.T) {
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GetBlobRequest":{"repository":{"storage_name":"%s","relative_path":"%s"},"oid":"%s","limit":-1}}`,
 		gitalyAddress, repoStorage, repoRelativePath, oid)
 
-	resp, _, err := doSendDataRequest("/something", "git-blob", jsonParams)
+	resp, _, err := doSendDataRequest(t, "/something", "git-blob", jsonParams)
 	require.NoError(t, err)
 
 	// This causes the server stream to be interrupted instead of consumed entirely.
@@ -636,7 +616,7 @@ func TestGetArchiveProxiedToGitalySuccessfully(t *testing.T) {
 	for _, tc := range testCases {
 		jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GitalyRepository":{"storage_name":"%s","relative_path":"%s"},"ArchivePath":"%s","ArchivePrefix":"%s","CommitId":"%s","DisableCache":%v}`,
 			gitalyAddress, repoStorage, repoRelativePath, tc.archivePath, archivePrefix, oid, tc.cacheDisabled)
-		resp, body, err := doSendDataRequest("/archive.tar.gz", "git-archive", jsonParams)
+		resp, body, err := doSendDataRequest(t, "/archive.tar.gz", "git-archive", jsonParams)
 		require.NoError(t, err)
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -667,7 +647,7 @@ func TestGetArchiveProxiedToGitalyInterruptedStream(t *testing.T) {
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"GitalyRepository":{"storage_name":"%s","relative_path":"%s"},"ArchivePath":"%s","ArchivePrefix":"%s","CommitId":"%s"}`,
 		gitalyAddress, repoStorage, repoRelativePath, path.Join(t.TempDir(), archivePath), archivePrefix, oid)
 
-	resp, _, err := doSendDataRequest("/archive.tar.gz", "git-archive", jsonParams)
+	resp, _, err := doSendDataRequest(t, "/archive.tar.gz", "git-archive", jsonParams)
 	require.NoError(t, err)
 
 	// This causes the server stream to be interrupted instead of consumed entirely.
@@ -694,7 +674,7 @@ func TestGetDiffProxiedToGitalyInterruptedStream(t *testing.T) {
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawDiffRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 
-	resp, _, err := doSendDataRequest("/something", "git-diff", jsonParams)
+	resp, _, err := doSendDataRequest(t, "/something", "git-diff", jsonParams)
 	require.NoError(t, err)
 
 	// This causes the server stream to be interrupted instead of consumed entirely.
@@ -721,7 +701,7 @@ func TestGetPatchProxiedToGitalyInterruptedStream(t *testing.T) {
 	jsonParams := fmt.Sprintf(`{"GitalyServer":{"Address":"%s","Token":""},"RawPatchRequest":"{\"repository\":{\"storageName\":\"%s\",\"relativePath\":\"%s\"},\"rightCommitId\":\"%s\",\"leftCommitId\":\"%s\"}"}`,
 		gitalyAddress, repoStorage, repoRelativePath, leftCommit, rightCommit)
 
-	resp, _, err := doSendDataRequest("/something", "git-format-patch", jsonParams)
+	resp, _, err := doSendDataRequest(t, "/something", "git-format-patch", jsonParams)
 	require.NoError(t, err)
 
 	// This causes the server stream to be interrupted instead of consumed entirely.
@@ -745,7 +725,7 @@ func TestGetSnapshotProxiedToGitalySuccessfully(t *testing.T) {
 	archiveLength := len(expectedBody)
 
 	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
-	resp, body, err := doSendDataRequest("/api/v4/projects/:id/snapshot", "git-snapshot", params)
+	resp, body, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	require.NoError(t, err)
 
 	require.Equal(t, http.StatusOK, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -765,7 +745,7 @@ func TestGetSnapshotProxiedToGitalyInterruptedStream(t *testing.T) {
 	gitalyAddress := "unix:" + socketPath
 
 	params := buildGetSnapshotParams(gitalyAddress, buildPbRepo("default", "foo/bar.git"))
-	resp, _, err := doSendDataRequest("/api/v4/projects/:id/snapshot", "git-snapshot", params)
+	resp, _, err := doSendDataRequest(t, "/api/v4/projects/:id/snapshot", "git-snapshot", params)
 	require.NoError(t, err)
 
 	// This causes the server stream to be interrupted instead of consumed entirely.

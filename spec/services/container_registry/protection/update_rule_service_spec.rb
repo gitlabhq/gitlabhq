@@ -72,11 +72,15 @@ RSpec.describe ContainerRegistry::Protection::UpdateRuleService, '#execute', fea
   context 'with invalid params' do
     using RSpec::Parameterized::TableSyntax
 
+    # rubocop:disable Layout/LineLength -- Avoid formatting to keep one-line table syntax
     where(:params_invalid, :message_expected) do
-      { repository_path_pattern: '' }               | [/Repository path pattern can't be blank/]
-      { delete_protected_up_to_access_level: 1000 } | /not a valid delete_protected_up_to_access_level/
-      { push_protected_up_to_access_level: 1000 }   | /not a valid push_protected_up_to_access_level/
+      { repository_path_pattern: '' }                                                    | include("Repository path pattern can't be blank")
+      { repository_path_pattern: 'wrong-project-scope/repository-path' }                 | include("Repository path pattern should start with the project's full path")
+      lazy { { repository_path_pattern: "#{project.full_path}/path-invalid-chars-#@" } } | include("Repository path pattern should be a valid container repository path with optional wildcard characters.")
+      { delete_protected_up_to_access_level: 1000 }                                      | /not a valid delete_protected_up_to_access_level/
+      { push_protected_up_to_access_level: 1000 }                                        | /not a valid push_protected_up_to_access_level/
     end
+    # rubocop:enable Layout/LineLength
 
     with_them do
       let(:params) do

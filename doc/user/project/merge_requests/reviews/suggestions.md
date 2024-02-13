@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Suggest changes **(FREE ALL)**
+# Suggest changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
 The merge request author (or other users with the appropriate role) can apply any or
@@ -171,7 +175,7 @@ For example, to customize the commit message to output
 
 ## Batch suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326168) custom commit messages for batch suggestions in GitLab 14.4.
 
 Prerequisites:
 

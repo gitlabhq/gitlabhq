@@ -20,7 +20,7 @@ a level that is difficult to manage.
 Test heuristics can help solve this problem. They concisely address many of the common ways bugs
 manifest themselves in our code. When designing our tests, take time to review known test heuristics to inform
 our test design. We can find some helpful heuristics documented in the Handbook in the
-[Test Engineering](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/#test-heuristics) section.
+[Test Engineering](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/#test-heuristics) section.
 
 ## RSpec
 
@@ -94,7 +94,7 @@ This ensures that the application code is eagerly loaded before the test executi
 
 ### Ruby warnings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47767) in GitLab 13.7.
 
 We've enabled [deprecation warnings](https://ruby-doc.org/core-2.7.4/Warning.html)
 by default when running specs. Making these warnings more visible to developers
@@ -110,7 +110,7 @@ SILENCE_DEPRECATIONS=1 bin/rspec spec/models/project_spec.rb
 
 ### Test order
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93137) in GitLab 15.4.
 
 All new spec files are run in [random order](https://gitlab.com/gitlab-org/gitlab/-/issues/337399)
 to surface flaky tests that are dependent on test order.
@@ -542,9 +542,9 @@ results are available, and not just the first failure.
 
 #### In case you're stuck
 
-We have a `backend_testing_performance` [domain expertise](https://about.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
+We have a `backend_testing_performance` [domain expertise](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#domain-experts) to list people that could help refactor slow backend specs.
 
-To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://about.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
+To find people that could help, search for `backend testing performance` on the [Engineering Projects page](https://handbook.gitlab.com/handbook/engineering/projects/), or look directly in [the `www-gitlab-org` project](https://gitlab.com/search?group_id=6543&nav_source=navbar&project_id=7764&repository_ref=master&scope=blobs&search=backend_testing_performance+path%3Adata%2Fteam_members%2F*&search_code=true).
 
 ### Feature category metadata
 
@@ -1290,7 +1290,7 @@ variables example can be used, but avoid this if at all possible.
 
 #### Elasticsearch specs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61171) in GitLab 14.0.
 
 Specs that require Elasticsearch must be marked with the `:elastic` trait. This
 creates and deletes indices before and after all examples.
@@ -1313,7 +1313,7 @@ Most tests for Elasticsearch logic relate to:
 There are some exceptions, such as checking for structural changes rather than individual records in an index.
 
 NOTE:
-Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../../../ee/development/redis.md#gitlabrediscachesharedstatequeues).
+Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch traits dynamically use the `:clean_gitlab_redis_shared_state` trait.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
 

@@ -89,13 +89,39 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         create(:ci_build, pipeline: pipeline)
       end
     end
+
+    context 'when running after_commit callbacks' do
+      it 'tracks creation event' do
+        build = FactoryBot.build(:ci_build, user: create(:user))
+
+        expect(Gitlab::InternalEvents).to receive(:track_event).with(
+          'create_ci_build',
+          project: build.project,
+          user: build.user
+        )
+
+        build.save!
+      end
+
+      context 'with FF track_ci_build_created_internal_event disabled' do
+        before do
+          stub_feature_flags(track_ci_build_created_internal_event: false)
+        end
+
+        it 'does not track creation event' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+          create(:ci_build)
+        end
+      end
+    end
   end
 
   describe 'status' do
     context 'when transitioning to any state from running' do
       it 'removes runner_session' do
         %w[success drop cancel].each do |event|
-          build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
+          build = create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
 
           build.fire_events!(event)
 
@@ -5038,6 +5064,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it { is_expected.to eq false }
     end
+
+    context 'when metadata does not exist' do
+      before do
+        build.metadata.destroy!
+      end
+
+      it { is_expected.to eq false }
+    end
   end
 
   describe '#drop_with_exit_code!' do
@@ -5567,14 +5601,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:ci_build) { create(:ci_build, pipeline: new_pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'includes partition_id in the token prefix' do
       prefix = ci_build.token.match(/^glcbt-([\h]+)_/)
       partition_prefix = prefix[1].to_i(16)
 
-      expect(partition_prefix).to eq(ci_testing_partition_id)
+      expect(partition_prefix).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 
@@ -5614,6 +5648,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when ID tokens are defined' do
       context 'on create' do
         let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
+
+        before do
+          allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
+        end
 
         it 'tracks RedisHLL event with user_id' do
           expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
@@ -5664,6 +5702,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'on create' do
         it 'does not track RedisHLL event' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+            .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
 
           ci_build.save!
         end
@@ -5734,46 +5773,9 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     # 100.to_s(16) -> 64
     let(:ci_build) { described_class.new(partition_id: 100) }
 
-    shared_examples 'partition prefix' do
-      it 'is prefixed with partition_id' do
-        ci_build.ensure_token
-        expect(ci_build.token).to match(/^64_[\w-]{20}$/)
-      end
-    end
-
-    shared_examples 'static and partition prefixes' do
-      it 'is prefixed with static string and partition id' do
-        ci_build.ensure_token
-        expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
-      end
-    end
-
-    it_behaves_like 'static and partition prefixes'
-
-    context 'when feature flag is globally disabled' do
-      before do
-        stub_feature_flags(prefix_ci_build_tokens: false)
-      end
-
-      it_behaves_like 'partition prefix'
-
-      context 'when enabled for a different project' do
-        let_it_be(:project) { create(:project) }
-
-        before do
-          stub_feature_flags(prefix_ci_build_tokens: project)
-        end
-
-        it_behaves_like 'partition prefix'
-      end
-
-      context 'when enabled for the project' do
-        before do
-          stub_feature_flags(prefix_ci_build_tokens: ci_build.project)
-        end
-
-        it_behaves_like 'static and partition prefixes'
-      end
+    it 'is prefixed with static string and partition id' do
+      ci_build.ensure_token
+      expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
     end
   end
 end

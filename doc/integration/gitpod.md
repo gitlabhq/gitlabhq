@@ -4,7 +4,11 @@ group: IDE
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Gitpod **(FREE ALL)**
+# Gitpod
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/228893) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/258206) in GitLab 13.8
@@ -37,7 +41,11 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 1. Under **Preferences**, locate the **Integrations** section.
 1. Select the **Enable Gitpod integration** checkbox and select **Save changes**.
 
-## Configure a self-managed instance **(FREE SELF)**
+## Configure a self-managed instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 For self-managed GitLab instances, a GitLab administrator must:
 

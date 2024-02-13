@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SPDX license list import Rake task **(ULTIMATE SELF)**
+# SPDX license list import Rake task
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 GitLab provides a Rake task for uploading a fresh copy of the [SPDX license list](https://spdx.org/licenses/)
 to a GitLab instance. This list is needed for matching the names of [License approval policies](../user/compliance/license_approval_policies.md).

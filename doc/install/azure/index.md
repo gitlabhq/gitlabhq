@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: 'Learn how to spin up a pre-configured GitLab VM on Microsoft Azure.'
 ---
 
-# Install GitLab on Microsoft Azure **(FREE SELF)**
+# Install GitLab on Microsoft Azure
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 For users of the Microsoft Azure business cloud, GitLab has a pre-configured offering in
 the [Azure Marketplace](https://azuremarketplace.microsoft.com/en-us/marketplace/).

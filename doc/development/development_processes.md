@@ -57,14 +57,14 @@ In these cases, use the following workflow:
 1. Request a review and approval of an Engineering Manager (EM)
    or Staff Engineer who's responsible for the area in question:
 
-   - [Frontend](https://about.gitlab.com/handbook/engineering/frontend/)
-   - [Backend](https://about.gitlab.com/handbook/engineering/)
-   - [Database](https://about.gitlab.com/handbook/engineering/development/database/)
-   - [User Experience (UX)](https://about.gitlab.com/handbook/product/ux/)
-   - [Security](https://about.gitlab.com/handbook/security/)
-   - [Quality](https://about.gitlab.com/handbook/engineering/quality/)
-     - [Engineering Productivity](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/)
-   - [Infrastructure](https://about.gitlab.com/handbook/engineering/infrastructure/)
+   - [Frontend](https://handbook.gitlab.com/handbook/engineering/frontend/)
+   - [Backend](https://handbook.gitlab.com/handbook/engineering/)
+   - [Database](https://handbook.gitlab.com/handbook/engineering/development/database/)
+   - [User Experience (UX)](https://handbook.gitlab.com/handbook/product/ux/)
+   - [Security](https://handbook.gitlab.com/handbook/security/)
+   - [Quality](https://handbook.gitlab.com/handbook/engineering/quality/)
+     - [Engineering Productivity](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/)
+   - [Infrastructure](https://handbook.gitlab.com/handbook/engineering/infrastructure/)
 
    You can skip this step for MRs authored by EMs or Staff Engineers responsible
    for their area.
@@ -88,10 +88,10 @@ other than the MR author can merge.
 
 ### Reviewer values
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57293) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57293) in GitLab 14.1.
 
 As a reviewer or as a reviewee, make sure to familiarize yourself with
-the [reviewer values](https://about.gitlab.com/handbook/engineering/workflow/reviewer-values/) we strive for at GitLab.
+the [reviewer values](https://handbook.gitlab.com/handbook/engineering/workflow/reviewer-values/) we strive for at GitLab.
 
 Also, any doc content should follow the [Documentation Style Guide](documentation/index.md).
 

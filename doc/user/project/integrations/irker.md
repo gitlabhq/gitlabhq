@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# irker (IRC gateway) **(FREE ALL)**
+# irker (IRC gateway)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides a way to push update messages to an irker server. After you configure
 the integration, each push to a project triggers the integration to send data directly

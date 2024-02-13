@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
     expect(Rails::Application::Configuration).to include(described_class)
   end
 
-  describe 'config/database.yml' do
+  describe '#database_configuration' do
     let(:configuration) { Rails::Application::Configuration.new(Rails.root) }
 
     before do
@@ -68,5 +68,110 @@ RSpec.describe Gitlab::Patch::DatabaseConfig do
     end
 
     include_examples 'hash containing main: connection name'
+
+    context 'when config/database.yml contains extra configuration through an external command' do
+      let(:database_yml) do
+        <<-EOS
+            production:
+              config_command: '/opt/database-config.sh'
+              main:
+                adapter: postgresql
+                encoding: unicode
+                database: gitlabhq_production
+                username: git
+                password: "dummy password"
+                host: localhost
+
+            development:
+              config_command: '/opt/database-config.sh'
+              main:
+                adapter: postgresql
+                encoding: unicode
+                database: gitlabhq_development
+                username: postgres
+                password: "dummy password"
+                host: localhost
+                variables:
+                  statement_timeout: 15s
+
+            test: &test
+              config_command: '/opt/database-config.sh'
+              main:
+                adapter: postgresql
+                encoding: unicode
+                database: gitlabhq_test
+                username: postgres
+                password:
+                host: localhost
+                prepared_statements: false
+                variables:
+                  statement_timeout: 15s
+        EOS
+      end
+
+      context 'when the external command returns valid yaml' do
+        before do
+          allow(Gitlab::Popen)
+            .to receive(:popen)
+            .and_return(["---\nmain:\n  password: 'secure password'\n", 0])
+        end
+
+        it 'merges the extra configuration' do
+          database_configuration = configuration.database_configuration
+
+          expect(database_configuration).to match(
+            "production" => { "main" => a_hash_including("password" => "secure password") },
+            "development" => { "main" => a_hash_including("password" => "secure password") },
+            "test" => { "main" => a_hash_including("password" => "secure password") }
+          )
+        end
+      end
+
+      context 'when the external command returns invalid yaml' do
+        before do
+          allow(Gitlab::Popen)
+            .to receive(:popen)
+            .and_return(["---\nmain:\n  password: 'secure password\n", 0])
+        end
+
+        it 'raises an error' do
+          expect { configuration.database_configuration }
+            .to raise_error(
+              Gitlab::Patch::DatabaseConfig::CommandExecutionError,
+              %r{database.yml: Execution of `/opt/database-config.sh` generated invalid yaml}
+            )
+        end
+      end
+
+      context 'when the parsed external command output returns invalid hash' do
+        before do
+          allow(Gitlab::Popen)
+            .to receive(:popen)
+            .and_return(["hello", 0])
+        end
+
+        it 'raises an error' do
+          expect { configuration.database_configuration }
+            .to raise_error(
+              Gitlab::Patch::DatabaseConfig::CommandExecutionError,
+              %r{database.yml: The output of `/opt/database-config.sh` must be a Hash, String given}
+            )
+        end
+      end
+
+      context 'when the external command fails' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["", 125])
+        end
+
+        it 'raises error' do
+          expect { configuration.database_configuration }
+            .to raise_error(
+              Gitlab::Patch::DatabaseConfig::CommandExecutionError,
+              %r{database.yml: Execution of `/opt/database-config.sh` failed}
+            )
+        end
+      end
+    end
   end
 end

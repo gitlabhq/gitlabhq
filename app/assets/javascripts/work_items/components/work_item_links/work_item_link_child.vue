@@ -8,10 +8,10 @@ import { createAlert } from '~/alert';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import {
   STATE_OPEN,
-  TASK_TYPE_NAME,
-  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_NAME_TO_ICON_MAP,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '../../constants';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
@@ -54,6 +54,11 @@ export default {
       required: false,
       default: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -76,13 +81,13 @@ export default {
       return this.childItem.workItemType.name;
     },
     iconName() {
-      if (this.childItemType === TASK_TYPE_NAME) {
+      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
         return this.isItemOpen ? 'issue-open-m' : 'issue-close';
       }
       return WORK_ITEM_NAME_TO_ICON_MAP[this.childItemType];
     },
     iconClass() {
-      if (this.childItemType === TASK_TYPE_NAME) {
+      if (this.childItemType === WORK_ITEM_TYPE_VALUE_TASK) {
         return this.isItemOpen ? 'gl-text-green-500' : 'gl-text-blue-500';
       }
       return '';
@@ -237,6 +242,7 @@ export default {
         :parent-work-item-id="issuableGid"
         :work-item-type="workItemType"
         :show-labels="showLabels"
+        :work-item-full-path="workItemFullPath"
         @click="$emit('click', $event)"
         @removeChild="$emit('removeChild', childItem)"
       />
@@ -248,6 +254,7 @@ export default {
       :work-item-type="workItemType"
       :children="children"
       :show-labels="showLabels"
+      :work-item-full-path="workItemFullPath"
       @removeChild="removeChild"
       @click="$emit('click', $event)"
     />

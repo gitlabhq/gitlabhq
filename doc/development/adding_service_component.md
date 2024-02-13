@@ -23,7 +23,7 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
   - [Release management](#release-management)
   - [Enabled on GitLab.com](feature_flags/controls.md#enabling-a-feature-for-gitlabcom)
 - Complete
-  - [Validated by the Reference Architecture group and scaled out recommendations made](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/self-managed-excellence/#reference-architectures)
+  - [Validated by the Reference Architecture group and scaled out recommendations made](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/self-managed-excellence/#reference-architectures)
 - Lovable
   - Enabled by default for the majority of users
 
@@ -31,9 +31,9 @@ The following outline re-uses the [maturity metric](https://about.gitlab.com/dir
 
 The initial step for integrating a new component with GitLab starts with creating a [Feature proposal in the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal).
 
-Identify the [product category](https://about.gitlab.com/handbook/product/categories/) the component falls under and assign the Engineering Manager and Product Manager responsible for that category.
+Identify the [product category](https://handbook.gitlab.com/handbook/product/categories/) the component falls under and assign the Engineering Manager and Product Manager responsible for that category.
 
-The general steps for getting any GitLab feature from proposal to release can be found in the [Product development flow](https://about.gitlab.com/handbook/product-development-flow/).
+The general steps for getting any GitLab feature from proposal to release can be found in the [Product development flow](https://handbook.gitlab.com/handbook/product-development-flow/).
 
 ## Integrating a new service with GitLab
 
@@ -59,9 +59,9 @@ NOTE:
 
 ## Bundling a service with GitLab
 
-Code shipped with GitLab needs to use a license approved by the Legal team. See the list of [existing approved licenses](https://about.gitlab.com/handbook/engineering/open-source/#using-open-source-libraries).
+Code shipped with GitLab needs to use a license approved by the Legal team. See the list of [existing approved licenses](https://handbook.gitlab.com/handbook/engineering/open-source/#using-open-source-software).
 
-Notify the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
+Notify the [Distribution team](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/) when adding a new dependency that must be compiled. We must be able to compile the dependency on all supported platforms.
 
 New services to be bundled with GitLab need to be available in the following environments.
 
@@ -84,11 +84,11 @@ In order for a service to be bundled for end-users or GitLab.com, it needs to be
 Dependencies should be kept up to date and be tracked for security updates. For the Rails codebase, the JavaScript and Ruby dependencies are
 scanned for vulnerabilities using GitLab [dependency scanning](../user/application_security/dependency_scanning/index.md).
 
-In addition, any system dependencies used in Omnibus packages or the Cloud Native images should be added to the [dependency update automation](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/maintenance/dependencies.io.html#adding-new-dependencies).
+In addition, any system dependencies used in Omnibus packages or the Cloud Native images should be added to the [dependency update automation](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/systems/distribution/maintenance/dependencies.io/#adding-new-dependencies).
 
 ## Release management
 
-If the service component needs to be updated or released with the monthly GitLab release, then it should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://about.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
+If the service component needs to be updated or released with the monthly GitLab release, then it should be added to the [release tools automation](https://gitlab.com/gitlab-org/release-tools). This project is maintained by the [Delivery group](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/).
 
 Different levels of automation are available to include a component in GitLab monthly releases. The requirements and process for including a component in a release at these different levels are detailed in the [release documentation](https://gitlab.com/gitlab-org/release/docs/-/tree/master/components).
 

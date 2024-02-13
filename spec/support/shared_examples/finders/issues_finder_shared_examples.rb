@@ -22,18 +22,10 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           it 'returns no items' do
             expect(items).to be_empty
           end
-
-          context 'when there are group-level work items' do
-            let!(:group_work_item) { create(:work_item, namespace: create(:group)) }
-
-            it 'returns no items' do
-              expect(items).to be_empty
-            end
-          end
         end
 
         context 'when filtering by group id' do
-          let(:params) { { group_id: group.id } }
+          let(:params) { { group_id: subgroup.id } }
 
           it 'returns no items' do
             expect(items).to be_empty
@@ -216,7 +208,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
         context 'when include_subgroup param not set' do
           it 'returns all group items' do
-            expect(items).to contain_exactly(item1, item5)
+            expect(items).to contain_exactly(item1, item5, group_level_item)
           end
 
           context 'when projects outside the group are passed' do
@@ -247,7 +239,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
             let(:params) { { group_id: group.id, release_tag: 'dne-release-tag' } }
 
             it 'ignores the release_tag parameter' do
-              expect(items).to contain_exactly(item1, item5)
+              expect(items).to contain_exactly(item1, item5, group_level_item)
             end
           end
         end
@@ -258,7 +250,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
 
           it 'returns all group and subgroup items' do
-            expect(items).to contain_exactly(item1, item4, item5)
+            expect(items).to contain_exactly(item1, item4, item5, group_level_item)
           end
 
           context 'when mixed projects are passed' do
@@ -270,31 +262,23 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           end
         end
 
-        context 'when querying group-level items' do
-          let(:params) { { group_id: group.id, issue_types: %w[issue epic] } }
-
-          it 'includes group-level items' do
-            expect(items).to contain_exactly(item1, item5, group_level_item)
+        context 'when user has access to confidential items' do
+          before do
+            group.add_reporter(user)
           end
 
-          context 'when user has access to confidential items' do
-            before do
-              group.add_reporter(user)
-            end
+          it 'includes confidential group-level items' do
+            expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
+          end
+        end
 
-            it 'includes confidential group-level items' do
-              expect(items).to contain_exactly(item1, item5, group_level_item, group_level_confidential_item)
-            end
+        context 'when namespace_level_work_items is disabled' do
+          before do
+            stub_feature_flags(namespace_level_work_items: false)
           end
 
-          context 'when namespace_level_work_items is disabled' do
-            before do
-              stub_feature_flags(namespace_level_work_items: false)
-            end
-
-            it 'only returns project-level items' do
-              expect(items).to contain_exactly(item1, item5)
-            end
+          it 'only returns project-level items' do
+            expect(items).to contain_exactly(item1, item5)
           end
         end
       end
@@ -1241,12 +1225,12 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
     end
   end
 
-  describe '#with_confidentiality_access_check' do
+  describe 'confidentiality access check' do
     let(:guest) { create(:user) }
 
     let_it_be(:authorized_user) { create(:user) }
     let_it_be(:banned_user) { create(:user, :banned) }
-    let_it_be(:project) { create(:project, namespace: authorized_user.namespace) }
+    let_it_be(:project) { create(:project, :public, namespace: authorized_user.namespace) }
     let_it_be(:public_item) { create(factory, project: project) }
     let_it_be(:confidential_item) { create(factory, project: project, confidential: true) }
     let_it_be(:hidden_item) { create(factory, project: project, author: banned_user) }
@@ -1281,20 +1265,14 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
     context 'when no project filter is given' do
       let(:params) { {} }
 
-      context 'for an anonymous user' do
-        subject { described_class.new(nil, params).with_confidentiality_access_check }
-
-        it_behaves_like 'returns public, does not return hidden or confidential'
-      end
-
       context 'for a user without project membership' do
-        subject { described_class.new(user, params).with_confidentiality_access_check }
+        subject { described_class.new(user, params).execute }
 
         it_behaves_like 'returns public, does not return hidden or confidential'
       end
 
       context 'for a guest user' do
-        subject { described_class.new(guest, params).with_confidentiality_access_check }
+        subject { described_class.new(guest, params).execute }
 
         before do
           project.add_guest(guest)
@@ -1304,7 +1282,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'for a project member with access to view confidential items' do
-        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+        subject { described_class.new(authorized_user, params).execute }
 
         it_behaves_like 'returns public and confidential, does not return hidden'
       end
@@ -1312,7 +1290,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       context 'for an admin' do
         let(:admin_user) { create(:user, :admin) }
 
-        subject { described_class.new(admin_user, params).with_confidentiality_access_check }
+        subject { described_class.new(admin_user, params).execute }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it_behaves_like 'returns public, confidential, and hidden'
@@ -1328,7 +1306,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       let(:params) { { project_id: project.id } }
 
       context 'for an anonymous user' do
-        subject { described_class.new(nil, params).with_confidentiality_access_check }
+        subject { described_class.new(nil, params).execute }
 
         it_behaves_like 'returns public, does not return hidden or confidential'
 
@@ -1339,17 +1317,17 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       end
 
       context 'for a user without project membership' do
-        subject { described_class.new(user, params).with_confidentiality_access_check }
+        subject { described_class.new(user, params).execute }
 
         it_behaves_like 'returns public, does not return hidden or confidential'
 
         it 'filters by confidentiality' do
-          expect(subject.to_sql).to match("issues.confidential")
+          expect(subject.to_sql).to match('"issues"."confidential"')
         end
       end
 
       context 'for a guest user' do
-        subject { described_class.new(guest, params).with_confidentiality_access_check }
+        subject { described_class.new(guest, params).execute }
 
         before do
           project.add_guest(guest)
@@ -1358,12 +1336,12 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         it_behaves_like 'returns public, does not return hidden or confidential'
 
         it 'filters by confidentiality' do
-          expect(subject.to_sql).to match("issues.confidential")
+          expect(subject.to_sql).to match('"issues"."confidential"')
         end
       end
 
       context 'for a project member with access to view confidential items' do
-        subject { described_class.new(authorized_user, params).with_confidentiality_access_check }
+        subject { described_class.new(authorized_user, params).execute }
 
         it_behaves_like 'returns public and confidential, does not return hidden'
 
@@ -1377,7 +1355,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
       context 'for an admin' do
         let(:admin_user) { create(:user, :admin) }
 
-        subject { described_class.new(admin_user, params).with_confidentiality_access_check }
+        subject { described_class.new(admin_user, params).execute }
 
         context 'when admin mode is enabled', :enable_admin_mode do
           it_behaves_like 'returns public, confidential, and hidden'
@@ -1393,7 +1371,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
           it_behaves_like 'returns public, does not return hidden or confidential'
 
           it 'filters by confidentiality' do
-            expect(subject.to_sql).to match("issues.confidential")
+            expect(subject.to_sql).to match('"issues"."confidential"')
           end
         end
       end

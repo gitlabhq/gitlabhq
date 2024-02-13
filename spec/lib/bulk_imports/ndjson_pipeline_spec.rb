@@ -203,6 +203,7 @@ RSpec.describe BulkImports::NdjsonPipeline, feature_category: :importers do
           failure = entity.failures.first
 
           expect(failure.pipeline_class).to eq(tracker.pipeline_name)
+          expect(failure.subrelation).to eq('LabelPriority')
           expect(failure.exception_class).to eq('RecordInvalid')
           expect(failure.exception_message).to eq("Project can't be blank, Priority can't be blank, and Priority is not a number")
         end

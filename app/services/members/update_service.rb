@@ -8,7 +8,7 @@ module Members
       members = Array.wrap(members)
 
       old_access_level_expiry_map = members.to_h do |member|
-        [member.id, { human_access: member.human_access, expires_at: member.expires_at }]
+        [member.id, { human_access: member.human_access_labeled, expires_at: member.expires_at }]
       end
 
       updated_members = update_members(members, permission)

@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Generic Packages Repository **(FREE ALL)**
+# GitLab Generic Packages Repository
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4209) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `generic_packages`. Enabled by default.
 > - [Feature flag `generic_packages`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80886) removed in GitLab 14.8.
@@ -47,11 +51,11 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                              |
-| `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
-| `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8).
-| `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`).
-| `status`           | string          | no       | The package status. It can be `default` (default) or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md).
-| `select`           | string          | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request.
+| `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
+| `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
+| `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
+| `status`           | string          | no       | The package status. It can be `default` or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md). |
+| `select`           | string          | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request. |
 
 Provide the file context in the request body.
 

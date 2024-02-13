@@ -152,6 +152,14 @@ module Gitlab
           options['active_directory']
         end
 
+        def smartcard_ad_cert_field
+          options['smartcard_ad_cert_field'] || 'altSecurityIdentities'
+        end
+
+        def smartcard_ad_cert_format
+          options['smartcard_ad_cert_format']
+        end
+
         def block_auto_created_users
           options['block_auto_created_users']
         end

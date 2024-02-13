@@ -21,7 +21,11 @@ module Mutations
                description: 'Sets the work item confidentiality.'
       argument :description, GraphQL::Types::String,
                required: false,
-               description: copy_field_description(Types::WorkItemType, :description)
+               description: copy_field_description(Types::WorkItemType, :description),
+               deprecated: { milestone: '16.9', reason: 'use description widget instead' }
+      argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
+               required: false,
+               description: 'Input for description widget.'
       argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
                required: false,
                description: 'Input for hierarchy widget.'
@@ -60,12 +64,11 @@ module Mutations
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
-        check_env_feature_available!(container)
         check_feature_available!(container)
 
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
         type = ::WorkItems::Type.find(attributes[:work_item_type_id])
-        widget_params = extract_widget_params!(type, params)
+        widget_params = extract_widget_params!(type, params, container)
 
         create_result = ::WorkItems::CreateService.new(
           container: container,
@@ -83,15 +86,6 @@ module Mutations
       end
 
       private
-
-      # This is just a temporary measure while we migrate and backfill epic internal_ids
-      # More info in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139367
-      def check_env_feature_available!(container)
-        return unless container.is_a?(::Group) && Rails.env.production?
-
-        message = 'Group level work items are disabled. Only project paths allowed in `namespacePath`.'
-        raise Gitlab::Graphql::Errors::ArgumentError, message
-      end
 
       def check_feature_available!(container)
         return unless container.is_a?(::Group) && Feature.disabled?(:namespace_level_work_items, container)

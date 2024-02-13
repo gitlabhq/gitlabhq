@@ -4,15 +4,18 @@ module Types
   module Projects
     class BranchRuleType < BaseObject
       graphql_name 'BranchRule'
-      description 'List of branch rules for a project, grouped by branch name.'
+      description 'Branch rules configured for a rule target.'
       authorize :read_protected_branch
 
       alias_method :branch_rule, :object
 
+      field :id, ::Types::GlobalIDType[::Projects::BranchRule],
+            description: 'ID of the branch rule.'
+
       field :name,
             type: GraphQL::Types::String,
             null: false,
-            description: 'Branch name, with wildcards, for the branch rules.'
+            description: 'Name of the branch rule target. Includes wildcards.'
 
       field :is_default,
             type: GraphQL::Types::Boolean,

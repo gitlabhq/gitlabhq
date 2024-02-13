@@ -32,7 +32,7 @@ export default {
 };
 </script>
 <template>
-  <div class="d-inline-block float-right mr-3">
+  <div class="d-inline-block gl-float-right mr-3">
     <gl-button v-gl-modal="$options.modalId" variant="danger" category="primary">
       {{ __('Delete') }}
     </gl-button>

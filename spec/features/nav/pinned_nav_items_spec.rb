@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigation do
   let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   before do
     sign_in(user)
@@ -28,8 +29,6 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
   end
 
   describe 'pinnable navigation menu' do
-    let_it_be(:project) { create(:project) }
-
     before do
       project.add_member(user, :owner)
       visit project_path(project)
@@ -166,10 +165,61 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
   end
 
+  describe 'section collapse states after using a pinned item to navigate' do
+    before do
+      project.add_member(user, :owner)
+      visit project_path(project)
+    end
+
+    context 'when a pinned item is clicked in the Pinned section' do
+      before do
+        within '[data-testid="pinned-nav-items"]' do
+          click_on 'Issues'
+        end
+      end
+
+      it 'shows the Pinned section as expanded' do
+        within '[data-testid="pinned-nav-items"]' do
+          expect(page).to have_link 'Issues'
+        end
+      end
+
+      it 'shows the original section as collapsed' do
+        within '#menu-section-button-plan' do
+          expect(page).not_to have_link 'Issues'
+        end
+      end
+    end
+
+    context 'when a pinned item is clicked in its original section' do
+      before do
+        within '#super-sidebar' do
+          click_on 'Plan'
+        end
+        within '#super-sidebar #plan' do
+          click_on 'Issues'
+        end
+      end
+
+      it 'shows the Pinned section as collapsed' do
+        within '#menu-section-button-plan' do
+          expect(page).not_to have_link 'Issues'
+        end
+      end
+
+      it 'shows the original section as expanded' do
+        within '#super-sidebar #plan' do
+          expect(page).to have_link 'Issues'
+        end
+      end
+    end
+  end
+
   private
 
   def add_pin(nav_item_title)
     nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    scroll_to(nav_item)
     nav_item.hover
     pin_button = nav_item.find("[data-testid=\"nav-item-pin\"]")
     pin_button.click
@@ -178,6 +228,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
   def remove_pin(nav_item_title)
     nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    scroll_to(nav_item)
     nav_item.hover
     unpin_button = nav_item.find("[data-testid=\"nav-item-unpin\"]")
     unpin_button.click

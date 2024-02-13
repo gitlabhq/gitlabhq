@@ -120,66 +120,30 @@ RSpec.describe Gitlab::Diff::PositionTracer do
     describe 'when requesting diffs' do
       shared_examples 'it does not call diff stats' do
         it 'does not call diff stats' do
-          expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |instance|
-            expect(instance).not_to receive(:diff_stats)
+          expect_next_instance_of(Compare) do |instance|
+            expect(instance).to receive(:diffs).with(hash_including(include_stats: false)).and_call_original
           end
 
           diff_files
         end
       end
 
-      shared_examples 'it calls diff stats' do
-        it 'calls diff stats' do
-          expect_next_instance_of(Gitlab::GitalyClient::CommitService) do |instance|
-            expect(instance).to receive(:diff_stats).and_call_original
-          end
+      context 'ac diffs' do
+        let(:diff_files) { subject.ac_diffs.diff_files }
 
-          diff_files
-        end
+        it_behaves_like 'it does not call diff stats'
       end
 
-      context 'when remove_request_stats_for_tracing is true' do
-        context 'ac diffs' do
-          let(:diff_files) { subject.ac_diffs.diff_files }
+      context 'bd diffs' do
+        let(:diff_files) { subject.bd_diffs.diff_files }
 
-          it_behaves_like 'it does not call diff stats'
-        end
-
-        context 'bd diffs' do
-          let(:diff_files) { subject.bd_diffs.diff_files }
-
-          it_behaves_like 'it does not call diff stats'
-        end
-
-        context 'cd diffs' do
-          let(:diff_files) { subject.cd_diffs.diff_files }
-
-          it_behaves_like 'it does not call diff stats'
-        end
+        it_behaves_like 'it does not call diff stats'
       end
 
-      context 'when remove_request_stats_for_tracing is false' do
-        before do
-          stub_feature_flags(remove_request_stats_for_tracing: false)
-        end
+      context 'cd diffs' do
+        let(:diff_files) { subject.cd_diffs.diff_files }
 
-        context 'ac diffs' do
-          let(:diff_files) { subject.ac_diffs.diff_files }
-
-          it_behaves_like 'it calls diff stats'
-        end
-
-        context 'bd diffs' do
-          let(:diff_files) { subject.bd_diffs.diff_files }
-
-          it_behaves_like 'it calls diff stats'
-        end
-
-        context 'cd diffs' do
-          let(:diff_files) { subject.cd_diffs.diff_files }
-
-          it_behaves_like 'it calls diff stats'
-        end
+        it_behaves_like 'it does not call diff stats'
       end
     end
   end

@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce repository size **(FREE ALL)**
+# Reduce repository size
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Git repositories become larger over time. When large files are added to a Git repository:
 
@@ -325,7 +329,11 @@ are accurate.
 To expedite this process, see the
 ['Prune Unreachable Objects' housekeeping task](../../../administration/housekeeping.md).
 
-### Sidekiq process fails to export a project **(FREE SELF)**
+### Sidekiq process fails to export a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.

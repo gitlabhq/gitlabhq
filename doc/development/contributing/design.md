@@ -24,10 +24,10 @@ As a merge request (MR) author, you must:
   for all reviewers and can speed up the review process, especially if the changes
   are small.
 - Attach the ~UX label to any merge request that has any user facing changes. This will trigger our
-  Reviewer Roulette to suggest a UX [reviewer](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#stage-group-mrs).
+  Reviewer Roulette to suggest a UX [reviewer](https://handbook.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#stage-group-mrs).
 
 If you are a **team member**: We recommend assigning the Product Designer suggested by the
-[Reviewer Roulette](../code_review.md#reviewer-roulette) as reviewer. [This helps us](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#benefits) spread work evenly, improve communication, and make our UI more
+[Reviewer Roulette](../code_review.md#reviewer-roulette) as reviewer. [This helps us](https://handbook.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#benefits) spread work evenly, improve communication, and make our UI more
 consistent. If you have a reason to choose a different reviewer, add a comment to mention you assigned
 it to a Product Designer of your choice.
 
@@ -113,7 +113,7 @@ When the design is ready, _before_ starting its implementation:
 
 - Share design specifications in the related issue, preferably through a [Figma link](https://help.figma.com/hc/en-us/articles/360040531773-Share-Files-with-anyone-using-Link-Sharing#Copy_link)
   or [GitLab Designs feature](../../user/project/issues/design_management.md).
-  See [when you should use each tool](https://about.gitlab.com/handbook/product/ux/product-designer/#deliver).
+  See [when you should use each tool](https://handbook.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
 - Document animations and transitions.
 - Document responsive behaviors.

@@ -224,24 +224,6 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
       end
     end
 
-    describe 'on smaller screens' do
-      shared_examples 'hidden activity calendar' do
-        include_context 'when user page is visited'
-
-        it 'hides the activity calender' do
-          expect(find('#js-overview')).not_to have_css('.js-contrib-calendar')
-        end
-      end
-
-      context 'when screen size is xs' do
-        before do
-          resize_screen_xs
-        end
-
-        it_behaves_like 'hidden activity calendar'
-      end
-    end
-
     describe 'first_day_of_week setting' do
       context 'when first day of the week is set to Monday' do
         before do
@@ -353,24 +335,6 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
           today = Date.today.strftime(date_format)
           expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
         end
-      end
-    end
-
-    describe 'on smaller screens' do
-      shared_examples 'hidden activity calendar' do
-        include_context 'when user page is visited'
-
-        it 'hides the activity calender' do
-          expect(page).not_to have_css('[data-testid="contrib-calendar"]')
-        end
-      end
-
-      context 'when screen size is xs' do
-        before do
-          resize_screen_xs
-        end
-
-        it_behaves_like 'hidden activity calendar'
       end
     end
 

@@ -17,23 +17,7 @@ class SnippetsController < Snippets::ApplicationController
   layout :determine_layout
 
   def index
-    if params[:username].present?
-      @user = UserFinder.new(params[:username]).find_by_username!
-
-      @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope], sort: sort_param)
-        .execute
-        .page(params[:page])
-        .inc_author
-        .inc_statistics
-
-      return if redirect_out_of_range(@snippets)
-
-      @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
-
-      render 'index'
-    else
-      redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
-    end
+    redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
   end
 
   def new

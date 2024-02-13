@@ -35,6 +35,10 @@ module QA
 
       it(
         'after a push via the API creates a merge request',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/403182',
+          type: :flaky
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360490'
       ) do
         commit = create(:commit,

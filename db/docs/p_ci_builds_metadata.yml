@@ -8,3 +8,5 @@ description: Routing table that holds information for job execution
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100115
 milestone: '15.5'
 gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

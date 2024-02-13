@@ -36,12 +36,13 @@ module Gitlab
     #
     # Returns an Array containing the waiter threads (from Process.detach) of
     # the started processes.
-    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
+    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
         start_sidekiq(pair, env: env,
                             directory: directory,
                             max_concurrency: max_concurrency,
                             min_concurrency: min_concurrency,
+                            concurrency: concurrency,
                             worker_id: index,
                             timeout: timeout,
                             dryrun: dryrun)
@@ -51,11 +52,13 @@ module Gitlab
     # Starts a Sidekiq process that processes _only_ the given queues.
     #
     # Returns the PID of the started process.
-    def self.start_sidekiq(queues, env:, directory:, max_concurrency:, min_concurrency:, worker_id:, timeout:, dryrun:)
+    # rubocop: disable Metrics/ParameterLists -- max_concurrency and min_concurrency will be removed in 17.0
+    def self.start_sidekiq(queues, env:, directory:, max_concurrency:, min_concurrency:, concurrency:, worker_id:, timeout:, dryrun:)
+      # rubocop: enable Metrics/ParameterLists
       counts = count_by_queue(queues)
 
       cmd = %w[bundle exec sidekiq]
-      cmd << "-c#{self.concurrency(queues, min_concurrency, max_concurrency)}"
+      cmd << "-c#{self.concurrency(queues, min_concurrency, max_concurrency, concurrency)}"
       cmd << "-e#{env}"
       cmd << "-t#{timeout}"
       cmd << "-gqueues:#{proc_details(counts)}"
@@ -101,7 +104,9 @@ module Gitlab
       end.join(',')
     end
 
-    def self.concurrency(queues, min_concurrency, max_concurrency)
+    def self.concurrency(queues, min_concurrency, max_concurrency, concurrency)
+      return concurrency if concurrency > 0
+
       concurrency_from_queues = queues.length + 1
       max = max_concurrency > 0 ? max_concurrency : concurrency_from_queues
       min = [min_concurrency, max].min

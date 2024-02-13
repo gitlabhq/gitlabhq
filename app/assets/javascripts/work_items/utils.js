@@ -4,6 +4,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
 } from './constants';
@@ -15,6 +16,8 @@ export const isHealthStatusWidget = (widget) => widget.type === WIDGET_TYPE_HEAL
 export const isLabelsWidget = (widget) => widget.type === WIDGET_TYPE_LABELS;
 
 export const isMilestoneWidget = (widget) => widget.type === WIDGET_TYPE_MILESTONE;
+
+export const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
 
 export const isStartAndDueDateWidget = (widget) => widget.type === WIDGET_TYPE_START_AND_DUE_DATE;
 
@@ -39,16 +42,16 @@ export const formatAncestors = (workItem) =>
 export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
   widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
 
-const autocompleteSourcesPath = (autocompleteType, fullPath, workItemIid) => {
-  return `${
-    gon.relative_url_root || ''
-  }/${fullPath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&type_id=${workItemIid}`;
+const autocompleteSourcesPath = ({ autocompleteType, fullPath, isGroup, iid }) => {
+  const domain = gon.relative_url_root || '';
+  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
+  return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&type_id=${iid}`;
 };
 
-export const autocompleteDataSources = (fullPath, iid) => ({
-  labels: autocompleteSourcesPath('labels', fullPath, iid),
-  members: autocompleteSourcesPath('members', fullPath, iid),
-  commands: autocompleteSourcesPath('commands', fullPath, iid),
+export const autocompleteDataSources = ({ fullPath, isGroup = false, iid }) => ({
+  labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, isGroup, iid }),
+  members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, isGroup, iid }),
+  commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, isGroup, iid }),
 });
 
 export const markdownPreviewPath = (fullPath, iid) =>
@@ -65,4 +68,8 @@ export const isReference = (input) => {
    */
 
   return /^([\w-]+(?:\/[\w-]+)*)?[#&](\d+)$/.test(input);
+};
+
+export const sortNameAlphabetically = (a, b) => {
+  return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 };

@@ -7,7 +7,6 @@ module Gitlab
 
       data_consistency :always
 
-      sidekiq_options retry: 3
       include QueueOptions
       include ::Gitlab::Import::AdvanceStage
 

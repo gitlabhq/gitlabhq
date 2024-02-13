@@ -151,6 +151,7 @@ as self-managed instances.
 ### Decisions
 
 - [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
+- [002: Run scan within subprocess](decisions/002_run_scan_within_subprocess.md)
 
 ## Challenges
 
@@ -288,6 +289,21 @@ sequenceDiagram
 
     Rails->>User: accepted
 ```
+
+#### Gem Scanning Interface
+
+For the Phase1, we use the private [Secret Detection Ruby Gem](https://gitlab.com/gitlab-org/gitlab/-/tree/5dfcf7431bfff25519c05a7e66c0cbb8d7b362be/gems/gitlab-secret_detection) that is invoked by the [Secrets Push Check](https://gitlab.com/gitlab-org/gitlab/-/blob/5dfcf7431bfff25519c05a7e66c0cbb8d7b362be/ee/lib/gitlab/checks/secrets_check.rb) on the GitLab Rails platform.
+
+The private SD gem offers the following support in addition to running scan on multiple blobs:
+
+- Configurable Timeout on the entire scan-level and on each blob level.
+
+- Ability to run the scan within subprocess instead of the main process. The number of processes spawned per request is capped to [`5`](https://gitlab.com/gitlab-org/gitlab/-/blob/5dfcf7431bfff25519c05a7e66c0cbb8d7b362be/gems/gitlab-secret_detection/lib/gitlab/secret_detection/scan.rb#L29).
+
+The Ruleset file referred during the Pre-receive Secret Detection scan is
+located [here](https://gitlab.com/gitlab-org/gitlab/-/blob/2da1c72dbc9df4d9130262c6b79ea785b6bb14ac/gems/gitlab-secret_detection/lib/gitleaks.toml).
+
+More details about the Gem can be found in the [README](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/README.md) file.
 
 ### Phase 2 - Standalone pre-receive service
 

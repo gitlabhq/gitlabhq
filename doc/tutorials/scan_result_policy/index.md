@@ -4,16 +4,20 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a scan result policy **(ULTIMATE ALL)**
+# Tutorial: Set up a merge request approval policy
 
-This tutorial shows you how to create and configure a [scan result policy](../../user/application_security/policies/scan-result-policies.md). These policies can be set to take action based on scan results.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+This tutorial shows you how to create and configure a [merge request approval policy](../../user/application_security/policies/scan-result-policies.md). These policies can be set to take action based on scan results.
 For example, in this tutorial, you'll set up a policy that requires approval from two specified users if a vulnerability is detected in a merge request.
 
-To set up a scan result policy:
+To set up a merge request approval policy:
 
 1. [Create a test project](#create-a-test-project).
-1. [Add a scan result policy](#add-a-scan-result-policy).
-1. [Test the scan result policy](#test-the-scan-result-policy).
+1. [Add a merge request approval policy](#add-a-merge-request-approval-policy).
+1. [Test the merge request approval policy](#test-the-merge-request-approval-policy).
 
 ## Before you begin
 
@@ -32,14 +36,14 @@ The namespace used for this tutorial must:
 1. Select **Create project**.
 1. Go to the newly created project and create [protected branches](../../user/project/protected_branches.md).
 
-## Add a scan result policy
+## Add a merge request approval policy
 
-Next, you'll add a scan result policy to your test project:
+Next, you'll add a merge request approval policy to your test project:
 
 1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Secure > Policies**.
 1. Select **New policy**.
-1. In **Scan result policy**, select **Select policy**.
+1. In **Merge request approval policy**, select **Select policy**.
 1. Complete the fields.
    - **Name**: `sast-scan-result-policy`
    - **Policy status**: **Enabled**
@@ -66,9 +70,9 @@ Next, you'll add a scan result policy to your test project:
 
    You can see the list of policies added in the previous steps.
 
-## Test the scan result policy
+## Test the merge request approval policy
 
-Nice work, you've created a scan result policy. To test it, create some vulnerabilities and check the result:
+Nice work, you've created a merge request approval policy. To test it, create some vulnerabilities and check the result:
 
 1. On the left sidebar, select **Search or go to** and find the `sast-scan-result-policy` project.
 1. Select **Code > Repository**.
@@ -119,7 +123,7 @@ Nice work, you've created a scan result policy. To test it, create some vulnerab
    Wait for the pipeline to complete. This could be a few minutes.
 
 The merge request security widget confirms that security scanning detected one potential
-vulnerability. As defined in the scan result policy, the merge request is blocked and waiting for
+vulnerability. As defined in the merge request approval policy, the merge request is blocked and waiting for
 approval.
 
-You now know how to set up and use scan result policies to catch vulnerabilities!
+You now know how to set up and use merge request approval policies to catch vulnerabilities!

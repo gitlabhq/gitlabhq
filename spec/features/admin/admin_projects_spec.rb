@@ -10,7 +10,7 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
 
   let_it_be_with_reload(:user) { create :user }
   let_it_be_with_reload(:project) { create(:project, :with_namespace_settings) }
-  let_it_be_with_reload(:current_user) { create(:admin) }
+  let_it_be_with_reload(:current_user) { create(:admin, timezone: 'Asia/Shanghai') }
 
   before do
     sign_in(current_user)
@@ -71,6 +71,19 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
 
       expect(page).to have_content(archived_project.name)
       expect(page).not_to have_content(project.name)
+    end
+
+    context 'for "jh transition banner" part' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(false)
+        allow(::Gitlab).to receive(:jh?).and_return(false)
+      end
+
+      it 'shows the banner class ".js-jh-transition-banner"' do
+        expect(page).to have_selector('.js-jh-transition-banner')
+        expect(page).to have_selector("[data-feature-name='transition_to_jihu_callout']")
+        expect(page).to have_selector("[data-user-preferred-language='en']")
+      end
     end
   end
 

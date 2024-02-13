@@ -39,6 +39,7 @@ describe('Pipelines table in Commits and Merge requests', () => {
   const findTableRows = () => wrapper.findAllByTestId('pipeline-table-row');
   const findModal = () => wrapper.findComponent(GlModal);
   const findMrPipelinesDocsLink = () => wrapper.findByTestId('mr-pipelines-docs-link');
+  const findUserPermissionsDocsLink = () => wrapper.findByTestId('user-permissions-docs-link');
   const findPipelinesTable = () => wrapper.findComponent(PipelinesTable);
 
   const createComponent = ({ props = {}, mountFn = mountExtended } = {}) => {
@@ -91,8 +92,12 @@ describe('Pipelines table in Commits and Merge requests', () => {
         expect(findMrPipelinesDocsLink().attributes('href')).toBe(
           '/help/ci/pipelines/merge_request_pipelines.md#prerequisites',
         );
+        expect(findUserPermissionsDocsLink().attributes('href')).toBe(
+          '/help/user/permissions.md#gitlab-cicd-permissions',
+        );
         expect(findEmptyState().text()).toContain(
-          'To run a merge request pipeline, the jobs in the CI/CD configuration file must be configured to run in merge request pipelines.',
+          'To run a merge request pipeline, the jobs in the CI/CD configuration file must be configured to run in merge request pipelines ' +
+            'and you must have sufficient permissions in the source project.',
         );
       });
     });

@@ -277,6 +277,11 @@ module MergeRequests
     def capture_suggested_reviewers_accepted(merge_request)
       # Implemented in EE
     end
+
+    def remove_approval(merge_request)
+      MergeRequests::RemoveApprovalService.new(project: project, current_user: current_user)
+        .execute(merge_request)
+    end
   end
 end
 

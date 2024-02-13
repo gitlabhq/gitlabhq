@@ -344,27 +344,94 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
         it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
         context 'for reporter' do
+          shared_examples 'returning the tag' do
+            it 'returns a details of tag' do
+              subject
+
+              expect(json_response).to include(
+                'name' => 'rootA',
+                'digest' => 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                'revision' => 'd7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                'total_size' => 2319870)
+            end
+
+            it 'returns a matching schema' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to match_response_schema('registry/tag')
+            end
+          end
+
           let(:api_user) { reporter }
 
-          before do
-            stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
+          context 'when the repository is migrated', :saas do
+            context 'when the Gitlab API is supported' do
+              before do
+                allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+              end
+
+              context 'when the Gitlab API returns a tag' do
+                let_it_be(:tags_response) do
+                  [
+                    {
+                      name: 'rootA',
+                      digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
+                      config_digest: 'sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
+                      size_bytes: 2319870,
+                      created_at: 1.minute.ago
+                    }
+                  ]
+                end
+
+                let_it_be(:response_body) do
+                  {
+                    pagination: {},
+                    response_body: ::Gitlab::Json.parse(tags_response.to_json)
+                  }
+                end
+
+                before do
+                  allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                    allow(client).to receive(:tags).and_return(response_body)
+                  end
+                end
+
+                it_behaves_like 'returning the tag'
+              end
+
+              context 'when the Gitlab API does not return a tag' do
+                before do
+                  allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                    allow(client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+                  end
+                end
+
+                it 'returns not found' do
+                  subject
+
+                  expect(response).to have_gitlab_http_status(:not_found)
+                  expect(json_response['message']).to include('Tag Not Found')
+                end
+              end
+            end
+
+            context 'when the Gitlab API is not supported' do
+              before do
+                allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+                stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
+              end
+
+              it_behaves_like 'returning the tag'
+            end
           end
 
-          it 'returns a details of tag' do
-            subject
+          context 'when the repository is not migrated' do
+            before do
+              stub_container_registry_tags(repository: root_repository.path, tags: %w[rootA], with_manifest: true)
+            end
 
-            expect(json_response).to include(
-              'name' => 'rootA',
-              'digest' => 'sha256:4c8e63ca4cb663ce6c688cb06f1c372b088dac5b6d7ad7d49cd620d85cf72a15',
-              'revision' => 'd7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac',
-              'total_size' => 2319870)
-          end
-
-          it 'returns a matching schema' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('registry/tag')
+            it_behaves_like 'returning the tag'
           end
         end
       end
@@ -398,15 +465,22 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
             it 'properly removes tag' do
               expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
+              expect(Projects::ContainerRepository::DeleteTagsService)
+                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
 
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
-                                    user: api_user, namespace: project.namespace.reload,
-                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-                                    property: 'i_package_container_user', context: service_ping_context)
+              expect_snowplow_event(
+                category: described_class.name,
+                action: 'delete_tag',
+                project: project,
+                user: api_user,
+                namespace: project.namespace.reload,
+                label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                property: 'i_package_container_user',
+                context: service_ping_context
+              )
             end
           end
 
@@ -417,15 +491,22 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
 
             it 'properly removes tag' do
               expect(service).to receive(:execute).with(root_repository) { { status: :success } }
-              expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
+              expect(Projects::ContainerRepository::DeleteTagsService)
+                .to receive(:new).with(root_repository.project, api_user, tags: %w[rootA]) { service }
 
               subject
 
               expect(response).to have_gitlab_http_status(:ok)
-              expect_snowplow_event(category: described_class.name, action: 'delete_tag', project: project,
-                                    user: api_user, namespace: project.namespace.reload,
-                                    label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
-                                    property: 'i_package_container_user', context: service_ping_context)
+              expect_snowplow_event(
+                category: described_class.name,
+                action: 'delete_tag',
+                project: project,
+                user: api_user,
+                namespace: project.namespace.reload,
+                label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+                property: 'i_package_container_user',
+                context: service_ping_context
+              )
             end
           end
         end

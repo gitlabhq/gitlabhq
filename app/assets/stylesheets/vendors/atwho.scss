@@ -4,21 +4,21 @@
   min-width: $gl-new-dropdown-min-width;
   max-width: $gl-new-dropdown-max-width;
 
-  @include gl-border-b-1;
-  @include gl-border-b-solid;
-  @include gl-border-b-gray-100;
-  @include gl-rounded-lg;
+  border-bottom-width: $gl-border-size-1;
+  border-bottom-style: solid;
+  border-bottom-color: $gray-100;
+  border-radius: $gl-border-radius-large;
   @include gl-shadow-md;
 
 
   small {
-    @include gl-font-sm;
+    font-size: $gl-font-size-sm;
   }
 
   small.description {
     display: block;
     width: auto;
-    @include gl-mt-2;
+    margin-top: $gl-spacing-scale-2;
   }
 
   .avatar-inline {
@@ -41,17 +41,20 @@
 
   // TODO: fallback to global style
   .atwho-view-ul {
-    @include gl-py-2;
+    padding-top: $gl-spacing-scale-2;
+    padding-bottom: $gl-spacing-scale-2;
     max-height: $gl-max-dropdown-max-height;
 
     li {
       border: 0;
       padding: $gl-padding-6;
 
-      @include gl-my-2;
-      @include gl-mx-3;
-      @include gl-rounded-small;
-      @include gl-line-height-normal;
+      margin-top: $gl-spacing-scale-2;
+      margin-bottom: $gl-spacing-scale-2;
+      margin-left: $gl-spacing-scale-3;
+      margin-right: $gl-spacing-scale-3;
+      border-radius: $gl-border-radius-small;
+      line-height: $gl-line-height-16;
 
       &.cur {
         @include gl-focus;
@@ -78,7 +81,7 @@
       }
 
       gl-emoji {
-        @include gl-mr-2;
+        margin-right: $gl-spacing-scale-2;
         vertical-align: text-top;
 
         img {
@@ -90,7 +93,7 @@
       .dropdown-label-box {
         position: relative;
         top: -1px;
-        @include gl-mr-2;
+        margin-right: $gl-spacing-scale-2;
       }
     }
   }

@@ -12,7 +12,7 @@ module InternalEventsCli
         1) Define event (using CLI)
         2) Trigger event (from code)
         3) Define metric (using CLI)
-        4) View data in Sisense (after merge & deploy)
+        4) View data in Tableau (after merge & deploy)
 
       This CLI will help you create the correct defintion files, then provide code examples for instrumentation and testing.
 
@@ -45,8 +45,9 @@ module InternalEventsCli
           https://docs.gitlab.com/ee/development/internal_analytics/metrics/metrics_lifecycle.html
 
       #{format_warning('Finding existing usage data for GitLab features:')}
-          https://metrics.gitlab.com/ (Customize Table > Sisense query)
-          https://app.periscopedata.com/app/gitlab/1049395/Service-Ping-Exploration-Dashboard
+          https://metrics.gitlab.com/ (Customize Table > Snowflake query)
+          https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D
+          https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricsExploration
 
       #{format_warning('Customer wants usage data for their own GitLab instance:')}
           https://docs.gitlab.com/ee/user/analytics/
@@ -131,8 +132,8 @@ module InternalEventsCli
       #{format_info('EXPECTED FORMAT:')} #{format_selection('<action>_<target_of_action>_<where/when>')}
 
         ex) click_save_button_in_issue_description_within_15s_of_page_load
-          - TARGET: save button
           - ACTION: click
+          - TARGET: save button
           - WHERE: in issue description
           - WHEN: within 15s of page load
 
@@ -155,7 +156,7 @@ module InternalEventsCli
       Identifies the attributes recorded when the event occurs. Generally, we want to include every identifier available to us when the event is triggered.
 
       #{format_info('BACKEND')}: Attributes must be specified when the event is triggered
-        ex) If the backend event was instrumentuser/project/namespace are the identifiers for this backend instrumentation:
+        ex) User, project, and namespace are the identifiers available for backend instrumentation:
 
           Gitlab::InternalEvents.track_event(
             '%s',

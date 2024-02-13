@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Enforce two-factor authentication **(FREE ALL)**
+# Enforce two-factor authentication
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Two-factor authentication (2FA)](../user/profile/account/two_factor_authentication.md)
 is an authentication method that requires the user to provide two different factors
@@ -19,7 +23,11 @@ they would need both factors.
 NOTE:
 If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforcement), you might already be enforcing 2FA on the identity provider (IDP) side. Enforcing 2FA on GitLab as well might be unnecessary.
 
-## Enforce 2FA for all users **(FREE SELF)**
+## Enforce 2FA for all users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Administrators can enforce 2FA for all users in two different ways:
 
@@ -49,7 +57,13 @@ Use the [application settings API](../api/settings.md) to modify the following s
 
 For more information, see the [list of settings that can be accessed through API calls](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
-## Enforce 2FA for Administrator users **(FREE SELF)**
+## Enforce 2FA for Administrator users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
 
 Administrators can enforce 2FA for administrator users in a self-managed instance.
 
@@ -64,9 +78,13 @@ Administrators can enforce 2FA for administrator users in a self-managed instanc
 NOTE:
 If you are using an external provider to sign in into GitLab, this setting will **not** enforce 2FA for users. 2FA should be enabled on that external provider.
 
-## Enforce 2FA for all users in a group **(FREE ALL)**
+## Enforce 2FA for all users in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24965) in GitLab 12.0, 2FA settings for a group are also applied to subgroups.
 
 Prerequisites:
 
@@ -119,7 +137,11 @@ for the 2FA group.
 If you add members to a project in a group or subgroup that has 2FA
 enabled, 2FA is **not** required for those individually added members.
 
-## Disable 2FA **(FREE SELF)**
+## Disable 2FA
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can disable 2FA for a single user or all users.
 
@@ -173,7 +195,11 @@ To disable 2FA for all users even when forced 2FA is disabled, use the following
   sudo -u git -H bundle exec rake gitlab:two_factor:disable_for_all_users RAILS_ENV=production
   ```
 
-## 2FA for Git over SSH operations **(PREMIUM ALL)**
+## 2FA for Git over SSH operations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.

@@ -2,7 +2,11 @@
 import Draggable from 'vuedraggable';
 import { s__ } from '~/locale';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
-import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '../constants';
+import {
+  PINNED_NAV_STORAGE_KEY,
+  SIDEBAR_PINS_EXPANDED_COOKIE,
+  SIDEBAR_COOKIE_EXPIRATION,
+} from '../constants';
 import MenuSection from './menu_section.vue';
 import NavItem from './nav_item.vue';
 
@@ -35,22 +39,24 @@ export default {
       required: false,
       default: false,
     },
+    wasPinnedNav: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
-      expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false',
+      expanded: getCookie(SIDEBAR_PINS_EXPANDED_COOKIE) !== 'false' || this.wasPinnedNav,
       draggableItems: this.renameSettings(this.items),
     };
   },
   computed: {
-    isActive() {
-      return this.items.some((item) => item.is_active);
-    },
     sectionItem() {
       return {
         title: this.$options.i18n.pinned,
         icon: 'thumbtack',
-        is_active: this.isActive,
+        is_active: this.wasPinnedNav,
         items: this.draggableItems,
       };
     },
@@ -87,6 +93,9 @@ export default {
     onPinRemove(itemId, itemTitle) {
       this.$emit('pin-remove', itemId, itemTitle);
     },
+    writePinnedClick() {
+      sessionStorage.setItem(PINNED_NAV_STORAGE_KEY, true);
+    },
   },
 };
 </script>
@@ -98,6 +107,7 @@ export default {
     :has-flyout="hasFlyout"
     @collapse-toggle="expanded = !expanded"
     @pin-remove="onPinRemove"
+    @nav-link-click="writePinnedClick"
   >
     <draggable
       v-if="items.length > 0"
@@ -114,11 +124,12 @@ export default {
         :item="item"
         is-in-pinned-section
         @pin-remove="onPinRemove(item.id, item.title)"
+        @nav-link-click="writePinnedClick"
       />
     </draggable>
     <li
       v-else
-      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-empty-pinned-text"
+      class="gl-text-secondary gl-font-sm gl-py-3 super-sidebar-mix-blend-mode"
       style="margin-left: 2.5rem"
     >
       {{ $options.i18n.emptyHint }}

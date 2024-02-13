@@ -347,6 +347,7 @@ export default {
       :status-tabs="$options.statusTabs"
       :track-views-options="$options.trackIncidentListViewsOptions"
       filter-search-key="incidents"
+      class="incident-management-list"
       @page-changed="pageChanged"
       @tabs-changed="statusChanged"
       @filters-changed="filtersChanged"

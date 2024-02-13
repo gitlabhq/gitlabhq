@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Jwt do
+RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
   let(:namespace) { build_stubbed(:namespace) }
   let(:project) { build_stubbed(:project, namespace: namespace) }
   let(:user) { build_stubbed(:user) }
@@ -46,11 +46,17 @@ RSpec.describe Gitlab::Ci::Jwt do
         expect(payload[:job_id]).to eq(build.id.to_s)
         expect(payload[:ref]).to eq(pipeline.source_ref)
         expect(payload[:ref_protected]).to eq(build.protected.to_s)
+        expect(payload[:user_access_level]).to be_nil
         expect(payload[:environment]).to be_nil
         expect(payload[:environment_protected]).to be_nil
         expect(payload[:deployment_tier]).to be_nil
         expect(payload[:environment_action]).to be_nil
       end
+    end
+
+    it_behaves_like 'setting the user_access_level claim' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:user) { create(:user) }
     end
 
     it 'skips user related custom attributes if build has no user assigned' do

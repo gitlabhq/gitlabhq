@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# File Locking **(FREE ALL)**
+# File Locking
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Preventing wasted work caused by unresolvable merge conflicts requires
 a different way of working. This means explicitly requesting write permissions,
@@ -37,8 +41,8 @@ Developer role in the repository.
 
 Only the user who locked the file or directory can edit locked files. Other
 users are prevented from modifying locked files by pushing, merging,
-or any other means, and are shown an error like: `The path '.gitignore' is
-locked by Administrator`.
+or any other means, and are shown an error like:
+`The path '.gitignore' is locked by Administrator`.
 
 ## Exclusive file locks
 
@@ -190,9 +194,13 @@ Suggested workflow for shared projects:
 1. Get your changes reviewed, approved, and merged.
 1. Unlock the file.
 
-## Default branch file and directory locks **(PREMIUM ALL)**
+## Default branch file and directory locks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/440) in GitLab 8.9.
 
 This process allows you to lock one file at a time through the GitLab UI and
 requires access to the [GitLab Premium or Ultimate tier](https://about.gitlab.com/pricing/).

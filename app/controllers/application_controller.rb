@@ -208,8 +208,8 @@ class ApplicationController < BaseActionController
     Gitlab::CurrentSettings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def can?(object, action, subject = :global)
-    Ability.allowed?(object, action, subject)
+  def can?(user, action, subject = :global)
+    Ability.allowed?(user, action, subject)
   end
 
   def access_denied!(message = nil, status = nil)
@@ -353,7 +353,7 @@ class ApplicationController < BaseActionController
 
   def require_email
     if current_user && current_user.temp_oauth_email? && session[:impersonator_id].nil?
-      redirect_to profile_path, notice: _('Please complete your profile with email address')
+      redirect_to user_settings_profile_path, notice: _('Please complete your profile with email address')
     end
   end
 

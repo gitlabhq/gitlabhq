@@ -896,7 +896,7 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
 
     context 'when master contains a .gitlab-ci.yml file' do
       before do
-        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
+        allow(project).to receive(:has_ci_config_file?).and_return(true)
       end
 
       it { is_expected.to eq(false) }

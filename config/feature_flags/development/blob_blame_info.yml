@@ -1,8 +1,0 @@
----
-name: blob_blame_info
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133798
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/425272
-milestone: '16.5'
-type: development
-group: group::source code
-default_enabled: true

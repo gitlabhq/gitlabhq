@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Admin Area **(FREE SELF)**
+# GitLab Admin Area
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Admin Area provides a web UI to manage and configure features of GitLab
 self-managed instances. If you are an administrator, to access the Admin Area:
@@ -123,15 +127,14 @@ You can impersonate a user in the following ways:
   1. Select **Impersonate**.
 - With the API, using [impersonation tokens](../api/rest/index.md#impersonation-tokens).
 
-All impersonation activities are [captured with audit events](audit_events.md#user-impersonation).
-
+All impersonation activities are [captured with audit events](audit_event_reports.md#user-impersonation).
 By default, impersonation is enabled. GitLab can be configured to [disable impersonation](../api/rest/index.md#disable-impersonation).
 
 ![user impersonation button](img/impersonate_user_button_v13_8.png)
 
 ### User identities
 
-> The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
+> - The ability to see a user's SCIM identity was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/294608) in GitLab 15.3.
 
 When using authentication providers, administrators can see the identities for a user:
 
@@ -143,7 +146,11 @@ When using authentication providers, administrators can see the identities for a
 This list shows the user's identities, including SCIM identities. Administrators can use this information to troubleshoot SCIM-related issues and confirm
 the identities being used for an account.
 
-### User Permission Export **(PREMIUM SELF)**
+### User Permission Export
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
@@ -228,8 +235,8 @@ To [Create a new group](../user/group/index.md#create-a-group) select **New grou
 
 ## Administering topics
 
-- > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
-- > Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340920) in GitLab 14.4.
+> - Merging topics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366884) in GitLab 15.5.
 
 [Topics](../user/project/settings/project_features_permissions.md#project-topics) are used to categorize and find similar projects.
 
@@ -326,7 +333,7 @@ For each Gitaly server, the following details are listed:
 
 ### Administering runners
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
 
 You can administer all runners in the GitLab instance from the Admin Area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information.
@@ -383,7 +390,7 @@ You can also edit, pause, or remove each runner.
 
 ### Administering Jobs
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
 
 You can administer all jobs in the GitLab instance from the Admin Area's Jobs page.
 
@@ -414,7 +421,7 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 ### System Information
 
-> Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
+> - Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
 
 The **System Info** page provides the following statistics:
 
@@ -467,7 +474,11 @@ For details of these log files and their contents, see [Log system](logs/index.m
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 
-### Audit Events **(PREMIUM SELF)**
+### Audit Events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 

@@ -30,6 +30,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
   const exampleMergeRequest = { iid: 224, title: 'Test MR' };
   const exampleMilestone1 = { iid: 21, title: '13' };
   const exampleMilestone2 = { iid: 24, title: 'Milestone with spaces' };
+  const expiredMilestone = { iid: 25, title: 'Expired Milestone', expired: true };
 
   const exampleCommand = {
     name: 'due',
@@ -137,6 +138,7 @@ describe('~/content_editor/components/suggestions_dropdown', () => {
       ${'reference'} | ${'epic'}          | ${exampleEpic}          | ${'rem'}     | ${'❓ <strong class="gl-text-body!">Rem</strong>ote Development | Solution validation'}
       ${'reference'} | ${'epic'}          | ${exampleEpic}          | ${'88'}      | ${'gitlab-org&amp;<strong class="gl-text-body!">88</strong>84'}
       ${'reference'} | ${'milestone'}     | ${exampleMilestone1}    | ${'1'}       | ${'<strong class="gl-text-body!">1</strong>3'}
+      ${'reference'} | ${'milestone'}     | ${expiredMilestone}     | ${'expired'} | ${'<span><strong class="gl-text-body!">Expired</strong> Milestone</span> <span>(expired)</span>'}
       ${'reference'} | ${'command'}       | ${exampleCommand}       | ${'due'}     | ${'<strong class="gl-text-body!">due</strong>'}
       ${'reference'} | ${'command'}       | ${exampleCommand}       | ${'due'}     | ${'Set <strong class="gl-text-body!">due</strong> date'}
       ${'reference'} | ${'label'}         | ${exampleLabel1}        | ${'c'}       | ${'<strong class="gl-text-body!">C</strong>reate'}

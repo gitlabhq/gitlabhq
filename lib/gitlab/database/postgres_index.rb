@@ -27,7 +27,7 @@ module Gitlab
           .not_match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$")
       end
 
-      scope :reindexing_leftovers, -> { match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$") }
+      scope :reindexing_leftovers, -> { match("#{Gitlab::Database::Reindexing::ReindexConcurrently::TEMPORARY_INDEX_PATTERN}$").order(:name) }
 
       scope :not_match, ->(regex) { where("name !~ ?", regex) }
 

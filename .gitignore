@@ -117,3 +117,6 @@ jest-snapshot-test-report.json
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local
 /config/vite.gdk.json
+
+# CSS compilation for cssbundling
+app/assets/builds/

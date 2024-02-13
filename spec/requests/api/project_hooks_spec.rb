@@ -7,12 +7,14 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
   let_it_be(:user3) { create(:user) }
   let_it_be(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let_it_be_with_refind(:hook) do
-    create(:project_hook,
-           :all_events_enabled,
-           project: project,
-           url: 'http://example.com',
-           enable_ssl_verification: true,
-           push_events_branch_filter: 'master')
+    create(
+      :project_hook,
+      :all_events_enabled,
+      project: project,
+      url: 'http://example.com',
+      enable_ssl_verification: true,
+      push_events_branch_filter: 'master'
+    )
   end
 
   before_all do

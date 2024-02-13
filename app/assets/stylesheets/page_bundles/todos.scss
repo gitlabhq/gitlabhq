@@ -14,7 +14,7 @@
   button,
   a:not(.todo-target-link),
   time {
-    @include gl-relative;
+    position: relative;
   }
 
   // overwrite border style of .content-list
@@ -29,7 +29,7 @@
   &.todo-pending.done-reversible {
     .todo-item,
     .todo-timestamp {
-      @include gl-opacity-5;
+      opacity: 0.5;
     }
 
     .todo-avatar {
@@ -37,9 +37,9 @@
     }
 
     &:hover {
-      @include gl-border-t-1;
-      @include gl-border-t-transparent;
-      @include gl-border-t-solid;
+      border-top-width: $gl-border-size-1;
+      border-top-color: transparent;
+      border-top-style: solid;
     }
   }
 }
@@ -49,12 +49,12 @@
 
   .todo-label a::before {
     // Make area of the todo item clickable by expanding the area around the todo link
-    @include gl-content-empty;
-    @include gl-absolute;
-    @include gl-left-0;
-    @include gl-right-0;
-    @include gl-top-0;
-    @include gl-bottom-0;
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
     z-index: 9;
   }
 }
@@ -63,26 +63,28 @@
   margin-right: 2.5rem;
 
   @include media-breakpoint-up(sm) {
-    @include gl-mr-0;
-    @include gl-text-overflow-ellipsis;
-    @include gl-white-space-nowrap;
-    @include gl-overflow-hidden;
+    margin-right: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 
 .todo-body {
   p {
-    @include gl-display-inline;
+    display: inline;
     color: var(--gl-text-color, $gl-text-color);
   }
 
   pre.code.highlight {
-    @include gl-py-0;
-    @include gl-px-1;
-    @include gl-m-0;
-    @include gl-border-0;
-    @include gl-rounded-base;
-    @include gl-display-inline-flex;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: $gl-spacing-scale-1;
+    padding-right: $gl-spacing-scale-1;
+    margin: 0;
+    border-width: 0;
+    border-radius: $gl-border-radius-base;
+    display: inline-flex;
     background: var(--gray-50, $gray-50);
     color: var(--gl-text-color, $gl-text-color);
   }
@@ -92,7 +94,7 @@
   }
 
   .avatar {
-    @include gl-mb-0;
+    margin-bottom: 0;
   }
 }
 
@@ -103,10 +105,10 @@
 }
 
 .todo-actions {
-  @include gl-absolute;
-  @include gl-right-0;
+  position: absolute;
+  right: 0;
 
   @include media-breakpoint-up(sm) {
-    @include gl-relative;
+    position: relative;
   }
 }

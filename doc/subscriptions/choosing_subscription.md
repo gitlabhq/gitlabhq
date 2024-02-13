@@ -5,9 +5,9 @@ description: Options for accessing GitLab.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choosing a GitLab subscription
+# Choose a GitLab subscription
 
-To choose the right GitLab subscription, choose an offering and a tier.
+To choose the right GitLab subscription, select an offering and a tier.
 
 ## Choose a subscription
 

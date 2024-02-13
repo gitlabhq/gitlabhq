@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ORGANIZATION_ROOT_ROUTE_NAME } from '../constants';
-import resolvers from '../shared/graphql/resolvers';
 import App from './components/app.vue';
 
 export const createRouter = () => {
@@ -28,15 +27,19 @@ export const initOrganizationsGroupsAndProjects = () => {
     dataset: { appData },
   } = el;
   const {
+    organizationGid,
     projectsEmptyStateSvgPath,
     groupsEmptyStateSvgPath,
     newGroupPath,
     newProjectPath,
+    canCreateGroup,
+    canCreateProject,
+    hasGroups,
   } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
   const apolloProvider = new VueApollo({
-    defaultClient: createDefaultClient(resolvers),
+    defaultClient: createDefaultClient(),
   });
   const router = createRouter();
 
@@ -46,10 +49,14 @@ export const initOrganizationsGroupsAndProjects = () => {
     apolloProvider,
     router,
     provide: {
+      organizationGid,
       projectsEmptyStateSvgPath,
       groupsEmptyStateSvgPath,
       newGroupPath,
       newProjectPath,
+      canCreateGroup,
+      canCreateProject,
+      hasGroups,
     },
     render(createElement) {
       return createElement(App);

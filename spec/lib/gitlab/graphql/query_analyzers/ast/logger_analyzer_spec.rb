@@ -39,6 +39,7 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer do
       expect(result[:complexity]).to eq 3
       expect(result[:used_fields]).to eq ['Note.id', 'CreateNotePayload.note', 'Mutation.createNote']
       expect(result[:used_deprecated_fields]).to eq []
+      expect(result[:used_deprecated_arguments]).to eq []
 
       request = result.except(:duration_s).merge({
         operation_name: 'createNote',

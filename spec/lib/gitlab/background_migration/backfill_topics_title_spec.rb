@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillTopicsTitle, schema: 20221111123146 do
+RSpec.describe Gitlab::BackgroundMigration::BackfillTopicsTitle, schema: 20230216060333 do
   it 'correctly backfills the title of the topics' do
     topics = table(:topics)
 

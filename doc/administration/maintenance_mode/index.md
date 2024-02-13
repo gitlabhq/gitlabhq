@@ -4,9 +4,13 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Maintenance Mode **(PREMIUM SELF)**
+# GitLab Maintenance Mode
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
 
 Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state. The internal state includes the PostgreSQL database, but especially files, Git repositories, and Container repositories.
 
@@ -126,7 +130,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 
 ### GraphQL API
 
-> The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
+> - The `GeoRegistriesUpdate` mutation addition in the allowlist was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124259) in GitLab 16.2.
 
 `POST /api/graphql` requests are allowed but mutations are blocked with the error message `You cannot perform write operations on a read-only instance`.
 

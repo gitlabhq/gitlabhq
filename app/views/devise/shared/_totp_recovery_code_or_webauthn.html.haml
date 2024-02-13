@@ -1,0 +1,20 @@
+- target_path = admin_mode ? admin_session_path : user_session_path
+- render_remember_me =  admin_mode ? false : remember_me_enabled?
+
+= gitlab_ui_form_for(:user, url: target_path, method: :post, html: { class: "gl-show-field-errors js-2fa-form #{'hidden' if @user.two_factor_webauthn_enabled?}", aria: { live: 'assertive' }}) do |f|
+  .form-group
+    = f.label :otp_attempt, _('Enter verification code')
+    -# Note: we use inputmode="numeric", because TOTP. However, recovery codes are alphanumeric.
+    = f.text_field :otp_attempt, class: 'form-control gl-form-input', required: true, autofocus: true, autocomplete: 'off', inputmode: 'numeric', title: _('This field is required.'), data: { testid: 'two-fa-code-field' }
+    %p.form-text.text-muted.hint
+      = _("Enter the code from your two-factor authenticator app. If you've lost your device, you can enter one of your recovery codes.")
+
+    - if render_remember_me
+      - resource_params = params[:user].presence || params
+      = f.hidden_field :remember_me, value: resource_params.fetch(:remember_me, 0)
+
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'verify-code-button' } }) do
+    = _("Verify code")
+
+- if @user.two_factor_webauthn_enabled?
+  = render 'authentication/authenticate', target_path: target_path, render_remember_me: render_remember_me

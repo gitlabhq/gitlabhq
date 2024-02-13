@@ -444,6 +444,20 @@ module ProjectsHelper
     }
   end
 
+  def star_count_data_attributes(project)
+    starred = current_user ? current_user.starred?(project) : false
+
+    {
+      data: {
+        project_id: project.id,
+        sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
+        star_count: project.star_count,
+        starred: starred.to_s,
+        starrers_path: project_starrers_path(project)
+      }
+    }
+  end
+
   def import_from_bitbucket_message
     configure_oauth_import_message('Bitbucket', help_page_path("integration/bitbucket"))
   end
@@ -752,7 +766,7 @@ module ProjectsHelper
     Ability.allowed?(user, :admin_project, project) &&
       project.has_auto_devops_implicitly_enabled? &&
       project.builds_enabled? &&
-      !project.repository.gitlab_ci_yml
+      !project.has_ci_config_file?
   end
 
   def show_visibility_confirm_modal?(project)

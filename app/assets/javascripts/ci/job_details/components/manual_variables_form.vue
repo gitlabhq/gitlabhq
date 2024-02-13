@@ -289,13 +289,11 @@ export default {
       <div class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-button
           v-if="isRetryable"
-          class="gl-mt-5"
           data-testid="cancel-btn"
           @click="$emit('hideManualVariablesForm')"
           >{{ $options.i18n.cancel }}</gl-button
         >
         <gl-button
-          class="gl-mt-5"
           variant="confirm"
           category="primary"
           :disabled="runBtnDisabled"

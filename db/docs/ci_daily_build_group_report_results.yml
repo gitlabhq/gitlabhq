@@ -4,7 +4,10 @@ classes:
 - Ci::DailyBuildGroupReportResult
 feature_categories:
 - code_testing
-description: Stores daily aggregated data related to the build group, including code coverage data.
+description: Stores daily aggregated data related to the build group, including code
+  coverage data.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30387
 milestone: '13.0'
 gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

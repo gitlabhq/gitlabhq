@@ -30,3 +30,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Explore::Panel.prepend_mod_with('Sidebars::Explore::Panel')

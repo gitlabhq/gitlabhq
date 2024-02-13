@@ -36,8 +36,8 @@ module OrphanFinalArtifactsCleanupHelpers
     expect_log_message("Looking for orphan job artifact objects")
   end
 
-  def expect_done_log_message
-    expect_log_message("Done")
+  def expect_done_log_message(filename)
+    expect_log_message("Done. All orphan objects are listed in #{filename}.")
   end
 
   def expect_first_page_loading_log_message
@@ -56,22 +56,41 @@ module OrphanFinalArtifactsCleanupHelpers
     expect(Gitlab::AppLogger).not_to have_received(:info).with(a_string_including("Resuming"))
   end
 
-  def expect_delete_log_message(fog_file)
-    expect_log_message("Delete #{fog_file.key} (#{fog_file.content_length} bytes)")
+  def expect_found_orphan_artifact_object_log_message(fog_file)
+    expect_log_message("Found orphan object #{fog_file.key} (#{fog_file.content_length} bytes)")
   end
 
-  def expect_no_delete_log_message(fog_file)
-    expect_no_log_message("Delete #{fog_file.key} (#{fog_file.content_length} bytes)")
+  def expect_no_found_orphan_artifact_object_log_message(fog_file)
+    expect_no_log_message("Found orphan object #{fog_file.key} (#{fog_file.content_length} bytes)")
   end
 
   def expect_log_message(message, times: 1)
-    message = "[DRY RUN] #{message}" if dry_run
     expect(Gitlab::AppLogger).to have_received(:info).with(a_string_including(message)).exactly(times).times
   end
 
   def expect_no_log_message(message)
-    message = "[DRY RUN] #{message}" if dry_run
     expect(Gitlab::AppLogger).not_to have_received(:info).with(a_string_including(message))
+  end
+
+  def expect_orphan_objects_list_to_include(lines, fog_file)
+    expect(lines).to include([fog_file.key, fog_file.content_length].join(','))
+  end
+
+  def expect_orphan_objects_list_not_to_include(lines, fog_file)
+    expect(lines).not_to include([fog_file.key, fog_file.content_length].join(','))
+  end
+
+  def expect_orphans_list_to_contain_exactly(filename, fog_files)
+    lines = File.readlines(filename).map(&:strip)
+    expected_objects = fog_files.map { |f| [f.key, f.content_length].join(',') }
+
+    # Given we can't guarantee order of which object will be listed first,
+    # we just use match_array.
+    expect(lines).to match_array(expected_objects)
+  end
+
+  def expect_orphans_list_to_have_number_of_entries(count)
+    expect(File.readlines(filename).count).to eq(count)
   end
 
   def fetch_saved_marker

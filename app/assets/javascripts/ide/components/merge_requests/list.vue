@@ -98,12 +98,12 @@ export default {
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
       <template v-else>
-        <ul class="mb-0 w-100">
+        <ul class="mb-0 gl-w-full">
           <template v-if="showSearchTypes">
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button
                 type="button"
-                class="btn-link d-flex align-items-center"
+                class="btn-link d-flex gl-align-items-center"
                 @click.stop="setSearchType(searchType)"
               >
                 <span class="d-flex gl-mr-3 ide-search-list-current-icon">
@@ -122,7 +122,10 @@ export default {
               />
             </li>
           </template>
-          <li v-else class="ide-search-list-empty d-flex align-items-center justify-content-center">
+          <li
+            v-else
+            class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
+          >
             {{ __('No merge requests found') }}
           </li>
         </ul>

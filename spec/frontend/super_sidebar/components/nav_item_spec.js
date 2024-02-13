@@ -290,7 +290,11 @@ describe('NavItem component', () => {
       createWrapper({
         item: { is_active: true },
       });
-      expect(wrapper.element.scrollIntoView).toHaveBeenNthCalledWith(1, false);
+      expect(wrapper.element.scrollIntoView).toHaveBeenNthCalledWith(1, {
+        behavior: 'instant',
+        block: 'center',
+        inline: 'nearest',
+      });
     });
   });
 

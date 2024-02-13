@@ -4,11 +4,15 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Jobs API **(FREE ALL)**
+# Jobs API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## List project jobs
 
-> Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
+> - Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
 
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
@@ -504,7 +508,11 @@ Example of response
 }
 ```
 
-## Get GitLab agent by `CI_JOB_TOKEN` **(PREMIUM ALL)**
+## Get GitLab agent by `CI_JOB_TOKEN`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
 [agents](../user/clusters/agent/index.md).

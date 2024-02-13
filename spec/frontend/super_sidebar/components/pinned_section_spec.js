@@ -4,7 +4,12 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import PinnedSection from '~/super_sidebar/components/pinned_section.vue';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
-import { SIDEBAR_PINS_EXPANDED_COOKIE, SIDEBAR_COOKIE_EXPIRATION } from '~/super_sidebar/constants';
+import NavItemLink from '~/super_sidebar/components/nav_item_link.vue';
+import {
+  PINNED_NAV_STORAGE_KEY,
+  SIDEBAR_PINS_EXPANDED_COOKIE,
+  SIDEBAR_COOKIE_EXPIRATION,
+} from '~/super_sidebar/constants';
 import { setCookie } from '~/lib/utils/common_utils';
 
 jest.mock('@floating-ui/dom');
@@ -74,6 +79,17 @@ describe('PinnedSection component', () => {
         });
       });
     });
+
+    describe('when a pinned nav item was used before', () => {
+      beforeEach(() => {
+        Cookies.set(SIDEBAR_PINS_EXPANDED_COOKIE, 'false');
+        createWrapper({ wasPinnedNav: true });
+      });
+
+      it('is expanded', () => {
+        expect(wrapper.findComponent(NavItem).isVisible()).toBe(true);
+      });
+    });
   });
 
   describe('hasFlyout prop', () => {
@@ -114,6 +130,18 @@ describe('PinnedSection component', () => {
         'Repository',
         'Something else',
       ]);
+    });
+  });
+
+  describe('click on a pinned nav item', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it('stores pinned nav usage in sessionStorage', () => {
+      expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe(null);
+      wrapper.findComponent(NavItemLink).vm.$emit('nav-link-click');
+      expect(window.sessionStorage.getItem(PINNED_NAV_STORAGE_KEY)).toBe('true');
     });
   });
 });

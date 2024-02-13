@@ -77,5 +77,34 @@ RSpec.shared_examples Integrations::Actions do
     end
 
     it_behaves_like 'unknown integration'
+
+    context 'with untestable integration' do
+      before do
+        allow_next_found_instance_of(integration.class) do |integration|
+          allow(integration).to receive(:testable?).and_return(false)
+        end
+
+        put :test, params: routing_params
+      end
+
+      it 'returns 404 Not Found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'with testable integration' do
+      before do
+        allow_next_found_instance_of(integration.class) do |integration|
+          allow(integration).to receive(:testable?).and_return(true)
+          allow(integration).to receive(:test).and_return({ success: true, data: [] })
+        end
+
+        put :test, params: routing_params
+      end
+
+      it 'returns 200' do
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
   end
 end

@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Track deployments of an external deployment tool **(FREE ALL)**
+# Track deployments of an external deployment tool
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22513) in GitLab 12.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22513) in GitLab 12.5.
 
 While GitLab offers a [built-in deployment solution](index.md), you might prefer to use an external deployment tool, such as Heroku or ArgoCD.
 GitLab can receive deployment events from these external tools and allows you to track the deployments within GitLab.

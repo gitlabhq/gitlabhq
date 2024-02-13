@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab application limits **(FREE SELF)**
+# GitLab application limits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab, like most large applications, enforces limits in certain features to maintain a
 minimum quality of performance. Allowing some features to be limitless could affect security,
@@ -96,7 +100,7 @@ This setting limits the request rate on the Packages API per user or IP. For mor
 
 ### Git LFS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68642) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68642) in GitLab 14.3.
 
 This setting limits the request rate on the [Git LFS](../topics/git/lfs/index.md)
 requests per user. For more information, read
@@ -116,7 +120,7 @@ This setting limits the request rate on the Packages API per user or IP address.
 
 ### Deprecated API endpoints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68645) in GitLab 14.4.
 
 This setting limits the request rate on deprecated API endpoints per user or IP address. For more information, read
 [Deprecated API rate limits](settings/deprecated_api_rate_limits.md).
@@ -191,7 +195,7 @@ This endpoint has been requested too many times. Try again later.
 
 ### Pipeline creation rate limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
 
 This setting limits the request rate to the pipeline creation endpoints.
 
@@ -327,7 +331,7 @@ See also [webhook limits for GitLab.com](../user/gitlab_com/index.md#other-limit
 
 ### Recursive webhooks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329743) in GitLab 14.8.
 
 GitLab detects and blocks webhooks that are recursive or that exceed the limit
 of webhooks that can be triggered from other webhooks. This enables GitLab to
@@ -368,7 +372,7 @@ header. Such emails don't create comments on issues or merge requests.
 
 ## Amount of data sent from Sentry through Error Tracking
 
-> [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
+> - [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
 
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.
@@ -484,7 +488,7 @@ Set the limit to `0` to disable it.
 
 ### Limit the number of pipeline triggers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33696) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33696) in GitLab 14.6.
 
 You can set a limit on the maximum number of pipeline triggers per project. This
 limit is checked every time a new trigger is created.
@@ -526,7 +530,7 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 
 ### Limit the number of pipelines created by a pipeline schedule per day
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323066) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323066) in GitLab 14.0.
 
 You can limit the number of pipelines that pipeline schedules can trigger per day.
 
@@ -552,7 +556,7 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### Limit the number of schedule rules defined for security policy project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335659) in GitLab 15.1.
 
 You can limit the total number of schedule rules per security policy project. This limit is
 checked each time policies with schedule rules are updated. If a new schedule rule would
@@ -588,7 +592,7 @@ Plan.default.actual_limits.update!(ci_instance_level_variables: 30)
 
 ### Number of group level variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
 The total number of group level CI/CD variables is limited at the instance level.
 This limit is checked each time a new group level variable is created. If a new variable
@@ -606,7 +610,7 @@ Plan.default.actual_limits.update!(group_ci_variables: 40000)
 
 ### Number of project level variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
 The total number of project level CI/CD variables is limited at the instance level.
 This limit is checked each time a new project level variable is created. If a new variable
@@ -624,7 +628,7 @@ Plan.default.actual_limits.update!(project_ci_variables: 10000)
 
 ### Maximum file size per type of artifact
 
-> `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - `ci_max_artifact_size_annotations` limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
 Job artifacts defined with [`artifacts:reports`](../ci/yaml/index.md#artifactsreports)
 that are uploaded by the runner are rejected if the file size exceeds the maximum
@@ -754,7 +758,7 @@ continue to run, but the log is truncated when it hits the limit.
 
 ### Maximum number of active DAST profile schedules per project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68551) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68551) in GitLab 14.3.
 
 Limit the number of active DAST profile schedules per project. A DAST profile schedule can be active or inactive.
 
@@ -809,7 +813,7 @@ ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
 
 ### Limit dotenv variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
 
 You can set a limit on the maximum number of variables inside of a dotenv artifact.
 This limit is checked every time a dotenv file is exported as an artifact.
@@ -827,7 +831,7 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### Limit dotenv file size
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321552) in GitLab 14.5.
 
 You can set a limit on the maximum size of a dotenv artifact. This limit is checked
 every time a dotenv file is exported as an artifact.
@@ -843,7 +847,7 @@ Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 
 ### Limit CI/CD job annotations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
 You can set a limit on the maximum number of [annotations](../ci/yaml/artifacts_reports.md#artifactsreportsannotations)
 per CI/CD job.
@@ -859,7 +863,7 @@ Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 
 ### Limit CI/CD job annotations file size
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
 You can set a limit on the maximum size of a CI/CD job [annotation](../ci/yaml/artifacts_reports.md#artifactsreportsannotations).
 
@@ -918,7 +922,11 @@ panel_groups:
       label: Legend Label
 ```
 
-## Environment Dashboard limits **(PREMIUM ALL)**
+## Environment Dashboard limits
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 See [Environment Dashboard](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard) for the maximum number of displayed projects.
 
@@ -960,7 +968,7 @@ Reports that go over the 20 MB limit aren't loaded. Affected reports:
 ### Maximum file size indexed
 
 You can set a limit on the content of repository files that are indexed in
-Elasticsearch. Any files larger than this limit only index the file name.
+Elasticsearch. Any files larger than this limit only index the filename.
 The file content is neither indexed nor searchable.
 
 Setting a limit helps reduce the memory usage of the indexing processes and
@@ -993,6 +1001,7 @@ Set the limit to `0` to disable it.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132939) in GitLab 16.5.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) the 50-node limit from Wiki and repository files.
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/368009) a group-level setting to allow disabling math rendering limits, and re-enabled by default the math limits for wiki and repository files in GitLab 16.9.
 
 GitLab imposes default limits when rendering math in Markdown fields. These limits provide better security and performance.
 
@@ -1000,9 +1009,6 @@ The limits for issues, merge requests, epics, wikis, and repository files:
 
 - Maximum number of macro expansions: `1000`.
 - Maximum user-specified size in [em](https://en.wikipedia.org/wiki/Em_(typography)): `20`.
-
-The limits for issues, merge requests, and epics:
-
 - Maximum number of nodes rendered: `50`.
 - Maximum number of characters in a math block: `1000`.
 - Maximum rendering time: `2000 ms`.
@@ -1014,6 +1020,12 @@ Use the [GitLab Rails console](operations/rails_console.md#starting-a-rails-cons
 ```ruby
 ApplicationSetting.update(math_rendering_limits_enabled: false)
 ```
+
+These limits can also be disabled per-group using the GraphQL or REST API.
+
+If the limits are disabled, math is rendered with mostly no limits in issues, merge requests, epics, wikis, and repository files.
+This means a malicious actor _could_ add math that would cause a DoS when viewing in the browser. You must ensure
+that only people you trust can add content.
 
 ## Wiki limits
 
@@ -1069,7 +1081,8 @@ The default maximum file size for a package that's uploaded to the [GitLab packa
 The [maximum file sizes on GitLab.com](../user/gitlab_com/index.md#package-registry-limits)
 might be different.
 
-To set these limits for a self-managed installation, run the following in the
+To set these limits for a self-managed installation, you can do it [through the Admin Area](settings/continuous_integration.md#package-file-size-limits)
+or run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
@@ -1108,7 +1121,7 @@ When asking for versions of a given NuGet package name, the GitLab package regis
 
 ## Dependency Proxy Limits
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6396) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6396) in GitLab 14.5.
 
 The maximum file size for an image cached in the
 [Dependency Proxy](../user/packages/dependency_proxy/index.md)
@@ -1137,7 +1150,7 @@ Container repository tags are in the container registry and, as such, each tag d
 
 ## Project-level Secure Files API limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8.
 
 The [secure files API](../api/secure_files.md) enforces the following limits:
 

@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epics **(PREMIUM ALL)**
+# Epics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When [issues](../../project/issues/index.md) share a theme across projects and
 milestones, you can manage them by using epics.
@@ -31,7 +35,7 @@ Use epics:
 The possible relationships between epics and issues are:
 
 - An epic is the parent of one or more issues.
-- An epic is the parent of one or more child epics. For details see [Multi-level child epics](manage_epics.md#multi-level-child-epics).
+- An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
 
 ```mermaid
 graph TD
@@ -52,7 +56,11 @@ You can add issues from a different group hierarchy to an epic.
 To do it, paste the issue URL when
 [adding an existing issue](manage_epics.md#add-an-existing-issue-to-an-epic).
 
-## Roadmap in epics **(ULTIMATE ALL)**
+## Roadmap in epics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 If your epic contains one or more [child epics](manage_epics.md#multi-level-child-epics) that
 have a start or due date, a visual

@@ -527,8 +527,9 @@ li.note {
 }
 
 .border-section {
-  @include gl-py-6;
-  @include gl-m-0;
+  padding-top: $gl-spacing-scale-6;
+  padding-bottom: $gl-spacing-scale-6;
+  margin: 0;
 
   border-top: 1px solid $border-color;
 }
@@ -562,8 +563,8 @@ See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
 // --- moved from labels.scss when moving to page_bundles ---
 // Fix scoped label padding in cases where old markdown uses the old label structure */
 .gl-label-text + .gl-label-text {
-  @include gl-pl-2;
-  @include gl-pr-3;
+  padding-left: $gl-spacing-scale-2;
+  padding-right: $gl-spacing-scale-3;
 }
 
 // used in the Markdown rendering of labels

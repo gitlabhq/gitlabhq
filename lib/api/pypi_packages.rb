@@ -299,9 +299,11 @@ module API
 
           validate_fips! if Gitlab::FIPS.enabled?
 
-          ::Packages::Pypi::CreatePackageService
+          service_response = ::Packages::Pypi::CreatePackageService
             .new(project, current_user, declared_params.merge(build: current_authenticated_job))
             .execute
+
+          bad_request!(service_response.message) if service_response.error?
 
           created!
         rescue ObjectStorage::RemoteStoreError => e

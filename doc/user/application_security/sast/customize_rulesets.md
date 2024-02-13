@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customize rulesets **(ULTIMATE ALL)**
+# Customize rulesets
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235382) in GitLab 13.5.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for
@@ -82,7 +86,7 @@ To create the ruleset configuration file:
 
 ## Specify a remote configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393452) in 16.1.
 
 You can set a [CI/CD variable](../../../ci/variables/index.md) to use a ruleset configuration file that's stored outside of the current repository.
 This can help you apply the same rules across multiple projects.
@@ -110,6 +114,16 @@ variables:
 ```
 
 See [specify a private remote configuration example](#specify-a-private-remote-configuration) for advanced usage.
+
+### Troubleshooting remote configuration files
+
+If remote configuration file doesn't seem to be applying customizations correctly, the causes can be:
+
+1. Your repository has a local `.gitlab/sast-ruleset.toml` file.
+    - A local file is used if it's present, even if a remote configuration is set as a variable.
+    - A change to this logic is considered in [issue 414732](https://gitlab.com/gitlab-org/gitlab/-/issues/414732).
+1. There is a problem with authentication.
+    - To check whether this is the cause of the problem, try referencing a configuration file from a repository location that doesn't require authentication.
 
 ## Schema
 

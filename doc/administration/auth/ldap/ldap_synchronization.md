@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# LDAP synchronization **(PREMIUM SELF)**
+# LDAP synchronization
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 If you have [configured LDAP to work with GitLab](index.md), GitLab can automatically synchronize
 users and groups.
@@ -15,7 +19,7 @@ You can change when synchronization occurs.
 
 ## User sync
 
-> Preventing LDAP user's profile name synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
+> - Preventing LDAP user's profile name synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.
@@ -485,7 +489,7 @@ group, GitLab revokes their `admin` role when syncing.
 
 ### Global group memberships lock
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4354) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4354) in GitLab 12.0.
 
 GitLab administrators can prevent group members from inviting new members to subgroups that have their membership synchronized with LDAP.
 

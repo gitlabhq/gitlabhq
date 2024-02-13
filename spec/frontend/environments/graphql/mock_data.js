@@ -154,7 +154,7 @@ export const environmentsApp = {
               illustration: {
                 image:
                   '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-394',
+                size: 'svg-content svg-394',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -363,7 +363,7 @@ export const resolvedEnvironmentsApp = {
               illustration: {
                 image:
                   '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-                size: 'svg-394',
+                size: 'svg-content svg-394',
                 title: 'This job requires a manual action',
                 content:
                   'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -593,8 +593,8 @@ export const resolvedEnvironment = {
         detailsPath: '/h5bp/html5-boilerplate/-/jobs/1014',
         illustration: {
           image:
-            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
-          size: 'svg-430',
+            '/assets/illustrations/empty-state/empty-job-skipped-md-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: '',
           title: 'This job does not have a trace.',
         },
         favicon:
@@ -665,7 +665,7 @@ export const resolvedEnvironment = {
           illustration: {
             image:
               '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-394',
+            size: 'svg-content svg-394',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',
@@ -810,12 +810,86 @@ export const agent = {
 
 export const kubernetesNamespace = 'agent-namespace';
 
-const runningPod = { status: { phase: 'Running' } };
-const pendingPod = { status: { phase: 'Pending' } };
-const succeededPod = { status: { phase: 'Succeeded' } };
-const failedPod = { status: { phase: 'Failed' } };
+const runningPod = {
+  metadata: { name: 'pod-1', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
+  status: { phase: 'Running' },
+};
+const pendingPod = {
+  metadata: {
+    name: 'pod-2',
+    namespace: 'new-namespace',
+    creationTimestamp: '2023-11-21T11:50:59Z',
+  },
+  status: { phase: 'Pending' },
+};
+const succeededPod = {
+  metadata: { name: 'pod-3', namespace: 'default', creationTimestamp: '2023-07-31T11:50:17Z' },
+  status: { phase: 'Succeeded' },
+};
+const failedPod = {
+  metadata: { name: 'pod-4', namespace: 'default', creationTimestamp: '2023-11-21T11:50:59Z' },
+  status: { phase: 'Failed' },
+};
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
+
+export const k8sPodsStatsData = [
+  {
+    value: 2,
+    title: 'Running',
+  },
+  {
+    value: 1,
+    title: 'Pending',
+  },
+  {
+    value: 1,
+    title: 'Succeeded',
+  },
+  {
+    value: 2,
+    title: 'Failed',
+  },
+];
+
+export const k8sPodsTableData = [
+  {
+    name: 'pod-1',
+    namespace: 'default',
+    status: 'Running',
+    age: '114d',
+  },
+  {
+    name: 'pod-1',
+    namespace: 'default',
+    status: 'Running',
+    age: '114d',
+  },
+  {
+    name: 'pod-2',
+    namespace: 'new-namespace',
+    status: 'Pending',
+    age: '1d',
+  },
+  {
+    name: 'pod-3',
+    namespace: 'default',
+    status: 'Succeeded',
+    age: '114d',
+  },
+  {
+    name: 'pod-4',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+  },
+  {
+    name: 'pod-4',
+    namespace: 'default',
+    status: 'Failed',
+    age: '1d',
+  },
+];
 
 export const k8sServicesMock = [
   {
@@ -869,53 +943,6 @@ export const k8sServicesMock = [
     },
   },
 ];
-
-const readyDeployment = {
-  status: {
-    conditions: [
-      { type: 'Available', status: 'True' },
-      { type: 'Progressing', status: 'True' },
-    ],
-  },
-};
-const failedDeployment = {
-  status: {
-    conditions: [
-      { type: 'Available', status: 'False' },
-      { type: 'Progressing', status: 'False' },
-    ],
-  },
-};
-const pendingDeployment = {
-  status: {
-    conditions: [],
-  },
-};
-const readyDaemonSet = {
-  status: { numberReady: 1, desiredNumberScheduled: 1, numberMisscheduled: 0 },
-};
-const failedDaemonSet = {
-  status: { numberMisscheduled: 1, numberReady: 0, desiredNumberScheduled: 1 },
-};
-const readySet = { spec: { replicas: 2 }, status: { readyReplicas: 2 } };
-const failedSet = { spec: { replicas: 2 }, status: { readyReplicas: 1 } };
-const completedJob = { spec: { completions: 1 }, status: { succeeded: 1, failed: 0 } };
-const failedJob = { spec: { completions: 1 }, status: { succeeded: 0, failed: 1 } };
-const completedCronJob = {
-  spec: { suspend: 0 },
-  status: { active: 0, lastScheduleTime: new Date().toString() },
-};
-const suspendedCronJob = { spec: { suspend: 1 }, status: { active: 0, lastScheduleTime: '' } };
-const failedCronJob = { spec: { suspend: 0 }, status: { active: 2, lastScheduleTime: '' } };
-
-export const k8sWorkloadsMock = {
-  DeploymentList: [readyDeployment, failedDeployment, pendingDeployment],
-  DaemonSetList: [readyDaemonSet, failedDaemonSet, failedDaemonSet],
-  StatefulSetList: [readySet, readySet, failedSet],
-  ReplicaSetList: [readySet, failedSet],
-  JobList: [completedJob, completedJob, failedJob],
-  CronJobList: [completedCronJob, suspendedCronJob, failedCronJob],
-};
 
 export const k8sNamespacesMock = [
   { metadata: { name: 'default' } },
@@ -992,8 +1019,8 @@ export const resolvedEnvironmentToRollback = {
         icon: 'status_success',
         illustration: {
           image:
-            '/assets/illustrations/skipped-job_empty-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
-          size: 'svg-430',
+            '/assets/illustrations/empty-state/empty-job-skipped-md-29a8a37d8a61d1b6f68cf3484f9024e53cd6eb95e28eae3554f8011a1146bf27.svg',
+          size: '',
           title: 'This job does not have a trace.',
         },
         label: 'passed',
@@ -1058,7 +1085,7 @@ export const resolvedEnvironmentToRollback = {
           illustration: {
             image:
               '/assets/illustrations/manual_action-c55aee2c5f9ebe9f72751480af8bb307be1a6f35552f344cc6d1bf979d3422f6.svg',
-            size: 'svg-394',
+            size: 'svg-content svg-394',
             title: 'This job requires a manual action',
             content:
               'This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.',

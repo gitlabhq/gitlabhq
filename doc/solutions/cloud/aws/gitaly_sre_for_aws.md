@@ -5,7 +5,11 @@ info: This page is owned by the Solutions Architecture team.
 description: Doing SRE for Gitaly instances on AWS.
 ---
 
-# SRE Considerations for Gitaly on AWS **(FREE SELF)**
+# SRE Considerations for Gitaly on AWS
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 ## Gitaly SRE considerations
 

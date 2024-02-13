@@ -111,7 +111,7 @@
   flex-flow: row wrap;
   width: 100%;
 
-  .float-right {
+  .gl-float-right {
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
@@ -239,7 +239,7 @@ table {
 
   .md-area {
     background-color: $white;
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
   }
 }
 
@@ -295,7 +295,7 @@ table {
 
 .diff-td > .content > .discussion-reply-holder {
   padding-top: $gl-padding-12;
-  @include gl-bg-gray-10;
+  background-color: $gray-10;
 }
 
 .discussion-with-resolve-btn {

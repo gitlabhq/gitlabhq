@@ -4,7 +4,17 @@ group: Incubation
 info: Breach and Attack Simulation is a GitLab Incubation Engineering program. No technical writer assigned to this group.
 ---
 
-# Breach and Attack Simulation **(ULTIMATE ALL)**
+<!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
+
+# Breach and Attack Simulation (deprecated)
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and will be removed in 17.0. This change is a breaking change.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/402784) in GitLab 15.11 as an Incubating feature.
 > - [Included](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119981) in the `Security/BAS.latest.gitlab-ci.yml` in GitLab 16.0.
@@ -14,7 +24,8 @@ Breach and Attack Simulation is a set of incubating features being developed by 
 
 Breach and Attack Simulation (BAS) uses additional security testing techniques to assess the risk of detected vulnerabilities and prioritize the remediation of exploitable vulnerabilities.
 
-For feedback, bug reports, and feature requests, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/404809).
+This feature is an [Experiment](../../../policy/experiment-beta-support.md). For feedback, bug
+reports, and feature requests, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/404809).
 
 WARNING:
 Only run BAS scans against test servers. Testing attacker behavior can lead to modification or loss of data.
@@ -81,7 +92,7 @@ To maintain a separate DAST job while testing the BAS extended DAST image:
 
 To enable Breach and Attack Simulation features inside of an existing DAST job:
 
-1. Follow the steps in [Create a DAST CI/CD job](../dast/browser_based.md#create-a-dast-cicd-job).
+1. Follow the steps in [Create a DAST CI/CD job](../dast/browser/configuration/enabling_the_analyzer.md#create-a-dast-cicd-job).
 
 1. Extend DAST to using the [extends](../../../ci/yaml/yaml_optimization.md#use-extends-to-reuse-configuration-sections) keyword to your DAST job's configuration:
 
@@ -107,7 +118,7 @@ As with all projects, the items mentioned on this page are subject to change or 
 The development, release, and timing of any products, features, or functionality remain at the
 sole discretion of GitLab Inc.
 
-Perform Out-of-Band Application Security Testing (OAST) for certain [active checks](../dast/checks/index.md#active-checks).
+Perform Out-of-Band Application Security Testing (OAST) for certain [active checks](../dast/browser/checks/index.md#active-checks).
 
 1. Extend the `.dast_with_bas_using_services` job configuration using the [extends](../../../ci/yaml/yaml_optimization.md#use-extends-to-reuse-configuration-sections) keyword:
 
@@ -137,7 +148,9 @@ Perform Out-of-Band Application Security Testing (OAST) for certain [active chec
 
 You can also manually enable callback attacks by making sure to:
 
-1. Set the `DAST_FF_ENABLE_BAS` [CI/CD variable](../dast/browser_based.md#available-cicd-variables) to `true`.
+1. Set the `DAST_FF_ENABLE_BAS` [CI/CD variable](../dast/browser/configuration/variables.md) to `true`.
 1. Enable both the application being tested and callback service container using [services](../../../ci/services/index.md).
 1. Enable container-to-container networking [making the callback service accessible](../../../ci/services/index.md#connecting-services) in the job.
 1. Set `DAST_BROWSER_CALLBACK` to include `Address:$YOUR_CALLBACK_URL` key/value pair where the callback service is accessible to the Runner/DAST container.
+
+<!--- end_remove -->

@@ -10,8 +10,13 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
   let(:bridge) { nil }
 
   subject(:config) do
-    described_class.new(project: project, sha: sha,
-                        custom_content: content, pipeline_source: source, pipeline_source_bridge: bridge)
+    described_class.new(
+      project: project,
+      sha: sha,
+      custom_content: content,
+      pipeline_source: source,
+      pipeline_source_bridge: bridge
+    )
   end
 
   before do

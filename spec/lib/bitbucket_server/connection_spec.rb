@@ -22,31 +22,27 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
       subject.get(url)
     end
 
-    shared_examples 'handles get requests' do
-      it 'returns JSON body' do
-        expect(subject.get(url, { something: 1 })).to eq(payload)
-      end
-
-      it 'throws an exception if the response is not 200' do
-        WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: payload.to_json, status: 500, headers: headers)
-
-        expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
-      end
-
-      it 'throws an exception if the response is not JSON' do
-        WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: 'bad data', status: 200, headers: headers)
-
-        expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
-      end
-
-      it 'throws an exception upon a network error' do
-        WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
-
-        expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
-      end
+    it 'returns JSON body' do
+      expect(subject.get(url, { something: 1 })).to eq(payload)
     end
 
-    it_behaves_like 'handles get requests'
+    it 'throws an exception if the response is not 200' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: payload.to_json, status: 500, headers: headers)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
+    end
+
+    it 'throws an exception if the response is not JSON' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: 'bad data', status: 200, headers: headers)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
+    end
+
+    it 'throws an exception upon a network error' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
+    end
 
     context 'when the response is a 429 rate limit reached error' do
       let(:response) do
@@ -65,14 +61,6 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
         expect { subject.get(url) }.to raise_error(BitbucketServer::Connection::ConnectionError)
       end
     end
-
-    context 'when the bitbucket_server_importer_exponential_backoff feature flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_importer_exponential_backoff: false)
-      end
-
-      it_behaves_like 'handles get requests'
-    end
   end
 
   describe '#post' do
@@ -88,38 +76,26 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
       subject.post(url, payload)
     end
 
-    shared_examples 'handles post requests' do
-      it 'returns JSON body' do
-        expect(subject.post(url, payload)).to eq(payload)
-      end
-
-      it 'throws an exception if the response is not 200' do
-        WebMock.stub_request(:post, url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
-
-        expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
-      end
-
-      it 'throws an exception upon a network error' do
-        WebMock.stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
-
-        expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
-      end
-
-      it 'throws an exception if the URI is invalid' do
-        stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(URI::InvalidURIError)
-
-        expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
-      end
+    it 'returns JSON body' do
+      expect(subject.post(url, payload)).to eq(payload)
     end
 
-    it_behaves_like 'handles post requests'
+    it 'throws an exception if the response is not 200' do
+      WebMock.stub_request(:post, url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
 
-    context 'when the bitbucket_server_importer_exponential_backoff feature flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_server_importer_exponential_backoff: false)
-      end
+      expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
+    end
 
-      it_behaves_like 'handles post requests'
+    it 'throws an exception upon a network error' do
+      WebMock.stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(OpenSSL::SSL::SSLError)
+
+      expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
+    end
+
+    it 'throws an exception if the URI is invalid' do
+      stub_request(:post, url).with(headers: { 'Accept' => 'application/json' }).to_raise(URI::InvalidURIError)
+
+      expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
     end
   end
 
@@ -141,32 +117,20 @@ RSpec.describe BitbucketServer::Connection, feature_category: :importers do
         subject.delete(:branches, branch_path, payload)
       end
 
-      shared_examples 'handles delete requests' do
-        it 'returns JSON body' do
-          expect(subject.delete(:branches, branch_path, payload)).to eq(payload)
-        end
-
-        it 'throws an exception if the response is not 200' do
-          WebMock.stub_request(:delete, branch_url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
-
-          expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
-        end
-
-        it 'throws an exception upon a network error' do
-          WebMock.stub_request(:delete, branch_url).with(headers: headers).to_raise(OpenSSL::SSL::SSLError)
-
-          expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
-        end
+      it 'returns JSON body' do
+        expect(subject.delete(:branches, branch_path, payload)).to eq(payload)
       end
 
-      it_behaves_like 'handles delete requests'
+      it 'throws an exception if the response is not 200' do
+        WebMock.stub_request(:delete, branch_url).with(headers: headers).to_return(body: payload.to_json, status: 500, headers: headers)
 
-      context 'with the bitbucket_server_importer_exponential_backoff feature flag disabled' do
-        before do
-          stub_feature_flags(bitbucket_server_importer_exponential_backoff: false)
-        end
+        expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
+      end
 
-        it_behaves_like 'handles delete requests'
+      it 'throws an exception upon a network error' do
+        WebMock.stub_request(:delete, branch_url).with(headers: headers).to_raise(OpenSSL::SSL::SSLError)
+
+        expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
       end
     end
   end

@@ -4,7 +4,7 @@ group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Code Suggestions **(FREE ALL)**
+# Code Suggestions
 
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.
@@ -13,90 +13,104 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-With [GitLab Duo Code Suggestions](https://about.gitlab.com/solutions/code-suggestions/), you get:
+With GitLab Duo Code Suggestions, you get:
 
-- Code Completion, which suggests completions to the current line you are typing. These suggestions are usually low latency.
-- Code Generation, which generates code based on a natural language code
-  comment block. Write a comment like `# Type more here` to generate the
-  appropriate code, based on the context of your comment and the rest of your code.
-  - Algorithms or large code blocks may take more than 10 seconds to generate.
-  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
+- Code completion, which suggests completions to the current line you are typing.
+- Code generation, which generates code based on a natural language code
+  comment block. Write a comment like `# Type more here`, then press <kbd>Enter</kbd> to generate
+  code based on the context of your comment and the rest of your code.
 
-## Start using Code Suggestions
+Get started with Code Suggestions on your [self-managed](self_managed.md) instance
+or on [SaaS](saas.md).
 
-GitLab Duo Code Suggestions are available:
+## Watch a demo
 
-- In the Premium and Ultimate tier for [self-managed](self_managed.md), and across all tiers for [SaaS](saas.md). View these pages to get started.
-- In VS Code, Microsoft Visual Studio, JetBrains IDEs, and Neovim. You must have the corresponding GitLab extension installed.
-- In the GitLab Web IDE.
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[Watch a video overview](https://youtu.be/xQUlrbIWo8o).
+<!-- Video published on 2023-12-09 -->
 
-<div class="video-fallback">
-  <a href="https://youtu.be/xQUlrbIWo8o">View how to setup and use GitLab Duo Code Suggestions</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/xQUlrbIWo8o" frameborder="0" allowfullscreen> </iframe>
-</figure>
+[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
+<!-- Demo published on 2024-02-01 -->
 
-Code Suggestions is available and free to use until February 15, 2024:
+## Required subscription
 
-- Before February 15, 2024, usage of Code Suggestions is governed by the
-  [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
-- On February 15, 2024, Code Suggestions becomes a paid add-on and will be governed by our
-  [AI Functionality Terms](https://about.gitlab.com/handbook/legal/ai-functionality-terms/).
+Code Suggestions availability is changing.
+
+Access subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)
+is available through February 14, 2024:
+
+- For SaaS, on all subscription tiers (Free, Premium, and Ultimate).
+- For self-managed, on Premium and Ultimate tiers.
+
+Starting February 15, 2024, Code Suggestions will be part of [GitLab Duo Pro](https://about.gitlab.com/gitlab-duo/):
+
+- GitLab Duo Pro is available for both SaaS and self-managed, on Premium and Ultimate tiers.
+
+NOTE:
+On February 15th, if you have not purchased GitLab Duo Pro,
+you will no longer have access to Code Suggestions.
+Get access by
+[contacting your sales team and assigning seats to the users who want access](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+
+Code Suggestions are not available for the GitLab Community Edition.
+
+## Supported editor extensions
+
+To use Code Suggestions, use one of these editor extensions:
+
+| IDE              | Extension              |
+|------------------|------------------------|
+| VSCode           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)|
+| [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md)  | No configuration required. |
+| Microsoft Visual Studio | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
+| JetBrains IDEs  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab) |
+| Neovim           | [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) |
+
+A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, and Neovim. The Language Server supports faster iteration across more platforms. You can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
 
 ## Supported languages
 
-Code Suggestions support is a function of the:
-
-- Underlying large language model.
-- IDE used.
-- Extension or plug-in support in the IDE.
-
-For languages not listed in the following table, Code Suggestions might not function as expected.
-
-### Supported languages in IDEs
-
-Code Suggestions is aware of common popular programming concepts and
+Code Suggestions is aware of common popular programming languages, concepts, and
 infrastructure-as-code interfaces, like Kubernetes Resource Model (KRM),
 Google Cloud CLI, and Terraform.
 
-The editor supports these languages:
+The following languages are supported:
 
 | Language         | VS Code                | JetBrains IDEs         | Visual Studio          | Neovim |
 |------------------|------------------------|------------------------|------------------------|--------|
 | C++              | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | C#               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| CSS              | **{check-circle}** No  | **{check-circle}** Yes | **{check-circle}** No  | **{check-circle}** No  |
 | Go               | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Google SQL       | **{dotted-circle}** No | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| HTML             | **{check-circle}** No  | **{check-circle}** Yes | **{check-circle}** No  | **{check-circle}** No  |
 | Java             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | JavaScript       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Kotlin           | **{check-circle}** Yes (Requires third-party extension providing Kotlin support) | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Kotlin           | **{check-circle}** Yes <br><br>(Requires third-party extension providing Kotlin support) | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | PHP              | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Python           | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Ruby             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | Rust             | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Scala            | **{check-circle}** Yes (Requires third-party extension providing Scala support) | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Scala            | **{check-circle}** Yes <br><br>(Requires third-party extension providing Scala support) | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
+| Shell scripts (`bash` only) | **{check-circle}** No  | **{check-circle}** Yes | **{check-circle}** No  | **{check-circle}** No  |
 | Swift            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
 | TypeScript       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
-| Terraform        | **{check-circle}** Yes (Requires third-party extension providing Terraform support) | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes (Requires third-party extension providing the `terraform` file type) |
+| Terraform        | **{check-circle}** Yes <br><br>(Requires third-party extension providing Terraform support) | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes <br><br>(Requires third-party extension providing the `terraform` file type) |
 
 NOTE:
-Some languages are not supported in all JetBrains IDEs, or may require additional
+Some languages are not supported in all JetBrains IDEs, or might require additional
 plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
-## Supported editor extensions
+For languages not listed in the table, Code Suggestions might not function as expected.
 
-Code Suggestions supports a variety of popular editors including:
+## Response time
 
-- VS Code, using [the VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow). Supports streaming responses for code generation.
-- [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md), with no additional configuration.
-- Microsoft Visual Studio, using the [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio).
-- JetBrains IDEs, using the [GitLab plugin](https://plugins.jetbrains.com/plugin/22325-gitlab).
-- Neovim, using the [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim).
+- Code completion suggestions are usually low latency.
+- For code generation:
+  - Algorithms or large code blocks might take more than 10 seconds to generate.
+  - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
 
-A [GitLab Language Server](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp) is used in VS Code, Visual Studio, and Neovim. The Language Server supports faster iteration across more platforms. Users can also configure it to support Code Suggestions in IDEs where GitLab doesn't provide official support.
-
-## Code Suggestions data usage
+## Data usage
 
 Code Suggestions is powered by a generative AI model.
 
@@ -109,7 +123,7 @@ GitLab selects the best-in-class large-language models for specific tasks. We us
 
 ### Telemetry
 
-For self-managed instances that have enabled Code Suggestions and SaaS accounts, we collect aggregated or de-identified first-party usage data through our [Snowplow collector](https://about.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
+For self-managed instances that have enabled Code Suggestions and for SaaS accounts, we collect aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:
 
 - Language the code suggestion was in (for example, Python)
 - Editor being used (for example, VS Code)
@@ -122,7 +136,7 @@ For self-managed instances that have enabled Code Suggestions and SaaS accounts,
 
 ### Inference window context
 
-Code Suggestions inferences against the currently opened file, the content before and after the cursor, the file name, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ### Training data
 
@@ -133,10 +147,10 @@ For more information on GitLab Code Suggestions data [sub-processors](https://ab
 - Google Vertex AI Codey APIs [data governance](https://cloud.google.com/vertex-ai/docs/generative-ai/data-governance) and [responsible AI](https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai).
 - Anthropic Claude's [constitution](https://www.anthropic.com/index/claudes-constitution).
 
-## Known limitations
+## Accuracy of results
 
 We are continuing to work on the accuracy of overall generated content.
-However, Code Suggestions may generate suggestions that are:
+However, Code Suggestions might generate suggestions that are:
 
 - Irrelevant.
 - Incomplete.
@@ -146,22 +160,17 @@ However, Code Suggestions may generate suggestions that are:
 
 When using Code Suggestions, [code review best practice](../../../../development/code_review.md) still applies.
 
-Let us know if you have [feedback](#feedback).
-
 ## Progressive enhancement
 
-This feature is designed as a progressive enhancement to developer's IDEs.
+This feature is designed as a progressive enhancement to developer IDEs.
 Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely matter.
 In the event of a connection issue or model inference failure, the feature gracefully degrades.
 Code Suggestions do not prevent you from writing code in your IDE.
 
+## Disable Code Suggestions
+
+To disable Code Suggestions, disable the feature in your IDE editor extension.
+
 ## Feedback
 
-Let us know about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).
-
-## Troubleshooting
-
-### Disable Code Suggestions
-
-Individual users can disable Code Suggestions by disabling the feature in their
-[installed IDE editor extension](index.md#supported-editor-extensions).
+Provide feedback about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).

@@ -8,11 +8,13 @@ module Gitlab
       end
 
       def call(env)
-        Gitlab::UrlBlocker.validate!(env[:url],
+        Gitlab::HTTP_V2::UrlBlocker.validate!(env[:url],
           schemes: %w[http https],
           allow_localhost: allow_local_requests?,
           allow_local_network: allow_local_requests?,
-          dns_rebind_protection: dns_rebind_protection?
+          dns_rebind_protection: dns_rebind_protection?,
+          deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
         )
 
         @app.call(env)

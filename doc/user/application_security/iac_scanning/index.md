@@ -4,9 +4,13 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Infrastructure as Code scanning **(FREE ALL)**
+# Infrastructure as Code scanning
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6655) in GitLab 14.5.
 
 Infrastructure as Code (IaC) scanning runs in your CI/CD pipeline, checking your infrastructure
 definition files for known vulnerabilities. Identify vulnerabilities before they're committed to
@@ -38,7 +42,8 @@ To enable IaC scanning of a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    ```yaml
    include:
@@ -78,7 +83,11 @@ Supported configuration formats:
 </small>
 </html>
 
-## Customize rules **(ULTIMATE ALL)**
+## Customize rules
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 
@@ -207,7 +216,7 @@ GitLab scanners are provided with a base Alpine image for size and maintainabili
 
 ### Use FIPS-enabled images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 GitLab provides [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
 versions of the scanners' images, in addition to the standard images.

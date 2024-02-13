@@ -1,7 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
 .file-tree-container {
-  @include gl-w-full;
+  width: 100%;
 
   @media (min-width: $breakpoint-md) {
     width: 300px;
@@ -17,7 +17,7 @@
 }
 
 .file-tree-includes-link:hover > svg {
-  @include gl-display-block;
+  display: block;
   top: 2px;
 }
 

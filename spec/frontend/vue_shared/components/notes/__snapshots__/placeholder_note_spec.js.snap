@@ -33,7 +33,7 @@ exports[`Issue placeholder note component matches snapshot 1`] = `
           href="/root"
         >
           <span
-            class="bold d-none d-sm-inline-block"
+            class="bold gl-display-none gl-sm-display-inline-block"
           >
             Root
           </span>

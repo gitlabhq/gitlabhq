@@ -4,9 +4,13 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Fail Fast Testing **(PREMIUM ALL)**
+# Fail Fast Testing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198550) in GitLab 13.1.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198550) in GitLab 13.1.
 
 For applications that use RSpec for running tests, we've introduced the `Verify/Failfast`
 [template to run subsets of your test suite](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Verify/FailFast.gitlab-ci.yml),

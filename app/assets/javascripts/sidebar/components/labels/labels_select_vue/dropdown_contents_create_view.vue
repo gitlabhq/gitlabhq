@@ -55,7 +55,7 @@ export default {
 
 <template>
   <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-title d-flex align-items-center pt-0 pb-2 gl-mb-0">
+    <div class="dropdown-title d-flex gl-align-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
         category="tertiary"
@@ -114,14 +114,17 @@ export default {
         :disabled="disableCreate"
         category="primary"
         variant="confirm"
-        class="float-left d-flex align-items-center"
+        class="float-left d-flex gl-align-items-center"
         data-testid="create-click"
         @click="handleCreateClick"
       >
         <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />
         {{ __('Create') }}
       </gl-button>
-      <gl-button class="float-right js-btn-cancel-create" @click="toggleDropdownContentsCreateView">
+      <gl-button
+        class="gl-float-right js-btn-cancel-create"
+        @click="toggleDropdownContentsCreateView"
+      >
         {{ __('Cancel') }}
       </gl-button>
     </div>

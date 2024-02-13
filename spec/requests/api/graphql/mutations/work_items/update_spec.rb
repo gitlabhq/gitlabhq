@@ -1479,6 +1479,207 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
     end
 
+    context 'with notes widget input' do
+      let(:discussion_locked) { true }
+      let(:input) { { 'notesWidget' => { 'discussionLocked' => true } } }
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                discussionLocked
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      shared_examples 'work item is not updated' do
+        it 'ignores the update' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.not_to change(&work_item_change)
+        end
+      end
+
+      it_behaves_like 'work item is not updated' do
+        let(:current_user) { guest }
+        let(:work_item_change) { -> { work_item.discussion_locked } }
+      end
+
+      context 'when user has permissions to update the work item' do
+        let(:current_user) { reporter }
+
+        it 'updates work item discussion locked attribute on notes widget' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.to change { work_item.discussion_locked }.from(nil).to(true)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(mutation_response['workItem']['widgets']).to include(
+            {
+              'discussionLocked' => true,
+              'type' => 'NOTES'
+            }
+          )
+        end
+
+        context 'when using quick action' do
+          let(:input) { { 'descriptionWidget' => { 'description' => "/lock" } } }
+
+          it 'updates work item discussion locked attribute on notes widget' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change { work_item.discussion_locked }.from(nil).to(true)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']['widgets']).to include(
+              {
+                'discussionLocked' => true,
+                'type' => 'NOTES'
+              }
+            )
+          end
+
+          context 'when unlocking discussion' do
+            let(:input) { { 'descriptionWidget' => { 'description' => "/unlock" } } }
+
+            before do
+              work_item.update!(discussion_locked: true)
+            end
+
+            it 'updates work item discussion locked attribute on notes widget' do
+              expect do
+                post_graphql_mutation(mutation, current_user: current_user)
+                work_item.reload
+              end.to change { work_item.discussion_locked }.from(true).to(false)
+
+              expect(response).to have_gitlab_http_status(:success)
+            end
+          end
+
+          context 'when the work item type does not support the notes widget' do
+            let(:input) do
+              { 'descriptionWidget' => { 'description' => "Updating notes discussion locked.\n/lock" } }
+            end
+
+            before do
+              WorkItems::Type.default_by_type(:issue).widget_definitions
+                .find_by_widget_type(:notes).update!(disabled: true)
+            end
+
+            it_behaves_like 'work item is not updated' do
+              let(:work_item_change) { -> { work_item.discussion_locked } }
+            end
+          end
+        end
+      end
+    end
+
+    context 'with time tracking widget input' do
+      shared_examples 'mutation updating work item with time tracking data' do
+        it 'updates time tracking' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.time_estimate }.from(0).to(12.hours.to_i).and(
+            change { mutation_work_item.total_time_spent }.from(0).to(2.hours.to_i)
+          )
+
+          expect(mutation_response['workItem']['widgets']).to include(
+            'timeEstimate' => 12.hours.to_i,
+            'totalTimeSpent' => 2.hours.to_i,
+            'timelogs' => {
+              'nodes' => [
+                {
+                  'timeSpent' => 2.hours.to_i
+                }
+              ]
+            },
+            'type' => 'TIME_TRACKING'
+          )
+
+          expect(mutation_response['workItem']['widgets']).to include(
+            'description' => 'some description',
+            'type' => 'DESCRIPTION'
+          )
+        end
+      end
+
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              ... on WorkItemWidgetTimeTracking {
+                type
+                timeEstimate
+                totalTimeSpent
+                timelogs {
+                  nodes {
+                    timeSpent
+                  }
+                }
+              }
+              ... on WorkItemWidgetDescription {
+                type
+                description
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      let_it_be(:group_work_item) { create(:work_item, :task, :group_level, namespace: group) }
+
+      context 'when adding time estimate and time spent' do
+        context 'with quick action' do
+          let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+
+          it_behaves_like 'mutation updating work item with time tracking data'
+        end
+
+        context 'when work item belongs to the group' do
+          let(:mutation_work_item) { group_work_item }
+          let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+
+          it_behaves_like 'mutation updating work item with time tracking data'
+        end
+      end
+
+      context 'when the work item type does not support time tracking widget' do
+        let_it_be(:work_item) { create(:work_item, :task, project: project) }
+
+        let(:input) { { 'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" } } }
+
+        before do
+          WorkItems::Type.default_by_type(:task).widget_definitions
+            .find_by_widget_type(:time_tracking).update!(disabled: true)
+        end
+
+        it 'ignores the quick action' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            work_item.reload
+          end.not_to change { work_item.time_estimate }
+
+          expect(mutation_response['workItem']['widgets']).to include(
+            'description' => "some description",
+            'type' => 'DESCRIPTION'
+          )
+          expect(mutation_response['workItem']['widgets']).not_to include(
+            'type' => 'TIME_TRACKING'
+          )
+        end
+      end
+    end
+
     context 'when unsupported widget input is sent' do
       let_it_be(:work_item) { create(:work_item, :test_case, project: project) }
 

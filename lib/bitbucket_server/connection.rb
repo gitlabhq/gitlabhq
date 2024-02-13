@@ -32,13 +32,9 @@ module BitbucketServer
     end
 
     def get(path, extra_query = {})
-      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
-                   retry_with_delay do
-                     Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
-                   end
-                 else
-                   Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
-                 end
+      response = retry_with_delay do
+        Gitlab::HTTP.get(build_url(path), basic_auth: auth, headers: accept_headers, query: extra_query)
+      end
 
       check_errors!(response)
 
@@ -48,13 +44,9 @@ module BitbucketServer
     end
 
     def post(path, body)
-      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
-                   retry_with_delay do
-                     Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
-                   end
-                 else
-                   Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
-                 end
+      response = retry_with_delay do
+        Gitlab::HTTP.post(build_url(path), basic_auth: auth, headers: post_headers, body: body)
+      end
 
       check_errors!(response)
 
@@ -70,13 +62,9 @@ module BitbucketServer
     def delete(resource, path, body)
       url = delete_url(resource, path)
 
-      response = if Feature.enabled?(:bitbucket_server_importer_exponential_backoff)
-                   retry_with_delay do
-                     Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
-                   end
-                 else
-                   Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
-                 end
+      response = retry_with_delay do
+        Gitlab::HTTP.delete(url, basic_auth: auth, headers: post_headers, body: body)
+      end
 
       check_errors!(response)
 

@@ -17,8 +17,8 @@
     line-height: $gl-line-height-24;
 
     // leave enough space for the close icon
-    &.mw-100,
-    &.w-100 {
+    &.gl-max-w-full,
+    &.gl-w-full {
       margin-right: -$modal-header-padding-x;
       padding-right: $modal-header-padding-x;
     }

@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Emoji reactions API **(FREE ALL)**
+# Emoji reactions API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/409884) from "award emoji" to "emoji reactions" in GitLab 16.0.
 
@@ -13,7 +17,7 @@ An [emoji reaction](../user/emoji_reactions.md) tells a thousand words.
 We call GitLab objects on which you can react with an emoji "awardables".
 You can react with emoji on the following:
 
-- [Epics](../user/group/epics/index.md) ([API](epics.md)). **(PREMIUM ALL)**
+- [Epics](../user/group/epics/index.md) ([API](epics.md)).
 - [Issues](../user/project/issues/index.md) ([API](issues.md)).
 - [Merge requests](../user/project/merge_requests/index.md) ([API](merge_requests.md)).
 - [Snippets](../user/snippets.md) ([API](snippets.md)).
@@ -25,7 +29,7 @@ For information on using these endpoints with comments, see [Add reactions to co
 
 ### List an awardable's emoji reactions
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
 Get a list of all emoji reactions for a specified awardable. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -90,7 +94,7 @@ Example response:
 
 ### Get single emoji reaction
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public awardables.
 
 Get a single emoji reaction from an issue, snippet, or merge request. This endpoint can
 be accessed without authentication if the awardable is publicly accessible.
@@ -214,7 +218,7 @@ adapted to comments on merge requests and snippets. Therefore, you have to repla
 
 ### List a comment's emoji reactions
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
 Get all emoji reactions for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.
@@ -262,7 +266,7 @@ Example response:
 
 ### Get an emoji reaction for a comment
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/335068) in GitLab 15.1 to allow unauthenticated access to public comments.
 
 Get a single emoji reaction for a comment (note). This endpoint can
 be accessed without authentication if the comment is publicly accessible.

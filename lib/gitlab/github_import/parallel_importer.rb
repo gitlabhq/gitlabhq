@@ -35,7 +35,7 @@ module Gitlab
       def execute
         Gitlab::Import::SetAsyncJid.set_jid(project.import_state)
 
-        # We need to track this job's status for use by Gitlab::GithubImport::RefreshImportJidWorker.
+        # We need to track this job's status for use by Gitlab::Import::RefreshImportJidWorker.
         Stage::ImportRepositoryWorker
           .with_status
           .perform_async(project.id)

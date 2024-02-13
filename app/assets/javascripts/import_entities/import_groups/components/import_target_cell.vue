@@ -1,8 +1,10 @@
 <script>
 import { GlFormInput } from '@gitlab/ui';
+
 import ImportTargetDropdown from '../../components/import_target_dropdown.vue';
 
-import { getInvalidNameValidationMessage } from '../utils';
+import { validationMessageFor } from '../utils';
+import { NEW_NAME_FIELD, TARGET_NAMESPACE_FIELD } from '../constants';
 
 export default {
   components: {
@@ -18,18 +20,27 @@ export default {
 
   computed: {
     selectedImportTarget() {
-      return this.group.importTarget.targetNamespace.fullPath || '';
+      return this.group.importTarget?.targetNamespace?.fullPath;
     },
+
+    importTargetNewName() {
+      return this.group.importTarget?.newName;
+    },
+
     validationMessage() {
       return (
-        this.group.progress?.message || getInvalidNameValidationMessage(this.group.importTarget)
+        this.group.progress?.message ||
+        validationMessageFor(this.group.importTarget, TARGET_NAMESPACE_FIELD) ||
+        validationMessageFor(this.group.importTarget, NEW_NAME_FIELD)
       );
     },
+
     validNameState() {
       // bootstrap-vue requires null for "indifferent" state, if we return true
       // this will highlight field in green like "passed validation"
-      return this.group.flags.isInvalid && this.group.flags.isAvailableForImport ? false : null;
+      return this.group.flags.isInvalid && this.isPathSelectionAvailable ? false : null;
     },
+
     isPathSelectionAvailable() {
       return this.group.flags.isAvailableForImport;
     },
@@ -52,6 +63,7 @@ export default {
     <div class="gl-display-flex gl-align-items-stretch">
       <import-target-dropdown
         :selected="selectedImportTarget"
+        :toggle-text="s__('BulkImport|Select parent group')"
         :disabled="!isPathSelectionAvailable"
         @select="onImportTargetSelect"
       />
@@ -76,7 +88,7 @@ export default {
           debounce="500"
           data-testid="target-namespace-input"
           :disabled="!isPathSelectionAvailable"
-          :value="group.importTarget.newName"
+          :value="importTargetNewName"
           :aria-label="__('New name')"
           :state="validNameState"
           @input="$emit('update-new-name', $event)"

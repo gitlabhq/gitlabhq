@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def get_connected_agents_by_agent_ids(agent_ids:)
-        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIdsRequest.new(agent_ids: agent_ids)
+        request = Gitlab::Agent::AgentTracker::Rpc::GetConnectedAgentsByAgentIDsRequest.new(agent_ids: agent_ids)
 
         stub_for(:agent_tracker)
          .get_connected_agents_by_agent_ids(request, metadata: metadata)

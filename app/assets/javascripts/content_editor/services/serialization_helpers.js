@@ -1,4 +1,5 @@
-import { uniq, isString, omit, isFunction } from 'lodash';
+import { uniq, omit, isFunction } from 'lodash';
+import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import { removeLastSlashInUrlPath, removeUrlProtocol } from '../../lib/utils/url_utility';
 
 const defaultAttrs = {
@@ -110,8 +111,8 @@ function htmlEncode(str = '') {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/'/g, '&#39;')
-    .replace(/"/g, '&#34;');
+    .replace(/'/g, '&apos;')
+    .replace(/"/g, '&quot;');
 }
 
 const shouldIgnoreAttr = (tagName, attrKey, attrValue) =>
@@ -337,15 +338,22 @@ export function renderHardBreak(state, node, parent, index) {
   }
 }
 
+function getMediaSrc(node, useCanonicalSrc = true) {
+  const { canonicalSrc, src } = node.attrs;
+
+  if (useCanonicalSrc) return canonicalSrc || src || '';
+  return src || '';
+}
+
 export function renderImage(state, node) {
-  const { alt, canonicalSrc, src, title, width, height, isReference } = node.attrs;
-  const realSrc = canonicalSrc || src || '';
+  const { alt, title, width, height, isReference } = node.attrs;
+  const realSrc = getMediaSrc(node, state.options.useCanonicalSrc);
   // eslint-disable-next-line @gitlab/require-i18n-strings
   if (realSrc.startsWith('data:') || realSrc.startsWith('blob:')) return;
 
-  if (isString(src) || isString(canonicalSrc)) {
+  if (realSrc) {
     const quotedTitle = title ? ` ${state.quote(title)}` : '';
-    const sourceExpression = isReference ? `[${canonicalSrc}]` : `(${realSrc}${quotedTitle})`;
+    const sourceExpression = isReference ? `[${realSrc}]` : `(${realSrc}${quotedTitle})`;
 
     const sizeAttributes = [];
     if (width) {
@@ -365,12 +373,44 @@ export function renderPlayable(state, node) {
   renderImage(state, node);
 }
 
+export function renderHeading(state, node) {
+  if (state.options.skipEmptyNodes && !node.childCount) return;
+
+  defaultMarkdownSerializer.nodes.heading(state, node);
+}
+
+export function renderBlockquote(state, node) {
+  if (state.options.skipEmptyNodes) {
+    if (!node.childCount) return;
+    if (node.childCount === 1) {
+      const child = node.child(0);
+      if (child.type.name === 'paragraph' && !child.childCount) return;
+    }
+  }
+
+  if (node.attrs.multiline) {
+    state.write('>>>');
+    state.ensureNewLine();
+    state.renderContent(node);
+    state.ensureNewLine();
+    state.write('>>>');
+    state.closeBlock(node);
+  } else {
+    state.wrapBlock('> ', null, node, () => state.renderContent(node));
+  }
+}
+
 export function renderCodeBlock(state, node) {
+  if (state.options.skipEmptyNodes && !node.childCount) return;
+
+  let { language } = node.attrs;
+  if (language === 'plaintext') language = '';
+
   const numBackticks = Math.max(2, node.textContent.match(/```+/g)?.[0]?.length || 0) + 1;
   const backticks = state.repeat('`', numBackticks);
   state.write(
     `${backticks}${
-      (node.attrs.language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')
+      (language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')
     }\n`,
   );
   state.text(node.textContent, false);
@@ -641,13 +681,20 @@ const isAutoLink = (linkMark, parent) => {
  */
 const isBracketAutoLink = (sourceMarkdown) => /^<.+?>$/.test(sourceMarkdown);
 
+function getLinkHref(mark, useCanonicalSrc = true) {
+  const { canonicalSrc, href } = mark.attrs;
+
+  if (useCanonicalSrc) return canonicalSrc || href || '';
+  return href || '';
+}
+
 export const link = {
   open(state, mark, parent) {
     if (isAutoLink(mark, parent)) {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '<' : '';
     }
 
-    const { canonicalSrc, href, title, sourceMarkdown } = mark.attrs;
+    const { href, title, sourceMarkdown } = mark.attrs;
 
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';
@@ -656,7 +703,9 @@ export const link = {
       return '[';
     }
 
-    const attrs = { href: state.esc(href || canonicalSrc || '') };
+    const attrs = {
+      href: state.esc(getLinkHref(mark, state.options.useCanonicalSrc)),
+    };
 
     if (title) {
       attrs.title = title;
@@ -669,25 +718,29 @@ export const link = {
       return isBracketAutoLink(mark.attrs.sourceMarkdown) ? '>' : '';
     }
 
-    const { canonicalSrc, href, title, sourceMarkdown, isReference } = mark.attrs;
+    const { href, title, sourceMarkdown, isReference } = mark.attrs;
 
     // eslint-disable-next-line @gitlab/require-i18n-strings
     if (href.startsWith('data:') || href.startsWith('blob:')) return '';
 
     if (isReference) {
-      return `][${state.esc(canonicalSrc || href || '')}]`;
+      return `][${state.esc(getLinkHref(mark, state.options.useCanonicalSrc))}]`;
     }
 
     if (linkType(sourceMarkdown) === LINK_HTML) {
       return closeTag('a');
     }
 
-    return `](${state.esc(canonicalSrc || href || '')}${title ? ` ${state.quote(title)}` : ''})`;
+    return `](${state.esc(getLinkHref(mark, state.options.useCanonicalSrc))}${
+      title ? ` ${state.quote(title)}` : ''
+    })`;
   },
 };
 
 const generateStrikeTag = (wrapTagName = openTag) => {
   return (_, mark) => {
+    if (mark.attrs.htmlTag) return wrapTagName(mark.attrs.htmlTag);
+
     const type = /^(~~|<del|<strike|<s).*/.exec(mark.attrs.sourceMarkdown)?.[1];
 
     switch (type) {

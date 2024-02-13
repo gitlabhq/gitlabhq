@@ -1,4 +1,5 @@
 import { __ } from '~/locale';
+import { SORT_ITEM_NAME, SORT_ITEM_CREATED_AT, SORT_ITEM_UPDATED_AT } from '../shared/constants';
 
 export const DISPLAY_QUERY_GROUPS = 'groups';
 export const DISPLAY_QUERY_PROJECTS = 'projects';
@@ -16,12 +17,4 @@ export const DISPLAY_LISTBOX_ITEMS = [
   },
 ];
 
-export const SORT_DIRECTION_ASC = 'asc';
-export const SORT_DIRECTION_DESC = 'desc';
-
-export const SORT_ITEM_CREATED = {
-  name: 'created',
-  text: __('Created'),
-};
-
-export const SORT_ITEMS = [SORT_ITEM_CREATED];
+export const SORT_ITEMS = [SORT_ITEM_NAME, SORT_ITEM_CREATED_AT, SORT_ITEM_UPDATED_AT];

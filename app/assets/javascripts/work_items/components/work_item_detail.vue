@@ -22,6 +22,7 @@ import {
   WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
+  LINKED_ITEMS_ANCHOR,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -174,6 +175,9 @@ export default {
     canAssignUnassignUser() {
       return this.workItemAssignees && this.canSetWorkItemMetadata;
     },
+    isDiscussionLocked() {
+      return this.workItemNotes?.discussionLocked;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -243,7 +247,8 @@ export default {
     },
     titleClassHeader() {
       return {
-        'gl-sm-display-none!': this.parentWorkItem,
+        'gl-sm-display-none! gl-mt-3': this.parentWorkItem,
+        'gl-sm-display-block!': !this.parentWorkItem,
         'gl-w-full': !this.parentWorkItem && !this.editMode,
         'editable-wi-title': this.editMode && !this.parentWorkItem,
       };
@@ -251,15 +256,12 @@ export default {
     titleClassComponent() {
       return {
         'gl-sm-display-block!': !this.parentWorkItem,
-        'gl-display-none gl-sm-display-block!': this.parentWorkItem,
-        'gl-mt-3 editable-wi-title': this.workItemsMvc2Enabled,
+        'gl-display-none gl-sm-display-block! gl-mt-3': this.parentWorkItem,
+        'editable-wi-title': this.workItemsMvc2Enabled,
       };
     },
-    headerWrapperClass() {
-      return {
-        'flex-wrap': this.parentWorkItem,
-        'gl-display-block gl-md-display-flex! gl-align-items-flex-start gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 gl-pt-3': true,
-      };
+    shouldShowEditButton() {
+      return this.workItemsMvc2Enabled && !this.editMode && this.canUpdate;
     },
   },
   mounted() {
@@ -325,8 +327,8 @@ export default {
         replace: true,
       });
     },
-    openInModal({ event, modalWorkItem }) {
-      if (!this.workItemsMvc2Enabled) {
+    openInModal({ event, modalWorkItem, context }) {
+      if (!this.workItemsMvc2Enabled || context === LINKED_ITEMS_ANCHOR) {
         return;
       }
 
@@ -436,7 +438,9 @@ export default {
             @click="$emit('close')"
           />
         </div>
-        <div :class="headerWrapperClass">
+        <div
+          class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
+        >
           <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
           <div
             v-if="!error && !workItemLoading"
@@ -446,7 +450,6 @@ export default {
             <work-item-title-with-edit
               v-if="workItem.title && workItemsMvc2Enabled"
               ref="title"
-              class="gl-mt-3 gl-sm-display-block!"
               :is-editing="editMode"
               :title="workItem.title"
               @updateWorkItem="updateWorkItem"
@@ -455,7 +458,6 @@ export default {
             <work-item-title
               v-else-if="workItem.title"
               ref="title"
-              class="gl-sm-display-block!"
               :work-item-id="workItem.id"
               :work-item-title="workItem.title"
               :work-item-type="workItemType"
@@ -463,11 +465,9 @@ export default {
               @error="updateError = $event"
             />
           </div>
-          <div
-            class="detail-page-header-actions gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3"
-          >
+          <div class="gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3">
             <gl-button
-              v-if="workItemsMvc2Enabled && !editMode"
+              v-if="shouldShowEditButton"
               category="secondary"
               data-testid="work-item-edit-form-button"
               @click="enableEditMode"
@@ -491,6 +491,7 @@ export default {
               :can-delete="canDelete"
               :can-update="canUpdate"
               :is-confidential="workItem.confidential"
+              :is-discussion-locked="isDiscussionLocked"
               :is-parent-confidential="parentWorkItemConfidentiality"
               :work-item-reference="workItem.reference"
               :work-item-create-note-email="workItem.createNoteEmail"
@@ -564,6 +565,7 @@ export default {
         >
           <section>
             <work-item-attributes-wrapper
+              v-if="!workItemsMvc2Enabled"
               :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
               class="gl-border-b"
               :full-path="fullPath"
@@ -593,56 +595,11 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
-            <work-item-tree
-              v-if="showWorkItemTree"
-              :full-path="fullPath"
-              :work-item-type="workItemType"
-              :parent-work-item-type="workItem.workItemType.name"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
-              :children="children"
-              :can-update="canUpdate"
-              :confidential="workItem.confidential"
-              @show-modal="openInModal"
-              @addChild="$emit('addChild')"
-            />
-            <work-item-relationships
-              v-if="showWorkItemLinkedItems"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItemIid"
-              :work-item-full-path="fullPath"
-              :work-item-type="workItem.workItemType.name"
-              @showModal="openInModal"
-            />
-            <work-item-notes
-              v-if="workItemNotes"
-              :full-path="fullPath"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItem.iid"
-              :work-item-type="workItemType"
-              :is-modal="isModal"
-              :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
-              :can-set-work-item-metadata="canAssignUnassignUser"
-              :report-abuse-path="reportAbusePath"
-              :is-work-item-confidential="workItem.confidential"
-              class="gl-pt-5"
-              :use-h2="!isModal"
-              @error="updateError = $event"
-              @has-notes="updateHasNotes"
-              @openReportAbuse="openReportAbuseDrawer"
-            />
-            <gl-empty-state
-              v-if="error"
-              :title="$options.i18n.fetchErrorTitle"
-              :description="error"
-              :svg-path="noAccessSvgPath"
-              :svg-height="null"
-            />
           </section>
           <aside
             v-if="workItemsMvc2Enabled"
             data-testid="work-item-overview-right-sidebar"
-            class="work-item-overview-right-sidebar gl-display-none gl-md-display-block"
+            class="work-item-overview-right-sidebar"
             :class="{ 'is-modal': isModal }"
           >
             <work-item-attributes-wrapper
@@ -651,6 +608,53 @@ export default {
               @error="updateError = $event"
             />
           </aside>
+
+          <work-item-tree
+            v-if="showWorkItemTree"
+            :full-path="fullPath"
+            :work-item-type="workItemType"
+            :parent-work-item-type="workItem.workItemType.name"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItemIid"
+            :children="children"
+            :can-update="canUpdate"
+            :confidential="workItem.confidential"
+            @show-modal="openInModal"
+            @addChild="$emit('addChild')"
+          />
+          <work-item-relationships
+            v-if="showWorkItemLinkedItems"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItemIid"
+            :work-item-full-path="fullPath"
+            :work-item-type="workItem.workItemType.name"
+            @showModal="openInModal"
+          />
+          <work-item-notes
+            v-if="workItemNotes"
+            :full-path="fullPath"
+            :work-item-id="workItem.id"
+            :work-item-iid="workItem.iid"
+            :work-item-type="workItemType"
+            :is-modal="isModal"
+            :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
+            :can-set-work-item-metadata="canAssignUnassignUser"
+            :report-abuse-path="reportAbusePath"
+            :is-discussion-locked="isDiscussionLocked"
+            :is-work-item-confidential="workItem.confidential"
+            class="gl-pt-5"
+            :use-h2="!isModal"
+            @error="updateError = $event"
+            @has-notes="updateHasNotes"
+            @openReportAbuse="openReportAbuseDrawer"
+          />
+          <gl-empty-state
+            v-if="error"
+            :title="$options.i18n.fetchErrorTitle"
+            :description="error"
+            :svg-path="noAccessSvgPath"
+            :svg-height="null"
+          />
         </div>
       </template>
       <work-item-detail-modal

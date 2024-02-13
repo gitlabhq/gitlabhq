@@ -29,7 +29,7 @@ RSpec.describe SshKeys::ExpiringSoonNotificationWorker, type: :worker, feature_c
         expect { worker.perform }.to change { expiring_soon.reload.before_expiry_notification_delivered_at }
       end
 
-      include_examples 'an idempotent worker' do
+      it_behaves_like 'an idempotent worker' do
         subject do
           perform_multiple(worker: worker)
         end

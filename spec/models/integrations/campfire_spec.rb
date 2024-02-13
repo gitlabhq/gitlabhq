@@ -9,6 +9,8 @@ RSpec.describe Integrations::Campfire, feature_category: :integrations do
     let(:integration) { described_class.new }
   end
 
+  it_behaves_like Integrations::HasAvatar
+
   describe 'Validations' do
     it { is_expected.to validate_numericality_of(:room).is_greater_than(0).only_integer }
     it { is_expected.to validate_length_of(:subdomain).is_at_least(1).is_at_most(63).allow_blank }

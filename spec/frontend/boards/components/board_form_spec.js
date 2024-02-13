@@ -11,7 +11,6 @@ import { formType } from '~/boards/constants';
 import createBoardMutation from '~/boards/graphql/board_create.mutation.graphql';
 import destroyBoardMutation from '~/boards/graphql/board_destroy.mutation.graphql';
 import updateBoardMutation from '~/boards/graphql/board_update.mutation.graphql';
-import eventHub from '~/boards/eventhub';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -279,11 +278,15 @@ describe('BoardForm', () => {
 
       await waitForPromises();
       expect(global.window.location.href).not.toContain('?group_by=epic');
-      expect(eventHub.$emit).toHaveBeenCalledTimes(1);
-      expect(eventHub.$emit).toHaveBeenCalledWith('updateBoard', {
-        id: 'gid://gitlab/Board/321',
-        webPath: 'test-path',
-      });
+      expect(wrapper.emitted('updateBoard').length).toBe(1);
+      expect(wrapper.emitted('updateBoard')).toEqual([
+        [
+          {
+            id: 'gid://gitlab/Board/321',
+            webPath: 'test-path',
+          },
+        ],
+      ]);
     });
 
     it('calls GraphQL mutation with correct parameters when issues are grouped by epic', async () => {

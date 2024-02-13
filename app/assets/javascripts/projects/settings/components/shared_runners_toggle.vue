@@ -6,7 +6,7 @@ import { CC_VALIDATION_REQUIRED_ERROR } from '../constants';
 
 const DEFAULT_ERROR_MESSAGE = __('An error occurred while updating the configuration.');
 const REQUIRES_VALIDATION_TEXT = s__(
-  `Billings|Shared runners cannot be enabled until a valid credit card is on file.`,
+  `Billings|Instance runners cannot be enabled until a valid credit card is on file.`,
 );
 
 export default {
@@ -122,13 +122,13 @@ export default {
         ref="sharedRunnersToggle"
         :disabled="isDisabledAndUnoverridable"
         :is-loading="isLoading"
-        :label="__('Enable shared runners for this project')"
+        :label="__('Enable instance runners for this project')"
         :value="isSharedRunnerEnabled"
         data-testid="toggle-shared-runners"
         @change="toggleSharedRunners"
       >
         <template v-if="isDisabledAndUnoverridable" #help>
-          {{ s__('Runners|Shared runners are disabled in the group settings.') }}
+          {{ s__('Runners|Instance runners are disabled in the group settings.') }}
           <gl-sprintf
             v-if="isGroupSettingsAvailable"
             :message="s__('Runners|Go to %{groupLink} to enable them.')"

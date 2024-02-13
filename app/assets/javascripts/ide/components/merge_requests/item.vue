@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <a :href="mergeRequestHref" class="btn-link d-flex align-items-center">
+  <a :href="mergeRequestHref" class="btn-link d-flex gl-align-items-center">
     <span class="d-flex gl-mr-3 ide-search-list-current-icon">
       <gl-icon v-if="isActive" :size="16" name="mobile-issue-close" />
     </span>

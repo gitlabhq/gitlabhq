@@ -59,12 +59,7 @@ module NavbarStructureHelper
     insert_after_sub_nav_item(
       after,
       within: _('Plan'),
-      new_sub_nav_item_name: _("Customer contacts")
-    )
-    insert_after_sub_nav_item(
-      _("Customer contacts"),
-      within: _('Plan'),
-      new_sub_nav_item_name: _("Customer organizations")
+      new_sub_nav_item_name: _("Customer relations")
     )
   end
 
@@ -92,9 +87,9 @@ module NavbarStructureHelper
     )
   end
 
-  def insert_infrastructure_registry_nav
+  def insert_infrastructure_registry_nav(within)
     insert_after_sub_nav_item(
-      s_('Terraform|Terraform states'),
+      within,
       within: _('Operate'),
       new_sub_nav_item_name: _('Terraform modules')
     )

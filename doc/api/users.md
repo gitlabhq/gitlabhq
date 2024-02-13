@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Users API **(FREE ALL)**
+# Users API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This documentation has information on API calls, parameters and responses for the Users API.
 
@@ -128,7 +132,11 @@ parameter `without_project_bots=true`.
 GET /users?without_project_bots=true
 ```
 
-### For administrators **(FREE SELF)**
+### For administrators
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
@@ -151,9 +159,9 @@ You can use all [parameters available for everyone](#for-non-administrator-users
 | `two_factor`       | string  | no       | Filter users by Two-factor authentication. Filter values are `enabled` or `disabled`. By default it returns all users |
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false`                                 |
-| `auditors`  **(PREMIUM ALL)** | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users.  |
-| `saml_provider_id` **(PREMIUM ALL)** | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. |
-| `skip_ldap` **(PREMIUM ALL)** | boolean | no     | Skip LDAP users. |
+| `auditors`         | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users. Premium and Ultimate only. |
+| `saml_provider_id` | number | no     | Return only users created by the specified SAML provider ID. If not included, it returns all users. Premium and Ultimate only. |
+| `skip_ldap`        | boolean | no     | Skip LDAP users. Premium and Ultimate only. |
 
 ```json
 [
@@ -379,7 +387,11 @@ Parameters:
 }
 ```
 
-### For administrators **(FREE SELF)**
+### For administrators
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
@@ -519,7 +531,11 @@ You can include the user's [custom attributes](custom_attributes.md) in the resp
 GET /users/:id?with_custom_attributes=true
 ```
 
-## User creation **(FREE SELF)**
+## User creation
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - Ability to create an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
@@ -548,8 +564,8 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false.
-| `auditor` **(PREMIUM ALL)**               | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.                                                                                                      |
+| `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
+| `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only.                                                                                       |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create top-level groups - true or false                                                                                                                  |
@@ -558,7 +574,7 @@ Parameters:
 | `email`                              | Yes      | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only.                                                                        |
 | `force_random_password`              | No       | Set user password to a random value - true or false (default)                                                                                           |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -573,7 +589,7 @@ Parameters:
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | User's public email address                                                                                                                        |
 | `reset_password`                     | No       | Send user password reset link - true or false(default)                                                                                                  |
-| `shared_runners_minutes_limit` **(PREMIUM ALL)**  | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only.                                                                                          |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default)                                                                                                             |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
@@ -583,7 +599,11 @@ Parameters:
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page                                                                                               |
 | `website_url`                        | No       | Website URL                                                                                                                                             |
 
-## User modification **(FREE SELF)**
+## User modification
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
@@ -600,8 +620,8 @@ Parameters:
 
 | Attribute                            | Required | Description                                                                                                                                             |
 | :----------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin`                              | No       |User is an administrator. Valid values are `true` or `false`. Defaults to false.
-| `auditor` **(PREMIUM ALL)**              | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default)                                                                                                           |
+| `admin`                              | No       |User is an administrator. Valid values are `true` or `false`. Defaults to false. |
+| `auditor`                            | No       |  User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.(default) Premium and Ultimate only.                                                                                                          |
 | `avatar`                             | No       | Image file for user's avatar                                                                                                                            |
 | `bio`                                | No       | User's biography                                                                                                                                        |
 | `can_create_group`                   | No       | User can create groups - true or false                                                                                                                  |
@@ -610,7 +630,7 @@ Parameters:
 | `email`                              | No       | Email                                                                                                                                                   |
 | `extern_uid`                         | No       | External UID                                                                                                                                            |
 | `external`                           | No       | Flags the user as external - true or false (default)                                                                                                    |
-| `extra_shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Additional compute minutes for this user.                                                                                                 |
+| `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only.                                                                                                 |
 | `group_id_for_saml`                  | No       | ID of group where SAML has been configured                                                                                                              |
 | `id`                                 | Yes      | ID of the user                                                                                                                                      |
 | `linkedin`                           | No       | LinkedIn                                                                                                                                                |
@@ -624,7 +644,7 @@ Parameters:
 | `pronouns`                           | No       | Pronouns                                                                                                                                                |
 | `provider`                           | No       | External provider name                                                                                                                                  |
 | `public_email`                       | No       | Public email of the user (must be already verified)                                                                                                                            |
-| `shared_runners_minutes_limit` **(PREMIUM ALL)** | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`.                                                                                                      |
+| `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only.                                                                                                     |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default)                                                                                                           |
 | `skype`                              | No       | Skype ID                                                                                                                                                |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-color-theme) for more information)                    |
@@ -639,7 +659,11 @@ Note, at the moment this method does only return a `404` error,
 even in cases where a `409` (Conflict) would be more appropriate.
 For example, when renaming the email address to some existing one.
 
-## Delete authentication identity from user **(FREE SELF)**
+## Delete authentication identity from user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Deletes a user's authentication identity using the provider name associated with that identity. Available only for administrators.
 
@@ -654,7 +678,11 @@ Parameters:
 | `id`       | integer | yes      | ID of a user       |
 | `provider` | string  | yes      | External provider name |
 
-## User deletion **(FREE SELF)**
+## User deletion
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Deletes a user. Available only for administrators.
 This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
@@ -732,7 +760,11 @@ GET /user
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `shared_runners_minutes_limit`, `extra_shared_runners_minutes_limit` parameters.
 
-### For administrators **(FREE SELF)**
+### For administrators
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The `namespace_id` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82045) in GitLab 14.10.
 > - The `created_by` field in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93092) in GitLab 15.6.
@@ -871,7 +903,7 @@ PATCH /user/status
 | -------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `emoji`              | string | no       | Name of the emoji to use as status. If omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
 | `message`            | string | no       | Message to set as a status. It can also contain emoji codes. Cannot exceed 100 characters.                                                                                                                                                      |
-| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days`
+| `clear_status_after` | string | no       | Automatically clean up the status after a given time interval, allowed values: `30_minutes`, `3_hours`, `8_hours`, `1_day`, `3_days`, `7_days`, `30_days` |
 
 Difference between `PUT` and `PATCH`
 
@@ -1060,9 +1092,13 @@ Example response:
 }
 ```
 
-## Create Service Account User **(PREMIUM SELF)**
+## Create Service Account User
 
-> Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - Ability to create a service account user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406782) in GitLab 16.1
 
 Creates a service account user with an auto-generated email address and username. Available only for administrators.
 
@@ -1178,7 +1214,7 @@ Parameters:
 
 ## Single SSH key for given user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81790) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81790) in GitLab 14.9.
 
 Get a single key for a given user.
 
@@ -1204,7 +1240,7 @@ Parameters:
 
 ## Add SSH key
 
-> The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
 
 Creates a new key owned by the authenticated user.
 
@@ -1246,9 +1282,13 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add SSH key for user **(FREE SELF)**
+## Add SSH key for user
 
-> The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - The `usage_type` parameter was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105551) in GitLab 15.7.
 
 Create new key owned by specified user. Available only for administrator.
 
@@ -1292,7 +1332,7 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 ```
 
 NOTE:
-This also adds an audit event. **(PREMIUM ALL)**
+This also adds an audit event.
 
 ## Delete SSH key for current user
 
@@ -1311,7 +1351,11 @@ Parameters:
 |-----------|---------|----------|-------------|
 | `key_id`  | integer | yes      | SSH key ID  |
 
-## Delete SSH key for given user **(FREE SELF)**
+## Delete SSH key for given user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Deletes key owned by a specified user. Available only for administrator.
 
@@ -1507,7 +1551,11 @@ Example response:
   }
 ```
 
-## Add a GPG key for a given user **(FREE SELF)**
+## Add a GPG key for a given user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Create new GPG key owned by the specified user. Available only for administrator.
 
@@ -1554,7 +1602,11 @@ Example response:
 ]
 ```
 
-## Delete a GPG key for a given user **(FREE SELF)**
+## Delete a GPG key for a given user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Delete a GPG key owned by a specified user. Available only for administrator.
 
@@ -1603,7 +1655,11 @@ Parameters:
 
 - **none**
 
-## List emails for user **(FREE SELF)**
+## List emails for user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Get a list of a specified user's emails. Available only for administrator
 
@@ -1677,7 +1733,11 @@ error occurs a `400 Bad Request` is returned with a message explaining the error
 }
 ```
 
-## Add email for user **(FREE SELF)**
+## Add email for user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Create new email owned by specified user. Available only for administrator
 
@@ -1695,12 +1755,13 @@ Parameters:
 
 ## Delete email for current user
 
-Deletes email owned by authenticated user.
+Deletes the specified email address owned by the authenticated user. Cannot be used to delete a primary email address.
 
-This returns a `204 No Content` status code if the operation was successfully
-or `404` if the resource was not found.
+If the deleted email address is used for any user emails, those user emails are sent to the primary email address instead.
 
-This cannot delete a primary email address.
+NOTE:
+Because of [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
+the deleted email address.
 
 ```plaintext
 DELETE /user/emails/:email_id
@@ -1712,7 +1773,16 @@ Parameters:
 |------------|---------|----------|-------------|
 | `email_id` | integer | yes      | Email ID    |
 
-## Delete email for given user **(FREE SELF)**
+Returns:
+
+- `204 No Content` if the operation was successful.
+- `404` if the resource was not found.
+
+## Delete email for given user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Prerequisites:
 
@@ -1731,7 +1801,11 @@ Parameters:
 | `id`       | integer | yes      | ID of specified user |
 | `email_id` | integer | yes      | Email ID             |
 
-## Block user **(FREE SELF)**
+## Block user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Blocks the specified user. Available only for administrator.
 
@@ -1753,7 +1827,11 @@ Returns:
   - A user that is blocked through LDAP.
   - An internal user.
 
-## Unblock user **(FREE SELF)**
+## Unblock user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Unblocks the specified user. Available only for administrator.
 
@@ -1770,9 +1848,13 @@ Parameters:
 Returns `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
-## Deactivate user **(FREE SELF)**
+## Deactivate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Deactivates the specified user. Available only for administrator.
 
@@ -1795,9 +1877,13 @@ Returns:
   - Not [dormant](../administration/moderate_users.md#automatically-deactivate-dormant-users).
   - Internal.
 
-## Activate user **(FREE SELF)**
+## Activate user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Activates the specified user. Available only for administrator.
 
@@ -1817,9 +1903,13 @@ Returns:
 - `404 User Not Found` if the user cannot be found.
 - `403 Forbidden` if the user cannot be activated because they are blocked by an administrator or by LDAP synchronization.
 
-## Ban user **(FREE SELF)**
+## Ban user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
 Bans the specified user. Available only for administrator.
 
@@ -1837,9 +1927,13 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to ban a user that is not active.
 
-## Unban user **(FREE SELF)**
+## Unban user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327354) in GitLab 14.3.
 
 Unbans the specified user. Available only for administrator.
 
@@ -1861,7 +1955,11 @@ Returns:
 
 See the [Events API documentation](events.md#get-user-contribution-events)
 
-## Get all impersonation tokens of a user **(FREE SELF)**
+## Get all impersonation tokens of a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Requires administrator access.
 
@@ -1918,9 +2016,13 @@ Example response:
 ]
 ```
 
-## Approve user **(FREE SELF)**
+## Approve user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263107) in GitLab 13.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/263107) in GitLab 13.7.
 
 Approves the specified user. Available only for administrators.
 
@@ -1959,9 +2061,13 @@ Example Responses:
 { "message": "The user you are trying to approve is not pending approval" }
 ```
 
-## Reject user **(FREE SELF)**
+## Reject user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339925) in GitLab 14.3.
 
 Rejects specified user that is [pending approval](../administration/moderate_users.md#users-pending-approval). Available only for administrators.
 
@@ -1998,7 +2104,11 @@ Example Responses:
 { "message": "User does not have a pending request" }
 ```
 
-## Get an impersonation token of a user **(FREE SELF)**
+## Get an impersonation token of a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > Requires administrators permissions.
 
@@ -2037,7 +2147,11 @@ Example response:
 }
 ```
 
-## Create an impersonation token **(FREE SELF)**
+## Create an impersonation token
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Requires administrator access. Token values are returned once. Make sure you save it because you can't access
 it again.
@@ -2082,7 +2196,11 @@ Example response:
 }
 ```
 
-## Revoke an impersonation token **(FREE SELF)**
+## Revoke an impersonation token
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Requires administrator access.
 
@@ -2103,7 +2221,11 @@ Parameters:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/42/impersonation_tokens/1"
 ```
 
-## Create a personal access token **(FREE SELF)**
+## Create a personal access token
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17176) in GitLab 13.6.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/267553) in GitLab 13.8.
@@ -2147,9 +2269,13 @@ Example response:
 }
 ```
 
-## Create a personal access token with limited scopes for the currently authenticated user **(FREE SELF)**
+## Create a personal access token with limited scopes for the currently authenticated user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923) in GitLab 16.5.
 
 Use this API to create a new personal access token for the currently authenticated user.
 For security purposes, the token:
@@ -2193,13 +2319,17 @@ Example response:
 }
 ```
 
-## Get user activities **(FREE SELF)**
+## Get user activities
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Pre-requisite:
 
-- You must be an administrator.
+- You must be an administrator to view the activity of users with private profiles.
 
-Get the last activity date for all users, sorted from oldest to newest.
+Get the last activity date for users with public profiles, sorted from oldest to newest.
 
 The activities that update the user event timestamps (`last_activity_on` and `current_sign_in_at`) are:
 
@@ -2209,7 +2339,7 @@ The activities that update the user event timestamps (`last_activity_on` and `cu
 - User using the API
 - User using the GraphQL API
 
-By default, it shows the activity for all users in the last 6 months, but this can be
+By default, it shows the activity for users with public profiles in the last 6 months, but this can be
 amended by using the `from` parameter.
 
 ```plaintext
@@ -2250,9 +2380,13 @@ Example response:
 
 `last_activity_at` is deprecated. Use `last_activity_on` instead.
 
-## User memberships **(FREE SELF)**
+## User memberships
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20532) in GitLab 12.8.
 
 Pre-requisite:
 
@@ -2304,9 +2438,13 @@ Example response:
 ]
 ```
 
-## Disable two factor authentication **(FREE SELF)**
+## Disable two factor authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295260) in GitLab 15.2.
 
 Pre-requisite:
 
@@ -2338,7 +2476,11 @@ Returns:
 - `403 Forbidden` if not authenticated as an administrator.
 - `404 User Not Found` if user cannot be found.
 
-## Create a runner linked to a user **(FREE ALL)**
+## Create a runner linked to a user
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Creates a runner linked to the current user.
 

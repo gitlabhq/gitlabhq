@@ -263,9 +263,8 @@ export default {
             'merged',
             'closed',
             'merging',
-            'autoMergeEnabled',
             'shaMismatch',
-          ].includes(this.mr.state) || ['MERGING', 'AUTO_MERGE'].includes(this.mr.machineValue)
+          ].includes(this.mr.state) || this.mr.machineValue === 'MERGING'
         )
       );
     },
@@ -577,7 +576,15 @@ export default {
       </div>
 
       <div class="mr-widget-section" data-testid="mr-widget-content">
-        <merge-checks v-if="mergeBlockedComponentEnabled" :mr="mr" :service="service" />
+        <template v-if="mergeBlockedComponentEnabled">
+          <mr-widget-auto-merge-enabled
+            v-if="mr.autoMergeEnabled"
+            :mr="mr"
+            :service="service"
+            class="gl-border-b-1 gl-border-b-solid gl-border-gray-100"
+          />
+          <merge-checks :mr="mr" :service="service" />
+        </template>
         <component :is="componentName" v-else :mr="mr" :service="service" />
         <ready-to-merge
           v-if="mr.commitsCount"

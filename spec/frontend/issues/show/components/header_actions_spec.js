@@ -133,8 +133,6 @@ describe('HeaderActions component', () => {
     findDesktopDropdown().findAllComponents(GlDisclosureDropdownItem);
   const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
   const findReportAbuseButton = () => wrapper.findByTestId('report-abuse-item');
-  const findNotificationWidget = () => wrapper.findByTestId('notification-toggle');
-  const findLockIssueWidget = () => wrapper.findByTestId('lock-issue-toggle');
   const findCopyRefenceDropdownItem = () => wrapper.findByTestId('copy-reference');
   const findCopyEmailItem = () => wrapper.findByTestId('copy-email');
 
@@ -158,7 +156,6 @@ describe('HeaderActions component', () => {
     props = {},
     issueState = STATUS_OPEN,
     blockedByIssues = [],
-    movedMrSidebarEnabled = false,
     promoteToEpicHandler = promoteToEpicMutationSuccessResponseHandler,
   } = {}) => {
     store.dispatch('setNoteableData', {
@@ -182,9 +179,6 @@ describe('HeaderActions component', () => {
       provide: {
         ...defaultProps,
         ...props,
-        glFeatures: {
-          movedMrSidebar: movedMrSidebarEnabled,
-        },
       },
       stubs: {
         GlButton,
@@ -346,7 +340,7 @@ describe('HeaderActions component', () => {
     });
 
     it('tracks clicking on button', () => {
-      findDesktopDropdownItems().at(4).vm.$emit('action');
+      findDesktopDropdownItems().at(5).vm.$emit('action');
 
       expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_dropdown', {
         label: 'delete_issue',
@@ -527,96 +521,13 @@ describe('HeaderActions component', () => {
     });
   });
 
-  describe('notification toggle', () => {
-    describe('visibility', () => {
-      describe.each`
-        movedMrSidebarEnabled | issueType        | visible
-        ${true}               | ${TYPE_ISSUE}    | ${true}
-        ${true}               | ${TYPE_INCIDENT} | ${true}
-        ${false}              | ${TYPE_ISSUE}    | ${false}
-        ${false}              | ${TYPE_INCIDENT} | ${false}
-      `(
-        `when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
-        ({ movedMrSidebarEnabled, issueType, visible }) => {
-          beforeEach(() => {
-            wrapper = mountComponent({
-              props: {
-                issueType,
-              },
-              movedMrSidebarEnabled,
-            });
-          });
-
-          it(`${visible ? 'shows' : 'hides'} Notification toggle`, () => {
-            expect(findNotificationWidget().exists()).toBe(visible);
-          });
-        },
-      );
-    });
-  });
-
-  describe('lock issue option', () => {
-    describe('visibility', () => {
-      describe.each`
-        movedMrSidebarEnabled | issueType        | visible
-        ${true}               | ${TYPE_ISSUE}    | ${true}
-        ${true}               | ${TYPE_INCIDENT} | ${false}
-        ${false}              | ${TYPE_ISSUE}    | ${false}
-        ${false}              | ${TYPE_INCIDENT} | ${false}
-      `(
-        `when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
-        ({ movedMrSidebarEnabled, issueType, visible }) => {
-          beforeEach(() => {
-            wrapper = mountComponent({
-              props: {
-                issueType,
-              },
-              movedMrSidebarEnabled,
-            });
-          });
-
-          it(`${visible ? 'shows' : 'hides'} Lock issue option`, () => {
-            expect(findLockIssueWidget().exists()).toBe(visible);
-          });
-        },
-      );
-    });
-  });
-
   describe('copy reference option', () => {
-    describe('visibility', () => {
-      describe.each`
-        movedMrSidebarEnabled | issueType        | visible
-        ${true}               | ${TYPE_ISSUE}    | ${true}
-        ${true}               | ${TYPE_INCIDENT} | ${true}
-        ${false}              | ${TYPE_ISSUE}    | ${false}
-        ${false}              | ${TYPE_INCIDENT} | ${false}
-      `(
-        'when movedMrSidebarFlagEnabled is "$movedMrSidebarEnabled" with issue type "$issueType"',
-        ({ movedMrSidebarEnabled, issueType, visible }) => {
-          beforeEach(() => {
-            wrapper = mountComponent({
-              props: {
-                issueType,
-              },
-              movedMrSidebarEnabled,
-            });
-          });
-
-          it(`${visible ? 'shows' : 'hides'} Copy reference option`, () => {
-            expect(findCopyRefenceDropdownItem().exists()).toBe(visible);
-          });
-        },
-      );
-    });
-
     describe('clicking when visible', () => {
       beforeEach(() => {
         wrapper = mountComponent({
           props: {
             issueType: TYPE_ISSUE,
           },
-          movedMrSidebarEnabled: true,
         });
       });
 
@@ -633,35 +544,6 @@ describe('HeaderActions component', () => {
   });
 
   describe('copy email option', () => {
-    describe('visibility', () => {
-      describe.each`
-        movedMrSidebarEnabled | issueType        | issuableEmailAddress    | visible
-        ${true}               | ${TYPE_ISSUE}    | ${'mock-email-address'} | ${true}
-        ${true}               | ${TYPE_ISSUE}    | ${''}                   | ${false}
-        ${true}               | ${TYPE_INCIDENT} | ${'mock-email-address'} | ${true}
-        ${true}               | ${TYPE_INCIDENT} | ${''}                   | ${false}
-        ${false}              | ${TYPE_ISSUE}    | ${'mock-email-address'} | ${false}
-        ${false}              | ${TYPE_INCIDENT} | ${'mock-email-address'} | ${false}
-      `(
-        'when movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" issue type is "$issueType" and issuableEmailAddress="$issuableEmailAddress"',
-        ({ movedMrSidebarEnabled, issueType, issuableEmailAddress, visible }) => {
-          beforeEach(() => {
-            wrapper = mountComponent({
-              props: {
-                issueType,
-                issuableEmailAddress,
-              },
-              movedMrSidebarEnabled,
-            });
-          });
-
-          it(`${visible ? 'shows' : 'hides'} Copy email option`, () => {
-            expect(findCopyEmailItem().exists()).toBe(visible);
-          });
-        },
-      );
-    });
-
     describe('clicking when visible', () => {
       beforeEach(() => {
         wrapper = mountComponent({
@@ -669,7 +551,6 @@ describe('HeaderActions component', () => {
             issueType: TYPE_ISSUE,
             issuableEmailAddress: 'mock-email-address',
           },
-          movedMrSidebarEnabled: true,
         });
       });
 
@@ -679,42 +560,6 @@ describe('HeaderActions component', () => {
         expect(toast).toHaveBeenCalledWith('Email address copied');
       });
     });
-  });
-
-  describe('when logged out', () => {
-    describe.each`
-      movedMrSidebarEnabled | issueType        | headerActionsVisible
-      ${true}               | ${TYPE_ISSUE}    | ${true}
-      ${true}               | ${TYPE_INCIDENT} | ${true}
-      ${false}              | ${TYPE_ISSUE}    | ${false}
-      ${false}              | ${TYPE_INCIDENT} | ${false}
-    `(
-      `with movedMrSidebarEnabled flag is "$movedMrSidebarEnabled" with issue type "$issueType"`,
-      ({ movedMrSidebarEnabled, issueType, headerActionsVisible }) => {
-        beforeEach(async () => {
-          wrapper = mountComponent({
-            props: {
-              issueType,
-              canCreateIssue: false,
-              canPromoteToEpic: false,
-              canReportSpam: false,
-            },
-            movedMrSidebarEnabled,
-            isLoggedIn: false,
-          });
-
-          await waitForPromises();
-        });
-
-        it(`${headerActionsVisible ? 'shows' : 'hides'} headers actions`, () => {
-          expect(findDesktopDropdown().exists()).toBe(headerActionsVisible);
-          expect(findCopyRefenceDropdownItem().exists()).toBe(headerActionsVisible);
-          expect(findNotificationWidget().exists()).toBe(false);
-          expect(findReportAbuseButton().exists()).toBe(false);
-          expect(findLockIssueWidget().exists()).toBe(false);
-        });
-      },
-    );
   });
 
   describe('issue type text', () => {
@@ -728,7 +573,6 @@ describe('HeaderActions component', () => {
       ${'unknown'}          | ${'unknown'}
     `('$issueType', ({ issueType, expectedText }) => {
       wrapper = mountComponent({
-        movedMrSidebarEnabled: true,
         props: { issueType, issuableEmailAddress: 'mock-email-address' },
       });
 

@@ -4,9 +4,13 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# API Discovery **(ULTIMATE ALL)**
+# API Discovery
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
 
 API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [DAST API](../../dast_api/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 
@@ -163,7 +167,7 @@ After the API Discovery job has successfully run, the OpenAPI document is availa
 To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Discovery.
-Use `~"Category:API Security"` [label](../../../../development/labels/index.md) when opening a new issue regarding API Discovery to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../../development/labels/index.md) when opening a new issue regarding API Discovery to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
 

@@ -98,12 +98,10 @@ func TestPollGeoProxyApiStopsWhenExplicitlyDisabled(t *testing.T) {
 }
 
 func TestPollGeoProxyApiStopsWhenGeoNotEnabled(t *testing.T) {
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
+	remoteServer := startRemoteServer(t, "Geo primary")
 
 	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
 	cfg := newUpstreamConfig(railsServer.URL)
 	roundTripper := roundtripper.NewBackendRoundTripper(cfg.Backend, "", 1*time.Minute, true)
@@ -132,15 +130,12 @@ func TestPollGeoProxyApiStopsWhenGeoNotEnabled(t *testing.T) {
 func TestGeoProxyFeatureDisabledOnGeoSecondarySite(t *testing.T) {
 	// We could just not set up the primary, but then we'd have to assert
 	// that the internal API call isn't made. This is easier.
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
+	remoteServer := startRemoteServer(t, "Geo primary")
 
 	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, false)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, false)
 
 	testCases := []testCase{
 		{"jobs request is served locally", "/api/v4/jobs/request", "Local Rails server received request to path /api/v4/jobs/request"},
@@ -166,11 +161,9 @@ func TestGeoProxyFeatureEnabledOnGeoSecondarySite(t *testing.T) {
 // This test can be removed when the environment variable `GEO_SECONDARY_PROXY` is removed
 func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, false)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, false)
 
 	testCases := []testCase{
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
@@ -184,11 +177,9 @@ func TestGeoProxyFeatureDisabledOnNonGeoSecondarySite(t *testing.T) {
 
 func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 	geoProxyEndpointResponseBody := `{"geo_enabled":false}`
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	testCases := []testCase{
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
@@ -202,11 +193,9 @@ func TestGeoProxyFeatureEnabledOnNonGeoSecondarySite(t *testing.T) {
 
 func TestGeoProxyFeatureEnabledButWithAPIError(t *testing.T) {
 	geoProxyEndpointResponseBody := "Invalid response"
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	testCases := []testCase{
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
@@ -219,18 +208,15 @@ func TestGeoProxyFeatureEnabledButWithAPIError(t *testing.T) {
 }
 
 func TestGeoProxyFeatureEnablingAndDisabling(t *testing.T) {
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
+	remoteServer := startRemoteServer(t, "Geo primary")
 
 	geoProxyEndpointEnabledResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
 	geoProxyEndpointDisabledResponseBody := `{"geo_enabled":true}`
 	geoProxyEndpointResponseBody := geoProxyEndpointEnabledResponseBody
 
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, waitForNextApiPoll := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, waitForNextApiPoll := startWorkhorseServer(t, railsServer.URL, true)
 
 	testCasesLocal := []testCase{
 		{"LFS files are served locally", "/group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6", "Local Rails server received request to path /group/project.git/gitlab-lfs/objects/37446575700829a11278ad3a550f244f45d5ae4fe1552778fa4f041f9eaeecf6"},
@@ -280,11 +266,9 @@ func TestGeoProxyUpdatesExtraDataWhenChanged(t *testing.T) {
 	geoProxyEndpointResponseBody := geoProxyEndpointExtraData1
 	expectedGeoProxyExtraData = "data1"
 
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, waitForNextApiPoll := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, waitForNextApiPoll := startWorkhorseServer(t, railsServer.URL, true)
 
 	http.Get(ws.URL)
 
@@ -323,11 +307,9 @@ func TestGeoProxySetsCustomHeader(t *testing.T) {
 			defer remoteServer.Close()
 
 			geoProxyEndpointResponseBody := fmt.Sprintf(tc.json, remoteServer.URL)
-			railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-			defer deferredClose()
+			railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-			ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-			defer wsDeferredClose()
+			ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 			http.Get(ws.URL)
 		})
@@ -370,29 +352,23 @@ func runTestCasesPost(t *testing.T, ws *httptest.Server, testCases []testCasePos
 }
 
 func runTestCasesWithGeoProxyEnabled(t *testing.T, testCases []testCase) {
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
+	remoteServer := startRemoteServer(t, "Geo primary")
 
 	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	runTestCases(t, ws, testCases)
 }
 
 func runTestCasesWithGeoProxyEnabledPost(t *testing.T, testCases []testCasePost) {
-	remoteServer, rsDeferredClose := startRemoteServer("Geo primary")
-	defer rsDeferredClose()
+	remoteServer := startRemoteServer(t, "Geo primary")
 
 	geoProxyEndpointResponseBody := fmt.Sprintf(`{"geo_enabled":true,"geo_proxy_url":"%v"}`, remoteServer.URL)
-	railsServer, deferredClose := startRailsServer("Local Rails server", &geoProxyEndpointResponseBody)
-	defer deferredClose()
+	railsServer := startRailsServer(t, "Local Rails server", &geoProxyEndpointResponseBody)
 
-	ws, wsDeferredClose, _ := startWorkhorseServer(railsServer.URL, true)
-	defer wsDeferredClose()
+	ws, _ := startWorkhorseServer(t, railsServer.URL, true)
 
 	runTestCasesPost(t, ws, testCases)
 }
@@ -406,7 +382,7 @@ func newUpstreamConfig(authBackend string) *config.Config {
 	}
 }
 
-func startRemoteServer(serverName string) (*httptest.Server, func()) {
+func startRemoteServer(t *testing.T, serverName string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body := serverName + " received request to path " + r.URL.Path
 
@@ -414,10 +390,14 @@ func startRemoteServer(serverName string) (*httptest.Server, func()) {
 		fmt.Fprint(w, body)
 	}))
 
-	return ts, ts.Close
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
-func startRailsServer(railsServerName string, geoProxyEndpointResponseBody *string) (*httptest.Server, func()) {
+func startRailsServer(t *testing.T, railsServerName string, geoProxyEndpointResponseBody *string) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var body string
 
@@ -432,10 +412,14 @@ func startRailsServer(railsServerName string, geoProxyEndpointResponseBody *stri
 		fmt.Fprint(w, body)
 	}))
 
-	return ts, ts.Close
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
-func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func(), func()) {
+func startWorkhorseServer(t *testing.T, railsServerURL string, enableGeoProxyFeature bool) (*httptest.Server, func()) {
 	geoProxySleepC := make(chan struct{})
 	geoProxySleep := func(time.Duration) {
 		geoProxySleepC <- struct{}{}
@@ -456,6 +440,10 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 	upstreamHandler := newUpstream(*cfg, logrus.StandardLogger(), myConfigureRoutes, nil)
 	ws := httptest.NewServer(upstreamHandler)
 
+	t.Cleanup(func() {
+		ws.Close()
+	})
+
 	waitForNextApiPoll := func() {}
 
 	if enableGeoProxyFeature {
@@ -471,7 +459,7 @@ func startWorkhorseServer(railsServerURL string, enableGeoProxyFeature bool) (*h
 		}
 	}
 
-	return ws, ws.Close, waitForNextApiPoll
+	return ws, waitForNextApiPoll
 }
 
 func TestFixRemoteAddr(t *testing.T) {

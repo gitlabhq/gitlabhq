@@ -30,7 +30,7 @@ In GitLab 14.1.x to 14.7, if you have already activated your subscription with a
 
 ## Activate subscription during installation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114572) in GitLab 16.0.
 
 To activate your subscription during installation, set the `GITLAB_ACTIVATION_CODE` environment variable with the activation code:
 
@@ -44,7 +44,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For self-compiled installations:
   - Place the `Gitlab.gitlab-license` file in the `config/` directory.
-  - To specify a custom location and file name for the license, set the
+  - To specify a custom location and filename for the license, set the
     `GITLAB_LICENSE_FILE` environment variable with the path to the file:
 
     ```shell
@@ -53,7 +53,7 @@ If you have a license, you can also import it when you install GitLab.
 
 - For Linux package installations:
   - Place the `Gitlab.gitlab-license` file in the `/etc/gitlab/` directory.
-  - To specify a custom location and file name for the license, add this entry to `gitlab.rb`:
+  - To specify a custom location and filename for the license, add this entry to `gitlab.rb`:
 
     ```ruby
     gitlab_rails['initial_license_file'] = "/path/to/license/file"
@@ -68,7 +68,9 @@ a license, add the license in the **Admin Area** in the web user interface.
 If you use a license file or key to activate your instance in an offline environment, you must submit your license
 usage data monthly.
 To submit the data, [export your license usage](../subscriptions/self_managed/index.md#export-your-license-usage)
-and send it by email to the renewals service, `renewals-service@customers.gitlab.com`.
+and send it by email to the renewals service, `renewals-service@customers.gitlab.com`. **You must not open the license
+usage file before you send it**. Otherwise, the file's content could be manipulated by the used program (for example,
+timestamps could be converted to another format) and cause failures when the file is being processed.
 
 If you don't submit your data each month after your subscription start date, an email is sent to the address
 associated with your subscription and a banner displays to remind you to submit your data. The banner displays

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline efficiency **(FREE ALL)**
+# Pipeline efficiency
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [CI/CD Pipelines](index.md) are the fundamental building blocks for [GitLab CI/CD](../index.md).
 Making pipelines more efficient helps you save developer time, which:
@@ -256,5 +260,5 @@ identify recurring problems with CI pipeline efficiency.
 ### Related topics
 
 - [CI Monitoring Webcast Slides](https://docs.google.com/presentation/d/1ONwIIzRB7GWX-WOSziIIv8fz1ngqv77HO1yVfRooOHM/edit?usp=sharing)
-- [GitLab.com Monitoring Handbook](https://about.gitlab.com/handbook/engineering/monitoring/)
+- [GitLab.com Monitoring Handbook](https://handbook.gitlab.com/handbook/engineering/monitoring/)
 - [Buildings dashboards for operational visibility](https://aws.amazon.com/builders-library/building-dashboards-for-operational-visibility/)

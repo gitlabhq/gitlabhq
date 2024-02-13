@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-input-group class="gl-md-form-input-xl">
+  <gl-form-input-group class="gl-md-form-input-xl form-control gl-p-0 gl-border-0">
     <template #prepend>
       <gl-input-group-text class="organization-root-path">
         <gl-truncate :text="baseUrl" position="middle" />

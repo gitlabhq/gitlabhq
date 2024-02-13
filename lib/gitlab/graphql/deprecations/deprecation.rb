@@ -9,7 +9,7 @@ module Gitlab
 
         REASONS = {
           REASON_RENAMED => 'This was renamed.',
-          REASON_ALPHA => 'This feature is an Experiment. It can be changed or removed at any time.'
+          REASON_ALPHA => '**Status**: Experiment.'
         }.freeze
 
         include ActiveModel::Validations
@@ -60,7 +60,7 @@ module Gitlab
 
           case context
           when :block
-            ['WARNING:', *parts].join("\n")
+            ['NOTE:', *parts].join("\n")
           when :inline
             parts.join(' ')
           end

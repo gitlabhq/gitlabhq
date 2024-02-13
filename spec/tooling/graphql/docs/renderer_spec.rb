@@ -299,7 +299,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          WARNING:
+          NOTE:
           **Deprecated** in 1.10.
           Do not use.
           Use: [`X.y`](#xy).
@@ -335,7 +335,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          WARNING:
+          NOTE:
           **Deprecated** in 10.11.
           This was renamed.
           Use: [`Query.foo`](#queryfoo).
@@ -377,7 +377,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in 101.2. This feature is an Experiment. It can be changed or removed at any time. Argument description. |
+         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in 101.2. **Status**: Experiment. Argument description. |
         DOC
       end
 
@@ -415,7 +415,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in 1.10. This feature is an Experiment. It can be changed or removed at any time. A description. |
+          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in 1.10. **Status**: Experiment. A description. |
 
           #### Fields with arguments
 
@@ -423,9 +423,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          WARNING:
+          NOTE:
           **Introduced** in 1.10.
-          This feature is an Experiment. It can be changed or removed at any time.
+          **Status**: Experiment.
 
           Returns [`String!`](#string).
 
@@ -458,9 +458,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          WARNING:
+          NOTE:
           **Introduced** in 10.11.
-          This feature is an Experiment. It can be changed or removed at any time.
+          **Status**: Experiment.
 
           Returns [`Int`](#int).
         DOC

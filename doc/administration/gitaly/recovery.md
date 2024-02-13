@@ -180,7 +180,7 @@ Virtual storage: default
 
 #### Unavailable replicas of available repositories
 
-> Introduced in GitLab 14.0, flag renamed from `-partially-replicated` and behavior changed.
+> - Introduced in GitLab 14.0, flag renamed from `-partially-replicated` and behavior changed.
 
 To also list information of repositories which are available but are unavailable from some of the assigned nodes,
 use the `-partially-unavailable` flag.
@@ -273,7 +273,7 @@ These tools reconcile the outdated repositories to bring them fully up to date a
 
 ### Automatic reconciliation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2717) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2717) in GitLab 13.4.
 
 Praefect automatically reconciles repositories that are not up to date. By default, this is done every
 five minutes. For each outdated repository on a healthy Gitaly node, Praefect picks a
@@ -498,7 +498,7 @@ This command fails if:
 
 ### Manually add many repositories to the tracking database
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6319) in GitLab 15.4.
 
 WARNING:
 Because of a [known issue](https://gitlab.com/gitlab-org/gitaly/-/issues/5402), you can't add repositories to the
@@ -543,7 +543,7 @@ If any entry fails these checks, the command aborts prior to attempting to track
 
 ### List virtual storage details
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4609) in GitLab 15.1.
 
 The `list-storages` Praefect sub-command lists virtual storages and their associated storage nodes. If a virtual storage is:
 

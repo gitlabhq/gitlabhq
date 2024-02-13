@@ -3,6 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_projects do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:issue) { create(:issue, project: project, title: 'Issue 1') }
+
+  before_all do
+    project.add_owner(owner)
+  end
+
   describe '#issues' do
     describe 'confidential issues' do
       let(:author) { create(:user) }
@@ -10,8 +19,6 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
       let(:non_member) { create(:user) }
       let(:member) { create(:user) }
       let(:admin) { create(:admin) }
-      let(:project) { create(:project, :public) }
-      let!(:issue) { create(:issue, project: project, title: 'Issue 1') }
       let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
       let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
@@ -107,8 +114,6 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
 
   describe '#milestones' do
     let(:user) { create(:user) }
-    let(:group) { create(:group) }
-    let(:project) { create(:project, group: group) }
     let!(:group_milestone1) { create(:milestone, group: group, due_date: '2017-01-01', title: 'Second Title') }
     let!(:group_milestone2) { create(:milestone, group: group, due_date: '2017-01-01', title: 'First Title') }
     let!(:project_milestone) { create(:milestone, project: project, due_date: '2016-01-01') }
@@ -150,8 +155,6 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
 
   describe '#contacts' do
     let_it_be(:user) { create(:user) }
-    let_it_be(:group) { create(:group, :crm_enabled) }
-    let_it_be(:project) { create(:project, group: group) }
     let_it_be(:contact_1) { create(:contact, group: group) }
     let_it_be(:contact_2) { create(:contact, group: group) }
     let_it_be(:contact_3) { create(:contact, :inactive, group: group) }
@@ -248,6 +251,32 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
           else
             expect(hash.key?(:set)).to eq(false)
           end
+        end
+      end
+    end
+  end
+
+  describe '#commands' do
+    subject(:commands) { described_class.new(project, owner).commands(issue) }
+
+    context 'spend' do
+      it 'params include timecategory' do
+        expect(commands).to include(a_hash_including(
+          name: :spend,
+          params: ['time(1h30m | -1h30m) <date(YYYY-MM-DD)> <[timecategory:category-name]>']
+        ))
+      end
+
+      context 'when timelog_category_quick_action feature flag is disabled' do
+        before do
+          stub_feature_flags(timelog_categories: false)
+        end
+
+        it 'params do not include timecategory' do
+          expect(commands).to include(a_hash_including(
+            name: :spend,
+            params: ['time(1h30m | -1h30m) <date(YYYY-MM-DD)>']
+          ))
         end
       end
     end

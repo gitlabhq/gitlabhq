@@ -142,18 +142,29 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
   end
 
   describe '#revert_preparation_for_partitioning' do
-    before do
-      converter.prepare_for_partitioning
-    end
-
     shared_examples 'runs #revert_preparation_for_partitioning' do
-      it 'removes a check constraint' do
-        expect { revert_prepare }.to change {
-          Gitlab::Database::PostgresConstraint
-            .check_constraints
-            .by_table_identifier("#{connection.current_schema}.#{table_name}")
-            .count
-        }.from(1).to(0)
+      context 'when check constraint exists' do
+        before do
+          converter.prepare_for_partitioning
+        end
+
+        it 'removes a check constraint' do
+          expect { revert_prepare }.to change {
+            Gitlab::Database::PostgresConstraint
+              .check_constraints
+              .by_table_identifier("#{connection.current_schema}.#{table_name}")
+              .count
+          }.from(1).to(0)
+        end
+      end
+
+      context 'when check constraint does not exist' do
+        it 'returns a message' do
+          expect(Gitlab::AppLogger)
+            .to receive(:warn)
+                  .with(starting_with('The partitioning constraint'))
+          revert_prepare
+        end
       end
     end
 
@@ -274,9 +285,11 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
           where(:case_name, :fault) do
             [
               ["creating parent table", lazy { fail_sql_matching(/CREATE/i) }],
-              ["adding the first foreign key", lazy { fail_adding_fk(parent_table_name, referenced_table_name) }],
+              ["adding the first foreign key", lazy do
+                fail_adding_concurrent_fk(parent_table_name, referenced_table_name)
+              end],
               ["adding the second foreign key", lazy do
-                fail_adding_fk(parent_table_name, other_referenced_table_name)
+                fail_adding_concurrent_fk(parent_table_name, other_referenced_table_name)
               end],
               ["attaching table", lazy { fail_sql_matching(/ATTACH/i) }]
             ]
@@ -320,6 +333,18 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
       let(:zero_partition_value) { [1, 3, 4] }
 
       include_examples 'runs partition method'
+    end
+
+    context 'when partitioning a table' do
+      let(:zero_partition_value) { single_partitioning_value }
+
+      it 'sets up partitioning analysis for parent table' do
+        expect(migration_context).to receive(:execute).with(/CREATE TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).exactly(5).with(/ALTER TABLE/).ordered.and_call_original
+        expect(migration_context).to receive(:execute).with(/ANALYZE VERBOSE/).ordered.and_call_original
+
+        partition
+      end
     end
   end
 

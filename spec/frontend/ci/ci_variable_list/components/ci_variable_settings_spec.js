@@ -21,6 +21,7 @@ describe('Ci variable table', () => {
     hideEnvironmentScope: false,
     isLoading: false,
     maxVariableLimit: 5,
+    mutationResponse: { message: 'Success', hasError: false },
     pageInfo: { after: '' },
     variables: mockVariablesWithScopes(projectString),
   };
@@ -61,6 +62,7 @@ describe('Ci variable table', () => {
         environments: defaultProps.environments,
         hideEnvironmentScope: defaultProps.hideEnvironmentScope,
         mode: ADD_VARIABLE_ACTION,
+        mutationResponse: defaultProps.mutationResponse,
         selectedVariable: {},
       });
     });

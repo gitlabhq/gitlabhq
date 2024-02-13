@@ -27,7 +27,7 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_categ
         expect(Gitlab::UsageDataCounters::HLLRedisCounter)
           .to receive(:track_event).with(template_name, values: project.id).once
         expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-          .to receive(:track_event).with('ci_template_included', values: project.id).once
+          .to receive(:track_event).with('ci_template_included', values: project.id, property_name: :project).once
 
         subject
       end

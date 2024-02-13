@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
   let(:extended_events) { true }
 
   let(:issue_event) do
-    Gitlab::GithubImport::Representation::IssueEvent.new(
+    Gitlab::GithubImport::Representation::IssueEvent.from_json_hash(
       id: 1196850910,
       actor: { id: user.id, login: user.username },
       event: 'reviewed',

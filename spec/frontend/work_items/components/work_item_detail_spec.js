@@ -46,6 +46,10 @@ describe('WorkItemDetail component', () => {
   Vue.use(VueApollo);
 
   const workItemQueryResponse = workItemByIidResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryResponseWithNoPermissions = workItemByIidResponseFactory({
+    canUpdate: false,
+    canDelete: false,
+  });
   const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
     canUpdate: true,
     canDelete: true,
@@ -56,6 +60,9 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const successHandlerWithNoPermissions = jest
+    .fn()
+    .mockResolvedValue(workItemQueryResponseWithNoPermissions);
   const groupSuccessHandler = jest.fn().mockResolvedValue(groupWorkItemQueryResponse);
   const showModalHandler = jest.fn();
   const { id } = workItemQueryResponse.data.workspace.workItems.nodes[0];
@@ -315,7 +322,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemType().classes()).toEqual(['gl-w-full']);
+      expect(findWorkItemType().classes()).toEqual(['gl-sm-display-block!', 'gl-w-full']);
     });
 
     describe('with parent', () => {
@@ -331,7 +338,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['gl-sm-display-none!']);
+        expect(findWorkItemType().classes()).toEqual(['gl-sm-display-none!', 'gl-mt-3']);
       });
     });
   });
@@ -721,41 +728,51 @@ describe('WorkItemDetail component', () => {
     });
 
     describe('when `workItemsMvc2Enabled` is true', () => {
-      beforeEach(async () => {
-        createComponent({ workItemsMvc2Enabled: true });
-        await waitForPromises();
-      });
-
-      it('shows the edit button', () => {
-        expect(findEditButton().exists()).toBe(true);
-      });
-
-      it('does not render the work item title inline editable component', () => {
-        expect(findWorkItemTitle().exists()).toBe(false);
-      });
-
-      it('renders the work item title with edit component', () => {
-        expect(findWorkItemTitleWithEdit().exists()).toBe(true);
-        expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(false);
-      });
-
-      it('work item description is not shown in edit mode by default', () => {
-        expect(findWorkItemDescription().props('editMode')).toBe(false);
-      });
-
-      describe('when edit is clicked', () => {
+      describe('with permissions to update', () => {
         beforeEach(async () => {
-          findEditButton().vm.$emit('click');
-          await nextTick();
+          createComponent({ workItemsMvc2Enabled: true });
+          await waitForPromises();
         });
 
-        it('work item title component shows in edit mode', () => {
-          expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(true);
+        it('shows the edit button', () => {
+          expect(findEditButton().exists()).toBe(true);
         });
 
-        it('work item description component shows in edit mode', () => {
-          expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
-          expect(findWorkItemDescription().props('editMode')).toBe(true);
+        it('does not render the work item title inline editable component', () => {
+          expect(findWorkItemTitle().exists()).toBe(false);
+        });
+
+        it('renders the work item title with edit component', () => {
+          expect(findWorkItemTitleWithEdit().exists()).toBe(true);
+          expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(false);
+        });
+
+        it('work item description is not shown in edit mode by default', () => {
+          expect(findWorkItemDescription().props('editMode')).toBe(false);
+        });
+
+        describe('when edit is clicked', () => {
+          beforeEach(async () => {
+            findEditButton().vm.$emit('click');
+            await nextTick();
+          });
+
+          it('work item title component shows in edit mode', () => {
+            expect(findWorkItemTitleWithEdit().props('isEditing')).toBe(true);
+          });
+
+          it('work item description component shows in edit mode', () => {
+            expect(findWorkItemDescription().props('disableInlineEditing')).toBe(true);
+            expect(findWorkItemDescription().props('editMode')).toBe(true);
+          });
+        });
+      });
+
+      describe('without permissions', () => {
+        it('does not show edit button when user does not have the permissions for it', async () => {
+          createComponent({ handler: successHandlerWithNoPermissions });
+          await waitForPromises();
+          expect(findEditButton().exists()).toBe(false);
         });
       });
     });

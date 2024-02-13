@@ -35,6 +35,10 @@ module Packages
       rule { packages_enabled_for_everyone }.policy do
         enable :read_package
       end
+
+      rule { project.public_or_internal & project.job_token_package_registry }.policy do
+        enable :read_package
+      end
     end
   end
 end

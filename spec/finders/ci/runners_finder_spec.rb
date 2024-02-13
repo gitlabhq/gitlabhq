@@ -153,11 +153,29 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
             end
           end
 
-          context 'by creator' do
+          context 'by creator id' do
             it 'calls the corresponding scope on Ci::Runner' do
               expect(Ci::Runner).to receive(:with_creator_id).with('1').and_call_original
 
               described_class.new(current_user: admin, params: { creator_id: '1' }).execute
+            end
+          end
+
+          context 'by creator username' do
+            let_it_be(:admin_runner) { create(:ci_runner, creator: admin) }
+
+            it 'calls the corresponding scope on Ci::Runner' do
+              expect(Ci::Runner).to receive(:with_creator_id).with(admin.id).and_call_original
+
+              result = described_class.new(current_user: admin, params: { creator_username: admin.username }).execute
+              expect(result).to match_array [admin_runner]
+            end
+
+            it 'does not call the scope when the username is not found and is empty' do
+              expect(Ci::Runner).not_to receive(:with_creator_id)
+
+              result = described_class.new(current_user: admin, params: { creator_username: "not a username" }).execute
+              expect(result).to be_empty
             end
           end
 

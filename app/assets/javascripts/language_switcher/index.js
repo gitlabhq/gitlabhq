@@ -10,12 +10,14 @@ export const initLanguageSwitcher = () => {
   const preferredLangCode = getCookie(PREFERRED_LANGUAGE_COOKIE_KEY);
   const preferredLocale = locales.find((locale) => locale.value === preferredLangCode);
 
+  const provide = { locales };
+  if (preferredLocale) {
+    provide.preferredLocale = preferredLocale;
+  }
+
   return new Vue({
     el,
-    provide: {
-      locales,
-      preferredLocale,
-    },
+    provide,
     render(createElement) {
       return createElement(LanguageSwitcher);
     },

@@ -82,6 +82,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :packages, only: [:index, :show]
 
+    resources :infrastructure_registry, only: [:index]
+
     resources :milestones, constraints: { id: %r{[^/]+} } do
       member do
         get :issues

@@ -4,9 +4,13 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group repository storage moves API **(PREMIUM SELF)**
+# Group repository storage moves API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53016) in GitLab 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53016) in GitLab 13.9.
 
 Group wiki repositories can be moved between storages. This API can help you, for example,
 [migrate to Gitaly Cluster](../administration/gitaly/index.md#migrate-to-gitaly-cluster)

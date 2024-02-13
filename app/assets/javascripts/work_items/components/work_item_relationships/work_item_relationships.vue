@@ -12,6 +12,7 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   LINKED_CATEGORIES_MAP,
   I18N_WORK_ITEM_SHOW_LABELS,
+  LINKED_ITEMS_ANCHOR,
 } from '../../constants';
 
 import WidgetWrapper from '../widget_wrapper.vue';
@@ -98,7 +99,7 @@ export default {
       linksIsBlockedBy: [],
       linksBlocks: [],
       isShownLinkItemForm: false,
-      widgetName: 'linkeditems',
+      widgetName: LINKED_ITEMS_ANCHOR,
       showLabels: true,
     };
   },
@@ -269,27 +270,41 @@ export default {
             <work-item-relationship-list
               v-if="linksBlocks.length"
               :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-pb-3 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
                   linksIsBlockedBy.length,
               }"
               :linked-items="linksBlocks"
               :heading="$options.i18n.blockingTitle"
               :can-update="canAdminWorkItemLink"
               :show-labels="showLabels"
-              @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              :work-item-full-path="workItemFullPath"
+              @showModal="
+                $emit('showModal', {
+                  event: $event.event,
+                  modalWorkItem: $event.child,
+                  context: widgetName,
+                })
+              "
               @removeLinkedItem="removeLinkedItem"
             />
             <work-item-relationship-list
               v-if="linksIsBlockedBy.length"
               :class="{
-                'gl-pb-3 gl-mb-5 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
+                'gl-pb-3 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100':
                   linksRelatesTo.length,
               }"
               :linked-items="linksIsBlockedBy"
               :heading="$options.i18n.blockedByTitle"
               :can-update="canAdminWorkItemLink"
               :show-labels="showLabels"
-              @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              :work-item-full-path="workItemFullPath"
+              @showModal="
+                $emit('showModal', {
+                  event: $event.event,
+                  modalWorkItem: $event.child,
+                  context: widgetName,
+                })
+              "
               @removeLinkedItem="removeLinkedItem"
             />
             <work-item-relationship-list
@@ -298,7 +313,14 @@ export default {
               :heading="$options.i18n.relatedToTitle"
               :can-update="canAdminWorkItemLink"
               :show-labels="showLabels"
-              @showModal="$emit('showModal', { event: $event.event, modalWorkItem: $event.child })"
+              :work-item-full-path="workItemFullPath"
+              @showModal="
+                $emit('showModal', {
+                  event: $event.event,
+                  modalWorkItem: $event.child,
+                  context: widgetName,
+                })
+              "
               @removeLinkedItem="removeLinkedItem"
             />
           </template>

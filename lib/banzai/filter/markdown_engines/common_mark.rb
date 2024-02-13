@@ -6,6 +6,9 @@
 # including GitHub's GFM extensions.
 # We now utilize the renderer built in `C`, rather than the ruby based renderer.
 # Homepage: https://github.com/gjtorikian/commonmarker
+#
+# Although this engine (ruby version) is currently not actively used, let's keep it here
+# for performance testing and as a backup.
 module Banzai
   module Filter
     module MarkdownEngines

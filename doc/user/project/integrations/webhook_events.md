@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Webhook events **(FREE ALL)**
+# Webhook events
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page lists the events that are triggered for [project webhooks](webhooks.md) and [group webhooks](webhooks.md#group-webhooks).
 
@@ -36,7 +40,7 @@ Event type                                   | Trigger
 
 NOTE:
 If an author has no public email listed in their
-[GitLab profile](https://gitlab.com/-/profile), the `email` attribute in the
+[GitLab profile](https://gitlab.com/-/user_settings/profile), the `email` attribute in the
 webhook payload displays a value of `[REDACTED]`.
 
 ## Push events
@@ -1515,7 +1519,7 @@ has not been retried. `1` means that it's the first retry.
 
 ### Pipeline name
 
-> `commit.name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107963) in GitLab 15.8.
+> - `commit.name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107963) in GitLab 15.8.
 
 You can set custom names for pipelines with [`workflow:name`](../../../ci/yaml/index.md#workflowname).
 If the pipeline has a name, that name is the value of `commit.name`.
@@ -1584,7 +1588,11 @@ Payload example:
 }
 ```
 
-## Group member events **(PREMIUM ALL)**
+## Group member events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 
@@ -1679,7 +1687,11 @@ Payload example:
 }
 ```
 
-## Subgroup events **(PREMIUM ALL)**
+## Subgroup events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 These events are triggered for [group webhooks](webhooks.md#group-webhooks) only.
 
@@ -1798,7 +1810,7 @@ Payload example:
 
 ## Release events
 
-> Delete release event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418113) in GitLab 16.5.
+> - Delete release event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418113) in GitLab 16.5.
 
 Release events are triggered when a release is created, updated, or deleted.
 

@@ -7,4 +7,19 @@ feature_categories:
 description: Stores wiki page slug metadata for when we create events.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
 milestone: '13.0'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: wiki_page_meta_id
+        table: wiki_page_meta
+        sharding_key: project_id
+        belongs_to: wiki_page_meta

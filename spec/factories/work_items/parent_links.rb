@@ -8,8 +8,8 @@ FactoryBot.define do
     end
 
     after(:build) do |link, evaluator|
-      link.work_item = evaluator.work_item
-      link.work_item_parent = evaluator.work_item_parent
+      link.work_item = evaluator.work_item if evaluator.work_item
+      link.work_item_parent = evaluator.work_item_parent if evaluator.work_item_parent
 
       unless link.work_item && link.work_item_parent
         project = link.work_item&.project || link.work_item_parent&.project || create(:project)

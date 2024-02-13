@@ -14,17 +14,17 @@
   // GitLab UI's label component
   .gl-label,
   .gl-label-sm {
-    @include gl-vertical-align-bottom;
+    vertical-align: bottom;
 
     &:focus:active {
-      @include gl-reset-color;
-      @include gl-shadow-none;
-      @include gl-outline-none;
+      color: inherit;
+      box-shadow: none;
+      outline: none;
     }
 
     .gl-label-text,
     .gl-label-text-scoped {
-      @include gl-font-sm;
+      font-size: $gl-font-size-sm;
       padding-block: $gl-spacing-scale-1;
       padding-inline: calc(#{$gl-spacing-scale-3} - 2px);
     }
@@ -51,6 +51,6 @@
   }
 
   .md code {
-    @include gl-vertical-align-bottom;
+    vertical-align: bottom;
   }
 }

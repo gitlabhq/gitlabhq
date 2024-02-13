@@ -52,7 +52,7 @@ Specific goals:
 
 ## Timeline
 
-In order to achieve the group objectives, the following timelines must be met for [GitLab phased rollout](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga) of Tracing.
+In order to achieve the group objectives, the following timelines must be met for [GitLab phased rollout](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga) of Tracing.
 
 - **Tracing Experiment Release**: 16.2
 - **Tracing Beta Release**: 16.3

@@ -4,9 +4,13 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Database migrations API **(FREE SELF)**
+# Database migrations API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123408) in GitLab 16.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123408) in GitLab 16.2.
 
 This API is for managing database migrations used in the development of GitLab.
 

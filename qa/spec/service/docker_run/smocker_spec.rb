@@ -29,38 +29,20 @@ module QA
         end
       end
 
-      context 'when running in CI' do
-        before do
-          allow(Runtime::Env).to receive(:running_in_ci?).and_return(true)
-        end
-
-        context 'when network is not bridge' do
-          it_behaves_like 'returns name.network'
-        end
-
-        context 'when network is bridge' do
-          let(:network) { 'bridge' }
-
-          it_behaves_like 'returns host ip'
-        end
+      context 'when network is not bridge or host' do
+        it_behaves_like 'returns name.network'
       end
 
-      context 'when running not in CI' do
-        before do
-          allow(Runtime::Env).to receive(:running_in_ci?).and_return(false)
-        end
+      context 'when network is bridge' do
+        let(:network) { 'bridge' }
 
-        context 'when QA hostname is not set' do
-          it_behaves_like 'returns host ip'
-        end
+        it_behaves_like 'returns host ip'
+      end
 
-        context 'when QA hostname is set' do
-          before do
-            allow(Runtime::Env).to receive(:qa_hostname).and_return('qa-hostname')
-          end
+      context 'when network is host' do
+        let(:network) { 'host' }
 
-          it_behaves_like 'returns name.network'
-        end
+        it_behaves_like 'returns host ip'
       end
     end
   end

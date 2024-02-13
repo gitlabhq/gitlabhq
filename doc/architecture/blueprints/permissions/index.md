@@ -17,7 +17,7 @@ static [role-based access control system](../../../user/permissions.md#roles).
 
 In %15.9, we [announced](https://about.gitlab.com/blog/2023/03/08/expanding-guest-capabilities-in-gitlab-ultimate/)
 a customer MVC of the custom roles feature. The MVC introduced the ability to
-add one single permission (`read_code`) to a custom role based on a standard
+add one single permission (`read_code`) to a custom role based on a default
 GitLab Guest role. The MVC was [implemented](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) by
 taking an existing permission from the GitLab authorization framework and
 enabling it if a custom role has it set to `true`.
@@ -42,7 +42,7 @@ a path for addressing them.
 
 ## What are custom roles?
 
-Our permissions system supports 6 pre-defined roles (Guest, Reporter, Developer, Maintainer, Owner) and users are assigned to per project or group, they can't be modified. Custom roles should solve the problem that our current system is static.
+Our permissions system supports six default roles (Guest, Reporter, Developer, Maintainer, Owner) and users are assigned to per project or group, they can't be modified. Custom roles should solve the problem that our current system is static.
 
 With custom roles, customers can define their own roles and give them permissions they want to. For every role they create they can assign set of permissions. For example, a newly created role "Engineer" could have `read code` and `admin merge requests` enabled but abilities such as `admin issues` disabled.
 
@@ -139,7 +139,7 @@ Cons:
 - Maintaining 2 systems
 - Each new "regular" permission added needs a parallel addition to the
   custom roles system. This makes it difficult to have feature parity between
-  custom roles and static roles.
+  custom roles and default roles.
 - Replacing our existing RBAC system with custom roles (an eventual goal of the
   custom roles feature) is more difficult with this approach because it requires
   retiring the legacy permissions system.
@@ -157,16 +157,16 @@ Cons:
   enable granular access.
 - Each new "regular" permission added needs a parallel addition to the
   bundled permissions for custom roles. This makes it difficult to have feature
-  parity between custom roles and static roles.
+  parity between custom roles and default roles.
 
 ## Glossary
 
 - **RBAC**: Role-based access control; "a method of restricting network access based
   on the roles of individual users." RBAC is the method of access control that
   GitLab uses.
-- **Static roles**: the 5 categories that GitLab users can be grouped into: Guest,
+- **Default roles**: the 5 categories that GitLab users can be grouped into: Guest,
   Reporter, Developer, Maintainer, Owner ([documentation](../../../user/permissions.md#roles)).
-  A static role can be thought of as a group of permissions.
+  A default role can be thought of as a group of permissions.
 - **Declarative Policy**: [code library](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/)
   used by GitLab to define our authorization logic.
 - **Permissions**: a specific ability that a user with a Role has. For example, a
@@ -175,7 +175,7 @@ Cons:
   represents a "permission" but these may not have a 1:1 mapping with a Declarative Policy
   [ability](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/doc/defining-policies.md#invocation).
   An ability is how permissions are represented in the GitLab codebase.
-- **Access level**: integer value representing a static role, used for determining access and calculating inherited user access in group hierarchies ([documentation](../../../api/access_requests.md#valid-access-levels)).
+- **Access level**: integer value representing a default role, used for determining access and calculating inherited user access in group hierarchies ([documentation](../../../api/access_requests.md#valid-access-levels)).
 
 ## Resources
 

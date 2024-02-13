@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Deploy to a Kubernetes cluster with cluster certificates (deprecated) **(FREE ALL)**
+# Deploy to a Kubernetes cluster with cluster certificates (deprecated)
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -98,8 +102,6 @@ combined with *one* of the following:
   can be added multiple times with multiple restricted service accounts.
 
 ## Web terminals for Kubernetes clusters
-
-> Introduced in GitLab 8.15.
 
 The Kubernetes integration adds [web terminal](../../../ci/environments/index.md#web-terminals-deprecated)
 support to your [environments](../../../ci/environments/index.md). This is based

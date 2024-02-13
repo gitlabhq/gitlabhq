@@ -9,7 +9,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqClientMiddleware, feature
   let(:job) { { "job_id" => "a180b47c-3fd6-41b8-81e9-34da61c3400e" } }
 
   before do
-    skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
   end
 

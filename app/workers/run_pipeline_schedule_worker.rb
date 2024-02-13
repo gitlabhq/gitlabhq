@@ -31,19 +31,13 @@ class RunPipelineScheduleWorker # rubocop:disable Scalability/IdempotentWorker
   end
 
   def run_pipeline_schedule(schedule, user)
-    response = Ci::CreatePipelineService
+    Ci::CreatePipelineService
       .new(schedule.project, user, ref: schedule.ref)
       .execute(
         :schedule,
-        save_on_errors: Feature.enabled?(:persist_failed_pipelines_from_schedules, schedule.project),
+        save_on_errors: true,
         ignore_skip_ci: true, schedule: schedule
       )
-
-    return response if response.payload.persisted?
-
-    # Remove with FF persist_failed_pipelines_from_schedules enabled, as corrupted yml is not longer logged
-    # This is a user operation error such as corrupted .gitlab-ci.yml. Log the error for debugging purpose.
-    log_extra_metadata_on_done(:pipeline_creation_error, response.message)
   rescue StandardError => e
     error(schedule, e)
   end

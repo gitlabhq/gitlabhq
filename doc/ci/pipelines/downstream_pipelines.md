@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Downstream pipelines **(FREE ALL)**
+# Downstream pipelines
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A downstream pipeline is any GitLab CI/CD pipeline triggered by another pipeline.
 Downstream pipelines run independently and concurrently to the upstream pipeline
@@ -144,7 +148,7 @@ job3:
 
 ### Use a child pipeline configuration file in a different project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/205157) in GitLab 13.5.
 
 You can use [`include:project`](../yaml/index.md#includeproject) in a trigger job
 to trigger child pipelines with a configuration file in a different project:
@@ -310,7 +314,7 @@ trigger_pipeline:
 
 ## View a downstream pipeline
 
-> Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
+> - Hover behavior for pipeline cards [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/197140/) in GitLab 13.2.
 
 In the [pipeline graph view](index.md#view-full-pipeline-graph), downstream pipelines display
 as a list of cards on the right of the graph. From this view, you can:
@@ -381,7 +385,7 @@ trigger_job:
 
 ### View multi-project pipelines in pipeline graphs
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/422282) from GitLab Premium to GitLab Free in 16.8.
 
 After you trigger a multi-project pipeline, the downstream pipeline displays
 to the right of the [pipeline graph](index.md#visualize-pipelines).
@@ -389,7 +393,11 @@ to the right of the [pipeline graph](index.md#visualize-pipelines).
 In [pipeline mini graphs](index.md#pipeline-mini-graphs), the downstream pipeline
 displays to the right of the mini graph.
 
-## Fetch artifacts from an upstream pipeline **(PREMIUM ALL)**
+## Fetch artifacts from an upstream pipeline
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ::Tabs
 
@@ -438,7 +446,7 @@ upstream pipeline:
 Use [`needs:project`](../yaml/index.md#needsproject) to fetch artifacts from an
 upstream pipeline:
 
-1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist) of the upstream project.
+1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) of the upstream project.
 1. In the upstream pipeline, save the artifacts in a job with the [`artifacts`](../yaml/index.md#artifacts)
    keyword, then trigger the downstream pipeline with a trigger job:
 
@@ -491,7 +499,7 @@ because the downstream pipeline attempts to fetch artifacts from the latest bran
 To fetch the artifacts from the upstream `merge request` pipeline instead of the `branch` pipeline,
 pass `CI_MERGE_REQUEST_REF_PATH` to the downstream pipeline using [variable inheritance](#pass-yaml-defined-cicd-variables):
 
-1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist) of the upstream project.
+1. In GitLab 15.9 and later, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) of the upstream project.
 1. In a job in the upstream pipeline, save the artifacts using the [`artifacts`](../yaml/index.md#artifacts) keyword.
 1. In the job that triggers the downstream pipeline, pass the `$CI_MERGE_REQUEST_REF_PATH` variable:
 
@@ -671,7 +679,11 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project take precedence.
 
-### Pass dotenv variables created in a job **(PREMIUM ALL)**
+### Pass dotenv variables created in a job
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/index.md#pass-an-environment-variable-to-another-job).
 
@@ -719,7 +731,7 @@ are considered trigger variables, which have the [highest precedence](../variabl
 
 ## Downstream pipelines for deployments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369061) in GitLab 16.4.
 
 You can use the [`environment`](../yaml/index.md#environment) keyword with [`trigger`](../yaml/index.md#trigger).
 You might want to use `environment` from a trigger job if your deployment and application projects are separately managed.
@@ -804,6 +816,12 @@ With multi-project pipelines, the trigger job fails and does not create the down
   to run pipelines against the protected branch. See [pipeline security for protected branches](index.md#pipeline-security-on-protected-branches)
   for more information.
 
+To identify which user is having permission issues in the downstream project, you can check the trigger job using the following command in the [Rails console](../../administration/operations/rails_console.md) and look at the `user_id` attribute.
+
+```ruby
+Ci::Bridge.find(<job_id>)
+```
+
 ### Job in child pipeline is not created when the pipeline runs
 
 If the parent pipeline is a [merge request pipeline](merge_request_pipelines.md),
@@ -825,4 +843,4 @@ Only trigger multi-project pipelines with tag names that do not match branch nam
 
 In GitLab 15.9 and later, CI/CD job tokens are scoped to the project that the pipeline executes under. Therefore, the job token in a downstream pipeline cannot be used to access an upstream project by default.
 
-To resolve this, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-scope-allowlist).
+To resolve this, [add the downstream project to the job token scope allowlist](../jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist).

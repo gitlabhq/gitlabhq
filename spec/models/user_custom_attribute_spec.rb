@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe UserCustomAttribute, feature_category: :user_profile do
+  using RSpec::Parameterized::TableSyntax
+
   describe 'assocations' do
     it { is_expected.to belong_to(:user) }
   end
@@ -169,32 +171,24 @@ RSpec.describe UserCustomAttribute, feature_category: :user_profile do
     end
   end
 
-  describe '.set_assumed_high_risk_reason' do
+  describe '#upsert_custom_attribute' do
     let_it_be(:user) { create(:user) }
-    let(:reason) { 'Because' }
 
-    subject(:call_method) { described_class.set_assumed_high_risk_reason(user: user, reason: reason) }
+    let(:user_id) { user.id }
 
-    it 'creates a custom attribute with correct attribute values for the user' do
-      expect { call_method }.to change { user.custom_attributes.count }.by(1)
-
-      record = user.custom_attributes.find_by_key(UserCustomAttribute::ASSUMED_HIGH_RISK_REASON)
-      expect(record.value).to eq 'Because'
+    where(:id, :key, :value, :created) do
+      nil           | 'key1' | 'value1' | false
+      ref(:user_id) | nil    | 'value2' | false
+      ref(:user_id) | 'key2' | nil      | false
+      ref(:user_id) | 'key3' | 'value3' | true
     end
 
-    context 'when passed in user is nil' do
-      let(:user) { nil }
+    with_them do
+      it do
+        described_class.upsert_custom_attribute(user_id: id, key: key, value: value)
 
-      it 'does nothing' do
-        expect { call_method }.not_to change { UserCustomAttribute.count }
-      end
-    end
-
-    context 'when there is no reason passed in' do
-      let(:reason) { nil }
-
-      it 'does nothing' do
-        expect { call_method }.not_to change { UserCustomAttribute.count }
+        record_exists = user.custom_attributes.where(key: key, value: value).exists?
+        expect(record_exists).to eq created
       end
     end
   end

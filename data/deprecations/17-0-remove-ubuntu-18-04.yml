@@ -1,0 +1,17 @@
+- title: "Linux packages for Ubuntu 18.04"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.8"
+  breaking_change: false
+  reporter: balasankarc
+  stage: Core Platform
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8082
+  body: |  # (required) Don't change this line.
+    Standard support for Ubuntu 18.04 [ended on June 2023](https://wiki.ubuntu.com/Releases).
+
+    From GitLab 17.0, we will not provide Linux packages for Ubuntu 18.04.
+
+    To prepare for GitLab 17.0 and later:
+
+    1. Move servers running GitLab instances from Ubuntu 18.04 to either Ubuntu 20.04 or Ubuntu 22.04.
+    1. Upgrade your GitLab instances using Linux package for the version of Ubuntu you're now using.
+  documentation_url: https://docs.gitlab.com/ee/administration/package_information/supported_os.html

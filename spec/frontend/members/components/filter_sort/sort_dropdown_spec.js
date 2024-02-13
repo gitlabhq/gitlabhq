@@ -1,12 +1,12 @@
-import { GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlSorting } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBER_TYPES, FIELD_KEY_MAX_ROLE } from '~/members/constants';
 
 Vue.use(Vuex);
 
@@ -47,58 +47,45 @@ describe('SortDropdown', () => {
   const findSortingComponent = () => wrapper.findComponent(GlSorting);
   const findSortDirectionToggle = () =>
     findSortingComponent().find('button[title^="Sort direction"]');
-  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="menu"]');
-  const findDropdownItemByText = (text) =>
-    wrapper
-      .findAllComponents(GlSortingItem)
-      .wrappers.find((dropdownItemWrapper) => dropdownItemWrapper.text() === text);
+  const findDropdownToggle = () => wrapper.find('button[aria-haspopup="listbox"]');
 
   beforeEach(() => {
     setWindowLocation(URL_HOST);
   });
 
   describe('dropdown options', () => {
-    it('adds dropdown items for all the sortable fields', () => {
+    it('sets sort options', () => {
       const URL_FILTER_PARAMS = '?two_factor=enabled&search=foobar';
-      const EXPECTED_BASE_URL = `${URL_HOST}${URL_FILTER_PARAMS}&sort=`;
 
       setWindowLocation(URL_FILTER_PARAMS);
 
-      const expectedDropdownItems = [
+      const expectedSortOptions = [
         {
-          label: 'Account',
-          url: `${EXPECTED_BASE_URL}name_asc`,
+          text: 'Account',
+          value: 'account',
         },
         {
-          label: 'Access granted',
-          url: `${EXPECTED_BASE_URL}last_joined`,
+          text: 'Access granted',
+          value: 'granted',
         },
         {
-          label: 'Max role',
-          url: `${EXPECTED_BASE_URL}access_level_asc`,
+          text: 'Max role',
+          value: 'maxRole',
         },
         {
-          label: 'Last sign-in',
-          url: `${EXPECTED_BASE_URL}recent_sign_in`,
+          text: 'Last sign-in',
+          value: 'lastSignIn',
         },
       ];
 
       createComponent();
 
-      expectedDropdownItems.forEach((expectedDropdownItem) => {
-        const dropdownItem = findDropdownItemByText(expectedDropdownItem.label);
-
-        expect(dropdownItem).not.toBe(null);
-        expect(dropdownItem.find('a').attributes('href')).toBe(expectedDropdownItem.url);
+      expect(findSortingComponent().props()).toMatchObject({
+        text: expectedSortOptions[0].text,
+        isAscending: true,
+        sortBy: expectedSortOptions[0].value,
+        sortOptions: expectedSortOptions,
       });
-    });
-
-    it('checks selected sort option', () => {
-      setWindowLocation('?sort=access_level_asc');
-
-      createComponent();
-
-      expect(findDropdownItemByText('Max role').vm.$attrs.active).toBe(true);
     });
   });
 
@@ -116,6 +103,20 @@ describe('SortDropdown', () => {
       createComponent();
 
       expect(findDropdownToggle().text()).toBe('Max role');
+    });
+
+    describe('select new sort field', () => {
+      beforeEach(async () => {
+        jest.spyOn(urlUtilities, 'visitUrl').mockImplementation();
+        createComponent();
+
+        findSortingComponent().vm.$emit('sortByChange', FIELD_KEY_MAX_ROLE);
+        await nextTick();
+      });
+
+      it('sorts by new field', () => {
+        expect(urlUtilities.visitUrl).toHaveBeenCalledWith(`${URL_HOST}?sort=access_level_asc`);
+      });
     });
   });
 

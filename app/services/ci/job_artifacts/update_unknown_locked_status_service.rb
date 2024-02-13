@@ -17,7 +17,11 @@ module Ci
         @removed_count = 0
         @locked_count = 0
         @start_at = Time.current
-        @loop_limit = Feature.enabled?(:ci_job_artifacts_backlog_large_loop_limit) ? LARGE_LOOP_LIMIT : LOOP_LIMIT
+        @loop_limit = if Feature.enabled?(:ci_job_artifacts_backlog_large_loop_limit, type: :ops)
+                        LARGE_LOOP_LIMIT
+                      else
+                        LOOP_LIMIT
+                      end
       end
 
       def execute
@@ -35,9 +39,9 @@ module Ci
           unknown_status_build_ids = safely_ordered_ci_job_artifacts_locked_unknown_relation.pluck_job_id.uniq
 
           locked_pipe_build_ids = ::Ci::Build
-            .with_pipeline_locked_artifacts
-            .id_in(unknown_status_build_ids)
-            .pluck_primary_key
+                                    .with_pipeline_locked_artifacts
+                                    .id_in(unknown_status_build_ids)
+                                    .pluck_primary_key
 
           @locked_count += update_unknown_artifacts(locked_pipe_build_ids, Ci::JobArtifact.lockeds[:artifacts_locked])
 

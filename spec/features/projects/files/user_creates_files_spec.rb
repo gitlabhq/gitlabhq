@@ -56,7 +56,13 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
   end
 
   context 'with committing a new file' do
+    let(:file_name) { 'a_file.md' }
+    let(:file_content) { 'some file content' }
+    let(:can_submit_mr_content) { 'You can now submit a merge request to get this change into the original branch.' }
+
     context 'when an user has write access' do
+      let(:branch_name) { 'new_branch_name' }
+
       before do
         visit(project_tree_path_root_ref)
 
@@ -94,28 +100,30 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         expect(page).to have_content 'Path cannot include directory traversal'
       end
 
-      it 'creates and commit a new file' do
-        editor_set_value('*.rbca')
-        fill_in(:file_name, with: 'not_a_file.md')
+      it 'creates and commits a new file' do
+        editor_set_value(file_content)
+        fill_in(:file_name, with: file_name)
         fill_in(:commit_message, with: 'New commit message', visible: true)
+
         click_button('Commit changes')
 
-        new_file_path = project_blob_path(project, 'master/not_a_file.md')
+        new_file_path = project_blob_path(project, "master/#{file_name}")
 
         expect(page).to have_current_path(new_file_path, ignore_query: true)
 
         wait_for_requests
 
-        expect(page).to have_content('*.rbca')
+        expect(page).to have_content(file_content)
       end
 
-      it 'creates and commit a new file with new lines at the end of file' do
+      it 'creates and commits a new file with new lines at the end of file' do
         editor_set_value('Sample\n\n\n')
-        fill_in(:file_name, with: 'not_a_file.md')
+        fill_in(:file_name, with: file_name)
         fill_in(:commit_message, with: 'New commit message', visible: true)
+
         click_button('Commit changes')
 
-        new_file_path = project_blob_path(project, 'master/not_a_file.md')
+        new_file_path = project_blob_path(project, "master/#{file_name}")
 
         expect(page).to have_current_path(new_file_path, ignore_query: true)
 
@@ -124,38 +132,64 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         expect(find('.monaco-editor')).to have_content('Sample\n\n\n')
       end
 
-      it 'creates and commit a new file with a directory name' do
+      it 'creates and commits a new file with a directory name' do
         fill_in(:file_name, with: 'foo/bar/baz.txt')
 
         expect(page).to have_selector('.file-editor')
 
-        editor_set_value('*.rbca')
+        editor_set_value(file_content)
         fill_in(:commit_message, with: 'New commit message', visible: true)
+
         click_button('Commit changes')
 
         expect(page).to have_current_path(project_blob_path(project, 'master/foo/bar/baz.txt'), ignore_query: true)
 
         wait_for_requests
 
-        expect(page).to have_content('*.rbca')
+        expect(page).to have_content(file_content)
       end
 
-      it 'creates and commit a new file specifying a new branch' do
-        expect(page).to have_selector('.file-editor')
+      context 'when not creating a new MR' do
+        it 'creates and commits a new file specifying a new branch' do
+          expect(page).to have_selector('.file-editor')
 
-        editor_set_value('*.rbca')
-        fill_in(:file_name, with: 'not_a_file.md')
-        fill_in(:commit_message, with: 'New commit message', visible: true)
-        fill_in(:branch_name, with: 'new_branch_name', visible: true)
-        click_button('Commit changes')
+          editor_set_value(file_content)
+          fill_in(:file_name, with: file_name)
+          fill_in(:commit_message, with: 'New commit message', visible: true)
+          fill_in(:branch_name, with: branch_name, visible: true)
+          find_field('Start a new merge request with these changes').uncheck
 
-        expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
+          click_button('Commit changes')
 
-        click_link('Changes')
+          new_file_path = project_blob_path(project, "#{branch_name}/#{file_name}")
 
-        wait_for_requests
+          expect(page).to have_current_path(new_file_path)
 
-        expect(page).to have_content('*.rbca')
+          wait_for_requests
+
+          expect(page).not_to have_content(can_submit_mr_content)
+        end
+      end
+
+      context 'when creating a new MR' do
+        it 'creates and commits a new file specifying a new branch and creates an MR' do
+          expect(page).to have_selector('.file-editor')
+
+          editor_set_value(file_content)
+          fill_in(:file_name, with: file_name)
+          fill_in(:commit_message, with: 'New commit message', visible: true)
+          fill_in(:branch_name, with: branch_name, visible: true)
+
+          click_button('Commit changes')
+
+          expect(page).to have_current_path(project_new_merge_request_path(project), ignore_query: true)
+
+          click_link('Changes')
+
+          wait_for_requests
+
+          expect(page).to have_content(can_submit_mr_content)
+        end
       end
     end
 
@@ -174,12 +208,12 @@ RSpec.describe 'Projects > Files > User creates files', :js, feature_category: :
         expect(page).to have_content(message)
       end
 
-      it 'creates and commit new file in forked project' do
+      it 'creates and commits a new file in forked project' do
         expect(page).to have_selector('.file-editor')
 
-        editor_set_value('*.rbca')
+        editor_set_value(file_content)
 
-        fill_in(:file_name, with: 'not_a_file.md')
+        fill_in(:file_name, with: file_name)
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
 

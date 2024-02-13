@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# AsciiDoc **(FREE ALL)**
+# AsciiDoc
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab uses the [Asciidoctor](https://asciidoctor.org) gem to convert AsciiDoc content to HTML5.
 Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/) for a complete Asciidoctor reference.
@@ -435,7 +439,7 @@ It's possible to generate diagrams and flowcharts from text in GitLab using
 
 #### Mermaid
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31818) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31818) in GitLab 13.3.
 
 Visit the [official page](https://mermaidjs.github.io/) for more details.
 If you're new to using Mermaid or need help identifying issues in your Mermaid code,

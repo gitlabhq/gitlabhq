@@ -42,6 +42,7 @@ RSpec.describe BulkImports::Common::Pipelines::BoardsPipeline, feature_category:
     allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
       allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: board_data))
     end
+    allow(subject).to receive(:set_source_objects_counter)
     group.add_owner(user)
   end
 

@@ -42,7 +42,7 @@ export default {
 };
 </script>
 <template>
-  <div class="file-header-content d-flex align-items-center lh-100">
+  <div class="file-header-content d-flex gl-align-items-center gl-line-height-1">
     <slot name="filepath-prepend"></slot>
 
     <template v-if="fileName">

@@ -1,0 +1,9 @@
+---
+name: log_large_in_list_queries
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/434581
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141150
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17359
+milestone: '16.9'
+group: group::database
+type: ops
+default_enabled: false

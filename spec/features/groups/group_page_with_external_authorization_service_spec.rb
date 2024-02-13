@@ -6,7 +6,7 @@ RSpec.describe 'The group page', :js, feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }
-  let(:group) { create(:group) }
+  let(:group) { create(:group, :crm_disabled) }
 
   before do
     sign_in user

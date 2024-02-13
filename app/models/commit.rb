@@ -359,7 +359,7 @@ class Commit
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha: self.parent_id || Gitlab::Git::SHA1_BLANK_SHA,
+      base_sha: self.parent_id || container.repository.blank_ref,
       head_sha: self.sha
     )
   end
@@ -639,6 +639,8 @@ class Commit
   end
 
   def merged_merge_request_no_cache(user)
-    MergeRequestsFinder.new(user, project_id: project_id).find_by(merge_commit_sha: id) if merge_commit?
+    return MergeRequestsFinder.new(user, project_id: project_id).find_by(merge_commit_sha: id) if merge_commit?
+
+    MergeRequestsFinder.new(user, project_id: project_id).find_by(squash_commit_sha: id)
   end
 end

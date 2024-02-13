@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Push options **(FREE ALL)**
+# Push options
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you push changes to a branch, you can use client-side
 [Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt).
@@ -31,6 +35,10 @@ For server-side controls and enforcement of best practices, see
 ## Push options for GitLab CI/CD
 
 You can use push options to skip a CI/CD pipeline, or pass CI/CD variables.
+
+NOTE:
+Push options are not available for merge request pipelines. For more information,
+see [issue 373212](https://gitlab.com/gitlab-org/gitlab/-/issues/373212).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

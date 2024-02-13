@@ -16,18 +16,19 @@ const createSpan = (content, classList) => {
 const wrapSpacesWithSpans = (text) =>
   text.replace(/ /g, createSpan(' ').outerHTML).replace(/\t/g, createSpan('	').outerHTML);
 
-const wrapTextWithSpan = (el, text, classList) => {
+const wrapTextWithSpan = (el, text, classList, dataset) => {
   if (isTextNode(el) && isMatch(el.textContent, text)) {
     const newEl = createSpan(text.trim(), classList);
+    Object.assign(newEl.dataset, dataset);
     el.replaceWith(newEl);
   }
 };
 
-const wrapNodes = (text, classList) => {
+const wrapNodes = (text, classList, dataset) => {
   const wrapper = createSpan();
   // eslint-disable-next-line no-unsanitized/property
   wrapper.innerHTML = wrapSpacesWithSpans(text);
-  wrapper.childNodes.forEach((el) => wrapTextWithSpan(el, text, classList));
+  wrapper.childNodes.forEach((el) => wrapTextWithSpan(el, text, classList, dataset));
   return wrapper.childNodes;
 };
 

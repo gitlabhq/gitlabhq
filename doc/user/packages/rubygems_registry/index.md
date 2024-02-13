@@ -4,9 +4,14 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Ruby gems in the package registry **(FREE ALL EXPERIMENT)**
+# Ruby gems in the package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in GitLab 13.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/803) in GitLab 13.10.
 
 WARNING:
 The Ruby gems package registry for GitLab is under development and isn't ready for production use due to
@@ -71,7 +76,7 @@ https://gitlab.example.com/api/v4/projects/<project_id>/packages/rubygems: '<you
 ```
 
 - `<your token>` must be the token value of either your personal access token or deploy token.
-- Your project ID is on your project's home page.
+- Your project ID is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 ### Authenticate with a CI job token
 

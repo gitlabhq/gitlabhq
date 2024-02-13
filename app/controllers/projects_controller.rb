@@ -38,8 +38,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
-    push_frontend_feature_flag(:blob_blame_info, @project)
-    push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
@@ -88,15 +86,15 @@ class ProjectsController < Projects::ApplicationController
 
     @parent_group = Group.find_by(id: params[:namespace_id])
 
-    manageable_groups_count = current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).count
+    manageable_groups = ::Groups::AcceptingProjectCreationsFinder.new(current_user).execute.limit(2)
 
-    if manageable_groups_count == 0 && !can?(current_user, :create_projects, current_user.namespace)
+    if manageable_groups.empty? && !can?(current_user, :create_projects, current_user.namespace)
       return access_denied!
     end
 
     @current_user_group =
-      if manageable_groups_count == 1
-        current_user.manageable_groups(include_groups_with_developer_maintainer_access: true).first
+      if manageable_groups.one?
+        manageable_groups.first
       end
 
     @project = Project.new(namespace_id: @namespace&.id)
@@ -185,9 +183,9 @@ class ProjectsController < Projects::ApplicationController
       flash.now[:alert] = _("Project '%{project_name}' queued for deletion.") % { project_name: @project.name }
     end
 
-    if Feature.enabled?(:redirect_with_ref_type, @project)
-      @ref_type = 'heads'
-    elsif ambiguous_ref?(@project, @ref)
+    @ref_type = 'heads'
+
+    if !Feature.enabled?(:ambiguous_ref_modal, @project) && ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
 
       # The files view would render a ref other than the default branch

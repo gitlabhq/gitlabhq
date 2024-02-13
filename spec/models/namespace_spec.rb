@@ -25,6 +25,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one :namespace_settings }
     it { is_expected.to have_one :namespace_details }
     it { is_expected.to have_one(:namespace_statistics) }
+    it { is_expected.to have_one(:catalog_verified_namespace) }
     it { is_expected.to have_many :custom_emoji }
     it { is_expected.to have_one :package_setting_relation }
     it { is_expected.to have_one :onboarding_progress }
@@ -508,6 +509,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:maven_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:pypi_package_requests_forwarding).to(:package_settings) }
     it { is_expected.to delegate_method(:npm_package_requests_forwarding).to(:package_settings) }
+    it { is_expected.to delegate_method(:math_rendering_limits_enabled).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)

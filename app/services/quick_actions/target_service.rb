@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QuickActions
-  class TargetService < BaseService
+  class TargetService < BaseContainerService
     def execute(type, type_iid)
       case type&.downcase
       when 'workitem'
@@ -19,15 +19,15 @@ module QuickActions
 
     # rubocop: disable CodeReuse/ActiveRecord
     def work_item(type_iid)
-      WorkItems::WorkItemsFinder.new(current_user, project_id: project.id).find_by(iid: type_iid)
+      WorkItems::WorkItemsFinder.new(current_user, **parent_params).find_by(iid: type_iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issue(type_iid)
-      return project.issues.build if type_iid.nil?
+      return container.issues.build if type_iid.nil?
 
-      IssuesFinder.new(current_user, project_id: project.id).find_by(iid: type_iid) || project.issues.build
+      IssuesFinder.new(current_user, **parent_params).find_by(iid: type_iid) || container.issues.build
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -42,7 +42,11 @@ module QuickActions
     def commit(type_iid)
       project.commit(type_iid)
     end
+
+    def parent_params
+      group_container? ? { group_id: group.id } : { project_id: project.id }
+    end
   end
 end
 
-QuickActions::TargetService.prepend_mod_with('QuickActions::TargetService')
+QuickActions::TargetService.prepend_mod

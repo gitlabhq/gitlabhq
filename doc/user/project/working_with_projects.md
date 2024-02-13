@@ -4,7 +4,11 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Manage projects **(FREE ALL)**
+# Manage projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
@@ -100,9 +104,13 @@ To delete a project:
 
 This action deletes the project and all associated resources (such as issues and merge requests).
 
-You can also [delete projects using the Rails console](#delete-a-project-using-console).
+You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
 
-### Delayed project deletion **(PREMIUM ALL)**
+### Delayed project deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
 > - [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
@@ -119,9 +127,13 @@ On SaaS, there is a non-adjustable default retention period of seven days.
 
 You can [view projects that are pending deletion](#view-projects-pending-deletion),
 and use the Rails console to
-[find projects that are pending deletion](#find-projects-that-are-pending-deletion).
+[find projects that are pending deletion](troubleshooting.md#find-projects-that-are-pending-deletion).
 
-### Delete a project immediately **(PREMIUM ALL)**
+### Delete a project immediately
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/191367) in GitLab 14.1.
 > - Option to delete projects immediately from the Admin Area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
@@ -144,7 +156,11 @@ To immediately delete a project marked for deletion:
 1. In the **Delete this project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
 
-### View projects pending deletion **(PREMIUM ALL)**
+### View projects pending deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37014) in GitLab 13.3 for Administrators.
 > - [Tab renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/347468) from **Deleted projects** in GitLab 14.6.
@@ -164,6 +180,58 @@ Each project in the list shows:
 - The time the project was marked for deletion.
 - The time the project is scheduled for final deletion.
 - A **Restore** link to stop the project being eventually deleted.
+
+## Restore a project
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+- The project must be marked for deletion.
+
+To restore a project marked for deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the Restore project section, select **Restore project**.
+
+## Archive a project
+
+When you archive a project, the repository, packages, issues, merge requests, and all
+other features become read-only. Archived projects are also hidden from project lists.
+
+To archive a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Archive project** section, select **Archive project**.
+1. To confirm, select **OK**.
+
+## Unarchive a project
+
+When you unarchive a project, the read-only restriction is removed,
+and the project becomes available in project lists.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the project.
+
+1. Find the archived project.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my projects**.
+   1. Select **Explore projects**.
+   1. In the **Sort projects** dropdown list, select **Show archived projects**.
+   1. In the **Filter by name** field, enter the project name.
+   1. Select the project link.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
+1. To confirm, select **OK**.
 
 ## View project activity
 
@@ -238,7 +306,7 @@ To rename a repository:
 
 ## Access the project overview page by using the project ID
 
-> Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 To access a project by using the project ID instead of its name,
 go to `https://gitlab.example.com/projects/<id>`.
@@ -272,7 +340,7 @@ For users without permission to view the project's code, the landing page shows:
 
 ## Leave a project
 
-> The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+> - The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
 
 When you leave a project:
 
@@ -291,7 +359,11 @@ To leave a project:
 1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
 1. Select **Leave project**, then **Leave project** again.
 
-## Add a compliance framework to a project **(PREMIUM)**
+## Add a compliance framework to a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can add compliance frameworks to projects in a group that has a [compliance framework](../group/compliance_frameworks.md).
 
@@ -311,105 +383,25 @@ Prerequisites:
 1. To use LDAP groups to manage access to a project,
    [add the LDAP-synchronized group as a member](../group/manage.md) to the project.
 
-## Troubleshooting
+## Project aliases
 
-When working with projects, you might encounter the following issues, or require alternate methods to complete specific tasks.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
-### `An error occurred while fetching commit data`
+GitLab repositories are usually accessed with a namespace and a project name. When migrating
+frequently accessed repositories to GitLab, however, you can use project aliases to access those
+repositories with the original name. Accessing repositories through a project alias reduces the risk
+associated with migrating such repositories.
 
-When you visit a project, the message `An error occurred while fetching commit data` might be displayed
-if you use an ad blocker in your browser. The solution is to disable your ad blocker
-for the GitLab instance you are trying to access.
+This feature is only available on Git over SSH. Also, only GitLab administrators can create project
+aliases, and they can only do so through the API. For more information, see the
+[Project Aliases API documentation](../../api/project_aliases.md).
 
-### Find projects using an SQL query
-
-While in [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session), you can find and store an array of projects based on a SQL query:
-
-```ruby
-# Finds projects that end with '%ject'
-projects = Project.find_by_sql("SELECT * FROM projects WHERE name LIKE '%ject'")
-=> [#<Project id:12 root/my-first-project>>, #<Project id:13 root/my-second-project>>]
-```
-
-### Clear a project's or repository's cache
-
-If a project or repository has been updated but the state is not reflected in the UI, you may need to clear the project's or repository's cache.
-You can do so through [a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and one of the following:
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-```ruby
-## Clear project cache
-ProjectCacheWorker.perform_async(project.id)
-
-## Clear repository .exists? cache
-project.repository.expire_exists_cache
-```
-
-### Find projects that are pending deletion
-
-If you need to find all projects marked for deletion but that have not yet been deleted,
-[start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and run the following:
-
-```ruby
-projects = Project.where(pending_delete: true)
-projects.each do |p|
-  puts "Project ID: #{p.id}"
-  puts "Project name: #{p.name}"
-  puts "Repository path: #{p.repository.full_path}"
-end
-```
-
-### Delete a project using console
-
-If a project cannot be deleted, you can attempt to delete it through [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-user = User.find_by_username('<username>')
-ProjectDestroyWorker.new.perform(project.id, user.id, {})
-```
-
-If this fails, display why it doesn't work with:
-
-```ruby
-project = Project.find_by_full_path('<project_path>')
-project.delete_error
-```
-
-### Toggle a feature for all projects within a group
-
-While toggling a feature in a project can be done through the [projects API](../../api/projects.md),
-you may need to do this for a large number of projects.
-
-To toggle a specific feature, you can [start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session)
-and run the following function:
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-```ruby
-projects = Group.find_by_name('_group_name').projects
-projects.each do |p|
-  ## replace <feature-name> with the appropriate feature name in all instances
-  state = p.<feature-name>
-
-  if state != 0
-    puts "#{p.name} has <feature-name> already enabled. Skipping..."
-  else
-    puts "#{p.name} didn't have <feature-name> enabled. Enabling..."
-    p.project_feature.update!(<feature-name>: ProjectFeature::PRIVATE)
-  end
-end
-```
-
-To find features that can be toggled, run `pp p.project_feature`.
-Available permission levels are listed in
-[concerns/featurable.rb](https://gitlab.com/gitlab-org/gitlab/blob/master/app/models/concerns/featurable.rb).
+After an administrator creates an alias for a project, you can use the alias to clone the
+repository. For example, if an administrator creates the alias `gitlab` for the project
+`https://gitlab.com/gitlab-org/gitlab`, you can clone the project with
+`git clone git@gitlab.com:gitlab.git` instead of `git clone git@gitlab.com:gitlab-org/gitlab.git`.
 
 ## Related topics
 

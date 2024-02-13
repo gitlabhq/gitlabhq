@@ -10,6 +10,7 @@ import getAgentsQuery from '../graphql/queries/get_agents.query.graphql';
 import { getAgentLastContact, getAgentStatus } from '../clusters_util';
 import AgentEmptyState from './agent_empty_state.vue';
 import AgentTable from './agent_table.vue';
+import GitopsDeprecationAlert from './gitops_deprecation_alert.vue';
 
 export default {
   i18n: {
@@ -50,6 +51,7 @@ export default {
     GlLoadingIcon,
     GlBanner,
     LocalStorageSync,
+    GitopsDeprecationAlert,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['projectPath'],
@@ -104,6 +106,12 @@ export default {
 
       return filteredList;
     },
+    agentConfigs() {
+      return this.agentList.map((agent) => agent.configFolder?.path).filter(Boolean) || [];
+    },
+    projectGid() {
+      return this.agents?.project?.id || '';
+    },
     isLoading() {
       return this.$apollo.queries.agents.loading;
     },
@@ -141,6 +149,12 @@ export default {
   <gl-loading-icon v-if="isLoading" size="lg" />
 
   <section v-else-if="!queryErrored">
+    <gitops-deprecation-alert
+      v-if="agentConfigs.length"
+      :agent-configs="agentConfigs"
+      :project-gid="projectGid"
+    />
+
     <div v-if="agentList.length">
       <local-storage-sync
         v-if="feedbackBannerEnabled"

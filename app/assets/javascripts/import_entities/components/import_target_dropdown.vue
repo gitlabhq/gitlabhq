@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { debounce } from 'lodash';
+import { debounce, isNull } from 'lodash';
 
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
@@ -33,7 +33,13 @@ export default {
     },
     selected: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    toggleText: {
+      type: String,
+      required: false,
+      default: null,
     },
     userNamespace: {
       type: String,
@@ -82,7 +88,11 @@ export default {
       );
     },
 
-    toggleText() {
+    listboxToggleText() {
+      if (isNull(this.selected)) {
+        return this.toggleText;
+      }
+
       return truncate(this.selected, this.$options.MAX_IMPORT_TARGET_LENGTH);
     },
 
@@ -146,7 +156,7 @@ export default {
     :items="items"
     :disabled="disabled"
     :selected="selected"
-    :toggle-text="toggleText"
+    :toggle-text="listboxToggleText"
     searchable
     fluid-width
     toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"

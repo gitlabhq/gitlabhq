@@ -346,6 +346,24 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
         end
 
+        it 'returns the error message if there was an error adding the member to the group' do
+          error_message = 'Test CreateService Error Message'
+          allow_next_instance_of(::Members::CreateService) do |service|
+            expect(service).to receive(:execute).and_return(status: :error, message: error_message)
+            allow(service).to receive(:single_member).and_return(
+              instance_double(Member, invalid?: false)
+            )
+          end
+
+          expect do
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                 params: { user_id: stranger.id, access_level: Member::DEVELOPER }
+          end.not_to change { source.members.count }
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['status']).to eq('error')
+          expect(json_response['message']).to eq(error_message)
+        end
+
         context 'with invite_source considerations', :snowplow do
           let(:params) { { user_id: stranger.id, access_level: Member::DEVELOPER } }
 

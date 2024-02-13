@@ -49,6 +49,11 @@ export default {
     };
   },
   computed: {
+    localStorageKey() {
+      return this.isGroupPage
+        ? 'group_package_registry_list_sorting'
+        : 'package_registry_list_sorting';
+    },
     sortableFields() {
       return sortableFields(this.isGroupPage);
     },
@@ -114,7 +119,7 @@ export default {
 
 <template>
   <local-storage-sync
-    storage-key="package_registry_list_sorting"
+    :storage-key="localStorageKey"
     :value="sorting"
     @input="updateSortingFromLocalStorage"
   >

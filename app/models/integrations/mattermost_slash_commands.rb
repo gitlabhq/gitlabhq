@@ -46,7 +46,12 @@ module Integrations
     end
 
     def redirect_url(team, channel, url)
-      return if Gitlab::UrlBlocker.blocked_url?(url, schemes: %w[http https], enforce_sanitization: true)
+      return if Gitlab::HTTP_V2::UrlBlocker.blocked_url?(
+        url,
+        schemes: %w[http https],
+        enforce_sanitization: true,
+        deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+        outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
 
       origin = Addressable::URI.parse(url).origin
       format(MATTERMOST_URL, ORIGIN: origin, TEAM: team, CHANNEL: channel)

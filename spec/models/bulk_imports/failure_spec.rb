@@ -43,6 +43,25 @@ RSpec.describe BulkImports::Failure, type: :model, feature_category: :importers 
         expect(failure.relation).to eq('test_relation')
       end
     end
+
+    context 'when subrelation is nil' do
+      it 'returns relation' do
+        failure = described_class.new(pipeline_class: 'BulkImports::Common::Pipelines::WikiPipeline')
+
+        expect(failure.relation).to eq('wiki')
+      end
+    end
+
+    context 'when subrelation is present' do
+      it 'returns relation and subrelation' do
+        failure = described_class.new(
+          subrelation: 'subrelation',
+          pipeline_class: 'BulkImports::Common::Pipelines::WikiPipeline'
+        )
+
+        expect(failure.relation).to eq('wiki, subrelation')
+      end
+    end
   end
 
   describe '#exception_message=' do
@@ -72,6 +91,14 @@ RSpec.describe BulkImports::Failure, type: :model, feature_category: :importers 
       failure = described_class.new
       failure.source_url = 'A' * 1000
       expect(failure.source_url.size).to eq(255)
+    end
+  end
+
+  describe '#subrelation=' do
+    it 'truncates subrelation to 255 characters' do
+      failure = described_class.new
+      failure.subrelation = 'A' * 1000
+      expect(failure.subrelation.size).to eq(255)
     end
   end
 end

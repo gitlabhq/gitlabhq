@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # `NOT NULL` constraints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
 
 All attributes that should not have `NULL` as a value, should be defined as `NOT NULL`
 columns in the database.
@@ -154,7 +154,7 @@ end
 
 #### Check if all records are fixed (next release)
 
-Use postgres.ai to [create a thin clone](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/gitlab-com-database.html#use-postgresai-to-work-with-a-thin-clone-of-the-database-includes-direct-psql-access-to-the-thin-clone)
+Use postgres.ai to [create a thin clone](https://handbook.gitlab.com/handbook/engineering/infrastructure/core-platform/data_stores/database/doc/gitlab-com-database/#use-postgresai-to-work-with-a-thin-clone-of-the-database-includes-direct-psql-access-to-the-thin-clone)
 of the production database and check if all records on GitLab.com have the attribute set.
 If not go back to [Prevent new invalid records](#prevent-new-invalid-records-current-release) step and figure out where
 in the code the attribute is explicitly set to `nil`. Fix the code path then reschedule the migration to fix the existing

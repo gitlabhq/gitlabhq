@@ -24,6 +24,7 @@ RSpec.describe 'GraphQL', feature_category: :shared do
           "query_analysis.complexity" => 1,
           "query_analysis.used_fields" => ['Query.echo'],
           "query_analysis.used_deprecated_fields" => [],
+          "query_analysis.used_deprecated_arguments" => [],
           # query_fingerprint starts with operation name
           query_fingerprint: %r{^anonymous/},
           duration_s: kind_of(Numeric),

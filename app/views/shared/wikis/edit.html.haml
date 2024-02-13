@@ -1,3 +1,4 @@
+- breadcrumb_title(s_("Wiki|New Page")) unless @page.persisted?
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
 - add_page_specific_style 'page_bundles/wiki'
 - @gfm_form = true
@@ -16,7 +17,7 @@
         &middot;
         = s_("Wiki|Edit Page")
     - else
-      = s_("Wiki|Create New Page")
+      = s_("Wiki|New Page")
 
   .nav-controls.pb-md-3.pb-lg-0
     - if @page.persisted?

@@ -1,0 +1,30 @@
+# This template is a port of the OpenTofu CI/CD component at
+# https://gitlab.com/components/opentofu
+# It is generated with the `make backports` command from that project.
+#
+# Please make sure to use the component when your project is hosted on GitLab.com
+# or when you are willing to mirror the component project into your self-managed
+# instance and use it from there.
+#
+# Attention: This template will be removed in favor of the OpenTofu CI/CD component as soon as components
+#            are available for self-managed instances.
+#
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/OpenTofu.latest.gitlab-ci.yml
+
+include:
+  - template: OpenTofu/Base.latest.gitlab-ci.yml  # https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/OpenTofu/Base.latest.gitlab-ci.yml
+
+stages: [validate, build, deploy]
+
+fmt:
+  extends: .opentofu:fmt
+
+validate:
+  extends: .opentofu:validate
+
+plan:
+  extends: .opentofu:plan
+
+apply:
+  extends: .opentofu:apply

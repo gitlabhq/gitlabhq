@@ -69,8 +69,6 @@ module Users
     end
 
     def sms_send_allowed_after
-      return unless Feature.enabled?(:sms_send_wait_time, user)
-
       # first send is allowed anytime
       return if sms_send_count < 1
       return unless sms_sent_at

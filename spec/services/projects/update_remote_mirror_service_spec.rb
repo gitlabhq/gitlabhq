@@ -53,7 +53,7 @@ RSpec.describe Projects::UpdateRemoteMirrorService, feature_category: :source_co
 
     context 'when the URL is blocked' do
       before do
-        allow(Gitlab::UrlBlocker).to receive(:blocked_url?).and_return(true)
+        allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:blocked_url?).and_return(true)
       end
 
       it 'hard retries and returns error status' do

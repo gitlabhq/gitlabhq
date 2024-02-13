@@ -11,7 +11,7 @@ module Gitlab
           @project = project
           @user_finder = UserFinder.new(project)
           @formatter = Gitlab::ImportFormatter.new
-          @mentions_converter = Gitlab::BitbucketServerImport::MentionsConverter.new(project.id)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project.id)
           @object = hash.with_indifferent_access
         end
 
@@ -193,11 +193,7 @@ module Gitlab
             note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
           end
 
-          comment_note = if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
-                           mentions_converter.convert(comment.note)
-                         else
-                           comment.note
-                         end
+          comment_note = mentions_converter.convert(comment.note)
 
           note +=
             # Provide some context for replying

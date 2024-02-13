@@ -5,10 +5,6 @@ html {
 }
 
 body {
-  &.navless {
-    background-color: $white !important;
-  }
-
   &.board-card-content {
     background-color: $gray-darker;
 
@@ -137,9 +133,9 @@ body {
 }
 
 .gl--flex-full {
-  @include gl-display-flex;
-  @include gl-align-items-stretch;
-  @include gl-overflow-hidden;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
 }
 
 .fullscreen-layout {

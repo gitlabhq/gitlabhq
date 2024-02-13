@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rotate secrets of third-party integrations **(FREE SELF)**
+# Rotate secrets of third-party integrations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Rotating secrets of third-party integrations is an important security practice
 that helps mitigate the risks associated with leaked secrets, such as

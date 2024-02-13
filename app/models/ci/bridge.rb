@@ -32,10 +32,8 @@ module Ci
 
     state_machine :status do
       after_transition [:created, :manual, :waiting_for_resource] => :pending do |bridge|
-        next unless bridge.triggers_downstream_pipeline?
-
         bridge.run_after_commit do
-          ::Ci::CreateDownstreamPipelineWorker.perform_async(bridge.id)
+          Ci::TriggerDownstreamPipelineService.new(bridge).execute # rubocop: disable CodeReuse/ServiceClass
         end
       end
 

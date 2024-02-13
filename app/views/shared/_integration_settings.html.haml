@@ -1,6 +1,6 @@
 = form_errors(integration)
 
-%div{ data: { testid: "integration-settings-form" } }
+%div
   - if @default_integration
     .js-vue-default-integration-settings{ data: integration_form_data(@default_integration, group: @group, project: @project) }
   .js-vue-integration-settings{ data: integration_form_data(integration, group: @group, project: @project) }

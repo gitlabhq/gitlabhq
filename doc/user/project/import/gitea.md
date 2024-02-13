@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from Gitea to GitLab **(FREE ALL)**
+# Import your project from Gitea to GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 
 Import your projects from Gitea to GitLab.
 
@@ -27,9 +31,14 @@ in your GitLab instance. This means the project creator (usually the user that
 started the import process) is set as the author. A reference, however, is kept
 on the issue about the original Gitea author.
 
+## Known issue
+
+Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
+in their path must be renamed for all items to be imported correctly.
+
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - Gitea version 1.0.0 or later.
 - [Gitea import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)

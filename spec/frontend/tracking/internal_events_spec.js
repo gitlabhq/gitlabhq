@@ -4,6 +4,7 @@ import InternalEvents from '~/tracking/internal_events';
 import { LOAD_INTERNAL_EVENTS_SELECTOR } from '~/tracking/constants';
 import * as utils from '~/tracking/utils';
 import { Tracker } from '~/tracking/tracker';
+import Tracking from '~/tracking';
 
 jest.mock('~/api', () => ({
   trackInternalEvent: jest.fn(),
@@ -20,11 +21,21 @@ const event = 'TestEvent';
 
 describe('InternalEvents', () => {
   describe('trackEvent', () => {
+    const category = 'TestCategory';
+
     it('trackEvent calls API.trackInternalEvent with correct arguments', () => {
-      InternalEvents.trackEvent(event);
+      InternalEvents.trackEvent(event, category);
 
       expect(API.trackInternalEvent).toHaveBeenCalledTimes(1);
       expect(API.trackInternalEvent).toHaveBeenCalledWith(event);
+    });
+
+    it('trackEvent calls Tracking.event with correct arguments including category', () => {
+      jest.spyOn(Tracking, 'event').mockImplementation(() => {});
+
+      InternalEvents.trackEvent(event, category);
+
+      expect(Tracking.event).toHaveBeenCalledWith(category, event, expect.any(Object));
     });
 
     it('trackEvent calls trackBrowserSDK with correct arguments', () => {
@@ -63,7 +74,7 @@ describe('InternalEvents', () => {
       await wrapper.findByTestId('button').trigger('click');
 
       expect(trackEventSpy).toHaveBeenCalledTimes(1);
-      expect(trackEventSpy).toHaveBeenCalledWith(event);
+      expect(trackEventSpy).toHaveBeenCalledWith(event, undefined);
     });
   });
 

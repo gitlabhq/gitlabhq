@@ -32,9 +32,33 @@ describe('WorkItemCommentLocked', () => {
       wrapper = createComponent({ isProjectArchived: true });
     });
 
-    it('learn more link is directed to archived project docs path', () => {
+    it('renders text', () => {
+      expect(wrapper.text()).toMatchInterpolatedText(
+        'This project is archived and cannot be commented on. Learn more.',
+      );
+    });
+
+    it('renders learn more link which links to archived project docs path', () => {
       expect(findLearnMoreLink().attributes('href')).toBe(
         WorkItemCommentLocked.constantOptions.archivedProjectDocsPath,
+      );
+    });
+  });
+
+  describe('when the work item is locked', () => {
+    beforeEach(() => {
+      wrapper = createComponent();
+    });
+
+    it('renders text', () => {
+      expect(wrapper.text()).toMatchInterpolatedText(
+        'The discussion in this task is locked. Only project members can comment. Learn more.',
+      );
+    });
+
+    it('renders learn more link which links to locked discussions docs path', () => {
+      expect(findLearnMoreLink().attributes('href')).toBe(
+        WorkItemCommentLocked.constantOptions.lockedIssueDocsPath,
       );
     });
   });

@@ -27,40 +27,12 @@ class Route < MainClusterwide::ApplicationRecord
   def rename_descendants
     return unless saved_change_to_path? || saved_change_to_name?
 
-    if Feature.disabled?(:batch_route_updates, Feature.current_request, type: :gitlab_com_derisk)
-      descendant_routes = self.class.inside_path(path_before_last_save)
+    changes = {
+      path: { saved: saved_change_to_path?, old_value: path_before_last_save },
+      name: { saved: saved_change_to_name?, old_value: name_before_last_save }
+    }
 
-      descendant_routes.each do |route|
-        attributes = {}
-
-        if saved_change_to_path? && route.path.present?
-          attributes[:path] = route.path.sub(path_before_last_save, path)
-        end
-
-        if saved_change_to_name? && name_before_last_save.present? && route.name.present?
-          attributes[:name] = route.name.sub(name_before_last_save, name)
-        end
-
-        next if attributes.empty?
-
-        old_path = route.path
-
-        # Callbacks must be run manually
-        route.update_columns(attributes.merge(updated_at: Time.current))
-
-        # We are not calling route.delete_conflicting_redirects here, in hopes
-        # of avoiding deadlocks. The parent (self, in this method) already
-        # called it, which deletes conflicts for all descendants.
-        route.create_redirect(old_path) if attributes[:path]
-      end
-    else
-      changes = {
-        path: { saved: saved_change_to_path?, old_value: path_before_last_save },
-        name: { saved: saved_change_to_name?, old_value: name_before_last_save }
-      }
-
-      Routes::RenameDescendantsService.new(self).execute(changes) # rubocop: disable CodeReuse/ServiceClass -- Need a service class to encapsulate all the logic.
-    end
+    Routes::RenameDescendantsService.new(self).execute(changes) # rubocop: disable CodeReuse/ServiceClass -- Need a service class to encapsulate all the logic.
   end
 
   def delete_conflicting_redirects

@@ -5,6 +5,7 @@ class Import::BulkImportsController < ApplicationController
 
   before_action :ensure_bulk_import_enabled
   before_action :verify_blocked_uri, only: :status
+  before_action :bulk_import, only: [:history]
 
   feature_category :importers
   urgency :low
@@ -49,6 +50,8 @@ class Import::BulkImportsController < ApplicationController
     end
   end
 
+  def history; end
+
   def details; end
 
   def create
@@ -74,6 +77,13 @@ class Import::BulkImportsController < ApplicationController
   end
 
   private
+
+  def bulk_import
+    return unless params[:id]
+
+    @bulk_import ||= BulkImport.find(params[:id])
+    @bulk_import || render_404
+  end
 
   def pagination_headers
     %w[x-next-page x-page x-per-page x-prev-page x-total x-total-pages]
@@ -148,11 +158,13 @@ class Import::BulkImportsController < ApplicationController
   end
 
   def verify_blocked_uri
-    Gitlab::UrlBlocker.validate!(
+    Gitlab::HTTP_V2::UrlBlocker.validate!(
       session[url_key],
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
-      schemes: %w[http https]
+      schemes: %w[http https],
+      deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+      outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
     )
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     clear_session_data

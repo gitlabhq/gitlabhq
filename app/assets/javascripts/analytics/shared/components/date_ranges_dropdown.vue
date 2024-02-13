@@ -55,6 +55,11 @@ export default {
       required: false,
       default: false,
     },
+    disableSelectedDayCount: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -85,7 +90,9 @@ export default {
       return this.groupedDateRangeOptionsByValue[this.selectedValue];
     },
     showDaysSelectedCount() {
-      return !this.isCustomDateRangeSelected && this.daysSelectedCount;
+      return (
+        !this.disableSelectedDayCount && !this.isCustomDateRangeSelected && this.daysSelectedCount
+      );
     },
     daysSelectedCount() {
       const { selectedDateRange } = this;

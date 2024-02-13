@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements for Auto DevOps **(FREE ALL)**
+# Requirements for Auto DevOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Before enabling [Auto DevOps](index.md), we recommend you to prepare it for
 deployment. If you don't, you can use it to build and test your apps, and
@@ -27,7 +31,7 @@ To prepare the deployment:
 
 ## Auto DevOps deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38542) in GitLab 11.0.
 
 When using Auto DevOps to deploy your applications, choose the
 [continuous deployment strategy](../../ci/index.md)
@@ -134,7 +138,7 @@ To make full use of Auto DevOps with Kubernetes, you need:
   You can configure Docker-based runners to autoscale as well, using
   [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
-  Runners should be registered as [shared runners](../../ci/runners/runners_scope.md#shared-runners)
+  Runners should be registered as [instance runners](../../ci/runners/runners_scope.md#instance-runners)
   for the entire GitLab instance, or [project runners](../../ci/runners/runners_scope.md#project-runners)
   that are assigned to specific projects.
 

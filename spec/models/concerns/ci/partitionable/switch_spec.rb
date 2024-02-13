@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
+RSpec.describe Ci::Partitionable::Switch, :aggregate_failures, feature_category: :continuous_integration do
   let(:model) do
     Class.new(Ci::ApplicationRecord) do
       self.primary_key = :id
@@ -71,7 +71,7 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
     allow(Feature::Definition).to receive(:get).with(table_rollout_flag)
       .and_return(
         Feature::Definition.new("development/#{table_rollout_flag}.yml",
-          { type: 'development', name: table_rollout_flag }
+          { type: 'gitlab_com_derisk', name: table_rollout_flag }
         )
       )
   end
@@ -96,25 +96,6 @@ RSpec.describe Ci::Partitionable::Switch, :aggregate_failures do
   it { expect(partitioned_model.arel_table.name).to eq('_test_p_ci_jobs_metadata') }
 
   it { expect(partitioned_model.sequence_name).to eq('_test_ci_jobs_metadata_id_seq') }
-
-  context 'with singe table inheritance' do
-    let(:child_model) do
-      Class.new(model) do
-        def self.name
-          'TestSwitchJobMetadataChild'
-        end
-      end
-    end
-
-    it 'adds a Partitioned model for each descendant' do
-      expect(model::Partitioned).not_to eq(child_model::Partitioned)
-    end
-
-    it 'uses the parent name in STI queries' do
-      recorder = ActiveRecord::QueryRecorder.new { child_model.all.load }
-      expect(recorder.log).to include(/"type" = 'TestSwitchJobMetadataChild'/)
-    end
-  end
 
   context 'when switching the tables' do
     before do

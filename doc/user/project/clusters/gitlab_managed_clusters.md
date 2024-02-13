@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab-managed clusters (deprecated) **(FREE ALL)**
+# GitLab-managed clusters (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22011) in GitLab 11.5.
 > - Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/26565) in GitLab 11.11.
@@ -36,7 +40,7 @@ namespaces and service accounts, can cause unexpected errors. If this occurs, tr
 
 ## Clearing the cluster cache
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31759) in GitLab 12.6.
 
 If you allow GitLab to manage your cluster, GitLab stores a cached
 version of the namespaces and service accounts it creates for your projects. If you
@@ -51,7 +55,7 @@ To clear the cache:
 
 ## Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24580) in GitLab 11.8.
 
 Specifying a base domain automatically sets `KUBE_INGRESS_BASE_DOMAIN` as an deployment variable.
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain is used for the different

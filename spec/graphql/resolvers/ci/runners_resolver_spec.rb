@@ -87,6 +87,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
             search: 'abc',
             sort: :contacted_asc,
             creator_id: 'gid://gitlab/User/1',
+            creator_username: 'root',
             version_prefix: '15.'
           }
         end
@@ -102,6 +103,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver, feature_category: :fleet_visibili
             search: 'abc',
             sort: 'contacted_asc',
             creator_id: '1',
+            creator_username: 'root',
             version_prefix: '15.'
           }
         end

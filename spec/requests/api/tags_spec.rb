@@ -158,11 +158,7 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       let(:description) { 'Awesome release!' }
 
       let!(:release) do
-        create(:release,
-               :legacy,
-               project: project,
-               tag: tag_name,
-               description: description)
+        create(:release, :legacy, project: project, tag: tag_name, description: description)
       end
 
       it 'returns an array of project tags with release info' do

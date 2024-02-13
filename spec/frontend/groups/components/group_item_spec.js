@@ -269,7 +269,6 @@ describe('GroupItemComponent', () => {
       expect(vm.$el.querySelector('.group-row-contents .stats')).toBeDefined();
 
       expect(vm.$el.querySelector('.folder-toggle-wrap')).toBeDefined();
-      expect(vm.$el.querySelector('.folder-toggle-wrap .folder-caret')).toBeDefined();
       expect(vm.$el.querySelector('.folder-toggle-wrap .item-type-icon')).toBeDefined();
 
       expect(vm.$el.querySelector('.avatar-container')).toBeDefined();

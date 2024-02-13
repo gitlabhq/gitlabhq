@@ -10,7 +10,7 @@ module Gitlab
           @project = project
           @formatter = Gitlab::ImportFormatter.new
           @user_finder = UserFinder.new(project)
-          @mentions_converter = Gitlab::BitbucketServerImport::MentionsConverter.new(project.id)
+          @mentions_converter = Gitlab::Import::MentionsConverter.new('bitbucket_server', project.id)
 
           # Object should behave as a object so we can remove object.is_a?(Hash) check
           # This will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/412328
@@ -53,11 +53,7 @@ module Gitlab
           description += author_line
           description += object[:description] if object[:description]
 
-          if Feature.enabled?(:bitbucket_server_convert_mentions_to_users, project.creator)
-            description = mentions_converter.convert(description)
-          end
-
-          description
+          mentions_converter.convert(description)
         end
 
         def author_line

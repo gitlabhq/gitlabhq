@@ -75,29 +75,37 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
 
       context 'when the ci_catalog_create_metadata feature flag is enabled' do
-        context 'when there are more than 10 components' do
+        context 'when there are at max 30 components' do
           let(:files) do
-            {
-              'templates/secret11.yml' => '',
-              'templates/secret10.yml' => '',
-              'templates/secret8.yml' => '',
-              'templates/secret7.yml' => '',
-              'templates/secret6.yml' => '',
-              'templates/secret5.yml' => '',
-              'templates/secret4.yml' => '',
-              'templates/secret3.yml' => '',
-              'templates/secret2.yml' => '',
-              'templates/secret1.yml' => '',
-              'templates/secret0.yml' => '',
-              'README.md' => 'Read me'
-            }
+            num_components = 30
+            components = (0...num_components).map { |i| "templates/secret#{i}.yml" }
+            components << 'README.md'
+
+            components.index_with { |_file| '' }
           end
 
-          it 'does not create components' do
+          it 'creates the components' do
+            response = described_class.new(release).execute
+
+            expect(response).to be_success
+            expect(project.ci_components.count).to eq(30)
+          end
+        end
+
+        context 'when there are more than 30 components' do
+          let(:files) do
+            num_components = 31
+            components = (0..num_components).map { |i| "templates/secret#{i}.yml" }
+            components << 'README.md'
+
+            components.index_with { |_file| '' }
+          end
+
+          it 'raises an error' do
             response = described_class.new(release).execute
 
             expect(response).to be_error
-            expect(response.message).to include('Release cannot contain more than 10 components')
+            expect(response.message).to include('Release cannot contain more than 30 components')
             expect(project.ci_components.count).to eq(0)
           end
         end

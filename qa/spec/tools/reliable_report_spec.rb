@@ -36,7 +36,7 @@ describe QA::Tools::ReliableReport do
       "stage" => "create",
       "product_group" => "code_review",
       "testcase" => "https://testcase/url",
-      "run_type" => "staging",
+      "run_type" => "e2e-package-and-test",
       "_time" => time
     }
   end
@@ -49,7 +49,7 @@ describe QA::Tools::ReliableReport do
       "stage" => "manage",
       "product_group" => "import_and_integrate",
       "testcase" => "https://testcase/url",
-      "run_type" => "staging",
+      "run_type" => "e2e-package-and-test",
       "_time" => time
     }
   end
@@ -86,7 +86,7 @@ describe QA::Tools::ReliableReport do
       "job_url" => "https://job/url",
       "testcase" => "https://testcase/url",
       "failure_issue" => "https://issues/url",
-      "run_type" => "staging",
+      "run_type" => "e2e-package-and-test",
       "_time" => time
     }
   end
@@ -102,7 +102,7 @@ describe QA::Tools::ReliableReport do
       "job_url" => "https://job/url",
       "testcase" => "https://testcase/url",
       "failure_issue" => "https://issues/url",
-      "run_type" => "staging",
+      "run_type" => "e2e-package-and-test",
       "_time" => time
     }
   end
@@ -137,18 +137,18 @@ describe QA::Tools::ReliableReport do
           r.run_type == "staging-sanity" or
           r.run_type == "production-full" or
           r.run_type == "production-sanity" or
-          r.run_type == "package-and-qa" or
+          r.run_type == "e2e-package-and-test" or
+          r.run_type == "e2e-test-on-gdk" or
           r.run_type == "nightly"
         )
         |> filter(fn: (r) => r.job_name != "airgapped" and
-          r.job_name != "instance-image-slow-network" and
           r.job_name != "nplus1-instance-image"
         )
         |> filter(fn: (r) => r.status != "pending" and
           r.merge_request == "false" and
           r.quarantined == "false" and
           r.smoke == "false" and
-          r.reliable == "#{reliable}"
+          (r.reliable == "#{reliable}" #{reliable ? 'or' : 'and'} r.blocking == "#{reliable}")
         )
         |> filter(fn: (r) => r["_field"] == "job_url" or
           r["_field"] == "failure_exception" or
@@ -300,7 +300,9 @@ describe QA::Tools::ReliableReport do
           <<~TXT.strip
             [[_TOC_]]
 
-            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable/blocking (#{Date.today - range} - #{Date.today})
+
+            **Note: MRs will be auto-created for promoting the top #{QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT} specs sorted by most number of successful runs**
 
             Total amount: **2**
 
@@ -311,6 +313,14 @@ describe QA::Tools::ReliableReport do
             #{expected_stage_markdown([[name_column('stable spec2'), 3, 0, '0%']], 'manage', 'import and integrate', :stable)}
 
             # Reliable specs with failures (#{Date.today - range} - #{Date.today})
+
+            **Note:**
+
+            * Only failures from the nightly, e2e-package-and-test and e2e-test-on-gdk pipelines are considered
+
+            * Only specs that have a failure rate of equal or greater than 1 percent are considered
+
+            * Quarantine MRs will be created for all specs listed below
 
             Total amount: **2**
 
@@ -341,7 +351,9 @@ describe QA::Tools::ReliableReport do
           <<~TXT.strip
             [[_TOC_]]
 
-            # Candidates for promotion to reliable (#{Date.today - range} - #{Date.today})
+            # Candidates for promotion to reliable/blocking (#{Date.today - range} - #{Date.today})
+
+            **Note: MRs will be auto-created for promoting the top #{QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT} specs sorted by most number of successful runs**
 
             Total amount: **2**
 
@@ -394,6 +406,52 @@ describe QA::Tools::ReliableReport do
     it "returns false for disallowed failure" do
       expect(reliable_report.send(:allowed_failure?,
         %q([Unable to find css "[data-testid=\"user_action_dropdown\"]"]))).to be false
+    end
+  end
+
+  describe "#issue_for_most_failures" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    let(:failure_message_1) { "This is a failure exception 1" }
+    let(:failure_message_2) { "This is a failure exception 2" }
+    let(:job_url) { "https://example.com/job/url" }
+    let(:failure_issue_url_1) { "https://example.com/failure/issue_1" }
+    let(:failure_issue_url_2) { "https://example.com/failure/issue_2" }
+
+    let(:records) do
+      [
+        instance_double("InfluxDB2::FluxRecord", values: values_1),
+        instance_double("InfluxDB2::FluxRecord", values: values_2),
+        instance_double("InfluxDB2::FluxRecord", values: values_2)
+      ]
+    end
+
+    let(:values_1) do
+      {
+        "failure_exception" => failure_message_1,
+        "failure_issue" => failure_issue_url_1,
+        "job_url" => job_url
+      }
+    end
+
+    let(:values_2) do
+      {
+        "failure_exception" => failure_message_2,
+        "failure_issue" => failure_issue_url_2,
+        "job_url" => job_url
+      }
+    end
+
+    let(:values_3) do
+      {
+        "failure_exception" => failure_message_2,
+        "failure_issue" => failure_issue_url_2,
+        "job_url" => job_url
+      }
+    end
+
+    it 'returns the failure issue with most failures' do
+      expect(reliable_report.send(:issue_for_most_failures, records)).to eq(failure_issue_url_2)
     end
   end
 
@@ -455,19 +513,23 @@ describe QA::Tools::ReliableReport do
   describe "#specs_attributes" do
     subject(:reliable_report) { described_class.new(14) }
 
+    let(:promotion_batch_limit) { 10 }
+
     let(:report_web_url) { 'https://report/url' }
 
     before do
       allow(reliable_report).to receive(:report_web_url).and_return(report_web_url)
     end
 
-    shared_examples "spec attributes" do |stable|
-      it "returns #{stable} spec attributes" do
-        expect(reliable_report.send(:specs_attributes, stable: stable)).to eq(expected_specs_attributes)
+    shared_examples "spec attributes" do |reliable|
+      it "returns #{reliable} spec attributes" do
+        stub_const("QA::Tools::ReliableReport::PROMOTION_BATCH_LIMIT", promotion_batch_limit)
+
+        expect(reliable_report.send(:specs_attributes, reliable: reliable)).to eq(expected_specs_attributes)
       end
     end
 
-    context "with stable false" do
+    context "with reliable true" do
       let(:expected_specs_attributes) do
         { type: "Unstable Specs",
           report_issue: "https://report/url",
@@ -484,7 +546,8 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 66.67,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                run_type: "staging" },
+                all_run_type: ["e2e-package-and-test"],
+                failed_run_type: ["e2e-package-and-test"] },
               { stage: "manage",
                 product_group: "import_and_integrate",
                 name: "unstable spec",
@@ -496,32 +559,21 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 66.67,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                run_type: "staging" }
+                all_run_type: ["e2e-package-and-test"],
+                failed_run_type: ["e2e-package-and-test"] }
             ] }
       end
 
-      it_behaves_like "spec attributes", false
+      it_behaves_like "spec attributes", true
     end
 
-    context "with stable true" do
+    context "with reliable false" do
       let(:expected_specs_attributes) do
         {
           type: "Stable Specs",
           report_issue: "https://report/url",
           specs:
             [
-              { stage: "create",
-                product_group: "code_review",
-                name: "stable spec1",
-                file: "spec.rb",
-                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
-                runs: 3,
-                failed: 0,
-                failure_issue: "",
-                failure_rate: 0,
-                testcase: "https://testcase/url",
-                file_path: "/qa/qa/specs/features/some/spec.rb",
-                run_type: "staging" },
               { stage: "manage",
                 product_group: "import_and_integrate",
                 name: "stable spec2",
@@ -533,12 +585,99 @@ describe QA::Tools::ReliableReport do
                 failure_rate: 0,
                 testcase: "https://testcase/url",
                 file_path: "/qa/qa/specs/features/some/spec.rb",
-                run_type: "staging" }
+                all_run_type: ["e2e-package-and-test"],
+                failed_run_type: [] },
+              { stage: "create",
+                product_group: "code_review",
+                name: "stable spec1",
+                file: "spec.rb",
+                link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                runs: 3,
+                failed: 0,
+                failure_issue: "",
+                failure_rate: 0,
+                testcase: "https://testcase/url",
+                file_path: "/qa/qa/specs/features/some/spec.rb",
+                all_run_type: ["e2e-package-and-test"],
+                failed_run_type: [] }
             ]
         }
       end
 
-      it_behaves_like "spec attributes", true
+      it_behaves_like "spec attributes", false
+
+      context "with specific PROMOTION_BATCH_LIMIT" do
+        let(:promotion_batch_limit) { 1 }
+
+        let(:runs) do
+          [
+            instance_double(
+              "InfluxDB2::FluxTable",
+              records: [
+                instance_double("InfluxDB2::FluxRecord", values: run_values),
+                instance_double("InfluxDB2::FluxRecord", values: run_values),
+                instance_double("InfluxDB2::FluxRecord", values: run_values.merge({ "_time" => Time.now.to_s }))
+              ]
+            ),
+            instance_double(
+              "InfluxDB2::FluxTable",
+              records: [
+                instance_double("InfluxDB2::FluxRecord", values: run_more_values),
+                instance_double("InfluxDB2::FluxRecord", values: run_more_values)
+              ]
+            )
+          ]
+        end
+
+        let(:expected_specs_attributes) do
+          {
+            type: "Stable Specs",
+            report_issue: "https://report/url",
+            specs:
+              [
+                { stage: "create",
+                  product_group: "code_review",
+                  name: "stable spec1",
+                  file: "spec.rb",
+                  link: "https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa/specs/features/some/spec.rb",
+                  runs: 3,
+                  failed: 0,
+                  failure_issue: "",
+                  failure_rate: 0,
+                  testcase: "https://testcase/url",
+                  file_path: "/qa/qa/specs/features/some/spec.rb",
+                  all_run_type: ["e2e-package-and-test"],
+                  failed_run_type: [] }
+              ]
+          }
+        end
+
+        it_behaves_like "spec attributes", false
+      end
+    end
+  end
+
+  describe "#skip_reliable_spec_record?" do
+    subject(:reliable_report) { described_class.new(14) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:failed_count, :failure_issue, :failed_run_type, :failure_rate, :result) do
+      1 | 'https://failure/issues/url' | ['e2e-package-and-test'] | 2 | false
+      1 | 'https://failure/issues/url' | ['e2e-test-on-gdk'] | 2 | false
+      1 | 'https://failure/issues/url' | ['nightly'] | 2 | false
+      0 | 'https://failure/issues/url' | ['e2e-test-on-gdk'] | 2 | true
+      1 | 'https://failure/issue/url' | ['e2e-test-on-gdk'] | 2 | true
+      1 | 'https://failure/issues/url' | ['abc'] | 2 | true
+      1 | 'https://failure/issues/url' | ['e2e-test-on-gdk'] | 0 | true
+    end
+
+    with_them do
+      it do
+        expect(reliable_report.send(:skip_reliable_spec_record?, failed_count: failed_count,
+          failure_issue: failure_issue, failed_run_type: failed_run_type, failure_rate: failure_rate))
+          .to eq result
+      end
     end
   end
 end

@@ -1,34 +1,79 @@
 <script>
-import { GlAlert } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
+import { captureException } from '~/ci/runner/sentry_utils';
+import { convertToSnakeCase } from '~/lib/utils/text_utility';
+import NamespaceStorageQuery from 'ee_else_ce/usage_quotas/storage/queries/namespace_storage.query.graphql';
+import ProjectListStorageQuery from 'ee_else_ce/usage_quotas/storage/queries/project_list_storage.query.graphql';
 import StorageUsageStatistics from 'ee_else_ce/usage_quotas/storage/components/storage_usage_statistics.vue';
+import SearchAndSortBar from '~/usage_quotas/components/search_and_sort_bar/search_and_sort_bar.vue';
+import { parseGetStorageResults } from '../utils';
+import DependencyProxyUsage from './dependency_proxy_usage.vue';
+import ContainerRegistryUsage from './container_registry_usage.vue';
+import ProjectList from './project_list.vue';
 
 export default {
   name: 'NamespaceStorageApp',
   components: {
     GlAlert,
+    GlKeysetPagination,
     StorageUsageStatistics,
+    DependencyProxyUsage,
+    ContainerRegistryUsage,
+    SearchAndSortBar,
+    ProjectList,
   },
-  props: {
-    namespaceLoadingError: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    projectsLoadingError: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    isNamespaceStorageStatisticsLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+  inject: [
+    'namespaceId',
+    'namespacePath',
+    'helpLinks',
+    'defaultPerPage',
+    'userNamespace',
+    'customSortKey',
+  ],
+  apollo: {
     namespace: {
-      type: Object,
-      required: false,
-      default: () => ({}),
+      query: NamespaceStorageQuery,
+      variables() {
+        return {
+          fullPath: this.namespacePath,
+        };
+      },
+      update: parseGetStorageResults,
+      error(error) {
+        this.namespaceLoadingError = true;
+        captureException({ error, component: this.$options.name });
+      },
     },
+    projects: {
+      query: ProjectListStorageQuery,
+      variables() {
+        return {
+          fullPath: this.namespacePath,
+          searchTerm: this.searchTerm,
+          first: this.defaultPerPage,
+          sortKey: this.sortKey,
+        };
+      },
+      update(data) {
+        return data.namespace.projects;
+      },
+      error(error) {
+        this.projectsLoadingError = true;
+        captureException({ error, component: this.$options.name });
+      },
+    },
+  },
+  data() {
+    return {
+      namespace: {},
+      projects: null,
+      searchTerm: '',
+      namespaceLoadingError: false,
+      projectsLoadingError: false,
+      sortKey: this.customSortKey ?? 'STORAGE_SIZE_DESC',
+      initialSortBy: this.customSortKey ? null : 'storage',
+      sortableFields: { storage: !this.customSortKey },
+    };
   },
   computed: {
     usedStorage() {
@@ -38,6 +83,67 @@ export default {
         // This is the actual storage size value, used in CE or when the above is disabled
         this.namespace.rootStorageStatistics?.storageSize
       );
+    },
+    dependencyProxyTotalSize() {
+      return this.namespace.rootStorageStatistics?.dependencyProxySize ?? 0;
+    },
+    containerRegistrySize() {
+      return this.namespace.rootStorageStatistics?.containerRegistrySize ?? 0;
+    },
+    containerRegistrySizeIsEstimated() {
+      return this.namespace.rootStorageStatistics?.containerRegistrySizeIsEstimated ?? false;
+    },
+    projectList() {
+      return this.projects?.nodes ?? [];
+    },
+    pageInfo() {
+      return this.projects?.pageInfo;
+    },
+    showPagination() {
+      return Boolean(this.pageInfo?.hasPreviousPage || this.pageInfo?.hasNextPage);
+    },
+  },
+  methods: {
+    onSearch(searchTerm) {
+      if (searchTerm?.length < 3) {
+        // NOTE: currently the API doesn't handle strings of length < 3,
+        // returning an empty list as a result of such searches. So here we
+        // substitute short search terms with empty string to simulate default
+        // "fetch all" behaviour.
+        this.searchTerm = '';
+      } else {
+        this.searchTerm = searchTerm;
+      }
+    },
+    onSortChanged({ sortBy, sortDesc }) {
+      if (!this.sortableFields[sortBy]) {
+        return;
+      }
+
+      const sortDir = sortDesc ? 'desc' : 'asc';
+      const sortKey = `${convertToSnakeCase(sortBy)}_size_${sortDir}`.toUpperCase();
+      this.sortKey = sortKey;
+    },
+    fetchMoreProjects(vars) {
+      this.$apollo.queries.projects.fetchMore({
+        variables: {
+          fullPath: this.namespacePath,
+          ...vars,
+        },
+        updateQuery(previousResult, { fetchMoreResult }) {
+          return fetchMoreResult;
+        },
+      });
+    },
+    onPrev(before) {
+      if (this.pageInfo?.hasPreviousPage) {
+        this.fetchMoreProjects({ before, last: this.defaultPerPage, first: undefined });
+      }
+    },
+    onNext(after) {
+      if (this.pageInfo?.hasNextPage) {
+        this.fetchMoreProjects({ after, first: this.defaultPerPage });
+      }
     },
   },
 };
@@ -59,9 +165,46 @@ export default {
     <storage-usage-statistics
       :additional-purchased-storage-size="namespace.additionalPurchasedStorageSize"
       :used-storage="usedStorage"
-      :loading="isNamespaceStorageStatisticsLoading"
+      :loading="$apollo.queries.namespace.loading"
+    />
+    <h3 data-testid="breakdown-subtitle">
+      {{ s__('UsageQuota|Storage usage breakdown') }}
+    </h3>
+    <dependency-proxy-usage
+      v-if="!userNamespace"
+      :dependency-proxy-total-size="dependencyProxyTotalSize"
+      :loading="$apollo.queries.namespace.loading"
+    />
+    <container-registry-usage
+      :container-registry-size="containerRegistrySize"
+      :container-registry-size-is-estimated="containerRegistrySizeIsEstimated"
+      :loading="$apollo.queries.namespace.loading"
     />
 
-    <slot name="ee-storage-app"></slot>
+    <section class="gl-mt-5">
+      <div class="gl-bg-gray-10 gl-p-5 gl-display-flex">
+        <search-and-sort-bar
+          :namespace="namespaceId"
+          :search-input-placeholder="__('Search')"
+          @onFilter="onSearch"
+        />
+      </div>
+      <project-list
+        :projects="projectList"
+        :is-loading="$apollo.queries.projects.loading"
+        :help-links="helpLinks"
+        :sort-by="initialSortBy"
+        :sortable-fields="sortableFields"
+        @sortChanged="onSortChanged"
+      />
+      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+        <gl-keyset-pagination
+          v-if="showPagination"
+          v-bind="pageInfo"
+          @prev="onPrev"
+          @next="onNext"
+        />
+      </div>
+    </section>
   </div>
 </template>

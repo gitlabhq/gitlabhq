@@ -4,7 +4,16 @@ classes:
 - Iterations::Cadence
 feature_categories:
 - team_planning
-description: Defines an iteration cadence for a group, used to define how iterations should act
+description: Defines an iteration cadence for a group, used to define how iterations
+  should act
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50707
 milestone: '13.9'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  group_id: namespaces

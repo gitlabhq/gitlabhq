@@ -6,10 +6,6 @@ MARKDOWN
 
 CATEGORY_TABLE = <<MARKDOWN
 
-Changes that require review have been detected!
-
-Please refer to the table below for assigning reviewers and maintainers suggested by Danger in the specified category:
-
 | Category | Reviewer | Maintainer |
 | -------- | -------- | ---------- |
 MARKDOWN
@@ -20,19 +16,11 @@ POST_TABLE_MESSAGE = <<MARKDOWN
 - ![available](https://gitlab-org.gitlab.io/gitlab-roulette/status-svg/_success.svg) Reviewer is available!
 - ![unavailable](https://gitlab-org.gitlab.io/gitlab-roulette/status-svg/_alert.svg) Reviewer is unavailable!
 
-Feel free to [override these selections](https://about.gitlab.com/handbook/engineering/projects/#gitlab)
-if you think someone else would be better-suited
-or use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/)
+Please refer to [documentation page](https://docs.gitlab.com/ee/development/code_review.html#reviewer-roulette)
+for guidance on how you can benefit from the Reviewer Roulette, or use the
+[GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/)
 to find other available reviewers.
 
-To read more on how to use the reviewer roulette, please take a look at the
-[Engineering workflow](https://about.gitlab.com/handbook/engineering/workflow/#basics)
-and [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html).
-Please consider assigning a reviewer or maintainer who is a
-[domain expert](https://about.gitlab.com/handbook/engineering/projects/#gitlab) in the area of the merge request.
-
-Once you've decided who will review this merge request, assign them as a reviewer!
-Danger does not automatically notify them for you.
 MARKDOWN
 
 NO_SUGGESTIONS = <<MARKDOWN

@@ -1,0 +1,17 @@
+query getNamespaceStorageStatistics($fullPath: ID!) {
+  namespace(fullPath: $fullPath) {
+    id
+    rootStorageStatistics {
+      storageSize
+      repositorySize
+      lfsObjectsSize
+      containerRegistrySize
+      containerRegistrySizeIsEstimated
+      dependencyProxySize
+      buildArtifactsSize
+      packagesSize
+      wikiSize
+      snippetsSize
+    }
+  }
+}

@@ -313,6 +313,19 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
             email_for_github_username
           end
 
+          context 'when github_import_lock_user_finder feature flag is disabled' do
+            before do
+              stub_feature_flags(github_import_lock_user_finder: false)
+            end
+
+            it 'does not lock the finder' do
+              expect(finder).not_to receive(:in_lock)
+              expect(client).to receive(:user)
+
+              email_for_github_username
+            end
+          end
+
           context 'if the response contains an email' do
             before do
               allow(client).to receive(:user).and_return({ email: email })
@@ -478,8 +491,9 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_cache, feat
             it 'fetch user detail' do
               expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
               expect(finder).to receive(:read_email_from_cache).ordered.and_return('')
+              expect(finder).to receive(:read_etag_from_cache).and_return(etag)
               expect(finder).to receive(:in_lock).and_yield(true)
-              expect(client).to receive(:user).with(username, { headers: {} }).and_return({ email: email }).once
+              expect(client).to receive(:user).with(username, { headers: { 'If-None-Match' => etag } }).once
 
               email_for_github_username
             end

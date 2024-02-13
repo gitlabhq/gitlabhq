@@ -160,7 +160,7 @@ $item-remove-button-space: 42px;
   line-height: 0;
 
   a:focus {
-    @include gl-rounded-full;
+    border-radius: $gl-border-radius-full;
     @include gl-focus;
   }
 }

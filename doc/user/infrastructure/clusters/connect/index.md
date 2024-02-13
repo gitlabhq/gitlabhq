@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect a cluster to GitLab **(FREE ALL)**
+# Connect a cluster to GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The [certificate-based Kubernetes integration with GitLab](../index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
@@ -12,7 +16,7 @@ in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../cluste
 
 ## Cluster levels (deprecated)
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 The [concept of cluster levels was deprecated](../index.md#cluster-levels)
@@ -49,7 +53,7 @@ your cluster's level.
 
 ## Security implications for clusters connected with certificates
 
-> Connecting clusters to GitLab through cluster certificates was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - Connecting clusters to GitLab through cluster certificates was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 The whole cluster security is based on a model where [developers](../../../permissions.md)

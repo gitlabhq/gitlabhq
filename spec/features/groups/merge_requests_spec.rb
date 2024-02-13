@@ -28,6 +28,7 @@ RSpec.describe 'Group merge requests page', feature_category: :code_review_workf
 
     it 'ignores archived merge request count badges in navbar', :js do
       within_testid('super-sidebar') do
+        click_on 'Pinned' # to close the Pinned section to only have one match
         expect(find_link(text: 'Merge requests').find('.badge').text).to eq("1")
       end
     end

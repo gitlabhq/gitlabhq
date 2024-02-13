@@ -5,10 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
   include ImportExport::CommonUtil
 
-  subject(:relation_saver) { described_class.new(project: project, shared: shared, relation: relation) }
+  subject(:relation_saver) do
+    described_class.new(project: project, shared: shared, relation: relation, user: user, params: params)
+  end
 
   let_it_be(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
+  let_it_be(:user) { create(:user) }
   let_it_be(:project) { setup_project }
+  let(:params) { { description: 'An overridden description' } }
 
   let(:relation) { Projects::ImportExport::RelationExport::ROOT_RELATION }
   let(:shared) do
@@ -22,6 +26,16 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
   end
 
   describe '#save' do
+    it 'uses the ImportExport presenter' do
+      expect(project).to receive(:present).with(
+        presenter_class: Projects::ImportExport::ProjectExportPresenter,
+        current_user: user,
+        override_description: params[:description]
+      )
+
+      relation_saver.save # rubocop:disable Rails/SaveBang -- Call RelationSaver's #save, not ActiveRecord
+    end
+
     context 'when relation is the root node' do
       let(:relation) { Projects::ImportExport::RelationExport::ROOT_RELATION }
 
@@ -29,14 +43,14 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
         json = read_json(File.join(shared.export_path, 'tree', 'project.json'))
-        expect(json).to include({ 'description' => 'Project description' })
+        expect(json).to include({ 'description' => params[:description] })
       end
 
       it 'serializes only allowed attributes' do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
         json = read_json(File.join(shared.export_path, 'tree', 'project.json'))
-        expect(json).to include({ 'description' => 'Project description' })
+        expect(json).to include({ 'description' => params[:description] })
         expect(json.keys).not_to include('name')
       end
 

@@ -4,10 +4,12 @@ module Gitlab
   module ImportExport
     module Project
       class RelationSaver
-        def initialize(project:, shared:, relation:)
+        def initialize(project:, shared:, relation:, user:, params: {})
           @project = project
           @relation = relation
           @shared = shared
+          @user = user
+          @params = params
         end
 
         def save
@@ -25,16 +27,26 @@ module Gitlab
 
         private
 
-        attr_reader :project, :relation, :shared
+        attr_reader :project, :relation, :shared, :user, :params
 
         def serializer
           @serializer ||= ::Gitlab::ImportExport::Json::StreamingSerializer.new(
-            project,
+            presented_project_for_export,
             reader.project_tree,
             json_writer,
             exportable_path: 'tree/project',
-            current_user: nil
+            current_user: user
           )
+        end
+
+        def presented_project_for_export
+          presentable_params = {
+            presenter_class: Projects::ImportExport::ProjectExportPresenter,
+            current_user: user
+          }
+          presentable_params[:override_description] = params[:description] if params[:description].present?
+
+          project.present(**presentable_params)
         end
 
         def root_relation?

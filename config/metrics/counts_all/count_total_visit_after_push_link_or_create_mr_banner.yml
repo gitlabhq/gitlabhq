@@ -1,0 +1,26 @@
+---
+key_path: counts.count_total_visit_after_push_link_or_create_mr_banner
+description: Total count of visited after push links or created MRs from banner
+product_section: growth
+product_stage: growth
+product_group: acquisition
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143036
+time_frame: all
+data_source: internal_events
+data_category: optional
+distribution:
+  - ce
+  - ee
+tier:
+  - free
+  - premium
+  - ultimate
+options:
+  events:
+    - visit_after_push_link_or_create_mr_banner
+events:
+  - name: visit_after_push_link_or_create_mr_banner

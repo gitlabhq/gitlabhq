@@ -8,6 +8,8 @@ module QA
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
       FALLBACK_REPORT = "knapsack/master_report.json"
+      PATTERN_VAR_NAME = "KNAPSACK_TEST_FILE_PATTERN"
+      DEFAULT_TEST_PATTERN = "qa/specs/features/**/*_spec.rb"
 
       class << self
         delegate :configure!, :move_regenerated_report, :download_report, :upload_report, to: :new
@@ -117,9 +119,9 @@ module QA
       #
       # @return [void]
       def setup_environment!
-        ENV["KNAPSACK_TEST_FILE_PATTERN"] ||= "qa/specs/features/**/*_spec.rb"
         ENV["KNAPSACK_TEST_DIR"] = "qa/specs"
         ENV["KNAPSACK_REPORT_PATH"] = report_path
+        ENV[PATTERN_VAR_NAME] = ENV[PATTERN_VAR_NAME].presence || DEFAULT_TEST_PATTERN
       end
 
       # Logger instance

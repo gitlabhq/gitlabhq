@@ -84,7 +84,6 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
     context 'when feature_flag is provided' do
       before do
         stub_feature_flags(test_feature_flag: false)
-        skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
       end
 
@@ -113,7 +112,6 @@ RSpec.describe WorkerAttributes, feature_category: :shared do
 
     context 'when feature flag is set' do
       before do
-        skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
 
         worker.deduplicate(:until_executing, feature_flag: :my_feature_flag)

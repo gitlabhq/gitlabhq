@@ -4,9 +4,13 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Automatic response to leaked secrets **(ULTIMATE ALL)**
+# Automatic response to leaked secrets
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4639) in GitLab 13.6.
 
 GitLab Secret Detection automatically responds when it finds certain types of leaked secrets.
 Automatic responses can:
@@ -32,7 +36,7 @@ GitLab supports automatic response for the following types of secrets:
 
 ## Feature availability
 
-> [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
+> - [Enabled for non-default branches](https://gitlab.com/gitlab-org/gitlab/-/issues/299212) in GitLab 15.11.
 
 Credentials are only post-processed when Secret Detection finds them:
 

@@ -42,7 +42,7 @@ RSpec.describe 'User activates Jira', :js, feature_category: :integrations do
         fill_in 'service-password', with: 'password'
         click_test_integration
 
-        page.within('[data-testid="integration-settings-form"]') do
+        within_testid 'integration-settings-form' do
           expect(page).to have_content('This field is required.')
         end
       end

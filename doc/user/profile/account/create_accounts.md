@@ -5,7 +5,11 @@ description: Passwords, user moderation, broadcast messages.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Creating users **(FREE SELF)**
+# Creating users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can create users:
 
@@ -80,6 +84,7 @@ To create a user through the Rails console:
 
    ```ruby
    u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+   u.assign_personal_namespace
    u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user receives confirmation e-mail
    u.save!
    ```

@@ -51,6 +51,10 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
         expect(doc.to_html).not_to match('foo<em>bar</em>baz')
       end
 
+      aggregate_failures 'parses multiline blockquotes' do
+        expect(doc).to have_selector('blockquote:contains("A multiline blockquote")')
+      end
+
       aggregate_failures 'parses table Markdown' do
         expect(doc).to have_selector('th:contains("Header")')
         expect(doc).to have_selector('th:contains("Row")')

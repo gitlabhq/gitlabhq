@@ -92,7 +92,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 | `api`              | Grants complete read and write access to the scoped project API, including the [container registry](../../packages/container_registry/index.md), the [dependency proxy](../../packages/dependency_proxy/index.md), and the [package registry](../../packages/package_registry/index.md). |
 | `read_api`         | Grants read access to the scoped project API, including the [package registry](../../packages/package_registry/index.md).                                                                                                                                                                |
 | `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if a project is private and authorization is required.                                                                                                                          |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                                                                                                                                                      |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md). You need both read and write access to push images.                                                                                                                              |
 | `read_repository`  | Grants read access (pull) to the repository.                                                                                                                                                                                                                                             |
 | `write_repository` | Grants read and write access (pull and push) to the repository.                                                                                                                                                                                                                          |
 | `create_runner`    | Grants permission to create runners in the project.                                                                                                                                                                                                                                      |
@@ -101,7 +101,7 @@ See the warning in [create a project access token](#create-a-project-access-toke
 
 ## Enable or disable project access token creation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287707) in GitLab 13.11.
 
 To enable or disable project access token creation for all projects in a top-level group:
 

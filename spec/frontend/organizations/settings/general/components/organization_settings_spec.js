@@ -174,9 +174,10 @@ describe('OrganizationSettings', () => {
         });
 
         it('displays form errors alert', () => {
-          expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
-            organizationUpdateResponseWithErrors.data.organizationUpdate.errors,
-          );
+          expect(wrapper.findComponent(FormErrorsAlert).props()).toStrictEqual({
+            errors: organizationUpdateResponseWithErrors.data.organizationUpdate.errors,
+            scrollOnError: true,
+          });
         });
       });
     });

@@ -53,7 +53,7 @@ To create a new application for your user:
 
 ## Create a group-owned application
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16227) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16227) in GitLab 13.11.
 
 To create a new application for a group:
 
@@ -72,6 +72,10 @@ To create a new application for a group:
    - The **Renew secret** function in [GitLab 15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/338243). Use this function to generate and copy a new secret for this application. Renewing a secret prevents the existing application from functioning until the credentials are updated.
 
 ## Create an instance-wide application
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To create an application for your GitLab instance:
 

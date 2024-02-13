@@ -34,6 +34,8 @@ RSpec.describe BulkImports::Groups::Pipelines::ProjectEntitiesPipeline, feature_
         allow(extractor).to receive(:extract).and_return(extracted_data)
       end
 
+      allow(subject).to receive(:set_source_objects_counter)
+
       destination_group.add_owner(user)
     end
 

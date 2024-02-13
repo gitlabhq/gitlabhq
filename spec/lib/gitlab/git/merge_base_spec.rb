@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Git::MergeBase do
       it 'does not call merge_base on the repository but raises an error' do
         expect(repository).not_to receive(:merge_base)
 
-        expect { merge_base.sha }.to raise_error(Gitlab::Git::UnknownRef)
+        expect { merge_base.sha }.to raise_error(Gitlab::Git::ReferenceNotFoundError)
       end
     end
 

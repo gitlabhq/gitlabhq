@@ -1,7 +1,7 @@
 <script>
 import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
-import { s__, __ } from '~/locale';
+import { n__, s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import AvatarUploadDropzone from '~/vue_shared/components/upload_dropzone/avatar_upload_dropzone.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
@@ -12,7 +12,9 @@ import {
   FORM_FIELD_PATH,
   FORM_FIELD_DESCRIPTION,
   FORM_FIELD_AVATAR,
+  MAX_DESCRIPTION_COUNT,
   FORM_FIELD_PATH_VALIDATORS,
+  FORM_FIELD_DESCRIPTION_VALIDATORS,
 } from '../constants';
 import OrganizationUrlField from './organization_url_field.vue';
 
@@ -28,8 +30,10 @@ export default {
   },
   i18n: {
     cancel: __('Cancel'),
+    charactersRemaining: (char) => n__('%d character remaining', '%d characters remaining', char),
+    charactersOverLimit: (char) => n__('%d character over limit', '%d characters over limit', char),
   },
-  formId: 'new-organization-form',
+  formId: 'organization-form',
   markdownDocsPath: helpPagePath('user/organization/index', {
     anchor: 'organization-description-supported-markdown',
   }),
@@ -93,24 +97,24 @@ export default {
           label: s__('Organization|Organization name'),
           validators: [formValidators.required(s__('Organization|Organization name is required.'))],
           groupAttrs: {
-            class: this.fieldsToRender.includes(FORM_FIELD_ID)
-              ? 'gl-flex-grow-1 gl-md-form-input-lg'
-              : 'gl-flex-grow-1',
+            class: 'gl-w-full',
             description: s__(
               'Organization|Must start with a letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
             ),
           },
           inputAttrs: {
-            class: !this.fieldsToRender.includes(FORM_FIELD_ID) ? 'gl-md-form-input-lg' : null,
+            class: 'gl-md-form-input-lg',
             placeholder: s__('Organization|My organization'),
+            'data-testid': 'organization-name',
           },
         },
         [FORM_FIELD_ID]: {
           label: s__('Organization|Organization ID'),
           groupAttrs: {
-            class: 'gl-md-form-input-lg gl-flex-grow-1',
+            class: 'gl-w-full',
           },
           inputAttrs: {
+            class: 'gl-md-form-input-lg',
             disabled: true,
           },
         },
@@ -123,6 +127,7 @@ export default {
         },
         [FORM_FIELD_DESCRIPTION]: {
           label: s__('Organization|Organization description (optional)'),
+          validators: FORM_FIELD_DESCRIPTION_VALIDATORS,
           groupAttrs: {
             class: 'gl-w-full common-note-form',
           },
@@ -146,6 +151,22 @@ export default {
           [fieldKey]: fieldDefinition,
         };
       }, {});
+    },
+    textareaCharacterCounter() {
+      const remainingCharacters =
+        MAX_DESCRIPTION_COUNT - this.formValues[FORM_FIELD_DESCRIPTION].length;
+
+      if (remainingCharacters >= 0) {
+        return {
+          class: 'gl-text-gray-500',
+          text: this.$options.i18n.charactersRemaining(remainingCharacters),
+        };
+      }
+
+      return {
+        class: 'gl-text-red-500',
+        text: this.$options.i18n.charactersOverLimit(Math.abs(remainingCharacters)),
+      };
     },
   },
   watch: {
@@ -188,6 +209,7 @@ export default {
       <template #input(description)="{ id, value, input, blur }">
         <div class="gl-md-form-input-xl">
           <markdown-field
+            class="organization-description gl-mb-2"
             :can-attach-file="false"
             :markdown-preview-path="previewMarkdownPath"
             :markdown-docs-path="$options.markdownDocsPath"
@@ -199,12 +221,16 @@ export default {
                 :id="id"
                 :value="value"
                 class="note-textarea js-gfm-input markdown-area"
-                maxlength="1024"
                 @input="input($event.target.value)"
                 @blur="blur"
               ></textarea>
             </template>
           </markdown-field>
+          <span
+            data-testid="description-character-counter"
+            :class="textareaCharacterCounter.class"
+            >{{ textareaCharacterCounter.text }}</span
+          >
         </div>
       </template>
       <template #input(avatar)="{ input, value }">

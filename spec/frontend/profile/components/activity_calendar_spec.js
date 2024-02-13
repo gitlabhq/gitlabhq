@@ -1,5 +1,4 @@
 import { GlLoadingIcon, GlAlert } from '@gitlab/ui';
-import * as GitLabUIUtils from '@gitlab/ui/dist/utils';
 
 import ActivityCalendar from '~/profile/components/activity_calendar.vue';
 import AjaxCache from '~/lib/utils/ajax_cache';
@@ -57,23 +56,6 @@ describe('ActivityCalendar', () => {
       expect(findCalendar().exists()).toBe(true);
       expect(wrapper.findByText(ActivityCalendar.i18n.calendarHint).exists()).toBe(true);
     });
-
-    describe('when window is resized', () => {
-      it('re-renders the calendar', async () => {
-        createComponent();
-
-        await waitForPromises();
-
-        mockSuccessfulApiRequest();
-        window.innerWidth = 1200;
-        window.dispatchEvent(new Event('resize'));
-
-        await waitForPromises();
-
-        expect(findCalendar().exists()).toBe(true);
-        expect(AjaxCache.retrieve).toHaveBeenCalledTimes(2);
-      });
-    });
   });
 
   describe('when API request is not successful', () => {
@@ -103,18 +85,6 @@ describe('ActivityCalendar', () => {
 
         expect(findCalendar().exists()).toBe(true);
       });
-    });
-  });
-
-  describe('when screen is extra small', () => {
-    beforeEach(() => {
-      GitLabUIUtils.GlBreakpointInstance.getBreakpointSize.mockReturnValueOnce('xs');
-    });
-
-    it('does not render the calendar', () => {
-      createComponent();
-
-      expect(findCalendar().exists()).toBe(false);
     });
   });
 });

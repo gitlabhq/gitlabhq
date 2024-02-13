@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
   let(:message_id) { 'CADkmRc+rNGAGGbV2iE5p918UVy4UyJqVcXRO2=otppgzduJSg@mail.gmail.com' }
   let(:issue_email_participants_count) { 1 }
 
-  let_it_be(:group) { create(:group, :private, :crm_enabled, name: "email") }
+  let_it_be(:group) { create(:group, :private, name: "email") }
 
   let(:expected_subject) { "The message subject! @all" }
   let(:expected_description) do

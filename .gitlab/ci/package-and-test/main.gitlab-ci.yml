@@ -39,13 +39,16 @@ download-knapsack-report:
 _quarantine:
   extends:
     - .qa
-    - .rules:test:manual
+    - .rules:test:manual-except-default-branch
   needs:
     - job: trigger-omnibus
       optional: true
   stage: test
   variables:
+    RSPEC_REPORT_OPTS: "--format html --out tmp/rspec-${CI_JOB_NAME}.htm --color --format documentation"
     QA_RSPEC_TAGS: --tag quarantine
+  after_script:
+    - echo "After script overridden in _quarantine job"
 
 # ------------------------------------------
 # FF changes
@@ -357,7 +360,7 @@ oauth:
     QA_GITLAB_HOSTNAME: "gitlab"
     QA_GITLAB_USE_TLS: "true"
     QA_RSPEC_TAGS: --tag oauth
-    GITLAB_QA_OPTS: --omnibus-config facebook_oauth --omnibus-config github_oauth
+    GITLAB_QA_OPTS: --omnibus-config github_oauth
   rules:
     - !reference [.rules:test:qa-default-branch, rules]
     - if: $QA_SUITES =~ /Test::Instance::All/
@@ -567,7 +570,7 @@ importers:
     - if: $QA_SUITES =~ /Test::Integration::Import/
     - !reference [.rules:test:manual, rules]
 
-ai-gateway-sync-seat-link:
+ai-gateway:
   extends:
     - .qa
     - .failure-videos
@@ -577,11 +580,6 @@ ai-gateway-sync-seat-link:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::AiGateway/
     - !reference [.rules:test:manual, rules]
-
-ai-gateway-sync-service-token:
-  extends: ai-gateway-sync-seat-link
-  variables:
-    QA_USE_SYNC_SERVICE_TOKEN_WORKER: "true"
 
 # ------------------------------------------
 # Update jobs

@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group SSH certificates API **(PREMIUM SAAS)**
+# Group SSH certificates API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../user/feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../user/feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
 
 FLAG:
 On GitLab.com, this feature is not available.

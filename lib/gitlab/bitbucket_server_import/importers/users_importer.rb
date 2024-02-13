@@ -5,7 +5,7 @@ module Gitlab
     module Importers
       class UsersImporter
         include Loggable
-        include UserFromMention
+        include Gitlab::Import::UserFromMention
 
         BATCH_SIZE = 100
 
@@ -46,7 +46,7 @@ module Gitlab
 
         def cache_users(users)
           users_hash = users.each_with_object({}) do |user, hash|
-            cache_key = source_user_cache_key(project_id, user.username)
+            cache_key = source_user_cache_key('bitbucket_server', project_id, user.username)
             hash[cache_key] = user.email
           end
 

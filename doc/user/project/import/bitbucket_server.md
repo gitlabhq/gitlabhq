@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from Bitbucket Server **(FREE ALL)**
+# Import your project from Bitbucket Server
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Ability to re-import projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23905) in GitLab 15.9.
 > - Ability to import reviewers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416611) in GitLab 16.3.
@@ -17,7 +21,7 @@ This process is different than [importing from Bitbucket Cloud](bitbucket.md).
 
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 - [Bitbucket Server import source](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources)
   must be enabled. If not enabled, ask your GitLab administrator to enable it. The Bitbucket Server import source is enabled
@@ -45,7 +49,7 @@ To import your Bitbucket repositories:
 - Repository description
 - Git repository data
 - Pull requests
-- Pull request comments, reviewers, approvals, and merge events
+- Pull request comments, user mentions, reviewers, approvals, and merge events
 - LFS objects
 
 When importing, repository public access is retained. If a repository is private in Bitbucket, it's
@@ -80,12 +84,24 @@ The following items are changed when they are imported:
 
 ## User assignment
 
-> Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
+> - Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
+> - Matching user mentions with GitLab users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
+
+FLAG:
+On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
+On GitLab.com, this feature is not available.
 
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the
 project creator is set as the author. The importer appends a note in the comment to mark the
 original creator.
+
+`@mentions` on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
+If a user with the same email address is not found on GitLab, the `@mention` is made static.
+For a user to be matched, they must have a GitLab role that provides at least read access to the project.
+
+If the project is public, GitLab only matches users who are invited to the project.
 
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.
@@ -134,6 +150,14 @@ If the project import completes but LFS objects can't be downloaded or cloned, y
 password or personal access token containing special characters. For more information, see
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337769).
 
-## Related topics
+### Import fails due to invalid/unresolved host address, or the import URL is blocked
 
-- [Automate group and project import](index.md#automate-group-and-project-import)
+If a project import fails with an error message such as `Importing the project failed: Import url is blocked`, even though the initial connection to the Bitbucket
+server succeeded, the Bitbucket server or a reverse proxy might not be configured correctly.
+
+To troubleshoot this problem, use the [Projects API](../../../api/projects.md) to check for the newly-created project and locate the `import_url` value of the project.
+
+This value indicates the URL provided by the Bitbucket server to use for the import. If this URL isn't publicly resolvable, you can get unresolvable address errors.
+
+To fix this problem, ensure that the Bitbucket server is aware of any proxy servers because proxy servers can impact how Bitbucket constructs and uses URLs.
+For more information, see [Atlassian's documentation](https://confluence.atlassian.com/bitbucketserver/proxy-and-secure-bitbucket-776640099.html).

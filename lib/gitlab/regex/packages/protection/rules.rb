@@ -5,8 +5,8 @@ module Gitlab
     module Packages
       module Protection
         module Rules
-          def protection_rules_npm_package_name_pattern_regex
-            @protection_rules_npm_package_name_pattern_regex ||= npm_package_name_regex('*')
+          def self.protection_rules_npm_package_name_pattern_regex
+            @protection_rules_npm_package_name_pattern_regex ||= Gitlab::Regex.npm_package_name_regex('*')
           end
         end
       end

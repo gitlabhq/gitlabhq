@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Members of a project **(FREE ALL)**
+# Members of a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Members are the users and groups who have access to your project.
 
@@ -71,7 +75,7 @@ To add a user to a project:
    - Has a GitLab account, enter their username.
    - Doesn't have a GitLab account, enter their email address.
 
-1. Select a [role](../../permissions.md).
+1. Select a [default role](../../permissions.md) or [custom role](../../custom_roles.md).
 1. Optional. Select an **Access expiration date**.
    From that date onward, the user can no longer access the project.
 
@@ -157,7 +161,7 @@ To add a group to a project:
 
 The invited group is displayed on the **Groups** tab.
 Private groups are masked from unauthorized users.
-With the feature flag `allow_members_to_see_invited_groups_in_access_dropdowns` enabled, private groups are displayed in project settings for protected branches, protected tags, and protected environments.
+Private groups are displayed in project settings for protected branches, protected tags, and protected environments.
 The members of the invited group are not displayed on the **Members** tab.
 The **Members** tab shows:
 

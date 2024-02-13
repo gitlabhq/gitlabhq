@@ -11,7 +11,7 @@ understand the state of each component, with context, to support
 performance tuning and debugging. To run a SaaS platform at scale, a
 rich and detailed observability platform is needed.
 
-To make information available to [stage groups](https://about.gitlab.com/handbook/product/categories/#hierarchy),
+To make information available to [stage groups](https://handbook.gitlab.com/handbook/product/categories/#hierarchy),
 we are aggregating metrics by feature category and then show
 this information on [dashboards](dashboards/index.md) tailored to the groups. Only metrics
 for the features built by the group are visible on their
@@ -32,16 +32,16 @@ For more specific information on dashboards, see:
 The error budget is calculated from the same [Service Level Indicators](https://en.wikipedia.org/wiki/Service_level_indicator) (SLIs)
 that we use to monitor GitLab.com. The 28-day availability number for a
 stage group is comparable to the
-[monthly availability](https://about.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability)
+[monthly availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability)
 we calculate for GitLab.com, except it's scoped to the features of a group.
 
 For more information about how we use error budgets, see the
-[Engineering Error Budgets](https://about.gitlab.com/handbook/engineering/error-budgets/) handbook page.
+[Engineering Error Budgets](https://handbook.gitlab.com/handbook/engineering/error-budgets/) handbook page.
 
 By default, the first row of panels on both dashboards shows the
-[error budget for the stage group](https://about.gitlab.com/handbook/engineering/error-budgets/#budget-spend-by-stage-group).
+[error budget for the stage group](https://handbook.gitlab.com/handbook/engineering/error-budgets/#budget-spend-by-stage-group).
 This row shows how features owned by the group contribute to our
-[overall availability](https://about.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability).
+[overall availability](https://handbook.gitlab.com/handbook/engineering/infrastructure/performance-indicators/#gitlabcom-availability).
 
 The official budget is aggregated over the 28 days. You can see it on the
 [stage group dashboard](dashboards/stage_group_dashboard.md).

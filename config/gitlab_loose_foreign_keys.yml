@@ -39,6 +39,16 @@ ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_job_token_group_scope_links:
+  - table: users
+    column: added_by_id
+    on_delete: async_nullify
+  - table: namespaces
+    column: target_group_id
+    on_delete: async_delete
+  - table: projects
+    column: source_project_id
+    on_delete: async_delete
 ci_job_token_project_scope_links:
   - table: users
     column: added_by_id
@@ -225,6 +235,13 @@ groups_visits:
   - table: users
     column: user_id
     on_delete: async_delete
+member_approvals:
+  - table: users
+    column: requested_by_id
+    on_delete: async_nullify
+  - table: users
+    column: reviewed_by_id
+    on_delete: async_nullify
 members:
   - table: users
     column: user_id
@@ -316,6 +333,10 @@ projects_visits:
     on_delete: async_delete
   - table: users
     column: user_id
+    on_delete: async_delete
+push_rules:
+  - table: organizations
+    column: organization_id
     on_delete: async_delete
 requirements_management_test_reports:
   - table: ci_builds

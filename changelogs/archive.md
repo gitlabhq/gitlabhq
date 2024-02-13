@@ -1643,7 +1643,7 @@
 - Rename builds to job for the v4 API. !9463
 - API: Remove /groups/owned endpoint. !9505 (Robert Schilling)
 - API: Return 400 for all validation erros in the mebers API. !9523 (Robert Schilling)
-- Fixes large file name tooltip cutoff in diff header. !9529
+- Fixes large filename tooltip cutoff in diff header. !9529
 - Keep consistent in handling indexOf results. !9531 (Takuya Noguchi)
 - Make documentation of list repository tree API call more detailed. !9532 (Marius Kleiner)
 - Fix Sort dropdown reflow issue. !9533 (Jarkko Tuunanen)
@@ -6714,7 +6714,7 @@
 - Admin broadcast messages
 - UI improvements
 - Dont show last push widget if user removed this branch
-- Fix 500 error for repos with newline in file name
+- Fix 500 error for repos with newline in filename
 - Extended html titles
 - API: create/update/delete repo files
 - Admin can transfer project to any namespace

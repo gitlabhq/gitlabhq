@@ -99,8 +99,8 @@ RSpec.describe Gitlab::OtherMarkup, feature_category: :wiki do
     end
 
     it 'times out' do
-      # expect 3 times because of timeout in SyntaxHighlightFilter and BlockquoteFenceFilter
-      expect(Gitlab::RenderTimeout).to receive(:timeout).exactly(3).times.and_call_original
+      # expect 2 times because of timeout in SyntaxHighlightFilter
+      expect(Gitlab::RenderTimeout).to receive(:timeout).twice.and_call_original
       expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
         instance_of(Timeout::Error),
         project_id: context[:project].id, file_name: file_name,

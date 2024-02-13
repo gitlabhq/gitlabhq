@@ -85,7 +85,7 @@ if (viewBlobEl) {
     router,
     apolloProvider,
     provide: {
-      highlightWorker: gon.features.highlightJsWorker ? new HighlightWorker() : null,
+      highlightWorker: new HighlightWorker(),
       targetBranch,
       originalBranch,
       resourceId,

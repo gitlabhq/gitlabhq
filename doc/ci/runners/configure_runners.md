@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configuring runners **(FREE ALL)**
+# Configuring runners
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you have installed your own runners, you can configure and secure them in GitLab.
 
@@ -17,13 +21,13 @@ You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
 used of it is shorter than the job timeout defined in the project.
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
 - You must be an administrator.
 
-On GitLab.com, you cannot override the job timeout for shared runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
+On GitLab.com, you cannot override the job timeout for instance runners and must use the [project defined timeout](../pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run) instead.
 
 To set the maximum job timeout:
 
@@ -87,7 +91,7 @@ To set the maximum job timeout:
 
 ## Set `script` and `after_script` timeouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/4335) in GitLab Runner 16.4.
 
 To control the amount of time `script` and `after_script` runs before it terminates, you can set specify a timeout.
 
@@ -127,28 +131,28 @@ job-artifact-upload-on-timeout:
 ## Protecting sensitive information
 
 To avoid exposing sensitive information, you can restrict the usage
-of shared runners on large GitLab instances. This ensures that you
+of instance runners on large GitLab instances. This ensures that you
 control access to your GitLab instances and secure [runner executors](https://docs.gitlab.com/runner/executors/).
 
 If certain executors run a job, the file system, the code the runner executes,
 and the runner authentication token may be exposed. This means that anyone who runs jobs
-on a _shared runner_ can access another user's code that runs on the runner.
+on an _instance runner_ can access another user's code that runs on the runner.
 Users with access to the runner authentication token can use it to create a clone of
 a runner and submit false jobs in a vector attack. For more information, see [Security Considerations](https://docs.gitlab.com/runner/security/).
 
-### Using shared runners in forked projects
+### Using instance runners in forked projects
 
-When a project is forked, the job settings related to jobs are copied. If you have shared runners
-configured for a project and a user forks that project, the shared runners serve jobs of this project.
+When a project is forked, the job settings related to jobs are copied. If you have instance runners
+configured for a project and a user forks that project, the instance runners serve jobs of this project.
 
 Due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), if the runner settings
 of the forked project does not match the new project namespace, the following message displays:
 `An error occurred while forking the project. Please try again.`.
 
-To work around this issue, ensure that the shared runner settings are consistent in the forked project and the new namespace.
+To work around this issue, ensure that the instance runner settings are consistent in the forked project and the new namespace.
 
-- If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
-- If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
+- If instance runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
+- If instance runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
 
 ### Reset the runner registration token for a project (deprecated)
 
@@ -198,11 +202,11 @@ If a runner authentication token is revealed, an attacker could use the token to
 To reset the runner authentication token:
 
 1. Delete the runner:
-   - [Delete a shared runner](runners_scope.md#delete-shared-runners).
+   - [Delete an instance runner](runners_scope.md#delete-instance-runners).
    - [Delete a group runner](runners_scope.md#delete-a-group-runner).
    - [Delete a project runner](runners_scope.md#delete-a-project-runner).
 1. Create a new runner so that it is assigned a new runner authentication token:
-   - [Create a shared runner](runners_scope.md#create-a-shared-runner-with-a-runner-authentication-token).
+   - [Create an instance runner](runners_scope.md#create-an-instance-runner-with-a-runner-authentication-token).
    - [Create a group runner](runners_scope.md#create-a-group-runner-with-a-runner-authentication-token).
    - [Create a project runner](runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 1. Optional. To verify that the previous runner authentication token has been revoked, use the [Runners API](../../api/runners.md#verify-authentication-for-a-registered-runner).
@@ -234,7 +238,7 @@ on [protected branches](../../user/project/protected_branches.md), or jobs that 
 
 Runners configured to run jobs on protected branches cannot run jobs in [merge request pipelines](../pipelines/merge_request_pipelines.md).
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
@@ -280,7 +284,7 @@ Rails test suites.
 GitLab CI/CD tags are different to Git tags. GitLab CI/CD tags are associated with runners.
 Git tags are associated with commits.
 
-### For a shared runner
+### For an instance runner
 
 Prerequisites:
 
@@ -417,7 +421,7 @@ osx job:
 
 ### Use CI/CD variables in tags
 
-> Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
+> - Introduced in [GitLab 14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/35742).
 
 In the `.gitlab-ci.yml` file, use [CI/CD variables](../variables/index.md) with `tags` for dynamic runner selection:
 
@@ -622,7 +626,7 @@ Where `$REFSPECS` is a value provided to the runner internally by GitLab.
 
 ### Sync or exclude specific submodules from CI jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/2249) in GitLab Runner 14.0.
 
 Use the `GIT_SUBMODULE_PATHS` variable to control which submodules have to be synced or updated.
 You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
@@ -690,7 +694,7 @@ submodule commits as designed, and update them using an auto-remediation/depende
 
 ### Rewrite submodule URLs to HTTPS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3198) in GitLab Runner 15.11.
 
 Use the `GIT_SUBMODULE_FORCE_HTTPS` variable to force a rewrite of all Git and SSH submodule URLs to HTTPS.
 This allows you to clone submodules on the same GitLab instance that use absolute URLs, even if they were
@@ -739,7 +743,7 @@ You can set it globally or per-job in the [`variables`](../yaml/index.md#variabl
 
 ### Git submodule depth
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
 
 Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
 when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
@@ -859,9 +863,9 @@ variables:
 
 You can set them globally or per-job in the [`variables`](../yaml/index.md#variables) section.
 
-## System calls not available on GitLab.com shared runners
+## System calls not available on GitLab.com instance runners
 
-GitLab.com shared runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
+GitLab.com instance runners run on CoreOS. This means that you cannot use some system calls, like `getlogin`, from the C standard library.
 
 ## Artifact and cache settings
 
@@ -905,7 +909,7 @@ variables:
 
 ## Artifact provenance metadata
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
 
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
@@ -925,9 +929,9 @@ job1:
 ```
 
 The metadata renders in a plain text `.json` file stored with the artifact. The
-file name is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
+filename is `{ARTIFACT_NAME}-metadata.json`. `ARTIFACT_NAME` is the
 [name for the artifact](../jobs/job_artifacts.md#with-a-dynamically-defined-name)
-defined in the `.gitlab-ci.yml` file. If the name is not defined, the default file name is
+defined in the `.gitlab-ci.yml` file. If the name is not defined, the default filename is
 `artifacts-metadata.json`.
 
 ### Provenance metadata format
@@ -942,7 +946,7 @@ The following fields are populated by default:
 | Field  | Value  |
 | ------ | ------ |
 | `_type` | `https://in-toto.io/Statement/v0.1` |
-| `subject.name` | The file name of the artifact. |
+| `subject.name` | The filename of the artifact. |
 | `subject.digest.sha256` | The artifact's `sha256` checksum. |
 | `predicateType` | `https://slsa.dev/provenance/v0.2` |
 | `predicate.buildType` | `https://gitlab.com/gitlab-org/gitlab-runner/-/blob/{GITLAB_RUNNER_VERSION}/PROVENANCE.md`. For example v15.0.0 |
@@ -1016,7 +1020,7 @@ An example of provenance metadata that the GitLab Runner might generate is as fo
 
 ### Staging directory
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3403) in GitLab Runner 15.0.
 
 If you do not want to archive cache and artifacts in the system's default temporary directory, you can specify a different directory.
 
@@ -1030,7 +1034,7 @@ used, this location is also used as scratch space when archiving.
 
 ### Configure `fastzip` to improve performance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3130) in GitLab Runner 15.0.
 
 To tune `fastzip`, ensure the [`FF_USE_FASTZIP`](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags) flag is enabled.
 Then use any of the following environment variables.

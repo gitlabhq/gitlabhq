@@ -37,11 +37,32 @@ module Timelogs
         note: nil
       )
 
+      old_associations = { total_time_spent: issuable.total_time_spent }
+
       if !timelog.save
         error_in_save(timelog)
       else
         SystemNoteService.created_timelog(issuable, issuable.project, current_user, timelog)
+
+        issuable_base_service.execute_hooks(issuable, 'update', old_associations: old_associations)
+
         success(timelog)
+      end
+    end
+
+    private
+
+    def issuable_base_service
+      if issuable.is_a?(Issue)
+        Issues::BaseService.new(
+          container: issuable.project,
+          current_user: current_user
+        )
+      else
+        MergeRequests::BaseService.new(
+          project: issuable.project,
+          current_user: current_user
+        )
       end
     end
   end

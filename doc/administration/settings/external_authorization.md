@@ -4,9 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# External authorization control **(FREE SELF)**
+# External authorization control
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) from GitLab Premium to GitLab Free in 11.10.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27056) from GitLab Premium to GitLab Free in 11.10.
 
 In highly controlled environments, it may be necessary for access policy to be
 controlled by an external service that permits access based on project

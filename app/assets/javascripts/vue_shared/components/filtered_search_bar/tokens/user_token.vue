@@ -6,8 +6,7 @@ import { __ } from '~/locale';
 
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import usersAutocompleteQuery from '~/graphql_shared/queries/users_autocomplete.query.graphql';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { OPERATORS_TO_GROUP, OPTIONS_NONE_ANY } from '../constants';
+import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
 
@@ -19,7 +18,6 @@ export default {
     GlIntersperse,
     GlFilteredSearchSuggestion,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     config: {
       type: Object,
@@ -40,7 +38,6 @@ export default {
       users: this.config.initialUsers || [],
       allUsers: this.config.initialUsers || [],
       loading: false,
-      selectedUsernames: [],
     };
   },
   computed: {
@@ -56,39 +53,6 @@ export default {
     fetchUsersQuery() {
       return this.config.fetchUsers ? this.config.fetchUsers : this.fetchUsersBySearchTerm;
     },
-    multiSelectEnabled() {
-      return (
-        this.config.multiSelect &&
-        this.glFeatures.groupMultiSelectTokens &&
-        OPERATORS_TO_GROUP.includes(this.value.operator)
-      );
-    },
-  },
-  watch: {
-    value: {
-      deep: true,
-      immediate: true,
-      handler(newValue) {
-        const { data } = newValue;
-
-        if (!this.multiSelectEnabled) {
-          return;
-        }
-
-        // don't add empty values to selectedUsernames
-        if (!data) {
-          return;
-        }
-
-        if (Array.isArray(data)) {
-          this.selectedUsernames = data;
-          // !active so we don't add strings while searching, e.g. r, ro, roo
-          // !includes so we don't add the same usernames (if @input is emitted twice)
-        } else if (!this.active && !this.selectedUsernames.includes(data)) {
-          this.selectedUsernames = this.selectedUsernames.concat(data);
-        }
-      },
-    },
   },
   methods: {
     getActiveUser(users, data) {
@@ -103,26 +67,6 @@ export default {
     avatarFor(username) {
       const user = this.getActiveUser(this.allUsers, username);
       return this.getAvatarUrl(user);
-    },
-    addCheckIcon(username) {
-      return this.multiSelectEnabled && this.selectedUsernames.includes(username);
-    },
-    addPadding(username) {
-      return this.multiSelectEnabled && !this.selectedUsernames.includes(username);
-    },
-    handleSelected(username) {
-      if (!this.multiSelectEnabled) {
-        return;
-      }
-
-      const index = this.selectedUsernames.indexOf(username);
-      if (index > -1) {
-        this.selectedUsernames.splice(index, 1);
-      } else {
-        this.selectedUsernames.push(username);
-      }
-
-      this.$emit('input', { ...this.value, data: '' });
     },
     fetchUsersBySearchTerm(search) {
       return this.$apollo
@@ -171,16 +115,14 @@ export default {
     :get-active-token-value="getActiveUser"
     :default-suggestions="defaultUsers"
     :preloaded-suggestions="preloadedUsers"
-    :multi-select-values="selectedUsernames"
     v-bind="$attrs"
     @fetch-suggestions="fetchUsers"
-    @token-selected="handleSelected"
     v-on="$listeners"
   >
-    <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
-      <gl-intersperse v-if="multiSelectEnabled" separator=",">
+    <template #view="{ viewTokenProps: { inputValue, activeTokenValue, selectedTokens } }">
+      <gl-intersperse v-if="selectedTokens.length > 0" separator=",">
         <span
-          v-for="(username, index) in selectedUsernames"
+          v-for="(username, index) in selectedTokens"
           :key="username"
           :class="{ 'gl-ml-2': index > 0 }"
           ><gl-avatar :size="16" :src="avatarFor(username)" class="gl-mr-1" />{{
@@ -198,7 +140,7 @@ export default {
         {{ activeTokenValue ? activeTokenValue.name : inputValue }}
       </template>
     </template>
-    <template #suggestions-list="{ suggestions }">
+    <template #suggestions-list="{ suggestions, selections = [] }">
       <gl-filtered-search-suggestion
         v-for="user in suggestions"
         :key="user.username"
@@ -206,10 +148,10 @@ export default {
       >
         <div
           class="gl-display-flex gl-align-items-center"
-          :class="{ 'gl-pl-6': addPadding(user.username) }"
+          :class="{ 'gl-pl-6': !selections.includes(user.username) }"
         >
           <gl-icon
-            v-if="addCheckIcon(user.username)"
+            v-if="selections.includes(user.username)"
             name="check"
             class="gl-mr-3 gl-text-secondary gl-flex-shrink-0"
           />

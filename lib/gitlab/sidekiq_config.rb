@@ -43,11 +43,6 @@ module Gitlab
       include Gitlab::SidekiqConfig::CliMethods
       include Gitlab::Utils::StrongMemoize
 
-      def redis_queues
-        # Not memoized, because this can change during the life of the application
-        Sidekiq::Queue.all.map(&:name)
-      end
-
       def config_queues
         @config_queues ||= begin
           config = YAML.load_file(Rails.root.join(SIDEKIQ_QUEUES_PATH))

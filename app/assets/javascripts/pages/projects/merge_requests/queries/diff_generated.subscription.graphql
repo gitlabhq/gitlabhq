@@ -1,0 +1,10 @@
+subscription diffGeneratedSubscription($issuableId: IssuableID!) {
+  mergeRequestDiffGenerated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      id
+      diffStatsSummary {
+        fileCount
+      }
+    }
+  }
+}

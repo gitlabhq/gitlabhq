@@ -183,6 +183,34 @@ RSpec.describe Sidebars::Groups::Menus::PackagesRegistriesMenu, feature_category
         it_behaves_like 'the menu entry is not available'
       end
     end
+
+    describe 'Infrastructure Registry' do
+      let(:item_id) { :infrastructure_registry }
+
+      context 'when user can read packages' do
+        before do
+          stub_config(packages: { enabled: packages_enabled })
+        end
+
+        context 'when config package setting is disabled' do
+          let(:packages_enabled) { false }
+
+          it_behaves_like 'the menu entry is not available'
+        end
+
+        context 'when config package setting is enabled' do
+          let(:packages_enabled) { true }
+
+          it_behaves_like 'the menu entry is available'
+        end
+      end
+
+      context 'when user cannot read packages' do
+        let(:user) { nil }
+
+        it_behaves_like 'the menu entry is available'
+      end
+    end
   end
 
   private

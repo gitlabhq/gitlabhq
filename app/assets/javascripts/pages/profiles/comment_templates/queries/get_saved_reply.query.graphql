@@ -1,0 +1,10 @@
+query getSavedReply($id: UsersSavedReplyID!) {
+  object: currentUser {
+    id
+    savedReply(id: $id) {
+      id
+      name
+      content
+    }
+  }
+}

@@ -4,10 +4,14 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Jira Cloud app **(FREE ALL)**
+# GitLab for Jira Cloud app
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
-This page contains information about configuring the GitLab for Jira Cloud app on GitLab.com. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
+This page contains user documentation for the GitLab for Jira Cloud app. For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](development_panel.md).
 
@@ -36,7 +40,11 @@ After you link a group, the following GitLab data is synced to Jira for all proj
   - Deployments
   - Feature flags
 
-## Install the GitLab for Jira Cloud app **(FREE SAAS)**
+## Install the GitLab for Jira Cloud app
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 Prerequisites:
 
@@ -56,14 +64,18 @@ You can now [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-
 For an overview, see
 [Configure the GitLab for Jira Cloud app from the Atlassian Marketplace](https://youtu.be/SwR-g1s1zTo).
 
-## Configure the GitLab for Jira Cloud app **(FREE SAAS)**
+## Configure the GitLab for Jira Cloud app
 
-> **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - **Add namespace** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/331432) to **Link groups** in GitLab 16.1.
 
 Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab group.
-- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
+- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
 To configure the GitLab for Jira Cloud app:
@@ -100,9 +112,9 @@ and the access token is stored encrypted with `AES256-GCM` on GitLab.
 
 ## Troubleshooting
 
-When configuring the GitLab for Jira Cloud app on GitLab.com, you might encounter the following issues.
+When working with the GitLab for Jira Cloud app, you might encounter the following issues.
 
-For self-managed GitLab, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
+For administrator documentation, see [GitLab for Jira Cloud app administration](../../administration/settings/jira_cloud_app_troubleshooting.md).
 
 ### Error when connecting the app
 

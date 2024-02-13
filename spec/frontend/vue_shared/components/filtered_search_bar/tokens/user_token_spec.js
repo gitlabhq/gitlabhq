@@ -1,4 +1,5 @@
 import {
+  GlFilteredSearchToken,
   GlFilteredSearchTokenSegment,
   GlFilteredSearchSuggestion,
   GlDropdownDivider,
@@ -310,109 +311,6 @@ describe('UserToken', () => {
       expect(mockInput).toHaveBeenLastCalledWith([{ data: 'mockData', operator: '=' }]);
     });
 
-    describe('multiSelect', () => {
-      it('renders check icons in suggestions when multiSelect is true', async () => {
-        wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
-          data: {
-            users: mockUsers,
-          },
-          config: { ...mockAuthorToken, multiSelect: true },
-          active: true,
-          stubs: { Portal: true },
-          groupMultiSelectTokens: true,
-        });
-
-        await activateSuggestionsList();
-
-        const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
-
-        expect(findIconAtSuggestion(0).props('name')).toBe('check');
-        expect(findIconAtSuggestion(1).props('name')).toBe('check');
-        expect(findIconAtSuggestion(2).exists()).toBe(false);
-
-        // test for left padding on unchecked items (so alignment is correct)
-        expect(suggestions.at(2).find('.gl-pl-6').exists()).toBe(true);
-      });
-
-      it('renders multiple users when multiSelect is true', async () => {
-        wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
-          data: {
-            users: mockUsers,
-          },
-          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
-          groupMultiSelectTokens: true,
-        });
-
-        await nextTick();
-        const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
-
-        expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
-
-        const tokenValue = tokenSegments.at(2);
-
-        const [user1, user2] = mockUsers;
-
-        expect(tokenValue.findAllComponents(GlAvatar).at(1).props('src')).toBe(
-          mockUsers[1].avatar_url,
-        );
-        expect(tokenValue.text()).toBe(`${user1.name},${user2.name}`);
-      });
-
-      it('adds new user to multi-select-values', () => {
-        wrapper = createComponent({
-          value: { data: [mockUsers[0].username], operator: '||' },
-          data: {
-            users: mockUsers,
-          },
-          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
-          active: true,
-          groupMultiSelectTokens: true,
-        });
-
-        findBaseToken().vm.$emit('token-selected', mockUsers[1].username);
-
-        expect(findBaseToken().props().multiSelectValues).toEqual([
-          mockUsers[0].username,
-          mockUsers[1].username,
-        ]);
-      });
-
-      it('removes existing user from array', () => {
-        const initialUsers = [mockUsers[0].username, mockUsers[1].username];
-        wrapper = createComponent({
-          value: { data: initialUsers, operator: '||' },
-          data: {
-            users: mockUsers,
-          },
-          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
-          active: true,
-          groupMultiSelectTokens: true,
-        });
-
-        findBaseToken().vm.$emit('token-selected', mockUsers[0].username);
-
-        expect(findBaseToken().props().multiSelectValues).toEqual([mockUsers[1].username]);
-      });
-
-      it('clears input field after token selected', () => {
-        wrapper = createComponent({
-          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
-          data: {
-            users: mockUsers,
-          },
-          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
-          active: true,
-          groupMultiSelectTokens: true,
-        });
-
-        findBaseToken().vm.$emit('token-selected', 'test');
-
-        expect(wrapper.emitted('input')).toEqual([[{ operator: '||', data: '' }]]);
-      });
-    });
-
     describe('when loading', () => {
       beforeEach(() => {
         wrapper = createComponent({
@@ -432,12 +330,54 @@ describe('UserToken', () => {
         expect(firstSuggestion).toContain('@root');
       });
 
-      it('does not show current user while searching', async () => {
-        wrapper.findComponent(BaseToken).vm.handleInput({ data: 'foo' });
+      it('does not show non-matching user while searching', async () => {
+        wrapper.findComponent(GlFilteredSearchToken).vm.$emit('input', { data: 'foo' });
 
         await nextTick();
 
         expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+      });
+    });
+
+    describe('multiSelect', () => {
+      it('renders check icons in suggestions when multiSelect is true', async () => {
+        wrapper = createComponent({
+          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
+          data: {
+            users: mockUsers,
+          },
+          config: { ...mockAuthorToken, multiSelect: true },
+          active: true,
+          stubs: { Portal: true },
+          groupMultiSelectTokens: true,
+        });
+        await activateSuggestionsList();
+        const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
+        expect(findIconAtSuggestion(0).props('name')).toBe('check');
+        expect(findIconAtSuggestion(1).props('name')).toBe('check');
+        expect(findIconAtSuggestion(2).exists()).toBe(false);
+        // test for left padding on unchecked items (so alignment is correct)
+        expect(suggestions.at(2).find('.gl-pl-6').exists()).toBe(true);
+      });
+
+      it('renders multiple users when multiSelect is true', async () => {
+        wrapper = createComponent({
+          value: { data: [mockUsers[0].username, mockUsers[1].username], operator: '||' },
+          data: {
+            users: mockUsers,
+          },
+          config: { ...mockAuthorToken, multiSelect: true, initialUsers: mockUsers },
+          groupMultiSelectTokens: true,
+        });
+        await nextTick();
+        const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
+        expect(tokenSegments).toHaveLength(3); // Author, =, "Administrator"
+        const tokenValue = tokenSegments.at(2);
+        const [user1, user2] = mockUsers;
+        expect(tokenValue.findAllComponents(GlAvatar).at(1).props('src')).toBe(
+          mockUsers[1].avatar_url,
+        );
+        expect(tokenValue.text()).toBe(`${user1.name},${user2.name}`);
       });
     });
   });

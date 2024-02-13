@@ -101,7 +101,7 @@
   box-shadow: 0 1px 2px rgba(var(--black, $black), 0.1);
 
   &:last-child {
-    @include gl-mb-0;
+    margin-bottom: 0;
   }
 
   .move-to-position {
@@ -143,7 +143,7 @@
 
   .user-avatar-link {
     &:not(:last-of-type) {
-      @include gl-mr-n3;
+      margin-right: -$gl-spacing-scale-3;
     }
   }
 
@@ -225,11 +225,11 @@
   padding-bottom: 0.5rem;
 
   .sidebar-collapsed-icon {
-    @include gl-display-none;
+    display: none;
   }
 
   .show.dropdown .dropdown-menu {
-    @include gl-w-full;
+    width: 100%;
   }
 }
 
@@ -240,5 +240,14 @@
   .board-card-skeleton-inner {
     width: 340px;
     height: 100px;
+  }
+}
+
+.board-cut-line {
+  &::before, &::after {
+    content: '';
+    height: 1px;
+    flex: 1;
+    border-top: 1px dashed $red-700;
   }
 }

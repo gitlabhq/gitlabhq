@@ -541,9 +541,9 @@ Settings.cron_jobs['trending_projects_worker']['job_class'] = 'TrendingProjectsW
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker'] ||= {}
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['cron'] ||= '20 0 * * *'
 Settings.cron_jobs['remove_unreferenced_lfs_objects_worker']['job_class'] = 'RemoveUnreferencedLfsObjectsWorker'
-Settings.cron_jobs['bulk_imports_stuck_import_worker'] ||= {}
-Settings.cron_jobs['bulk_imports_stuck_import_worker']['cron'] ||= '0 */4 * * *'
-Settings.cron_jobs['bulk_imports_stuck_import_worker']['job_class'] = 'BulkImports::StuckImportWorker'
+Settings.cron_jobs['bulk_imports_stale_import_worker'] ||= {}
+Settings.cron_jobs['bulk_imports_stale_import_worker']['cron'] ||= '0 */4 * * *'
+Settings.cron_jobs['bulk_imports_stale_import_worker']['job_class'] = 'BulkImports::StaleImportWorker'
 Settings.cron_jobs['import_stuck_project_import_jobs'] ||= {}
 Settings.cron_jobs['import_stuck_project_import_jobs']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['import_stuck_project_import_jobs']['job_class'] = 'Gitlab::Import::StuckProjectImportJobsWorker'
@@ -706,6 +706,9 @@ Settings.cron_jobs['ci_schedule_unlock_pipelines_in_queue_worker']['job_class'] 
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['cron'] ||= '*/1 * * * *'
 Settings.cron_jobs['ci_catalog_resources_process_sync_events_worker']['job_class'] = 'Ci::Catalog::Resources::ProcessSyncEventsWorker'
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker'] ||= {}
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['cron'] ||= '*/1 * * * *'
+Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worker']['job_class'] = 'Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -795,12 +798,18 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker'] ||= {}
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
+  Settings.cron_jobs['search_zoekt_scheduling_worker'] ||= {}
+  Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['search_zoekt_scheduling_worker']['job_class'] ||= 'Search::Zoekt::SchedulingWorker'
   Settings.cron_jobs['search_index_curation_worker'] ||= {}
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_index_curation_worker']['job_class'] ||= 'Search::IndexCurationWorker'
   Settings.cron_jobs['pause_control_resume_worker'] ||= {}
   Settings.cron_jobs['pause_control_resume_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['pause_control_resume_worker']['job_class'] ||= 'PauseControl::ResumeWorker'
+  Settings.cron_jobs['concurrency_limit_resume_worker'] ||= {}
+  Settings.cron_jobs['concurrency_limit_resume_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['concurrency_limit_resume_worker']['job_class'] ||= 'ConcurrencyLimit::ResumeWorker'
   Settings.cron_jobs['sync_seat_link_worker'] ||= {}
   Settings.cron_jobs['sync_seat_link_worker']['cron'] ||= "#{rand(60)} #{rand(3..4)} * * * UTC"
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
@@ -903,6 +912,12 @@ Gitlab.ee do
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker'] ||= {}
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['cron'] ||= "*/30 * * * *"
     Settings.cron_jobs['click_house_event_authors_consistency_cron_worker']['job_class'] = 'ClickHouse::EventAuthorsConsistencyCronWorker'
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker'] ||= {}
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['cron'] ||= "*/45 * * * *"
+    Settings.cron_jobs['click_house_event_namespace_paths_consistency_cron_worker']['job_class'] = 'ClickHouse::EventPathsConsistencyCronWorker'
+    Settings.cron_jobs['click_house_audit_events_sync_worker'] ||= {}
+    Settings.cron_jobs['click_house_audit_events_sync_worker']['cron'] ||= "*/3 * * * *"
+    Settings.cron_jobs['click_house_audit_events_sync_worker']['job_class'] = 'ClickHouse::AuditEventsSyncWorker'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker'] ||= {}
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['cron'] ||= '*/50 * * * *'
     Settings.cron_jobs['vertex_ai_refresh_access_token_worker']['job_class'] = 'Llm::VertexAiAccessTokenRefreshWorker'

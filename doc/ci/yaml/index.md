@@ -1,10 +1,17 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: >-
+  To determine the technical writer assigned to the Stage/Group associated with
+  this page, see
+  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD YAML syntax reference **(FREE ALL)**
+# CI/CD YAML syntax reference
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This document lists the configuration options for the GitLab `.gitlab-ci.yml` file.
 This file is where you define the CI/CD jobs that make up your pipeline.
@@ -55,6 +62,7 @@ A GitLab CI/CD pipeline configuration includes:
   | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
   | [`environment`](#environment)               | Name of an environment to which the job deploys. |
   | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
+  | [`identity`](#identity)                     | Authenticate with third party services using identity federation. |
   | [`image`](#image)                           | Use Docker images. |
   | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
   | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
@@ -82,7 +90,7 @@ or import additional pipeline configuration.
 
 ### `default`
 
-> Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
+> - Support for `id_tokens` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419750) in GitLab 16.4.
 
 You can set global defaults for some keywords. Each default keyword is copied to every job
 that doesn't already have it defined. If the job already has a keyword defined, that default
@@ -103,7 +111,8 @@ is not used.
 - [`retry`](#retry)
 - [`services`](#services)
 - [`tags`](#tags)
-- [`timeout`](#timeout)
+- [`timeout`](#timeout), though due to [issue 213634](https://gitlab.com/gitlab-org/gitlab/-/issues/213634)
+  this keyword has no effect.
 
 **Example of `default`**:
 
@@ -135,7 +144,7 @@ In this example:
 
 ### `include`
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
 
 Use `include` to include external YAML files in your CI/CD configuration.
 You can split one long `.gitlab-ci.yml` file into multiple files to increase readability,
@@ -248,7 +257,7 @@ include: '.gitlab-ci-production.yml'
 
 #### `include:project`
 
-> Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
+> - Including multiple files from the same project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26793) in GitLab 13.6. [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/271560) in GitLab 13.8.
 
 To include files from another private project on the same GitLab instance,
 use `include:project` and `include:file`.
@@ -378,7 +387,7 @@ include:
 
 #### `include:inputs`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 
 Use `include:inputs` to set the values for input parameters when the included configuration
 uses [`spec:inputs`](#specinputs) and is added to the pipeline.
@@ -413,6 +422,8 @@ In this example:
 - [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
 
 ### `stages`
+
+> - Support for nested array of strings [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.
 
 Use `stages` to define stages that contain groups of jobs. Use [`stage`](#stage)
 in a job to configure the job to run in a specific stage.
@@ -460,7 +471,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 - If a job does not specify a [`stage`](#stage), the job is assigned the `test` stage.
 - If a stage is defined but no jobs use it, the stage is not visible in the pipeline,
-  which can help [compliance pipeline configurations](../../user/group/compliance_frameworks.md#compliance-pipelines):
+  which can help [compliance pipeline configurations](../../user/group/compliance_pipelines.md):
   - Stages can be defined in the compliance configuration but remain hidden if not used.
   - The defined stages become visible when developers use them in job definitions.
 
@@ -470,7 +481,7 @@ start. Jobs in the current stage are not stopped and continue to run.
 
 ### `workflow`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29654) in GitLab 12.5
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29654) in GitLab 12.5
 
 Use [`workflow`](workflow.md) to control pipeline behavior.
 
@@ -484,13 +495,13 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 
 #### `workflow:auto_cancel:on_new_commit`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or
-for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is available.
 
 Use `workflow:auto_cancel:on_new_commit` to configure the behavior of
 the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines) feature.
@@ -701,13 +712,13 @@ When the branch is something else:
 
 #### `workflow:rules:auto_cancel`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per project or
-for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`.
+On GitLab.com, this feature is available.
 
 Use `workflow:rules:auto_cancel` to configure the behavior of
 the [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit) feature.
@@ -753,7 +764,7 @@ with `---`.
 
 ### `spec`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 
 Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
 when a configuration is added to the pipeline with the `include` keyword.
@@ -803,7 +814,7 @@ scan-website:
 
 ##### `spec:inputs:default`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
 
 Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
 
@@ -845,7 +856,7 @@ In this example:
 
 ##### `spec:inputs:description`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415637) in GitLab 16.5.
 
 Use `description` to give a description to a specific input. The description does
 not affect the behavior of the input and is only used to help users of the file
@@ -870,7 +881,7 @@ spec:
 
 ##### `spec:inputs:options`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393401) in GitLab 16.6.
 
 Inputs can use `options` to specify a list of allowed values for an input.
 The limit is 50 options per input.
@@ -909,7 +920,7 @@ In this example:
 
 ##### `spec:inputs:regex`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410836) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/410836) in GitLab 16.5.
 
 Use `spec:inputs:regex` to specify a regular expression that the input must match.
 
@@ -1286,7 +1297,7 @@ job:
 
 #### `artifacts:expose_as`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15018) in GitLab 12.5.
 
 Use the `artifacts:expose_as` keyword to
 [expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
@@ -1311,7 +1322,11 @@ test:
 
 **Additional details**:
 
-- If `artifacts:paths` uses [CI/CD variables](../variables/index.md), the artifacts do not display in the UI.
+- Artifacts are saved, but do not display in the UI if the `artifacts:paths` values:
+  - Use [CI/CD variables](../variables/index.md).
+  - Define a directory, but do not end with `/`. For example, `directory/` works with `artifacts:expose_as`,
+    but `directory` does not.
+  - Start with `./`. For example, `file` works with `artifacts:expose_as`, but `./file` does not.
 - A maximum of 10 job artifacts per merge request can be exposed.
 - Glob patterns are unsupported.
 - If a directory is specified and there is more than one file in the directory,
@@ -1369,10 +1384,10 @@ Use `artifacts:public` to determine whether the job artifacts should be
 publicly available.
 
 When `artifacts:public` is `true` (default), the artifacts in
-public pipelines are available for download by anonymous and guest users.
+public pipelines are available for download by anonymous, guest, and reporter users.
 
-To deny read access for anonymous and guest users to artifacts in public
-pipelines, set `artifacts:public` to `false`:
+To deny read access to artifacts in public
+pipelines for anonymous, guest, and reporter users, set `artifacts:public` to `false`:
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1523,7 +1538,7 @@ job:
 
 ### `cache`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
 
 Use `cache` to specify a list of files and directories to
 cache between jobs. You can only use paths that are in the local working copy.
@@ -1638,7 +1653,7 @@ cache-job:
 
 ##### `cache:key:files`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
 
 Use the `cache:key:files` keyword to generate a new key when one or two specific files
 change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
@@ -1650,6 +1665,8 @@ which speeds up subsequent pipeline runs.
 **Possible inputs**:
 
 - An array of one or two file paths.
+
+CI/CD variables are not supported.
 
 **Example of `cache:key:files`**:
 
@@ -1681,7 +1698,7 @@ use the new cache, instead of rebuilding the dependencies.
 
 ##### `cache:key:prefix`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18986) in GitLab 12.5.
 
 Use `cache:key:prefix` to combine a prefix with the SHA computed for [`cache:key:files`](#cachekeyfiles).
 
@@ -1767,7 +1784,7 @@ rspec:
 
 #### `cache:unprotect`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362114) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362114) in GitLab 15.8.
 
 Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/protected_branches.md)
 and unprotected branches.
@@ -1794,7 +1811,7 @@ rspec:
 
 #### `cache:when`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18969) in GitLab 13.5 and GitLab Runner v13.5.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18969) in GitLab 13.5 and GitLab Runner v13.5.0.
 
 Use `cache:when` to define when to save the cache, based on the status of the job.
 
@@ -1951,9 +1968,13 @@ In this example:
   is not recorded or displayed. Check [the related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/280818)
   for more details.
 
-### `dast_configuration` **(ULTIMATE ALL)**
+### `dast_configuration`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5981) in GitLab 14.1.
 
 Use the `dast_configuration` keyword to specify a site profile and scanner profile to be used in a
 CI/CD configuration. Both profiles must first have been created in the project. The job's stage must
@@ -1998,10 +2019,10 @@ to select a specific site profile and scanner profile.
 ### `dependencies`
 
 Use the `dependencies` keyword to define a list of specific jobs to fetch [artifacts](#artifacts)
-from. When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
-and the job fetches all artifacts from those jobs.
+from. The specified jobs must all be in earlier stages. You can also set a job to download no artifacts at all.
 
-You can also set a job to download no artifacts at all.
+When `dependencies` is not defined in a job, all jobs in earlier stages are considered dependent
+and the job fetches all artifacts from those jobs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -2057,6 +2078,8 @@ the [stage](#stages) precedence.
 - The job status does not matter. If a job fails or it's a manual job that isn't triggered, no error occurs.
 - If the artifacts of a dependent job are [expired](#artifactsexpire_in) or
   [deleted](../jobs/job_artifacts.md#delete-job-log-and-artifacts), then the job fails.
+- To fetch artifacts from a job in the same stage, you must use [`needs:artifacts`](#needsartifacts).
+  You should not combine `dependencies` with `needs` in the same job.
 
 ### `environment`
 
@@ -2184,7 +2207,7 @@ stop_review_app:
 
 #### `environment:auto_stop_in`
 
-> CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
+> - CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365140) in GitLab 15.4.
 
 The `auto_stop_in` keyword specifies the lifetime of the environment. When an environment expires, GitLab
 automatically stops it.
@@ -2220,7 +2243,7 @@ Every time the review app is deployed, that lifetime is also reset to `1 day`.
 
 #### `environment:kubernetes`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27630) in GitLab 12.6.
 
 Use the `kubernetes` keyword to configure deployments to a
 [Kubernetes cluster](../../user/infrastructure/clusters/index.md) that is associated with your project.
@@ -2254,7 +2277,7 @@ environment, using the `production`
 
 #### `environment:deployment_tier`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
 Use the `deployment_tier` keyword to specify the tier of the deployment environment.
 
@@ -2425,9 +2448,39 @@ job1:
 
 - [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 
+### `identity`
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+
+FLAG:
+On GitLab.com, this feature is not available.
+The feature is not ready for production use.
+
+Use `identity` to authenticate with third party services using identity federation.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the [`default:` section](#default).
+
+**Possible inputs**: An identifier. Supported providers: `google_cloud` (Google Cloud).
+
+**Example of `identity`**:
+
+```yaml
+job_with_workload_identity:
+  identity: google_cloud
+  script:
+    - gcloud compute instances list
+```
+
+**Related topics**:
+
+- [Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+
 ### `id_tokens`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
@@ -2445,7 +2498,7 @@ JWTs created this way support OIDC authentication. The required `aud` sub-keywor
 job_with_id_tokens:
   id_tokens:
     ID_TOKEN_1:
-      aud: https://gitlab.com
+      aud: https://vault.example.com
     ID_TOKEN_2:
       aud:
         - https://gcp.com
@@ -2453,8 +2506,9 @@ job_with_id_tokens:
     SIGSTORE_ID_TOKEN:
       aud: sigstore
   script:
-    - command_to_authenticate_with_gitlab $ID_TOKEN_1
+    - command_to_authenticate_with_vault $ID_TOKEN_1
     - command_to_authenticate_with_aws $ID_TOKEN_2
+    - command_to_authenticate_with_gcp $ID_TOKEN_2
 ```
 
 **Related topics**:
@@ -2629,7 +2683,7 @@ job2:
 
 ### `inherit`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207484) in GitLab 12.9.
 
 Use `inherit` to [control inheritance of default keywords and variables](../jobs/index.md#control-the-inheritance-of-default-keywords-and-global-variables).
 
@@ -2708,7 +2762,7 @@ job2:
 ### `interruptible`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32022) in GitLab 12.3.
-> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+> - Support for `trigger` jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138508) in GitLab 16.8.
 
 Use `interruptible` to configure the [auto-cancel redundant pipelines](../pipelines/settings.md#auto-cancel-redundant-pipelines)
 feature to cancel a job before it completes if a new pipeline on the same ref starts for a newer commit. If the feature
@@ -2870,7 +2924,7 @@ This example creates four paths of execution:
 
 #### `needs:artifacts`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.6.
 
 When a job uses `needs`, it no longer downloads all artifacts from previous stages
 by default, because jobs with `needs` can start before earlier stages complete. With
@@ -2917,12 +2971,15 @@ In this example:
 
 **Additional details**:
 
-- In GitLab 12.6 and later, you can't combine the [`dependencies`](#dependencies) keyword
-  with `needs`.
+- You should not combine `needs` with [`dependencies`](#dependencies) in the same job.
 
-#### `needs:project` **(PREMIUM ALL)**
+#### `needs:project`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
 The artifacts are downloaded from the latest successful specified job for the specified ref.
@@ -3003,7 +3060,7 @@ build_job:
 
 #### `needs:pipeline:job`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255983) in GitLab 13.7.
 
 A [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines) can download artifacts from a job in
 its parent pipeline or another child pipeline in the same parent-child pipeline hierarchy.
@@ -3053,7 +3110,7 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 **Additional details**:
 
 - The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
-  To download artifacts from a job in the current pipeline, use [`needs`](#needsartifacts).
+  To download artifacts from a job in the current pipeline, use [`needs:artifacts`](#needsartifacts).
 
 #### `needs:optional`
 
@@ -3147,7 +3204,7 @@ upstream_status:
 
 #### `needs:parallel:matrix`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
 
 Jobs can use [`parallel:matrix`](#parallelmatrix) to run a job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -3251,7 +3308,7 @@ This directory is exported as an artifact and published with GitLab Pages.
 
 #### `pages:publish`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415821) in GitLab 16.1.
 
 Use `publish` to configure the content directory of a [`pages` job](#pages).
 
@@ -3279,9 +3336,14 @@ This example uses [Eleventy](https://www.11ty.dev) to generate a static website 
 output the generated HTML files into a the `dist/` directory. This directory is exported
 as an artifact and published with GitLab Pages.
 
-#### `pages:pages.path_prefix` **(PREMIUM ALL EXPERIMENT)**
+#### `pages:pages.path_prefix`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -3316,7 +3378,7 @@ In this example, a different pages deployment is created for each branch.
 
 ### `parallel`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum value for `parallel` is increased from 50 to 200.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336576) in GitLab 15.9, the maximum value for `parallel` is increased from 50 to 200.
 
 Use `parallel` to run a job multiple times in parallel in a single pipeline.
 
@@ -3444,7 +3506,7 @@ deploystacks: [vultr, processing]
 
 ### `release`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19298) in GitLab 13.2.
 
 Use `release` to create a [release](../../user/project/releases/index.md).
 
@@ -3560,7 +3622,7 @@ job:
 
 #### `release:tag_message`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
 
 If the tag does not exist, the newly created tag is annotated with the message specified by `tag_message`.
 If omitted, a lightweight tag is created.
@@ -3666,7 +3728,7 @@ released_at: '2021-03-15T08:00:00Z'
 
 #### `release:assets:links`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271454) in GitLab 13.12.
 
 Use `release:assets:links` to include [asset links](../../user/project/releases/release_fields.md#release-assets) in the release.
 
@@ -3687,7 +3749,7 @@ assets:
 
 ### `resource_group`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
 Use `resource_group` to create a [resource group](../resource_groups/index.md) that
 ensures a job is mutually exclusive across different pipelines for the same project.
@@ -3819,7 +3881,7 @@ using variables.
 
 ### `rules`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
 Use `rules` to include or exclude jobs in pipelines.
 
@@ -3971,11 +4033,11 @@ docker build:
 
 **Related topics**:
 
-- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+- [Jobs or pipelines can run unexpectedly when using `rules: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 ##### `rules:changes:paths`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90171) in GitLab 15.2.
 
 Use `rules:changes` to specify that a job only be added to a pipeline when specific
 files are changed, and use `rules:changes:paths` to specify the files.
@@ -4082,7 +4144,7 @@ job:
 
 #### `rules:allow_failure`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30235) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30235) in GitLab 12.8.
 
 Use [`allow_failure: true`](#allow_failure) in `rules` to allow a job to fail
 without stopping the pipeline.
@@ -4237,9 +4299,13 @@ job2:
 - [Create custom collapsible sections](../jobs/index.md#custom-collapsible-sections)
   to simplify job log output.
 
-### `secrets` **(PREMIUM ALL)**
+### `secrets`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33014) in GitLab 13.4.
 
 Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
@@ -4249,7 +4315,7 @@ Use `secrets` to specify [CI/CD secrets](../secrets/index.md) to:
 
 #### `secrets:vault`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28321) in GitLab 13.4 and GitLab Runner 13.4.
 
 Use `secrets:vault` to specify secrets provided by a [HashiCorp Vault](https://www.vaultproject.io/).
 
@@ -4299,7 +4365,7 @@ job:
 
 #### `secrets:gcp_secret_manager`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab 16.8 and GitLab Runner 16.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11739) in GitLab 16.8 and GitLab Runner 16.8.
 
 Use `secrets:gcp_secret_manager` to specify secrets provided by [GCP Secret Manager](https://cloud.google.com/security/products/secret-manager).
 
@@ -4327,7 +4393,7 @@ job:
 
 #### `secrets:azure_key_vault`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab 16.3 and GitLab Runner 16.3.
 
 Use `secrets:azure_key_vault` to specify secrets provided by a [Azure Key Vault](https://azure.microsoft.com/en-us/products/key-vault/).
 
@@ -4355,7 +4421,7 @@ job:
 
 #### `secrets:file`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250695) in GitLab 14.1 and GitLab Runner 14.1.
 
 Use `secrets:file` to configure the secret to be stored as either a
 [`file` or `variable` type CI/CD variable](../variables/index.md#use-file-type-cicd-variables)
@@ -4601,7 +4667,7 @@ job4:
 
 #### `stage: .pre`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
 
 Use the `.pre` stage to make a job run at the start of a pipeline. `.pre` is
 always the first stage in a pipeline. User-defined stages execute after `.pre`.
@@ -4637,7 +4703,7 @@ job2:
 
 #### `stage: .post`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31441) in GitLab 12.4.
 
 Use the `.post` stage to make a job run at the end of a pipeline. `.post`
 is always the last stage in a pipeline. User-defined stages execute before `.post`.
@@ -4721,7 +4787,7 @@ In this example, only runners with *both* the `ruby` and `postgres` tags can run
 
 ### `timeout`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14887) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14887) in GitLab 12.3.
 
 Use `timeout` to configure a timeout for a specific job. If the job runs for longer
 than the timeout, the job fails.
@@ -5036,7 +5102,7 @@ deploy_review_job:
 
 #### `variables:description`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 Use the `description` keyword to define a description for a pipeline-level (global) variable.
 The description displays with [the prefilled variable name when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
@@ -5062,7 +5128,7 @@ variables:
 
 #### `variables:value`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 Use the `value` keyword to define a pipeline-level (global) variable's value. When used with
 [`variables: description`](#variablesdescription), the variable value is [prefilled when running a pipeline manually](../pipelines/index.md#prefill-variables-in-manual-pipelines).
@@ -5089,7 +5155,7 @@ variables:
 
 #### `variables:options`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
 
 Use `variables:options` to define an array of values that are [selectable in the UI when running a pipeline manually](../pipelines/index.md#configure-a-list-of-selectable-prefilled-variable-values).
 
@@ -5464,7 +5530,7 @@ docker build:
 - [`only: changes` and `except: changes` examples](../jobs/job_control.md#onlychanges--exceptchanges-examples).
 - If you use `changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#require-a-successful-pipeline-for-merge),
   you should [also use `only:merge_requests`](../jobs/job_control.md#use-onlychanges-with-merge-request-pipelines).
-- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_control.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
+- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
 
 #### `only:kubernetes` / `except:kubernetes`
 

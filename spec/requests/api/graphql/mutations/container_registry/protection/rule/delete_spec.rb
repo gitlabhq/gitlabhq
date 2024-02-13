@@ -49,9 +49,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
   end
 
   context 'with existing container registry protection rule belonging to other project' do
-    let_it_be(:container_protection_rule) do
-      create(:container_registry_protection_rule, repository_path_pattern: 'protection_rule_other_project')
-    end
+    let_it_be(:container_protection_rule) { create(:container_registry_protection_rule) }
 
     it_behaves_like 'an erroneous response'
 
@@ -61,7 +59,7 @@ RSpec.describe 'Deleting a container registry protection rule', :aggregate_failu
   context 'with deleted container registry protection rule' do
     let!(:container_protection_rule) do
       create(:container_registry_protection_rule, project: project,
-        repository_path_pattern: 'protection_rule_deleted').destroy!
+        repository_path_pattern: "#{project.full_path}/image-deleted").destroy!
     end
 
     it_behaves_like 'an erroneous response'

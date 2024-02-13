@@ -24,7 +24,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def hook_param_names
-    %i[enable_ssl_verification token url]
+    %i[enable_ssl_verification name description token url]
   end
 
   def trigger_values

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Atlassian as an OAuth 2.0 authentication provider **(FREE SELF)**
+# Use Atlassian as an OAuth 2.0 authentication provider
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To enable the Atlassian OmniAuth provider for passwordless authentication you must register an application with Atlassian.
 

@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating from Jenkins **(FREE ALL)**
+# Migrating from Jenkins
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If you're migrating from Jenkins to GitLab CI/CD, you are able to create CI/CD
 pipelines that replicate and enhance your Jenkins workflows.
@@ -471,7 +475,7 @@ deploy_staging:
 #### Runners
 
 Like Jenkins agents, GitLab runners are the hosts that run jobs. If you are using GitLab.com,
-you can use the [shared runner fleet](../runners/index.md) to run jobs without provisioning
+you can use the [instance runner fleet](../runners/index.md) to run jobs without provisioning
 your own runners.
 
 To convert a Jenkins agent for use with GitLab CI/CD, uninstall the agent and then

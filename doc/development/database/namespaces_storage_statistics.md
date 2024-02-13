@@ -114,7 +114,7 @@ Same benefits and downsides as attempt A.
 ### Attempt C: Get rid of the model and store the statistics on Redis
 
 We could get rid of the model that stores the statistics in aggregated form and instead use a Redis Set.
-This would be the [boring solution](https://about.gitlab.com/handbook/values/#boring-solutions) and the fastest one
+This would be the [boring solution](https://handbook.gitlab.com/handbook/values/#boring-solutions) and the fastest one
 to implement, as GitLab already includes Redis as part of its [Architecture](../architecture.md#redis).
 
 The downside of this approach is that Redis does not provide the same persistence/consistency guarantees as PostgreSQL,

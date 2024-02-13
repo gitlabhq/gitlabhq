@@ -19,5 +19,4 @@ Style/KeywordParametersOrder:
     - 'lib/gitlab/email/smime/signer.rb'
     - 'lib/gitlab/exclusive_lease.rb'
     - 'lib/gitlab/merge_requests/mergeability/results_store.rb'
-    - 'lib/gitlab/usage_data_counters/editor_unique_counter.rb'
     - 'lib/microsoft_teams/notifier.rb'

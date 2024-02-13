@@ -2,9 +2,8 @@
 import { GlButton, GlFormCheckbox, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
-import Tracking from '~/tracking';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { STATE_OPEN, TRACKING_CATEGORY_SHOW, TASK_TYPE_NAME } from '~/work_items/constants';
+import { STATE_OPEN, WORK_ITEM_TYPE_VALUE_TASK } from '~/work_items/constants';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
@@ -34,7 +33,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
   props: {
     workItemId: {
       type: String,
@@ -91,6 +89,11 @@ export default {
       required: false,
       default: false,
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isWorkItemConfidential: {
       type: Boolean,
       required: false,
@@ -105,13 +108,6 @@ export default {
     };
   },
   computed: {
-    tracking() {
-      return {
-        category: TRACKING_CATEGORY_SHOW,
-        label: 'work_item_task_status',
-        property: `type_${this.workItemType}`,
-      };
-    },
     formFieldProps() {
       return {
         'aria-label': this.ariaLabel,
@@ -120,23 +116,29 @@ export default {
         name: 'work-item-add-or-edit-comment',
       };
     },
-    isWorkItemOpen() {
-      return this.workItemState === STATE_OPEN;
-    },
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
     workItemDocPath() {
-      return this.workItemType === TASK_TYPE_NAME ? 'user/tasks.html' : 'user/okrs.html';
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'user/tasks.html' : 'user/okrs.html';
     },
-    workItemDocAnchor() {
-      return this.workItemType === TASK_TYPE_NAME ? 'confidential-tasks' : 'confidential-okrs';
+    workItemDocConfidentialAnchor() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
+        ? 'confidential-tasks'
+        : 'confidential-okrs';
+    },
+    workItemDocLockedAnchor() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'locked-tasks' : 'locked-okrs';
     },
     getWorkItemData() {
       return {
         confidential: this.isWorkItemConfidential,
         confidential_issues_docs_path: helpPagePath(this.workItemDocPath, {
-          anchor: this.workItemDocAnchor,
+          anchor: this.workItemDocConfidentialAnchor,
+        }),
+        discussion_locked: this.isDiscussionLocked,
+        locked_discussion_docs_path: helpPagePath(this.workItemDocPath, {
+          anchor: this.workItemDocLockedAnchor,
         }),
       };
     },
@@ -235,7 +237,7 @@ export default {
             :work-item-id="workItemId"
             :work-item-state="workItemState"
             :work-item-type="workItemType"
-            :has-comment="!!commentText.length"
+            :has-comment="Boolean(commentText.length)"
             can-update
             @submit-comment="$emit('submitForm', { commentText, isNoteInternal })"
             @error="$emit('error', $event)"

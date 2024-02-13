@@ -142,9 +142,10 @@ describe('OrganizationNewApp', () => {
         });
 
         it('displays form errors alert', () => {
-          expect(wrapper.findComponent(FormErrorsAlert).props('errors')).toEqual(
-            organizationCreateResponseWithErrors.data.organizationCreate.errors,
-          );
+          expect(wrapper.findComponent(FormErrorsAlert).props()).toStrictEqual({
+            errors: organizationCreateResponseWithErrors.data.organizationCreate.errors,
+            scrollOnError: true,
+          });
         });
       });
     });

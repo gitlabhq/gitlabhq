@@ -77,6 +77,11 @@ include:
       variables:
         QA_TESTS: ""
 
+.rules:test:manual-except-default-branch:
+  rules:
+    - *default-branch
+    - !reference [.rules:test:manual, rules]
+
 .rules:test:feature-flags-set:
   rules:
     # unset specific specs if pipeline has feature flag changes and run full suite
@@ -151,12 +156,6 @@ include:
   rules:
     - <<: *if-schedule-pipeline
       when: never
-
-.rules:test:gdk-load-balancer-changes:
-  rules:
-    - changes:
-        - ".gitlab/ci/test-on-gdk/**"
-        - "lib/gitlab/database/load_balancing/**/*"
 
 .rules:test:qa-default-branch:
   rules:

@@ -119,8 +119,6 @@ module API
         post ":id/members", feature_category: feature_category do
           source = find_source(source_type, params[:id])
 
-          authorize_admin_source_member!(source_type, source)
-
           create_service_params = params.merge(source: source)
 
           if add_multiple_members?(params[:user_id].to_s)

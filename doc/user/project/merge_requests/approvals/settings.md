@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request approval settings **(PREMIUM ALL)**
+# Merge request approval settings
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure
@@ -42,7 +46,7 @@ These settings limit who can approve merge requests:
 
 ## Prevent approval by author
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 By default, the author of a merge request cannot approve it. To change this setting:
 
@@ -162,7 +166,7 @@ However, approvals are reset if the target branch is changed.
 
 ## Remove approvals by Code Owners if their files changed
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
 
 If you only want to remove approvals by Code Owners whose files have been changed when a commit is added:
 

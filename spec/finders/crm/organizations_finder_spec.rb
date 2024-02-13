@@ -9,7 +9,7 @@ RSpec.describe Crm::OrganizationsFinder do
     subject { described_class.new(user, group: group).execute }
 
     context 'when customer relations feature is enabled for the group' do
-      let_it_be(:root_group) { create(:group, :crm_enabled) }
+      let_it_be(:root_group) { create(:group) }
       let_it_be(:group) { create(:group, parent: root_group) }
 
       let_it_be(:crm_organization_1) { create(:crm_organization, group: root_group) }
@@ -45,7 +45,7 @@ RSpec.describe Crm::OrganizationsFinder do
     end
 
     context 'when customer relations feature is disabled for the group' do
-      let_it_be(:group) { create(:group) }
+      let_it_be(:group) { create(:group, :crm_disabled) }
       let_it_be(:crm_organization) { create(:crm_organization, group: group) }
 
       before do
@@ -58,7 +58,7 @@ RSpec.describe Crm::OrganizationsFinder do
     end
 
     context 'with search informations' do
-      let_it_be(:search_test_group) { create(:group, :crm_enabled) }
+      let_it_be(:search_test_group) { create(:group) }
 
       let_it_be(:search_test_a) do
         create(
@@ -130,7 +130,7 @@ RSpec.describe Crm::OrganizationsFinder do
     end
 
     context 'when sorting' do
-      let_it_be(:group) { create(:group, :crm_enabled) }
+      let_it_be(:group) { create(:group) }
 
       let_it_be(:sort_test_a) do
         create(
@@ -185,7 +185,7 @@ RSpec.describe Crm::OrganizationsFinder do
   end
 
   describe '.counts_by_state' do
-    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:active_crm_organizations) { create_list(:crm_organization, 3, group: group, state: :active) }
     let_it_be(:inactive_crm_organizations) { create_list(:crm_organization, 2, group: group, state: :inactive) }
 

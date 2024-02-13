@@ -1,0 +1,10 @@
+---
+table_name: catalog_verified_namespaces
+feature_categories:
+- pipeline_composition
+description: Verified namespaces in the CI catalog.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143003
+milestone: '16.9'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

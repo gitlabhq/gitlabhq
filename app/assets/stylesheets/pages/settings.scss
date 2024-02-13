@@ -33,23 +33,6 @@
   max-width: px-to-rem(500px);
 }
 
-.created-deploy-token-container {
-  .deploy-token-field {
-    width: 90%;
-    display: inline;
-  }
-
-  .btn-clipboard {
-    background-color: var(--white, $white);
-    border: 1px solid var(--gray-100, $gray-100);
-  }
-
-  .deploy-token-help-block {
-    display: block;
-    margin-bottom: 0;
-  }
-}
-
 .deploy-freeze-table {
   @media(max-width: map-get($grid-breakpoints, lg)-1) {
     .truncated-container {
@@ -61,21 +44,21 @@
 .settings-section::after {
   content: '';
   display: block;
-  @include gl-mb-7;
+  margin-bottom: $gl-spacing-scale-7;
 }
 
 .settings-section,
 .settings-section-no-bottom ~ .settings-section {
-  @include gl-pt-0;
+  padding-top: 0;
 }
 
 // Fix for sticky header when there is no search bar.
 .flash-container + .settings-section {
-  @include gl-pt-3;
+  padding-top: $gl-spacing-scale-3;
 }
 
 .settings-section ~ .settings-section {
-  @include gl-pt-6;
+  padding-top: $gl-spacing-scale-6;
 }
 
 .settings-section:not(.settings-section-no-bottom) ~ .settings-section {
@@ -83,10 +66,10 @@
 }
 
 .settings-section-no-bottom::after {
-  @include gl-pb-0;
+  padding-bottom: 0;
 
   @include media-breakpoint-up(sm) {
-    @include gl-pb-5;
+    padding-bottom: $gl-spacing-scale-5;
   }
 }
 

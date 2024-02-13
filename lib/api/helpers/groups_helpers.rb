@@ -35,6 +35,7 @@ module API
           optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
         end
         optional :shared_runners_setting, type: String, values: ::Namespace::SHARED_RUNNERS_SETTINGS, desc: 'Enable/disable shared runners for the group and its subgroups and projects'
+        optional :enabled_git_access_protocol, type: String, values: %w[ssh http all], desc: 'Allow only the selected protocols to be used for Git access.'
       end
 
       params :optional_params_ee do
@@ -42,6 +43,8 @@ module API
 
       params :optional_update_params do
         optional :prevent_sharing_groups_outside_hierarchy, type: Boolean, desc: 'Prevent sharing groups within this namespace with any groups outside the namespace. Only available on top-level groups.'
+        optional :lock_math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are locked for all descendent groups.'
+        optional :math_rendering_limits_enabled, type: Boolean, desc: 'Indicates if math rendering limits are used for this group.'
       end
 
       params :optional_update_params_ee do

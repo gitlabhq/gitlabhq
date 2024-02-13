@@ -18,6 +18,9 @@ module Types
       value 'BROKEN_STATUS',
             value: :broken_status,
             description: 'Can not merge the source into the target branch, potential conflict.'
+      value 'COMMITS_STATUS',
+            value: :commits_status,
+            description: 'Source branch exists and contains commits.'
       value 'CI_MUST_PASS',
             value: :ci_must_pass,
             description: 'Pipeline must succeed before merging.'
@@ -38,7 +41,7 @@ module Types
             description: 'Merge request must be approved before merging.'
       value 'BLOCKED_STATUS',
             value: :merge_request_blocked,
-            description: 'Merge request is blocked by another merge request.'
+            description: 'Merge request dependencies have been merged.'
       value 'POLICIES_DENIED',
             value: :policies_denied,
             description: 'There are denied policies for the merge request.'

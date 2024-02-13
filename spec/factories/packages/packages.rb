@@ -43,23 +43,6 @@ FactoryBot.define do
       end
     end
 
-    factory :rubygems_package do
-      sequence(:name) { |n| "my_gem_#{n}" }
-      sequence(:version) { |n| "1.#{n}" }
-      package_type { :rubygems }
-
-      after :create do |package|
-        create :package_file, package.processing? ? :unprocessed_gem : :gem, package: package
-        create :package_file, :gemspec, package: package unless package.processing?
-      end
-
-      trait(:with_metadatum) do
-        after :build do |pkg|
-          pkg.rubygems_metadatum = build(:rubygems_metadatum)
-        end
-      end
-    end
-
     factory :rpm_package do
       sequence(:name) { |n| "package-#{n}" }
       sequence(:version) { |n| "v1.0.#{n}" }

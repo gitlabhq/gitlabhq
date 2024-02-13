@@ -5,6 +5,8 @@ fragment PackageSettingsFields on PackageSettings {
   genericDuplicateExceptionRegex
   nugetDuplicatesAllowed
   nugetDuplicateExceptionRegex
+  terraformModuleDuplicatesAllowed
+  terraformModuleDuplicateExceptionRegex
   mavenPackageRequestsForwarding
   lockMavenPackageRequestsForwarding
   mavenPackageRequestsForwardingLocked

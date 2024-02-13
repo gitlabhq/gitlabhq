@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Security and Compliance Admin Area settings **(ULTIMATE SELF)**
+# Security and Compliance Admin Area settings
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 The settings for package metadata synchronization are located in the [Admin Area](index.md).
 

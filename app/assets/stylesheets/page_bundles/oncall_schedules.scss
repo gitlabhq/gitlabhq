@@ -5,7 +5,7 @@
 }
 
 .modal-footer {
-  @include gl-bg-gray-10;
+  background-color: $gray-10;
 }
 
 .invalid-dropdown {
@@ -65,13 +65,13 @@ $column-right-gradient: linear-gradient(to right, $gradient-dark-gray 0%, $gradi
 
 .list-section .details-cell {
   &::after {
-    @include gl-h-full;
-    @include gl-content-empty;
-    @include gl-absolute;
-    @include gl-top-0;
+    height: 100%;
+    content: '';
+    position: absolute;
+    top: 0;
     right: -$grid-size;
     width: $grid-size;
-    @include gl-pointer-events-none;
+    pointer-events: none;
     background: $column-right-gradient;
   }
 }

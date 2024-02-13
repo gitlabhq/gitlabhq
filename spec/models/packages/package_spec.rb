@@ -22,9 +22,9 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
     it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
+    it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
   end
 
@@ -1124,6 +1124,17 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
         it { is_expected.to eq('"projects"."name" DESC NULLS FIRST, "packages_packages"."id" DESC') }
       end
+    end
+  end
+
+  describe '.preload_tags' do
+    let_it_be(:package) { create(:npm_package) }
+    let_it_be(:tags) { create_list(:packages_tag, 2, package: package) }
+
+    subject { described_class.preload_tags }
+
+    it 'preloads tags' do
+      expect(subject.first.association(:tags)).to be_loaded
     end
   end
 

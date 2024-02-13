@@ -4,11 +4,11 @@ group: Tenant Scale
 info: 'To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments'
 ---
 
-# Migrate projects **(FREE ALL)**
+# Transfer projects
 
-## Export a project
-
-You can [export a project and its data](import_export.md#export-a-project-and-its-data).
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Transfer a project to another namespace
 
@@ -44,61 +44,13 @@ NOTE:
 If you are an administrator, you can also use the [administration interface](../../../administration/admin_area.md#administering-projects)
 to move any project to any namespace.
 
-### Transferring a GitLab SaaS project to a different subscription tier
+## Transferring a GitLab SaaS project to a different subscription tier
 
 When you transfer a project from a namespace licensed for GitLab SaaS Premium or Ultimate to GitLab Free:
 
 - [Project access tokens](../../../user/project/settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../../ci/pipelines/index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt)
   and [test cases](../../../ci/test_cases/index.md) are deleted.
-
-## Archive a project
-
-When you archive a project, the repository, packages, issues, merge requests, and all
-other features become read-only. Archived projects are also hidden from project lists.
-
-To archive a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Archive project** section, select **Archive project**.
-1. To confirm, select **OK**.
-
-## Unarchive a project
-
-When you unarchive a project, the read-only restriction is removed,
-and the project becomes available in project lists.
-
-Prerequisites:
-
-- You must be an administrator or have the Owner role for the project.
-
-1. Find the archived project.
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **View all my projects**.
-   1. Select **Explore projects**.
-   1. In the **Sort projects** dropdown list, select **Show archived projects**.
-   1. In the **Filter by name** field, enter the project name.
-   1. Select the project link.
-1. On the left sidebar, select **Settings > General**.
-1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive project**.
-1. To confirm, select **OK**.
-
-## Restore a project **(PREMIUM ALL)**
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-- The project must be [marked for deletion](../working_with_projects.md#delete-a-project).
-
-To restore a project marked for deletion:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the Restore project section, select **Restore project**.
 
 ## Troubleshooting
 

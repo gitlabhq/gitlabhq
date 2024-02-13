@@ -1,7 +1,7 @@
 kbd {
   display: inline-block;
   padding: 3px 5px;
-  @include gl-font-sm;
+  font-size: $gl-font-size-sm;
   line-height: 10px;
   color: var(--gray-700, $gray-700);
   vertical-align: unset;

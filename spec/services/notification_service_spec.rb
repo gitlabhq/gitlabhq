@@ -581,7 +581,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
   end
 
   describe 'Notes' do
-    context 'issue note' do
+    describe 'issue note' do
       let_it_be(:project) { create(:project, :private) }
       let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let_it_be(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
@@ -591,26 +591,28 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
       subject { notification.new_note(note) }
 
-      context 'issue_email_participants' do
+      describe 'issue_email_participants' do
         before do
           allow(Notify).to receive(:service_desk_new_note_email)
-                             .with(Integer, Integer, String).and_return(mailer)
+                             .with(Integer, Integer, IssueEmailParticipant).and_return(mailer)
 
-          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?) { true }
-          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?) { true }
+          allow(::Gitlab::Email::IncomingEmail).to receive(:enabled?).and_return(true)
+          allow(::Gitlab::Email::IncomingEmail).to receive(:supports_wildcard?).and_return(true)
         end
 
-        let(:subject) { described_class.new }
         let(:mailer) { double(deliver_later: true) }
         let(:issue) { create(:issue, author: Users::Internal.support_bot) }
         let(:project) { issue.project }
         let(:note) { create(:note, noteable: issue, project: project) }
 
+        subject(:notification_service) { described_class.new }
+
         shared_examples 'notification with exact metric events' do |number_of_events|
           it 'adds metric event' do
             metric_transaction = double('Gitlab::Metrics::WebTransaction', increment: true, observe: true)
             allow(::Gitlab::Metrics::BackgroundTransaction).to receive(:current).and_return(metric_transaction)
-            expect(metric_transaction).to receive(:add_event).with(:service_desk_new_note_email).exactly(number_of_events).times
+            expect(metric_transaction).to receive(:add_event)
+              .with(:service_desk_new_note_email).exactly(number_of_events).times
 
             subject.new_note(note)
           end
@@ -638,9 +640,9 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
           it 'sends the email' do
             expect(Notify).to receive(:service_desk_new_note_email)
-              .with(issue.id, note.id, issue.external_author)
+              .with(issue.id, note.id, issue_email_participant)
 
-            subject.new_note(note)
+            notification_service.new_note(note)
           end
 
           it_behaves_like 'notification with exact metric events', 1
@@ -651,6 +653,71 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             end
 
             it_behaves_like 'no participants are notified'
+          end
+
+          context 'with multiple external participants' do
+            let!(:other_external_participant) { issue.issue_email_participants.create!(email: 'user@example.com') }
+
+            it 'sends emails' do
+              expect(Notify).to receive(:service_desk_new_note_email)
+                .with(issue.id, note.id, IssueEmailParticipant).twice
+
+              notification_service.new_note(note)
+            end
+
+            context 'when note is from an external participant' do
+              shared_examples 'only sends one Service Desk notification email' do
+                it 'sends one email' do
+                  expect(Notify).not_to receive(:service_desk_new_note_email)
+                    .with(issue.id, note.id, non_recipient)
+
+                  expect(Notify).to receive(:service_desk_new_note_email)
+                    .with(issue.id, note.id, recipient)
+
+                  notification_service.new_note(note)
+                end
+              end
+
+              let!(:note) do
+                create(
+                  :note_on_issue,
+                  author: Users::Internal.support_bot,
+                  noteable: issue,
+                  project_id: issue.project_id,
+                  note: '@mention referenced, @unsubscribed_mentioned and @outsider also'
+                )
+              end
+
+              context 'and the note is from the external issue author' do
+                let(:non_recipient) { issue_email_participant }
+                let(:recipient) { other_external_participant }
+                let!(:note_metadata) do
+                  create(:note_metadata, note: note, email_participant: issue_email_participant.email)
+                end
+
+                it_behaves_like 'only sends one Service Desk notification email'
+              end
+
+              context 'and the note is from another external participant' do
+                let(:non_recipient) { other_external_participant }
+                let(:recipient) { issue_email_participant }
+                let!(:note_metadata) do
+                  create(:note_metadata, note: note, email_participant: other_external_participant.email)
+                end
+
+                it_behaves_like 'only sends one Service Desk notification email'
+
+                context 'and the external note auhor email has different format' do
+                  let(:non_recipient) { other_external_participant }
+                  let(:recipient) { issue_email_participant }
+                  let!(:note_metadata) do
+                    create(:note_metadata, note: note, email_participant: 'USER@example.com')
+                  end
+
+                  it_behaves_like 'only sends one Service Desk notification email'
+                end
+              end
+            end
           end
         end
 

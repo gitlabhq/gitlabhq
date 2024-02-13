@@ -105,7 +105,6 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
     delegate :enable_debug_trace!, to: :metadata
-    delegate :debug_trace_enabled?, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
@@ -221,6 +220,7 @@ module Ci
     end
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
+    after_commit :track_ci_build_created_event, on: :create
 
     class << self
       # This is needed for url_for to work,
@@ -1017,7 +1017,7 @@ module Ci
 
     def debug_mode?
       # perform the check on both sides in case the runner version is old
-      debug_trace_enabled? ||
+      metadata&.debug_trace_enabled? ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_SERVICES']&.value, default: false) ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_TRACE']&.value, default: false)
     end
@@ -1244,16 +1244,18 @@ module Ci
       )
     end
 
+    def track_ci_build_created_event
+      return unless Feature.enabled?(:track_ci_build_created_internal_event, project, type: :gitlab_com_derisk)
+
+      Gitlab::InternalEvents.track_event('create_ci_build', project: project, user: user)
+    end
+
     def partition_id_prefix_in_16_bit_encode
       "#{partition_id.to_s(16)}_"
     end
 
     def prefix_and_partition_for_token
-      if Feature.enabled?(:prefix_ci_build_tokens, project, type: :beta)
-        TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
-      else
-        partition_id_prefix_in_16_bit_encode
-      end
+      TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
     end
   end
 end

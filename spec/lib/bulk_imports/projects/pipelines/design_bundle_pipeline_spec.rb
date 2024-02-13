@@ -22,6 +22,7 @@ RSpec.describe BulkImports::Projects::Pipelines::DesignBundlePipeline, feature_c
 
     allow(portable).to receive(:lfs_enabled?).and_return(true)
     allow(Dir).to receive(:mktmpdir).with('bulk_imports').and_return(tmpdir)
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   after do

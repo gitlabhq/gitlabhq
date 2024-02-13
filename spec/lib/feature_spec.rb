@@ -27,7 +27,6 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
       # reset Flipper AR-engine
       Feature.reset
-      skip_feature_flags_yaml_validation
     end
 
     describe '.current_request' do
@@ -253,15 +252,15 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       it 'returns false (and tracks / raises exception for dev) for undefined feature' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-        expect(described_class.enabled?(:some_random_feature_flag)).to be_falsey
+        expect(described_class.enabled?(:some_random_feature_fla, type: :undefined)).to be_falsey
       end
 
       it 'returns false for undefined feature with default_enabled_if_undefined: false' do
-        expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_falsey
+        expect(described_class.enabled?(:some_random_feature_flag, type: :undefined, default_enabled_if_undefined: false)).to be_falsey
       end
 
       it 'returns true for undefined feature with default_enabled_if_undefined: true' do
-        expect(described_class.enabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_truthy
+        expect(described_class.enabled?(:some_random_feature_flag, type: :undefined, default_enabled_if_undefined: true)).to be_truthy
       end
 
       it 'returns false for existing disabled feature in the database' do
@@ -307,7 +306,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         base_class = Feature::BypassLoadBalancer.enabled? ? Feature::BypassLoadBalancer::FlipperRecord : ActiveRecord::Base
         expect(base_class).to receive(:connection) { raise ActiveRecord::NoDatabaseError, "No database" }
 
-        expect(described_class.enabled?(:a_feature, default_enabled_if_undefined: fake_default)).to eq(fake_default)
+        expect(described_class.enabled?(:a_feature, type: :undefined, default_enabled_if_undefined: fake_default)).to eq(fake_default)
       end
 
       context 'logging is enabled', :request_store do
@@ -497,7 +496,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
 
         it 'when invalid type is used' do
           expect { described_class.enabled?(:my_feature_flag, type: :ops) }
-            .to raise_error(/The `type:` of/)
+            .to raise_error(/The given `type: :ops`/)
         end
 
         context 'when default_enabled: is false in the YAML definition' do
@@ -581,19 +580,19 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
       end
     end
 
-    describe '.disable?' do
+    describe '.disabled?' do
       it 'returns true (and tracks / raises exception for dev) for undefined feature' do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
 
-        expect(described_class.disabled?(:some_random_feature_flag)).to be_truthy
+        expect(described_class.disabled?(:some_random_feature_flag, type: :undefined)).to be_truthy
       end
 
       it 'returns true for undefined feature with default_enabled_if_undefined: false' do
-        expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: false)).to be_truthy
+        expect(described_class.disabled?(:some_random_feature_flag, type: :undefined, default_enabled_if_undefined: false)).to be_truthy
       end
 
       it 'returns false for undefined feature with default_enabled_if_undefined: true' do
-        expect(described_class.disabled?(:some_random_feature_flag, default_enabled_if_undefined: true)).to be_falsey
+        expect(described_class.disabled?(:some_random_feature_flag, type: :undefined, default_enabled_if_undefined: true)).to be_falsey
       end
 
       it 'returns true for existing disabled feature in the database' do

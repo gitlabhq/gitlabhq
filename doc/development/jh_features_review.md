@@ -22,7 +22,7 @@ We have two kinds of changes related to JH:
     then we wouldn't have to treat them differently.
   - Database migrations and database schema changes which are required to
     support running JH edition. See
-    [JiHu guidelines for database changes](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process.html)
+    [JiHu guidelines for database changes](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
     for details.
 
 If needed, review the corresponding JH merge request located at [JH repository](https://jihulab.com/gitlab-cn/gitlab).
@@ -39,10 +39,10 @@ the reference from being misidentified as a missing partial and subsequently del
 
 Read the following process guides:
 
-- [Contribution review process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-review-process.html)
-- [Database change process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process.html)
-- [Security review process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-security-review-process.html)
-- [Merge request process](https://about.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/#merge-request-process)
+- [Contribution review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/)
+- [Database change process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-database-change-process/)
+- [Security review process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-security-review-process/)
+- [Merge request process](https://handbook.gitlab.com/handbook/ceo/chief-of-staff-team/jihu-support/jihu-contribution-process/#merge-request-review-process)
 
 ## Act as EE when `jh/` does not exist or when `EE_ONLY=1`
 

@@ -4,9 +4,13 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages custom domains **(FREE ALL)**
+# GitLab Pages custom domains
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238461) in GitLab 15.4, you can use verified domains to [bypass user email confirmation for SAML- or SCIM-provisioned users](../../../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
 You can use custom domains:
 
@@ -142,15 +146,15 @@ They require:
 If you're using Cloudflare, check
 [Redirecting `www.domain.com` to `domain.com` with Cloudflare](#redirect-wwwdomaincom-to-domaincom-with-cloudflare).
 
-> **Notes**:
->
-> - **Do not** use a `CNAME` record if you want to point your
+Additionally:
+
+- **Do not** use a `CNAME` record if you want to point your
   `domain.com` to your GitLab Pages site. Use an `A` record instead.
-> - **Do not** add any special chars after the default Pages
+- **Do not** add any special chars after the default Pages
   domain. For example, don't point `subdomain.domain.com` to
   or `namespace.gitlab.io/`. Some domain hosting providers may request a trailing dot (`namespace.gitlab.io.`), though.
-> - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
-> - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
+- GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/releases/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
+- GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
   from `52.167.214.135` to `35.185.44.232` in 2018.
 
 #### 4. Verify the domain's ownership
@@ -171,15 +175,15 @@ Considering GitLab instances with domain verification enabled,
 if the domain can't be verified for 7 days, it's removed
 from the GitLab project.
 
-> **Notes:**
->
-> - Domain verification is **required for GitLab.com users**;
+Additionally:
+
+- Domain verification is **required for GitLab.com users**;
   for GitLab self-managed instances, your GitLab administrator has the option
   to [disabled custom domain verification](../../../../administration/pages/index.md#custom-domain-verification).
-> - [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
+- [DNS propagation may take some time (up to 24 hours)](https://www.inmotionhosting.com/support/domain-names/dns-nameserver-changes/complete-guide-to-dns-records/),
   although it's usually a matter of minutes to complete. Until it does, verification
   fails, and attempts to visit your domain result in a 404.
-> - Once your domain has been verified, leave the verification record
+- Once your domain has been verified, leave the verification record
   in place. Your domain is periodically reverified, and may be
   disabled if the record is removed.
 

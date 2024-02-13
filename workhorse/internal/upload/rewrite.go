@@ -16,6 +16,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 )
@@ -62,7 +63,7 @@ type rewriter struct {
 	finalizedFields map[string]bool
 }
 
-func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, filter MultipartFormProcessor, fa fileAuthorizer, preparer Preparer) error {
+func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, filter MultipartFormProcessor, fa fileAuthorizer, preparer Preparer, cfg *config.Config) error {
 	// Create multipart reader
 	reader, err := r.MultipartReader()
 	if err != nil {
@@ -100,7 +101,7 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, fi
 		}
 
 		if filename != "" {
-			err = rew.handleFilePart(r, name, p)
+			err = rew.handleFilePart(r, name, p, cfg)
 		} else {
 			err = rew.copyPart(r.Context(), name, p)
 		}
@@ -120,7 +121,7 @@ func parseAndNormalizeContentDisposition(header textproto.MIMEHeader) (string, s
 	return params["name"], params["filename"]
 }
 
-func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.Part) error {
+func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.Part, cfg *config.Config) error {
 	if rew.filter.Count() >= maxFilesAllowed {
 		return ErrTooManyFilesUploaded
 	}
@@ -171,7 +172,7 @@ func (rew *rewriter) handleFilePart(r *http.Request, name string, p *multipart.P
 
 	multipartFileUploadBytes.WithLabelValues(rew.filter.Name()).Add(float64(fh.Size))
 
-	return rew.filter.ProcessFile(ctx, name, fh, rew.writer)
+	return rew.filter.ProcessFile(ctx, name, fh, rew.writer, cfg)
 }
 
 func (rew *rewriter) copyPart(ctx context.Context, name string, p *multipart.Part) error {

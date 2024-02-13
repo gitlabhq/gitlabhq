@@ -224,6 +224,20 @@ It is responsible for parsing the `approval_rules_attributes` parameter to:
 - Append user defined inapplicable (rules that do not apply to the merge request's target
   branch) approval rules.
 
+### `ApprovalRules::CreateService`
+
+This service is defined in `ee/app/services/approval_rules/create_service.rb`.
+
+It is responsible for creating approval rules at either the merge request or project level.
+
+It is called when:
+
+- Creating approval rules at the project level through the UI.
+- Creating approval rules at the project level through the [API::ProjectApprovalRules](../../api/merge_request_approvals.md#create-merge-request-level-rule) `/projects/:id/approval_rules` endpoint.
+- Creating merge request level rules through [API::MergeRequestApprovalRules](../../api/merge_request_approvals.md#create-project-level-rule) `/projects/:id/merge_requests/:merge_request_iid/approval_rules` endpoint.
+
+Merge request level rules created through the UI do not use this service. See [Projects::MergeRequests::CreationsController](#projectsmergerequestscontroller)
+
 ## Flow
 
 These flowcharts should help explain the flow from the controllers down to the

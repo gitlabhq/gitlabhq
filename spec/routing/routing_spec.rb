@@ -123,8 +123,9 @@ end
 #             profile_account GET    /-/profile/account(.:format)             profile#account
 #             profile_history GET    /-/profile/history(.:format)             profile#history
 #               profile_token GET    /-/profile/token(.:format)               profile#token
-#                     profile GET    /-/profile(.:format)                     profile#show
-#              profile_update PUT    /-/profile/update(.:format)              profile#update
+#       user_settings_profile GET    /-/user_settings/profile(.:format)       user_settings/profile#show
+#       user_settings_profile PUT    /-/user_settings/profile(.:format)       user_settings/profile#update
+#       user_settings_profile PATCH  /-/user_settings/profile(.:format)       user_settings/profile#update
 RSpec.describe ProfilesController, "routing" do
   it "to #account" do
     expect(get("/-/profile/account")).to route_to('profiles/accounts#show')
@@ -135,7 +136,12 @@ RSpec.describe ProfilesController, "routing" do
   end
 
   it "to #show" do
-    expect(get("/-/profile")).to route_to('profiles#show')
+    expect(get("/-/user_settings/profile")).to route_to('user_settings/profiles#show')
+  end
+
+  it "to #update" do
+    expect(put("/-/user_settings/profile")).to route_to('user_settings/profiles#update')
+    expect(patch("/-/user_settings/profile")).to route_to('user_settings/profiles#update')
   end
 end
 

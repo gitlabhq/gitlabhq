@@ -21,6 +21,7 @@ import {
   WIDGET_ICONS,
   WORK_ITEM_STATUS_TEXT,
   I18N_WORK_ITEM_SHOW_LABELS,
+  TASKS_ANCHOR,
 } from '../../constants';
 import { findHierarchyWidgetChildren } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
@@ -110,7 +111,7 @@ export default {
       isReportDrawerOpen: false,
       reportedUserId: 0,
       reportedUrl: '',
-      widgetName: 'tasks',
+      widgetName: TASKS_ANCHOR,
       showLabels: true,
     };
   },

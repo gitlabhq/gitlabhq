@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Documentation on Git file history."
 ---
 
-# Git file history **(FREE ALL)**
+# Git file history
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Git file History provides information about the commit history associated
 with a file. To use it:
@@ -23,6 +27,22 @@ are shown.
 The name and email information provided are retrieved from the
 [Git configuration](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
 of the contributor when a commit is made.
+
+## Limit history range
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423108) in GitLab 16.9.
+
+In these cases you can constrain the search period by adding `committed_before` and `committed_after` dates as parameters.
+To do this, add `&` and `committed_before=YYYY-MM-DD` or `committed_after=YYYY-MM-DD` parameters to the URL.
+
+For example:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/commits/master/README.md?ref_type=heads&committed_before=2010-11-22&committed_after=2008-05-15
+```
+
+Doing this might be necessary to fix [commit history requests timeouts](https://gitlab.com/gitlab-org/gitaly/-/issues/5426)
+in very large repositories.
 
 ## Associated `git` command
 

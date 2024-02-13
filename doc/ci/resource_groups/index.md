@@ -5,9 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Control the job concurrency in GitLab CI/CD
 ---
 
-# Resource group **(FREE ALL)**
+# Resource group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15536) in GitLab 12.7.
 
 By default, pipelines in GitLab CI/CD run concurrently. Concurrency is an important factor to improve
 the feedback loop in merge requests, however, there are some situations that
@@ -141,7 +145,7 @@ Depending on the process mode of the resource group:
 
 ## Pipeline-level concurrency control with cross-project/parent-child pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39057) in GitLab 13.9.
 
 You can define `resource_group` for downstream pipelines that are sensitive to concurrent
 executions. The [`trigger` keyword](../yaml/index.md#trigger) can trigger downstream pipelines and the

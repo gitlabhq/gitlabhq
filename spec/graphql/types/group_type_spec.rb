@@ -22,12 +22,13 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       mentions_disabled parent boards milestones group_members
       merge_requests container_repositories container_repositories_count
       packages dependency_proxy_setting dependency_proxy_manifests
-      dependency_proxy_blobs dependency_proxy_image_count
+      dependency_proxy_blobs dependency_proxy_image_count max_access_level
       dependency_proxy_blob_count dependency_proxy_total_size dependency_proxy_total_size_in_bytes
       dependency_proxy_image_prefix dependency_proxy_image_ttl_policy
       shared_runners_setting timelogs organization_state_counts organizations
       contact_state_counts contacts work_item_types
       recent_issue_boards ci_variables releases environment_scopes work_items autocomplete_users
+      lock_math_rendering_limits_enabled math_rendering_limits_enabled
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -157,6 +158,84 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
         expect(result.dig('data', 'group', 'customEmoji', 'nodes').count).to eq(2)
       end
+    end
+  end
+
+  describe 'emailsDisabled' do
+    let_it_be(:group) { create(:group) }
+
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            emailsDisabled
+          }
+        }
+      )
+    end
+
+    subject(:result) do
+      result = GitlabSchema.execute(query).as_json
+      result.dig('data', 'group', 'emailsDisabled')
+    end
+
+    it 'is not a deprecated field' do
+      expect(described_class.fields['emailsDisabled'].deprecation).to be_nil
+    end
+
+    describe 'when emails_enabled is true' do
+      before do
+        group.update!(emails_enabled: true)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    describe 'when emails_enabled is false' do
+      before do
+        group.update!(emails_enabled: false)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+  end
+
+  describe 'emailsEnabled' do
+    let_it_be(:group) { create(:group) }
+
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            emailsEnabled
+          }
+        }
+      )
+    end
+
+    subject(:result) do
+      result = GitlabSchema.execute(query).as_json
+      result.dig('data', 'group', 'emailsEnabled')
+    end
+
+    it 'is not a deprecated field' do
+      expect(described_class.fields['emailsEnabled'].deprecation).to be_nil
+    end
+
+    describe 'when emails_enabled is true' do
+      before do
+        group.update!(emails_enabled: true)
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    describe 'when emails_enabled is false' do
+      before do
+        group.update!(emails_enabled: false)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 end

@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# NuGet packages in the package registry **(FREE ALL)**
+# NuGet packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20050) in GitLab 12.8.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -26,7 +30,7 @@ Learn how to [install NuGet](../workflows/build_packages.md#nuget).
 
 ## Use the GitLab endpoint for NuGet Packages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) group-level endpoint in GitLab 13.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36423) group-level endpoint in GitLab 13.8.
 
 To use the GitLab endpoint for NuGet Packages, choose an option:
 
@@ -61,7 +65,7 @@ Prerequisites:
     both.
 - A name for your source.
 - Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either:
-  - Your project ID, which is found on your project's home page.
+  - Your project ID, which is found on your [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
   - Your group ID, which is found on your group's home page.
 
 You can now add a new source to NuGet with:
@@ -333,7 +337,7 @@ nuget push <package_file> -Source <source_name>
 
 ### Publish a package with the .NET CLI
 
-> Publishing a package with `--api-key` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) in GitLab 16.1.
+> - Publishing a package with `--api-key` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214674) in GitLab 16.1.
 
 Prerequisites:
 
@@ -372,7 +376,7 @@ dotnet nuget push MyPackage.1.0.0.nupkg --source https://gitlab.example.com/api/
 
 ### Publish a NuGet package by using CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36424) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36424) in GitLab 13.3.
 
 If you're using NuGet with GitLab CI/CD, a CI job token can be used instead of a
 personal access token or deploy token. The token inherits the permissions of the
@@ -404,7 +408,7 @@ updated:
 
 ### Publish a NuGet package with Chocolatey CLI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416404) in GitLab 16.2.
 
 Prerequisites:
 
@@ -499,7 +503,7 @@ dotnet add package <package_id> \
 
 ### Install a package using NuGet v2 feed
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416405) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416405) in GitLab 16.5.
 
 Prerequisites:
 
@@ -548,7 +552,7 @@ choco upgrade MyPackage -Source gitlab -Version 1.0.3
 
 ## Delete a package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
 
 WARNING:
 Deleting a package is a permanent action that cannot be undone.
@@ -578,7 +582,7 @@ nuget delete MyPackage 1.0.0 -Source gitlab -ApiKey <gitlab_personal_access_toke
 
 ## Symbol packages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262081) in GitLab 14.1.
 
 If you push a `.nupkg`, symbol package files in the `.snupkg` format are uploaded automatically. You
 can also push them manually:
@@ -589,7 +593,7 @@ nuget push My.Package.snupkg -Source <source_name>
 
 ### Use the package registry as a symbol server
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416178) in GitLab 16.7.
 
 GitLab can consume symbol files from the NuGet package registry,
 so you can use the package registry as a symbol server.
@@ -635,7 +639,7 @@ Note that:
 
 ## Supported CLI commands
 
-> `nuget delete` and `dotnet nuget delete` commands [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
+> - `nuget delete` and `dotnet nuget delete` commands [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38275) in GitLab 16.5.
 
 The GitLab NuGet repository supports the following commands for the NuGet CLI (`nuget`) and the .NET
 CLI (`dotnet`):

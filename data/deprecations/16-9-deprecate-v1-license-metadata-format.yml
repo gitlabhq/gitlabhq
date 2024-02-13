@@ -1,0 +1,13 @@
+- title: "Deprecate license metadata format V1"
+  removal_milestone: "18.0"
+  announcement_milestone: "16.9"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: Secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438477
+  body: |  # (required) Don't change this line.
+    The license metadata format V1 dataset has been deprecated and will be removed
+    in GitLab 18.0.
+
+    Users who have the `package_metadata_synchronization` feature flag enabled are advised to
+    upgrade to GitLab 16.3 or above, and remove the feature flag configuration.

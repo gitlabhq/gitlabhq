@@ -122,6 +122,12 @@ export const MERGE_REQUEST_METRICS = {
   THROUGHPUT: MERGE_REQUEST_THROUGHPUT_TYPE,
 };
 
+export const CONTRIBUTOR_COUNT_TYPE = 'contributor_count';
+
+export const CONTRIBUTOR_METRICS = {
+  COUNT: CONTRIBUTOR_COUNT_TYPE,
+};
+
 export const METRIC_TOOLTIPS = {
   [DORA_METRICS.DEPLOYMENT_FREQUENCY]: {
     description: s__(
@@ -181,17 +187,24 @@ export const METRIC_TOOLTIPS = {
   },
   [FLOW_METRICS.ISSUES_COMPLETED]: {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
-    groupLink: '-/analytics/value_stream_analytics',
-    projectLink: '-/value_stream_analytics',
-    docsLink: helpPagePath('user/analytics/value_streams_dashboard', {
-      anchor: 'dashboard-metrics-and-drill-down-reports',
-    }),
+    groupLink: '-/issues_analytics',
+    projectLink: '-/analytics/issues_analytics',
+    docsLink: helpPagePath('user/analytics/issue_analytics'),
   },
   [FLOW_METRICS.DEPLOYS]: {
     description: s__('ValueStreamAnalytics|Total number of deploys to production.'),
     groupLink: '-/analytics/productivity_analytics',
     projectLink: '-/analytics/merge_request_analytics',
     docsLink: helpPagePath('user/analytics/merge_request_analytics'),
+  },
+  [CONTRIBUTOR_METRICS.COUNT]: {
+    description: s__(
+      'ValueStreamAnalytics|Number of monthly unique users with contributions in the group.',
+    ),
+    groupLink: '-/contribution_analytics',
+    docsLink: helpPagePath('user/profile/contributions_calendar.html', {
+      anchor: 'user-contribution-events',
+    }),
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
     description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),

@@ -99,6 +99,7 @@ module Gitlab
         hset
         incr
         incrby
+        ltrim
         mapped_hmset
         pfadd
         pfmerge
@@ -251,15 +252,26 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
+        feature_flag = "use_primary_and_secondary_stores_for_#{instance_name.underscore}"
+
         feature_table_exists? &&
-          Feature.enabled?("use_primary_and_secondary_stores_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
           !same_redis_store?
       end
 
       def use_primary_store_as_default?
+        feature_flag = "use_primary_store_as_default_for_#{instance_name.underscore}"
+
         feature_table_exists? &&
-          Feature.enabled?("use_primary_store_as_default_for_#{instance_name.underscore}") && # rubocop:disable Cop/FeatureFlagUsage
+          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
           !same_redis_store?
+      end
+
+      def feature_flag_type(feature_flag)
+        feature_definition = Feature::Definition.get(feature_flag)
+        return if feature_definition
+
+        :undefined
       end
 
       def increment_pipelined_command_error_count(command_name)
@@ -305,15 +317,15 @@ module Gitlab
       #
       # Let's define it explicitly instead of propagating it to method_missing
       def close
-        with_borrowed_connection do
-          if same_redis_store?
-            # if same_redis_store?, `use_primary_store_as_default?` returns false
-            # but we should avoid a feature-flag check in `.close` to avoid checking out
-            # an ActiveRecord connection during clean up.
-            secondary_store.close
-          else
-            [primary_store, secondary_store].map(&:close).first
-          end
+        return if primary_store.nil? || secondary_store.nil?
+
+        if same_redis_store?
+          # if same_redis_store?, `use_primary_store_as_default?` returns false
+          # but we should avoid a feature-flag check in `.close` to avoid checking out
+          # an ActiveRecord connection during clean up.
+          secondary_store.close
+        else
+          [primary_store, secondary_store].map(&:close).first
         end
       end
 

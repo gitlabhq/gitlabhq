@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to the development of GitLab.
 
-For a first-time step-by-step guide, see [Tutorial: Make a GitLab contribution](first_contribution.md).
+For a first-time step-by-step guide, see [Tutorial: Make a GitLab contribution](first_contribution/index.md).
 
 ## How to contribute
 
@@ -62,7 +62,7 @@ To write and test your code, you will use the GitLab Development Kit.
      From a project repository:
        1. On the left sidebar, select **Search or go to** and find your project.
        1. In the upper right, select **Edit > Gitpod**.
-1. If you want to contribute to the [website](https://about.gitlab.com/) or the [handbook](https://about.gitlab.com/handbook/),
+1. If you want to contribute to the [website](https://about.gitlab.com/) or the [handbook](https://handbook.gitlab.com/handbook/),
    go to the footer of any page and select **Edit in Web IDE** to open the [Web IDE](../../user/project/web_ide/index.md).
 
 ### Open a merge request
@@ -82,9 +82,9 @@ For details, see the [merge request workflow](merge_request_workflow.md).
 #### How community merge requests are triaged
 
 1. When you create a merge request, the [`@gitlab-bot`](https://gitlab.com/gitlab-bot) automatically applies
-   the ["~Community contribution"](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#ensure-quick-feedback-for-community-contributions) label.
+   the ["~Community contribution"](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues-and-merge-requests) label.
 1. In the 24-48 hours after you create the merge request, a
-   [Merge Request Coach](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/merge-request-coach-lifecycle.html)
+   [Merge Request Coach](https://handbook.gitlab.com/handbook/marketing/developer-relations/contributor-success/merge-request-coach-lifecycle/)
    will review your merge request and apply stage, group, and type labels.
 1. If a merge request was not automatically assigned, ask for a review by typing `@gitlab-bot ready` in a comment.
    If your code has not been assigned a reviewer within two working days of its initial submission, you can ask
@@ -98,7 +98,7 @@ written some front-end code, you should mention the frontend merge request coach
 your code has multiple disciplines, you can mention multiple merge request coaches.
 
 For details about timelines and how you can request help or escalate a merge request,
-see the [Wider Community Merge Request guide](https://about.gitlab.com/handbook/engineering/quality/merge-request-triage/).
+see the [Wider Community Merge Request guide](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/merge-request-triage/).
 
 After your merge request is reviewed and merged, your changes will be deployed to GitLab.com and included in the next release!
 
@@ -144,13 +144,13 @@ Lastly, keep the following in mind when submitting merge requests:
 
 ## Closing policy for issues and merge requests
 
-- For the criteria for closing issues, see [the Issue Triage handbook page](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#outdated-issues).
+- For the criteria for closing issues, see [the Issue Triage handbook page](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#outdated-issues).
 - For the criteria for closing merge requests, see [the Merge Request Workflow](merge_request_workflow.md).
 
 ## Contributing to Premium/Ultimate features with an Enterprise Edition license
 
 If you would like to work on GitLab features that are within a paid tier, also known as the code that lives in the [EE folder](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee), it requires a GitLab Enterprise Edition license.
-Request an Enterprise Edition Developers License according to the [documented process](https://about.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows#contributing-to-the-gitlab-enterprise-edition-ee).
+Request an Enterprise Edition Developers License according to the [documented process](https://handbook.gitlab.com/handbook/marketing/developer-relations/contributor-success/community-contributors-workflows/#contributing-to-the-gitlab-enterprise-edition-ee).
 
 ## Get help
 
@@ -159,7 +159,7 @@ If you need any help while contributing to GitLab:
 - If you need help with a merge request or need help finding a reviewer:
   - Don't hesitate to ask for help by typing `@gitlab-bot help` in a comment.
   - Find reviewers and maintainers of GitLab projects in our
-    [handbook](https://about.gitlab.com/handbook/engineering/projects/) and
+    [handbook](https://handbook.gitlab.com/handbook/engineering/projects/) and
     [mention](../../user/group/subgroups/index.md#mention-subgroups) them in a comment.
 - Join the community on the [GitLab Community Discord](https://discord.com/invite/gitlab) and find other
   contributors in the `#contribute` channel or [initiate a mentor session](https://about.gitlab.com/community/contribute/mentor-sessions/).

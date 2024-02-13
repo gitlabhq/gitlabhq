@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project features and permissions **(FREE ALL)**
+# Project features and permissions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Configure project features and permissions
 
@@ -65,9 +69,13 @@ To disable this feature and remove the **Analyze** item from the left sidebar:
 1. Turn off the **Analytics** toggle.
 1. Select **Save changes**.
 
-## Disable CVE identifier request in issues **(FREE SAAS)**
+## Disable CVE identifier request in issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41203) in GitLab 13.4, only for public projects on GitLab.com.
 
 In some environments, users can submit a [CVE identifier request](../../application_security/cve_id_request.md) in an issue.
 

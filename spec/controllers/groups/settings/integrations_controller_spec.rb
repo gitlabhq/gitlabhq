@@ -55,7 +55,9 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
         get :edit,
           params: {
             group_id: group,
-            id: Integration.available_integration_names(include_project_specific: false).sample
+            id: Integration.available_integration_names(
+              include_project_specific: false, include_instance_specific: false
+            ).sample
           }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -67,7 +69,9 @@ RSpec.describe Groups::Settings::IntegrationsController, feature_category: :inte
         group.add_owner(user)
       end
 
-      Integration.available_integration_names(include_project_specific: false).each do |integration_name|
+      Integration.available_integration_names(
+        include_project_specific: false, include_instance_specific: false
+      ).each do |integration_name|
         context integration_name do
           it 'successfully displays the template' do
             get :edit, params: { group_id: group, id: integration_name }

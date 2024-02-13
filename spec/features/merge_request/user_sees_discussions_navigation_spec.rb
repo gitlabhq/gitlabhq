@@ -173,7 +173,9 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
       before do
         # we can't go directly to the commits page since it doesn't load discussions
         visit project_merge_request_path(project, merge_request)
-        click_link 'Commits'
+        within '.merge-request-tabs' do
+          click_link 'Commits'
+        end
       end
 
       it_behaves_like 'a page with no code discussions'
@@ -190,13 +192,13 @@ RSpec.describe 'Merge request > User sees discussions navigation', :js, feature_
   end
 
   def goto_next_thread
-    click_button 'Go to next unresolved thread', obscured: false
+    click_button 'Next unresolved thread', obscured: false
     # Wait for scroll
     sleep(1)
   end
 
   def goto_previous_thread
-    click_button 'Go to previous unresolved thread', obscured: false
+    click_button 'Previous unresolved thread', obscured: false
     # Wait for scroll
     sleep(1)
   end

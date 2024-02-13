@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Geo **(PREMIUM SELF)**
+# Troubleshooting Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Setting up Geo requires careful attention to details, and sometimes it's easy to
 miss a step.
@@ -68,7 +72,7 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
-> The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+> - The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
 
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:
@@ -337,8 +341,8 @@ sudo gitlab-rake gitlab:geo:check
   ```
 
   - If you are running the secondary site on a single node for all services, then follow [Geo database replication - Configure the secondary server](../setup/database.md#step-2-configure-the-secondary-server).
-  - If you are running the secondary site's tracking database on its own node, then follow [Geo for multiple servers - Configure the Geo tracking database on the Geo secondary site](multiple_servers.md#step-3-configure-the-geo-tracking-database-on-the-geo-secondary-site)
-  - If you are running the secondary site's tracking database in a Patroni cluster, then follow [Geo database replication - Configure the tracking database on the secondary sites](../setup/database.md#step-3-configure-the-tracking-database-on-the-secondary-sites)
+  - If you are running the secondary site's tracking database on its own node, then follow [Geo for multiple servers - Configure the Geo tracking database on the Geo secondary site](multiple_servers.md#step-2-configure-the-geo-tracking-database-on-the-geo-secondary-site)
+  - If you are running the secondary site's tracking database in a Patroni cluster, then follow [Geo database replication - Configuring Patroni cluster for the tracking PostgreSQL database](../setup/database.md#configuring-patroni-cluster-for-the-tracking-postgresql-database)
   - If you are running the secondary site's tracking database in an external database, then follow [Geo with external PostgreSQL instances](../setup/external_database.md#configure-the-tracking-database)
   - If the Geo check task was run on a node which is not running a service which runs the GitLab Rails app (Puma, Sidekiq, or Geo Log Cursor), then this error can be ignored. The node does not need Rails to be configured.
 
@@ -771,7 +775,7 @@ The following configuration example:
 - [Uses the new configuration structure](../../../update/versions/gitlab_16_changes.md#gitaly-configuration-structure-change) required from GitLab 16.0.
 - Ignores five common check failures.
 
-[The Gitaly documentation has more details](../../gitaly/configure_gitaly.md#repository-consistency-checks)
+[The Gitaly documentation has more details](../../gitaly/consistency_checks.md)
 about other Git check failures and older versions of GitLab.
 
 ```ruby

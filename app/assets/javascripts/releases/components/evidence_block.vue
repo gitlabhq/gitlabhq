@@ -63,10 +63,10 @@ export default {
       <b>{{ __('Evidence collection') }}</b>
     </div>
     <div v-for="(evidence, index) in evidences" :key="evidenceTitle(index)" class="mb-2">
-      <div class="d-flex align-items-center">
+      <div class="d-flex gl-align-items-center">
         <gl-link
           v-gl-tooltip
-          class="d-flex align-items-center monospace"
+          class="d-flex gl-align-items-center monospace"
           target="_blank"
           :title="__('Open evidence JSON in new tab')"
           :href="evidenceUrl(index)"
@@ -87,7 +87,7 @@ export default {
         <clipboard-button :title="__('Copy evidence SHA')" :text="sha(index)" category="tertiary" />
       </div>
 
-      <div class="d-flex align-items-center text-muted">
+      <div class="d-flex gl-align-items-center text-muted">
         <gl-icon
           v-gl-tooltip
           name="clock"

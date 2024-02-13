@@ -112,9 +112,11 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       expect(model_class.pg_full_text_search('"description english"')).to contain_exactly(english)
     end
 
-    it 'ignores accents' do
-      expect(model_class.pg_full_text_search('jurgen')).to contain_exactly(with_accent)
-      expect(model_class.pg_full_text_search('Jürgen')).to contain_exactly(with_accent)
+    it 'ignores accents regardless of user locale' do
+      with_accent_in_german = Gitlab::I18n.with_locale(:de) { model_class.create!(project: project, namespace: project.project_namespace, title: 'Jürgen') }
+
+      expect(model_class.pg_full_text_search('jurgen')).to contain_exactly(with_accent, with_accent_in_german)
+      expect(model_class.pg_full_text_search('Jürgen')).to contain_exactly(with_accent, with_accent_in_german)
     end
 
     it 'does not support searching by non-Latin characters' do

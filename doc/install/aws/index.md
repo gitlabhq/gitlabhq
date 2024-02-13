@@ -7,7 +7,11 @@ description: Read through the GitLab installation methods.
 
 {::options parse_block_html="true" /}
 
-# Installing a GitLab POC on Amazon Web Services (AWS) **(FREE SELF)**
+# Installing a GitLab POC on Amazon Web Services (AWS)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page offers a walkthrough of a common configuration for GitLab on AWS using the official Linux package. You should customize it to accommodate your needs.
 
@@ -766,7 +770,7 @@ Some important things to know:
   must [configure this yourself](../../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - By default, the backup files are stored locally, but you can
   [backup GitLab using S3](../../administration/backup_restore/backup_gitlab.md#using-amazon-s3).
-- You can [exclude specific directories form the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup).
+- You can [exclude specific directories form the backup](../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup).
 
 ### Backing up GitLab
 

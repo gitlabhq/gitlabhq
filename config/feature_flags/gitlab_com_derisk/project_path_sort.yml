@@ -1,0 +1,9 @@
+---
+name: project_path_sort
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/409312
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142390
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17492
+milestone: '16.9'
+group: group::tenant scale
+type: gitlab_com_derisk
+default_enabled: false

@@ -4,7 +4,11 @@ group: Tenant Scale
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Move your personal project to a group **(FREE SAAS)**
+# Tutorial: Move your personal project to a group
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 If you created a project under a [personal namespace](../../user/namespace/index.md),
 you can perform common tasks, like managing issue and merge requests,

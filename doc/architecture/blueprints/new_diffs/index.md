@@ -20,6 +20,8 @@ to develop a single, performant way for diffs to be rendered across the applicat
 to improve all areas of diff rendering, from the backend creation of diffs to the frontend rendering
 the diffs.
 
+All the diffs features related to this document are [listed on a dedicated page](features.md).
+
 ## Motivation
 
 ### Goals
@@ -37,6 +39,10 @@ optional.
 - What is out of scope for this blueprint?
 -->
 
+This effort will not:
+
+- Identify improvements for the current implementation of diffs both in Merge Requests or in the Repository Commits
+
 ### Priority of Goals
 
 In an effort to provide guidance on which goals are more important than others to assist in making
@@ -53,6 +59,15 @@ Examples:
 
 In essence, we'll strive to meet every goal at each decision but prioritise the higher ones.
 
+## Process
+
+### Workspace & Artifacts
+
+- We will store implementation details like metrics, budgets, and development & architectural patterns here in the docs
+- We will store large bodies of research, the results of audits, etc. in the [wiki](https://gitlab.com/gitlab-com/create-stage/new-diffs/-/wikis/home) of the [New Diffs project](https://gitlab.com/gitlab-com/create-stage/new-diffs)
+- We will store audio & video recordings on the public YouTube channel in the [Code Review / New Diffs playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpZ3yR2eN0Sh9Bn073HU093)
+- We will store drafts, meeting notes, and other temporary documents in public Google docs
+
 ## Proposal
 
 <!--
@@ -65,6 +80,121 @@ real nitty-gritty.
 You might want to consider including the pros and cons of the proposed solution so that they can be
 compared with the pros and cons of alternatives.
 -->
+
+The new approach proposed here changes what [we have done in the past](#alternative-solutions) by doing the following:
+
+1. Stop using virtualized scrolling for rendering diffs.
+1. Move most of the rendering work to the server.
+1. Enhance server-rendered HTML on the client.
+1. Unify diffs codebase across all pages rendering diffs (merge request, repository commits, compare revisions and any other).
+
+## Definitions
+
+### Maintainability
+
+Maintainable projects are _simple_ projects.
+
+Simplicity is the opposite of complexity. This uses a definition of simple and complex [described by Rich Hickey in "Simple Made Easy"](https://www.infoq.com/presentations/Simple-Made-Easy/) (Strange Loop, 2011).
+
+- Maintainable code is simple (single task, single concept, separate from other things).
+- Maintainable projects expand on simple code by having simple structure (folders define classes of behaviors, e.g. you can be assured that a component directory will never initiate a network call, because that would be conflating visual display with data access)
+- Maintainable applications flow out of simple organization and simple code. The old saying is a cluttered desk is representative of a cluttered mind. Rigorous discipline on simplicity will be represented in our output (the product). By being strict about working simply, we will naturally produce applications where our users can more easily reason about their behavior.
+
+### Done
+
+GitLab has an existing [definition of done](/ee/development/contributing/merge_request_workflow.md#definition-of-done) which is geared primarily toward identifying when an MR is ready to be merged.
+
+In addition to the items in the GitLab definition of done, work on new diffs should also adhere to the following requirements:
+
+- Meets or exceeds all metrics
+  - Meets or exceeds our minimum accessibility metrics (these are explicitly not part of our defined priorities, because they are non-negotiable)
+- All work is fully documented for engineers (user documentation is a requirement of the standard definition of done)
+
+## Acceptance Criteria
+
+To measure our success, we need to set meaningful metrics. These metrics should meaningfully and positively impact the end user.
+
+1. Meets or exceeds [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/).
+1. Meets or exceeds [ATAG 2.0 AA](https://www.w3.org/TR/ATAG20/).
+1. The new Diffs app loads less than or equal to 300 KiB of JavaScript (compressed / "across-the-wire")<sup>1</sup>.
+1. The new Diffs app loads less than or equal to 150 KiB of markup, images, styles, fonts, etc. (compressed / "across-the-wire")<sup>1</sup>.
+1. The Time to First Diff (`mr-diffs-mark-first-diff-file-shown`) happens before 3 seconds mark.
+1. The new Diffs app can execute in total isolation from the rest of the GitLab product:
+    1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
+    1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
+    1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).
+    1. If a part of the application must be brought in from the rest of the product, it may not block functionality of the Diffs application.
+    1. If a part of the application must be brought in from the rest of the product, it must be loaded asynchronously.
+    1. If a part of the application meets 5.1-5.5 _(such as: the Markdown editor is loaded asynchronously when the user would like to leave a comment on a diff)_ and its inclusion causes a budget overflow:
+       - It must be added to a list of documented exceptions that we accept are out of bounds and out of our control.
+       - The exceptions list should be addressed on a regular basis to determine the ongoing value of overflowing our budget.
+
+---
+<sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
+
+### Frontend
+
+Ideally, we would meet our definition of done and our accountability metrics on our first try.
+We also need to continue to stay within those boundaries as we move forward. To ensure this,
+we need to design an application architecture that:
+
+1. Is:
+   1. Scalable.
+   1. Malleable.
+   1. Flexible.
+1. Considers itself a mission-critical part of the overall GitLab product.
+1. Treats itself as a complex, unique application with concerns that cannot be addressed
+   as side effects of other parts of the product.
+1. Can handle data access/format changes without making UI changes.
+1. Can handle UI changes without making data access/format changes.
+1. Provides a hookable, inspectable API and avoids code coupling.
+1. Separates:
+    - State and application data.
+    - Application behavior and UI.
+    - Data access and network access.
+
+## Design and implementation details
+
+### Overview
+
+New diffs introduce a change in responsibilities for both frontend and backend.
+
+The backend will:
+
+1. Prepare diffs data.
+1. Highlight diff lines.
+1. Render diffs as HTML and stream them to the browser.
+1. Embed diffs metadata into the final response.
+
+The frontend will:
+
+1. Enhance existing and future diffs HTML.
+1. Handle streamed diffs HTML.
+1. Enhance diffs HTML with dynamic controls to enable user interaction.
+
+#### Static and dynamic separation
+
+To achieve the separation of concerns, we should distinguish between static and dynamic UI on the page:
+
+- Everything that is static should always be rendered on the server.
+- Everything dynamic should be enhanced on the client.
+
+As an example: a highlighted diff line doesn't change with user input, so we should consider rendering it on the server.
+
+#### Performance optimizations
+
+To improve the perceived performance of the page we should implement the following techniques:
+
+1. Limit the number of diffs rendered on the page at first.
+1. Use [HTML streaming](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/101)
+   to render the rest of the diffs.
+    1. Use Web Components to hook into diff files appearing on the page.
+1. Apply `content-visibility` whenever possible to reduce redraw overhead.
+1. Render diff discussions asynchronously.
+
+#### Requests throughout the page lifecycle
+
+- ToDo in follow-up: add a graph showing the planned requests throughout the page lifecycle.
 
 ### Accessibility
 
@@ -81,87 +211,6 @@ Giving the nature of diffs, the following guidelines will be our main focus:
 1. [Guideline A.3.1: (For the authoring tool user interface) Provide keyboard access to authoring features](https://www.w3.org/TR/ATAG20/#gl_a31)
 1. [Guideline A.3.4: (For the authoring tool user interface) Enhance navigation and editing via content structure](https://www.w3.org/TR/ATAG20/#gl_a34)
 1. [Guideline A.3.6: (For the authoring tool user interface) Manage preference settings](https://www.w3.org/TR/ATAG20/#gl_a36)
-
-## Design and implementation details
-
-### Workspace & Artifacts
-
-- We will store implementation details like metrics, budgets, and development & architectural patterns here in the docs
-- We will store large bodies of research, the results of audits, etc. in the [wiki](https://gitlab.com/gitlab-com/create-stage/new-diffs/-/wikis/home) of the [New Diffs project](https://gitlab.com/gitlab-com/create-stage/new-diffs)
-- We will store audio & video recordings on the public YouTube channel in the Code Review / New Diffs playlist
-- We will store drafts, meeting notes, and other temporary documents in public Google docs
-
-### Definitions
-
-#### Maintainability
-
-Maintainable projects are _simple_ projects.
-
-Simplicity is the opposite of complexity. This uses a definition of simple and complex [described by Rich Hickey in "Simple Made Easy"](https://www.infoq.com/presentations/Simple-Made-Easy/) (Strange Loop, 2011).
-
-- Maintainable code is simple (single task, single concept, separate from other things).
-- Maintainable projects expand on simple code by having simple structure (folders define classes of behaviors, e.g. you can be assured that a component directory will never initiate a network call, because that would be conflating visual display with data access)
-- Maintainable applications flow out of simple organization and simple code. The old saying is a cluttered desk is representative of a cluttered mind. Rigorous discipline on simplicity will be represented in our output (the product). By being strict about working simply, we will naturally produce applications where our users can more easily reason about their behavior.
-
-#### Done
-
-GitLab has an existing [definition of done](/ee/development/contributing/merge_request_workflow.md#definition-of-done) which is geared primarily toward identifying when an MR is ready to be merged.
-
-In addition to the items in the GitLab definition of done, work on new diffs should also adhere to the following requirements:
-
-- Meets or exceeds all metrics
-  - Meets or exceeds our minimum accessibility metrics (these are explicitly not part of our defined priorities, because they are non-negotiable)
-- All work is fully documented for engineers (user documentation is a requirement of the standard definition of done)
-
-### Metrics
-
-To measure our success, we need to set meaningful metrics. These metrics should meaningfully and positively impact the end user.
-
-1. Meets or exceeds [WCAG 2.2 AA](https://www.w3.org/TR/WCAG22/).
-1. Meets or exceeds [ATAG 2.0 AA](https://www.w3.org/TR/ATAG20/).
-1. The new Diffs app loads less than or equal to 300 KiB of JavaScript (compressed / "across-the-wire")<sup>1</sup>.
-1. The new Diffs app loads less than or equal to 150 KiB of markup, images, styles, fonts, etc. (compressed / "across-the-wire")<sup>1</sup>.
-1. The new Diffs app can execute in total isolation from the rest of the GitLab product:
-    1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
-    1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
-    1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).
-    1. If a part of the application must be brought in from the rest of the product, it may not block functionality of the Diffs application.
-    1. If a part of the application must be brought in from the rest of the product, it must be loaded asynchronously.
-    1. If a part of the application meets 5.1-5.5 _(such as: the Markdown editor is loaded asynchronously when the user would like to leave a comment on a diff)_ and its inclusion causes a budget overflow:
-       - It must be added to a list of documented exceptions that we accept are out of bounds and out of our control.
-       - The exceptions list should be addressed on a regular basis to determine the ongoing value of overflowing our budget.
-
----
-<sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
-
-### Front end
-
-#### High-level implementation
-
-<!--
-This section should contain enough information that the specifics of your
-change are understandable. This may include API specs (though not always
-required) or even code snippets. If there's any ambiguity about HOW your
-proposal will be implemented, this is the place to discuss them.
-
-If you are not sure how many implementation details you should include in the
-blueprint, the rule of thumb here is to provide enough context for people to
-understand the proposal. As you move forward with the implementation, you may
-need to add more implementation details to the blueprint, as those may become
-an important context for important technical decisions made along the way. A
-blueprint is also a register of such technical decisions. If a technical
-decision requires additional context before it can be made, you probably should
-document this context in a blueprint. If it is a small technical decision that
-can be made in a merge request by an author and a maintainer, you probably do
-not need to document it here. The impact a technical decision will have is
-another helpful information - if a technical decision is very impactful,
-documenting it, along with associated implementation details, is advisable.
-
-If it's helpful to include workflow diagrams or any other related images.
-Diagrams authored in GitLab flavored markdown are preferred. In cases where
-that is not feasible, images should be placed under `images/` in the same
-directory as the `index.md` for the proposal.
--->
 
 #### HTML structure
 
@@ -219,6 +268,33 @@ Some of the visual indicators that require alternatives for assistive technology
 - `+` or red highlighting to be read as `added`
 - `-` or green highlighting to be read as `removed`
 
+### High-level implementation
+
+<!--
+This section should contain enough information that the specifics of your
+change are understandable. This may include API specs (though not always
+required) or even code snippets. If there's any ambiguity about HOW your
+proposal will be implemented, this is the place to discuss them.
+
+If you are not sure how many implementation details you should include in the
+blueprint, the rule of thumb here is to provide enough context for people to
+understand the proposal. As you move forward with the implementation, you may
+need to add more implementation details to the blueprint, as those may become
+an important context for important technical decisions made along the way. A
+blueprint is also a register of such technical decisions. If a technical
+decision requires additional context before it can be made, you probably should
+document this context in a blueprint. If it is a small technical decision that
+can be made in a merge request by an author and a maintainer, you probably do
+not need to document it here. The impact a technical decision will have is
+another helpful information - if a technical decision is very impactful,
+documenting it, along with associated implementation details, is advisable.
+
+If it's helpful to include workflow diagrams or any other related images.
+Diagrams authored in GitLab flavored markdown are preferred. In cases where
+that is not feasible, images should be placed under `images/` in the same
+directory as the `index.md` for the proposal.
+-->
+
 ## Alternative Solutions
 
 <!--
@@ -228,6 +304,41 @@ each alternative solution/path.
 "Do nothing" and its pros and cons could be included in the list too.
 -->
 
+### Historical context
+
+New diffs introduce a paradigm shift in our approach to rendering diffs. Before this proposed architecture, we had two different approaches to rendering diffs:
+
+1. Merge requests heavily utilized client-side rendering.
+1. All other pages mainly used server-side rendering with additional behavior implemented in JavaScript.
+
+In merge requests, most of the rendering work was done on the client:
+
+- The backend would only generate a JSON response with diffs data.
+- The client would be responsible for both drawing the diffs and reacting to user input.
+
+This led to us adopting a
+[virtualized scrolling solution](https://github.com/Akryum/vue-virtual-scroller/tree/v1/packages/vue-virtual-scroller)
+for client-side rendering, which sped up drawing large diff file lists significantly.
+
+Unfortunately, this came with downsides of a very high maintenance cost and
+[constant bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/427155#note_1607184794).
+The user experience also suffered because we couldn't show diffs right away
+when you visited a page, and had to wait for the JSON response first.
+Lastly, this approach went completely parallel to the server-rendered diffs used on other pages,
+which resulted in two completely separate codebases for the diffs.
+
+### Summary of the alternative solutions attempted
+
+Here is a list of the strategies we have adopted or simply tested in the past:
+
+- Full Server Side Rendering (adopted and replaced by Vue app): before the Vue refactor of the Merge Request Changes tab, diffs were fully rendered on the server. This resulted in long waits before the page started to render.
+- Frontend templates (Vue) Server Side Rendered ([tested](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33052#note_350101205)): results and impact weren't compelling and pointed in the direction of partial SSR. ([PoC MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/33052))
+- Batch diffing (adopted): Break up the diffs into async paginated requests, increasing in size (slow start). Bootstrapping time unsatisfactory, perceived performance still involved a long time of a page without content.
+- Virtual Scrolling (adopted): several known side-effects like inability to fully use native search functionality, interferences and weird behavior while scrolling to elements, overall strain on the browser to keep reflowing and painting. ([Comparison with the proposed approach in this blueprint](https://gitlab.com/gitlab-org/gitlab/-/issues/433015#note_1671675884))
+- Repository Commits details paginated if too large (adopted): As an interim solution, really large commit diffs in the repository are now paginated with negative impact in UX, hiding away files and changes through multiple pages.
+- Micro Code Review Frontend PoC (tested): This approach was significantly different from the application design used in the past, so it was never seriously explored as a way forward. Parts of this design - like custom elements and a reliance on events - have been incorporated into alternative approaches. ([Micro Code Review Frontend PoC](https://gitlab.com/gitlab-org/gitlab/-/issues/389282))
+- Streaming Diffs using a node server (tested): Combines streaming with a dedicated nodejs server. Percursor to the proposed SSR approach in this blueprint. ([PoC: Streaming diffs app](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84563))
+
 ## Proposed changes
 
 These changes (indicated by an arbitrary name like "Design A") suggest a proposed final path forward for this blueprint, but have not yet been accepted as the authoritative content.
@@ -235,28 +346,6 @@ These changes (indicated by an arbitrary name like "Design A") suggest a propose
 - Mark the highest hierarchical heading with your design name. If you are changing multiple headings at the same level, make sure to mark them all with the same name. This will create a high-level table of contents that is easier to reason about.
 
 ### Front end (Design A)
-
-NOTE:
-This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
-
-Ideally, we would meet our definition of done and our accountability metrics on our first try.
-We also need to continue to stay within those boundaries as we move forward. To ensure this,
-we need to design an application architecture that:
-
-1. Is:
-   1. Scalable.
-   1. Malleable.
-   1. Flexible.
-1. Considers itself a mission-critical part of the overall GitLab product.
-1. Treats itself as a complex, unique application with concerns that cannot be addressed
-   as side effects of other parts of the product.
-1. Can handle data access/format changes without making UI changes.
-1. Can handle UI changes without making data access/format changes.
-1. Provides a hookable, inspectable API and avoids code coupling.
-1. Separates:
-    - State and application data.
-    - Application behavior and UI.
-    - Data access and network access.
 
 #### High-level implementation
 
@@ -342,90 +431,3 @@ end
 
     Network --> Socket --> API --> unk
 ```
-
-## Proposal (Design B)
-
-NOTE:
-This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
-
-New diffs introduce a paradigm shift in our approach to rendering diffs.
-Previously, we had two different approaches to rendering diffs:
-
-1. Merge requests heavily utilized client-side rendering.
-1. All other pages used server-side rendering with sprinkles of JavaScript.
-
-In merge requests, most of the rendering work was done on the client:
-
-- The backend would only generate a JSON response with diffs data.
-- The client would be responsible for both drawing the diffs and reacting to user input.
-
-This led to us adopting a
-[virtualized scrolling solution](https://github.com/Akryum/vue-virtual-scroller/tree/v1/packages/vue-virtual-scroller)
-for client-side rendering, which sped up drawing large diff file lists significantly.
-
-Unfortunately, this came with downsides of a very high maintenance cost and
-[constant bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/427155#note_1607184794).
-The user experience also suffered because we couldn't show diffs right away
-when you visited a page, and had to wait for the JSON response first.
-Lastly, this approach went completely parallel to the server-rendered diffs used on other pages,
-which resulted in two completely separate codebases for the diffs.
-
-The new-diffs approach changes that by doing the following:
-
-1. Stop using virtualized scrolling for rendering diffs.
-1. Move most of the rendering work to the server.
-1. Enhance server-rendered HTML on the client.
-1. Unify diffs codebase across merge requests and other pages.
-
-## Design & Implementation Details (Design B)
-
-NOTE:
-This draft proposal suggests one potential front end architecture which may not be chosen. It is not necessarily mutually exclusive with other proposed designs.
-
-### Metrics
-
-1. _(no change)_
-1. _(no change)_
-1. _(no change)_
-1. _(no change)_
-1. _(no change)_
-1. When rendering diffs on the server:
-    - The total server-rendered count should not exceed 5 files.
-    - It should not try to render empty diffs. (It should render at least 1 file.)
-    - The total lines of diff code rendered should not exceed 1000 lines.
-
-### Overview
-
-New diffs introduce a change in responsibilities for both frontend and backend.
-
-The backend will:
-
-1. Prepare diffs data.
-1. Highlight diff lines.
-1. Render diffs as HTML.
-1. Embed diffs metadata into the final response.
-
-The frontend will:
-
-1. Enhance existing and future diffs HTML.
-1. Fetch and render additional diffs HTML that didn't fit into the page document.
-
-#### Static and dynamic separation
-
-To achieve the separation of concerns, we should distinguish between static and dynamic UI on the page:
-
-- Everything that is static should always be rendered on the server.
-- Everything dynamic should be enhanced on the client.
-
-As an example: a highlighted diff line doesn't change with user input, so we should consider rendering it on the server.
-
-#### Performance optimizations
-
-To improve the perceived performance of the page we should implement the following techniques:
-
-1. Limit the number of diffs rendered on the page at first.
-1. Use [HTML streaming](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/101)
-   to render the rest of the diffs.
-    1. Use Web Components to hook into diff files appearing on the page.
-1. Apply `content-visibility` whenever possible to reduce redraw overhead.
-1. Render diff discussions asynchronously.

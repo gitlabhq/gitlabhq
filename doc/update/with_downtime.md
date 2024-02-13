@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multi-node upgrades with downtime **(FREE SELF)**
+# Multi-node upgrades with downtime
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 While you can upgrade a multi-node GitLab deployment [with zero downtime](zero_downtime.md),
 there are a number of constraints. In particular, you can upgrade to only one minor release
@@ -35,12 +39,37 @@ At a high level, the process is:
 
 ## Stop writes to the database
 
+Before upgrade, you need to stop writes to the database. The process is different
+depending on your [reference architecture](../administration/reference_architectures/index.md).
+
+::Tabs
+
+:::TabTitle Linux package
+
 Shut down Puma and Sidekiq on all servers running these processes:
 
 ```shell
 sudo gitlab-ctl stop sidekiq
 sudo gitlab-ctl stop puma
 ```
+
+:::TabTitle Cloud Native Hybrid
+
+For [Cloud Native Hybrid](../administration/reference_architectures/index.md#cloud-native-hybrid) environments:
+
+1. Note the current number of replicas for database clients for subsequent restart:
+
+```shell
+kubectl get deploy -n <namespace> -l release=<helm release name> -l 'app in (prometheus,webservice,sidekiq)' -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.replicas}{"\n"}{end}'
+```
+
+1. Stop the clients of the database:
+
+```shell
+kubectl scale deploy -n <namespace> -l release=<helm release name> -l 'app in (prometheus,webservice,sidekiq)' --replicas=0
+```
+
+::EndTabs
 
 ## Upgrade the Consul nodes
 
@@ -164,12 +193,20 @@ PgBouncer are upgraded as part of the application server upgrade.
 
 Upgrade a standalone Redis server by [upgrading the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-## Upgrade Redis HA (using Sentinel) **(PREMIUM SELF)**
+## Upgrade Redis HA (using Sentinel)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Follow [the zero downtime instructions](zero_downtime.md#redis-ha-using-sentinel)
 for upgrading your Redis HA cluster.
 
-## Upgrade the Rails nodes (Puma / Sidekiq)
+## Upgrade the Rails components
+
+::Tabs
+
+:::TabTitle Linux package
 
 All the Puma and Sidekiq processes were previously shut down. On each node:
 
@@ -247,6 +284,22 @@ They can be upgraded in parallel:
    ```shell
    sudo gitlab-ctl restart
    ```
+
+:::TabTitle Cloud Native Hybrid
+
+Now that all stateful components are upgraded, you need to follow
+[GitLab chart upgrade steps](https://docs.gitlab.com/charts/installation/upgrade.html)
+to upgrade the stateless components (Webservice, Sidekiq, other supporting services).
+
+After you perform the GitLab chart upgrade, resume the database clients:
+
+```shell
+kubectl scale deploy -lapp=sidekiq,release=<helm release name> -n <namespace> --replicas=<value>
+kubectl scale deploy -lapp=webservice,release=<helm release name> -n <namespace> --replicas=<value>
+kubectl scale deploy -lapp=prometheus,release=<helm release name> -n <namespace> --replicas=<value>
+```
+
+::EndTabs
 
 ## Upgrade the Monitor node
 

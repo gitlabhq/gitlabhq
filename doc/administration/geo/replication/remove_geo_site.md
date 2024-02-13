@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Removing secondary Geo sites **(PREMIUM SELF)**
+# Removing secondary Geo sites
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 **Secondary** sites can be removed from the Geo cluster using the Geo administration page of the **primary** site. To remove a **secondary** site:
 

@@ -138,3 +138,64 @@ export const createModelResponses = {
     },
   },
 };
+
+export const modelWithVersions = {
+  id: 'gid://gitlab/Ml::Model/1',
+  name: 'model_1',
+  versionCount: 2,
+  createdAt: '2023-12-06T12:41:48Z',
+  latestVersion: {
+    id: 'gid://gitlab/Ml::ModelVersion/1',
+    version: '1.0.0',
+    _links: {
+      showPath: '/my_project/-/ml/models/1/versions/1',
+    },
+  },
+  _links: {
+    showPath: '/my_project/-/ml/models/1',
+  },
+};
+
+export const modelWithOneVersion = {
+  id: 'gid://gitlab/Ml::Model/2',
+  name: 'model_2',
+  versionCount: 1,
+  createdAt: '2023-12-06T12:41:48Z',
+  latestVersion: {
+    id: 'gid://gitlab/Ml::ModelVersion/1',
+    version: '1.0.0',
+    _links: {
+      showPath: '/my_project/-/ml/models/2/versions/1',
+    },
+  },
+  _links: {
+    showPath: '/my_project/-/ml/models/2',
+  },
+};
+
+export const modelWithoutVersion = {
+  id: 'gid://gitlab/Ml::Model/3',
+  name: 'model_3',
+  versionCount: 0,
+  latestVersion: null,
+  createdAt: '2023-12-06T12:41:48Z',
+  _links: {
+    showPath: '/my_project/-/ml/models/3',
+  },
+};
+
+export const modelsQuery = (
+  models = [modelWithOneVersion, modelWithoutVersion],
+  pageInfo = graphqlPageInfo,
+) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      mlModels: {
+        count: models.length,
+        nodes: models,
+        pageInfo,
+      },
+    },
+  },
+});

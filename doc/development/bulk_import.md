@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Group migration by direct transfer
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2771) in GitLab 13.7.
 
 NOTE:
 To use direct transfer, ensure your GitLab installation is accessible from

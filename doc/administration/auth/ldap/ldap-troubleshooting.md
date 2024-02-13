@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting LDAP **(FREE SELF)**
+# Troubleshooting LDAP
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you are an administrator, use the following information to troubleshoot LDAP.
 
@@ -53,7 +57,11 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
   admin_group: 'my_admin_group'
 ```
 
-#### Query LDAP **(PREMIUM SELF)**
+#### Query LDAP
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following allows you to perform a search in LDAP using the rails console.
 Depending on what you're trying to do, it may make more sense to query [a user](#query-a-user-in-ldap)
@@ -248,7 +256,11 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
   port.
 - We are assuming the password for the `bind_dn` user is in `bind_dn_password.txt`.
 
-#### Sync all users **(PREMIUM SELF)**
+#### Sync all users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The output from a manual [user sync](ldap_synchronization.md#user-sync) can show you what happens when
 GitLab tries to sync its users against LDAP. Enter the [rails console](#rails-console)
@@ -262,7 +274,11 @@ LdapSyncWorker.new.perform
 
 Next, [learn how to read the output](#example-console-output-after-a-user-sync).
 
-##### Example console output after a user sync **(PREMIUM SELF)**
+##### Example console output after a user sync
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The output from a [manual user sync](#sync-all-users) is very verbose, and a
 single user's successful sync can look like this:
@@ -353,7 +369,11 @@ adapter = Gitlab::Auth::Ldap::Adapter.new('ldapmain') # If `main` is the LDAP pr
 Gitlab::Auth::Ldap::Person.find_by_uid('<uid>', adapter)
 ```
 
-### Group memberships **(PREMIUM SELF)**
+### Group memberships
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 #### Memberships not granted
 
@@ -392,6 +412,12 @@ the rails console.
 1. Is the user's DN or UID in one of the lists from the above output? One of the DNs or
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
+
+#### Cannot add service account user to group when LDAP sync is enabled
+
+When LDAP sync is enabled for a group, you cannot use the "invite" dialog to invite new group members.
+
+To resolve this issue in GitLab 16.8 and later, you can invite service accounts to and remove them from a group using the [group members API endpoints](../../../api/members.md#add-a-member-to-a-group-or-project).
 
 #### Administrator privileges not granted
 
@@ -475,7 +501,8 @@ To sync all groups manually when debugging is unnecessary,
 [use the Rake task](../../raketasks/ldap.md#run-a-group-sync) instead.
 
 The output from a manual [group sync](ldap_synchronization.md#group-sync) can show you what happens
-when GitLab syncs its LDAP group memberships against LDAP.
+when GitLab syncs its LDAP group memberships against LDAP. Enter the [rails console](#rails-console)
+and then run:
 
 ```ruby
 Rails.logger.level = Logger::DEBUG
@@ -654,7 +681,7 @@ emails.each do |username, email|
 end
 ```
 
-You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
+You can then [run a UserSync](#sync-all-users) to sync the latest DN
 for each of these users.
 
 ## Could not authenticate from AzureActivedirectoryV2 because "Invalid grant"

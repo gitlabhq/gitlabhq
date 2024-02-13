@@ -2222,4 +2222,32 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#has_widget?' do
+    let_it_be(:work_item_type) { create(:work_item_type) }
+    let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
+
+    # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.
+    # Using const_get in the implementation will make sure the widget exists in CE (no licenses)
+    let(:widget_type) { :assignees }
+
+    subject { issue.has_widget?(widget_type) }
+
+    context 'when the work item does not have the widget' do
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the work item has the widget' do
+      before do
+        create(
+          :widget_definition,
+          widget_type: widget_type,
+          work_item_type: work_item_type,
+          namespace: work_item_type.namespace
+        )
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

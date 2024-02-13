@@ -1,8 +1,10 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
+import ExperimentBadge from '~/vue_shared/components/badges/experiment_badge.vue';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import CiResourceDetails from '~/ci/catalog/components/details/ci_resource_details.vue';
 import CiResourceReadme from '~/ci/catalog/components/details/ci_resource_readme.vue';
+import waitForPromises from 'helpers/wait_for_promises';
 
 describe('CiResourceDetails', () => {
   let wrapper;
@@ -14,8 +16,8 @@ describe('CiResourceDetails', () => {
     glFeatures: { ciCatalogComponentsTab: true },
   };
 
-  const createComponent = ({ provide = {}, props = {} } = {}) => {
-    wrapper = shallowMount(CiResourceDetails, {
+  const createComponent = ({ provide = {}, mountFn = shallowMount, props = {} } = {}) => {
+    wrapper = mountFn(CiResourceDetails, {
       propsData: {
         ...defaultProps,
         ...props,
@@ -32,6 +34,7 @@ describe('CiResourceDetails', () => {
   const findAllTabs = () => wrapper.findAllComponents(GlTab);
   const findCiResourceReadme = () => wrapper.findComponent(CiResourceReadme);
   const findCiResourceComponents = () => wrapper.findComponent(CiResourceComponents);
+  const findExperimentBadge = () => wrapper.findComponent(ExperimentBadge);
 
   describe('tabs', () => {
     describe('when feature flag `ci_catalog_components_tab` is enabled', () => {
@@ -43,6 +46,13 @@ describe('CiResourceDetails', () => {
         expect(findAllTabs()).toHaveLength(2);
         expect(findCiResourceComponents().exists()).toBe(true);
         expect(findCiResourceReadme().exists()).toBe(true);
+      });
+
+      it('renders an Experiment Badge', async () => {
+        createComponent({ mountFn: mount });
+        await waitForPromises();
+
+        expect(findExperimentBadge().exists()).toBe(true);
       });
     });
 
@@ -57,6 +67,10 @@ describe('CiResourceDetails', () => {
         expect(findCiResourceReadme().exists()).toBe(true);
         expect(findCiResourceComponents().exists()).toBe(false);
         expect(findAllTabs()).toHaveLength(1);
+      });
+
+      it('does not render an Experiment Badge', () => {
+        expect(findExperimentBadge().exists()).toBe(false);
       });
     });
 

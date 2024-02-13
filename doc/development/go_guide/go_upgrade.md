@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 All Go binaries, with the exception of
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) and [Security Projects](https://gitlab.com/gitlab-org/security-products), are built in
-projects managed by the [Distribution team](https://about.gitlab.com/handbook/product/categories/#distribution-group).
+projects managed by the [Distribution team](https://handbook.gitlab.com/handbook/product/categories/#distribution-group).
 
 The [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab) project creates a
 single, monolithic operating system package containing all the binaries, while
@@ -71,15 +71,15 @@ The upgrade process involves several key steps:
 
 #### Tracking work
 
-Use [the product categories page](https://about.gitlab.com/handbook/product/categories/)
+Use [the product categories page](https://handbook.gitlab.com/handbook/product/categories/)
 if you need help finding the correct person or labels:
 
 1. Create the epic in `gitlab-org` group:
    - Title the epic `Update Go version to <VERSION_NUMBER>`.
    - Ping the engineering managers responsible for [the projects listed below](#known-dependencies-using-go).
      - Most engineering managers can be identified on
-       [the product page](https://about.gitlab.com/handbook/product/categories/) or the
-       [feature page](https://about.gitlab.com/handbook/product/categories/features/).
+       [the product page](https://handbook.gitlab.com/handbook/product/categories/) or the
+       [feature page](https://handbook.gitlab.com/handbook/product/categories/features/).
      - If you still can't find the engineering manager, use
        [Git blame](/ee/user/project/repository/git_blame.md) to identify a maintainer
        involved in the project.
@@ -151,7 +151,7 @@ if you need help finding the correct person or labels:
 | [Alertmanager](https://github.com/prometheus/alertmanager) | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) |
 | Docker Distribution Pruner    | [Issue Tracker](https://gitlab.com/gitlab-org/docker-distribution-pruner) |
 | Gitaly                        | [Issue Tracker](https://gitlab.com/gitlab-org/gitaly/-/issues) |
-| GitLab CLI (`glab`).          | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues)
+| GitLab CLI (`glab`).          | [Issue Tracker](https://gitlab.com/gitlab-org/cli/-/issues) |
 | GitLab Compose Kit            | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues) |
 | GitLab container registry     | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry) |
 | GitLab Elasticsearch Indexer  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues) |

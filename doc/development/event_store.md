@@ -148,10 +148,12 @@ class Ci::PipelineCreatedEvent < Gitlab::EventStore::Event
 end
 ```
 
-The schema is validated immediately when we initialize the event object so we can ensure that
-publishers follow the contract with the subscribers.
+The schema, which must be a valid [JSON schema](https://json-schema.org/specification), is validated
+by the [`JSONSchemer`](https://github.com/davishmcclurg/json_schemer) gem. The validation happens
+immediately when you initialize the event object to ensure that publishers follow the contract
+with the subscribers.
 
-We recommend using optional properties as much as possible, which require fewer rollouts for schema changes.
+You should use optional properties as much as possible, which require fewer rollouts for schema changes.
 However, `required` properties could be used for unique identifiers of the event's subject. For example:
 
 - `pipeline_id` can be a required property for a `Ci::PipelineCreatedEvent`.
@@ -372,6 +374,21 @@ it 'publishes a ProjectCreatedEvent with project id and namespace id' do
   expect { create_project(user, name: 'Project', path: 'project', namespace_id: group_id) }
     .to publish_event(Projects::ProjectCreatedEvent)
     .with(expected_data)
+end
+```
+
+When you publish multiple events, you can also check for non-published events.
+
+```ruby
+it 'publishes a ProjectCreatedEvent with project id and namespace id' do
+  # The project ID is generated when `create_project`
+  # is called in the `expect` block.
+  expected_data = { project_id: kind_of(Numeric), namespace_id: group_id }
+
+  expect { create_project(user, name: 'Project', path: 'project', namespace_id: group_id) }
+    .to publish_event(Projects::ProjectCreatedEvent)
+    .with(expected_data)
+    .and not_publish_event(Projects::ProjectDeletedEvent)
 end
 ```
 

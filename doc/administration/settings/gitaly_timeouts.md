@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Gitaly timeouts **(FREE SELF)**
+# Gitaly timeouts
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 [Gitaly](../gitaly/index.md) provides two types of configurable timeouts:
 
@@ -33,7 +37,7 @@ Different call timeouts are available for different Gitaly operations.
 
 ## Configure the negotiation timeouts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5574) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5574) in GitLab 16.5.
 
 You might need to increase the negotiation timeout:
 

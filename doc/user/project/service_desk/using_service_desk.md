@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Service Desk **(FREE ALL)**
+# Use Service Desk
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use Service Desk to [create an issue](#as-an-end-user-issue-creator) or [respond to one](#as-a-responder-to-the-issue).
 In these issues, you can also see our friendly neighborhood [Support Bot](configure.md#support-bot-user).
@@ -20,7 +24,7 @@ The email address is available at the top of the issue list.
 
 ## As an end user (issue creator)
 
-> Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6. In earlier versions, the Service Desk email address had to be in the "To" field.
+> - Support for additional email headers [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346600) in GitLab 14.6. In earlier versions, the Service Desk email address had to be in the "To" field.
 
 To create a Service Desk issue, an end user does not need to know anything about
 the GitLab instance. They just send an email to the address they are given, and
@@ -145,9 +149,26 @@ attachments are sent as part of the email. In other cases, the email contains li
 
 In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
+## Convert a regular issue to a Service Desk ticket
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`.
+On GitLab.com, this feature is not available.
+
+Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
+into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
+and add them to the list of external participants. They receive Service Desk emails for any public
+comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
+
+GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-the-requester).
+You can add a public comment on the ticket to let the end user know that the ticket has been created.
+
 ## Privacy considerations
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108901) the minimum required role to view the creator's and participant's email in GitLab 15.9.
 
 Service Desk issues are [confidential](../issues/confidential_issues.md), so they are
 only visible to project members. The project owner can
@@ -168,7 +189,7 @@ displayed in the information note.
 
 ### Moving a Service Desk issue
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
 
 You can move a Service Desk issue the same way you
 [move a regular issue](../issues/managing_issues.md#move-an-issue) in GitLab.

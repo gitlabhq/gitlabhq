@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limits on Git SSH operations **(FREE SELF)**
+# Rate limits on Git SSH operations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
 
 GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
 further connection requests from that user for the project.
@@ -21,7 +25,7 @@ Because the same commands are shared by `git-upload-pack`, `git pull`, and `git 
 
 ## Configure GitLab Shell operation limit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123761) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123761) in GitLab 16.2.
 
 `Git operations using SSH` is enabled by default. Defaults to 600 per user per minute.
 

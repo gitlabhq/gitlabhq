@@ -41,20 +41,6 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, fe
       importer.sequential_import
     end
 
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(github_importer_attachments: false)
-      end
-
-      it 'executes importer for both releases' do
-        expect_next_instances_of(Gitlab::GithubImport::Importer::NoteAttachmentsImporter, 2) do |importer|
-          expect(importer).to receive(:execute)
-        end
-
-        importer.sequential_import
-      end
-    end
-
     context 'when release has already been processed' do
       before do
         importer.mark_as_imported(release_with_attachment)

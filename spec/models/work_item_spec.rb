@@ -6,6 +6,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:reusable_project) { create(:project) }
+  let_it_be(:reusable_group) { create(:group) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:namespace) }
@@ -86,21 +87,6 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
-  describe '.with_confidentiality_check' do
-    let(:user) { create(:user) }
-    let!(:authored_work_item) { create(:work_item, :confidential, project: reusable_project, author: user) }
-    let!(:assigned_work_item) { create(:work_item, :confidential, project: reusable_project, assignees: [user]) }
-    let!(:public_work_item) { create(:work_item, project: reusable_project) }
-
-    before do
-      create(:work_item, :confidential, project: reusable_project)
-    end
-
-    subject { described_class.with_confidentiality_check(user) }
-
-    it { is_expected.to contain_exactly(public_work_item, authored_work_item, assigned_work_item) }
-  end
-
   describe '#noteable_target_type_name' do
     it 'returns `issue` as the target name' do
       work_item = build(:work_item)
@@ -152,6 +138,17 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         supports_assignee = widgets.include?(:assignees)
 
         expect(work_item.supports_assignee?).to eq(supports_assignee)
+      end
+    end
+  end
+
+  describe '#supports_time_tracking?' do
+    Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE.each_pair do |base_type, widgets|
+      specify do
+        work_item = build(:work_item, base_type)
+        supports_time_tracking = widgets.include?(:time_tracking)
+
+        expect(work_item.supports_time_tracking?).to eq(supports_time_tracking)
       end
     end
   end
@@ -738,6 +735,24 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       expect(item2.linked_items_count).to eq(1)
       expect(item3.linked_items_count).to eq(1)
       expect(item4.linked_items_count).to eq(0)
+    end
+  end
+
+  context 'work item participants' do
+    context 'project level work item' do
+      let_it_be(:work_item) { create(:work_item, project: reusable_project) }
+
+      it 'has participants' do
+        expect(work_item.participants).to match_array([work_item.author])
+      end
+    end
+
+    context 'group level work item' do
+      let_it_be(:work_item) { create(:work_item, namespace: reusable_group) }
+
+      it 'has participants' do
+        expect(work_item.participants).to match_array([work_item.author])
+      end
     end
   end
 end

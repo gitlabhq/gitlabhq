@@ -184,7 +184,7 @@ module GroupsHelper
     }
   end
 
-  def enabled_git_access_protocol_options_for_group(_)
+  def enabled_git_access_protocol_options_for_group
     case ::Gitlab::CurrentSettings.enabled_git_access_protocol
     when nil, ""
       [[_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]]
@@ -196,7 +196,6 @@ module GroupsHelper
   end
 
   def new_custom_emoji_path(group)
-    return unless Feature.enabled?(:custom_emoji)
     return unless group
     return unless can?(current_user, :create_custom_emoji, group)
 

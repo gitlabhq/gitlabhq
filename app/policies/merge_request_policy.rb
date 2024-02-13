@@ -14,6 +14,7 @@ class MergeRequestPolicy < IssuablePolicy
   rule { ~can?(:read_merge_request) }.policy do
     prevent :create_note
     prevent :accept_merge_request
+    prevent :mark_note_as_internal
   end
 
   rule { can_approve }.policy do
@@ -41,6 +42,10 @@ class MergeRequestPolicy < IssuablePolicy
 
   rule { can?(:admin_merge_request) }.policy do
     enable :set_merge_request_metadata
+  end
+
+  rule { can?(:reporter_access) }.policy do
+    enable :mark_note_as_internal
   end
 
   private

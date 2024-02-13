@@ -20,6 +20,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
   context 'for signed in user' do
     before do
+      stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
       project.add_developer(user)
       sign_in(user)
       visit work_items_path
@@ -41,23 +42,62 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_button _('More actions')
     end
 
-    it 'reassigns to another user',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-      find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
-      wait_for_requests
+    context 'when work_items_mvc_2 is disabled' do
+      before do
+        stub_feature_flags(work_items_mvc_2: false)
 
-      send_keys(:enter)
-      find("body").click
-      wait_for_requests
+        page.refresh
+        wait_for_all_requests
+      end
 
-      find('[data-testid="work-item-assignees-input"]').fill_in(with: user2.username)
-      wait_for_requests
+      it 'reassigns to another user',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
+        find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
+        wait_for_requests
 
-      send_keys(:enter)
-      find("body").click
-      wait_for_requests
+        send_keys(:enter)
+        find("body").click
+        wait_for_requests
 
-      expect(work_item.reload.assignees).to include(user2)
+        find('[data-testid="work-item-assignees-input"]').fill_in(with: user2.username)
+        wait_for_requests
+
+        send_keys(:enter)
+        find("body").click
+        wait_for_requests
+
+        expect(work_item.reload.assignees).to include(user2)
+      end
+    end
+
+    context 'when work_items_mvc_2 is enabled' do
+      before do
+        stub_feature_flags(work_items_mvc_2: true)
+
+        page.refresh
+        wait_for_all_requests
+      end
+
+      it 'reassigns to another user',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
+        within('[data-testid="work-item-assignees-with-edit"]') do
+          click_button 'Edit'
+        end
+
+        select_listbox_item(user.username)
+
+        wait_for_requests
+
+        within('[data-testid="work-item-assignees-with-edit"]') do
+          click_button 'Edit'
+        end
+
+        select_listbox_item(user2.username)
+
+        wait_for_requests
+
+        expect(work_item.reload.assignees).to include(user2)
+      end
     end
 
     it_behaves_like 'work items title'
@@ -118,9 +158,33 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
-    it 'assignees input field is disabled' do
-      within('[data-testid="work-item-assignees-input"]') do
-        expect(page).to have_field(type: 'text', disabled: true)
+    context 'when work_items_mvc_2 is disabled' do
+      before do
+        stub_feature_flags(work_items_mvc_2: false)
+
+        page.refresh
+        wait_for_all_requests
+      end
+
+      it 'assignees input field is disabled' do
+        within('[data-testid="work-item-assignees-input"]') do
+          expect(page).to have_field(type: 'text', disabled: true)
+        end
+      end
+    end
+
+    context 'when work_items_mvc_2 is enabled' do
+      before do
+        stub_feature_flags(work_items_mvc_2: true)
+
+        page.refresh
+        wait_for_all_requests
+      end
+
+      it 'assignees edit button is not visible' do
+        within('[data-testid="work-item-assignees-with-edit"]') do
+          expect(page).not_to have_button('Edit')
+        end
       end
     end
 

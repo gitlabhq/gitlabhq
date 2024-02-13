@@ -7,6 +7,12 @@ fragment CatalogResourceFields on CiCatalogResource {
   starCount
   latestVersion {
     id
+    components {
+      nodes {
+        id
+        name
+      }
+    }
     name
     path
     releasedAt

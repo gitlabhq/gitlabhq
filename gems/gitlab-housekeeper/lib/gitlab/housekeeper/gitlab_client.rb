@@ -43,6 +43,9 @@ module Gitlab
           changes << :title if note['body'].start_with?("changed title from")
           changes << :description if note['body'] == "changed the description"
           changes << :code if note['body'].match?(/added \d+ commit/)
+
+          changes << :reviewers if note['body'].include?('requested review from')
+          changes << :reviewers if note['body'].include?('removed review request for')
         end
 
         resource_label_events = get_merge_request_resource_label_events(target_project_id: target_project_id, iid: iid)
@@ -61,17 +64,17 @@ module Gitlab
         changes.to_a
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def create_or_update_merge_request(
+        change:,
         source_project_id:,
-        title:,
-        description:,
-        labels:,
         source_branch:,
         target_branch:,
         target_project_id:,
         update_title:,
         update_description:,
-        update_labels:
+        update_labels:,
+        update_reviewers:
       )
         existing_iid = get_existing_merge_request(
           source_project_id: source_project_id,
@@ -82,105 +85,48 @@ module Gitlab
 
         if existing_iid
           update_existing_merge_request(
+            change: change,
             existing_iid: existing_iid,
-            title: title,
-            description: description,
-            labels: labels,
             target_project_id: target_project_id,
             update_title: update_title,
             update_description: update_description,
-            update_labels: update_labels
+            update_labels: update_labels,
+            update_reviewers: update_reviewers
           )
         else
           create_merge_request(
+            change: change,
             source_project_id: source_project_id,
-            title: title,
-            description: description,
-            labels: labels,
             source_branch: source_branch,
             target_branch: target_branch,
             target_project_id: target_project_id
           )
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       private
 
       def get_merge_request_notes(target_project_id:, iid:)
-        response = HTTParty.get(
-          "#{@base_uri}/projects/#{target_project_id}/merge_requests/#{iid}/notes",
-          query: {
-            per_page: 100
-          },
-          headers: {
-            "Private-Token" => @token
-          }
-        )
-
-        unless (200..299).cover?(response.code)
-          raise Error,
-            "Failed to get merge request notes with response code: #{response.code} and body:\n#{response.body}"
-        end
-
-        JSON.parse(response.body)
+        request(:get, "/projects/#{target_project_id}/merge_requests/#{iid}/notes", query: { per_page: 100 })
       end
 
       def get_merge_request_resource_label_events(target_project_id:, iid:)
-        response = HTTParty.get(
-          "#{@base_uri}/projects/#{target_project_id}/merge_requests/#{iid}/resource_label_events",
-          query: {
-            per_page: 100
-          },
-          headers: {
-            "Private-Token" => @token
-          }
-        )
-
-        unless (200..299).cover?(response.code)
-          raise Error,
-            "Failed to get merge request label events with response code: #{response.code} and body:\n#{response.body}"
-        end
-
-        JSON.parse(response.body)
+        request(:get, "/projects/#{target_project_id}/merge_requests/#{iid}/resource_label_events",
+          query: { per_page: 100 })
       end
 
       def current_user_id
-        @current_user_id = begin
-          response = HTTParty.get(
-            "#{@base_uri}/user",
-            headers: {
-              "Private-Token" => @token
-            }
-          )
-
-          unless (200..299).cover?(response.code)
-            raise Error,
-              "Failed with response code: #{response.code} and body:\n#{response.body}"
-          end
-
-          data = JSON.parse(response.body)
-          data['id']
-        end
+        @current_user_id ||= request(:get, "/user")['id']
       end
 
       def get_existing_merge_request(source_project_id:, source_branch:, target_branch:, target_project_id:)
-        response = HTTParty.get("#{@base_uri}/projects/#{target_project_id}/merge_requests",
-          query: {
-            state: :opened,
-            source_branch: source_branch,
-            target_branch: target_branch,
-            source_project_id: source_project_id
-          },
-          headers: {
-            'Private-Token' => @token
-          })
-
-        unless (200..299).cover?(response.code)
-          raise Error,
-            "Failed with response code: #{response.code} and body:\n#{response.body}"
-        end
-
-        data = JSON.parse(response.body)
+        data = request(:get, "/projects/#{target_project_id}/merge_requests", query: {
+          state: :opened,
+          source_branch: source_branch,
+          target_branch: target_branch,
+          source_project_id: source_project_id
+        })
 
         return nil if data.empty?
 
@@ -192,62 +138,64 @@ module Gitlab
       end
 
       def create_merge_request(
+        change:,
         source_project_id:,
-        title:,
-        description:,
-        labels:,
         source_branch:,
         target_branch:,
         target_project_id:
       )
-        response = HTTParty.post("#{@base_uri}/projects/#{source_project_id}/merge_requests", body: {
-          title: title,
-          description: description,
-          labels: Array(labels).join(','),
+        request(:post, "/projects/#{source_project_id}/merge_requests", body: {
+          title: change.title,
+          description: change.mr_description,
+          labels: Array(change.labels).join(','),
           source_branch: source_branch,
           target_branch: target_branch,
-          target_project_id: target_project_id
-        }.to_json,
-          headers: {
-            'Private-Token' => @token,
-            'Content-Type' => 'application/json'
-          })
-
-        return if (200..299).cover?(response.code)
-
-        raise Error,
-          "Failed with response code: #{response.code} and body:\n#{response.body}"
+          target_project_id: target_project_id,
+          remove_source_branch: true,
+          reviewer_ids: usernames_to_ids(change.reviewers)
+        })
       end
 
       def update_existing_merge_request(
+        change:,
         existing_iid:,
-        title:,
-        description:,
-        labels:,
         target_project_id:,
         update_title:,
         update_description:,
-        update_labels:
+        update_labels:,
+        update_reviewers:
       )
         body = {}
 
-        body[:title] = title if update_title
-        body[:description] = description if update_description
-        body[:add_labels] = Array(labels).join(',') if update_labels
+        body[:title] = change.title if update_title
+        body[:description] = change.mr_description if update_description
+        body[:add_labels] = Array(change.labels).join(',') if update_labels
+        body[:reviewer_ids] = usernames_to_ids(change.reviewers) if update_reviewers
 
         return if body.empty?
 
-        response = HTTParty.put("#{@base_uri}/projects/#{target_project_id}/merge_requests/#{existing_iid}",
-          body: body.to_json,
-          headers: {
-            'Private-Token' => @token,
-            'Content-Type' => 'application/json'
-          })
+        request(:put, "/projects/#{target_project_id}/merge_requests/#{existing_iid}", body: body)
+      end
 
-        return if (200..299).cover?(response.code)
+      def usernames_to_ids(usernames)
+        usernames.map do |username|
+          data = request(:get, "/users", query: { username: username })
+          data[0]['id']
+        end
+      end
 
-        raise Error,
-          "Failed with response code: #{response.code} and body:\n#{response.body}"
+      def request(method, path, query: {}, body: {})
+        response = HTTParty.public_send(method, "#{@base_uri}#{path}", query: query, body: body.to_json, headers: { # rubocop:disable GitlabSecurity/PublicSend
+          'Private-Token' => @token,
+          'Content-Type' => 'application/json'
+        })
+
+        unless (200..299).cover?(response.code)
+          raise Error,
+            "Failed with response code: #{response.code} and body:\n#{response.body}"
+        end
+
+        JSON.parse(response.body)
       end
     end
   end

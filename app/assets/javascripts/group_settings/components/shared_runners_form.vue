@@ -127,13 +127,13 @@ export default {
         :value="sharedRunnersToggleValue"
         :is-loading="isLoading"
         :disabled="isSharedRunnersToggleDisabled"
-        :label="__('Enable shared runners for this group')"
-        :description="__('Enable shared runners for all projects and subgroups in this group.')"
+        :label="__('Enable instance runners for this group')"
+        :description="__('Enable instance runners for all projects and subgroups in this group.')"
         data-testid="shared-runners-toggle"
         @change="onSharedRunnersToggle"
       >
         <template v-if="isSharedRunnersToggleDisabled" #help>
-          {{ s__('Runners|Shared runners are disabled.') }}
+          {{ s__('Runners|Instance runners are disabled.') }}
           <gl-sprintf
             v-if="isParentAvailable"
             :message="s__('Runners|Go to %{groupLink} to enable them.')"
@@ -159,7 +159,7 @@ export default {
         @change="onOverrideToggle"
       >
         <template v-if="isSharedRunnersToggleDisabled" #help>
-          {{ s__('Runners|Shared runners are disabled.') }}
+          {{ s__('Runners|Instance runners are disabled.') }}
           <gl-sprintf
             v-if="isParentAvailable"
             :message="s__('Runners|Go to %{groupLink} to enable them.')"

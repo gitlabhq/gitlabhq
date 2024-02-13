@@ -4,9 +4,13 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limits on pipeline creation **(FREE SELF)**
+# Rate limits on pipeline creation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362475) in GitLab 15.0.
 
 You can set a limit so that users and processes can't request more than a certain number of pipelines each minute. This limit can help save resources and improve stability.
 

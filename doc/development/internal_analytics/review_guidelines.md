@@ -7,7 +7,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Internal Analytics review guidelines
 
 This page includes introductory material for an
-[Analytics Instrumentation](https://about.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/)
+[Analytics Instrumentation](https://handbook.gitlab.com/handbook/engineering/development/analytics/analytics-instrumentation/)
 review. For broader advice and general best practices for code reviews, refer to our [code review guide](../code_review.md).
 
 ## Review process

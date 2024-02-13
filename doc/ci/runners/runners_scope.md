@@ -4,36 +4,39 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage runners **(FREE ALL)**
+# Manage runners
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab Runner has the following types of runners, which are available based on who you want to have access:
 
-- [Shared runners](#shared-runners) are available to all groups and projects in a GitLab instance.
+- [Instance runners](#instance-runners) are available to all groups and projects in a GitLab instance.
 - [Group runners](#group-runners) are available to all projects and subgroups in a group.
 - [Project runners](#project-runners) are associated with specific projects.
   Typically, project runners are used by one project at a time.
 
-## Shared runners
+## Instance runners
 
-*Shared runners* are available to every project in a GitLab instance.
+*Instance runners* are available to every project in a GitLab instance.
 
-Use shared runners when you have multiple jobs with similar requirements. Rather than
+Use instance runners when you have multiple jobs with similar requirements. Rather than
 having multiple runners idling for many projects, you can have a few runners that handle
 multiple projects.
 
-If you are using a self-managed instance of GitLab:
+If you are using a self-managed instance of GitLab, administrators can:
 
-- Your administrator can [install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register a shared runner.
-- The administrator can also configure a maximum number of shared runner
-  [compute minutes for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
+- [Install GitLab Runner](https://docs.gitlab.com/runner/install/index.html) and register an instance runner.
+- Configure a maximum number of instance runner [compute minutes for each group](../pipelines/cicd_minutes.md#set-the-compute-quota-for-a-specific-namespace).
 
 If you are using GitLab.com:
 
-- You can select from a list of [shared runners that GitLab maintains](index.md).
-- The shared runners consume the [compute minutes](../pipelines/cicd_minutes.md)
+- You can select from a list of [instance runners that GitLab maintains](index.md).
+- The instance runners consume the [compute minutes](../pipelines/cicd_minutes.md)
   included with your account.
 
-### Create a shared runner with a runner authentication token
+### Create an instance runner with a runner authentication token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383139) in GitLab 15.10. Deployed behind the `create_runner_workflow_for_admin` [flag](../../administration/feature_flags.md)
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/389269) in GitLab 16.0.
@@ -45,7 +48,7 @@ Prerequisites:
 
 When you create a runner, it is assigned a runner authentication token that you use to register it. The runner uses the token to authenticate with GitLab when picking up jobs from the job queue.
 
-To create a shared runner:
+To create an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
@@ -69,7 +72,7 @@ NOTE:
 The runner authentication token displays in the UI for a limited period of time during registration. After you register the runner,
 the authentication token is stored in the `config.toml`.
 
-### Create a shared runner with a registration token (deprecated)
+### Create an instance runner with a registration token (deprecated)
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
@@ -80,7 +83,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To create a shared runner:
+To create an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
@@ -88,7 +91,7 @@ To create a shared runner:
 1. Copy the registration token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-deprecated).
 
-### Pause or resume a shared runner
+### Pause or resume an instance runner
 
 Prerequisites:
 
@@ -103,92 +106,92 @@ You can pause a runner so that it does not accept jobs from groups and projects 
    - To pause the runner, select **Pause** (**{pause}**).
    - To resume the runner, select **Resume** (**{play}**).
 
-### Delete shared runners
+### Delete instance runners
 
 Prerequisites:
 
 - You must be an administrator.
 
-When you delete a shared runner, it is permanently deleted from the GitLab instance and can
+When you delete an instance runner, it is permanently deleted from the GitLab instance and can
 no longer be used by groups and projects. If you want to temporarily stop the runner from accepting
-jobs, you can [pause](#pause-or-resume-a-shared-runner) the runner instead.
+jobs, you can [pause](#pause-or-resume-an-instance-runner) the runner instead.
 
-To delete a single or multiple shared runners:
+To delete a single or multiple instance runners:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
-1. Delete the shared runner:
+1. Delete the instance runner:
    - To delete a single runner, next to the runner, select **Delete runner** (**{remove}**).
-   - To delete multiple shared runners, select the checkbox for each runner and select **Delete selected**.
+   - To delete multiple instance runners, select the checkbox for each runner and select **Delete selected**.
    - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
 1. Select **Permanently delete runner**.
 
-### Enable shared runners for a project
+### Enable instance runners for a project
 
-On GitLab.com, [shared runners](index.md) are enabled in all projects by
+On GitLab.com, [instance runners](index.md) are enabled in all projects by
 default.
 
 On self-managed instances of GitLab, an administrator can
-[enable them for all new projects](../../administration/settings/continuous_integration.md#enable-shared-runners-for-new-projects).
+[enable them for all new projects](../../administration/settings/continuous_integration.md#enable-instance-runners-for-new-projects).
 
 For existing projects, an administrator must
 [install](https://docs.gitlab.com/runner/install/index.html) and
 [register](https://docs.gitlab.com/runner/register/index.html) them.
 
-To enable shared runners for a project:
+To enable instance runners for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable shared runners for this project** toggle.
+1. Turn on the **Enable instance runners for this project** toggle.
 
-### Enable shared runners for a group
+### Enable instance runners for a group
 
-To enable shared runners for a group:
+To enable instance runners for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable shared runners for this group** toggle.
+1. Turn on the **Enable instance runners for this group** toggle.
 
-### Disable shared runners for a project
+### Disable instance runners for a project
 
-You can disable shared runners for individual projects or for groups.
+You can disable instance runners for individual projects or for groups.
 You must have the Owner role for the project
 or group.
 
-To disable shared runners for a project:
+To disable instance runners for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Shared runners** area, turn off the **Enable shared runners for this project** toggle.
+1. In the **Instance runners** area, turn off the **Enable instance runners for this project** toggle.
 
-Shared runners are automatically disabled for a project:
+instance runners are automatically disabled for a project:
 
-- If the shared runners setting for the parent group is disabled, and
+- If the instance runners setting for the parent group is disabled, and
 - If overriding this setting is not permitted at the project level.
 
-### Disable shared runners for a group
+### Disable instance runners for a group
 
-To disable shared runners for a group:
+To disable instance runners for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn off the **Enable shared runners for this group** toggle.
-1. Optional. To allow shared runners to be enabled for individual projects or subgroups,
+1. Turn off the **Enable instance runners for this group** toggle.
+1. Optional. To allow instance runners to be enabled for individual projects or subgroups,
    select **Allow projects and subgroups to override the group setting**.
 
-### How shared runners pick jobs
+### How instance runners pick jobs
 
-Shared runners process jobs by using a fair usage queue. This queue prevents
+Instance runners process jobs by using a fair usage queue. This queue prevents
 projects from creating hundreds of jobs and using all available
-shared runner resources.
+instance runner resources.
 
 The fair usage queue algorithm assigns jobs based on the projects that have the
-fewest number of jobs already running on shared runners.
+fewest number of jobs already running on instance runners.
 
 For example, if these jobs are in the queue:
 
@@ -265,7 +268,7 @@ The runner authentication token displays in the UI for only a short period of ti
 
 ### Create a group runner with a registration token (deprecated)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19819) in GitLab 14.10, path changed from **Settings > CI/CD > Runners**.
 
 WARNING:
 The ability to pass a runner registration token, and support for certain configuration arguments was
@@ -288,7 +291,7 @@ how to [register a runner](https://docs.gitlab.com/runner/register/#register-wit
 
 ### View group runners
 
-> Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
+> - Ability for users with the Maintainer role to view group runners [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384179) in GitLab 16.4.
 
 Prerequisites:
 
@@ -310,7 +313,7 @@ those that are inherited from the instance or other groups.
 
 By default, only those that are inherited are shown.
 
-To show all runners available in the instance, including shared runners and
+To show all runners available in the instance, including instance runners and
 those in other groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
@@ -335,7 +338,7 @@ instance. If you pause a group runner that is used by multiple projects, the run
 
 ### Delete a group runner
 
-> Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
+> - Multiple runner deletion [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361721/) in GitLab 15.6.
 
 Prerequisites:
 
@@ -352,13 +355,17 @@ To delete a single or multiple group runners:
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the group runner:
    - To delete a single runner, next to the runner, select **Delete runner** (**{remove}**).
-   - To delete multiple shared runners, select the checkbox for each runner and select **Delete selected**.
+   - To delete multiple instance runners, select the checkbox for each runner and select **Delete selected**.
    - To delete all runners, select the checkbox at the top of the runner list and select **Delete selected**.
 1. Select **Permanently delete runner**.
 
-### Clean up stale group runners **(ULTIMATE ALL)**
+### Clean up stale group runners
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363012) in GitLab 15.1.
 
 Prerequisites:
 
@@ -416,7 +423,7 @@ must be enabled for each project explicitly.
 Project runners process jobs by using a first in, first out ([FIFO](https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics))) queue.
 
 NOTE:
-Project runners do not get shared with forked projects automatically.
+Project runners do not get instance with forked projects automatically.
 A fork *does* copy the CI/CD settings of the cloned repository.
 
 ### Create a project runner with a runner authentication token
@@ -554,7 +561,7 @@ To lock or unlock a project runner:
    find the project where you want to enable the runner.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock shared or group runners.
+1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock instance or group runners.
 1. Select **Edit** (**{pencil}**).
 1. Select the **Lock to current projects** checkbox.
 1. Select **Save changes**.
@@ -570,9 +577,13 @@ A runner can have one of the following statuses.
 | `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
 | `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
-## View statistics for runner performance **(ULTIMATE ALL)**
+## View statistics for runner performance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377963) in GitLab 15.8.
 
 As an administrator, you can view runner statistics to learn about the performance of your runner fleet.
 
@@ -590,9 +601,13 @@ To view runner statistics:
 1. Select **CI/CD > Runners**.
 1. Select **View metrics**.
 
-## Determine which runners need to be upgraded **(ULTIMATE ALL)**
+## Determine which runners need to be upgraded
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/365078) in GitLab 15.3.
 
 The version of GitLab Runner used by your runners should be
 [kept up-to-date](https://docs.gitlab.com/runner/index.html#gitlab-runner-versions).
@@ -622,26 +637,26 @@ the source of the HTTP requests it makes to GitLab when polling for jobs. The
 IP address is always kept up to date so if the runner IP changes it
 automatically updates in GitLab.
 
-The IP address for shared runners and project runners can be found in
+The IP address for instance runners and project runners can be found in
 different places.
 
-### Determine the IP address of a shared runner
+### Determine the IP address of an instance runner
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To determine the IP address of a shared runner:
+To determine the IP address of an instance runner:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![shared runner IP address](img/shared_runner_ip_address_14_5.png)
+![Instance runner IP address](img/shared_runner_ip_address_14_5.png)
 
 ### Determine the IP address of a project runner
 
-To can find the IP address of a runner for a project project,
+To can find the IP address of a runner for a project,
 you must have the Owner role for the
 project.
 

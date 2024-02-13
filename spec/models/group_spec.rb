@@ -1122,6 +1122,50 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.excluding_restricted_visibility_levels_for_user' do
+      let_it_be(:admin_user) { create(:admin) }
+
+      context 'when restricted_visibility_level is not configured' do
+        context 'when user is an admin', :enable_admin_mode do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+
+        context 'when user is not an admin' do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+      end
+
+      context 'when restricted_visibility_level is set to private' do
+        before do
+          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE])
+        end
+
+        context 'and user is an admin', :enable_admin_mode do
+          it 'returns all groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to eq(
+              [private_group, internal_group, group]
+            )
+          end
+        end
+
+        context 'and user is not an admin' do
+          it 'excludes private groups' do
+            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to eq(
+              [internal_group, group]
+            )
+          end
+        end
+      end
+    end
+
     describe '.project_creation_allowed' do
       let_it_be(:group_1) { create(:group, project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
       let_it_be(:group_2) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
@@ -1129,7 +1173,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       let_it_be(:group_4) { create(:group, project_creation_level: nil) }
 
       it 'only includes groups where project creation is allowed' do
-        result = described_class.project_creation_allowed
+        expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
+
+        result = described_class.project_creation_allowed(user1)
 
         expect(result).to include(group_2, group_3, group_4)
         expect(result).not_to include(group_1)
@@ -1141,7 +1187,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         it 'only includes groups where project creation is allowed' do
-          result = described_class.project_creation_allowed
+          expect(described_class).to receive(:excluding_restricted_visibility_levels_for_user).and_call_original
+
+          result = described_class.project_creation_allowed(user1)
 
           expect(result).to include(group_2, group_3)
 
@@ -1241,7 +1289,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#users' do
-    it { expect(group.users).to eq(group.owners) }
+    let(:group_users) { group.users.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
+    let(:group_owners) { group.owners.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
+
+    it { expect(group_users).to eq(group_owners) }
   end
 
   describe '#human_name' do
@@ -1425,6 +1476,13 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
     end
 
+    it 'preloads user and source' do
+      owner = group.member_owners_excluding_project_bots.first
+
+      expect(owner.association(:user).loaded?).to be_truthy
+      expect(owner.association(:source).loaded?).to be_truthy
+    end
+
     context 'there is also a project_bot owner' do
       before do
         group.add_member(create(:user, :project_bot), GroupMember::OWNER)
@@ -1599,7 +1657,9 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it 'returns the owners of a Group' do
       members = setup_group_members(group)
 
-      expect(group.owners).to eq([members[:owner]])
+      expect(
+        group.owners.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662")
+      ).to eq([members[:owner]])
     end
   end
 
@@ -2546,7 +2606,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#bots' do
-    subject { group.bots }
+    subject { group.bots.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436662") }
 
     let_it_be(:group) { create(:group) }
     let_it_be(:project_bot) { create(:user, :project_bot) }
@@ -3200,8 +3260,8 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '#crm_enabled?' do
-    it 'returns false where no crm_settings exist' do
-      expect(group.crm_enabled?).to be_falsey
+    it 'returns true where no crm_settings exist' do
+      expect(group.crm_enabled?).to be_truthy
     end
 
     it 'returns false where crm_settings.state is disabled' do
@@ -3217,7 +3277,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     it 'returns true where crm_settings.state is enabled for subgroup' do
-      subgroup = create(:group, :crm_enabled, parent: group)
+      subgroup = create(:group, parent: group)
 
       expect(subgroup.crm_enabled?).to be_truthy
     end

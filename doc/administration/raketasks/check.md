@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrity check Rake task **(FREE SELF)**
+# Integrity check Rake task
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks to check the integrity of various components.
 See also the [check GitLab configuration Rake task](maintenance.md#check-gitlab-configuration).
@@ -207,7 +211,7 @@ See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
 
 ## Verify database values can be decrypted using the current secrets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20069) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20069) in GitLab 13.1.
 
 This task runs through all possible encrypted values in the
 database, verifying that they are decryptable using the current
@@ -285,7 +289,7 @@ I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 
 ## Reset encrypted tokens when they can't be recovered
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131893) in GitLab 16.6.
 
 WARNING:
 This operation is dangerous and can result in data-loss. Proceed with extreme caution.

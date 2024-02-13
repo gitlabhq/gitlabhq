@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab 14 changes **(FREE SELF)**
+# GitLab 14 changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab 14.
 Ensure you review these instructions for:
@@ -110,7 +114,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
   For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - **Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
 
@@ -203,7 +211,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   If your instance has Redis HA with Sentinel, follow the upgrade steps documented in
   [Redis HA (using Sentinel)](../zero_downtime.md#redis-ha-using-sentinel).
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
   When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
@@ -225,7 +237,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 - If upgrading from a version earlier than 14.6.5, 14.7.4, or 14.8.2, review the [Critical Security Release: 14.8.2, 14.7.4, and 14.6.5](https://about.gitlab.com/releases/2022/02/25/critical-security-release-gitlab-14-8-2-released/) blog post.
   Updating to 14.6.5 or later resets runner registration tokens for your groups and projects.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
   When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
@@ -309,7 +325,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   are using a self-compiled installation, update paths to these binaries in your [systemd unit files](../upgrading_from_source.md#configure-systemd-units)
   or [init scripts](../upgrading_from_source.md#configure-sysv-init-script) by [following the documentation](../upgrading_from_source.md).
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -334,7 +354,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 14.4.1 and 14.4.2
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.4.0 through 14.4.2](#1440) that can affect
   Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
@@ -385,7 +409,11 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   the downgrade. If the errors persist after a Grafana restart you may need to reset the Grafana db and re-add the
   customizations. The Grafana database can be reset with `sudo gitlab-ctl reset-grafana`.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -545,14 +573,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
       sudo gitlab-rake "gitlab:password:reset[user_handle]"
       ```
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [122978](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122978) as the `mr_iid`.
 
 ### Self-compiled installations
 
 - Ruby 2.7.4 is required. Refer to [the Ruby installation instructions](../../install/installation.md#2-ruby)
   for how to proceed.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -651,9 +683,13 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   end
   ```
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [123476](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123476) as the `mr_iid`.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -730,9 +766,13 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   [This bug](https://gitlab.com/gitlab-org/gitlab/-/issues/329261) was fixed in
   GitLab 14.5.0 and backported into 14.4.3 and 14.3.5.
 
-- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://about.gitlab.com/handbook/support/workflows/patching_an_instance.html) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
+- If you encounter the error, `I18n::InvalidLocale: :en is not a valid locale`, when starting the application, follow the [patching](https://handbook.gitlab.com/handbook/support/workflows/patching_an_instance/) process. Use [123475](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123475) as the `mr_iid`.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
@@ -889,7 +929,11 @@ Other issues:
   The following invalid roles have been set in 'roles': redis_slave_role
   ```
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 - We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 

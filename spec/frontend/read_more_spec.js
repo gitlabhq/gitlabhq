@@ -2,6 +2,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initReadMore from '~/read_more';
 
 describe('Read more click-to-expand functionality', () => {
+  const findTarget = () => document.querySelector('.read-more-container');
   const findTrigger = () => document.querySelector('.js-read-more-trigger');
 
   afterEach(() => {
@@ -19,13 +20,11 @@ describe('Read more click-to-expand functionality', () => {
     });
 
     it('adds "is-expanded" class to target element', () => {
-      const target = document.querySelector('.read-more-container');
-      const trigger = findTrigger();
       initReadMore();
 
-      trigger.click();
+      findTrigger().click();
 
-      expect(target.classList.contains('is-expanded')).toEqual(true);
+      expect(findTarget().classList.contains('is-expanded')).toEqual(true);
     });
   });
 
@@ -38,8 +37,7 @@ describe('Read more click-to-expand functionality', () => {
         </button>
       `);
 
-      const trigger = findTrigger();
-      const nestedElement = trigger.firstElementChild;
+      const nestedElement = findTrigger().firstElementChild;
       initReadMore();
 
       nestedElement.click();
@@ -48,5 +46,80 @@ describe('Read more click-to-expand functionality', () => {
     it('removes the trigger element', () => {
       expect(findTrigger()).toBe(null);
     });
+  });
+
+  describe('data-read-more-height defines when to show the read-more button', () => {
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('if not set shows button all the time', () => {
+      setHTMLFixture(`
+        <div class="read-more-container">
+          <p class="read-more-content">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+          <button type="button" class="js-read-more-trigger">
+            Button text
+          </button>
+        </div>
+      `);
+
+      initReadMore();
+
+      expect(findTrigger()).not.toBe(null);
+    });
+
+    it('if set hides button as threshold is met', () => {
+      setHTMLFixture(`
+        <div class="read-more-container" data-read-more-height="120">
+          <p class="read-more-content read-more-content--has-scrim">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+          <button type="button" class="js-read-more-trigger">
+            Button text
+        </button>
+        </div>
+      `);
+
+      initReadMore();
+
+      expect(findTarget().classList.contains('read-more-content--has-scrim')).toBe(false);
+      expect(findTrigger()).toBe(null);
+    });
+  });
+});
+
+describe('data-read-more-height defines when to show the read-more button', () => {
+  const findTrigger = () => document.querySelectorAll('.js-read-more-trigger');
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
+  it('if not set shows button all the time', () => {
+    setHTMLFixture(`
+      <div class="read-more-container">
+        <p class="read-more-content">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+        <button type="button" class="js-read-more-trigger">
+          Button text
+        </button>
+      </div>
+    `);
+
+    initReadMore();
+
+    expect(findTrigger().length).toBe(1);
+  });
+
+  it('if set hides button as threshold is met', () => {
+    setHTMLFixture(`
+      <div class="read-more-container" data-read-more-height="120">
+        <p class="read-more-content">Occaecat voluptate exercitation aliqua et duis eiusmod mollit esse ea laborum amet consectetur officia culpa anim. Fugiat laboris eu irure deserunt excepteur laboris irure quis. Occaecat nostrud irure do officia ea laborum velit sunt. Aliqua incididunt non deserunt proident magna aliqua sunt laborum laborum eiusmod ullamco. Et elit commodo irure. Labore eu nisi proident.</p>
+        <button type="button" class="js-read-more-trigger">
+          Button text
+      </button>
+      </div>
+    `);
+
+    initReadMore();
+
+    expect(findTrigger().length).toBe(0);
   });
 });

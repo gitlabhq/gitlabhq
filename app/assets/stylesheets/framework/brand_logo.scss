@@ -1,12 +1,12 @@
 .brand-logo {
   display: inline-block;
-  @include gl-rounded-base;
-  @include gl-p-2;
-  @include gl-bg-transparent;
-  @include gl-border-none;
+  border-radius: $gl-border-radius-base;
+  padding: $gl-spacing-scale-2;
+  background-color: transparent;
+  border-style: none;
 
   .tanuki-logo {
-    @include gl-vertical-align-middle;
+    vertical-align: middle;
   }
 
   &:focus,

@@ -32,7 +32,6 @@ describe('PasswordInput', () => {
     expect(findPasswordInput().attributes('autocomplete')).toBe(propsData.autocomplete);
     expect(findPasswordInput().attributes('name')).toBe(propsData.name);
     expect(findPasswordInput().attributes('minlength')).toBe(propsData.minimumPasswordLength);
-    expect(findPasswordInput().attributes('data-qa-selector')).toBe(propsData.qaSelector);
     expect(findPasswordInput().attributes('data-testid')).toBe(propsData.testid);
     expect(findPasswordInput().attributes('title')).toBe(propsData.title);
   });

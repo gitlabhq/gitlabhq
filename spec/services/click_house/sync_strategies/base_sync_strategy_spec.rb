@@ -87,7 +87,7 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
           end
 
           it 'stops the processing' do
-            allow_next_instance_of(Analytics::CycleAnalytics::RuntimeLimiter) do |runtime_limiter|
+            allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |runtime_limiter|
               allow(runtime_limiter).to receive(:over_time?).and_return(false, true)
             end
 
@@ -128,7 +128,7 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
 
     context 'when clickhouse is not configured' do
       before do
-        allow(ClickHouse::Client.configuration).to receive(:databases).and_return({})
+        allow(Gitlab::ClickHouse).to receive(:configured?).and_return(false)
       end
 
       it 'skips execution' do
@@ -138,7 +138,7 @@ RSpec.describe ClickHouse::SyncStrategies::BaseSyncStrategy, feature_category: :
 
     context 'when exclusive lease error happens' do
       it 'skips execution' do
-        allow(ClickHouse::Client.configuration).to receive(:databases).and_return({ main: :some_db })
+        allow(Gitlab::ClickHouse).to receive(:configured?).and_return(true)
 
         expect(strategy).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
         expect(execute).to eq({ status: :skipped })

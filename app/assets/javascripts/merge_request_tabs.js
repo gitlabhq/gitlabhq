@@ -331,11 +331,9 @@ export default class MergeRequestTabs {
           });
       }
 
-      if (window.gon?.features?.movedMrSidebar) {
-        this.expandSidebar?.forEach((el) =>
-          el.classList.toggle('gl-display-none!', action !== 'show'),
-        );
-      }
+      this.expandSidebar?.forEach((el) =>
+        el.classList.toggle('gl-display-none!', action !== 'show'),
+      );
 
       if (action === 'commits') {
         if (!this.commitsLoaded) {

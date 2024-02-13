@@ -6,8 +6,6 @@
 # the usages to the new gem.
 #
 
-require_relative 'http_connection_adapter'
-
 module Gitlab
   class HTTP
     BlockedUrlError = Gitlab::HTTP_V2::BlockedUrlError
@@ -71,7 +69,7 @@ module Gitlab
           allow_local_requests: Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?,
           deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
           dns_rebinding_protection_enabled: Gitlab::CurrentSettings.dns_rebinding_protection_enabled?,
-          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist, # rubocop:disable Naming/InclusiveLanguage
+          outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist, # rubocop:disable Naming/InclusiveLanguage -- existing setting
           silent_mode_enabled: Gitlab::SilentMode.enabled?
         }.merge(options)
       end

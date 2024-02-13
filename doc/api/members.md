@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group and project members API **(FREE ALL)**
+# Group and project members API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > `created_by` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28789) in GitLab 14.10.
 
@@ -29,8 +33,7 @@ In GitLab 14.8 and earlier, projects in personal namespaces have an `access_leve
 
 The `group_saml_identity` attribute is only visible to group owners for [SSO-enabled groups](../user/group/saml_sso/index.md).
 
-The `email` attribute is only visible to group owners for users provisioned by the group with [SCIM](../user/group/saml_sso/scim_setup.md).
-[Issue 391453](https://gitlab.com/gitlab-org/gitlab/-/issues/391453) proposes to change the criteria for access to the `email` attribute from provisioned users to [enterprise users](../user/enterprise_user/index.md).
+The `email` attribute is only visible to group owners for [enterprise users](../user/enterprise_user/index.md) of the group when an API request is sent to the group itself, or that group's subgroups or projects.
 
 ## List all members of a group or project
 
@@ -132,11 +135,11 @@ GET /projects/:id/members/all
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `query`   | string | no     | A query string to search for members |
-| `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
-| `show_seat_info`   | boolean | no     | Show seat information for users |
-| `state`   | string | no | Filter results by member state, one of `awaiting` or `active` **(PREMIUM ALL)** |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `query`   | string | no     | A query string to search for members. |
+| `user_ids`   | array of integers | no     | Filter the results on the given user IDs. |
+| `show_seat_info`   | boolean | no     | Show seat information for users. |
+| `state`   | string | no | Filter results by member state, one of `awaiting` or `active`. Premium and Ultimate only. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/all"
@@ -262,7 +265,7 @@ Example response:
 
 ## Get a member of a group or project, including inherited and invited members
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17744) in GitLab 12.4.
 
 Gets a member of a group or project, including members inherited or invited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-and-invited-members) for details.
 
@@ -309,7 +312,7 @@ Example response:
 
 ## List all billable members of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217384) in GitLab 13.5.
 
 Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
@@ -398,7 +401,7 @@ Example response:
 
 ## List memberships for a billable member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321560) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321560) in GitLab 13.11.
 
 Gets a list of memberships for a billable member of a group.
 
@@ -480,7 +483,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## Change membership state of a user in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
 
 Changes the membership state of a user in a group. The state is applied to
 all subgroups and projects.
@@ -523,6 +526,7 @@ POST /projects/:id/members
 | `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels) |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
+| `member_role_id` | integer | no | The ID of a member role. Ultimate only. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -572,7 +576,7 @@ PUT /projects/:id/members/:user_id
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A [valid access level](access_requests.md#valid-access-levels) |
 | `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
-| `member_role_id` | integer | no | The ID of a member role **(ULTIMATE ALL)** |
+| `member_role_id` | integer | no | The ID of a member role. Ultimate only. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/members/:user_id?access_level=40"
@@ -607,7 +611,7 @@ Example response:
 
 ### Set override flag for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 By default, the access level of LDAP group members is set to the value specified
 by LDAP through Group Sync. You can allow access level overrides by calling this endpoint.
@@ -653,7 +657,7 @@ Example response:
 
 ### Remove override for a member of a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/4875) in GitLab 13.0.
 
 Sets the override flag to false and allows LDAP Group Sync to reset the access
 level to the LDAP-prescribed value.
@@ -764,7 +768,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 
 ## List pending members of a group and its subgroups and projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332596) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332596) in GitLab 14.6.
 
 For a group and its subgroups and projects, get a list of all members in an `awaiting` state and those who are invited but do not have a GitLab account.
 

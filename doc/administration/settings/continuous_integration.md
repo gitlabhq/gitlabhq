@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Continuous Integration and Deployment Admin Area settings **(FREE SELF)**
+# Continuous Integration and Deployment Admin Area settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [Admin Area](index.md) has the instance settings for Auto DevOps, runners, and
 job artifacts.
@@ -27,18 +31,18 @@ From now on, every existing project and newly created ones that don't have a
 If you want to disable it for a specific project, you can do so in
 [its settings](../../topics/autodevops/index.md#enable-or-disable-auto-devops).
 
-## Enable shared runners for new projects
+## Enable instance runners for new projects
 
-You can set all new projects to have the instance's shared runners available by default.
+You can set all new projects to have instance runners available by default.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Select the **Enable shared runners for new projects** checkbox.
+1. Select the **Enable instance runners for new projects** checkbox.
 
-Any time a new project is created, the shared runners are available.
+Any time a new project is created, the instance runners are available.
 
-## Shared runners compute quota
+## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific
 limit on the number of [compute minutes](../../ci/pipelines/cicd_minutes.md) you can use.
@@ -58,17 +62,15 @@ To enable a project runner for more than one project:
 1. To the left of the project, select **Enable**.
 1. Repeat this process for each additional project.
 
-## Add a message for shared runners
+## Add a message for instance runners
 
-To display details about the instance's shared runners in all projects'
+To display details about the instance runners in all projects'
 runner settings:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
-1. Enter text, including Markdown if you want, in the **Shared runner details** field. For example:
-
-   ![Shared runner details input](img/continuous_integration_shared_runner_details_input_v14_10.png)
+1. Enter text, including Markdown if you want, in the **Instance runner details** field.
 
 To view the rendered details:
 
@@ -76,7 +78,7 @@ To view the rendered details:
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
 
-![Shared runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
+![Instance runner details example](img/continuous_integration_shared_runner_details_v14_10.png)
 
 ## Maximum artifacts size
 
@@ -133,7 +135,7 @@ artifacts, as described in the [troubleshooting documentation](../../administrat
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50889) in GitLab 13.9.
 
 When enabled (default), the artifacts of the most recent pipeline for each Git ref
 ([branches and tags](https://git-scm.com/book/en/v2/Git-Internals-Git-References))
@@ -193,7 +195,7 @@ To set all new [CI/CD variables](../../ci/variables/index.md) as
 
 ## Maximum includes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
 
 The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set at the instance level.
 The default is `150`.
@@ -205,7 +207,7 @@ The default is `150`.
 
 ## Default CI/CD configuration file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18073) in GitLab 12.5.
 
 The default CI/CD configuration file and path for new projects can be set in the Admin Area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
@@ -267,14 +269,18 @@ so you can view job artifact pages directly:
 1. Expand **Continuous Integration and Deployment**.
 1. Deselect **Enable the external redirect page for job artifacts**.
 
-## Required pipeline configuration **(ULTIMATE SELF)**
+## Required pipeline configuration
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389467) in GitLab 15.9
-and is planned for removal in 17.0. Use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines)
+and is planned for removal in 17.0. Use [compliance pipelines](../../user/group/compliance_pipelines.md)
 instead. This change is a breaking change.
 
 You can set a [CI/CD template](../../ci/examples/index.md#cicd-templates)
@@ -306,7 +312,11 @@ To select a CI/CD template for the required pipeline configuration:
 
 ## Package registry configuration
 
-### Maven Forwarding **(PREMIUM SELF)**
+### Maven Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of Maven requests to [Maven Central](https://search.maven.org/).
 
@@ -318,7 +328,11 @@ To disable forwarding Maven requests:
 1. Clear the checkbox **Forward Maven package requests to the Maven Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
 
-### npm Forwarding **(PREMIUM SELF)**
+### npm Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of npm requests to [npmjs.com](https://www.npmjs.com/).
 
@@ -330,7 +344,11 @@ To disable it:
 1. Clear the checkbox **Forward npm package requests to the npm Registry if the packages are not found in the GitLab Package Registry**.
 1. Select **Save changes**.
 
-### PyPI Forwarding **(PREMIUM SELF)**
+### PyPI Forwarding
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab administrators can disable the forwarding of PyPI requests to [pypi.org](https://pypi.org/).
 
@@ -398,7 +416,7 @@ To restrict runner registration by members in a specific group:
 
 ## Disable runner version management
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114041) in GitLab 15.10.
 
 By default, GitLab instances periodically fetch official runner version data from GitLab.com to [determine whether the runners need upgrades](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
 

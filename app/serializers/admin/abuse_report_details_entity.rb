@@ -21,9 +21,6 @@ module Admin
         expose :email do |report|
           report.user.confirmed?
         end
-        expose :phone do |report|
-          report.user.phone_number_validation.present? && report.user.phone_number_validation.validated?
-        end
         expose :credit_card do |report|
           report.user.credit_card_validation.present?
         end

@@ -170,7 +170,7 @@ end
 
 #### Estimated batch counters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48233) in GitLab 13.7.
 
 Estimated batch counter functionality handles `ActiveRecord::StatementInvalid` errors
 when used through the provided `estimate_batch_distinct_count` method.
@@ -288,7 +288,7 @@ options:
 
 ### Event sourced aggregated metrics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
 
 To declare the aggregate of events collected with Internal Events, make sure `time_frame` does not include the `all` value, which is unavailable for Redis-sourced aggregated metrics.
 
@@ -296,7 +296,7 @@ While it is possible to aggregate EE-only events together with events that occur
 
 ### Database sourced aggregated metrics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
 
 To declare an aggregate of metrics based on events collected from database, follow
 these steps:

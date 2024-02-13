@@ -7,17 +7,21 @@ module RestClient
     module UrlBlocker
       def transmit(uri, req, payload, &block)
         begin
-          ip, hostname_override = Gitlab::UrlBlocker.validate!(uri, allow_local_network: allow_settings_local_requests?,
-                                                                    allow_localhost: allow_settings_local_requests?,
-                                                                    dns_rebind_protection: dns_rebind_protection?,
-                                                                    schemes: %w[http https])
+          ip, hostname_override = Gitlab::HTTP_V2::UrlBlocker.validate!(
+            uri,
+            allow_local_network: allow_settings_local_requests?,
+            allow_localhost: allow_settings_local_requests?,
+            dns_rebind_protection: dns_rebind_protection?,
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            schemes: %w[http https],
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
 
           self.hostname_override = hostname_override
         rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
           raise ArgumentError, "URL is blocked: #{e.message}"
         end
 
-        # Gitlab::UrlBlocker returns a Addressable::URI which we need to coerce
+        # Gitlab::HTTP_V2::UrlBlocker returns a Addressable::URI which we need to coerce
         # to URI so that rest-client can use it to determine if it's a
         # URI::HTTPS or not. It uses it to set `net.use_ssl` to true or not:
         #

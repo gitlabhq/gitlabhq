@@ -147,7 +147,7 @@ export default {
 </script>
 
 <template>
-  <div class="incident-management-list">
+  <div class="paginated-table-wrapper">
     <gl-table
       class="integration-list"
       :items="integrations"

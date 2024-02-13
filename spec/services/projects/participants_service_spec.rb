@@ -225,7 +225,7 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
 
           create(:project_group_link, group: invited_public_group, project: public_project)
 
-          expect(usernames).to include(invited_public_group.users.first.username)
+          expect(usernames).to include(invited_public_group.group_members.first.user.username)
         end
 
         it 'returns members of the ancestral groups of the private group' do

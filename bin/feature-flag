@@ -5,6 +5,7 @@
 # Automatically stages the file and amends the previous commit if the `--amend`
 # argument is used.
 
+require_relative '../config/bundler_setup'
 require 'fileutils'
 require 'httparty'
 require 'json'
@@ -13,6 +14,7 @@ require 'readline'
 require 'shellwords'
 require 'uri'
 require 'yaml'
+require 'gitlab/utils/all'
 
 require_relative '../lib/feature/shared' unless defined?(Feature::Shared)
 require_relative '../lib/gitlab/popen'
@@ -276,7 +278,7 @@ class FeatureFlagOptionParser
     def read_rollout_issue_url(options)
       return unless TYPES.dig(options.type, :rollout_issue)
 
-      issue_new_url = "https://gitlab.com/gitlab-com/gl-infra/production/-/issues/new"
+      issue_new_url = "https://gitlab.com/gitlab-org/gitlab/-/issues/new"
       issue_title = "[Feature flag] Rollout of `#{options.name}`"
       issue_new_url = issue_new_url + "?" + URI.encode_www_form('issue[title]' => issue_title)
       group_name = find_group_by_label(options.group)
@@ -328,6 +330,17 @@ class FeatureFlagOptionParser
         username = Readline.readline('?> ', false)&.strip
         return if username.empty?
         return username if valid_url?("https://gitlab.com/#{username}")
+      end
+    end
+
+    def read_ee
+      $stdout.puts
+      $stdout.puts ">> Is this an EE only feature (enter to skip):"
+
+      loop do
+        ee = Readline.readline('?> ', false)&.strip
+        return if ee.empty?
+        return Gitlab::Utils.to_boolean(ee)
       end
     end
 
@@ -404,6 +417,7 @@ class FeatureFlagCreator
     options.introduced_by_url ||= FeatureFlagOptionParser.read_introduced_by_url
     options.milestone ||= FeatureFlagOptionParser.read_milestone
     options.username ||= FeatureFlagOptionParser.read_username
+    options.ee ||= FeatureFlagOptionParser.read_ee
     options.rollout_issue_url ||= FeatureFlagOptionParser.read_rollout_issue_url(options)
 
     $stdout.puts "\e[32mcreate\e[0m #{file_path}"

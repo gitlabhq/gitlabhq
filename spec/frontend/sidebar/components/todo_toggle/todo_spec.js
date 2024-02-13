@@ -23,7 +23,7 @@ describe('SidebarTodo', () => {
 
   it.each`
     state    | classes
-    ${false} | ${['gl-button', 'btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'float-right']}
+    ${false} | ${['gl-button', 'btn', 'btn-default', 'btn-todo', 'issuable-header-btn', 'gl-float-right']}
     ${true}  | ${['btn-blank', 'btn-todo', 'sidebar-collapsed-icon', 'js-dont-change-state']}
   `('returns todo button classes for when `collapsed` prop is `$state`', ({ state, classes }) => {
     createComponent({ collapsed: state });

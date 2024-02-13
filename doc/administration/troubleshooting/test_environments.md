@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Apps for a testing environment **(FREE SELF)**
+# Apps for a testing environment
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the GitLab Support Team's collection of information regarding testing environments,
 for use while troubleshooting. It is listed here for transparency, and it may be useful

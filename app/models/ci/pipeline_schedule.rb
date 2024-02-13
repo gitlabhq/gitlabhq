@@ -31,6 +31,7 @@ module Ci
     scope :inactive, -> { where(active: false) }
     scope :preloaded, -> { preload(:owner, project: [:route]) }
     scope :owned_by, ->(user) { where(owner: user) }
+    scope :for_project, ->(project_id) { where(project_id: project_id) }
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 

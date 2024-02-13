@@ -31,6 +31,8 @@ class Member < ApplicationRecord
 
   delegate :name, :username, :email, :last_activity_on, to: :user, prefix: true
 
+  has_many :member_approvals, inverse_of: :member, class_name: 'Members::MemberApproval'
+
   validates :expires_at, allow_blank: true, future_date: true
   validates :user, presence: true, unless: :invite?
   validates :source, presence: true
@@ -171,7 +173,7 @@ class Member < ApplicationRecord
   scope :by_access_level, -> (access_level) { active.where(access_level: access_level) }
   scope :all_by_access_level, -> (access_level) { where(access_level: access_level) }
 
-  scope :preload_user, -> { preload(:user) }
+  scope :preload_users, -> { preload(:user) }
 
   scope :preload_user_and_notification_settings, -> do
     preload(user: :notification_settings)
@@ -277,7 +279,9 @@ class Member < ApplicationRecord
   after_create :create_notification_setting, unless: [:pending?, :importing?]
   after_create :post_create_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
   after_create :update_two_factor_requirement, unless: :invite?
+  after_create :create_organization_user_record
   after_update :post_update_hook, unless: [:pending?, :importing?], if: :hook_prerequisites_met?
+  after_update :create_organization_user_record, if: :saved_change_to_user_id? # only occurs on invite acceptance
   after_destroy :destroy_notification_setting
   after_destroy :post_destroy_hook, unless: :pending?, if: :hook_prerequisites_met?
   after_destroy :update_two_factor_requirement, unless: :invite?
@@ -286,14 +290,6 @@ class Member < ApplicationRecord
   after_commit :send_request, if: :request?, unless: :importing?, on: [:create]
   after_commit on: [:create, :update, :destroy], unless: :importing? do
     refresh_member_authorized_projects
-  end
-
-  after_create if: :update_organization_user? do
-    Organizations::OrganizationUser.upsert(
-      { organization_id: source.organization_id, user_id: user_id, access_level: :default },
-      unique_by: [:organization_id, :user_id],
-      on_duplicate: :skip # Do not change access_level, could make :owner :default
-    )
   end
 
   attribute :notification_level, default: -> { NotificationSetting.levels[:global] }
@@ -668,12 +664,6 @@ class Member < ApplicationRecord
     user&.project_bot?
   end
 
-  def update_organization_user?
-    return false unless Feature.enabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
-
-    !invite? && source.organization.present?
-  end
-
   def log_invitation_token_cleanup
     return true unless Gitlab.com? && invite? && invite_accepted_at?
 
@@ -683,6 +673,14 @@ class Member < ApplicationRecord
 
   def event_service
     EventCreateService.new # rubocop:todo CodeReuse/ServiceClass -- Legacy, convert to value object eventually
+  end
+
+  def create_organization_user_record
+    return if Feature.disabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
+    return if invite?
+    return if source.organization.blank?
+
+    Organizations::OrganizationUser.create_organization_record_for(user_id, source.organization_id)
   end
 end
 

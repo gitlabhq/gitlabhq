@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline do
+RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project) }
@@ -21,6 +21,8 @@ RSpec.describe BulkImports::Common::Pipelines::BadgesPipeline do
       allow_next_instance_of(BulkImports::Common::Extractors::RestExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(first_page, last_page)
       end
+
+      allow(subject).to receive(:set_source_objects_counter)
     end
 
     it 'imports a group badge' do

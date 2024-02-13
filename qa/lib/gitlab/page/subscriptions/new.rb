@@ -34,6 +34,9 @@ module Gitlab
         link(:review_your_order) { payment_form_element.link(text: /Review your order/) }
         # ENDTODO
 
+        # ToS Acceptance
+        div :privacy_and_terms_confirm
+
         # Confirmation
         button :confirm_purchase, text: /Confirm purchase/
 
@@ -52,6 +55,7 @@ module Gitlab
           ) do
             ::QA::Runtime::Logger.debug('Attempting to purchase subscription')
 
+            privacy_and_terms_confirm_element.click
             confirm_purchase
             ::QA::Support::WaitForRequests.wait_for_requests
             !lock_competition_error?

@@ -434,7 +434,7 @@ To update a migration timestamp:
 
 ## Migration helpers and versioning
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339115) in GitLab 14.3.
 
 Various helper methods are available for many common patterns in database migrations. Those
 helpers can be found in `Gitlab::Database::MigrationHelpers` and related modules.
@@ -844,9 +844,7 @@ combining it with other operations that don't require `disable_ddl_transaction!`
 
 ### Disabling an index
 
-There are certain situations in which you might want to disable an index before removing it.
-See the [maintenance operations guide](database/maintenance_operations.md#disabling-an-index)
-for more details.
+[Disabling an index is not a safe operation](database/maintenance_operations.md#disabling-an-index-is-not-safe).
 
 ## Adding indexes
 
@@ -895,7 +893,7 @@ You can read more about adding [foreign key constraints to an existing column](d
 
 ## `NOT NULL` constraints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38358) in GitLab 13.0.
 
 See the style guide on [`NOT NULL` constraints](database/not_null_constraints.md) for more information.
 
@@ -1111,7 +1109,7 @@ end
 
 ## Dropping a sequence
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88387) in GitLab 15.1.
 
 Dropping a sequence is uncommon, but you can use the `drop_sequence` method provided by the database team.
 
@@ -1149,7 +1147,7 @@ Adding sequence to these columns is **only allowed** in the down method (restore
 
 ## Truncate a table
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117373) in GitLab 15.11.
 
 Truncating a table is uncommon, but you can use the `truncate_tables!` method provided by the database team.
 
@@ -1163,7 +1161,7 @@ Under the hood, it works like this:
 
 ## Swapping primary key
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98645) in GitLab 15.5.
 
 Swapping the primary key is required to partition a table as the **partition key must be included in the primary key**.
 
@@ -1219,7 +1217,7 @@ add_column(:projects, :foo, :integer, default: 10, limit: 8)
 
 ## Strings and the Text data type
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
 
 See the [text data type](database/strings_and_the_text_data_type.md) style guide for more information.
 
@@ -1335,7 +1333,7 @@ You can now use `restricted_visibility_levels` as an ActiveRecord attribute:
 
 ## Encrypted attributes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227779) in GitLab 14.0.
 
 Do not store `attr_encrypted` attributes as `:text` in the database; use
 `:binary` instead. This uses the `bytea` type in PostgreSQL and makes storage more
@@ -1584,3 +1582,21 @@ their corresponding GitLab minor versions. This:
 
 - Simplifies the upgrade process.
 - Alleviates potential migration ordering issues that arise when we rely solely on the migration's timestamp for ordering.
+
+## Autovacuum wraparound protection
+
+This is a [special autovacuum](https://www.cybertec-postgresql.com/en/autovacuum-wraparound-protection-in-postgresql/)
+run mode for PostgreSQL and it requires a `ShareUpdateExclusiveLock` on the
+table that it is vacuuming. For [larger tables](https://gitlab.com/gitlab-org/release-tools/-/blob/master/lib/release_tools/prometheus/wraparound_vacuum_checks.rb#L11)
+this could take hours and the lock can conflict with most DDL migrations that
+try to modify the table at the same time. Because the migrations will not be
+able to acquire the lock in time, they will fail and block the deployments.
+
+The [post-deploy migration (PDM) pipeline](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/post_deploy_migration) can check and halt its execution if it
+detects a wraparound prevention vacuum process on one of the tables. For this to
+happen we need to use the complete table name in the migration name. For example
+`add_foreign_key_between_ci_builds_and_ci_job_artifacts` will check for vacuum
+on `ci_builds` and `ci_job_artifacts` before executing the migrations.
+
+If the migration doesn't have conflicting locks, the vacuum check can be skipped
+by not using the complete table name, for example `create_async_index_on_job_artifacts`.

@@ -19,7 +19,9 @@ exports[`SearchItem should render the item 1`] = `
   >
     <span
       class="gl-text-gray-900"
-    />
+    >
+      Cole Dickinson
+    </span>
   </span>
 </div>
 `;

@@ -188,6 +188,7 @@ func TestConfigDefaults(t *testing.T) {
 		APIQueueTimeout:          queueing.DefaultTimeout,
 		APICILongPollingDuration: 50 * time.Nanosecond, // TODO this is meant to be 50*time.Second but it has been wrong for ages
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
+		MetadataConfig:           config.DefaultMetadataConfig,
 	}
 
 	require.Equal(t, expectedCfg, cfg)
@@ -221,6 +222,7 @@ func TestCableConfigDefault(t *testing.T) {
 		APIQueueTimeout:          queueing.DefaultTimeout,
 		APICILongPollingDuration: 50 * time.Nanosecond,
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
+		MetadataConfig:           config.DefaultMetadataConfig,
 	}
 	require.Equal(t, expectedCfg, cfg)
 }
@@ -285,6 +287,7 @@ func TestConfigFlagParsing(t *testing.T) {
 		APICILongPollingDuration: 234 * time.Second,
 		PropagateCorrelationID:   true,
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
+		MetadataConfig:           config.DefaultMetadataConfig,
 		MetricsListener:          &config.ListenerConfig{Network: "tcp", Addr: "prometheus listen addr"},
 	}
 	require.Equal(t, expectedCfg, cfg)
@@ -415,6 +418,22 @@ func TestLoadConfigCommand(t *testing.T) {
 					},
 					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
 						cfg.ConfigCommand = cmd
+					}),
+				}
+			},
+		},
+		{
+			desc: "script taking arguments",
+			setup: func(t *testing.T) setupData {
+				cmd := writeScript(t, `echo "{\"shutdown_timeout\": \"$1s\"}"`)
+
+				return setupData{
+					cfg: config.Config{
+						ConfigCommand: fmt.Sprintf("%s 200", cmd),
+					},
+					expectedCfg: modifyDefaultConfig(func(cfg *config.Config) {
+						cfg.ConfigCommand = fmt.Sprintf("%s 200", cmd)
+						cfg.ShutdownTimeout = config.TomlDuration{Duration: 200 * time.Second}
 					}),
 				}
 			},

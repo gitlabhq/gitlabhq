@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages administration for self-compiled installations **(FREE SELF)**
+# GitLab Pages administration for self-compiled installations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 Before attempting to enable GitLab Pages, first make sure you have
@@ -56,7 +60,7 @@ Before proceeding with the Pages configuration, make sure that:
   Pages artifacts.
 - Optional. You have a **wildcard certificate** for the Pages domain if you
   decide to serve Pages (`*.example.io`) under HTTPS.
-- Optional but recommended. You have configured and enabled the [shared runners](../../ci/runners/index.md)
+- Optional but recommended. You have configured and enabled the [instance runners](../../ci/runners/index.md)
   so your users don't have to bring their own.
 
 ### DNS configuration

@@ -81,18 +81,12 @@ export const packagesCleanupPolicyMutationPayload = ({ override, errors = [] } =
 });
 
 export const packagesProtectionRulesData = [
-  {
-    id: `gid://gitlab/Packages::Protection::Rule/14`,
-    packageNamePattern: `@flight/flight-maintainer-14-*`,
+  ...Array.from(Array(15)).map((_e, i) => ({
+    id: `gid://gitlab/Packages::Protection::Rule/${i}`,
+    packageNamePattern: `@flight/flight-maintainer-${i}-*`,
     packageType: 'NPM',
     pushProtectedUpToAccessLevel: 'MAINTAINER',
-  },
-  {
-    id: `gid://gitlab/Packages::Protection::Rule/15`,
-    packageNamePattern: `@flight/flight-maintainer-15-*`,
-    packageType: 'NPM',
-    pushProtectedUpToAccessLevel: 'MAINTAINER',
-  },
+  })),
   {
     id: 'gid://gitlab/Packages::Protection::Rule/16',
     packageNamePattern: '@flight/flight-owner-16-*',
@@ -101,14 +95,46 @@ export const packagesProtectionRulesData = [
   },
 ];
 
-export const packagesProtectionRuleQueryPayload = ({ override, errors = [] } = {}) => ({
+export const packagesProtectionRuleQueryPayload = ({
+  errors = [],
+  nodes = packagesProtectionRulesData.slice(0, 10),
+  pageInfo = {
+    hasNextPage: true,
+    hasPreviousPage: false,
+    startCursor: '0',
+    endCursor: '10',
+  },
+} = {}) => ({
   data: {
     project: {
       id: '1',
       packagesProtectionRules: {
-        nodes: override || packagesProtectionRulesData,
+        nodes,
+        pageInfo: { __typename: 'PageInfo', ...pageInfo },
       },
       errors,
     },
   },
 });
+
+export const createPackagesProtectionRuleMutationPayload = ({ override, errors = [] } = {}) => ({
+  data: {
+    createPackagesProtectionRule: {
+      packageProtectionRule: {
+        ...packagesProtectionRulesData[0],
+        ...override,
+      },
+      errors,
+    },
+  },
+});
+
+export const createPackagesProtectionRuleMutationInput = {
+  packageNamePattern: `@flight/flight-developer-14-*`,
+  packageType: 'NPM',
+  pushProtectedUpToAccessLevel: 'DEVELOPER',
+};
+
+export const createPackagesProtectionRuleMutationPayloadErrors = [
+  'Package name pattern has already been taken',
+];

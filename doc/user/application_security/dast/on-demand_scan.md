@@ -4,7 +4,11 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DAST On Demand Scan **(ULTIMATE ALL)**
+# DAST On Demand Scan
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that a user can, such
@@ -26,8 +30,8 @@ a [site profile](#site-profile) defines **what** is to be scanned, and a
 
 An on-demand scan can be run in active or passive mode:
 
-- **Passive mode**: The default mode, which runs a [Passive Browser based scan](/ee/user/application_security/dast/browser_based.md#passive-scans).
-- **Active mode**: Runs an [Active Browser based scan](/ee/user/application_security/dast/browser_based.md#active-scans) which is potentially harmful to the site being scanned. To
+- **Passive mode**: The default mode, which runs a [Passive Browser based scan](browser/index.md#passive-scans).
+- **Active mode**: Runs an [Active Browser based scan](browser/index.md#active-scans) which is potentially harmful to the site being scanned. To
   minimize the risk of accidental damage, running an active scan requires a
   [validated site profile](#site-profile-validation).
 
@@ -164,7 +168,7 @@ This data can only be read and decrypted with a valid secrets file.
 
 ### Site profile validation
 
-> Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
+> - Meta tag validation [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6460) in GitLab 14.2.
 
 Site profile validation reduces the risk of running an active scan against the wrong website. A site
 must be validated before an active scan can run against it. Each of the site validation methods are
@@ -403,7 +407,7 @@ To delete a scanner profile:
 
 ## Auditing
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217872) in GitLab 14.1.
 
 The creation, updating, and deletion of DAST profiles, DAST scanner profiles,
 and DAST site profiles are included in the [audit log](../../../administration/audit_events.md).

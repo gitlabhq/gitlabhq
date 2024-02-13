@@ -8,10 +8,17 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'wrapping gRPC errors' do |gitaly_client_class, gitaly_client_method|
-    it 'wraps gRPC not found error' do
-      expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method)
-        .and_raise(GRPC::NotFound)
-      expect { subject }.to raise_error(Gitlab::Git::Repository::NoRepository)
+    context 'when commit is not found' do
+      let(:find_commits_error) { Gitaly::FindCommitsError.new }
+
+      before do
+        allow(Gitlab::GitalyClient).to receive(:decode_detailed_error).and_return(find_commits_error)
+      end
+
+      it 'wraps gRPC not found error' do
+        expect_any_instance_of(gitaly_client_class).to receive(gitaly_client_method).and_raise(GRPC::NotFound)
+        expect { subject }.to raise_error(Gitlab::Git::Repository::CommitNotFound)
+      end
     end
 
     it 'wraps gRPC unknown error' do
@@ -1702,25 +1709,50 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let_it_be(:diff_tree) { Gitlab::Git::DiffTree.from_commit(initial_commit) }
 
     let(:commit_1_files) do
-      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "files/executables/ls", old_mode: "0", new_mode: "100755")]
+      [
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: "files/executables/ls", old_mode: "0", new_mode: "100755",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'c84acd1ff0b844201312052f9bb3b7259eb2e177'
+        )
+      ]
     end
 
     let(:commit_2_files) do
-      [Gitlab::Git::ChangedPath.new(status: :ADDED, path: "bar/branch-test.txt", old_mode: "0", new_mode: "100644")]
+      [
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: "bar/branch-test.txt", old_mode: "0", new_mode: "100644",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '93e123ac8a3e6a0b600953d7598af629dec7b735'
+        )
+      ]
     end
 
     let(:commit_3_files) do
       [
-        Gitlab::Git::ChangedPath.new(status: :MODIFIED, path: ".gitmodules", old_mode: "100644", new_mode: "100644"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "gitlab-shell", old_mode: "0", new_mode: "160000")
+        Gitlab::Git::ChangedPath.new(
+          status: :MODIFIED, path: ".gitmodules", old_mode: "100644", new_mode: "100644",
+          old_blob_id: 'fdaada1754989978413d618ee1fb1c0469d6a664', new_blob_id: '0792c58905eff3432b721f8c4a64363d8e28d9ae'
+        ),
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: "gitlab-shell", old_mode: "0", new_mode: "160000",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '79bceae69cb5750d6567b223597999bfa91cb3b9'
+        )
       ]
     end
 
     let(:diff_tree_files) do
       [
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: ".gitignore", old_mode: "0", new_mode: "100644"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "LICENSE", old_mode: "0", new_mode: "100644"),
-        Gitlab::Git::ChangedPath.new(status: :ADDED, path: "README.md", old_mode: "0", new_mode: "100644")
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: ".gitignore", old_mode: "0", new_mode: "100644",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '470ad2fcf1e33798f1afc5781d08e60c40f51e7a'
+        ),
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: "LICENSE", old_mode: "0", new_mode: "100644",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: '50b27c6518be44c42c4d87966ae2481ce895624c'
+        ),
+        Gitlab::Git::ChangedPath.new(
+          status: :ADDED, path: "README.md", old_mode: "0", new_mode: "100644",
+          old_blob_id: '0000000000000000000000000000000000000000', new_blob_id: 'faaf198af3a36dbf41961466703cc1d47c61d051'
+        )
       ]
     end
 
@@ -1852,7 +1884,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     context 'with gitattributes' do
       before do
+        # this line can be removed once gitaly stops using info/attributes
         repository.copy_gitattributes('gitattributes')
+
+        # This line is added to make sure this test works when gitaly stops using
+        # info/attributes. See https://gitlab.com/gitlab-org/gitaly/-/issues/5348 for details.
+        repository.write_ref('HEAD', 'refs/heads/gitattributes')
       end
 
       it 'returns matching language attribute' do
@@ -2929,6 +2966,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
       end
 
       shared_examples 'an invalid request' do
+        let(:exception_class) { Gitlab::Git::CommandError }
+
         it 'returns an empty set' do
           expect(generated_files).to eq Set.new
         end
@@ -2937,11 +2976,12 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           expect(Gitlab::ErrorTracking)
             .to receive(:track_exception)
             .with(
-              instance_of(Gitlab::Git::CommandError),
+              instance_of(exception_class),
               gl_project_path: repository.gl_project_path,
               base: base,
               head: head,
-              paths: paths.map(&:path)
+              paths_count: paths.count,
+              paths_bytesize: paths.map(&:path).join.bytesize
             )
 
           generated_files
@@ -2963,6 +3003,26 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         end
 
         it_behaves_like 'an invalid request'
+      end
+
+      context 'when an Gitlab::Git::ResourceExhaustedError is raised' do
+        let(:exception_class) { Gitlab::Git::ResourceExhaustedError }
+
+        before do
+          allow(repository).to receive(:get_file_attributes).and_raise(exception_class)
+        end
+
+        it_behaves_like 'an invalid request'
+      end
+
+      context 'when the size of changed paths exceeds the diff_max_files limit' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:diff_max_files).and_return(2)
+        end
+
+        it 'returns an empty set' do
+          expect(generated_files).to eq Set.new
+        end
       end
     end
 

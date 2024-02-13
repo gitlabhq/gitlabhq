@@ -16,7 +16,7 @@ module Gitlab
       idempotent!
 
       def perform
-        ProjectExportJob.prune_expired_jobs
+        Projects::ImportExport::PruneExpiredExportJobsService.execute
       end
     end
   end

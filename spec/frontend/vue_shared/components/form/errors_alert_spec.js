@@ -1,5 +1,6 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
 
 describe('FormErrorsAlert', () => {
@@ -55,6 +56,47 @@ describe('FormErrorsAlert', () => {
       findAlert().vm.$emit('dismiss');
 
       expect(wrapper.emitted('input')).toEqual([[[]]]);
+    });
+  });
+
+  describe('scrollOnError', () => {
+    describe('when scrollOnError is true', () => {
+      beforeEach(() => {
+        createComponent({ propsData: { scrollOnError: true } });
+      });
+
+      it('scrolls to error when errors appear', async () => {
+        // setProps is justified here because we are testing the component's
+        // reactive behavior to when an alert appears.
+        // See https://docs.gitlab.com/ee/development/fe_guide/style/vue.html#setting-component-state
+        wrapper.setProps({ errors: ['foo'] });
+
+        await nextTick();
+        await nextTick(); // Wait two ticks to allow alert to render, followed by scrollIntoView to activate
+
+        expect(wrapper.element.scrollIntoView).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+    });
+
+    describe('when scrollOnError is false', () => {
+      beforeEach(() => {
+        createComponent({ propsData: { scrollOnError: false } });
+      });
+
+      it('does not scroll to error when errors appear', async () => {
+        // setProps is justified here because we are testing the component's
+        // reactive behavior to when an alert appears.
+        // See https://docs.gitlab.com/ee/development/fe_guide/style/vue.html#setting-component-state
+        wrapper.setProps({ errors: ['foo'] });
+
+        await nextTick();
+        await nextTick(); // Wait two ticks to allow alert to render, followed by scrollIntoView to activate
+
+        expect(wrapper.element.scrollIntoView).not.toHaveBeenCalled();
+      });
     });
   });
 });

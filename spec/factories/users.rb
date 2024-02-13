@@ -23,6 +23,10 @@ FactoryBot.define do
       user.assign_personal_namespace if assign_ns
     end
 
+    trait :without_default_org do
+      before(:create) { |user| user.define_singleton_method(:create_default_organization_user) { nil } }
+    end
+
     trait :with_namespace do
       namespace { assign_personal_namespace }
     end

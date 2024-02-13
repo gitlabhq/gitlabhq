@@ -56,7 +56,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
               class="gl-new-dropdown-contents gl-new-dropdown-contents-with-scrim-overlay"
               id="reference-2"
               role="listbox"
-              tabindex="-1"
+              tabindex="0"
             >
               <li
                 aria-hidden="true"

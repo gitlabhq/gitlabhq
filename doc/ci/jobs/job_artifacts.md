@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Job artifacts **(FREE ALL)**
+# Job artifacts
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
@@ -245,11 +249,31 @@ For example:
 
   Files returned by this endpoint always have the `plain/text` content type.
 
-In both examples, replace `<project-id>` with a valid project ID, found at the top of the project details page.
+In both examples, replace `<project-id>` with a valid project ID. You can find the project ID on the,
+[project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 Artifacts for [parent and child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 are searched in hierarchical order from parent to child. For example, if both parent and
 child pipelines have a job with the same name, the job artifacts from the parent pipeline are returned.
+
+### With a CI/CD job token
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+You can use a [CI/CD job token](ci_job_token.md) to authenticate with the [jobs artifacts API endpoint](../../api/job_artifacts.md)
+and fetch artifacts from a different pipeline. You must specify which job to retrieve artifacts from,
+for example:
+
+```yaml
+build_submodule:
+  stage: test
+  script:
+    - apt update && apt install -y unzip
+    - curl --location --output artifacts.zip "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/main/download?job=test&job_token=$CI_JOB_TOKEN"
+    - unzip artifacts.zip
+```
 
 ## Browse the contents of the artifacts archive
 

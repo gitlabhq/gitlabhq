@@ -124,6 +124,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    describe '#latest_finished_jobs' do
+      it 'has a one to many relationship with its latest finished jobs' do
+        _old_build = create(:ci_build, :retried, pipeline: pipeline)
+        _expired_build = create(:ci_build, :expired, pipeline: pipeline)
+
+        failed_job = create(:ci_build, :failed, pipeline: pipeline)
+        successful_job = create(:ci_build, :success, pipeline: pipeline)
+        canceled_job = create(:ci_build, :canceled, pipeline: pipeline)
+
+        expect(pipeline.latest_finished_jobs).to contain_exactly(failed_job, successful_job, canceled_job)
+      end
+    end
+
     describe '#downloadable_artifacts' do
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
       let_it_be(:downloadable_artifact) { create(:ci_job_artifact, :codequality, job: build) }
@@ -154,6 +167,28 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         expect(Ci::PipelineArtifacts::CoverageReportWorker).to receive(:perform_async).with(pipeline.id)
 
         pipeline.succeed!
+      end
+    end
+  end
+
+  describe 'callbacks' do
+    describe '.track_ci_pipeline_created_event' do
+      let(:pipeline) { build(:ci_pipeline, user: user) }
+
+      it 'tracks the creation event with user information' do
+        expect(Gitlab::InternalEvents).to receive(:track_event).with('create_ci_internal_pipeline', project: project, user: user)
+
+        pipeline.save!
+      end
+
+      context 'when pipeline is external' do
+        let(:pipeline) { build(:ci_pipeline, source: :external) }
+
+        it 'does not track creation event' do
+          expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+          pipeline.save!
+        end
       end
     end
   end

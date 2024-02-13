@@ -4,9 +4,13 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# AWS CodePipeline **(FREE SAAS)**
+# AWS CodePipeline
 
-> [Introduced](https://gitlab.com/gitlab-com/alliances/aws/wip/aws-cs-collab/aws-gitlab-collaboration/-/issues/25) in GitLab 16.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-com/alliances/aws/wip/aws-cs-collab/aws-gitlab-collaboration/-/issues/25) in GitLab 16.5.
 
 You can use your GitLab project to build, test, and deploy code changes using [AWS CodePipeline](https://aws.amazon.com/codepipeline/). To do so, you use:
 

@@ -4,7 +4,7 @@ module ServicePing
   module ServicePingSettings
     extend self
 
-    def product_intelligence_enabled?
+    def enabled_and_consented?
       enabled? && !User.single_user&.requires_usage_stats_consent?
     end
 

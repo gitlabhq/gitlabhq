@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Events API **(FREE ALL)**
+# Events API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Filter parameters
 
@@ -76,6 +80,7 @@ Example response:
     "project_id":1,
     "action_name":"opened",
     "target_id":160,
+    "target_iid":53,
     "target_type":"Issue",
     "author_id":25,
     "target_title":"Qui natus eos odio tempore et quaerat consequuntur ducimus cupiditate quis.",
@@ -96,6 +101,7 @@ Example response:
     "project_id":1,
     "action_name":"opened",
     "target_id":159,
+    "target_iid":14,
     "target_type":"Issue",
     "author_id":21,
     "target_title":"Nostrum enim non et sed optio illo deleniti non.",
@@ -149,6 +155,7 @@ Example response:
     "project_id": 15,
     "action_name": "closed",
     "target_id": 830,
+    "target_iid": 82,
     "target_type": "Issue",
     "author_id": 1,
     "target_title": "Public project search field",
@@ -168,6 +175,7 @@ Example response:
     "project_id": 15,
     "action_name": "pushed",
     "target_id": null,
+    "target_iid": null,
     "target_type": null,
     "author_id": 1,
     "author": {
@@ -196,6 +204,7 @@ Example response:
     "project_id": 15,
     "action_name": "closed",
     "target_id": 840,
+    "target_iid": 11,
     "target_type": "Issue",
     "author_id": 1,
     "target_title": "Finish & merge Code search PR",
@@ -215,6 +224,7 @@ Example response:
     "project_id": 15,
     "action_name": "commented on",
     "target_id": 1312,
+    "target_iid": 61,
     "target_type": "Note",
     "author_id": 1,
     "target_title": null,

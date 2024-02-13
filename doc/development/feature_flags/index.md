@@ -24,11 +24,11 @@ Blueprints:
 
 This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 
-For an [overview of the feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, see the [feature flag lifecycle](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) handbook page.
+For an [overview of the feature flag lifecycle](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flag-lifecycle), or if you need help deciding [if you should use a feature flag](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) or not, see the feature flag lifecycle handbook page.
 
 ## When to use feature flags
 
-Moved to the ["When to use feature flags"](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
+Moved to the ["When to use feature flags"](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
 
 ## Feature flags in GitLab development
 
@@ -65,6 +65,11 @@ When the feature implementation is delivered over multiple merge requests:
    - Add a [changelog entry](#changelog).
    - Remove the feature flag to enable the new behavior, or flip the feature flag to be **enabled by default** (only for `ops` and `beta` feature flags).
 
+When the feature flag removal is delivered over multiple merge requests:
+
+1. The value change of a feature flag should be the only change in a merge request. As long as the feature flag exists in the codebase, both states should be fully functional (when the feature is on and off).
+1. After all mentions of the feature flag have been removed, legacy code can be removed. Steps in the feature flag roll-out issue should be followed, and if a step needs to be skipped, a comment should be added to the issue detailing why.
+
 One might be tempted to think that feature flags will delay the release of a
 feature by at least one month (= one release). This is not the case. A feature
 flag does not have to stick around for a specific amount of time
@@ -75,7 +80,7 @@ problems, such as outages.**
 ## Risk of a broken default branch
 
 Feature flags must be used in the MR that introduces them. Not doing so causes a
-[broken default branch](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+[broken default branch](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the default branch.
 
 ## Types of feature flags
@@ -105,26 +110,26 @@ To enable and disable them, run on the GitLab Rails console:
 
 ```ruby
 # To enable it for the instance:
-Feature.enable(:<dev_flag_name>, type: :gitlab_com_derisk)
+Feature.enable(:<dev_flag_name>)
 
 # To disable it for the instance:
-Feature.disable(:<dev_flag_name>, type: :gitlab_com_derisk)
+Feature.disable(:<dev_flag_name>)
 
 # To enable for a specific project:
-Feature.enable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
+Feature.enable(:<dev_flag_name>, Project.find(<project id>))
 
 # To disable for a specific project:
-Feature.disable(:<dev_flag_name>, Project.find(<project id>), type: :gitlab_com_derisk)
+Feature.disable(:<dev_flag_name>, Project.find(<project id>))
 ```
 
 To check a `gitlab_com_derisk` feature flag's state:
 
 ```ruby
 # Check if the feature flag is enabled
-Feature.enabled?(:dev_flag_name, type: :gitlab_com_derisk)
+Feature.enabled?(:dev_flag_name)
 
 # Check if the feature flag is disabled
-Feature.disabled?(:dev_flag_name, type: :gitlab_com_derisk)
+Feature.disabled?(:dev_flag_name)
 ```
 
 ### `wip` type
@@ -149,19 +154,19 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_wip_flag, project, type: :wip)
+Feature.enabled?(:my_wip_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_wip_flag, project, type: :wip)
+Feature.disabled?(:my_wip_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_wip_flag, project, type: :wip)
+push_frontend_feature_flag(:my_wip_flag, project)
 ```
 
 ### `beta` type
 
 We might
-[not be confident we'll be able to scale, support, and maintain a feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
+[not be confident we'll be able to scale, support, and maintain a feature](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
 in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
 There are also scenarios where a feature is not complete enough to be considered an MVC.
 Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.
@@ -182,13 +187,13 @@ Providing a flag in this case allows engineers and customers to disable the new 
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_beta_flag, project, type: :beta)
+Feature.enabled?(:my_beta_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_beta_flag, project, type: :beta)
+Feature.disabled?(:my_beta_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_beta_flag, project, type: :beta)
+push_frontend_feature_flag(:my_beta_flag, project)
 ```
 
 ### `ops` type
@@ -202,25 +207,25 @@ instance/group/project/user setting.
 
 #### Constraints
 
-- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
-  possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
-  reason on specific on-premise installations)
-- Maximum Lifespan: Unlimited
+- `default_enabled`: Should be set to `false` in most cases, and only enabled to resolve temporary scalability
+  issues or help debug production issues.
+- Maximum Lifespan: 12 months
 - Documentation: This type of feature flag **must** be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page
+  [All feature flags in GitLab](../../user/feature_flags.md) page as well as be associated with an operational
+  runbook describing the circumstances when it can be used.
 - Rollout issue: Likely no need for a rollout issues, as it is hard to predict when they are enabled or disabled
 
 #### Usage
 
 ```ruby
 # Check if feature flag is enabled
-Feature.enabled?(:my_ops_flag, project, type: :ops)
+Feature.enabled?(:my_ops_flag, project)
 
 # Check if feature flag is disabled
-Feature.disabled?(:my_ops_flag, project, type: :ops)
+Feature.disabled?(:my_ops_flag, project)
 
 # Push feature flag to Frontend
-push_frontend_feature_flag(:my_ops_flag, project, type: :ops)
+push_frontend_feature_flag(:my_ops_flag, project)
 ```
 
 ### `experiment` type
@@ -250,15 +255,15 @@ The `development` type is deprecated in favor of the `gitlab_com_derisk`, `wip`,
 
 ## Feature flag definition and validation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229161) in GitLab 13.3.
 
 During development (`RAILS_ENV=development`) or testing (`RAILS_ENV=test`) all feature flag usage is being strictly validated.
 
 This process is meant to ensure consistent feature flag usage in the codebase. All feature flags **must**:
 
-- Be known. Only use feature flags that are explicitly defined.
+- Be known. Only use feature flags that are explicitly defined (except for feature flags of the types `experiment`, `worker` and `undefined`).
 - Not be defined twice. They have to be defined either in FOSS or EE, but not both.
-- Use a valid and consistent `type:` across all invocations.
+- For feature flags that don't have a definition file, use a valid and consistent `type:` across all invocations.
 - Have an owner.
 
 All feature flags known to GitLab are self-documented in YAML files stored in:
@@ -275,7 +280,7 @@ Each feature flag is defined in a separate YAML file consisting of a number of f
 | `default_enabled`   | yes      | The default state of the feature flag.                         |
 | `introduced_by_url` | yes      | The URL to the merge request that introduced the feature flag. |
 | `milestone`         | yes      | Milestone in which the feature flag was created. |
-| `group`             | yes      | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+| `group`             | yes      | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
 | `feature_issue_url` | no       | The URL to the original feature issue.                         |
 | `rollout_issue_url` | no       | The URL to the Issue covering the feature flag rollout.        |
 | `log_state_changes` | no       | Used to log the state of the feature flag                      |
@@ -297,24 +302,43 @@ Only feature flags that have a YAML definition file can be used when running the
 
 ```shell
 $ bin/feature-flag my_feature_flag
->> Specify the group introducing the feature flag, like `group::project management`:
-?> group::cloud connector
+>> Specify the feature flag type
+?> beta
+You picked the type 'beta'
 
->> URL of the MR introducing the feature flag (enter to skip):
-?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+>> Specify the group label to which the feature flag belongs, from the following list:
+1. group::group1
+2. group::group2
+?> 2
+You picked the group 'group::group2'
 
->> Open this URL and fill in the rest of the details:
-https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue%5Btitle%5D=%5BFeature+flag%5D+Rollout+of+%60test-flag%60&issuable_template=Feature+Flag+Roll+Out
+>> URL of the original feature issue (enter to skip):
+?> https://gitlab.com/gitlab-org/gitlab/-/issues/435435
+
+>> URL of the MR introducing the feature flag (enter to skip and let Danger provide a suggestion directly in the MR):
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141023
+
+>> Username of the feature flag DRI (enter to skip):
+?> bob
+
+>> Is this an EE only feature (enter to skip):
+?> [Return]
+
+>> Press any key and paste the issue content that we copied to your clipboard! 🚀
+?> [Return automatically opens the "New issue" page where you only have to paste the issue content]
 
 >> URL of the rollout issue (enter to skip):
-?> https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-create config/feature_flags/development/my_feature_flag.yml
+?> https://gitlab.com/gitlab-org/gitlab/-/issues/437162
+
+create config/feature_flags/beta/my_feature_flag.yml
 ---
 name: my_feature_flag
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-group: group::cloud connector
-type: development
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/435435
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141023
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437162
+milestone: '16.9'
+group: group::composition analysis
+type: beta
 default_enabled: false
 ```
 
@@ -347,7 +371,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
 
 WARNING:
 Feature flags **must** be used in the MR that introduces them. Not doing so causes a
-[broken master](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
+[broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
 
 ## List all the feature flags
@@ -400,17 +424,15 @@ by `default_enabled:` in YAML definition.
 If feature flag does not have a YAML definition an error will be raised
 in development or test environment, while returning `false` on production.
 
-If not specified, the default feature flag type for `Feature.enabled?` and `Feature.disabled?`
-is `type: development`. For all other feature flag types, you must specify the `type:`:
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+you need to pass their `type:` when calling `Feature.enabled?` and `Feature.disabled?`:
 
 ```ruby
-if Feature.enabled?(:feature_flag, project, type: :ops)
-  # execute code if ops feature flag is enabled
-else
-  # execute code if ops feature flag is disabled
+if Feature.enabled?(:experiment_feature_flag, project, type: :experiment)
+  # execute code if feature flag is enabled
 end
 
-if Feature.disabled?(:my_feature_flag, project, type: :ops)
+if Feature.disabled?(:worker_feature_flag, project, type: :worker)
   # execute code if feature flag is disabled
 end
 ```
@@ -487,12 +509,12 @@ so checking for `gon.features.vim_bindings` would not work.
 See the [Vue guide](../fe_guide/vue.md#accessing-feature-flags) for details about
 how to access feature flags in a Vue component.
 
-If not specified, the default feature flag type for `push_frontend_feature_flag`
-is `type: development`. For all other feature flag types, you must specify the `type:`:
+For feature flags that don't have a definition file (only allowed for the `experiment`, `worker` and `undefined` types),
+you need to pass their `type:` when calling `push_frontend_feature_flag`:
 
 ```ruby
 before_action do
-  push_frontend_feature_flag(:vim_bindings, project, type: :ops)
+  push_frontend_feature_flag(:vim_bindings, project, type: :experiment)
 end
 ```
 
@@ -538,7 +560,7 @@ to selectively enable or disable feature flags in GitLab-provided environments, 
 
 #### Current request actor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5
 
 It is not recommended to use percentage of time rollout, as each call may return
 inconsistent results.

@@ -1108,10 +1108,10 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     context 'data' do
       where(:scope, :label, :data, :search, :active_scope) do
-        "projects"       | "Projects"                | { qa_selector: 'projects_tab' } | nil                  | "projects"
-        "snippet_titles" | "Snippets"                | nil                             | { snippets: "test" } | "code"
-        "projects"       | "Projects"                | { qa_selector: 'projects_tab' } | nil                  | "issue"
-        "snippet_titles" | "Snippets"                | nil                             | { snippets: "test" } | "snippet_titles"
+        "projects"       | "Projects"                | { testid: 'projects-tab' } | nil                  | "projects"
+        "snippet_titles" | "Snippets"                | nil                        | { snippets: "test" } | "code"
+        "projects"       | "Projects"                | { testid: 'projects-tab' } | nil                  | "issue"
+        "snippet_titles" | "Snippets"                | nil                        | { snippets: "test" } | "snippet_titles"
       end
 
       with_them do

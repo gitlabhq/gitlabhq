@@ -41,7 +41,6 @@ describe('HighlightMixin', () => {
       mixins: [highlightMixin],
       inject: {
         highlightWorker: { default: workerMock },
-        glFeatures: { default: { highlightJsWorker: true } },
       },
       template: '<div>{{chunks[0]?.highlightedContent}}</div>',
       created() {

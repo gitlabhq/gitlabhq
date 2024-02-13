@@ -2,56 +2,7 @@ import {
   MarkdownSerializer as ProseMirrorMarkdownSerializer,
   defaultMarkdownSerializer,
 } from '~/lib/prosemirror_markdown_serializer';
-import Audio from '../extensions/audio';
-import Blockquote from '../extensions/blockquote';
-import Bold from '../extensions/bold';
-import BulletList from '../extensions/bullet_list';
-import Code from '../extensions/code';
-import CodeBlockHighlight from '../extensions/code_block_highlight';
-import CodeSuggestion from '../extensions/code_suggestion';
-import DescriptionItem from '../extensions/description_item';
-import DescriptionList from '../extensions/description_list';
-import Details from '../extensions/details';
-import DetailsContent from '../extensions/details_content';
-import DrawioDiagram from '../extensions/drawio_diagram';
-import Diagram from '../extensions/diagram';
-import Emoji from '../extensions/emoji';
-import Figure from '../extensions/figure';
-import FigureCaption from '../extensions/figure_caption';
-import FootnoteDefinition from '../extensions/footnote_definition';
-import FootnoteReference from '../extensions/footnote_reference';
-import Frontmatter from '../extensions/frontmatter';
-import HardBreak from '../extensions/hard_break';
-import Heading from '../extensions/heading';
-import HorizontalRule from '../extensions/horizontal_rule';
-import Highlight from '../extensions/highlight';
-import HTMLMarks from '../extensions/html_marks';
-import HTMLNodes from '../extensions/html_nodes';
-import Image from '../extensions/image';
-import InlineDiff from '../extensions/inline_diff';
-import Italic from '../extensions/italic';
-import Link from '../extensions/link';
-import ListItem from '../extensions/list_item';
-import Loading from '../extensions/loading';
-import MathInline from '../extensions/math_inline';
-import OrderedList from '../extensions/ordered_list';
-import Paragraph from '../extensions/paragraph';
-import Reference from '../extensions/reference';
-import ReferenceLabel from '../extensions/reference_label';
-import ReferenceDefinition from '../extensions/reference_definition';
-import Strike from '../extensions/strike';
-import Subscript from '../extensions/subscript';
-import Superscript from '../extensions/superscript';
-import Table from '../extensions/table';
-import TableCell from '../extensions/table_cell';
-import TableHeader from '../extensions/table_header';
-import TableOfContents from '../extensions/table_of_contents';
-import TableRow from '../extensions/table_row';
-import TaskItem from '../extensions/task_item';
-import TaskList from '../extensions/task_list';
-import Text from '../extensions/text';
-import Video from '../extensions/video';
-import WordBreak from '../extensions/word_break';
+import * as extensions from '../extensions';
 import {
   renderCodeBlock,
   renderHardBreak,
@@ -62,6 +13,8 @@ import {
   closeTag,
   renderOrderedList,
   renderImage,
+  renderHeading,
+  renderBlockquote,
   renderPlayable,
   renderHTMLNode,
   renderContent,
@@ -78,13 +31,13 @@ import {
 
 const defaultSerializerConfig = {
   marks: {
-    [Bold.name]: bold,
-    [Italic.name]: italic,
-    [Code.name]: code,
-    [Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
-    [Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
-    [Highlight.name]: { open: '<mark>', close: '</mark>', mixable: true },
-    [InlineDiff.name]: {
+    [extensions.Bold.name]: bold,
+    [extensions.Italic.name]: italic,
+    [extensions.Code.name]: code,
+    [extensions.Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
+    [extensions.Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
+    [extensions.Highlight.name]: { open: '<mark>', close: '</mark>', mixable: true },
+    [extensions.InlineDiff.name]: {
       mixable: true,
       open(_, mark) {
         return mark.attrs.type === 'addition' ? '{+' : '{-';
@@ -93,14 +46,14 @@ const defaultSerializerConfig = {
         return mark.attrs.type === 'addition' ? '+}' : '-}';
       },
     },
-    [Link.name]: link,
-    [MathInline.name]: {
+    [extensions.Link.name]: link,
+    [extensions.MathInline.name]: {
       open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
       close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
       escape: false,
     },
-    [Strike.name]: strike,
-    ...HTMLMarks.reduce(
+    [extensions.Strike.name]: strike,
+    ...extensions.HTMLMarks.reduce(
       (acc, { name }) => ({
         ...acc,
         [name]: {
@@ -116,38 +69,27 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
-    [Audio.name]: preserveUnchanged({
+    [extensions.Audio.name]: preserveUnchanged({
       render: renderPlayable,
       inline: true,
     }),
-    [Blockquote.name]: preserveUnchanged((state, node) => {
-      if (node.attrs.multiline) {
-        state.write('>>>');
-        state.ensureNewLine();
-        state.renderContent(node);
-        state.ensureNewLine();
-        state.write('>>>');
-        state.closeBlock(node);
-      } else {
-        state.wrapBlock('> ', null, node, () => state.renderContent(node));
-      }
-    }),
-    [BulletList.name]: preserveUnchanged(renderBulletList),
-    [CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
-    [Diagram.name]: preserveUnchanged(renderCodeBlock),
-    [CodeSuggestion.name]: preserveUnchanged(renderCodeBlock),
-    [DrawioDiagram.name]: preserveUnchanged({
+    [extensions.Blockquote.name]: preserveUnchanged(renderBlockquote),
+    [extensions.BulletList.name]: preserveUnchanged(renderBulletList),
+    [extensions.CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
+    [extensions.Diagram.name]: preserveUnchanged(renderCodeBlock),
+    [extensions.CodeSuggestion.name]: preserveUnchanged(renderCodeBlock),
+    [extensions.DrawioDiagram.name]: preserveUnchanged({
       render: renderImage,
       inline: true,
     }),
-    [DescriptionList.name]: renderHTMLNode('dl', true),
-    [DescriptionItem.name]: (state, node, parent, index) => {
+    [extensions.DescriptionList.name]: renderHTMLNode('dl', true),
+    [extensions.DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();
       renderHTMLNode(node.attrs.isTerm ? 'dt' : 'dd')(state, node);
       if (index === parent.childCount - 1) state.ensureNewLine();
     },
-    [Details.name]: renderHTMLNode('details', true),
-    [DetailsContent.name]: (state, node, parent, index) => {
+    [extensions.Details.name]: renderHTMLNode('details', true),
+    [extensions.DetailsContent.name]: (state, node, parent, index) => {
       if (!index) renderHTMLNode('summary')(state, node);
       else {
         if (index === 1) state.ensureNewLine();
@@ -155,23 +97,23 @@ const defaultSerializerConfig = {
         if (index === parent.childCount - 1) state.ensureNewLine();
       }
     },
-    [Emoji.name]: (state, node) => {
+    [extensions.Emoji.name]: (state, node) => {
       const { name } = node.attrs;
 
       state.write(`:${name}:`);
     },
-    [FootnoteDefinition.name]: preserveUnchanged((state, node) => {
+    [extensions.FootnoteDefinition.name]: preserveUnchanged((state, node) => {
       state.write(`[^${node.attrs.identifier}]: `);
       state.renderInline(node);
       state.ensureNewLine();
     }),
-    [FootnoteReference.name]: preserveUnchanged({
+    [extensions.FootnoteReference.name]: preserveUnchanged({
       render: (state, node) => {
         state.write(`[^${node.attrs.identifier}]`);
       },
       inline: true,
     }),
-    [Frontmatter.name]: preserveUnchanged((state, node) => {
+    [extensions.Frontmatter.name]: preserveUnchanged((state, node) => {
       const { language } = node.attrs;
       const syntax = {
         toml: '+++',
@@ -185,22 +127,24 @@ const defaultSerializerConfig = {
       state.write(syntax);
       state.closeBlock(node);
     }),
-    [Figure.name]: renderHTMLNode('figure'),
-    [FigureCaption.name]: renderHTMLNode('figcaption'),
-    [HardBreak.name]: preserveUnchanged(renderHardBreak),
-    [Heading.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.heading),
-    [HorizontalRule.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.horizontal_rule),
-    [Image.name]: preserveUnchanged({
+    [extensions.Figure.name]: renderHTMLNode('figure'),
+    [extensions.FigureCaption.name]: renderHTMLNode('figcaption'),
+    [extensions.HardBreak.name]: preserveUnchanged(renderHardBreak),
+    [extensions.Heading.name]: preserveUnchanged(renderHeading),
+    [extensions.HorizontalRule.name]: preserveUnchanged(
+      defaultMarkdownSerializer.nodes.horizontal_rule,
+    ),
+    [extensions.Image.name]: preserveUnchanged({
       render: renderImage,
       inline: true,
     }),
-    [ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
-    [Loading.name]: () => {},
-    [OrderedList.name]: preserveUnchanged(renderOrderedList),
-    [Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
-    [Reference.name]: renderReference,
-    [ReferenceLabel.name]: renderReferenceLabel,
-    [ReferenceDefinition.name]: preserveUnchanged({
+    [extensions.ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
+    [extensions.Loading.name]: () => {},
+    [extensions.OrderedList.name]: preserveUnchanged(renderOrderedList),
+    [extensions.Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
+    [extensions.Reference.name]: renderReference,
+    [extensions.ReferenceLabel.name]: renderReferenceLabel,
+    [extensions.ReferenceDefinition.name]: preserveUnchanged({
       render: (state, node, parent, index, same, sourceMarkdown) => {
         const nextSibling = parent.maybeChild(index + 1);
 
@@ -211,7 +155,7 @@ const defaultSerializerConfig = {
          * because it isn’t necessary and a more compact text format
          * is preferred.
          */
-        if (!nextSibling || nextSibling.type.name !== ReferenceDefinition.name) {
+        if (!nextSibling || nextSibling.type.name !== extensions.ReferenceDefinition.name) {
           state.closeBlock(node);
         } else {
           state.ensureNewLine();
@@ -219,34 +163,35 @@ const defaultSerializerConfig = {
       },
       overwriteSourcePreservationStrategy: true,
     }),
-    [TableOfContents.name]: preserveUnchanged((state, node) => {
+    [extensions.TableOfContents.name]: preserveUnchanged((state, node) => {
       state.write('[[_TOC_]]');
       state.closeBlock(node);
     }),
-    [Table.name]: preserveUnchanged(renderTable),
-    [TableCell.name]: renderTableCell,
-    [TableHeader.name]: renderTableCell,
-    [TableRow.name]: renderTableRow,
-    [TaskItem.name]: preserveUnchanged((state, node) => {
+    [extensions.Table.name]: preserveUnchanged(renderTable),
+    [extensions.TableCell.name]: renderTableCell,
+    [extensions.TableHeader.name]: renderTableCell,
+    [extensions.TableRow.name]: renderTableRow,
+    [extensions.TaskItem.name]: preserveUnchanged((state, node) => {
       let symbol = ' ';
       if (node.attrs.inapplicable) symbol = '~';
       else if (node.attrs.checked) symbol = 'x';
 
       state.write(`[${symbol}] `);
+
       if (!node.textContent) state.write('&nbsp;');
       state.renderContent(node);
     }),
-    [TaskList.name]: preserveUnchanged((state, node) => {
+    [extensions.TaskList.name]: preserveUnchanged((state, node) => {
       if (node.attrs.numeric) renderOrderedList(state, node);
       else renderBulletList(state, node);
     }),
-    [Text.name]: defaultMarkdownSerializer.nodes.text,
-    [Video.name]: preserveUnchanged({
+    [extensions.Text.name]: defaultMarkdownSerializer.nodes.text,
+    [extensions.Video.name]: preserveUnchanged({
       render: renderPlayable,
       inline: true,
     }),
-    [WordBreak.name]: (state) => state.write('<wbr>'),
-    ...HTMLNodes.reduce((serializers, htmlNode) => {
+    [extensions.WordBreak.name]: (state) => state.write('<wbr>'),
+    ...extensions.HTMLNodes.reduce((serializers, htmlNode) => {
       return {
         ...serializers,
         [htmlNode.name]: (state, node) => renderHTMLNode(htmlNode.options.tagName)(state, node),
@@ -310,7 +255,7 @@ export default class MarkdownSerializer {
    * changed.
    * @returns A String that represents the serialized document as Markdown
    */
-  serialize({ doc, pristineDoc }) {
+  serialize({ doc, pristineDoc }, { useCanonicalSrc = true, skipEmptyNodes = false } = {}) {
     const changeTracker = createChangeTracker(doc, pristineDoc);
     const serializer = new ProseMirrorMarkdownSerializer(
       {
@@ -325,6 +270,8 @@ export default class MarkdownSerializer {
 
     return serializer.serialize(doc, {
       tightLists: true,
+      useCanonicalSrc,
+      skipEmptyNodes,
       changeTracker,
       escapeExtraCharacters: /<|>/g,
     });

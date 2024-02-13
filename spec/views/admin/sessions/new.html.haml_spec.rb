@@ -19,7 +19,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
     it 'shows enter password form' do
       render
 
-      expect(rendered).to have_css('.login-box')
+      expect(rendered).to have_selector('[data-testid="sign-in-form"]')
       expect(rendered).to have_selector('[data-testid="password-field"]')
     end
 
@@ -28,7 +28,7 @@ RSpec.describe 'admin/sessions/new.html.haml' do
 
       render
 
-      expect(rendered).not_to have_css('.login-box')
+      expect(rendered).to have_no_selector('[data-testid="sign-in-form"]')
       expect(rendered).to have_content _('No authentication methods configured.')
     end
   end
@@ -43,8 +43,9 @@ RSpec.describe 'admin/sessions/new.html.haml' do
       render
 
       expect(rendered).not_to have_content _('No authentication methods configured.')
-      expect(rendered).to have_css('.omniauth-divider')
-      expect(rendered).to have_content(_('or sign in with'))
+      within('[data-testid="divider"]') do
+        expect(rendered).to have_content(_('or sign in with'))
+      end
       expect(rendered).to have_css('.js-oauth-login')
     end
   end

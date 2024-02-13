@@ -1,13 +1,41 @@
 .read-more-container {
-  @include media-breakpoint-down(md) {
-    &:not(.is-expanded) {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+  $scrim: 2rem;
+  $fallback: 320px;
+  $height: 39px;
 
-      > * {
-        display: inline;
+  &:not(:has(.read-more-content)) {
+    @include media-breakpoint-down(md) {
+      &:not(.is-expanded) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        > * {
+          display: inline;
+        }
       }
+    }
+  }
+
+  &:has(.read-more-content--has-scrim:not(.is-expanded)) {
+    position: relative;
+    max-height: var(--read-more-height, #{$fallback - $height});
+    overflow: hidden;
+  }
+
+  // only appears when size is > $height.
+  .read-more-content--has-scrim:not(.is-expanded)::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(var(--read-more-height, #{$fallback}) - #{$scrim} - #{$height});
+    height: $scrim;
+    background: linear-gradient(180deg, transparent, $white);
+
+    .gl-dark & {
+      background: linear-gradient(180deg, transparent, $black);
     }
   }
 }

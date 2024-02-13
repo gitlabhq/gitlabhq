@@ -7,6 +7,7 @@ import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
 import eventHub from '~/environments/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { noteableDataMock, notesDataMock, discussionMock, note } from '../mock_data';
@@ -16,6 +17,7 @@ jest.mock('~/lib/utils/autosave');
 describe('issue_note_form component', () => {
   let store;
   let wrapper;
+  let textarea;
   let props;
   let trackingSpy;
 
@@ -39,10 +41,13 @@ describe('issue_note_form component', () => {
         },
       },
     });
+
+    textarea = wrapper.find('textarea');
   };
 
   const findCancelButton = () => wrapper.findByTestId('cancel');
   const findCancelCommentButton = () => wrapper.findByTestId('cancelBatchCommentsEnabled');
+  const findAddToStartReviewButton = () => wrapper.findByTestId('start-review-button');
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
 
   beforeEach(() => {
@@ -112,14 +117,10 @@ describe('issue_note_form component', () => {
     });
 
     it('should render text area with placeholder', () => {
-      const textarea = wrapper.find('textarea');
-
       expect(textarea.attributes('placeholder')).toBe('Write a comment or drag your files here…');
     });
 
     it('should set data-supports-quick-actions to enable autocomplete', () => {
-      const textarea = wrapper.find('textarea');
-
       expect(textarea.attributes('data-supports-quick-actions')).toBe('true');
     });
 
@@ -147,10 +148,7 @@ describe('issue_note_form component', () => {
     });
 
     describe('keyboard events', () => {
-      let textarea;
-
       beforeEach(() => {
-        textarea = wrapper.find('textarea');
         textarea.setValue('Foo');
       });
 
@@ -213,7 +211,6 @@ describe('issue_note_form component', () => {
       it('should be possible to update the note', () => {
         createComponentWrapper();
 
-        const textarea = wrapper.find('textarea');
         textarea.setValue('Foo');
         const saveButton = wrapper.find('.js-vue-issue-save');
         saveButton.vm.$emit('click');
@@ -224,7 +221,6 @@ describe('issue_note_form component', () => {
       it('tracks event when save button is clicked', () => {
         createComponentWrapper();
 
-        const textarea = wrapper.find('textarea');
         textarea.setValue('Foo');
         const saveButton = wrapper.find('.js-vue-issue-save');
         saveButton.vm.$emit('click');
@@ -313,8 +309,6 @@ describe('issue_note_form component', () => {
 
     describe('on enter', () => {
       it('should start review or add to review when cmd+enter is pressed', async () => {
-        const textarea = wrapper.find('textarea');
-
         textarea.setValue('Foo');
         textarea.trigger('keydown.enter', { metaKey: true });
 
@@ -323,6 +317,41 @@ describe('issue_note_form component', () => {
         expect(wrapper.emitted('handleFormUpdateAddToReview')).toStrictEqual([
           ['Foo', false, wrapper.vm.$refs.editNoteForm, expect.any(Function)],
         ]);
+      });
+    });
+
+    describe('when adding a draft comment', () => {
+      beforeEach(() => {
+        jest.spyOn(notesEventHub, '$emit');
+      });
+
+      it('sends the event to indicate that a draft has been added to the review', () => {
+        store.state.batchComments.drafts = [{ note: 'A' }];
+        createComponentWrapper({
+          isDraft: true,
+          noteId: '',
+          discussion: { ...discussionMock, for_commit: false },
+        });
+
+        findAddToStartReviewButton().trigger('click');
+
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
+          name: 'noteFormAddToReview',
+        });
+      });
+
+      it('sends the event to indicate that a review has been started with the new draft', () => {
+        createComponentWrapper({
+          isDraft: true,
+          noteId: '',
+          discussion: { ...discussionMock, for_commit: false },
+        });
+
+        findAddToStartReviewButton().trigger('click');
+
+        expect(notesEventHub.$emit).toHaveBeenCalledWith('noteFormStartReview', {
+          name: 'noteFormStartReview',
+        });
       });
     });
   });

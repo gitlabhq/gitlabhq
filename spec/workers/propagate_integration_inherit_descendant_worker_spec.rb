@@ -11,8 +11,8 @@ RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :i
   it_behaves_like 'an idempotent worker' do
     let(:job_args) { [group_integration.id, subgroup_integration.id, subgroup_integration.id] }
 
-    it 'calls to BulkUpdateIntegrationService' do
-      expect(BulkUpdateIntegrationService).to receive(:new)
+    it 'calls to Integrations::Propagation::BulkUpdateService' do
+      expect(Integrations::Propagation::BulkUpdateService).to receive(:new)
         .with(group_integration, match_array(subgroup_integration)).twice
         .and_return(double(execute: nil))
 
@@ -22,7 +22,7 @@ RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :i
 
   context 'with an invalid integration id' do
     it 'returns without failure' do
-      expect(BulkUpdateIntegrationService).not_to receive(:new)
+      expect(Integrations::Propagation::BulkUpdateService).not_to receive(:new)
 
       subject.perform(0, subgroup_integration.id, subgroup_integration.id)
     end

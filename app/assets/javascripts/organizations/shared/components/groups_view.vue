@@ -1,10 +1,13 @@
 <script>
-import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
+import { DEFAULT_PER_PAGE } from '~/api';
 import groupsQuery from '../graphql/queries/groups.query.graphql';
+import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import { formatGroups } from '../utils';
+import NewGroupButton from './new_group_button.vue';
 
 export default {
   i18n: {
@@ -16,15 +19,14 @@ export default {
       description: s__(
         'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
       ),
-      primaryButtonText: __('New group'),
     },
+    prev: __('Prev'),
+    next: __('Next'),
   },
-  components: { GlLoadingIcon, GlEmptyState, GroupsList },
+  components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList, NewGroupButton },
   inject: {
+    organizationGid: {},
     groupsEmptyStateSvgPath: {},
-    newGroupPath: {
-      default: null,
-    },
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -37,17 +39,62 @@ export default {
       required: false,
       default: '',
     },
+    startCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    endCursor: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    perPage: {
+      type: Number,
+      required: false,
+      default: DEFAULT_PER_PAGE,
+    },
+    search: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    sortName: {
+      type: String,
+      required: false,
+      default: SORT_ITEM_NAME.value,
+    },
+    sortDirection: {
+      type: String,
+      required: false,
+      default: SORT_DIRECTION_ASC,
+    },
   },
   data() {
     return {
-      groups: [],
+      groups: {},
     };
   },
   apollo: {
     groups: {
       query: groupsQuery,
-      update(data) {
-        return formatGroups(data.organization.groups.nodes);
+      variables() {
+        return {
+          id: this.organizationGid,
+          search: this.search,
+          sort: this.sort,
+          ...this.pagination,
+        };
+      },
+      update({
+        organization: {
+          groups: { nodes, pageInfo },
+        },
+      }) {
+        return {
+          nodes: formatGroups(nodes),
+          pageInfo,
+        };
       },
       error(error) {
         createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
@@ -55,6 +102,32 @@ export default {
     },
   },
   computed: {
+    nodes() {
+      return this.groups.nodes || [];
+    },
+    pageInfo() {
+      return this.groups.pageInfo || {};
+    },
+    pagination() {
+      if (!this.startCursor && !this.endCursor) {
+        return {
+          first: this.perPage,
+          after: null,
+          last: null,
+          before: null,
+        };
+      }
+
+      return {
+        first: this.endCursor && this.perPage,
+        after: this.endCursor,
+        last: this.startCursor && this.perPage,
+        before: this.startCursor,
+      };
+    },
+    sort() {
+      return `${this.sortName}_${this.sortDirection}`.toUpperCase();
+    },
     isLoading() {
       return this.$apollo.queries.groups.loading;
     },
@@ -66,15 +139,21 @@ export default {
         description: this.$options.i18n.emptyState.description,
       };
 
-      if (this.shouldShowEmptyStateButtons && this.newGroupPath) {
-        return {
-          ...baseProps,
-          primaryButtonLink: this.newGroupPath,
-          primaryButtonText: this.$options.i18n.emptyState.primaryButtonText,
-        };
-      }
-
       return baseProps;
+    },
+  },
+  methods: {
+    onNext(endCursor) {
+      this.$emit('page-change', {
+        endCursor,
+        startCursor: null,
+      });
+    },
+    onPrev(startCursor) {
+      this.$emit('page-change', {
+        endCursor: null,
+        startCursor,
+      });
     },
   },
 };
@@ -82,11 +161,22 @@ export default {
 
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
-  <groups-list
-    v-else-if="groups.length"
-    :groups="groups"
-    show-group-icon
-    :list-item-class="listItemClass"
-  />
-  <gl-empty-state v-else v-bind="emptyStateProps" />
+  <div v-else-if="nodes.length">
+    <groups-list :groups="nodes" show-group-icon :list-item-class="listItemClass" />
+
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="$options.i18n.prev"
+        :next-text="$options.i18n.next"
+        @prev="onPrev"
+        @next="onNext"
+      />
+    </div>
+  </div>
+  <gl-empty-state v-else v-bind="emptyStateProps">
+    <template v-if="shouldShowEmptyStateButtons" #actions>
+      <new-group-button />
+    </template>
+  </gl-empty-state>
 </template>

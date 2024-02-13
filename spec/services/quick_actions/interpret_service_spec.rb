@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe QuickActions::InterpretService, feature_category: :team_planning do
   include AfterNextHelpers
 
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:repository_project) { create(:project, :repository) }
   let_it_be(:project) { public_project }
@@ -384,6 +384,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
+                                  category: nil,
                                   duration: 3600,
                                   user_id: developer.id,
                                   spent_at: DateTime.current
@@ -398,6 +399,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
           _, updates, _ = service.execute(content, issuable)
 
           expect(updates).to eq(spend_time: {
+                                  category: nil,
                                   duration: -7200,
                                   user_id: developer.id,
                                   spent_at: DateTime.current
@@ -417,6 +419,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq(spend_time: {
+                                category: nil,
                                 duration: 1800,
                                 user_id: developer.id,
                                 spent_at: Date.parse(date)
@@ -437,6 +440,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, _ = service.execute(content, issuable)
 
         expect(updates).to eq({})
+      end
+    end
+
+    shared_examples 'spend command with category' do
+      it 'populates spend_time with expected attributes' do
+        _, updates, _ = service.execute(content, issuable)
+
+        expect(updates).to match(spend_time: a_hash_including(category: 'pm'))
       end
     end
 
@@ -1544,6 +1555,11 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'spend command with category' do
+      let(:content) { '/spent 30m [timecategory:pm]' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'failed command' do
       let(:content) { '/spend' }
       let(:issuable) { issue }
@@ -2550,6 +2566,89 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    describe 'convert_to_ticket command' do
+      shared_examples 'a failed command execution' do
+        it 'fails with message' do
+          _, _, message = convert_to_ticket
+
+          expect(message).to eq(expected_message)
+          expect(issuable).to have_attributes(
+            confidential: false,
+            author_id: original_author.id,
+            service_desk_reply_to: nil
+          )
+        end
+      end
+
+      let_it_be_with_reload(:issuable) { issue }
+      let_it_be(:original_author) { issue.author }
+
+      let(:content) { '/convert_to_ticket' }
+      let(:expected_message) do
+        s_("ServiceDesk|Cannot convert issue to ticket because no email was provided or the format was invalid.")
+      end
+
+      subject(:convert_to_ticket) { service.execute(content, issuable) }
+
+      it 'is part of the available commands' do
+        expect(service.available_commands(issuable)).to include(a_hash_including(name: :convert_to_ticket))
+      end
+
+      it_behaves_like 'a failed command execution'
+
+      context 'when parameter is not an email' do
+        let(:content) { '/convert_to_ticket no-email-at-all' }
+
+        it_behaves_like 'a failed command execution'
+      end
+
+      context 'when parameter is an email' do
+        let(:content) { '/convert_to_ticket user@example.com' }
+
+        it 'converts issue to Service Desk issue' do
+          _, _, message = convert_to_ticket
+
+          expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
+          expect(issuable).to have_attributes(
+            confidential: true,
+            author_id: Users::Internal.support_bot.id,
+            service_desk_reply_to: 'user@example.com'
+          )
+        end
+      end
+
+      context 'when issue is Service Desk issue' do
+        before do
+          issue.update!(
+            author: Users::Internal.support_bot,
+            service_desk_reply_to: 'user@example.com'
+          )
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with non-persisted issue' do
+        let(:issuable) { build(:issue) }
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+
+      context 'with feature flag convert_to_ticket_quick_action disabled' do
+        before do
+          stub_feature_flags(convert_to_ticket_quick_action: false)
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :convert_to_ticket))
+        end
+      end
+    end
+
     context 'severity command' do
       let_it_be_with_reload(:issuable) { create(:incident, project: project) }
 
@@ -2752,6 +2851,42 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         _, updates, _ = service.execute(content, work_item)
 
         expect(updates).to eq(set_parent: parent)
+      end
+    end
+
+    context '/remove_parent command' do
+      let_it_be_with_reload(:work_item) { create(:work_item, :task, project: project) }
+
+      let(:content) { "/remove_parent" }
+
+      context 'when a parent is not present' do
+        it 'is empty' do
+          _, explanations = service.explain(content, work_item)
+
+          expect(explanations).to eq([])
+        end
+      end
+
+      context 'when a parent is present' do
+        let_it_be(:parent) { create(:work_item, :issue, project: project) }
+
+        before do
+          create(:parent_link, work_item_parent: parent, work_item: work_item)
+        end
+
+        it 'returns correct explanation' do
+          _, explanations = service.explain(content, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Remove #{parent.to_reference(work_item)} as this work item's parent.")
+        end
+
+        it 'returns success message' do
+          _, updates, message = service.execute(content, work_item)
+
+          expect(updates).to eq(remove_parent: true)
+          expect(message).to eq('Work item parent removed successfully')
+        end
       end
     end
   end

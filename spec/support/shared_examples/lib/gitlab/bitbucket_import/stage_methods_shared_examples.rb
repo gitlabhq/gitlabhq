@@ -16,12 +16,23 @@ RSpec.shared_examples Gitlab::BitbucketImport::StageMethods do
     end
   end
 
-  describe '.perform' do
+  describe '#perform' do
     let(:worker) { described_class.new }
 
     it 'executes the import' do
       expect(worker).to receive(:import).with(project).once
       expect(Gitlab::BitbucketImport::Logger).to receive(:info).twice
+
+      worker.perform(project.id)
+    end
+
+    it 'queues RefreshImportJidWorker' do
+      allow(worker).to receive(:import)
+      allow(worker).to receive(:jid).and_return('mock_jid')
+
+      expect(Gitlab::Import::RefreshImportJidWorker)
+        .to receive(:perform_in_the_future)
+        .with(project.id, 'mock_jid')
 
       worker.perform(project.id)
     end

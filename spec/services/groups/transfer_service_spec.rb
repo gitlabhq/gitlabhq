@@ -17,7 +17,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
   end
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:new_parent_group) { create(:group, :public, :crm_enabled) }
+  let_it_be(:new_parent_group) { create(:group, :public) }
 
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
@@ -841,12 +841,12 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
       let(:transfer_service) { described_class.new(subgroup, user) }
 
       it 'ensures there is still an owner for the transferred group' do
-        expect(subgroup.owners).to be_empty
+        expect(subgroup.all_owner_members).to be_empty
 
         transfer_service.execute(nil)
         subgroup.reload
 
-        expect(subgroup.owners).to match_array(user)
+        expect(subgroup.all_owner_members.map(&:user)).to match_array(user)
       end
 
       context 'when group has explicit owner' do
@@ -854,12 +854,12 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         let!(:another_member) { create(:group_member, :owner, group: subgroup, user: another_owner) }
 
         it 'does not add additional owner' do
-          expect(subgroup.owners).to match_array(another_owner)
+          expect(subgroup.all_owner_members.map(&:user)).to match_array(another_owner)
 
           transfer_service.execute(nil)
           subgroup.reload
 
-          expect(subgroup.owners).to match_array(another_owner)
+          expect(subgroup.all_owner_members.map(&:user)).to match_array(another_owner)
         end
       end
     end

@@ -1,8 +1,8 @@
 <script>
-import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
 import eventHub from '~/boards/eventhub';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
 export default {
@@ -10,24 +10,13 @@ export default {
     GlButton,
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
     GlModalDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['canAdminList'],
-  props: {
-    boardHasScope: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
   computed: {
     buttonText() {
       return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
-    },
-    tooltipTitle() {
-      return this.boardHasScope ? __("This board's scope is reduced") : '';
     },
   },
   methods: {
@@ -43,9 +32,6 @@ export default {
   <div class="gl-ml-3 gl-display-flex gl-align-items-center">
     <gl-button
       v-gl-modal-directive="'board-config-modal'"
-      v-gl-tooltip
-      :title="tooltipTitle"
-      :class="{ 'dot-highlight': boardHasScope }"
       data-testid="boards-config-button"
       @click.prevent="showPage"
     >

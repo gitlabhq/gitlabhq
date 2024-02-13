@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Runners API **(FREE ALL)**
+# Runners API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page describes endpoints for runners registered to an instance. To create a runner linked to the current user, see [Create a runner](users.md#create-a-runner-linked-to-a-user).
 
@@ -107,7 +111,11 @@ Example response:
 ]
 ```
 
-## List all runners **(FREE SELF)**
+## List all runners
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Get a list of all runners in the GitLab instance (project and shared). Access
 is restricted to users with administrator access.
@@ -370,7 +378,7 @@ and will be removed in [a future version of the REST API](https://gitlab.com/git
 
 ## List jobs processed by a runner
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/15432) in GitLab 10.3.
 
 List jobs that are being processed or were processed by the specified runner. The list of jobs is limited
 to projects where the user has at least the Reporter role.
@@ -463,7 +471,7 @@ Example response:
 
 ## List project's runners
 
-List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners-for-a-project).
+List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
 ```plaintext
 GET /projects/:id/runners
@@ -582,7 +590,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List group's runners
 
-List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-shared-runners-for-a-group).
+List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
 
 ```plaintext
 GET /groups/:id/runners
@@ -786,7 +794,7 @@ Example response:
 
 ## Reset instance's runner registration token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
@@ -804,7 +812,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset project's runner registration token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.
@@ -822,7 +830,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Reset group's runner registration token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30942) in GitLab 14.3.
 
 WARNING:
 Runner registration tokens, and support for certain configuration arguments, were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/380872) in GitLab 15.6 and will be removed in GitLab 17.0. After GitLab 17.0, you will no longer be able to reset runner registration tokens and the `reset_registration_token` endpoint will not function.

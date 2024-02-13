@@ -3,7 +3,7 @@
 module WorkItems
   module Callbacks
     class Description < Base
-      def before_update
+      def after_initialize
         params[:description] = nil if excluded_in_new_type?
 
         return unless params.present? && params.key?(:description)

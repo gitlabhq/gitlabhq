@@ -281,18 +281,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
       it_behaves_like 'creates work item'
 
-      # This is a temporary measure just to ensure the internal id migration doesn't get conflicts
-      # More info in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139367
-      context 'when making the request in a production environment' do
-        before do
-          stub_rails_env('production')
-        end
-
-        it_behaves_like 'a mutation that returns top-level errors', errors: [
-          'Group level work items are disabled. Only project paths allowed in `namespacePath`.'
-        ]
-      end
-
       context 'when the namespace_level_work_items feature flag is disabled' do
         before do
           stub_feature_flags(namespace_level_work_items: false)
@@ -332,6 +320,113 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
       it_behaves_like 'a mutation that returns top-level errors', errors: [
         Mutations::WorkItems::Create::MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR
       ]
+    end
+  end
+
+  context 'with time tracking widget input' do
+    shared_examples 'mutation creating work item with time tracking data' do
+      it 'creates work item with time tracking data' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change(WorkItem, :count).by(1)
+
+        expect(mutation_response['workItem']['widgets']).to include(
+          'timeEstimate' => 12.hours.to_i,
+          'totalTimeSpent' => 2.hours.to_i,
+          'timelogs' => {
+            'nodes' => [
+              {
+                'timeSpent' => 2.hours.to_i
+              }
+            ]
+          },
+          'type' => 'TIME_TRACKING'
+        )
+
+        expect(mutation_response['workItem']['widgets']).to include(
+          'description' => 'some description',
+          'type' => 'DESCRIPTION'
+        )
+      end
+    end
+
+    let(:mutation) { graphql_mutation(:workItemCreate, input.merge('namespacePath' => project.full_path), fields) }
+    let(:fields) do
+      <<~FIELDS
+        workItem {
+          widgets {
+            ... on WorkItemWidgetTimeTracking {
+              type
+              timeEstimate
+              totalTimeSpent
+              timelogs {
+                nodes {
+                  timeSpent
+                }
+              }
+            }
+            ... on WorkItemWidgetDescription {
+              type
+              description
+            }
+          }
+        }
+        errors
+      FIELDS
+    end
+
+    context 'when adding time estimate and time spent' do
+      context 'with quick action' do
+        let(:input) do
+          {
+            title: 'item1',
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" }
+          }
+        end
+
+        it_behaves_like 'mutation creating work item with time tracking data'
+      end
+
+      context 'when work item belongs directly to the group' do
+        let(:input) do
+          {
+            title: 'item1',
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+            descriptionWidget: { description: "some description\n\n/estimate 12h\n/spend 2h" },
+            namespacePath: group.full_path
+          }
+        end
+
+        it_behaves_like 'mutation creating work item with time tracking data'
+      end
+    end
+
+    context 'when the work item type does not support time tracking widget' do
+      let(:input) do
+        {
+          title: 'item1',
+          workItemTypeId: WorkItems::Type.default_by_type(:task).to_gid.to_s,
+          'descriptionWidget' => { 'description' => "some description\n\n/estimate 12h\n/spend 2h" }
+        }
+      end
+
+      before do
+        WorkItems::Type.default_by_type(:task).widget_definitions
+          .find_by_widget_type(:time_tracking).update!(disabled: true)
+      end
+
+      it 'ignores the quick action' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change(WorkItem, :count).by(1)
+
+        expect(mutation_response['workItem']['widgets']).not_to include('type' => 'TIME_TRACKING')
+        expect(mutation_response['workItem']['widgets']).to include(
+          'description' => "some description",
+          'type' => 'DESCRIPTION'
+        )
+      end
     end
   end
 end

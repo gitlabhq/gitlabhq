@@ -4,12 +4,17 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pre-receive secret detection **(EXPERIMENT)**
+# Pre-receive secret detection
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Dedicated
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 
 NOTE:
-This feature is an [Experiment](../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+This feature is an [Experiment](../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 Pre-receive secret detection scans the contents of committed files when they are pushed to a remote repository to prevent the accidental exposure of secrets like keys or API tokens to your repositories. If any secrets are detected, the push is blocked, ensuring that the secrets do not reach your instance.
 
@@ -30,7 +35,7 @@ Prerequisites:
 ## Limitations
 
 - This feature only scans non-binary blobs under 1 MiB in size. Binary blobs and blobs larger than 1 MiB are not scanned.
-- The scan does not analyze the content of a commit if it is identical to the content of another file already present in the source code. 
+- The scan does not analyze the content of a commit if it is identical to the content of another file already present in the source code.
 - The scan skips analyzing files that are renamed, deleted, or moved, unless their content is modified in the same commit.
 
 ## Resolve a blocked push

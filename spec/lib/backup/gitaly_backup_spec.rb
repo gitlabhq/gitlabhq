@@ -10,9 +10,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
   let(:server_side) { false }
 
   let(:progress) do
-    Tempfile.new('progress').tap do |progress|
-      progress.unlink
-    end
+    Tempfile.new('progress').tap(&:unlink)
   end
 
   let(:expected_env) do
@@ -62,8 +60,8 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         subject.finish!
 
         expect(File).to exist(File.join(destination, project.disk_path, backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, project.disk_path + '.wiki', backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, project.disk_path + '.design', backup_id, '001.bundle'))
+        expect(File).to exist(File.join(destination, "#{project.disk_path}.wiki", backup_id, '001.bundle'))
+        expect(File).to exist(File.join(destination, "#{project.disk_path}.design", backup_id, '001.bundle'))
         expect(File).to exist(File.join(destination, personal_snippet.disk_path, backup_id, '001.bundle'))
         expect(File).to exist(File.join(destination, project_snippet.disk_path, backup_id, '001.bundle'))
       end
@@ -189,7 +187,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         custom_hooks_path = '#{repo.relative_path}.custom_hooks.tar'
       TOML
 
-      File.write(File.join(repo_backup_root, 'manifests', repo.storage, repo.relative_path, backup_id + '.toml'), manifest)
+      File.write(File.join(repo_backup_root, 'manifests', repo.storage, repo.relative_path, "#{backup_id}.toml"), manifest)
     end
 
     it 'restores from repository bundles', :aggregate_failures do
@@ -209,7 +207,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
       subject.finish!
 
-      collect_commit_shas = -> (repo) { repo.commits('master', limit: 10).map(&:sha) }
+      collect_commit_shas = ->(repo) { repo.commits('master', limit: 10).map(&:sha) }
 
       expect(collect_commit_shas.call(project.repository)).to match_array(['393a7d860a5a4c3cc736d7eb00604e3472bb95ec'])
       expect(collect_commit_shas.call(project.wiki.repository)).to match_array(['c74b9948d0088d703ee1fafeddd9ed9add2901ea'])

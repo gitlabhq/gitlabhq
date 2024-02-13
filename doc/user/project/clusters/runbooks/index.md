@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Runbooks **(FREE ALL)**
+# Runbooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Runbooks are a collection of documented procedures that explain how to
 carry out a particular process, be it starting, stopping, debugging,
@@ -23,7 +27,7 @@ pre-written code blocks or database queries against a given environment.
 
 ## Executable Runbooks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45912) in GitLab 11.4.
 
 The JupyterHub app offered via the GitLab Kubernetes integration now ships
 with Nurtch's Rubix library, providing a simple way to create DevOps

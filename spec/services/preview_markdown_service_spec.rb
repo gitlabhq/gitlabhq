@@ -3,16 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-
-  before do
-    project.add_developer(user)
-  end
+  let_it_be_with_reload(:project) { create(:project, :repository) }
+  let_it_be(:developer) { create(:user).tap { |u| project.add_developer(u) } }
+  let(:user) { developer }
+  let(:service) { described_class.new(container: project, current_user: user, params: params) }
 
   describe 'user references' do
     let(:params) { { text: "Take a look #{user.to_reference}" } }
-    let(:service) { described_class.new(project, user, params) }
 
     it 'returns users referenced in text' do
       result = service.execute
@@ -34,8 +31,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
         target_id: merge_request.iid
       )
     end
-
-    let(:service) { described_class.new(project, user, params) }
 
     context 'when preview markdown param is present' do
       let(:path) { "files/ruby/popen.rb" }
@@ -72,12 +67,7 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       end
 
       context 'when user is not authorized' do
-        let(:another_user) { create(:user) }
-        let(:service) { described_class.new(project, another_user, params) }
-
-        before do
-          project.add_guest(another_user)
-        end
+        let(:user) { create(:user).tap { |u| project.add_guest(u) } }
 
         it 'returns no suggestions' do
           result = service.execute
@@ -112,8 +102,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       }
     end
 
-    let(:service) { described_class.new(project, user, params) }
-
     it 'removes quick actions from text' do
       result = service.execute
 
@@ -145,8 +133,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       }
     end
 
-    let(:service) { described_class.new(project, user, params) }
-
     it 'removes quick actions from text' do
       result = service.execute
 
@@ -161,7 +147,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
   end
 
   context 'commit description' do
-    let(:project) { create(:project, :repository) }
     let(:commit) { project.commit }
     let(:params) do
       {
@@ -170,8 +155,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
         target_id: commit.id
       }
     end
-
-    let(:service) { described_class.new(project, user, params) }
 
     it 'removes quick actions from text' do
       result = service.execute
@@ -196,8 +179,6 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       }
     end
 
-    let(:service) { described_class.new(project, user, params) }
-
     it 'renders quick actions on multiple lines' do
       result = service.execute
 
@@ -216,7 +197,7 @@ RSpec.describe PreviewMarkdownService, feature_category: :team_planning do
       }
     end
 
-    let(:result) { described_class.new(project, user, params).execute }
+    let(:result) { service.execute }
 
     it 'renders the quick action preview' do
       expect(result[:commands]).to eq "Changes the title to \"new title\"."

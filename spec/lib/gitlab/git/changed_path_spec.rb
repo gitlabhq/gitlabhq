@@ -3,12 +3,23 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Git::ChangedPath do
-  subject(:changed_path) { described_class.new(path: path, status: status, old_mode: old_mode, new_mode: new_mode) }
+  subject(:changed_path) do
+    described_class.new(
+      path: path,
+      status: status,
+      old_mode: old_mode,
+      new_mode: new_mode,
+      old_blob_id: old_blob_id,
+      new_blob_id: new_blob_id
+    )
+  end
 
   let(:path) { 'test_path' }
   let(:status) { :MODIFIED }
   let(:old_mode) { '100644' }
   let(:new_mode) { '100644' }
+  let(:old_blob_id) { '0000000000000000000000000000000000000000' }
+  let(:new_blob_id) { '645f6c4c82fd3f5e06f67134450a570b795e55a6' }
 
   describe '#new_file?' do
     subject(:new_file?) { changed_path.new_file? }

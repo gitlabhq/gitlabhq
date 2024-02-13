@@ -161,6 +161,8 @@ export class CopyAsGFM {
       codeElement.appendChild(documentFragment);
     }
 
+    [...codeElement.querySelectorAll('.idiff')].forEach((el) => el.classList.remove('idiff'));
+
     return codeElement;
   }
 
@@ -176,10 +178,10 @@ export class CopyAsGFM {
         wrapEl.appendChild(node.cloneNode(true));
         const doc = DOMParser.fromSchema(schema.default).parse(wrapEl);
 
-        const res = markdownSerializer.default.serialize(doc, {
-          tightLists: true,
-        });
-        return res;
+        return markdownSerializer.default.serialize(
+          { doc },
+          { useCanonicalSrc: false, skipEmptyNodes: true },
+        );
       })
       .catch(() => {});
   }

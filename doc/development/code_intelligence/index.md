@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Code intelligence development guidelines
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/1576) in GitLab 13.1.
 
 This document describes the design behind [Code Intelligence](../../user/project/code_intelligence.md).
 

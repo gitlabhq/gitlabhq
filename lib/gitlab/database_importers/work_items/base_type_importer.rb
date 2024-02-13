@@ -24,7 +24,10 @@ module Gitlab
           award_emoji: 'Award emoji',
           linked_items: 'Linked items',
           color: 'Color',
-          rolledup_dates: 'Rolledup dates'
+          rolledup_dates: 'Rolledup dates',
+          participants: 'Participants',
+          time_tracking: 'Time tracking',
+          designs: 'Designs'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -42,7 +45,10 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking,
+            :designs
           ],
           incident: [
             :assignees,
@@ -52,7 +58,9 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking
           ],
           test_case: [
             :description,
@@ -60,7 +68,9 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking
           ],
           requirement: [
             :description,
@@ -71,7 +81,9 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking
           ],
           task: [
             :assignees,
@@ -86,7 +98,9 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking
           ],
           objective: [
             :assignees,
@@ -100,7 +114,8 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants
           ],
           key_result: [
             :assignees,
@@ -114,7 +129,8 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants
           ],
           epic: [
             :assignees,
@@ -130,7 +146,9 @@ module Gitlab
             :award_emoji,
             :linked_items,
             :color,
-            :rolledup_dates
+            :rolledup_dates,
+            :participants,
+            :time_tracking
           ],
           ticket: [
             :assignees,
@@ -146,7 +164,9 @@ module Gitlab
             :notifications,
             :current_user_todos,
             :award_emoji,
-            :linked_items
+            :linked_items,
+            :participants,
+            :time_tracking
           ]
         }.freeze
 

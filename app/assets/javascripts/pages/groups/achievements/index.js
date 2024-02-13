@@ -31,6 +31,7 @@ const init = () => {
 
   return new Vue({
     el,
+    name: 'AchievementsAppRoot',
     router,
     apolloProvider,
     provide: convertObjectPropsToCamelCase(provide),

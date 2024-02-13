@@ -104,20 +104,20 @@ RSpec.describe ServicePing::SubmitService, feature_category: :service_ping do
     it_behaves_like 'does not run'
   end
 
-  context 'when product_intelligence_enabled is false' do
+  context 'when enabled_and_consented is false' do
     before do
-      allow(ServicePing::ServicePingSettings).to receive(:product_intelligence_enabled?).and_return(false)
+      allow(ServicePing::ServicePingSettings).to receive(:enabled_and_consented?).and_return(false)
     end
 
     it_behaves_like 'does not run'
   end
 
-  context 'when product_intelligence_enabled is true' do
+  context 'when enabled_and_consented is true' do
     before do
       stub_usage_data_connections
       stub_database_flavor_check
 
-      allow(ServicePing::ServicePingSettings).to receive(:product_intelligence_enabled?).and_return(true)
+      allow(ServicePing::ServicePingSettings).to receive(:enabled_and_consented?).and_return(true)
     end
 
     it 'submits a service ping payload without errors', :aggregate_failures do

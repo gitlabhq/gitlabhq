@@ -48,7 +48,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
           open_assignees_dropdown
 
           page.within '.dropdown-menu-user' do
-            find('[data-testid="user-search-input"]').set(user2.name)
+            find_by_testid('user-search-input').set(user2.name)
 
             wait_for_requests
 
@@ -68,7 +68,7 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
         it 'keeps your filtered term after filtering and dismissing the dropdown' do
           open_assignees_dropdown
 
-          find('[data-testid="user-search-input"]').set(user2.name)
+          find_by_testid('user-search-input').set(user2.name)
           wait_for_requests
 
           page.within '.dropdown-menu-user' do
@@ -84,21 +84,20 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
             expect(page.all('[data-testid="unselected-participant"]').length).to eq(1)
           end
 
-          expect(find('[data-testid="user-search-input"]').value).to eq(user2.name)
+          expect(find_by_testid('user-search-input').value).to eq(user2.name)
         end
       end
     end
 
     context 'as an allowed user' do
       before do
-        stub_feature_flags(moved_mr_sidebar: false)
         project.add_developer(user)
         visit_issue(project, issue)
       end
 
       context 'for sidebar', :js do
+        sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         it 'changes size when the screen size is smaller' do
-          sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
           # Resize the window
           resize_screen_sm
           # Make sure the sidebar is collapsed
@@ -112,6 +111,14 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
           # Restore the window size as it was including the sidebar
           restore_window_size
           open_issue_sidebar
+        end
+
+        it 'passes axe automated accessibility testing', :js do
+          resize_screen_sm
+          open_issue_sidebar
+          refresh
+          find(sidebar_selector)
+          expect(page).to be_axe_clean.within(sidebar_selector)
         end
       end
 
@@ -137,7 +144,6 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
         collapsed_sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         expanded_sidebar_selector = 'aside.right-sidebar.right-sidebar-expanded'
         confidentiality_sidebar_block = '.block.confidentiality'
-        lock_sidebar_block = '.block.lock'
         collapsed_sidebar_block_icon = '.sidebar-collapsed-icon'
 
         before do
@@ -159,65 +165,17 @@ RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
 
           expect(page).to have_css(collapsed_sidebar_selector)
         end
-
-        it 'lock block expands then collapses sidebar' do
-          expect(page).to have_css(collapsed_sidebar_selector)
-
-          page.within(lock_sidebar_block) do
-            find(collapsed_sidebar_block_icon).click
-          end
-
-          expect(page).to have_css(expanded_sidebar_selector)
-
-          page.within(lock_sidebar_block) do
-            page.find('button', text: 'Cancel').click
-          end
-
-          expect(page).to have_css(collapsed_sidebar_selector)
-        end
       end
     end
 
     context 'as a guest' do
       before do
-        stub_feature_flags(moved_mr_sidebar: false)
         project.add_guest(user)
         visit_issue(project, issue)
       end
 
       it 'does not have a option to edit labels' do
         expect(page).not_to have_selector('.block.labels .js-sidebar-dropdown-toggle')
-      end
-
-      context 'for sidebar', :js do
-        it 'finds issue copy forwarding email' do
-          expect(
-            find('[data-testid="copy-forward-email"]').text
-          ).to eq "Issue email: #{issue.creatable_note_email_address(user)}"
-        end
-      end
-
-      context 'when interacting with collapsed sidebar', :js do
-        collapsed_sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
-        expanded_sidebar_selector = 'aside.right-sidebar.right-sidebar-expanded'
-        lock_sidebar_block = '.block.lock'
-        lock_button = '.block.lock .btn-close'
-        collapsed_sidebar_block_icon = '.sidebar-collapsed-icon'
-
-        before do
-          resize_screen_sm
-        end
-
-        it 'expands then does not show the lock dialog form' do
-          expect(page).to have_css(collapsed_sidebar_selector)
-
-          page.within(lock_sidebar_block) do
-            find(collapsed_sidebar_block_icon).click
-          end
-
-          expect(page).to have_css(expanded_sidebar_selector)
-          expect(page).not_to have_selector(lock_button)
-        end
       end
     end
   end

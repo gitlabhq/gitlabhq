@@ -4,9 +4,13 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epic Links API **(ULTIMATE ALL)**
+# Epic Links API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9188) in GitLab 11.8.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9188) in GitLab 11.8.
 
 Manages parent-child [epic relationships](../user/group/epics/manage_epics.md#multi-level-child-epics).
 

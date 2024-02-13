@@ -105,6 +105,19 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
           end
         end
 
+        context 'with a timecategory' do
+          let!(:timelog_category) { create(:timelog_category, name: 'bob', namespace: project.root_namespace) }
+          let(:note_text) { "a note \n/spend 1h [timecategory:bob]" }
+
+          it 'sets the category of the new timelog' do
+            new_content, update_params = service.execute(note)
+            note.update!(note: new_content)
+            service.apply_updates(update_params, note)
+
+            expect(Timelog.last.timelog_category_id).to eq(timelog_category.id)
+          end
+        end
+
         context 'adds a system note' do
           context 'when not specifying a date' do
             let(:note_text) { "/spend 1h" }
@@ -410,6 +423,28 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         let_it_be(:note_text) { "/set_parent #{url}" }
 
         it_behaves_like 'sets work item parent'
+      end
+    end
+
+    describe '/remove_parent' do
+      let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
+      let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
+      let_it_be(:note_text) { "/remove_parent" }
+      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+      before do
+        create(:parent_link, work_item_parent: parent, work_item: noteable)
+      end
+
+      it 'leaves the note empty' do
+        expect(execute(note)).to be_empty
+      end
+
+      it 'removes work item parent' do
+        execute(note)
+
+        expect(noteable.valid?).to be_truthy
+        expect(noteable.work_item_parent).to eq(nil)
       end
     end
 

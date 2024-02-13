@@ -1,0 +1,26 @@
+---
+key_path: counts.count_total_create_ci_build_monthly
+description: Monthly count of ci builds created across all projects and project types
+product_section: ci
+product_stage: verify
+product_group: pipeline_execution
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141421
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+options:
+  events:
+  - create_ci_build
+events:
+- name: create_ci_build

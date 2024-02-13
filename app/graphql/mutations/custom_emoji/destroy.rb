@@ -17,10 +17,6 @@ module Mutations
                description: 'Global ID of the custom emoji to destroy.'
 
       def resolve(id:)
-        if Feature.disabled?(:custom_emoji)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Custom emoji feature is disabled'
-        end
-
         custom_emoji = authorized_find!(id: id)
 
         custom_emoji.destroy!

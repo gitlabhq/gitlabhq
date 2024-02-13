@@ -224,45 +224,6 @@ describe('MRWidget approvals', () => {
             });
           });
         });
-
-        describe('with approvers, with SAML auth requried for approval', () => {
-          beforeEach(async () => {
-            canApproveResponse.data.project.mergeRequest.approvedBy.nodes =
-              approvedByCurrentUser.data.project.mergeRequest.approvedBy.nodes;
-            canApproveResponse.data.project.mergeRequest.approvedBy.nodes[0].id = 69;
-            mr.requireSamlAuthToApprove = true;
-            createComponent({}, { query: canApproveResponse });
-            await waitForPromises();
-          });
-
-          it('approve additionally action is rendered with correct text', () => {
-            expect(findActionData()).toEqual({
-              variant: 'confirm',
-              text: 'Approve additionally with SAML',
-              category: 'secondary',
-            });
-          });
-        });
-
-        describe('with approvers', () => {
-          beforeEach(async () => {
-            canApproveResponse.data.project.mergeRequest.approvedBy.nodes =
-              approvedByCurrentUser.data.project.mergeRequest.approvedBy.nodes;
-
-            canApproveResponse.data.project.mergeRequest.approvedBy.nodes[0].id = 2;
-
-            createComponent({}, { query: canApproveResponse });
-            await waitForPromises();
-          });
-
-          it('approve additionally action is rendered', () => {
-            expect(findActionData()).toEqual({
-              variant: 'confirm',
-              text: 'Approve additionally',
-              category: 'secondary',
-            });
-          });
-        });
       });
 
       describe('when SAML auth is required and user clicks Approve with SAML', () => {

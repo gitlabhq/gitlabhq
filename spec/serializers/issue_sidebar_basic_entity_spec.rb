@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe IssueSidebarBasicEntity do
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group) }
   let_it_be(:user) { create(:user, developer_projects: [project]) }
   let_it_be_with_reload(:issue) { create(:issue, project: project, assignees: [user]) }
@@ -99,7 +99,7 @@ RSpec.describe IssueSidebarBasicEntity do
       end
 
       context 'with crm enabled' do
-        let(:subgroup) { create(:group, :crm_enabled, parent: group) }
+        let(:subgroup) { create(:group, parent: group) }
 
         it 'is true' do
           allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(true)
@@ -109,7 +109,7 @@ RSpec.describe IssueSidebarBasicEntity do
       end
 
       context 'with crm disabled' do
-        let(:subgroup) { create(:group, parent: group) }
+        let(:subgroup) { create(:group, :crm_disabled, parent: group) }
 
         it 'is false' do
           allow(CustomerRelations::Contact).to receive(:exists_for_group?).with(group).and_return(true)

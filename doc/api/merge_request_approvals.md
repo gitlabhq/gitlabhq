@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Merge request approvals API **(PREMIUM ALL)**
+# Merge request approvals API
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Changing approval configuration with the `/approvals` endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3.
 > - Endpoint `/approvals` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0.
@@ -12,6 +16,92 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
 in the project. Must be authenticated for all endpoints.
+
+## Group-level MR approvals
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [Experiment](../policy/experiment-beta-support.md).
+
+### Create group-level approval rules
+
+Users with at least the Maintainer role can create group level approval rules using the following endpoint:
+
+```plaintext
+POST /groups/:id/approval_rules
+```
+
+Supported attributes:
+
+| Attribute                           | Type              | Required               | Description                                                                                                                                                                                                                                                         |
+|-------------------------------------|-------------------|------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                                | integer or string | Yes | The ID or [URL-encoded path of a group](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                    |
+| `approvals_required`                | integer           | Yes | The number of required approvals for this rule.                                                                                                                                                                                                                     |
+| `name`                              | string            | Yes | The name of the approval rule.                                                                                                                                                                                                                                      |
+| `group_ids`                         | array             | No | The IDs of groups as approvers.                                                                                                                                                                                                                                     |
+| `report_type`                       | string            | No | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`. |
+| `rule_type`                         | string            | No | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` and `report_approver`.                                                                                                                |
+| `user_ids`                          | array             | No | The IDs of users as approvers.                                                                                                                                                       |
+
+Example request:
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules?name=security&approvals_required=2"
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "security",
+  "rule_type": "any_approver",
+  "eligible_approvers": [],
+  "approvals_required": 2,
+  "users": [],
+  "groups": [],
+  "contains_hidden_groups": false,
+  "protected_branches": [
+    {
+      "id": 5,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "deploy_key_id": null,
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "allow_force_push": false,
+      "unprotect_access_levels": [],
+      "code_owner_approval_required": false,
+      "inherited": false
+    }
+  ],
+  "applies_to_all_protected_branches": true
+}
+```
 
 ## Project-level MR approvals
 
@@ -49,7 +139,7 @@ Supported attributes:
 
 ### Change configuration
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can change approval configuration using the following
 endpoint:
@@ -536,7 +626,7 @@ Supported attributes:
 
 ### Delete project-level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can delete project approval rules using the following endpoint:
 
@@ -557,7 +647,7 @@ Configuration for approvals on a specific merge request. Must be authenticated f
 
 ### Get Configuration
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval status using the
 following endpoint:
@@ -603,7 +693,7 @@ Supported attributes:
 
 ### Get the approval state of merge requests
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can request information about a merge request's approval state by using the following endpoint:
 
@@ -756,7 +846,7 @@ Supported attributes:
 
 ### Get a single merge request level rule
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82767) in GitLab 14.10.
 
 You can request information about a single merge request approval rule using the following endpoint:
 
@@ -832,7 +922,7 @@ Supported attributes:
 
 ### Create merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can create merge request approval rules using the following endpoint:
 
@@ -850,7 +940,7 @@ Supported attributes:
 | `name`                     | string            | Yes | The name of the approval rule.                                               |
 | `approval_project_rule_id` | integer           | No | The ID of a project-level approval rule.                                     |
 | `group_ids`                | Array             | No | The IDs of groups as approvers.                                              |
-| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added.
+| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
 | `usernames`                | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
@@ -917,7 +1007,7 @@ is used.
 
 ### Update merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can update merge request approval rules using the following endpoint:
 
@@ -1004,7 +1094,7 @@ Supported attributes:
 
 ### Delete merge request level rule
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 You can delete merge request approval rules using the following endpoint:
 
@@ -1025,7 +1115,7 @@ Supported attributes:
 
 ## Approve merge request
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you are allowed to, you can approve a merge request using the following
 endpoint:
@@ -1088,7 +1178,7 @@ does not match, the response code is `409`.
 
 ## Unapprove merge request
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If you did approve a merge request, you can unapprove it using the following
 endpoint:

@@ -23,7 +23,6 @@
 - ee/spec/features/boards/swimlanes/epics_swimlanes_spec.rb
 - ee/spec/features/ci/ci_minutes_spec.rb
 - ee/spec/features/ci_shared_runner_warnings_spec.rb
-- ee/spec/features/code_suggestions_ga_non_owner_alert_spec.rb
 - ee/spec/features/dashboards/todos_spec.rb
 - ee/spec/features/epics/gfm_autocomplete_spec.rb
 - ee/spec/features/epics/issue_promotion_spec.rb
@@ -32,8 +31,6 @@
 - ee/spec/features/groups/analytics/productivity_analytics_spec.rb
 - ee/spec/features/groups/member_roles_spec.rb
 - ee/spec/features/groups/members/list_members_spec.rb
-- ee/spec/features/groups/security/policies_list_spec.rb
-- ee/spec/features/groups/security/policy_editor_spec.rb
 - ee/spec/features/groups/usage_quotas/code_suggestions_usage_tab_spec.rb
 - ee/spec/features/groups/wikis_spec.rb
 - ee/spec/features/incidents/incident_details_spec.rb
@@ -89,8 +86,6 @@
 - ee/spec/features/projects/new_project_spec.rb
 - ee/spec/features/projects/path_locks_spec.rb
 - ee/spec/features/projects/push_rules_spec.rb
-- ee/spec/features/projects/security/policies_list_spec.rb
-- ee/spec/features/projects/security/policy_editor_spec.rb
 - ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb
 - ee/spec/features/projects/settings/merge_requests/user_manages_merge_requests_template_spec.rb
 - ee/spec/features/projects/settings/packages_spec.rb
@@ -125,7 +120,6 @@
 - ee/spec/finders/ee/fork_targets_finder_spec.rb
 - ee/spec/finders/issues_finder_spec.rb
 - ee/spec/finders/security/approval_groups_finder_spec.rb
-- ee/spec/frontend/fixtures/namespace.rb
 - ee/spec/frontend/fixtures/search.rb
 - ee/spec/graphql/ee/resolvers/board_lists_resolver_spec.rb
 - ee/spec/graphql/mutations/namespaces/increase_storage_temporarily_spec.rb
@@ -215,6 +209,7 @@
 - ee/spec/requests/api/graphql/project/requirements_management/requirements_spec.rb
 - ee/spec/requests/api/graphql/work_item_spec.rb
 - ee/spec/requests/api/groups_spec.rb
+- ee/spec/requests/api/integrations_spec.rb
 - ee/spec/requests/api/internal/ai/x_ray/scan_spec.rb
 - ee/spec/requests/api/internal/base_spec.rb
 - ee/spec/requests/api/issues_spec.rb
@@ -237,6 +232,7 @@
 - ee/spec/requests/projects/analytics/code_reviews_controller_spec.rb
 - ee/spec/requests/projects/issues_controller_spec.rb
 - ee/spec/requests/projects/metrics_controller_spec.rb
+- ee/spec/requests/projects/logs_controller_spec.rb
 - ee/spec/requests/projects/security/policies_controller_spec.rb
 - ee/spec/requests/projects/tracing_controller_spec.rb
 - ee/spec/requests/subscriptions/hand_raise_leads_spec.rb
@@ -938,6 +934,7 @@
 - spec/services/auth/container_registry_authentication_service_spec.rb
 - spec/services/award_emojis/add_service_spec.rb
 - spec/services/ci/abort_pipelines_service_spec.rb
+- spec/services/ci/drop_pipelines_and_disable_schedules_for_user_service_spec.rb
 - spec/services/draft_notes/publish_service_spec.rb
 - spec/services/environments/schedule_to_delete_review_apps_service_spec.rb
 - spec/services/import/bitbucket_server_service_spec.rb

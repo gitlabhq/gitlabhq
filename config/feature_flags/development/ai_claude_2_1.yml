@@ -1,0 +1,8 @@
+---
+name: ai_claude_2_1
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139946
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17472
+milestone: '16.7'
+type: development
+group: group::ai framework
+default_enabled: true

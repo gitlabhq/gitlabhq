@@ -265,7 +265,6 @@ class RegistrationsController < Devise::RegistrationsController
     resource.state = User::BLOCKED_PENDING_APPROVAL_STATE
   end
 
-  # overridden by EE module
   def set_blocked_pending_approval?
     Gitlab::CurrentSettings.require_admin_approval_after_user_signup
   end

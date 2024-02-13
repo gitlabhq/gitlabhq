@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project templates API **(FREE ALL)**
+# Project templates API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This API is a project-specific version of these endpoints:
 
@@ -20,7 +24,7 @@ It deprecates these endpoints, which are scheduled for removal in API version 5.
 In addition to templates common to the entire instance, project-specific
 templates are also available from this API endpoint.
 
-Support is also available for [group-level file templates](../user/group/manage.md#group-file-templates). **(PREMIUM ALL)**
+Support is also available for [group-level file templates](../user/group/manage.md#group-file-templates).
 
 ## Get all templates of a particular type
 

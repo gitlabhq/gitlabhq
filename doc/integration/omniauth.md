@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# OmniAuth **(FREE SELF)**
+# OmniAuth
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Users can sign in to GitLab by using their credentials from Twitter, GitHub, and other popular services.
 [OmniAuth](https://rubygems.org/gems/omniauth/) is the Rack framework that GitLab uses to provide this authentication.
@@ -43,11 +47,11 @@ GitLab supports the following OmniAuth providers.
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
 
-Linux package, Docker, and self-compiled | Helm chart | Description | Default value
-----------------------------|------------|-------------|-----------
-`allow_single_sign_on`     | `allowSingleSignOn` | List of providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | `false`, which means that signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings.
-`auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false`
-`block_auto_created_users` | `blockAutoCreatedUsers` | Places automatically-created users in a [Pending approval](../administration/moderate_users.md#users-pending-approval) state (unable to sign in) until they are approved by an administrator. | `true`. If you set the value to `false`, make sure you define providers that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
+| Linux package, Docker, and self-compiled | Helm chart | Description | Default value |
+| ----------------------------|------------|-------------|-----------|
+| `allow_single_sign_on`     | `allowSingleSignOn` | List of providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | `false`, which means that signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings. |
+| `auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false` |
+| `block_auto_created_users` | `blockAutoCreatedUsers` | Places automatically-created users in a [Pending approval](../administration/moderate_users.md#users-pending-approval) state (unable to sign in) until they are approved by an administrator. | `true`. If you set the value to `false`, make sure you define providers that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval. |
 
 ### Configure initial settings
 
@@ -165,7 +169,7 @@ your chosen [provider](#supported-providers).
 
 ### Per-provider configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89379) in GitLab 15.3.
 
 If `allow_single_sign_on` is set, GitLab uses one of the following fields returned in the OmniAuth `auth_hash` to establish a username in GitLab for the user signing in,
 choosing the first that exists:
@@ -289,7 +293,7 @@ omniauth:
 
 ## Link existing users to OmniAuth users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36664) in GitLab 13.4.
 
 You can automatically link OmniAuth users with existing GitLab users if their email addresses match.
 
@@ -426,7 +430,7 @@ omniauth:
 
 ## Bypass two-factor authentication
 
-> Introduced in GitLab 12.3.
+> - Introduced in GitLab 12.3.
 
 With certain OmniAuth providers, users can sign in without using two-factor authentication (2FA).
 

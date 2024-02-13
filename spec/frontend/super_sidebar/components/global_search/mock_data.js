@@ -436,7 +436,7 @@ export const MOCK_GROUPED_AUTOCOMPLETE_OPTIONS_SETTINGS_HELP = [
         html_id: 'autocomplete-Settings-0',
         category: 'Settings',
         label: 'User settings',
-        url: '/-/profile',
+        url: '/-/user_settings/profile',
       },
       {
         html_id: 'autocomplete-Settings-3',

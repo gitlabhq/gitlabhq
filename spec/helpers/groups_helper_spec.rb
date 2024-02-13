@@ -533,24 +533,22 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe "#enabled_git_access_protocol_options_for_group" do
-    let_it_be(:group) { create(:group) }
-
-    subject { helper.enabled_git_access_protocol_options_for_group(group) }
+    subject { helper.enabled_git_access_protocol_options_for_group }
 
     before do
-      allow(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
+      expect(::Gitlab::CurrentSettings).to receive(:enabled_git_access_protocol).and_return(instance_setting)
     end
 
     context "instance setting is nil" do
       let(:instance_setting) { nil }
 
-      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is blank" do
-      let(:instance_setting) { '' }
+      let(:instance_setting) { nil }
 
-      it { is_expected.to include([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
+      it { is_expected.to contain_exactly([_("Both SSH and HTTP(S)"), "all"], [_("Only SSH"), "ssh"], [_("Only HTTP(S)"), "http"]) }
     end
 
     context "instance setting is ssh" do
@@ -571,38 +569,28 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     let_it_be(:group) { create(:group) }
 
-    context 'with feature flag disabled' do
+    context 'with nil group' do
+      let(:group) { nil }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'with current_user who has no permissions' do
       before do
-        stub_feature_flags(custom_emoji: false)
+        allow(helper).to receive(:current_user).and_return(create(:user))
       end
 
       it { is_expected.to eq(nil) }
     end
 
-    context 'with feature flag enabled' do
-      context 'with nil group' do
-        let(:group) { nil }
-
-        it { is_expected.to eq(nil) }
+    context 'with current_user who has permissions' do
+      before do
+        user = create(:user)
+        group.add_owner(user)
+        allow(helper).to receive(:current_user).and_return(user)
       end
 
-      context 'with current_user who has no permissions' do
-        before do
-          allow(helper).to receive(:current_user).and_return(create(:user))
-        end
-
-        it { is_expected.to eq(nil) }
-      end
-
-      context 'with current_user who has permissions' do
-        before do
-          user = create(:user)
-          group.add_owner(user)
-          allow(helper).to receive(:current_user).and_return(user)
-        end
-
-        it { is_expected.to eq(new_group_custom_emoji_path(group)) }
-      end
+      it { is_expected.to eq(new_group_custom_emoji_path(group)) }
     end
   end
 

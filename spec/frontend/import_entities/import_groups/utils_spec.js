@@ -1,5 +1,9 @@
 import { STATUSES } from '~/import_entities/constants';
-import { isFinished, isAvailableForImport } from '~/import_entities/import_groups/utils';
+import {
+  isFinished,
+  isAvailableForImport,
+  isProjectCreationAllowed,
+} from '~/import_entities/import_groups/utils';
 
 const FINISHED_STATUSES = [STATUSES.FINISHED, STATUSES.FAILED, STATUSES.TIMEOUT];
 const OTHER_STATUSES = Object.values(STATUSES).filter(
@@ -52,5 +56,20 @@ describe('Direct transfer status utils', () => {
     it('reports group as finished when status is unknown', () => {
       expect(isFinished({ progress: { status: 'weird' } })).toBe(false);
     });
+  });
+
+  describe('isProjectCreationAllowed', () => {
+    it.each`
+      projectCreationLevel | expected
+      ${null}              | ${false}
+      ${'noone'}           | ${false}
+      ${'developer'}       | ${true}
+      ${'maintainer'}      | ${true}
+    `(
+      'when projectCreationLevel is $projectCreationLevel, returns $expected',
+      ({ projectCreationLevel, expected }) => {
+        expect(isProjectCreationAllowed({ projectCreationLevel })).toBe(expected);
+      },
+    );
   });
 });

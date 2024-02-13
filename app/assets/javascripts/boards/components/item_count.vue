@@ -26,7 +26,7 @@ export default {
 
 <template>
   <div class="item-count text-nowrap">
-    <span :class="{ 'text-danger': issuesExceedMax }" data-testid="board-items-count">
+    <span :class="{ 'gl-text-red-700': issuesExceedMax }" data-testid="board-items-count">
       {{ itemsSize }}
     </span>
     <span v-if="isMaxLimitSet" class="max-issue-size">

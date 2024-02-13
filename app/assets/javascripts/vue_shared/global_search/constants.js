@@ -4,6 +4,10 @@ export const AUTOCOMPLETE_ERROR_MESSAGE = s__(
   'GlobalSearch|There was an error fetching search autocomplete suggestions.',
 );
 
+export const NO_SEARCH_RESULTS = s__(
+  'GlobalSearch|No results found. Edit your search and try again.',
+);
+
 export const ALL_GITLAB = __('All GitLab');
 export const PLACES = s__('GlobalSearch|Places');
 
@@ -74,6 +78,37 @@ export const DROPDOWN_HEADER = s__('GlobalSearch|Labels');
 export const AGGREGATIONS_ERROR_MESSAGE = s__('GlobalSearch|Fetching aggregations error.');
 
 export const NO_LABELS_FOUND = s__('GlobalSearch|No labels found');
+
+export const COMMAND_PALETTE_TIP = s__('GlobalSearch|Tip:');
+
+export const COMMAND_PALETTE_TYPE_PAGES = s__('GlobalSearch|Pages or actions');
+
+export const COMMAND_PALETTE_TYPE_FILES = s__('GlobalSearch|Files');
+
+export const COMMAND_PALETTE_SEARCH_SCOPE_HEADER = s__(
+  'GlobalSearch|Search for `%{searchTerm}` in...',
+);
+
+export const COMMAND_PALETTE_PAGES_SCOPE_HEADER = s__(
+  'GlobalSearch|Search for `%{searchTerm}` pages in...',
+);
+
+export const COMMAND_PALETTE_USERS_SCOPE_HEADER = s__(
+  'GlobalSearch|Search for `%{searchTerm}` users in...',
+);
+
+export const COMMAND_PALETTE_PROJECTS_SCOPE_HEADER = s__(
+  'GlobalSearch|Search for `%{searchTerm}` projects in...',
+);
+
+export const COMMAND_PALETTE_FILES_SCOPE_HEADER = s__(
+  'GlobalSearch|Search for `%{searchTerm}` files in...',
+);
+
+export const COMMAND_PALETTE_PAGES_CHAR = '>';
+export const COMMAND_PALETTE_USERS_CHAR = '@';
+export const COMMAND_PALETTE_PROJECTS_CHAR = ':';
+export const COMMAND_PALETTE_FILES_CHAR = '~';
 
 export const I18N = {
   SEARCH_DESCRIBED_BY_DEFAULT,

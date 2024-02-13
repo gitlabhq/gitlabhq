@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Strings and the Text data type
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30453) in GitLab 13.0.
 
 When adding new columns to store strings or other textual information:
 
@@ -292,7 +292,7 @@ class ChangeMaintainerNoteLimitInCiRunner < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
-    add_text_limit :ci_runners, :maintainer_note, 1024, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length_1MB')
+    add_text_limit :ci_runners, :maintainer_note, 1024, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length_1K')
     remove_text_limit :ci_runners, :maintainer_note, constraint_name: check_constraint_name(:ci_runners, :maintainer_note, 'max_length')
   end
 

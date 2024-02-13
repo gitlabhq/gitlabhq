@@ -1,0 +1,11 @@
+mutation createPackagesProtectionRule($input: CreatePackagesProtectionRuleInput!) {
+  createPackagesProtectionRule(input: $input) {
+    packageProtectionRule {
+      id
+      packageNamePattern
+      packageType
+      pushProtectedUpToAccessLevel
+    }
+    errors
+  }
+}

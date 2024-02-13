@@ -73,9 +73,10 @@ class User < MainClusterwide::ApplicationRecord
   FEED_TOKEN_PREFIX = 'glft-'
 
   # lib/tasks/tokens.rake needs to be updated when changing mail and feed tokens
-  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token }
+  add_authentication_token_field :incoming_email_token, token_generator: -> { self.generate_incoming_mail_token } # rubocop:disable Gitlab/TokenWithoutPrefix -- wontfix: the prefix is in the generator
   add_authentication_token_field :feed_token, format_with_prefix: :prefix_for_feed_token
-  add_authentication_token_field :static_object_token, encrypted: :optional
+  # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/439294
+  add_authentication_token_field :static_object_token, encrypted: :optional # rubocop:todo Gitlab/TokenWithoutPrefix -- https://gitlab.com/gitlab-org/gitlab/-/issues/439294
 
   attribute :admin, default: false
   attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
@@ -299,6 +300,9 @@ class User < MainClusterwide::ApplicationRecord
   has_many :achievements, through: :user_achievements, class_name: 'Achievements::Achievement', inverse_of: :users
   has_many :vscode_settings, class_name: 'VsCode::Settings::VsCodeSetting', inverse_of: :user
 
+  has_many :requested_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'requested_by_id'
+  has_many :reviewed_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'reviewed_by_id'
+
   #
   # Validations
   #
@@ -334,6 +338,10 @@ class User < MainClusterwide::ApplicationRecord
 
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
+  validates :hide_no_ssh_key, allow_nil: false, inclusion: { in: [true, false] }
+  validates :hide_no_password, allow_nil: false, inclusion: { in: [true, false] }
+  validates :notified_of_own_activity, allow_nil: false, inclusion: { in: [true, false] }
+  validates :project_view, presence: true
 
   after_initialize :set_projects_limit
   before_validation :sanitize_attrs
@@ -365,6 +373,9 @@ class User < MainClusterwide::ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
+
+  after_create_commit :create_default_organization_user
+  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }
@@ -497,8 +508,11 @@ class User < MainClusterwide::ApplicationRecord
     # rubocop: disable CodeReuse/ServiceClass
     after_transition any => :blocked do |user|
       user.run_after_commit do
-        Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
-        Ci::DisableUserPipelineSchedulesService.new.execute(user)
+        Ci::DropPipelinesAndDisableSchedulesForUserService.new.execute(
+          user,
+          reason: :user_blocked,
+          include_owned_projects_and_groups: false
+        )
       end
     end
 
@@ -509,11 +523,23 @@ class User < MainClusterwide::ApplicationRecord
         NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
       end
     end
-    # rubocop: enable CodeReuse/ServiceClass
 
     after_transition active: :banned do |user|
       user.create_banned_user
+
+      if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- this is always necessary on GitLab.com
+        user.run_after_commit do
+          deep_clean_ci = user.custom_attributes.by_key(UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED).exists?
+
+          Ci::DropPipelinesAndDisableSchedulesForUserService.new.execute(
+            user,
+            reason: :user_banned,
+            include_owned_projects_and_groups: deep_clean_ci
+          )
+        end
+      end
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     after_transition banned: :active do |user|
       user.banned_user&.destroy
@@ -606,6 +632,8 @@ class User < MainClusterwide::ApplicationRecord
       .where('user_id = users.id')
       .trusted_with_spam)
   end
+
+  scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings
     {
@@ -2578,10 +2606,18 @@ class User < MainClusterwide::ApplicationRecord
     FEED_TOKEN_PREFIX
   end
 
-  # method overriden in EE
+  def create_default_organization_user
+    Organizations::OrganizationUser.create_default_organization_record_for(id, user_is_admin: admin?)
+  end
+
+  def update_default_organization_user
+    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
+  end
+
+  # method overridden in EE
   def audit_lock_access(reason: nil); end
 
-  # method overriden in EE
+  # method overridden in EE
   def audit_unlock_access(author: self); end
 end
 

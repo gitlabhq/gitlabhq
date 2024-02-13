@@ -8,8 +8,7 @@ import (
 )
 
 func TestRangesRead(t *testing.T) {
-	r, cleanup := setup(t)
-	defer cleanup()
+	r := setup(t)
 
 	firstRange := Range{Line: 1, Character: 2, ResultSetId: 4}
 	rg, err := r.getRange(1)
@@ -28,8 +27,7 @@ func TestRangesRead(t *testing.T) {
 }
 
 func TestSerialize(t *testing.T) {
-	r, cleanup := setup(t)
-	defer cleanup()
+	r := setup(t)
 
 	docs := map[Id]string{6: "def-path", 7: "ref-path"}
 
@@ -41,7 +39,7 @@ func TestSerialize(t *testing.T) {
 	require.Equal(t, want, buf.String())
 }
 
-func setup(t *testing.T) (*Ranges, func()) {
+func setup(t *testing.T) *Ranges {
 	r, err := NewRanges()
 	require.NoError(t, err)
 
@@ -61,9 +59,9 @@ func setup(t *testing.T) (*Ranges, func()) {
 	require.NoError(t, r.Read("item", []byte(`{"id":"12","label":"item","outV":5,"inVs":["2"],"document":"7"}`)))
 	require.NoError(t, r.Read("item", []byte(`{"id":"13","label":"item","outV":5,"inVs":["3"],"document":"7"}`)))
 
-	cleanup := func() {
+	t.Cleanup(func() {
 		require.NoError(t, r.Close())
-	}
+	})
 
-	return r, cleanup
+	return r
 }

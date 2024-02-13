@@ -42,7 +42,7 @@ export default TaskItem.extend({
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },
       {
-        tag: 'li.task-list-item.inapplicable s',
+        tag: 'li.inapplicable > s, li.inapplicable > p:first-of-type > s',
         skip: true,
         priority: PARSE_HTML_PRIORITY_HIGHEST,
       },

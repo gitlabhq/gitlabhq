@@ -4,26 +4,26 @@ group: Pipeline Authoring
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Development guide for GitLab CI/CD components
+# Development guide for GitLab official CI/CD components
 
-This document explains how to develop [CI/CD components](../../ci/components/index.md) that are maintained by GitLab.
+This document explains how to develop [CI/CD components](../../ci/components/index.md) that are maintained by GitLab, either the official public ones or those for internal use.
 
-The official location for all GitLab-maintained component projects is the [`gitlab.com/components`](https://gitlab.com/components) group.
+The location for all official GitLab component projects is the [`gitlab.com/components`](https://gitlab.com/components) group.
 This group contains all components that are designed to be generic, served to all GitLab users, and maintained by GitLab.
-
+For example: SAST, Secret Detection and Code Quality components.
 A component project can initially be created under a different group (for example `gitlab-org`)
-but they need to be moved into the `components` group before the first version gets published to the catalog.
+but it needs to be moved into the `components` group before the first version gets published to the catalog.
 
 Components that are for GitLab internal use only, for example specific to `gitlab-org/gitlab` project, should be
 implemented under `gitlab-org` group.
 
 Component projects that are expected to be published in the [CI/CD catalog](../../ci/components/index.md#cicd-catalog)
-should first be dogfooded it to ensure we stay on top of the project quality and have first-hand
+should first be dogfooded to ensure we stay on top of the project quality and have first-hand
 experience with it.
 
 ## Define ownership
 
-GitLab-maintained components are trusted by the community and require a high degree of quality and timely maintenance.
+Official GitLab components are trusted by the community and require a high degree of quality and timely maintenance.
 Components must be kept up to date, monitored for security vulnerabilities, and bugs fixed.
 
 Each component project must have a set of owners and maintainers that are also domain experts.
@@ -31,6 +31,9 @@ Experts can be from any department in GitLab, from Engineering to Support, Custo
 
 If a component is related to a GitLab feature (for example Secret Detection), the team that owns the
 feature category or is most closely related to it should maintain the project.
+In this case, the Engineering Manager for the feature category is assigned as the project owner.
+
+Members with the `owner` role in the project are the DRIs responsible for triaging open issues and merge requests to ensure they get addressed promptly.
 
 The component project can be created by a separate team or individual initially but it must be transitioned
 to a set of owners before the first version gets published to the catalog.
@@ -40,7 +43,7 @@ they can be contacted by the wider community if needed.
 
 NOTE:
 If a set of project owners cannot be guaranteed or the components cannot be dogfooded, we strongly recommend
-not creating a GitLab-maintained component project and instead let the wider community fulfill the demand
+not creating an official GitLab component project and instead let the wider community fulfill the demand
 in the catalog.
 
 ## Development process
@@ -49,12 +52,16 @@ in the catalog.
    or ask one of the group owners to create an empty project for you.
 1. Follow the [standard guide for creating components](../../ci/components/index.md).
 1. Add a concise project description that clearly describes the capabilities offered by the component project.
-1. Ensure that the [best practices](../../ci/components/index.md#best-practices) are followed.
-1. Use [semantic versioning](https://semver.org) in the form `MAJOR.MINOR` or `MAJOR.MINOR.PATCH`.
+1. Ensure that the [general best practices](../../ci/components/index.md#best-practices) are followed as well as
+   [those for the official components](#best-practices-for-official-components).
 1. Add a `LICENSE.md` file with the MIT license.
 1. The project must have a `.gitlab-ci.yml` file that:
    - Validates all the components in the project correctly.
    - Contains a `release` job to publish newly released tags to the catalog.
+1. For official component projects, upload the [official avatar image](img/avatar_component_project.png) to the component project.
+
+### Best practices for official components
+
 1. Ensure that the `README.md` contains at least the sections below (for example, see the [Code quality component](https://gitlab.com/components/code-quality)):
    - **Overview**: The capabilities offered by the component project.
    - **Components**: Sub-sections for each component, each with:
@@ -63,9 +70,9 @@ in the catalog.
      - **Variables** (when applicable): The variable names, possible values, and descriptions.
    - **Contribute**: Notes and how to get in touch with the maintainers.
      Usually the contribution process should follow the [official guide](../../ci/components/index.md).
-1. Upload the [official avatar image](img/avatar_component_project.png) to the component project.
+1. Use underscores `_` for composite input names and hyphens `-` as separators, if necessary. For example: `service_x-project_name`.
 
-## Review and contribution process
+## Review and contribution process for official components
 
 It's possible that components in the project have a related [CI/CD template](templates.md) in the GitLab codebase.
 In that case we need to cross link the component project and CI/CD template:
@@ -76,5 +83,28 @@ In that case we need to cross link the component project and CI/CD template:
 When changes are applied to these components, check whether we can integrate the changes in the CI/CD template too.
 This might not be possible due to the rigidity of versioning in CI/CD templates.
 
-Ping [`@gitlab-org/maintainers/ci-components`](https://gitlab.com/groups/gitlab-org/maintainers/ci-components/-/group_members?with_inherited_permissions=exclude)
+Ping any of the [maintainers](#default-maintainers-of-gitlab-official-components)
 for reviews to ensure that the components are written in consistent style and follow the best practices.
+
+## Default maintainers of GitLab official components
+
+Each component project under [`gitlab.com/components`](https://gitlab.com/components) group should
+have specific DRIs and maintainers, however the [`@gitlab-org/maintainers/ci-components`](https://gitlab.com/groups/gitlab-org/maintainers/ci-components/-/group_members?with_inherited_permissions=exclude)
+group of maintainers is responsible for managing the `components` group in general.
+
+The responsibilities for this group of maintainers:
+
+- Manage any development and helper resources, such as toolkit components and project templates, to provide the best development experience.
+- Manage any component projects that is missing a clear DRI, or is in the process of being developed, and work to find the right owners long term.
+- Guide and mentor the maintainers of individual component projects, including during code reviews and when troubleshooting issues.
+- Ensure best practices are applied and improved over time.
+
+Requirements for becoming a maintainer:
+
+- Have a an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/index.md) and features.
+- Understand how CI components work and demonstrate experience developing them.
+- Have a solid understanding of the components [best practices](../../ci/components/index.md#best-practices).
+
+How to join the `gitlab-components` group of general maintainers:
+
+- Review the [process for becoming a `gitlab-components` maintainer](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#project-maintainer-process-for-gitlab-components).

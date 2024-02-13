@@ -1,0 +1,31 @@
+@import 'mixins_and_variables_and_functions';
+
+.paginated-table-wrapper {
+  .new-alert {
+    background-color: var(--green-50, $green-50);
+  }
+
+  .gl-tabs-nav {
+    border-bottom-width: 0;
+
+    .gl-tab-nav-item {
+      color: var(--gray-500, $gray-500);
+
+      > .gl-tab-counter-badge {
+        color: inherit;
+        font-size: $gl-font-size-sm;
+        background-color: var(--gray-50, $gray-50);
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .list-header {
+      flex-direction: column-reverse;
+    }
+
+    .create-incident-button {
+      width: 100%;
+    }
+  }
+}

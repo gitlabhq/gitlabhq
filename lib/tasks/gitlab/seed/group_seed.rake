@@ -147,7 +147,7 @@ class GroupSeeder
         epic_params = {
           title: FFaker::Lorem.sentence(6),
           description: FFaker::Lorem.paragraphs(3).join("\n\n"),
-          author: group.users.sample,
+          author: group.group_members.non_invite.sample.user,
           group: group
         }
 

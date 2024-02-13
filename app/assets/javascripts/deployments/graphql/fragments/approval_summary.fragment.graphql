@@ -1,0 +1,3 @@
+fragment ApprovalSummary on Deployment {
+  iid
+}

@@ -1,4 +1,5 @@
 <script>
+import { isEqual } from 'lodash';
 import {
   GlAlert,
   GlButton,
@@ -23,6 +24,7 @@ import Tracking from '~/tracking';
 import CiEnvironmentsDropdown from '~/ci/common/private/ci_environments_dropdown';
 import {
   defaultVariableState,
+  ADD_VARIABLE_ACTION,
   DRAWER_EVENT_LABEL,
   EDIT_VARIABLE_ACTION,
   ENVIRONMENT_SCOPE_LINK_TITLE,
@@ -44,6 +46,8 @@ export const i18n = {
   cancel: __('Cancel'),
   defaultScope: __('All (default)'),
   deleteVariable: s__('CiVariables|Delete variable'),
+  description: __('Description'),
+  descriptionHelpText: s__("CiVariables|The description of the variable's value or usage."),
   editVariable: s__('CiVariables|Edit variable'),
   saveVariable: __('Save changes'),
   environments: __('Environments'),
@@ -141,6 +145,11 @@ export default {
         return VARIABLE_ACTIONS.includes(val);
       },
     },
+    mutationResponse: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     selectedVariable: {
       type: Object,
       required: false,
@@ -149,6 +158,7 @@ export default {
   },
   data() {
     return {
+      isMutationAlertVisible: false,
       variable: { ...defaultVariableState, ...this.selectedVariable },
       trackedValidationErrorProperty: undefined,
     };
@@ -202,6 +212,13 @@ export default {
       return sprintf(this.$options.i18n.maskedValueMinLengthValidationText, {
         charsAmount: MASKED_VALUE_MIN_LENGTH,
       });
+    },
+    mutationAlertVariant() {
+      if (this.mutationResponse.hasError) {
+        return 'danger';
+      }
+
+      return 'success';
     },
     unsupportedCharsList() {
       if (this.isMaskedReqsMet) {
@@ -270,9 +287,22 @@ export default {
     },
   },
   watch: {
+    mutationResponse: {
+      handler(response) {
+        this.showMutationAlert();
+
+        if (!response.hasError && this.mode === ADD_VARIABLE_ACTION) {
+          this.resetForm();
+        }
+      },
+    },
     variable: {
-      handler() {
+      handler(variable) {
         this.trackVariableValidationErrors();
+
+        if (this.isMutationAlertVisible && !isEqual(variable, { ...defaultVariableState })) {
+          this.hideMutationAlert();
+        }
       },
       deep: true,
     },
@@ -295,9 +325,6 @@ export default {
       this.$emit('delete-variable', this.variable);
       this.close();
     },
-    setEnvironmentScope(scope) {
-      this.variable = { ...this.variable, environmentScope: scope };
-    },
     getTrackingErrorProperty() {
       if (this.isValueEmpty) {
         return null;
@@ -312,12 +339,23 @@ export default {
 
       return property;
     },
+    hideMutationAlert() {
+      this.isMutationAlertVisible = false;
+    },
+    resetForm() {
+      this.variable = { ...defaultVariableState };
+    },
+    setEnvironmentScope(scope) {
+      this.variable = { ...this.variable, environmentScope: scope };
+    },
     setRaw(expanded) {
       this.variable = { ...this.variable, raw: !expanded };
     },
+    showMutationAlert() {
+      this.isMutationAlertVisible = true;
+    },
     submit() {
       this.$emit(this.isEditing ? 'update-variable' : 'add-variable', this.variable);
-      this.close();
     },
     trackVariableValidationErrors() {
       const property = this.getTrackingErrorProperty();
@@ -364,6 +402,15 @@ export default {
       <template #title>
         <h2 class="gl-m-0">{{ modalTitle }}</h2>
       </template>
+      <gl-alert
+        v-if="isMutationAlertVisible"
+        :variant="mutationAlertVariant"
+        class="gl-m-4 gl-pl-9! gl-border-bottom-0"
+        data-testid="ci-variable-mutation-alert"
+        @dismiss="hideMutationAlert"
+      >
+        {{ mutationResponse.message }}
+      </gl-alert>
       <gl-form-group
         :label="$options.i18n.type"
         label-for="ci-variable-type"
@@ -458,6 +505,21 @@ export default {
             </gl-sprintf>
           </p>
         </gl-form-checkbox>
+      </gl-form-group>
+      <gl-form-group
+        label-for="ci-variable-description"
+        :label="$options.i18n.description"
+        class="gl-border-none gl-mb-n5"
+        data-testid="ci-variable-description-label"
+        :description="$options.i18n.descriptionHelpText"
+        optional
+      >
+        <gl-form-input
+          id="ci-variable-description"
+          v-model="variable.description"
+          class="gl-border-none"
+          data-testid="ci-variable-description"
+        />
       </gl-form-group>
       <gl-form-combobox
         v-model="variable.key"

@@ -13,7 +13,7 @@ RSpec.describe GravatarService, feature_category: :user_profile do
     it 'replaces the placeholders' do
       avatar_url = described_class.new.execute('user@example.com', 100, 2, username: 'user')
 
-      expect(avatar_url).to include("hash=#{Digest::MD5.hexdigest('user@example.com')}")
+      expect(avatar_url).to include("hash=#{Digest::SHA256.hexdigest('user@example.com')}")
       expect(avatar_url).to include("size=200")
       expect(avatar_url).to include("email=user%40example.com")
       expect(avatar_url).to include("username=user")

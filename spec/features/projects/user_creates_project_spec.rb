@@ -58,12 +58,13 @@ RSpec.describe 'User creates a project', :js, feature_category: :groups_and_proj
   end
 
   context 'when creating a project with SHA256 repository' do
-    let(:sha256_field) { 'Use SHA-256 as the repository hashing algorithm' }
+    let(:sha256_field) { 'Use SHA-256 for repository hashing algorithm' }
 
     it 'creates a new project' do
       visit(new_project_path)
 
       click_link 'Create blank project'
+      click_button 'Experimental settings'
       fill_in(:project_name, with: 'With initial commits')
 
       expect(page).to have_checked_field 'Initialize repository with a README'

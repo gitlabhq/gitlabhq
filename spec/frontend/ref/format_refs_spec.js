@@ -19,7 +19,7 @@ describe('formatListBoxItems', () => {
     ${undefined}     | ${undefined} | ${MOCK_COMMITS} | ${[FORMATTED_COMMITS]}
     ${MOCK_BRANCHES} | ${undefined} | ${null}         | ${[FORMATTED_BRANCHES]}
   `('should correctly format listbox items', ({ branches, tags, commits, expectedResult }) => {
-    expect(formatListBoxItems(branches, tags, commits)).toEqual(expectedResult);
+    expect(formatListBoxItems(branches, tags, commits)).toStrictEqual(expectedResult);
   });
 });
 

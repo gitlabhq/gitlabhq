@@ -6,7 +6,7 @@ RSpec.describe Resolvers::Crm::OrganizationsResolver do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let_it_be(:crm_organization_a) do
     create(

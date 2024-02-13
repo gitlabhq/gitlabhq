@@ -8,6 +8,7 @@ export const SCOPE = {
 };
 
 export const SORT_OPTION_CREATED = 'CREATED';
+export const SORT_OPTION_RELEASED = 'LATEST_RELEASED_AT';
 export const SORT_ASC = 'ASC';
 export const SORT_DESC = 'DESC';
 export const DEFAULT_SORT_VALUE = `${SORT_OPTION_CREATED}_${SORT_DESC}`;

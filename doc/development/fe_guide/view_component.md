@@ -24,7 +24,7 @@ available as a ViewComponent in `app/components/pajamas`.
 
 NOTE:
 We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
-Reach out to the [Foundations team](https://about.gitlab.com/handbook/engineering/development/dev/manage/foundations/)
+Reach out to the [Foundations team](https://handbook.gitlab.com/handbook/engineering/development/dev/manage/foundations/)
 if the component you are looking for is not yet available.
 
 ### Available components
@@ -163,7 +163,7 @@ For example:
 
 ```haml
 = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_sast]',
-  checkbox_options: { data: { qa_selector: 'initialize_with_sast_checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
+  checkbox_options: { data: { testid: 'initialize-with-sast-checkbox', track_label: track_label, track_action: 'activate_form_input', track_property: 'init_with_sast' } }) do |c|
   - c.with_label do
     = s_('ProjectsNew|Enable Static Application Security Testing (SAST)')
   - c.with_help_text do

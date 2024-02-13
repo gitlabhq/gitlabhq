@@ -39,18 +39,12 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :validate_diff_params, only: :diff
   before_action :set_last_commit_sha, only: [:edit, :update]
 
-  track_event :create, :update,
-    name: 'g_edit_by_sfe',
-    action: 'perform_sfe_action',
-    label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_sfe_edit',
-    destinations: [:redis_hll, :snowplow]
+  track_internal_event :create, :update, name: 'g_edit_by_sfe'
 
   feature_category :source_code_management
   urgency :low, [:create, :show, :edit, :update, :diff]
 
   before_action do
-    push_frontend_feature_flag(:blob_blame_info, @project)
-    push_frontend_feature_flag(:highlight_js_worker, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:encoding_logs_tree)
     push_licensed_feature(:file_locks) if @project.licensed_feature_available?(:file_locks)
@@ -164,9 +158,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def check_for_ambiguous_ref
-    return if Feature.enabled?(:redirect_with_ref_type, @project)
-
     @ref_type = ref_type
+    return if Feature.enabled?(:ambiguous_ref_modal, @project)
 
     if @ref_type == ExtractsRef::RefExtractor::BRANCH_REF_TYPE && ambiguous_ref?(@project, @ref)
       branch = @project.repository.find_branch(@ref)
@@ -175,17 +168,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def commit
-    if Feature.enabled?(:redirect_with_ref_type, @project)
-      response = ::ExtractsRef::RequestedRef.new(@repository, ref_type: ref_type, ref: @ref).find
-      @commit = response[:commit]
-      @ref_type = response[:ref_type]
-
-      if response[:ambiguous]
-        return redirect_to(project_blob_path(@project, File.join(@ref_type ? @ref : @commit.id, @path), ref_type: @ref_type))
-      end
-    else
-      @commit ||= @repository.commit(@ref)
-    end
+    @commit ||= @repository.commit(@ref)
 
     return render_404 unless @commit
   end

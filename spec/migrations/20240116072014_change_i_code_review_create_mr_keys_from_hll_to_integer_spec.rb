@@ -14,13 +14,13 @@ RSpec.describe ChangeICodeReviewCreateMrKeysFromHllToInteger, :migration, :clean
 
   describe "#up" do
     before do
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-16', value: 1)
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-16', value: 2)
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-47', value: 3)
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-48', value: 1)
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-49', value: 2)
-      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-49', value: 4)
-      set_redis_hll('{hll_counters}_some_other_event-2023-49', value: 7)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-16', 1)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-16', 2)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-47', 3)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-48', 1)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-49', 2)
+      set_redis_hll('{hll_counters}_i_code_review_create_mr-2023-49', 4)
+      set_redis_hll('{hll_counters}_some_other_event-2023-49', 7)
     end
 
     it 'migrates all RedisHLL keys for i_code_review_create_mr', :aggregate_failures do

@@ -4,21 +4,29 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scan result policies **(ULTIMATE ALL)**
+# Merge request approval policies (Previously: Scan result policies)
 
-> Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
-You can use scan result policies to take action based on scan results. For example, one type of scan
-result policy is a security approval policy that allows approval to be required based on the
-findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
+> - Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
+> - Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
 
 NOTE:
-Scan result policies are applicable only to [protected](../../project/protected_branches.md) target branches.
+Scan result policies feature was renamed to merge request approval policies in GitLab 16.9.
+
+You can use merge request approval policies to enforce project level settings and create approval rules based on scan results. For example, one type of scan
+result policy is a security approval policy that allows approval to be required based on the
+findings of one or more security scan jobs. Merge request approval policies are evaluated after a CI scanning job is fully executed and both vulnerability and license type policies are evaluated based on the job artifact reports that are published in the completed pipeline.
+
+NOTE:
+Merge request approval policies are applicable only to [protected](../../project/protected_branches.md) target branches.
 
 NOTE:
 When a protected branch is created or deleted, the policy approval rules synchronize, with a delay of 1 minute.
 
-The following video gives you an overview of GitLab scan result policies:
+The following video gives you an overview of GitLab merge request approval policies (previously scan result policies):
 
 <div class="video-fallback">
   See the video: <a href="https://youtu.be/w5I9gcUgr9U">Overview of GitLab Scan Result Policies</a>.
@@ -30,11 +38,11 @@ The following video gives you an overview of GitLab scan result policies:
 ## Requirements and limitations
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, scan result policies do not have any effect.
-- The maximum number of scan result policies is five per security policy project.
+  Otherwise, merge request approval policies cannot get evaluated and the corresonding approvals stay required.
+- The maximum number of merge request approval policies is five per security policy project.
 - Each policy can have a maximum of five rules.
 - All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
-- Scan result policies evaluate findings and determine approval requirements based on the job artifact reports published in a completed pipeline. However, scan result policies do not check the integrity or authenticity of the scan results generated in the artifact reports.
+- Merge request approval policies evaluate findings and determine approval requirements based on the job artifact reports published in a completed pipeline. However, merge request approval policies do not check the integrity or authenticity of the scan results generated in the artifact reports.
 
 ## Merge request with multiple pipelines
 
@@ -45,12 +53,15 @@ A project can have multiple pipeline types configured. A single commit can initi
 pipelines, each of which may contain a security scan.
 
 - In GitLab 16.3 and later, the results of all completed pipelines for the latest commit in
-  the merge request's source and target branch are evaluated and used to enforce the scan result policy.
+  the merge request's source and target branch are evaluated and used to enforce the merge request approval policy.
   Parent-child pipelines and on-demand DAST pipelines are not considered.
 - In GitLab 16.2 and earlier, only the results of the latest completed pipeline were evaluated
-  when enforcing scan result policies.
+  when enforcing merge request approval policies.
 
-## Scan result policy editor
+If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must use the [`latest` security templates](../../../development/cicd/templates.md) so that the security scanning jobs are present in the pipeline.
+For more information see [Use security scanning tools with merge request pipelines](../index.md#use-security-scanning-tools-with-merge-request-pipelines).
+
+## Merge request approval policy editor
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
@@ -72,25 +83,28 @@ before the policy changes take effect.
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
 
 NOTE:
-Propagating scan result policies created for groups with a large number of projects take a while to complete.
+Propagating merge request approval policies created for groups with a large number of projects take a while to complete.
 
-## Scan result policies schema
+## Merge request approval policies schema
 
-The YAML file with scan result policies consists of an array of objects matching the scan result
-policy schema nested under the `scan_result_policy` key. You can configure a maximum of five
-policies under the `scan_result_policy` key.
+The YAML file with merge request approval policies consists of an array of objects matching the merge request approval
+policy schema nested under the `approval_policy` key. You can configure a maximum of five policies under the `approval_policy` key.
+
+NOTE:
+Merge request approval policies were defined under the `scan_result_policy` key. Until GitLab 17.0, policies can be
+defined under both keys. Starting from GitLab 17.0, only `approval_policy` key is supported.
 
 When you save a new policy, GitLab validates its contents against [this JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/validators/json_schemas/security_orchestration_policy.json).
 If you're not familiar with how to read [JSON schemas](https://json-schema.org/),
 the following sections and tables provide an alternative.
 
-| Field                | Type                          | Required | Possible values | Description                               |
-|----------------------|-------------------------------|----------|-----------------|-------------------------------------------|
-| `scan_result_policy` | `array` of Scan Result Policy | true     |                 | List of scan result policies (maximum 5). |
+| Field             | Type                          | Required | Possible values | Description                               |
+|-------------------|-------------------------------|----------|-----------------|-------------------------------------------|
+| `approval_policy` | `array` of Merge Request Approval Policy | true     |                 | List of merge request approval policies (maximum 5). |
 
-## Scan result policy schema
+## Merge request approval policy schema
 
-> The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
+> - The `approval_settings` fields were [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4 [with flags](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`, `scan_result_any_merge_request`, or `scan_result_policies_block_force_push`. See the `approval_settings` section below for more information.
 
 | Field               | Type               | Required | Possible values | Description                                              |
 |---------------------|--------------------|----------|-----------------|----------------------------------------------------------|
@@ -103,8 +117,8 @@ the following sections and tables provide an alternative.
 
 ## `scan_finding` rule type
 
-> - The scan result policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
-> - The scan result policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
+> - The merge request approval policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
+> - The merge request approval policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
 > - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
 
 This rule enforces the defined actions based on security scan findings.
@@ -130,24 +144,20 @@ This rule enforces the defined actions based on security scan findings.
 
 This rule enforces the defined actions based on license findings.
 
-| Field      | Type | Required | Possible values | Description |
-|------------|------|----------|-----------------|-------------|
-| `type` | `string` | true | `license_finding` | The rule's type. |
-| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` |  The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `match_on_inclusion` | `boolean` | true | `true`, `false` | Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. |
-| `license_types` | `array` of `string` | true | license types | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`. |
-| `license_states` | `array` of `string` | true | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected. |
+| Field                | Type                | Required                                   | Possible values              | Description                                                                                                                                                                                                                                                                      |
+|----------------------|---------------------|--------------------------------------------|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type`               | `string`            | true                                       | `license_finding`            | The rule's type.                                                                                                                                                                                                                                                                 |
+| `branches`           | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name    | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                                                                              |
+| `branch_type`        | `string`            | true if `branches` field does not exist    | `default` or `protected`     | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                                                                                |
+| `branch_exceptions`  | `array` of `string` | false                                      | Names of branches            | Branches to exclude from this rule.                                                                                                                                                                                                                                              |
+| `match_on_inclusion` | `boolean`           | true                                       | `true`, `false`              | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/424513)** in GitLab 16.9. Whether the rule matches inclusion or exclusion of licenses listed in `license_types`. When `false`, any detected licenses excluded from `license_types` require approval. |
+| `license_types`      | `array` of `string` | true                                       | license types                | [SPDX license names](https://spdx.org/licenses) to match on, for example `Affero General Public License v1.0` or `MIT License`.                                                                                                                                                  |
+| `license_states`     | `array` of `string` | true                                       | `newly_detected`, `detected` | Whether to match newly detected and/or previously detected licenses. The `newly_detected` state triggers approval when either a new package is introduced or when a new license for an existing package is detected.                                                             |
 
 ## `any_merge_request` rule type
 
 > - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
-> - The `any_merge_request` rule type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136298) in GitLab 16.6.
-
-FLAG:
-On self-managed GitLab, by default the `any_merge_request` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `any_merge_request`.
-On GitLab.com, this feature is available.
+> - The `any_merge_request` rule type was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418752) in GitLab 16.4. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136298) in GitLab 16.6. Feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432127).
 
 This rule enforces the defined actions for any merge request based on the commits signature.
 
@@ -189,10 +199,10 @@ the defined policy.
 > - The `prevent_pushing_and_force_pushing` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420629) in GitLab 16.4 [with flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. Disabled by default.
 > - The above field was [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.6.
 > - The above field was [enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/427260) in GitLab 16.7.
+> - Feature flag `scan_result_policies_block_force_push` [was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/432123) in GitLab 16.8.
 
 FLAG:
 On self-managed GitLab, by default the `block_branch_modification` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_unprotecting_branches`. On GitLab.com, this feature is available.
-On self-managed GitLab, by default the `prevent_pushing_and_force_pushing` field is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `scan_result_policies_block_force_push`. On GitLab.com, this feature is available.
 
 The settings set in the policy overwrite settings in the project.
 
@@ -206,14 +216,14 @@ The settings set in the policy overwrite settings in the project.
 | `require_password_to_approve`       | `boolean`             | false    | `true`, `false`                                               | `Any merge request`  | When enabled, there will be password confirmation on approvals. Password confirmation adds an extra layer of security.                                                                                                                                                                           |
 | `prevent_pushing_and_force_pushing` | `boolean`             | false    | `true`, `false`                                               | All                  | When enabled, prevents users from pushing and force pushing to a protected branch if that branch is included in the security policy. This ensures users do not bypass the merge request process to add vulnerable code to a branch.                                                              |
 
-## Example security scan result policies project
+## Example security merge request approval policies project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):
 
 ```yaml
 ---
-scan_result_policy:
+approval_policy:
 - name: critical vulnerability CS approvals
   description: critical severity level only for container scanning
   enabled: true
@@ -269,13 +279,13 @@ In this example:
 - Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
   container scanning requires one approval from a project member with the Owner role.
 
-## Example for Scan Result Policy editor
+## Example for Merge Request Approval Policy editor
 
-You can use this example in the YAML mode of the [Scan Result Policy editor](#scan-result-policy-editor).
+You can use this example in the YAML mode of the [Merge Request Approval Policy editor](#merge-request-approval-policy-editor).
 It corresponds to a single object from the previous example:
 
 ```yaml
-type: scan_result_policy
+type: approval_policy
 name: critical vulnerability CS approvals
 description: critical severity level only for container scanning
 enabled: true
@@ -297,29 +307,23 @@ actions:
   - adalberto.dare
 ```
 
-## Understanding scan result policy approvals
+## Understanding merge request approval policy approvals
 
-> The branch comparison logic for `scan_finding` was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_merge_base_pipeline`. Disabled by default.
+> - The branch comparison logic for `scan_finding` was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `scan_result_policy_merge_base_pipeline`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435297) in GitLab 16.9. Feature flag `scan_result_policy_merge_base_pipeline` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `scan_result_policy_merge_base_pipeline`.
-On GitLab.com, this feature is not available.
-
-### Scope of scan result policy comparison
+### Scope of merge request approval policy comparison
 
 - To determine when approval is required on a merge request, we compare completed pipelines for each supported pipeline source for the source and target branch (for example, `feature`/`main`). This ensures the most comprehensive evaluation of scan results.
 - For the source branch, the comparison pipeline is its latest completed `HEAD` pipeline.
-- For `license_finding` rules, we compare to a common ancestor's latest completed pipeline.
-- For `scan_finding` rules, the comparison pipeline may differ:
-  - If the `scan_result_policy_merge_base_pipeline` feature flag is enabled, we compare to a common ancestor's latest completed pipeline.
-  - Otherwise, we compare to the target branch's latest completed `HEAD` pipeline.
-- Scan result policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
+- For the target branch, we compare to a common ancestor's latest completed pipeline.
+- Merge request approval policies considers all supported pipeline sources (based on the [`CI_PIPELINE_SOURCE` variable](../../../ci/variables/predefined_variables.md)) when comparing results from both the source and target branches when determining if a merge request requires approval. Pipeline sources `webide` and `parent_pipeline` are not supported.
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 
-For scan result policies that are scoped to `newly_detected` findings, it's important to understand the implications of this vulnerability state. A finding is considered `newly_detected` if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains `newly_detected` findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `previously_detected` and so not be out of scope of a policy aimed at `newly_detected` findings. For example:
+For merge request approval policies that are scoped to `newly_detected` findings, it's important to understand the implications of this vulnerability state. A finding is considered `newly_detected` if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains `newly_detected` findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `previously_detected` and so not be out of scope of a policy aimed at `newly_detected` findings. For example:
 
-- A scan result policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
+- A merge request approval policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
 
 When using license approval policies, the combination of project, component (dependency), and license are considered in the evaluation. If a license is approved as an exception, future merge requests don't require approval for the same combination of project, component (dependency), and license. The component's version is not be considered in this case. If a previously approved package is updated to a new version, approvers will not need to re-approve. For example:
 
@@ -327,17 +331,17 @@ When using license approval policies, the combination of project, component (dep
 
 ### Multiple approvals
 
-There are several situations where the scan result policy requires an additional approval step. For example:
+There are several situations where the merge request approval policy requires an additional approval step. For example:
 
 - The number of security jobs is reduced in the working branch and no longer matches the number of
   security jobs in the target branch. Users can't skip the Scanning Result Policies by removing
   scanning jobs from the CI/CD configuration. Only the security scans that are configured in the
-  scan result policy rules are checked for removal.
+  merge request approval policy rules are checked for removal.
 
   For example, consider a situation where the default branch pipeline has four security scans:
-  `sast`, `secret_detection`, `container_scanning`, and `dependency_scanning`. A scan result
+  `sast`, `secret_detection`, `container_scanning`, and `dependency_scanning`. A merge request approval
   policy enforces two scanners: `container_scanning` and `dependency_scanning`. If an MR removes a
-  scan that is configured in scan result policy, `container_scanning` for example, an additional
+  scan that is configured in merge request approval policy, `container_scanning` for example, an additional
   approval is required.
 - Someone stops a pipeline security job, and users can't skip the security scan.
 - A job in a merge request fails and is configured with `allow_failure: false`. As a result, the pipeline is in a blocked state.
@@ -345,9 +349,9 @@ There are several situations where the scan result policy requires an additional
 
 ### Managing scan findings used to evaluate approval requirements
 
-Scan result policies evaluate the artifact reports generated by scanners in your pipelines after the pipeline has completed. Scan result policies focus on evaluating the results and determining approvals based on the scan result findings to identify potential risks, block merge requests, and require approval.
+Merge request approval policies evaluate the artifact reports generated by scanners in your pipelines after the pipeline has completed. Merge request approval policies focus on evaluating the results and determining approvals based on the scan result findings to identify potential risks, block merge requests, and require approval.
 
-Scan result policies do not extend beyond that scope to reach into artifact files or scanners. Instead, we trust the results from artifact reports. This gives teams flexibility in managing their scan execution and supply chain, and customizing scan results generated in artifact reports (for example, to filter out false positives) if needed.
+Merge request approval policies do not extend beyond that scope to reach into artifact files or scanners. Instead, we trust the results from artifact reports. This gives teams flexibility in managing their scan execution and supply chain, and customizing scan results generated in artifact reports (for example, to filter out false positives) if needed.
 
 Lock file tampering, for example, is outside of the scope of security policy management, but may be mitigated through use of [Code owners](../../project/codeowners/index.md#codeowners-file) or [external status checks](../../project/merge_requests/status_checks.md). For more information, see [issue 433029](https://gitlab.com/gitlab-org/gitlab/-/issues/433029).
 
@@ -358,20 +362,28 @@ Lock file tampering, for example, is outside of the scope of security policy man
 We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
 
 - When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). We currently use `main tip` of the target branch for comparison. In the future, we plan to use `merge base` for `newly_detected` policies (see [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518)).
-- Findings or errors that cause approval to be required on a scan result policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
+- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR Widget. By using `merge base` in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases will be addressed. We will additionally be [displaying more granular details](https://gitlab.com/groups/gitlab-org/-/epics/11185) about what caused security policy violations.
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 
-## Experimental features **(EXPERIMENT)**
+## Experimental features
+
+DETAILS:
+**Status:** Experiment
 
 ### Security policy scopes
 
-> The `policy_scope` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`.
+Prerequisites:
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature,
-an administrator can [disable the feature flag](../../../administration/feature_flags.md)
-named `security_policies_policy_scope`.
-On GitLab.com, this feature is available.
+- To enable these experimental features, a group owner or administrator must enable the experimental
+  features:
+  1. On the left sidebar, select **Search or go to** and find your group.
+  1. Select **Settings > General**.
+  1. Expand **Permissions and group features**.
+  1. Select the **Security Policy Scopes** checkbox.
+  1. Optional. Select **Enforce for all subgroups**.
+
+Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
 
 Security policy enforcement depends first on establishing a link between the group, subgroup, or
 project on which you want to enforce policies, and the security policy project that contains the
@@ -401,7 +413,7 @@ You can refine a security policy's scope to:
 
 ```yaml
 ---
-scan_result_policy:
+approval_policy:
 - name: critical vulnerability CS approvals
   description: critical severity level only for container scanning
   enabled: true
@@ -435,16 +447,15 @@ scan_result_policy:
 
 ## Troubleshooting
 
-### Merge request rules widget shows a scan result policy is invalid or duplicated **(ULTIMATE SELF)**
+### Merge request rules widget shows a merge request approval policy is invalid or duplicated
 
-On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a
-group and imported into another, and had scan result policy rules. These rules are stored in a
-separate project to the one that was exported. As a result, the project contains policy rules that
-reference entities that don't exist in the imported project's group. The result is policy rules that
-are invalid, duplicated, or both.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
-To remove all invalid scan result policy rules from a GitLab instance, an administrator can run
-the following script in the [Rails console](../../../administration/operations/rails_console.md).
+On GitLab self-managed from 15.0 to 16.4, the most likely cause is that the project was exported from a group and imported into another, and had merge request approval policy rules. These rules are stored in a separate project to the one that was exported. As a result, the project contains policy rules that reference entities that don't exist in the imported project's group. The result is policy rules that are invalid, duplicated, or both.
+
+To remove all invalid merge request approval policy rules from a GitLab instance, an administrator can run the following script in the [Rails console](../../../administration/operations/rails_console.md).
 
 ```ruby
 Project.joins(:approval_rules).where(approval_rules: { report_type: %i[scan_finding license_scanning] }).where.not(approval_rules: { security_orchestration_policy_configuration_id: nil }).find_in_batches.flat_map do |batch|
@@ -467,7 +478,7 @@ end
 
 ### Debugging security approval policy approvals
 
-GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support/) titled "Scan result approval policy debugging". Provide the following details:
+GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:
 
 - Group path, project path and optionally merge request ID
 - Severity
@@ -490,4 +501,4 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
 
 Common failure reasons:
 
-- Scanner removed by MR: Scan result policy expect that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.
+- Scanner removed by MR: Merge request approval policy expects that the scanners defined in the policy are present and that they successfully produce an artifact for comparison.

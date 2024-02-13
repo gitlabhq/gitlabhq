@@ -33,12 +33,12 @@ Currently, the [Metrics Dictionary](https://metrics.gitlab.com/) is built automa
 ## Remove a metric
 
 WARNING:
-If a metric is not used in Sisense or any other system after 6 months, the
+If a metric is not used in Tableau or any other system after 6 months, the
 Analytics Instrumentation team marks it as inactive and assigns it to the group owner for review.
 
 We are working on automating this process. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/8988) for details.
 
-Analytics Instrumentation removes metrics from Service Ping if they are not used in any Sisense dashboard.
+Analytics Instrumentation removes metrics from Service Ping if they are not used in any Tableau dashboard.
 
 For an example of the metric removal process, see this [example issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388236).
 

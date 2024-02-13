@@ -81,7 +81,6 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: keep-all;
-    @include gl-font-base;
   }
 
   h1 {
@@ -129,11 +128,14 @@
   blockquote,
   .blockquote {
     font-size: inherit;
-    @include gl-text-gray-700;
-    @include gl-py-3;
-    @include gl-pl-6;
-    @include gl-my-3;
-    @include gl-mx-0;
+    color: $gray-700;
+    padding-top: $gl-spacing-scale-3;
+    padding-bottom: $gl-spacing-scale-3;
+    padding-left: $gl-spacing-scale-6;
+    margin-top: $gl-spacing-scale-3;
+    margin-bottom: $gl-spacing-scale-3;
+    margin-left: 0;
+    margin-right: 0;
     @include gl-inset-border-l-4-gray-100;
 
     &:dir(rtl) {
@@ -143,7 +145,7 @@
 
     p {
       line-height: 1.5;
-      @include gl-reset-color;
+     color: inherit;
 
       &:last-child {
         margin: 0;
@@ -657,12 +659,12 @@ body {
 
 /** CODE **/
 pre {
-  @include gl-relative;
+  position: relative;
   font-family: $monospace-font;
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  @include gl-font-base;
+  font-size: $gl-font-size;
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
@@ -709,7 +711,7 @@ code {
  */
 textarea.js-gfm-input {
   font-family: $monospace-font;
-  @include gl-font-base;
+  font-size: $gl-font-size;
 }
 
 h1,
@@ -769,8 +771,6 @@ textarea {
   }
 }
 /* stylelint-enable */
-
-.lh-100 { line-height: 1; }
 
 wbr {
   display: inline-block;

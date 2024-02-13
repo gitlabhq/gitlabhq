@@ -24,7 +24,7 @@ _Why do you believe this AI solution is a good way to solve this problem?_
 _What assumptions are you making about this problem and the solution?_
 
 ### Personas
-_What [personas](https://about.gitlab.com/handbook/product/personas/#list-of-user-personas) have this problem, who is the intended user?_
+_What [personas](https://handbook.gitlab.com/handbook/product/personas/#list-of-user-personas) have this problem, who is the intended user?_
 
 ## Proposal
 <!-- Explain the proposed changes, including details around usage and business drivers. -->

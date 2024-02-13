@@ -22,7 +22,7 @@ module CommitsHelper
       user: committer,
       user_name: committer.name,
       user_email: committer.email,
-      css_class: 'd-none d-sm-inline-block float-none gl-mr-0! gl-vertical-align-text-bottom'
+      css_class: 'gl-display-none gl-sm-display-inline-block float-none gl-mr-0! gl-vertical-align-text-bottom'
     }))
   end
 
@@ -134,7 +134,13 @@ module CommitsHelper
   def conditionally_paginate_diff_files(diffs, paginate:, page:, per:)
     if paginate
       diff_files = diffs.diff_files.to_a
-      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, diffs.project.repository])
+      project = diffs.project
+      repo = project.repository
+
+      # While Feature flag increase_diff_file_performance exists, we clear both
+      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo, Gitlab::Diff::FileCollection::MergeRequestDiffBase.max_blob_size(project)])
+      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo, Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE])
+      Gitlab::Utils::BatchLoader.clear_key([:repository_blobs, repo])
 
       Kaminari.paginate_array(diff_files).page(page).per(per).tap do |diff_files|
         diff_files.each(&:add_blobs_to_batch_loader)

@@ -4,45 +4,54 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compliance center **(ULTIMATE ALL)**
+# Compliance center
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
-See report and manage standards adherence, violations, and compliance frameworks for the group
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122931) from Compliance report in GitLab 16.3.
 
-## Standards adherence dashboard
+The compliance center is the central location for compliance teams to manage their compliance standards adherence reporting, violations reporting, and compliance frameworks for their group.
+
+## Compliance standards adherence dashboard
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125875) GraphQL APIs in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `compliance_adherence_report`. Disabled by default.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125444) compliance standards adherence dashboard in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `adherence_report_ui`. Disabled by default.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/414495) in GitLab 16.5.
 > - [Feature flag `compliance_adherence_report` and `adherence_report_ui`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137398) removed in GitLab 16.7.
 > - Standards adherence filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413734) in GitLab 16.7.
+> - Standards adherence grouping [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413735) in GitLab 16.9.
 
-Standards adherence dashboard lists the adherence status of projects complying to GitLab standard.
+The compliance standards adherence dashboard lists the adherence status of projects complying to the _GitLab standard_.
 
 When a project is added or an associated project or group setting is changed, an adherence scan is run on that project to update the standards adherence for that project. The date in the
 **Last Scanned** column reflects any changes.
 
-### View the standards adherence dashboard
+### View the compliance standards adherence dashboard
 
 Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To view the standards adherence dashboard for a group:
+To view the compliance standards adherence dashboard for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
 
-You can filter the standards adherence dashboard on:
+You can filter the compliance standards adherence dashboard on:
 
 - The project that the check was performed on.
 - The type of check that was performed on a project.
 - The standard that the check belongs to.
 
+You can group the compliance standards adherence dashboard on:
+
+- The type of check that was performed on a project.
+
 ### GitLab standard
 
-GitLab standard consists of three rules:
+The GitLab standard consists of three rules:
 
 - Prevent authors as approvers.
 - Prevent committers as approvers.
@@ -50,7 +59,7 @@ GitLab standard consists of three rules:
 
 #### Prevent authors as approvers
 
-To comply with GitLab standard, you must prevent users from approving their own merge requests. For more information,
+To comply with the GitLab standard, you must prevent users from approving their own merge requests. For more information,
 see [Prevent approval by author](../../project/merge_requests/approvals/settings.md#prevent-approval-by-author).
 
 On self-managed GitLab, when instance-level setting for [prevent approval by author](../../../administration/merge_requests_approvals.md)
@@ -59,7 +68,7 @@ To update the adherence status for these projects, the group-level or the projec
 
 #### Prevent committers as approvers
 
-To comply with GitLab standard, you must prevent users from approving merge requests where they've added commits. For
+To comply with the GitLab standard, you must prevent users from approving merge requests where they've added commits. For
 more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 
 On self-managed GitLab, when instance-level setting for [prevent approvals by users who add commits](../../../administration/merge_requests_approvals.md)
@@ -68,16 +77,13 @@ To update the adherence status for these projects, the group-level or the projec
 
 #### At least two approvals
 
-To comply with GitLab standard, you must have at least two users approve a merge request to get it merged. For more
+To comply with the GitLab standard, you must have at least two users approve a merge request to get it merged. For more
 information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).
 
-### Export standards adherence report for projects in a group
+### Export compliance standards adherence report for projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `compliance_standards_adherence_csv_export`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413736) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `compliance_standards_adherence_csv_export`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) in GitLab 16.9. Feature flag `compliance_standards_adherence_csv_export` removed.
 
 Exports the contents of a standards adherence report for projects in a group. Reports are truncated at 15 MB to avoid a large email attachment.
 
@@ -85,7 +91,7 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To export the standards adherence report for projects in a group:
+To export the compliance standards adherence report for projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -105,9 +111,9 @@ A report is compiled and delivered to your email inbox as an attachment.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112111) to compliance violations report in GitLab 15.9.
 > - Ability to create and edit compliance frameworks [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394950) in GitLab 16.0.
 
-With compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
+With the compliance violations report, you can see a high-level view of merge request activity for all projects in the group.
 
-When you select a row in the compliance report, a drawer appears that provides:
+When you select a row in the compliance violations report, a drawer appears that provides:
 
 - The project name and [compliance framework label](../../project/working_with_projects.md#add-a-compliance-framework-to-a-project),
   if the project has one assigned.
@@ -120,7 +126,7 @@ When you select a row in the compliance report, a drawer appears that provides:
 
 ### View the compliance violations report for a group
 
-> Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
+> - Target branch search [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358414) in GitLab 16.0.
 
 Prerequisites:
 
@@ -171,21 +177,6 @@ From [GitLab 14.10](https://gitlab.com/groups/gitlab-org/-/epics/6870), these ar
 | Committers approved merge request | High           | [Separation of duties](#separation-of-duties) | Committers of the merge request approved the merge request they contributed to. For more information, see [Prevent approvals by users who add commits](../../project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits). |
 | Fewer than two approvals          | High           | [Separation of duties](#separation-of-duties) | Merge request was merged with fewer than two approvals. For more information, see [Merge request approval rules](../../project/merge_requests/approvals/rules.md).                                                                                     |
 
-The following are unavailable compliance violations that are tracked in [epic 5237](https://gitlab.com/groups/gitlab-org/-/epics/5237).
-
-<!-- vale gitlab.SubstitutionWarning = NO -->
-
-| Violation                            | Severity level | Category                                                                               | Description                                                                                        |
-|:-------------------------------------|:---------------|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------|
-| Pipeline failed                      | Medium         | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge requests pipeline failed and was merged.                                                     |
-| Pipeline passed with warnings        | Info           | [Pipeline results](../../../ci/pipelines/index.md)                                     | Merge request pipeline passed with warnings and was merged.                                        |
-| Code coverage down more than 10%     | High           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of more than 10%.     |
-| Code coverage down between 5% to 10% | Medium         | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 5% to 10%. |
-| Code coverage down between 1% to 5%  | Low            | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of between 1% to 5%.  |
-| Code coverage down less than 1%      | Info           | [Code coverage](../../../ci/testing/code_coverage.md#view-code-coverage-results-in-the-mr) | Code coverage report for the merge request indicates a reduction in coverage of less than 1%.      |
-
-<!-- vale gitlab.SubstitutionWarning = YES -->
-
 ##### Separation of duties
 
 GitLab supports a separation of duties policy between users who create and approve merge requests. Our criteria for the
@@ -199,10 +190,7 @@ separation of duties is:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356791) in GitLab 16.4 [with a flag](../../../administration/feature_flags.md) named `compliance_violation_csv_export`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424447) in GitLab 16.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named
-`compliance_violation_csv_export`. On GitLab.com, this feature is available.
+> - [Feature flag `compliance_violation_csv_export`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142568) removed in GitLab 16.9.
 
 Export a report of merge request compliance violations on merge requests belonging to projects in a group. Reports:
 
@@ -373,7 +361,7 @@ To remove a compliance framework from multiple projects in a group:
 
 ### Export a report of compliance frameworks on projects in a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387912) in GitLab 16.0.
 
 Export a report of compliance frameworks that are applied to projects in a group. Reports:
 
@@ -395,7 +383,7 @@ A report is compiled and delivered to your email inbox as an attachment.
 
 #### Filter the compliance projects report
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
 
 To filter the list of compliance frameworks:
 

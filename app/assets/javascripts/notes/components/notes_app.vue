@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import { v4 as uuidv4 } from 'uuid';
+import { InternalEvents } from '~/tracking';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
@@ -39,7 +40,7 @@ export default {
     TimelineEntryItem,
     AiSummary: () => import('ee_component/notes/components/ai_summary.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   provide() {
     return {
       summarizeClientSubscriptionId: uuidv4(),
@@ -165,6 +166,9 @@ export default {
       });
     }
 
+    eventHub.$on('noteFormAddToReview', this.handleReviewTracking);
+    eventHub.$on('noteFormStartReview', this.handleReviewTracking);
+
     window.addEventListener('hashchange', this.handleHashChanged);
 
     eventHub.$on('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
@@ -177,6 +181,8 @@ export default {
   beforeDestroy() {
     window.removeEventListener('hashchange', this.handleHashChanged);
     eventHub.$off('notesApp.updateIssuableConfidentiality', this.setConfidentiality);
+    eventHub.$off('noteFormStartReview', this.handleReviewTracking);
+    eventHub.$off('noteFormAddToReview', this.handleReviewTracking);
   },
   methods: {
     ...mapActions([
@@ -221,6 +227,16 @@ export default {
     },
     setAiLoading(loading) {
       this.aiLoading = loading;
+    },
+    handleReviewTracking(event) {
+      const types = {
+        noteFormStartReview: 'merge_request_click_start_review_on_overview_tab',
+        noteFormAddToReview: 'merge_request_click_add_to_review_on_overview_tab',
+      };
+
+      if (this.shouldShow && window.mrTabs && types[event.name]) {
+        this.trackEvent(types[event.name]);
+      }
     },
   },
   systemNote: constants.SYSTEM_NOTE,

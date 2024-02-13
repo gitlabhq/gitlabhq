@@ -71,7 +71,7 @@ module WebHooks
     end
 
     def hook_param_names
-      %i[enable_ssl_verification token url push_events_branch_filter branch_filter_strategy]
+      %i[enable_ssl_verification name description token url push_events_branch_filter branch_filter_strategy]
     end
 
     def destroy_hook(hook)

@@ -6,7 +6,7 @@
   table-layout: fixed;
 
   pre {
-    padding: 10px 0;
+    line-height: 0;
     border: 0;
     border-radius: 0 0 $border-radius-default;
     font-family: $monospace-font;
@@ -41,7 +41,8 @@
   }
 
   .line-numbers {
-    padding: 10px;
+    padding: 0 10px;
+    line-height: 19px;
     text-align: right;
     float: left;
     border-bottom-left-radius: $border-radius-default;
@@ -49,8 +50,8 @@
     a {
       font-family: $monospace-font;
       white-space: nowrap;
-      @include gl-display-flex;
-      @include gl-justify-content-end;
+      display: flex;
+      justify-content: flex-end;
 
       i,
       svg {
@@ -97,7 +98,7 @@ td.line-numbers {
     min-width: 6rem;
     // for server-side-rendering
     .line-links {
-      @include gl-display-flex;
+      display: flex;
     }
 
     // for client
@@ -114,23 +115,23 @@ td.line-numbers {
   .line-numbers:not(.line-links) a:focus-within::before,
   .line-links:hover a::before,
   .line-links:focus-within a::before {
-    @include gl-visibility-visible;
+    visibility: visible;
   }
 
 
   .file-line-num {
-    @include gl-justify-content-end;
-    @include gl-flex-grow-1;
-    @include gl-pr-3;
+    justify-content: flex-end;
+    flex-grow: 1;
+    padding-right: $gl-spacing-scale-3;
   }
 
   .file-line-blame {
-    @include gl-ml-3;
+    margin-left: $gl-spacing-scale-3;
   }
 
   .file-line-num,
   .file-line-blame {
-    @include gl-align-items-center;
-    @include gl-display-flex;
+    align-items: center;
+    display: flex;
   }
 }

@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request diffs storage **(FREE SELF)**
+# Merge request diffs storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies

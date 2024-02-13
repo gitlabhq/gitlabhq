@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Syntax Highlighting **(FREE ALL)**
+# Syntax Highlighting
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides syntax highlighting on all files through [Highlight.js](https://github.com/highlightjs/highlight.js/) and the
 [Rouge](https://rubygems.org/gems/rouge) Ruby gem. It attempts to guess what language

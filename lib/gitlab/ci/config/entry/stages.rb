@@ -10,12 +10,18 @@ module Gitlab
         class Stages < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
+          MAX_NESTING_LEVEL = 10
+
           validations do
-            validates :config, array_of_strings: true
+            validates :config, nested_array_of_strings: { max_level: MAX_NESTING_LEVEL }
           end
 
           def self.default
             Config::EdgeStagesInjector.wrap_stages %w[build test deploy]
+          end
+
+          def value
+            @config.flatten(MAX_NESTING_LEVEL)
           end
         end
       end

@@ -29,6 +29,10 @@ module Auth
         return error('DENIED', status: 403, message: 'access forbidden')
       end
 
+      if repository_path_push_protected?
+        return error('PROTECTED', status: 403, message: 'Pushing to protected repository path forbidden')
+      end
+
       { token: authorized_token(*scopes).encoded }
     rescue ActiveImportError
       error(
@@ -324,6 +328,26 @@ module Auth
     def has_registry_ability?
       @authentication_abilities.any? do |ability|
         REGISTRY_LOGIN_ABILITIES.include?(ability)
+      end
+    end
+
+    def repository_path_push_protected?
+      return false if Feature.disabled?(:container_registry_protected_containers, project)
+
+      push_scopes = scopes.select { |scope| scope[:actions].include?('push') || scope[:actions].include?('*') }
+
+      push_scopes.any? do |push_scope|
+        push_scope_container_registry_path = ContainerRegistry::Path.new(push_scope[:name])
+
+        next unless push_scope_container_registry_path.valid?
+
+        repository_project = push_scope_container_registry_path.repository_project
+        current_user_project_authorization_access_level = current_user&.max_member_access_for_project(repository_project.id)
+
+        repository_project.container_registry_protection_rules.for_push_exists?(
+          access_level: current_user_project_authorization_access_level,
+          repository_path: push_scope_container_registry_path.to_s
+        )
       end
     end
 

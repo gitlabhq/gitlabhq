@@ -17,6 +17,25 @@ module Ci
       included_project
     end
 
+    def create_project_with_group_allowlist(target_project, accessible_project: nil)
+      included_project = accessible_project || create(:project,
+        ci_inbound_job_token_scope_enabled: true
+      )
+      create(
+        :ci_job_token_group_scope_link,
+        source_project: included_project,
+        target_group: target_project.group
+      )
+
+      included_project
+    end
+
+    def create_project_without_group_allowlist(accessible_project: nil)
+      accessible_project || create(:project,
+        ci_inbound_job_token_scope_enabled: true
+      )
+    end
+
     def create_project_in_both_allowlists(root_project)
       create_project_in_allowlist(root_project, direction: :outbound).tap do |new_project|
         create_project_in_allowlist(root_project, target_project: new_project, direction: :inbound)

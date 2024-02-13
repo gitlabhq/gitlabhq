@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class Projects::TriggersController < Projects::ApplicationController
-  before_action :authorize_admin_build!
+  before_action :authorize_manage_trigger_on_project!
   before_action :authorize_manage_trigger!, except: [:index, :create]
+
   before_action :authorize_admin_trigger!, only: [:edit, :update]
   before_action :trigger, only: [:edit, :update, :destroy]
 
@@ -16,12 +17,18 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def create
-    @trigger = project.triggers.create(trigger_params.merge(owner: current_user))
+    response = ::Ci::PipelineTriggers::CreateService.new(
+      project: project,
+      user: current_user,
+      description: trigger_params[:description]
+    ).execute
 
-    if @trigger.valid?
-      flash[:notice] = _('Trigger was created successfully.')
+    @trigger = response.payload[:trigger]
+
+    if response.success?
+      flash[:notice] = _('Trigger token was created successfully.')
     else
-      flash[:alert] = _('You could not create a new trigger.')
+      flash[:alert] = response.message
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
@@ -31,8 +38,10 @@ class Projects::TriggersController < Projects::ApplicationController
   end
 
   def update
-    if trigger.update(trigger_params)
-      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), notice: _('Trigger was successfully updated.')
+    response = ::Ci::PipelineTriggers::UpdateService.new(user: current_user, trigger: trigger, description: trigger_params[:description]).execute
+
+    if response.success?
+      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), notice: _('Trigger token was successfully updated.')
     else
       render action: "edit"
     end
@@ -52,6 +61,10 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def authorize_manage_trigger!
     access_denied! unless can?(current_user, :manage_trigger, trigger)
+  end
+
+  def authorize_manage_trigger_on_project!
+    access_denied! unless can?(current_user, :manage_trigger, project)
   end
 
   def authorize_admin_trigger!

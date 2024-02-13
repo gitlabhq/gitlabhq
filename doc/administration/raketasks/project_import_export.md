@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import and export Rake tasks **(FREE SELF)**
+# Project import and export Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for [project import and export](../../user/project/settings/import_export.md).
 
@@ -12,7 +16,7 @@ You can only import from a [compatible](../../user/project/settings/import_expor
 
 ## Import large projects
 
-> The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
+> - The [Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/tasks/gitlab/import_export/import.rake) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20724) in GitLab 12.6, replacing a GitLab.com Ruby script.
 
 This script was introduced in GitLab 12.6 for importing large GitLab project exports.
 
@@ -41,7 +45,7 @@ gitlab-rake "gitlab:import_export:import[root, group/subgroup, testingprojectimp
 
 ## Export large projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25598) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25598) in GitLab 12.9.
 
 You can use a Rake task to export large project.
 

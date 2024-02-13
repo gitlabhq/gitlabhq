@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure SCIM for GitLab.com groups **(PREMIUM SAAS)**
+# Configure SCIM for GitLab.com groups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 You can use the open standard System for Cross-domain Identity Management (SCIM) to automatically:
 
@@ -40,23 +44,30 @@ To configure GitLab SAML SSO SCIM:
 
 You can configure one of the following as an identity provider:
 
-- [Azure Active Directory](#configure-azure-active-directory).
+- [Azure Active Directory](#configure-microsoft-entra-id-formerly-azure-active-directory).
 - [Okta](#configure-okta).
 
 NOTE:
 Other providers can work with GitLab but they have not been tested and are not supported. You should contact the provider for support. GitLab support can assist by reviewing related log entries.
 
-### Configure Azure Active Directory
+### Configure Microsoft Entra ID (formerly Azure Active Directory)
+
+> - Updated to Microsoft Entra ID terminology in 16.10.
 
 Prerequisites:
 
 - [GitLab is configured](#configure-gitlab).
+- [Group single sign-on](index.md) is configured.
 
 The SAML application created during [single sign-on](index.md) set up for
 [Azure Active Directory](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/view-applications-portal)
 must be set up for SCIM. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
-To configure Azure Active Directory for SCIM:
+NOTE:
+You must configure SCIM provisioning exactly as detailed in the following instructions. If misconfigured, you will encounter issues with user provisioning
+and sign in, which require a lot of effort to resolve. If you have any trouble or questions with any step, contact GitLab support.
+
+To configure Microsoft Entra ID for SCIM:
 
 1. In your app, go to the **Provisioning** tab and select **Get started**.
 1. Set the **Provisioning Mode** to **Automatic**.
@@ -67,63 +78,103 @@ To configure Azure Active Directory for SCIM:
    [troubleshooting](troubleshooting.md) information.
 1. Select **Save**.
 
-After saving, **Settings** and **Mappings** sections appear.
+After saving, **Mappings** and **Settings** sections appear.
 
-1. Under **Settings**, if required, set a notification email and select the
-   **Send an email notification when a failure occurs** checkbox.
-1. Under **Mappings**, we recommend you:
-   1. Keep **Provision Azure Active Directory Users** enabled and select the **Provision Azure Active Directory Users**
-      link to [configure attribute mappings](#configure-attribute-mappings).
-   1. Below the mapping list select the **Show advanced options** checkbox.
-   1. Select the **Edit attribute list for customappsso** link.
-   1. Ensure the `id` is the primary and required field, and `externalId` is also required.
-   1. Select **Save**.
-1. Return to the **Provisioning** tab, saving unsaved changes if necessary.
-1. Select **Edit attribute mappings**.
-1. Under **Mappings**:
-   1. Select **Provision Azure Active Directory Groups**.
-   1. On the Attribute Mapping page, turn off the **Enabled** toggle. Leaving it turned on doesn't break the SCIM user
-      provisioning, but it causes errors in Azure Active Directory that may be confusing and misleading.
-   1. Select **Save**.
-1. Return to the **Provisioning** tab, saving unsaved changes if necessary.
-1. Select **Edit attribute mappings**.
-1. Turn on the **Provisioning Status** toggle. Synchronization details and any errors appears on the bottom of the
-   **Provisioning** screen, together with a link to the audit events.
+#### Configure mappings
+
+Under the **Mappings** section, first provision the groups:
+
+1. Select **Provision Microsoft Entra ID Groups**.
+1. On the Attribute Mapping page, turn off the **Enabled** toggle. SCIM group provisioning is not supported in
+   GitLab. Leaving group provisioning enabled does not break the SCIM user provisioning, but it causes errors in the
+   Entra ID SCIM provisioning log that may be confusing and misleading.
+
+   NOTE:
+   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignored.
+
+1. Select **Save**.
+
+Next, provision the users:
+
+1. Select **Provision Microsoft Entra ID Users**.
+1. Ensure that the **Enabled** toggle is set to **Yes**.
+1. Ensure that all **Target Object Actions** are enabled.
+1. Under **Attribute Mappings**, configure mappings to match
+   the [configured attribute mappings](#configure-attribute-mappings):
+   1. Optional. In the **customappsso Attribute** column, find `externalId` and delete it.
+   1. Edit the first attribute to have a:
+      - **source attribute** of `objectId`
+      - **target attribute** of `externalId`
+      - **matching precedence** of `1`
+   1. Update the existing **customappsso** attributes to match the
+      [configured attribute mappings](#configure-attribute-mappings).
+   1. Delete any additional attributes that are not present in the following table. They do not cause problems if they are
+      not deleted, but GitLab does not consume the attributes.
+1. Under the mapping list, select the **Show advanced options** checkbox.
+1. Select the **Edit attribute list for customappsso** link.
+1. Ensure the `id` is the primary and required field, and `externalId` is also required.
+1. Select **Save**, which returns you to the Attribute Mapping configuration page.
+1. Close the **Attribute Mapping** configuration page by clicking the `X` in the top right corner.
+
+#### Configure settings
+
+Under the **Settings** section:
+
+1. Optional. If desired, select the **Send an email notification when a failure occurs** checkbox.
+1. Optional. If desired, select the **Prevent accidental deletion** checkbox.
+1. If necessary, select **Save** to ensure all changes have been saved.
+
+After you have configured the mappings and the settings, return to the app overview page and select **Start provisioning** to start automatic SCIM provisioning of users in GitLab.
 
 WARNING:
-Once synchronized, changing the field mapped to `id` and `externalId` may cause a number of errors. These include
+Once synchronized, changing the field mapped to `id` and `externalId` may cause errors. These include
 provisioning errors, duplicate users, and may prevent existing users from accessing the GitLab group.
 
 #### Configure attribute mappings
 
-While [configuring Azure Active Directory for SCIM](#configure-azure-active-directory), you configure attribute mappings.
-For an example, see [example configuration](example_saml_config.md#scim-mapping).
+NOTE:
+While Microsoft transitions from Azure Active Directory to Entra ID naming schemes, you might notice inconsistencies in
+your user interface. If you're having trouble, you can view an older version of this document or contact GitLab Support.
 
-The following table provides attribute mappings known to work with GitLab.
+While [configuring Entra ID for SCIM](#configure-microsoft-entra-id-formerly-azure-active-directory), you configure
+attribute mappings. For an example, see [example configuration](example_saml_config.md#scim-mapping).
 
-| Source attribute    | Target attribute               | Matching precedence |
-|:--------------------|:-------------------------------|:--------------------|
-| `objectId`          | `externalId`                   | 1                   |
-| `userPrincipalName` | `emails[type eq "work"].value` |                     |
-| `mailNickname`      | `userName`                     |                     |
+The following table provides attribute mappings that are required for GitLab.
+
+| Source attribute                                                           | Target attribute               | Matching precedence |
+|:---------------------------------------------------------------------------|:-------------------------------|:--------------------|
+| `objectId`                                                                 | `externalId`                   | 1                   |
+| `userPrincipalName` OR `mail` (1)                                 | `emails[type eq "work"].value` |                     |
+| `mailNickname`                                                    | `userName`                     |                     |
+| `displayName` OR `Join(" ", [givenName], [surname])` (2)          | `name.formatted`               |                     |
+| `Switch([IsSoftDeleted], , "False", "True", "True", "False")` (3) | `active`                       |                     |
+
+<!-- markdownlint-disable MD029 -->
+
+1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
+2. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
+3. This is an expression mapping type, not a direct mapping. Select "Expression" in the "Mapping type" dropdown list.
+
+<!-- markdownlint-enable MD029 -->
 
 Each attribute mapping has:
 
-- An Azure Active Directory attribute (source attribute).
-- A `customappsso` attribute (target attribute).
+- A **customappsso Attribute**, which corresponds to **target attribute**.
+- A **Microsoft Entra ID Attribute**, which corresponds to **source attribute**.
 - A matching precedence.
 
 For each attribute:
 
-1. Select the attribute to edit it.
-1. Select the required settings.
+1. Edit the existing attribute or add a new attribute.
+1. Select the required source and target attribute mappings from the dropdown lists.
 1. Select **Ok**.
+1. Select **Save**.
 
 If your SAML configuration differs from [the recommended SAML settings](index.md#azure), select the mapping
 attributes and modify them accordingly. The source attribute that you map to the `externalId`
 target attribute must match the attribute used for the SAML `NameID`.
 
-If a mapping is not listed in the table, use the Azure Active Directory defaults. For a list of required attributes,
+If a mapping is not listed in the table, use the Microsoft Entra ID defaults. For a list of required attributes,
 refer to the [internal group SCIM API](../../../development/internal_api/index.md#group-scim-api) documentation.
 
 ### Configure Okta
@@ -198,7 +249,10 @@ For role information, see the [Group SAML](index.md#user-access-and-management) 
 
 ### Passwords for users created through SCIM for GitLab groups
 
-GitLab requires passwords for all user accounts. For more information on how GitLab generates passwords for users created through SCIM for GitLab groups, see [generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md).
+GitLab requires passwords for all user accounts. For users created using SCIM provisioning, GitLab automatically
+generates a random password, and users do not need to set one during their first sign-in. For more information on how
+GitLab generates passwords for users created through SCIM for GitLab groups, see
+[generated passwords for users created through integrated authentication](../../../security/passwords_for_integrated_authentication_methods.md).
 
 ### Link SCIM and SAML identities
 

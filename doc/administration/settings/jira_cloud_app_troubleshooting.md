@@ -4,11 +4,15 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting GitLab for Jira Cloud app administration **(FREE SELF)**
+# Troubleshooting GitLab for Jira Cloud app administration
 
-When administering the GitLab for Jira Cloud app for self-managed instances, you might encounter the following issues.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
-For GitLab.com, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
+When administering the GitLab for Jira Cloud app, you might encounter the following issues.
+
+For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md#troubleshooting).
 
 ## Sign-in message displayed when already signed in
 
@@ -123,7 +127,8 @@ GitLab Support with:
 1. Your GitLab self-managed instance URL.
 1. Your GitLab.com username.
 1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
-1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting).
+1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) that you have
+   processed with the [harcleaner](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) utility.
 
 The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
 
@@ -132,7 +137,8 @@ The GitLab Support team can then look up why this is failing in the GitLab.com s
 NOTE:
 These steps can only be completed by GitLab Support.
 
-In Kibana, the logs should be filtered for `json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
+[In Kibana](https://log.gprd.gitlab.net/app/r/s/0FdPP), the logs should be filtered for
+`json.meta.caller_id: JiraConnect::InstallationsController#update` and `NOT json.status: 200`.
 If you have been provided the `X-Request-Id` value, you can use that against `json.correlation_id` to narrow down the results.
 
 Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_connect/installations` generates two log entries.
@@ -142,12 +148,17 @@ For the first log:
 - `json.status` is `422`.
 - `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
-For the second log:
+For the second log, you might have one of the following scenarios:
 
-- `json.message` is `Proxy lifecycle event received error response` or similar.
-- `json.jira_status_code` and `json.jira_body` might contain details on why GitLab.com wasn't able to connect back to the self-managed instance.
-- If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
+- Scenario 1:
+  - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
+  - `json.message` is `Proxy lifecycle event received error response` or similar.
+  - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
+  - If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
   `https://gitlab.com`.
+- Scenario 2:
+  - `json.exception.class` and `json.exception.message` are present.
+  - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
 
 ## Error when connecting the app
 

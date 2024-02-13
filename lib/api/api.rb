@@ -151,7 +151,7 @@ module API
     end
 
     rescue_from Grape::Exceptions::Base do |e|
-      error! e.message, e.status, e.headers
+      error!(e.message, e.status, e.headers || {})
     end
 
     rescue_from MovedPermanentlyError do |e|
@@ -296,7 +296,9 @@ module API
         mount ::API::Pages
         mount ::API::PagesDomains
         mount ::API::PersonalAccessTokens::SelfInformation
+        mount ::API::PersonalAccessTokens::SelfRotation
         mount ::API::PersonalAccessTokens
+        mount ::API::ProjectAvatar
         mount ::API::ProjectClusters
         mount ::API::ProjectContainerRepositories
         mount ::API::ProjectDebianDistributions

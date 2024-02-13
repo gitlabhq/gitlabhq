@@ -28,6 +28,11 @@ export default {
       },
     },
   },
+  computed: {
+    hasUserAchievements() {
+      return Boolean(this.userAchievements?.length);
+    },
+  },
   methods: {
     processNodes(nodes) {
       return Object.entries(groupBy(nodes, 'achievement.id'))
@@ -67,12 +72,16 @@ export default {
   i18n: {
     awardedBy: s__('Achievements|Awarded %{timeAgo} by %{namespace}'),
     awardedByUnknownNamespace: s__('Achievements|Awarded %{timeAgo} by a private namespace'),
+    achievementsLabel: s__('Achievements|Achievements'),
   },
 };
 </script>
 
 <template>
-  <div class="gl-mb-3">
+  <div v-if="hasUserAchievements">
+    <h2 class="gl-font-base gl-mb-2 gl-mt-4">
+      {{ $options.i18n.achievementsLabel }}
+    </h2>
     <div
       v-for="userAchievement in userAchievements"
       :key="userAchievement.id"
@@ -85,7 +94,7 @@ export default {
         :size="32"
         tabindex="0"
         shape="rect"
-        class="gl-mx-2 gl-p-1 gl-border-none"
+        class="gl-mr-2 gl-p-1 gl-border-none"
       />
       <br />
       <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{

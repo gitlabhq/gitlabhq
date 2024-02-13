@@ -136,6 +136,14 @@
     .commit-author-link {
       color: $gl-text-color;
     }
+
+    &.gl-display-inline-flex {
+      gap: 0.5ch;
+    }
+
+    .commit-author-link.gl-text-truncate {
+      max-width: 19ch;
+    }
   }
 }
 
@@ -255,11 +263,11 @@
 
 .signature-badge {
   &:hover {
-    @include gl-text-decoration-none;
+    text-decoration: none;
   }
 
   .header-main-content & {
-    @include gl-mr-2;
+    margin-right: $gl-spacing-scale-2;
   }
 }
 

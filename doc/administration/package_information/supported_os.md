@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Supported operating systems **(FREE SELF)**
+# Supported operating systems
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab officially supports LTS versions of operating systems. While OSs like
 Ubuntu have a clear distinction between LTS and non-LTS versions, there are
@@ -73,7 +77,7 @@ To upgrade both the operating system (OS) and GitLab:
 
 ## Packages for ARM64
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/issues/27) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-omnibus-builder/-/issues/27) in GitLab 13.4.
 
 GitLab provides arm64/aarch64 packages for some supported operating systems.
 You can see if your operating system architecture is supported in the table

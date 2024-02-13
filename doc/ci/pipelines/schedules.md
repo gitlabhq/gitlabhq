@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Scheduled pipelines **(FREE ALL)**
+# Scheduled pipelines
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use scheduled pipelines to run GitLab CI/CD [pipelines](index.md) at regular intervals.
 
@@ -21,7 +25,7 @@ Otherwise, the pipeline is not created. No error message is displayed.
 
 ## Add a pipeline schedule
 
-> Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
+> - Scheduled pipelines for tags [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23292) in GitLab 14.9.
 
 To add a pipeline schedule:
 
@@ -42,7 +46,7 @@ you must delete unused schedules before you can add another.
 
 ## Edit a pipeline schedule
 
-> Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.
+> - Introduced in GitLab 14.8, only a pipeline schedule owner can edit the schedule.
 
 The owner of a pipeline schedule can edit it:
 

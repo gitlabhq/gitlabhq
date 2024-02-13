@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected environments API **(PREMIUM ALL)**
+# Protected environments API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30595) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30595) in GitLab 12.8.
 
 ## Valid access levels
 
@@ -172,7 +176,7 @@ Example response:
 
 ## Update a protected environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
 
 Updates a single environment.
 

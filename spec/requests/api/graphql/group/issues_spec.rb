@@ -15,8 +15,6 @@ RSpec.describe 'getting an issue list for a group', feature_category: :team_plan
   let_it_be(:issue2) { create(:issue, project: project2) }
   let_it_be(:issue3) { create(:issue, project: project3) }
 
-  let_it_be(:group_level_issue) { create(:issue, :epic, :group_level, namespace: group1) }
-
   let(:issue1_gid) { issue1.to_global_id.to_s }
   let(:issue2_gid) { issue2.to_global_id.to_s }
   let(:issues_data) { graphql_data['group']['issues']['edges'] }
@@ -145,6 +143,8 @@ RSpec.describe 'getting an issue list for a group', feature_category: :team_plan
   end
 
   context 'when querying epic types' do
+    let_it_be(:group_level_issue) { create(:issue, :epic, :group_level, namespace: group1) }
+
     let(:query) do
       graphql_query_for(
         'group',

@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Unit test report examples **(FREE ALL)**
+# Unit test report examples
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 [Unit test reports](unit_test_reports.md) can be generated for many languages and packages.
 Use these examples as guidelines for configuring your pipeline to generate unit test reports

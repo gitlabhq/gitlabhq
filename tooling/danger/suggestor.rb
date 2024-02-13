@@ -4,7 +4,7 @@ module Tooling
   module Danger
     module Suggestor
       # For file lines matching `regex` adds suggestion `replacement` with `comment_text` added.
-      def add_suggestion(filename:, regex:, replacement: nil, comment_text: nil, exclude: nil)
+      def add_suggestion(filename:, regex:, replacement: nil, comment_text: nil, exclude: nil, once_per_file: false)
         added_lines = added_lines_matching(filename, regex)
 
         return if added_lines.empty?
@@ -12,6 +12,8 @@ module Tooling
         file_lines = project_helper.file_lines(filename)
 
         added_lines.each_with_object([]) do |added_line, processed_line_numbers|
+          break if once_per_file && processed_line_numbers.any?
+
           line_number = find_line_number(file_lines, added_line.delete_prefix('+'),
 exclude_indexes: processed_line_numbers)
 

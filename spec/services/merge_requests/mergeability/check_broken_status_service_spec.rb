@@ -12,24 +12,37 @@ RSpec.describe MergeRequests::Mergeability::CheckBrokenStatusService, feature_ca
   describe '#execute' do
     let(:result) { check_broken_status.execute }
 
-    before do
-      expect(merge_request).to receive(:broken?).and_return(broken)
-    end
+    context 'when switch_broken_status is false' do
+      before do
+        expect(merge_request).to receive(:broken?).and_return(broken)
+        stub_feature_flags(switch_broken_status: false)
+      end
 
-    context 'when the merge request is broken' do
-      let(:broken) { true }
+      context 'when the merge request is broken' do
+        let(:broken) { true }
 
-      it 'returns a check result with status failed' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
-        expect(result.payload[:identifier]).to eq(:broken_status)
+        it 'returns a check result with status failed' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+          expect(result.payload[:identifier]).to eq(:broken_status)
+        end
+      end
+
+      context 'when the merge request is not broken' do
+        let(:broken) { false }
+
+        it 'returns a check result with status success' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+        end
       end
     end
 
-    context 'when the merge request is not broken' do
-      let(:broken) { false }
+    context 'when switch_broken_status is true' do
+      before do
+        stub_feature_flags(switch_broken_status: true)
+      end
 
-      it 'returns a check result with status success' do
-        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::SUCCESS_STATUS
+      it 'returns a check result with inactive status' do
+        expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::INACTIVE_STATUS
       end
     end
   end

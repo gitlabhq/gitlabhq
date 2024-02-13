@@ -3,7 +3,6 @@ import { uniqueId } from 'lodash';
 import { GlDisclosureDropdown, GlTooltip, GlModal, GlModalDirective, GlSprintf } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import deleteSavedReplyMutation from '../queries/delete_saved_reply.mutation.graphql';
 
 export default {
   components: {
@@ -15,6 +14,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  inject: ['deleteMutation'],
   props: {
     template: {
       type: Object,
@@ -57,7 +57,7 @@ export default {
       this.isDeleting = true;
 
       this.$apollo.mutate({
-        mutation: deleteSavedReplyMutation,
+        mutation: this.deleteMutation,
         variables: {
           id: this.template.id,
         },

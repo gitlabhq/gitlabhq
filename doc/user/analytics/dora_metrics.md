@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DevOps Research and Assessment (DORA) metrics **(ULTIMATE ALL)**
+# DevOps Research and Assessment (DORA) metrics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275991) in GitLab 13.7.
 > - Lead time for changes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291746) in GitLab 13.10.
@@ -33,7 +37,7 @@ This enables teams and managers to understand all aspects of productivity, quali
 
 ## Deployment frequency
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394712) fix for the frequency calculation formula for `all` and `monthly` intervals in GitLab 16.0.
 
 Deployment frequency is the frequency of successful deployments to production over the given date range (hourly, daily, weekly, monthly, or yearly).
 
@@ -64,14 +68,9 @@ Lead time for changes is the amount of time it takes a code change to get into p
 For software leaders, lead time for changes reflects the efficiency of CI/CD pipelines and visualizes how quickly work is delivered to customers.
 Over time, the lead time for changes should decrease, while your team's performance should increase. Low lead time for changes means more efficient CI/CD pipelines.
 
-In GitLab, lead time for changes is measured by the `Median time it takes for a merge request to get merged into production (from master)`.
-
-By default, lead time for changes measures only one-branch operations with multiple deployment jobs (for example, jobs moving from development to staging to production jobs on the main branch).
-When a merge request gets merged in staging and then merge to production, GitLab processes them as two deployed merge requests, not one.
-
 ### How lead time for changes is calculated
 
-GitLab calculates lead time for changes based on the number of seconds to successfully deliver a commit into production - **from** code committed **to** code successfully running in production, without adding the `coding_time` to the calculation.
+GitLab calculates lead time for changes based on the number of seconds to successfully deliver a commit into production: from merge request merge time (when the merge button is clicked) to code successfully running in production, without adding the `coding_time` to the calculation. Data is aggregated right after the deployment is finished, with a slight delay.
 
 By default, lead time for changes supports measuring only one branch operation with multiple deployment jobs (for example, from development to staging to production on the default branch). When a merge request gets merged on staging, and then on production, GitLab interprets them as two deployed merge requests, not one.
 
@@ -131,9 +130,14 @@ The first step is to benchmark the quality and stability, between groups and pro
 - Improving the efficacy of code review processes.
 - Adding automated testing.
 
-## DORA custom calculation rules **(ULTIMATE ALL EXPERIMENT)**
+## DORA custom calculation rules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `dora_configuration`.
@@ -178,7 +182,7 @@ To track DORA metrics in these cases, you can [create a deployment record](../..
 ### Measure DORA metrics with Jira
 
 - Deployment frequency and lead time for changes are calculated based on GitLab CI/CD and Merge Requests (MRs), and do not require Jira data.
-- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents).
+- Time to restore service and change failure rate require [GitLab incidents](../../operations/incident_management/manage_incidents.md) for the calculation. For more information, see [Measure DORA Time to restore service and Change failure rate with external incidents](#measure-dora-time-to-restore-service-and-change-failure-rate-with-external-incidents) and the [Jira incident replicator guide](https://gitlab.com/smathur/jira-incident-replicator).
 
 ### Measure DORA Time to restore service and Change failure rate with external incidents
 

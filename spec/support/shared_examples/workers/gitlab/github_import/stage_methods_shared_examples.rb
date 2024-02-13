@@ -100,7 +100,7 @@ RSpec.shared_examples Gitlab::GithubImport::StageMethods do
       allow(worker).to receive(:import)
       allow(worker).to receive(:jid).and_return('mock_jid')
 
-      expect(Gitlab::GithubImport::RefreshImportJidWorker)
+      expect(Gitlab::Import::RefreshImportJidWorker)
         .to receive(:perform_in_the_future)
         .with(project.id, 'mock_jid')
 

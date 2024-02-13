@@ -122,6 +122,7 @@ describe('BaseToken', () => {
 
   const findGlFilteredSearchToken = () => wrapper.findComponent(GlFilteredSearchToken);
   const findMockSuggestionList = () => wrapper.findByTestId(mockSuggestionListTestId);
+
   const getMockSuggestionListSuggestions = () =>
     JSON.parse(findMockSuggestionList().attributes('data-suggestions'));
 
@@ -409,30 +410,6 @@ describe('BaseToken', () => {
         wrapper.vm.handleTokenValueSelected(mockTokenValue.title);
 
         expect(setTokenValueToRecentlyUsed).not.toHaveBeenCalled();
-      });
-
-      it('emits token-selected event when groupMultiSelectTokens: true', () => {
-        const config = { ...mockConfig, multiSelect: true };
-        wrapper = createComponent({
-          props: { suggestions: mockLabels, config, value: { operator: '||' } },
-          groupMultiSelectTokens: true,
-        });
-
-        findGlFilteredSearchToken().vm.$emit('select', mockTokenValue.title);
-
-        expect(wrapper.emitted('token-selected')).toEqual([[mockTokenValue.title]]);
-      });
-
-      it('does not emit token-selected event when groupMultiSelectTokens: false', () => {
-        const config = { ...mockConfig, multiSelect: true };
-        wrapper = createComponent({
-          props: { suggestions: mockLabels, config, value: { operator: '||' } },
-          groupMultiSelectTokens: false,
-        });
-
-        findGlFilteredSearchToken().vm.$emit('select', mockTokenValue.title);
-
-        expect(wrapper.emitted('token-selected')).toBeUndefined();
       });
     });
   });

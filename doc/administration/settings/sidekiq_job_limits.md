@@ -4,9 +4,13 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sidekiq job size limits **(FREE SELF)**
+# Sidekiq job size limits
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68982) in GitLab 14.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68982) in GitLab 14.3.
 
 [Sidekiq](../sidekiq/index.md) jobs get stored in
 Redis. To avoid excessive memory for Redis, we:

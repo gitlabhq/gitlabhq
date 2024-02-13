@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Parsing GitLab logs with `jq` **(FREE SELF)**
+# Parsing GitLab logs with `jq`
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 We recommend using log aggregation and search tools like Kibana and Splunk whenever possible,
 but if they are not available you can still quickly parse
@@ -24,7 +28,7 @@ include use cases targeted for parsing GitLab log files.
 ## Parsing Logs
 
 The examples listed below address their respective log files by
-their relative Linux package installation paths and default file names.
+their relative Linux package installation paths and default filenames.
 Find the respective full paths in the [GitLab logs sections](../logs/index.md#production_jsonlog).
 
 ### General Commands
@@ -161,24 +165,25 @@ CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02, 
 #### Print top API user agents
 
 ```shell
-jq --raw-output '[.route, .ua] | @tsv' api_json.log | sort | uniq -c | sort -n
+jq --raw-output 'select(.remote_ip != "127.0.0.1") | [.remote_ip, .username, .route, .ua] | @tsv' api_json.log |
+  sort | uniq -c | sort -n | tail
 ```
 
 **Example output**:
 
 ```plaintext
-  89 /api/:version/usage_data/increment_unique_users  # plus browser details
- 567 /api/:version/jobs/:id/trace       gitlab-runner # plus version details
-1234 /api/:version/internal/allowed     GitLab-Shell
+  89 1.2.3.4, 127.0.0.1  some_user  /api/:version/projects/:id/pipelines  # plus browser details; OK
+ 567 5.6.7.8, 127.0.0.1      /api/:version/jobs/:id/trace gitlab-runner   # plus version details; OK
+1234 98.76.54.31, 127.0.0.1  some_bot  /api/:version/projects/:id/repository/files/:file_path/raw
 ```
 
-This sample response seems typical. A custom tool or script might be causing a high load
-if the output contains many:
+This example shows a custom tool or script causing an unexpectedly high number of requests.
+User agents in this situation can be:
 
 - Third party libraries like `python-requests` or `curl`.
 - [GitLab CLI clients](https://about.gitlab.com/partners/technology-partners/#cli-clients).
 
-You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics.
+You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics for those users or bots.
 
 ### Parsing `gitlab-rails/importer.log`
 
@@ -196,19 +201,13 @@ For common issues, see [troubleshooting](../../administration/raketasks/project_
 #### Print top Workhorse user agents
 
 ```shell
-jq --raw-output '[.uri, .user_agent] | @tsv' current | sort | uniq -c | sort -n
+jq --raw-output 'select(.remote_ip != "127.0.0.1") | [.remote_ip, .uri, .user_agent] | @tsv' current |
+  sort | uniq -c | sort -n | tail
 ```
 
-**Example output**:
-
-```plaintext
-  89 /api/graphql # plus browser details
- 567 /api/v4/internal/allowed   GitLab-Shell
-1234 /api/v4/jobs/request       gitlab-runner # plus version details
-```
-
-Similar to the [API `ua` data](#print-top-api-user-agents),
-deviations from this common order might indicate scripts that could be optimized.
+Similar to the [API `ua` example](#print-top-api-user-agents),
+many unexpected user agents in this output indicate unoptimized scripts.
+Expected user agents include `gitlab-runner`, `GitLab-Shell`, and browsers.
 
 The performance impact of runners checking for new jobs can be reduced by increasing
 [the `check_interval` setting](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section),

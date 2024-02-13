@@ -4,7 +4,11 @@ group: Utilization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Storage **(FREE SAAS)**
+# Storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 All projects on GitLab SaaS have 10 GiB of free storage for their Git repository and Large File Storage (LFS).
 
@@ -15,7 +19,11 @@ you must [purchase more storage](../subscriptions/gitlab_com/index.md#purchase-m
 GitLab plans to introduce storage limits for namespaces on GitLab SaaS. After these storage limits have been applied,
 storage usage will be calculated across the entire namespace and project storage limits will no longer apply.
 
-## View storage **(FREE ALL)**
+## View storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can view the following statistics for storage usage in projects and namespaces:
 

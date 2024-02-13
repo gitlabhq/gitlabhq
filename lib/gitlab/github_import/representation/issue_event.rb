@@ -40,7 +40,7 @@ module Gitlab
           def from_api_response(event, additional_data = {})
             new(
               id: event[:id],
-              actor: user_representation(event[:actor]),
+              actor: user_representation(event[:actor] || event[:user]),
               event: event[:event],
               commit_id: event[:commit_id],
               label_title: event.dig(:label, :name),

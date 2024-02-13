@@ -4,9 +4,13 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linked issues **(FREE ALL)**
+# Linked issues
 
-> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) from GitLab Premium to GitLab Free in 13.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) from GitLab Premium to GitLab Free in 13.4.
 
 Linked issues are a bi-directional relationship between any two issues and appear in a block below
 the issue description. You can link issues in different projects.
@@ -70,7 +74,11 @@ Due to the bi-directional relationship, the relationship no longer appears in ei
 
 Access our [permissions](../../permissions.md) page for more information.
 
-## Blocking issues **(PREMIUM ALL)**
+## Blocking issues
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.

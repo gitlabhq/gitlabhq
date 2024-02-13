@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Merge request approvals **(FREE ALL)**
+# Merge request approvals
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can configure your merge requests so that they must be approved before
 they can be merged. While [GitLab Free](https://about.gitlab.com/pricing/) allows
@@ -34,7 +38,7 @@ rules to define what types of users can approve work. Some examples of rules you
 - Users with specific permissions can always approve work.
 - [Code owners](../../codeowners/index.md) can approve work for files they own.
 - Users with specific permissions can approve work,
-  [even if they don't have merge rights](rules.md#merge-request-approval-segregation-of-duties)
+  [even if they don't have merge rights](rules.md#enable-approval-permissions-for-users-with-the-reporter-role)
   to the repository.
 - Users with specific permissions can be allowed or denied the ability
   to [override approval rules on a specific merge request](rules.md#edit-or-override-merge-request-approval-rules).
@@ -46,7 +50,7 @@ You can also configure:
 - Merge request approval rules and settings through the GitLab UI or with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
 
-Approvals cannot be added after a merge request is merged.
+Approvals cannot be changed after a merge request is merged.
 
 ## Approve a merge request
 
@@ -83,9 +87,13 @@ GitLab allows all users with Developer or greater [permissions](../../../permiss
 to approve merge requests. Approvals in GitLab Free are optional, and don't prevent
 a merge request from merging without approval.
 
-## Required approvals **(PREMIUM ALL)**
+## Required approvals
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 Required approvals enforce code reviews by the number and type of users you specify.
 Without the approvals, the work cannot merge. Required approvals enable multiple use cases:
@@ -118,8 +126,8 @@ Whenever an approval rule cannot be satisfied, the rule is displayed as **Auto a
 - The number of required approvals is more than the number of eligible approvers.
 
 These rules are automatically approved to unblock their respective merge requests, unless they were
-created through a [scan result policy](../../../application_security/policies/scan-result-policies.md).
-Invalid approval rules created through a scan result policy are presented with
+created through a [merge request approval policy](../../../application_security/policies/scan-result-policies.md).
+Invalid approval rules created through a merge request approval policy are presented with
 **Action required** and are not automatically approved, blocking their respective merge requests.
 
 ## Related topics

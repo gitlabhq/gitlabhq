@@ -4,9 +4,13 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package registry **(FREE ALL)**
+# Package registry
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 With the GitLab package registry, you can use GitLab as a private or public registry for a variety
 of [supported package managers](supported_package_managers.md).
@@ -149,7 +153,7 @@ Registry disables all package registry operations.
 
 ### Allow anyone to pull from package registry
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385994) in GitLab 15.7.
 
 To allow anyone to pull from the package registry, regardless of project visibility:
 

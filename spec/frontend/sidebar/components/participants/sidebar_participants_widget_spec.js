@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import Participants from '~/sidebar/components/participants/participants.vue';
+import SidebarParticipants from '~/sidebar/components/participants/sidebar_participants.vue';
 import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
 import epicParticipantsQuery from '~/sidebar/queries/epic_participants.query.graphql';
 import { epicParticipantsResponse } from '../../mock_data';
@@ -11,10 +11,11 @@ import { epicParticipantsResponse } from '../../mock_data';
 Vue.use(VueApollo);
 
 describe('Sidebar Participants Widget', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
   let fakeApollo;
 
-  const findParticipants = () => wrapper.findComponent(Participants);
+  const findParticipants = () => wrapper.findComponent(SidebarParticipants);
 
   const createComponent = ({
     participantsQueryHandler = jest.fn().mockResolvedValue(epicParticipantsResponse()),
@@ -27,9 +28,6 @@ describe('Sidebar Participants Widget', () => {
         fullPath: 'group',
         iid: '1',
         issuableType: 'epic',
-      },
-      stubs: {
-        Participants,
       },
     });
   };

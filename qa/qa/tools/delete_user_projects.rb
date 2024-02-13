@@ -94,9 +94,9 @@ module QA
         total_project_pages.to_i.times do |page_no|
           projects_response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}/projects",
             page: (page_no + 1).to_s, per_page: "100").url
-          projects_ids.concat(JSON.parse(projects_response.body)
-                                  .select { |project| Date.parse(project["created_at"]) < @delete_before }
-                                  .map { |project| project["id"] })
+          projects_ids.concat(parse_body(projects_response)
+                                  .select { |project| Date.parse(project[:created_at]) < @delete_before }
+                                  .map { |project| project[:id] })
         rescue StandardError => e
           logger.error("Failed to fetch projects for user #{user_id}: #{e.message}")
         end
@@ -123,14 +123,14 @@ module QA
             next
           end
 
-          parsed_response = JSON.parse(user_response.body)
+          parsed_response = parse_body(user_response)
 
           if parsed_response.empty?
             logger.error("User #{qa_username} not found")
             next
           end
 
-          user_ids << parsed_response.first["id"]
+          user_ids << parsed_response.first[:id]
         rescue StandardError => e
           logger.error("Failed to fetch user ID for #{qa_username}: #{e.message}")
         end
@@ -140,8 +140,8 @@ module QA
 
       def fetch_qa_username(user_id)
         response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
-        parsed_response = JSON.parse(response.body)
-        parsed_response["username"]
+        parsed_response = parse_body(response)
+        parsed_response[:username]
       end
 
       def set_api_client(token)

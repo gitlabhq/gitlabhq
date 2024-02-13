@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'a request using Gitlab::UrlBlocker' do
+RSpec.shared_examples 'a request using Gitlab::HTTP_V2::UrlBlocker' do
   # Written to test internal patches against 3rd party libraries
   #
   # Expects the following to be available in the example contexts:

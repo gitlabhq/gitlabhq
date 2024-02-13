@@ -156,32 +156,6 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
         end
       end
     end
-
-    context 'when namespace is provided' do
-      let(:params) { { namespace: namespace } }
-
-      context 'when it is a root namespace' do
-        context 'when it has catalog resources' do
-          it 'returns resources in the namespace visible to the user' do
-            is_expected.to contain_exactly(public_resource_a, private_namespace_resource)
-          end
-        end
-
-        context 'when the namespace has no catalog resources' do
-          let(:namespace) { build(:namespace) }
-
-          it { is_expected.to be_empty }
-        end
-      end
-
-      context 'when namespace is not a root namespace' do
-        let_it_be(:namespace) { create(:group, :nested) }
-
-        it 'raises an exception' do
-          expect { resources }.to raise_error(ArgumentError, 'Namespace is not a root namespace')
-        end
-      end
-    end
   end
 
   describe '#find_resource' do

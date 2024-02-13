@@ -343,7 +343,7 @@ RSpec.describe Gitlab::Graphql::Queries do
       it_behaves_like 'an invalid GraphQL query for the blog schema' do
         let(:errors) do
           contain_exactly(
-            have_attributes(message: include('Parse error'))
+            have_attributes(message: include('Expected LCURLY, actual: RCURLY ("}") at [1, 7]'))
           )
         end
       end

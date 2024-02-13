@@ -2,8 +2,8 @@
 
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
-    .block.wiki-sidebar-header.gl-mb-3.w-100
-      %a.gutter-toggle.float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
+    .block.wiki-sidebar-header.gl-mb-3.gl-w-full
+      %a.gutter-toggle.gl-float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
 
       .gl-display-flex.gl-flex-wrap
@@ -23,14 +23,14 @@
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
     .blocks-container
-      .block.block-first.w-100
+      .block.block-first.gl-w-full
         - if @sidebar_page
           = render_wiki_content(@sidebar_page)
         - elsif @sidebar_wiki_entries
           %ul.wiki-pages
             - @sidebar_wiki_entries.each do |entry|
               = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
-      .block.w-100
+      .block.gl-w-full
         - if @sidebar_limited
           = link_button_to wiki_path(@wiki, action: :pages), data: { testid: 'view-all-pages-button' }, block: true do
             = s_("Wiki|View All Pages")

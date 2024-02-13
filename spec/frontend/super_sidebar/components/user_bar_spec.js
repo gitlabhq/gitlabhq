@@ -9,15 +9,22 @@ import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import SearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
+import OrganizationSwitcher from '~/super_sidebar/components/organization_switcher.vue';
 import UserBar from '~/super_sidebar/components/user_bar.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
 import { userCounts } from '~/super_sidebar/user_counts_manager';
+import { isLoggedIn } from '~/lib/utils/common_utils';
+import { stubComponent } from 'helpers/stub_component';
 import { sidebarData as mockSidebarData, loggedOutSidebarData } from '../mock_data';
 import { MOCK_DEFAULT_SEARCH_OPTIONS } from './global_search/mock_data';
 
+jest.mock('~/lib/utils/common_utils');
+
 describe('UserBar component', () => {
   let wrapper;
+
+  const OrganizationSwitcherStub = stubComponent(OrganizationSwitcher);
 
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findUserMenu = () => wrapper.findComponent(UserMenu);
@@ -30,6 +37,7 @@ describe('UserBar component', () => {
   const findSearchButton = () => wrapper.findByTestId('super-sidebar-search-button');
   const findSearchModal = () => wrapper.findComponent(SearchModal);
   const findStopImpersonationButton = () => wrapper.findByTestId('stop-impersonation-btn');
+  const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
 
   Vue.use(Vuex);
 
@@ -56,6 +64,9 @@ describe('UserBar component', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       store,
+      stubs: {
+        OrganizationSwitcher: OrganizationSwitcherStub,
+      },
     });
   };
 
@@ -250,6 +261,43 @@ describe('UserBar component', () => {
       expect(findIssuesCounter().exists()).toBe(false);
       expect(findMRsCounter().exists()).toBe(false);
       expect(findTodosCounter().exists()).toBe(false);
+    });
+  });
+
+  describe('when `ui_for_organizations` feature flag is enabled', () => {
+    describe('when logged in', () => {
+      beforeEach(() => {
+        isLoggedIn.mockReturnValue(true);
+      });
+
+      it('renders `OrganizationSwitcher component', async () => {
+        createWrapper({ provideOverrides: { glFeatures: { uiForOrganizations: true } } });
+        await waitForPromises();
+
+        expect(findOrganizationSwitcher().exists()).toBe(true);
+      });
+    });
+
+    describe('when not logged in', () => {
+      beforeEach(() => {
+        isLoggedIn.mockReturnValue(false);
+      });
+
+      it('does not render `OrganizationSwitcher component', async () => {
+        createWrapper({ provideOverrides: { glFeatures: { uiForOrganizations: true } } });
+        await waitForPromises();
+
+        expect(findOrganizationSwitcher().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('when `ui_for_organizations` feature flag is disabled', () => {
+    it('does not render `OrganizationSwitcher component', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(findOrganizationSwitcher().exists()).toBe(false);
     });
   });
 });

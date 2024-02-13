@@ -22,10 +22,10 @@ RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_m
     )
   end
 
-  describe '#update' do
+  describe '#after_initialize' do
     let(:service) { described_class.new(issuable: work_item, current_user: current_user, params: params) }
 
-    subject(:before_update_callback) { service.before_update }
+    subject(:after_initialize_callback) { service.after_initialize }
 
     shared_examples 'sets work item description' do
       it 'correctly sets work item description value' do
@@ -94,7 +94,7 @@ RSpec.describe WorkItems::Callbacks::Description, feature_category: :portfolio_m
         end
 
         it "resets the work item's description" do
-          expect { before_update_callback }
+          expect { after_initialize_callback }
             .to change { work_item.description }
             .from('test')
             .to(nil)

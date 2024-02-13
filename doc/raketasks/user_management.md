@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User management Rake tasks **(FREE SELF)**
+# User management Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for managing users. Administrators can also use the Admin Area to
 [manage users](../administration/admin_area.md#administering-users).
@@ -177,6 +181,49 @@ cp config/secrets.yml.bak config/secrets.yml
 sudo /etc/init.d/gitlab start
 
 ```
+
+## Bulk assign users to GitLab Duo Pro
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142189) in GitLab 16.9.
+
+The Rake task for bulk user assignment is available in GitLab 16.9 and later. For GitLab 16.8, use the script [`bulk_user_assignment.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/duo_pro/bulk_user_assignment.rb) instead.
+
+To perform bulk user assignment for GitLab Duo Pro, you can use the following Rake task:
+
+```shell
+bundle exec rake duo_pro:bulk_user_assignment DUO_PRO_BULK_USER_FILE_PATH=path/to/your/file.csv
+```
+
+If you prefer to use square brackets in the file path, you can escape them or use double quotes:
+
+```shell
+bundle exec rake duo_pro:bulk_user_assignment\['path/to/your/file.csv'\]
+# or
+bundle exec rake "duo_pro:bulk_user_assignment['path/to/your/file.csv']"
+```
+
+The CSV file should have the following format:
+
+```csv
+username
+user1
+user2
+user3
+user4
+etc..
+```
+
+Ensure that the file contains a header named `username`, and each subsequent row represents a username for user assignment.
+
+The task might raise the following error messages:
+
+- `User is not found`: The specified user was not found.
+- `ERROR_NO_SEATS_AVAILABLE`: No more seats are available for user assignment.
+- `ERROR_INVALID_USER_MEMBERSHIP`: The user is not eligible for assignment due to being inactive, a bot, or a ghost.
 
 ## Related topics
 

@@ -8,10 +8,7 @@ info: For assistance with this Style Guide page, see https://handbook.gitlab.com
 
 Troubleshooting topics should be the final topics on a page.
 
-If a page has five or more troubleshooting topics, put those topics on a separate page.
-
-- Name the page `Troubleshooting <feature>`.
-- In the left nav, use the word `Troubleshooting` only.
+If a page has five or more troubleshooting topics, put those topics on a [separate page](#troubleshooting-page-type).
 
 ## What type of troubleshooting information to include
 
@@ -85,3 +82,14 @@ add the following warning:
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 ```
+
+## Troubleshooting page type
+
+When there are five Troubleshooting topics or more on a page, create a separate Troubleshooting page type.
+
+Follow these conventions:
+
+- Name the page `Troubleshooting <feature>`.
+- In the left nav, use the word `Troubleshooting` only.
+- In the navigation file, nest the new page under the feature it belongs to.
+- Name the file `<feature>_troubleshooting.md`.

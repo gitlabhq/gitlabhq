@@ -71,18 +71,21 @@
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "format": "uri"
     },
     "removed_by_url": {
       "type": [
         "string",
         "null"
-      ]
+      ],
+      "format": "uri"
     },
     "repair_issue_url": {
       "type": [
         "string"
-      ]
+      ],
+      "format": "uri"
     },
     "options": {
       "type": "object"
@@ -166,5 +169,19 @@
     "value_json_schema": {
       "type": "string"
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "internal_events.json"
+    },
+    {
+      "$ref": "redis_hll.json"
+    },
+    {
+      "$ref": "redis.json"
+    },
+    {
+      "$ref": "status.json"
+    }
+  ]
 }

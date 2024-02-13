@@ -31,7 +31,7 @@ module Sidebars
 
         override :extra_container_html_options
         def extra_container_html_options
-          { 'data-qa-selector': 'admin_settings_menu_link' }
+          { testid: 'admin-settings-menu-link' }
         end
 
         override :separated?
@@ -47,7 +47,7 @@ module Sidebars
             link: general_admin_application_settings_path,
             active_routes: { path: 'admin/application_settings#general' },
             item_id: :general_settings,
-            container_html_options: { 'data-qa-selector': 'admin_settings_general_link' }
+            container_html_options: { 'data-testid': 'admin-settings-general-link' }
           )
         end
 
@@ -59,7 +59,7 @@ module Sidebars
             link: integrations_admin_application_settings_path,
             active_routes: { path: %w[application_settings#integrations integrations#edit] },
             item_id: :admin_integrations,
-            container_html_options: { 'data-qa-selector': 'admin_settings_integrations_link' }
+            container_html_options: { 'data-testid': 'admin-settings-integrations-link' }
           )
         end
 
@@ -69,7 +69,7 @@ module Sidebars
             link: repository_admin_application_settings_path,
             active_routes: { path: 'admin/application_settings#repository' },
             item_id: :admin_repository,
-            container_html_options: { 'data-qa-selector': 'admin_settings_repository_link' }
+            container_html_options: { 'data-testid': 'admin-settings-repository-link' }
           )
         end
 
@@ -97,7 +97,7 @@ module Sidebars
             link: metrics_and_profiling_admin_application_settings_path,
             active_routes: { path: 'admin/application_settings#metrics_and_profiling' },
             item_id: :admin_metrics,
-            container_html_options: { 'data-qa-selector': 'admin_settings_metrics_and_profiling_link' }
+            container_html_options: { 'data-testid': 'admin-settings-metrics-and-profiling-link' }
           )
         end
 
@@ -107,7 +107,7 @@ module Sidebars
             link: network_admin_application_settings_path,
             active_routes: { path: 'admin/application_settings#network' },
             item_id: :admin_network,
-            container_html_options: { 'data-qa-selector': 'admin_settings_network_link' }
+            container_html_options: { 'data-testid': 'admin-settings-network-link' }
           )
         end
 
@@ -126,7 +126,7 @@ module Sidebars
             link: preferences_admin_application_settings_path,
             active_routes: { path: 'admin/application_settings#preferences' },
             item_id: :admin_preferences,
-            container_html_options: { 'data-qa-selector': 'admin_settings_preferences_link' }
+            container_html_options: { 'data-testid': 'admin-settings-preferences-link' }
           )
         end
 

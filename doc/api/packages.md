@@ -4,9 +4,13 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Packages API **(FREE ALL)**
+# Packages API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349418) support for [GitLab CI/CD job token](../ci/jobs/ci_job_token.md) authentication for the project-level API in GitLab 15.3.
 
 The API documentation of [GitLab Packages](../administration/packages/index.md).
 
@@ -32,7 +36,7 @@ GET /projects/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the project packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/packages"
@@ -98,7 +102,7 @@ GET /groups/:id/packages
 | `package_name`        | string         | no       | Filter the project packages with a fuzzy search by name. |
 | `package_version`     | string         | no       | Filter the returned packages by version. If used in combination with `include_versionless`, then no versionless packages are returned. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349065) in GitLab 16.6. |
 | `include_versionless` | boolean        | no       | When set to true, versionless packages are included in the response. |
-| `status`              | string         | no       | Filter the returned packages by status. One of `default` (default), `hidden`, `processing`, `error`, or `pending_destruction`. |
+| `status`              | string         | no       | Filter the returned packages by status. One of `default`, `hidden`, `processing`, `error`, or `pending_destruction`. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/:id/packages?exclude_subgroups=false"
@@ -322,7 +326,7 @@ By default, the `GET` request returns 20 results, because the API is [paginated]
 
 ## List package pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341950) in GitLab 16.1.
 
 Get a list of pipelines for a single package. The results are sorted by `id` in descending order.
 

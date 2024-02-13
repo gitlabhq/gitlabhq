@@ -1,0 +1,2 @@
+valid_workload_identity:
+  identity: google_cloud

@@ -161,6 +161,53 @@ RSpec.shared_examples "redis_shared_examples" do
       expect(params2).not_to have_key(:foo)
     end
 
+    context 'with command to generate extra config specified' do
+      let(:config_file_name) { 'spec/fixtures/config/redis_config_with_extra_config_command.yml' }
+
+      context 'when the command returns valid yaml' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["password: 'actual-password'\n", 0])
+        end
+
+        it 'merges config from command on top of config from file' do
+          is_expected.to include(password: 'actual-password')
+        end
+      end
+
+      context 'when the command returns invalid yaml' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["password: 'actual-password\n", 0])
+        end
+
+        it 'raises error' do
+          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+            %r{Redis: Execution of `/opt/redis-config.sh` generated invalid yaml})
+        end
+      end
+
+      context 'when the parsed external command output returns invalid hash' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["hello", 0])
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+            %r{Redis: The output of `/opt/redis-config.sh` must be a Hash, String given})
+        end
+      end
+
+      context 'when the command fails' do
+        before do
+          allow(Gitlab::Popen).to receive(:popen).and_return(["", 125])
+        end
+
+        it 'raises error' do
+          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+            %r{Redis: Execution of `/opt/redis-config.sh` failed})
+        end
+      end
+    end
+
     context 'when url contains unix socket reference' do
       context 'with old format' do
         let(:config_file_name) { config_old_format_socket }

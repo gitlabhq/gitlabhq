@@ -209,7 +209,7 @@ describe('UncollapsedReviewerList component', () => {
   describe('reviewer state icons', () => {
     it.each`
       reviewState            | approved | icon
-      ${'UNREVIEWED'}        | ${false} | ${'dotted-circle'}
+      ${'UNREVIEWED'}        | ${false} | ${'dash-circle'}
       ${'REVIEWED'}          | ${true}  | ${'status-success'}
       ${'REVIEWED'}          | ${false} | ${'comment'}
       ${'REQUESTED_CHANGES'} | ${false} | ${'status-alert'}

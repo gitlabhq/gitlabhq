@@ -4,10 +4,15 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Terraform Module Registry **(FREE ALL)**
+# Terraform Module Registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3221) in GitLab 14.0.
 > - Infrastructure registry and Terraform Module Registry [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/404075) into a single Terraform Module Registry feature in GitLab 15.11.
+> - Support for groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140215) in GitLab 16.9.
 
 With the Terraform Module Registry, you can use GitLab projects as a
 private registry for terraform modules. You can create and publish
@@ -16,17 +21,12 @@ projects.
 
 ## View Terraform modules
 
-To view Terraform modules in your project:
+To view Terraform modules in your project or group:
 
-1. Go to the project.
-1. On the left sidebar, select **Operate > Terraform modules**.
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
-
-For information on how to create and upload a package, view the GitLab
-documentation for your package type:
-
-- [Terraform modules](../terraform_module_registry/index.md)
 
 ## Authenticate to the Terraform Module Registry
 
@@ -61,9 +61,9 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                    |
-| `module-name`      | string          | yes      | The module name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The module name can't exceed 64 characters.
-| `module-system`    | string          | yes      | The module system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The module system can't exceed 64 characters. More information can be found in the [Terraform Module Registry protocol documentation](https://www.terraform.io/internals/module-registry-protocol).
-| `module-version`   | string          | yes      | The module version. It must be valid according to the [semantic versioning specification](https://semver.org/).
+| `module-name`      | string          | yes      | The module name. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The module name can't exceed 64 characters. |
+| `module-system`    | string          | yes      | The module system. **Supported syntax**: One to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). The module system can't exceed 64 characters. More information can be found in the [Terraform Module Registry protocol documentation](https://www.terraform.io/internals/module-registry-protocol). |
+| `module-version`   | string          | yes      | The module version. It must be valid according to the [semantic versioning specification](https://semver.org/). |
 
 Provide the file content in the request body.
 
@@ -97,7 +97,7 @@ Example response:
 
 ### Using a CI/CD template (recommended)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110493) in GitLab 15.9.
 
 You can use the [`Terraform-Module.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform-Module.gitlab-ci.yml)
 or the advanced [`Terraform/Module-Base.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Terraform/Module-Base.gitlab-ci.yml)
@@ -159,11 +159,20 @@ For other ways to control jobs in your CI/CD pipeline, refer to the [CI/CD YAML 
 
 ### Allow duplicate Terraform modules
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368040) in GitLab 16.8.
 
-By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace. To allow publishing duplicate module names:
+By default, the Terraform Module Registry enforces uniqueness for module names in the same namespace.
 
-- Enable `terraform_module_duplicates_allowed` for the namespace with the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings).
+To allow publishing duplicate module names:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
+1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of packages to allow.
+
+Your changes are automatically saved.
+
+You can also allow publishing duplicate names by enabling `terraform_module_duplicates_allowed` in the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings).
 
 To allow duplicates with specific names:
 

@@ -8,3 +8,5 @@ description: https://docs.gitlab.com/ee/ci/environments/deployment_safety.html#p
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29162
 milestone: '13.0'
 gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

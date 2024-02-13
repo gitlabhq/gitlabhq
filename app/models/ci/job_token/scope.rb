@@ -39,13 +39,8 @@ module Ci
         inbound_allowlist.projects
       end
 
-      def add!(added_project, user:, direction:)
-        case direction
-        when :inbound
-          inbound_allowlist.add!(added_project, user: user)
-        when :outbound
-          outbound_allowlist.add!(added_project, user: user)
-        end
+      def groups
+        inbound_allowlist.groups
       end
 
       private
@@ -56,21 +51,27 @@ module Ci
 
         return true unless accessed_project.private?
 
-        outbound_allowlist.includes?(accessed_project)
+        outbound_allowlist.includes_project?(accessed_project)
       end
 
       def inbound_accessible?(accessed_project)
         # if the setting is disabled any project is considered to be in scope.
         return true unless accessed_project.ci_inbound_job_token_scope_enabled?
 
-        inbound_linked_as_accessible?(accessed_project)
+        inbound_linked_as_accessible?(accessed_project) ||
+          (::Feature.enabled?(:ci_job_token_groups_allowlist, accessed_project) &&
+          group_linked_as_accessible?(accessed_project))
       end
 
       # We don't check the inbound allowlist here. That is because
       # the access check starts from the current project but the inbound
       # allowlist contains projects that can access the current project.
       def inbound_linked_as_accessible?(accessed_project)
-        inbound_accessible_projects(accessed_project).includes?(current_project)
+        inbound_accessible_projects(accessed_project).includes_project?(current_project)
+      end
+
+      def group_linked_as_accessible?(accessed_project)
+        Ci::JobToken::Allowlist.new(accessed_project).includes_group?(current_project)
       end
 
       def inbound_accessible_projects(accessed_project)

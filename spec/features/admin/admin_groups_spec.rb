@@ -160,7 +160,7 @@ RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
 
       visit admin_group_edit_path(group)
 
-      expect(page).to have_content('Allowed to create subgroups')
+      expect(page).to have_content('Roles allowed to create subgroups')
     end
 
     it 'edit group path does not change group name', :js do

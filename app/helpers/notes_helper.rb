@@ -174,7 +174,7 @@ module NotesHelper
       projectId: @project&.id,
       groupId: @group&.id,
       discussionsPath: discussions_path(issuable),
-      registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
+      registerPath: new_user_registration_path(redirect_to_referer: 'yes'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),

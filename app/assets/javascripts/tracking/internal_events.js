@@ -9,10 +9,13 @@ const InternalEvents = {
   /**
    *
    * @param {string} event
+   * @param {string} category - The category of the event. This is optional and
+   * defaults to the page name where the event was triggered. It's advised not to use
+   * this parameter for new events unless absolutely necessary.
    */
-  trackEvent(event) {
+  trackEvent(event, category = undefined) {
     API.trackInternalEvent(event);
-    Tracking.event(undefined, event, {
+    Tracking.event(category, event, {
       context: {
         schema: SERVICE_PING_SCHEMA,
         data: {
@@ -30,8 +33,8 @@ const InternalEvents = {
   mixin() {
     return {
       methods: {
-        trackEvent(event) {
-          InternalEvents.trackEvent(event);
+        trackEvent(event, category = undefined) {
+          InternalEvents.trackEvent(event, category);
         },
       },
     };

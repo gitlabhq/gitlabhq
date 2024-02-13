@@ -4,7 +4,7 @@ key_path: object_store.uploads.enabled
 description: Whether Object Storage is enabled for Uploads
 product_section: enablement
 product_stage: enablement
-product_group: memory
+product_group: application_performance
 value_type: string
 status: active
 time_frame: none

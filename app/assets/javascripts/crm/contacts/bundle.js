@@ -26,7 +26,9 @@ export default () => {
     basePath,
     groupFullPath,
     groupIssuesPath,
+    groupOrganizationsPath,
     canAdminCrmContact,
+    canReadCrmOrganization,
     groupId,
     textQuery,
   } = el.dataset;
@@ -44,7 +46,9 @@ export default () => {
     provide: {
       groupFullPath,
       groupIssuesPath,
+      groupOrganizationsPath,
       canAdminCrmContact: parseBoolean(canAdminCrmContact),
+      canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       groupId,
       textQuery,
     },

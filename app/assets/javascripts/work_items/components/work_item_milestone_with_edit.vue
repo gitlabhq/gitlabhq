@@ -4,7 +4,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 import { s__, __ } from '~/locale';
 import { MILESTONE_STATE } from '~/sidebar/constants';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -92,11 +91,19 @@ export default {
         expired,
       }));
     },
+    localMilestoneId() {
+      return this.localMilestone?.id;
+    },
+  },
+  watch: {
+    workItemMilestone(newVal) {
+      this.localMilestone = newVal;
+      this.selectedMilestoneId = newVal?.id;
+    },
   },
   apollo: {
     milestones: {
       query: projectMilestonesQuery,
-      debounce: DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
       variables() {
         return {
           fullPath: this.fullPath,
@@ -180,7 +187,7 @@ export default {
     dropdown-name="milestone"
     :loading="isLoadingMilestones"
     :list-items="milestonesList"
-    :item-value="localMilestone"
+    :item-value="localMilestoneId"
     :update-in-progress="updateInProgress"
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select milestone')"

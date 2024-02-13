@@ -2,8 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
-    describe "Unlocking job artifacts across pipelines", feature_flag: { name: 'ci_unlock_non_successful_pipelines,
-                                                                         scope: :project' } do
+    describe "Unlocking job artifacts across pipelines" do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'unlock-job-artifacts-project') }
 
@@ -16,13 +15,11 @@ module QA
       end
 
       before do
-        Runtime::Feature.enable(:ci_unlock_non_successful_pipelines, project: project)
         Flow::Login.sign_in
         project.visit!
       end
 
       after do
-        Runtime::Feature.disable(:ci_unlock_non_successful_pipelines, project: project)
         runner.remove_via_api!
       end
 

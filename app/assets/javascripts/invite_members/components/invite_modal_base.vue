@@ -45,6 +45,8 @@ export default {
     GlSprintf,
     GlButton,
     ContentTransition,
+    ManageRolesDropdownFooter: () =>
+      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
   },
   mixins: [Tracking.mixin()],
   inheritAttrs: false,
@@ -332,7 +334,20 @@ export default {
             :items="accessLevelOptions.formatted"
             :loading="isLoadingRoles"
             block
-          />
+          >
+            <template #list-item="{ item }">
+              <div :class="{ 'gl-font-weight-bold': item.memberRoleId }">{{ item.text }}</div>
+              <div
+                v-if="item.description"
+                class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2"
+              >
+                {{ item.description }}
+              </div>
+            </template>
+            <template #footer>
+              <manage-roles-dropdown-footer />
+            </template>
+          </gl-collapsible-listbox>
         </gl-form-group>
 
         <gl-form-group

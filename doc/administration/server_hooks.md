@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git server hooks **(FREE SELF)**
+# Git server hooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196051) in GitLab 12.8 replacing Custom Hooks.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/372991) from server hooks to Git server hooks in GitLab 15.6.
@@ -38,7 +42,7 @@ If you don't have access to the `gitaly` command, alternatives to server hooks i
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access. Existing Git hooks don't need migrating for the `hooks set` command.
 
 Prerequisites:
 
@@ -54,7 +58,7 @@ To set server hooks for a repository:
       example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
 
       - To create a single server hook, create a file with a name that matches the hook type. For example, for a
-        `pre-receive` server hook, the file name should be `pre-receive` with no extension.
+        `pre-receive` server hook, the filename should be `pre-receive` with no extension.
       - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
         `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that
         directory.
@@ -89,7 +93,7 @@ To create server hooks for a repository:
 1. On the file system, create a new directory in the correct location called `custom_hooks`.
 1. In the new `custom_hooks` directory:
    - To create a single server hook, create a file with a name that matches the hook type. For example, for a
-     `pre-receive` server hook, the file name should be `pre-receive` with no extension.
+     `pre-receive` server hook, the filename should be `pre-receive` with no extension.
    - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
      `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
 1. **Make the server hook files executable** and ensure that they are owned by the Git user.
@@ -118,7 +122,7 @@ The location to copy the scripts to depends on where repositories are stored:
 - In GitLab 15.3 and later, new repositories are created using
   [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later),
   which are not the hashed storage path. The replica path can be identified by
-  [querying the Praefect repository metadata](../administration/gitaly/troubleshooting.md#view-repository-metadata)
+  [querying the Praefect repository metadata](../administration/gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)
   using `-relative-path` to specify the expected GitLab hashed storage path.
 
 ## Create global server hooks for all repositories
@@ -160,7 +164,7 @@ To create a global server hook for all repositories:
 1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file
    pattern (`*~`).
 
-If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by file name in the hook type
+If the server hook code is properly implemented, it should execute when the Git hook is next triggered. Hooks are executed in alphabetical order by filename in the hook type
 subdirectories.
 
 ## Remove server hooks for a repository
@@ -169,7 +173,7 @@ subdirectories.
 
 :::TabTitle GitLab 15.11 and later
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4629) in GitLab 15.11, `hooks set` command replaces direct file system access.
 
 Prerequisites:
 

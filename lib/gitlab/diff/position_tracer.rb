@@ -59,11 +59,9 @@ module Gitlab
       end
 
       def compare(start_sha, head_sha, straight: false)
-        include_stats = !Feature.enabled?(:remove_request_stats_for_tracing, project)
-
         compare = CompareService.new(project, head_sha).execute(project, start_sha, straight: straight)
         compare.diffs(paths: paths, expanded: true, ignore_whitespace_change: @ignore_whitespace_change, include_stats:
-                     include_stats)
+                     false)
       end
     end
   end

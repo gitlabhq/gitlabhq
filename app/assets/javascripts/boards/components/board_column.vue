@@ -63,7 +63,7 @@ export default {
     data-testid="board-list"
   >
     <div
-      class="board-inner gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
+      class="gl-display-flex gl-flex-direction-column gl-relative gl-h-full gl-rounded-base gl-bg-gray-50"
       :class="{ 'board-column-highlighted': highlighted }"
     >
       <board-list-header

@@ -6,7 +6,7 @@ RSpec.describe 'getting CRM contacts', feature_category: :service_desk do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group) { create(:group, :crm_enabled) }
+  let_it_be(:group) { create(:group) }
 
   let_it_be(:contact_a) do
     create(

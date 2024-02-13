@@ -4,7 +4,11 @@ group: Global Search
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Elasticsearch **(PREMIUM ALL)**
+# Elasticsearch
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page describes how to enable advanced search. When enabled,
 advanced search provides faster search response times and [improved search features](../../user/search/advanced_search.md).
@@ -13,7 +17,7 @@ advanced search provides faster search response times and [improved search featu
 
 ### Elasticsearch version requirements
 
-> Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
 Advanced search works with the following versions of Elasticsearch.
 
@@ -23,7 +27,7 @@ Advanced search works with the following versions of Elasticsearch.
 | GitLab 14.0 to 14.10  | Elasticsearch 6.8 to 7.x    |
 
 Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
-When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations) in monthly release posts
+When we change Elasticsearch supported versions in GitLab, we announce them in [deprecation notes](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc) in monthly release posts
 before we remove them.
 
 ### OpenSearch version requirements
@@ -65,7 +69,7 @@ The search index updates after you:
 
 ## Upgrade to a new Elasticsearch major version
 
-> Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
+> - Support for Elasticsearch 6.8 [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/350275) in GitLab 15.0.
 
 You don't have to change the GitLab configuration when you upgrade Elasticsearch.
 
@@ -257,6 +261,7 @@ The following Elasticsearch settings are available:
 | `Maximum bulk request size (MiB)` | Used by the GitLab Ruby and Go-based indexer processes. This setting indicates how much data must be collected (and stored in memory) in a given indexing process before submitting the payload to the Elasticsearch Bulk API. For the GitLab Go-based indexer, you should use this setting with `Bulk request concurrency`. `Maximum bulk request size (MiB)` must accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer from either the `gitlab-rake` command or the Sidekiq tasks. |
 | `Bulk request concurrency`                            | The Bulk request concurrency indicates how many of the GitLab Go-based indexer processes (or threads) can run in parallel to collect data to subsequently submit to the Elasticsearch Bulk API. This increases indexing performance, but fills the Elasticsearch bulk requests queue faster. This setting should be used together with the Maximum bulk request size setting (see above) and needs to accommodate the resource constraints of both the Elasticsearch hosts and the hosts running the GitLab Go-based indexer either from the `gitlab-rake` command or the Sidekiq tasks. |
 | `Client request timeout` | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |
+| `Code indexing concurrency` | Maximum number of Elasticsearch code indexing background jobs allowed to run concurrently. This only applies to repository indexing operations. |
 
 WARNING:
 Increasing the values of `Maximum bulk request size (MiB)` and `Bulk request concurrency` can negatively impact
@@ -546,7 +551,7 @@ advanced search, which means adding or changing the way content is indexed.
 
 ### Migration dictionary files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
 
 Every migration has a corresponding dictionary file in the `ee/elastic/docs/` folder with the following information:
 
@@ -654,9 +659,9 @@ The following are some available Rake tasks:
 | [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
 | [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                            | Resumes Elasticsearch indexing. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created.                                                                                                      |
-| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`.
-| [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                         | Indexes all epics from the groups where Elasticsearch is enabled.
-| [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Indexes all wikis from the groups where Elasticsearch is enabled.
+| [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`. |
+| [`sudo gitlab-rake gitlab:elastic:index_epics`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                         | Indexes all epics from the groups where Elasticsearch is enabled. |
+| [`sudo gitlab-rake gitlab:elastic:index_group_wikis`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Indexes all wikis from the groups where Elasticsearch is enabled. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)            | Determines the overall indexing status of all project repository data (code, commits, and wikis). The status is calculated by dividing the number of indexed projects by the total number of projects and multiplying by 100. This task does not include non-repository data such as issues, merge requests, or milestones. |
 | [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)               | Deletes all instances of IndexStatus for all projects. This command results in a complete wipe of the index, and it should be used with caution.                                                                                              |
 | [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake) | Generates empty indices (the default index and a separate issues index) and assigns an alias for each on the Elasticsearch side only if it doesn't already exist.                                                                                                      |

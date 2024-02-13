@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD pipelines **(FREE ALL)**
+# CI/CD pipelines
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
 Watch the
@@ -150,7 +154,7 @@ The pipeline now executes the jobs as configured.
 
 #### Prefill variables in manual pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
 
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to [define pipeline-level (global) variables](../variables/index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -188,9 +192,9 @@ In this example:
   and the message explains the other options.
 
 NOTE:
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_frameworks.md#compliance-pipelines) can have prefilled variables not appear
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/382857), projects that use [compliance pipelines](../../user/group/compliance_pipelines.md) can have prefilled variables not appear
 when running a pipeline manually. To workaround this issue,
-[change the compliance pipeline configuration](../../user/group/compliance_frameworks.md#prefilled-variables-are-not-shown).
+[change the compliance pipeline configuration](../../user/group/compliance_pipelines.md#prefilled-variables-are-not-shown).
 
 #### Configure a list of selectable prefilled variable values
 
@@ -219,7 +223,7 @@ variables:
 
 ### Run a pipeline by using a URL query string
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24146) in GitLab 12.5.
 
 You can use a query string to pre-populate the **Run Pipeline** page. For example, the query string
 `.../pipelines/new?ref=my_branch&var[foo]=bar&file_var[file_foo]=file_bar` pre-populates the
@@ -279,7 +283,7 @@ pipelines.
 
 ### Delete a pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
 Users with the Owner role for a project can delete a pipeline
 by selecting the pipeline in the **Build > Pipelines** to get to the **Pipeline Details**
@@ -324,9 +328,13 @@ runners do not use regular runners, they must be [tagged](../yaml/index.md#tags)
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.
 
-## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM ALL)**
+## Trigger a pipeline when an upstream project is rebuilt
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9045) in GitLab 12.8.
 
 You can trigger a pipeline in your project whenever a pipeline finishes for a new
 tag in a different project.
@@ -355,8 +363,12 @@ downstream projects. On self-managed instances, an administrator can change this
 
 ### How pipeline duration is calculated
 
-Total running time for a given pipeline excludes retries and pending
-(queued) time.
+The total running time for a given pipeline excludes:
+
+- The duration of the initial run for any job that is retried or manually re-run.
+- Any pending (queue) time.
+
+That means that if a job is retried or manually re-run, only the duration of the latest run is included in the total running time.
 
 Each job is represented as a `Period`, which consists of:
 
@@ -365,26 +377,32 @@ Each job is represented as a `Period`, which consists of:
 
 A simple example is:
 
-- A (1, 3)
-- B (2, 4)
+- A (0, 2)
+- A' (2, 4)
+  - This is retrying A
+- B (1, 3)
 - C (6, 7)
 
 In the example:
 
-- A begins at 1 and ends at 3.
-- B begins at 2 and ends at 4.
+- A begins at 0 and ends at 2.
+- A' begins at 2 and ends at 4.
+- B begins at 1 and ends at 3.
 - C begins at 6 and ends at 7.
 
 Visually, it can be viewed as:
 
 ```plaintext
 0  1  2  3  4  5  6  7
-   AAAAAAA
-      BBBBBBB
+AAAAAAA
+   BBBBBBB
+      A'A'A'A
                   CCCC
 ```
 
-The union of A, B, and C is (1, 4) and (6, 7). Therefore, the total running time is:
+Because A is retried, we ignore it and count only job A'.
+The union of B, A', and C is (1, 4) and (6, 7). Therefore, the total
+running time is:
 
 ```plaintext
 (4 - 1) + (7 - 6) => 4
@@ -404,7 +422,7 @@ GitLab capitalizes the stages' names in the pipeline graphs.
 
 ### View full pipeline graph
 
-> Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
+> - Visualization improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276949) in GitLab 13.11.
 
 The [pipeline details page](#view-pipelines) displays the full pipeline graph of
 all the jobs in the pipeline.

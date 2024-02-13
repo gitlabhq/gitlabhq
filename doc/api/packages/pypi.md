@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PyPI API **(FREE ALL)**
+# PyPI API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for [PyPI Packages](../../user/packages/pypi_repository/index.md).
 
@@ -26,7 +30,7 @@ is recommended when [FIPS mode](../../development/fips_compliance.md) is enabled
 
 ## Download a package file from a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
 
 Download a PyPI package file. The [simple API](#group-level-simple-api-entry-point)
 usually supplies this URL.
@@ -56,7 +60,7 @@ directory.
 
 ## Group-level simple API index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
 
 Returns a list of packages in the group as an HTML file:
 
@@ -97,7 +101,7 @@ This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Group level simple API entry point
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225545) in GitLab 13.12.
 
 Returns the package descriptor as an HTML file:
 
@@ -139,7 +143,7 @@ This writes the downloaded file to `simple.html` in the current directory.
 
 ## Download a package file from a project
 
-> Introduced in GitLab 12.10.
+> - Introduced in GitLab 12.10.
 
 Download a PyPI package file. The [simple API](#project-level-simple-api-entry-point)
 usually supplies this URL.
@@ -152,7 +156,7 @@ GET projects/:id/packages/pypi/files/:sha256/:file_identifier
 | --------- | ---- | -------- | ----------- |
 | `id`              | string | yes | The ID or full path of the project. |
 | `sha256`          | string | yes | PyPI package file sha256 check sum. |
-| `file_identifier` | string | yes | The PyPI package file name. |
+| `file_identifier` | string | yes | The PyPI package filename. |
 
 ```shell
 curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/pypi/files/5y57017232013c8ac80647f4ca153k3726f6cba62d055cd747844ed95b3c65ff/my.pypi.package-0.0.1.tar.gz"
@@ -169,7 +173,7 @@ directory.
 
 ## Project-level simple API index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327595) in GitLab 15.1.
 
 Returns a list of packages in the project as an HTML file:
 
@@ -210,7 +214,7 @@ This writes the downloaded file to `simple_index.html` in the current directory.
 
 ## Project-level simple API entry point
 
-> Introduced in GitLab 12.10.
+> - Introduced in GitLab 12.10.
 
 Returns the package descriptor as an HTML file:
 

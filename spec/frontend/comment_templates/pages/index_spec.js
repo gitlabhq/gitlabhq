@@ -6,7 +6,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import IndexPage from '~/comment_templates/pages/index.vue';
 import ListItem from '~/comment_templates/components/list_item.vue';
-import savedRepliesQuery from '~/comment_templates/queries/saved_replies.query.graphql';
+import savedRepliesQuery from '~/pages/profiles/comment_templates/queries/saved_replies.query.graphql';
+import deleteSavedReplyMutation from '~/pages/profiles/comment_templates/queries/delete_saved_reply.mutation.graphql';
 
 let wrapper;
 
@@ -23,13 +24,17 @@ function createComponent(options = {}) {
 
   return mount(IndexPage, {
     apolloProvider: mockApollo,
+    provide: {
+      fetchAllQuery: savedRepliesQuery,
+      deleteMutation: deleteSavedReplyMutation,
+    },
   });
 }
 
 describe('Comment templates index page component', () => {
   it('renders list of comment templates', async () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
-    const savedReplies = savedRepliesResponse.data.currentUser.savedReplies.nodes;
+    const savedReplies = savedRepliesResponse.data.object.savedReplies.nodes;
     wrapper = createComponent({ mockApollo });
 
     await waitForPromises();

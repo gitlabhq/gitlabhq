@@ -4,11 +4,15 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting GitLab for Slack app **(FREE ALL)**
+# Troubleshooting GitLab for Slack app
 
-When configuring the GitLab for Slack app on GitLab.com, you might encounter the following issues.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
-For self-managed GitLab, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md#troubleshooting).
+When working with the GitLab for Slack app, you might encounter the following issues.
+
+For administrator documentation, see [GitLab for Slack app administration](../../../administration/settings/slack_app.md#troubleshooting).
 
 ## App does not appear in the list of integrations
 
@@ -28,7 +32,7 @@ GitLab error: project or alias not found
 To resolve this issue, ensure:
 
 - The project full path is correct.
-- If using a [project alias](gitlab_slack_application.md#create-a-project-alias-for-slash-commands), the alias is correct.
+- If using a [project alias](gitlab_slack_application.md#create-a-project-alias), the alias is correct.
 - The GitLab for Slack app is [enabled for the project](gitlab_slack_application.md#from-project-integration-settings).
 
 ## Slash commands return `dispatch_failed` in Slack
@@ -46,4 +50,4 @@ If you're not receiving notifications to a Slack channel, ensure:
 
 ## App Home does not display properly
 
-If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#update-the-gitlab-for-slack-app).
+If the [App Home](https://api.slack.com/start/overview#app_home) does not display properly, ensure your [app is up to date](gitlab_slack_application.md#reinstall-the-gitlab-for-slack-app).

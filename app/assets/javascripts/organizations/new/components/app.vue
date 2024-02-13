@@ -80,7 +80,6 @@ export default {
 
 <template>
   <div class="gl-py-6">
-    <form-errors-alert v-model="errors" />
     <h1 class="gl-mt-0 gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
     <p>
       <gl-sprintf :message="$options.i18n.pageDescription">
@@ -89,6 +88,7 @@ export default {
         >
       </gl-sprintf>
     </p>
+    <form-errors-alert v-model="errors" :scroll-on-error="true" />
     <new-edit-form :loading="loading" @submit="onSubmit" />
   </div>
 </template>

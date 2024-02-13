@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# PostgreSQL Server Exporter **(FREE SELF)**
+# PostgreSQL Server Exporter
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [PostgreSQL Server Exporter](https://github.com/prometheus-community/postgres_exporter) allows you to export various PostgreSQL metrics.
 

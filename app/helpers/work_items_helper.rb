@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WorkItemsHelper
-  def work_items_index_data(resource_parent)
+  def work_items_show_data(resource_parent)
     {
       full_path: resource_parent.full_path,
       issues_list_path:

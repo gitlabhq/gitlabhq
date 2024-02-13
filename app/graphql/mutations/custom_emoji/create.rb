@@ -28,10 +28,6 @@ module Mutations
                description: 'Location of the emoji file.'
 
       def resolve(group_path:, **args)
-        if Feature.disabled?(:custom_emoji)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable, 'Custom emoji feature is disabled'
-        end
-
         group = authorized_find!(group_path: group_path)
         # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911#note_444682238
         args[:external] = true

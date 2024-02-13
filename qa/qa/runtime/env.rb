@@ -286,14 +286,6 @@ module QA
         ENV['QA_GITHUB_PASSWORD']
       end
 
-      def facebook_username
-        ENV['QA_FACEBOOK_USERNAME']
-      end
-
-      def facebook_password
-        ENV['QA_FACEBOOK_PASSWORD']
-      end
-
       def forker?
         !!(forker_username && forker_password)
       end
@@ -567,7 +559,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'fe716ea')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'v16.6.0')
       end
 
       def transient_trials
@@ -692,8 +684,11 @@ module QA
         ENV['QA_1P_GITHUB_UUID']
       end
 
-      def gdk_url
-        ENV['GDK_URL']
+      # Docker network to use when starting sidecar containers
+      #
+      # @return [String]
+      def docker_network
+        ENV["QA_DOCKER_NETWORK"]
       end
 
       private

@@ -4,7 +4,11 @@ group: Tenant Scale
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Create a project **(FREE ALL)**
+# Create a project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can create a project in many ways in GitLab.
 
@@ -62,9 +66,13 @@ A user who creates a project [from a template](#create-a-project-from-a-built-in
 Imported objects are labeled as `By <username> on <timestamp> (imported from GitLab)`.
 For this reason, the creation date of imported objects can be older than the creation date of the user's account. This can lead to objects appearing to have been created by a user before they even had an account.
 
-## Create a project from a custom template **(PREMIUM ALL)**
+## Create a project from a custom template
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6860) in GitLab 11.2.
 
 Custom project templates are available at:
 
@@ -87,9 +95,13 @@ Custom project templates are available at:
      change the **Visibility Level**.
 1. Select **Create project**.
 
-## Create a project from the HIPAA Audit Protocol template **(ULTIMATE ALL)**
+## Create a project from the HIPAA Audit Protocol template
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 
 The HIPAA Audit Protocol template contains issues for audit inquiries in the
 HIPAA Audit Protocol published by the U.S Department of Health and Human Services.
@@ -114,7 +126,7 @@ To create a project from the HIPAA Audit Protocol template:
 
 ## Create a new project with Git push
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/26388) in GitLab 10.5.
 
 Use `git push` to push a local project repository to GitLab. After you push a repository,
 GitLab creates your project in your chosen namespace.
@@ -177,6 +189,45 @@ remote: The private project namespace/myproject was created.
 To view your new project, go to `https://gitlab.example.com/namespace/myproject`.
 Your project's visibility is set to **Private** by default. To change project visibility, adjust your
 [project's settings](../public_access.md#change-project-visibility).
+
+## Create a project that uses SHA-256 hashing
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/794) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can enable the [feature flag](../../administration/feature_flags.md) named `support_sha256_repositories`.
+On GitLab.com, this feature is not available because it's an [Experiment](../../policy/experiment-beta-support.md#experiment).
+If you would like access on GitLab.com, please fill out this [form](https://forms.gle/pUUPB8GBgaPCvdNc6).
+
+You can select SHA-256 hashing for a project only when you create the project.
+
+To create a project that uses SHA-256 hashing:
+
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Create blank project** and fill out the project's details as usual. For more information on project details, see [Create a blank project](#create-a-blank-project).
+1. In the **Project Configuration** area, click on **Experimental settings** to
+   expand the accordion.
+1. Select **Use SHA-256 as the repository hashing algorithm**.
+1. Select **Create project**.
+
+WARNING:
+Git does not support migrating to SHA-256 later, or migrating back to SHA-1.
+
+### Why SHA-256?
+
+By default, Git uses the SHA-1 [hashing algorithm](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards) to generate a 40-character
+ID for objects such as commits, blobs, trees, and tags. The SHA-1 algorithm was proven to be insecure when
+[Google was able to produce a hash collision](https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html). The Git project is not yet impacted by these
+kinds of attacks because of the way Git stores objects. However, it is only a matter of time until new attacks on SHA-1 are found that impact Git.
+
+In SHA-256 repositories, the algorithm generates a 64-character ID instead of a 40-character ID. The Git project determined that the SHA-256 feature is safe to use when they [removed the experimental label](https://github.com/git/git/blob/master/Documentation/RelNotes/2.42.0.txt#L41-L45).
+
+Federal regulations, such as NIST and CISA [guidelines](https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions) (which
+[FedRamp](https://www.fedramp.gov/) enforces), have set a due date in 2030 to stop using SHA-1 and encourage agencies using SHA-1 to move away from it sooner, if possible.
 
 ## Related topics
 

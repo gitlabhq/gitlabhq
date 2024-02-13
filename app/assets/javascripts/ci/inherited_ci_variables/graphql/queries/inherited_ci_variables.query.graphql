@@ -10,6 +10,7 @@ query getInheritedCiVariables($after: String, $first: Int, $fullPath: ID!) {
       nodes {
         id
         key
+        description
         variableType
         environmentScope
         groupCiCdSettingsPath

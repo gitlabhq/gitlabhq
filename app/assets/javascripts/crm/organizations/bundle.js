@@ -25,6 +25,8 @@ export default () => {
   const {
     basePath,
     canAdminCrmOrganization,
+    canReadCrmContact,
+    groupContactsPath,
     groupFullPath,
     groupId,
     groupIssuesPath,
@@ -43,6 +45,8 @@ export default () => {
     apolloProvider,
     provide: {
       canAdminCrmOrganization: parseBoolean(canAdminCrmOrganization),
+      canReadCrmContact: parseBoolean(canReadCrmContact),
+      groupContactsPath,
       groupFullPath,
       groupId,
       groupIssuesPath,

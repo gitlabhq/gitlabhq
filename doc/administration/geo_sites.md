@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo sites Admin Area **(PREMIUM SELF)**
+# Geo sites Admin Area
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can configure various settings for GitLab Geo sites. For more information, see
 [Geo documentation](../administration/geo/index.md).
@@ -57,7 +61,7 @@ you can decrease them.
 
 ## Set up the internal URLs
 
-> Setting up internal URLs in secondary sites was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77179) in GitLab 14.7.
+> - Setting up internal URLs in secondary sites was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77179) in GitLab 14.7.
 
 You can set up a different URL for synchronization between the primary and secondary site.
 

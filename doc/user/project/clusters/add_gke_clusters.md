@@ -4,9 +4,13 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Connect GKE clusters through cluster certificates (deprecated) **(FREE ALL)**
+# Connect GKE clusters through cluster certificates (deprecated)
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -23,13 +27,13 @@ use the [GitLab agent](../../clusters/agent/index.md).
 
 ## Create a new GKE cluster from GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25925) in GitLab 12.4, all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25925) in GitLab 12.4, all the GKE clusters provisioned by GitLab are [VPC-native](https://cloud.google.com/kubernetes-engine/docs/how-to/alias-ips).
 
 To create a new GKE cluster from GitLab, use [Infrastructure as Code](../../infrastructure/clusters/connect/new_gke_cluster.md).
 
 ## Create a new cluster on GKE through cluster certificates
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/-/epics/6049) in GitLab 14.0.
 
 Prerequisites:
 
@@ -89,7 +93,7 @@ After a couple of minutes, your cluster is ready.
 
 ### Cloud Run for Anthos
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16566) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16566) in GitLab 12.4.
 
 You can choose to use Cloud Run for Anthos in place of installing Knative and Istio
 separately after the cluster has been created. This means that Cloud Run

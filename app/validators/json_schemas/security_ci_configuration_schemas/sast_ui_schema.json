@@ -12,7 +12,7 @@
     },
     {
       "field": "SAST_EXCLUDED_PATHS",
-      "label": "Excluded Paths",
+      "label": "Excluded paths",
       "type": "string",
       "default_value": "",
       "value": "",
@@ -32,12 +32,12 @@
     },
     {
       "field": "SEARCH_MAX_DEPTH",
-      "label": "Search Maximum Depth",
+      "label": "Search maximum depth",
       "type": "string",
       "default_value": "",
       "value": "",
       "size": "SMALL",
-      "description": "Specifies the number of directory levels to be included in the repository search phase during SAST analysis. SAST scanner searches through the repository to detect the programming languages used and selects the corresponding analyzers. After that, the entire repository is analyzed."
+      "description": "Specifies the number of directory levels searched to identify programming languages and frameworks. This determines which analyzers to run against the entire repository."
     }
   ],
   "analyzers": [

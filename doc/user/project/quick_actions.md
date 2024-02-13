@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab quick actions **(FREE ALL)**
+# GitLab quick actions
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Quick actions are text-based shortcuts for common actions that are usually done
 by selecting buttons or dropdowns in the GitLab user interface. You can enter
@@ -63,6 +67,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/clone <path/to/project> [--with_notes]`                                                        | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Clone the issue to given project, or the current one if no arguments are given. Copies as much data as possible as long as the target project contains equivalent objects like labels, milestones, or epics. Does not copy comments or system notes unless `--with_notes` is provided as an argument. |
 | `/close`                                                                                         | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Close. |
 | `/confidential`                                                                                  | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Mark issue or epic as confidential. Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213741) in GitLab 15.6. |
+| `/convert_to_ticket <email address>`                                                             | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | [Convert an issue into a Service Desk ticket](service_desk/using_service_desk.md#convert-a-regular-issue-to-a-service-desk-ticket). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default. |
 | `/copy_metadata <!merge_request>`                                                                | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Copy labels and milestone from another merge request in the project. |
 | `/copy_metadata <#issue>`                                                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Copy labels and milestone from another issue in the project. |
 | `/create_merge_request <branch name>`                                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Create a new merge request starting from the current issue. |
@@ -74,7 +79,9 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/estimate <time>` or `/estimate_time <time>`                                                    | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Set time estimate. For example, `/estimate 1mo 2w 3d 4h 5m`. For more information, see [Time tracking](time_tracking.md). Alias `/estimate_time` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16501) in GitLab 15.6. |
 | `/health_status <value>`                                                                         | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set [health status](issues/managing_issues.md#health-status). Valid options for `<value>` are `on_track`, `needs_attention`, and `at_risk` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213814) in GitLab 14.7). |
 | `/invite_email email1 email2`                                                                    | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Add up to six email participants. This action is behind feature flag `issue_email_participants` and is not yet supported in issue templates. |
-| `/iteration *iteration:"iteration name"`                                                         | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set iteration. For example, to set the `Late in July` iteration: `/iteration *iteration:"Late in July"`. |
+| `/iteration *iteration:<iteration ID> or <iteration name>`                                       | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set iteration. For example, to set the `Late in July` iteration: `/iteration *iteration:"Late in July"`. |
+| `/iteration [cadence:<iteration cadence ID> or <iteration cadence name>] <--current or --next>`  | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set iteration to the current or next upcoming iteration of the referenced iteration cadence. For example, `/iteration [cadence:"Team cadence"] --current` sets the iteration to the current iteration of the iteration cadence named "Team cadence". [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9. |
+| `/iteration <--current or --next>`                                                               | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Set iteration to the current or next upcoming iteration when a group has one iteration cadence. For example, `/iteration --current` sets the iteration to the current iteration of the iteration cadence. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9. |
 | `/label ~label1 ~label2` or `/labels ~label1 ~label2`                                            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Add one or more labels. Label names can also start without a tilde (`~`), but mixed syntax is not supported. |
 | `/link`                                                                                          | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Add a link and description to [linked resources](../../operations/incident_management/linked_resources.md) in an incident ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374964) in GitLab 15.5). |
 | `/lock`                                                                                          | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Lock the discussions. |
@@ -90,7 +97,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/ready`                                                                                         | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Set the [ready status](merge_requests/drafts.md#mark-merge-requests-as-ready) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90361) in GitLab 15.1). |
 | `/reassign @user1 @user2`                                                                        | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No | Replace current assignees with those specified. |
 | `/reassign_reviewer @user1 @user2`                                                               | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Replace current reviewers with those specified. |
-| `/rebase`                                                                                        | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Rebase source branch. This schedules a background task that attempts to rebase the changes in the source branch on the latest commit of the target branch. If `/rebase` is used, `/merge` is ignored to avoid a race condition where the source branch is merged or deleted before it is rebased. If there are merge conflicts, GitLab displays a message that a rebase cannot be scheduled. Rebase failures are displayed with the merge request status. |
+| `/rebase`                                                                                        | **{dotted-circle}** No | **{check-circle}** Yes | **{dotted-circle}** No | Rebase source branch on the latest commit of the target branch. For help, see [troubleshooting `git rebase`](../../topics/git/git_rebase.md#troubleshooting). |
 | `/relabel ~label1 ~label2`                                                                       | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current labels with those specified. |
 | `/relate #issue1 #issue2`                                                                        | **{check-circle}** Yes | **{dotted-circle}** No | **{dotted-circle}** No | Mark issues as related. |
 | `/remove_child_epic <epic>`                                                                      | **{dotted-circle}** No | **{dotted-circle}** No | **{check-circle}** Yes | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. |
@@ -130,7 +137,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 
 ## Work items
 
-> Executing quick actions from comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391282) in GitLab 15.10.
+> - Executing quick actions from comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391282) in GitLab 15.10.
 
 Work items in GitLab include [tasks](../tasks.md) and [OKRs](../okrs.md).
 The following quick actions can be applied through the description field when editing or commenting on work items.
@@ -161,6 +168,7 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/reassign @user1 @user2`                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current assignees with those specified. |
 | `/relabel ~label1 ~label2`                                    | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Replace current labels with those specified. |
 | `/remove_due_date`                                            | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Remove due date. |
+| `/remove_parent`                                     | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Removes the parent work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434344) in GitLab 16.9. |
 | `/reopen`                                                     | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Reopen. |
 | `/set_parent <work_item>`                                     | **{check-circle}** Yes | **{dotted-circle}** No | **{check-circle}** Yes | Set parent work item to `<work_item>`. The `<work_item>` value should be in the format of `#iid`, `group/project#iid`, or a URL to a work item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420798) in GitLab 16.5. |
 | `/shrug <comment>`                                            | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes | Append the comment with `¯\＿(ツ)＿/¯`. |

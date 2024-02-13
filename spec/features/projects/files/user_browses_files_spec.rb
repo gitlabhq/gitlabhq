@@ -311,12 +311,6 @@ RSpec.describe "User browses files", :js, feature_category: :source_code_managem
 
       expect(page).not_to have_selector(".tree-commit .animation-container")
     end
-
-    it "does not show the permalink link" do
-      click_link(".gitignore")
-
-      expect(page).not_to have_link("permalink")
-    end
   end
 
   context "when browsing a file content", :js do

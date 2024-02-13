@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Environments and deployments **(FREE ALL)**
+# Environments and deployments
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Environments describe where code is deployed.
 
@@ -65,6 +69,15 @@ To search environments by name:
 To customize your environments and deployments, you can use any of the
 [predefined CI/CD variables](../../ci/variables/predefined_variables.md),
 and define custom CI/CD variables.
+
+## Environment states
+
+An environment state indicates whether an environment's [stop job](../../ci/yaml/index.md#environmenton_stop) has run.
+There are three states:
+
+- `available`: The environment exists. There might be a deployment.
+- `stopping`: The _on stop job_ has started. This state does not apply when there is no on stop job defined.
+- `stopped`: Either the _on stop job_ has run, or a user manually stopped the job.
 
 ## Types of environments
 
@@ -253,7 +266,7 @@ To achieve the same result as renaming an environment:
 
 ## Deployment tier of environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300741) in GitLab 13.10.
 
 Sometimes, instead of using an [industry standard](https://en.wikipedia.org/wiki/Deployment_environment)
 environment name, like `production`, you might want to use a code name, like `customer-portal`.
@@ -396,9 +409,6 @@ from source files to public pages in the environment set for Review Apps.
 Stopping an environment means its deployments are not accessible on the target server. You must stop
 an environment before it can be deleted.
 
-If the environment has an [`on_stop` action](../yaml/index.md#environmenton_stop) defined, it's
-executed to stop the environment.
-
 #### Stop an environment when a branch is deleted
 
 You can configure environments to stop when a branch is deleted.
@@ -470,12 +480,28 @@ stop_review:
 
 #### Run a pipeline job when environment is stopped
 
-You can specify a job to run when an environment is stopped.
+> - Feature flag `environment_stop_actions_include_all_finished_deployments` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435128) in GitLab 16.9. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `environment_stop_actions_include_all_finished_deployments`.
+On GitLab.com, this feature is not available.
+
+You can define a stop job for the environment with an [`on_stop` action](../yaml/index.md#environmenton_stop) in the environment's deploy job.
+
+If `environment_stop_actions_include_all_finished_deployments` is disabled:
+
+- The stop jobs of successful deployments in the latest successful pipeline are run when an environment is stopped.
+
+If `environment_stop_actions_include_all_finished_deployments` is enabled:
+
+- The stop jobs of finished deployments in the latest finished pipeline are run when an environment is stopped.
+
+  A deployment or pipeline is _finished_ if it has the successful, canceled, or failed status.
 
 Prerequisites:
 
-- Both jobs must have the same rules or only/except configuration.
-- The `stop_review_app` job **must** have the following keywords defined:
+- Both the deploy and stop jobs must have the same rules or only/except configuration.
+- The stop job must have the following keywords defined:
   - `when`, defined at either:
     - [The job level](../yaml/index.md#when).
     - [In a rules clause](../yaml/index.md#rules). If you use `rules` and `when: manual`, you should
@@ -483,9 +509,6 @@ Prerequisites:
       even if the job doesn't run.
   - `environment:name`
   - `environment:action`
-
-In your `.gitlab-ci.yml` file, specify in the [`on_stop`](../yaml/index.md#environmenton_stop)
-keyword the name of the job that stops the environment.
 
 In the following example:
 
@@ -682,7 +705,7 @@ To delete an environment:
 
 ### Access an environment for preparation or verification purposes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208655) in GitLab 13.2.
 
 You can define a job that accesses an environment for various purposes, such as verification or preparation. This
 effectively bypasses deployment creation, so that you can adjust your CD workflow more accurately.
@@ -739,9 +762,13 @@ or human error can cause major issues with an environment. Things like:
 You can use [incident management](../../operations/incident_management/index.md)
 to get alerts when there are critical issues that need immediate attention.
 
-#### View the latest alerts for environments **(ULTIMATE ALL)**
+#### View the latest alerts for environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214634) in GitLab 13.4.
 
 If you [set up alerts for Prometheus metrics](../../operations/incident_management/integrations.md#configuration),
 alerts for environments are shown on the environments page. The alert with the highest
@@ -755,9 +782,13 @@ longer visible on the environments page.
 If the alert requires a [rollback](#retry-or-roll-back-a-deployment), you can select the
 deployment tab from the environment page and select which deployment to roll back to.
 
-#### Auto Rollback **(ULTIMATE ALL)**
+#### Auto Rollback
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/35404) in GitLab 13.7.
 
 In a typical Continuous Deployment workflow, the CI pipeline tests every commit before deploying to
 production. However, problematic code can still make it to production. For example, inefficient code
@@ -785,7 +816,7 @@ GitLab Auto Rollback is turned off by default. To turn it on:
 
 ### Web terminals (deprecated)
 
-> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
+> - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -1024,7 +1055,7 @@ To ensure the `action: stop` can always run when needed, you can:
 
 ### A deployment job failed with "This job could not be executed because it would create an environment with an invalid parameter" error
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21182) in GitLab 14.4.
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error because the dynamically generated parameter can't be used for creating an environment.

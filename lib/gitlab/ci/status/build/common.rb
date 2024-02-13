@@ -7,8 +7,8 @@ module Gitlab
         module Common
           def illustration
             {
-              image: 'illustrations/skipped-job_empty.svg',
-              size: 'svg-430',
+              image: 'illustrations/empty-state/empty-job-skipped-md.svg',
+              size: '',
               title: _('This job does not have a trace.')
             }
           end

@@ -7,8 +7,6 @@ import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import Api from '~/api';
-import createSavedReplyMutation from '../queries/create_saved_reply.mutation.graphql';
-import updateSavedReplyMutation from '../queries/update_saved_reply.mutation.graphql';
 
 export default {
   components: {
@@ -20,6 +18,7 @@ export default {
     MarkdownEditor,
   },
   mixins: [InternalEvents.mixin()],
+  inject: ['createMutation', 'updateMutation'],
   props: {
     id: {
       type: String,
@@ -92,7 +91,7 @@ export default {
 
       this.$apollo
         .mutate({
-          mutation: this.id ? updateSavedReplyMutation : createSavedReplyMutation,
+          mutation: this.id ? this.updateMutation : this.createMutation,
           variables: {
             id: this.id,
             name: this.updateCommentTemplate.name,

@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage group's SSH certificates **(PREMIUM SAAS)**
+# Manage group's SSH certificates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Manage Git access to the projects by sharing public Certified Authority (`CA`) files in your organization's top-level group.
 
@@ -14,10 +18,12 @@ To temporarily grant Git access to your projects, you can use SSH certificates.
 
 ## Add a CA certificate to a top-level group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
 
 FLAG:
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
+
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -59,10 +65,11 @@ The user certificates can only be used to access the projects within the top-lev
 
 ## Enforce SSH certificates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../feature_flags.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../feature_flags.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
 
 FLAG:
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 You can enforce usage of SSH certificates and forbid users from authenticating using SSH
 keys and access tokens.

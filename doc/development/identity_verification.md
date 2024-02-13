@@ -60,18 +60,10 @@ On rows where `json.event` is `Failed Attempt`, you can find valuable debugging 
 
 #### View Telesign SMS status update logs
 
-To view logs of Telesign status updates for an SMS sent to a user:
-
-1. Get a `telesign_reference_id` value for an SMS sent to a specific user:
+To view Telesign status updates logs for SMS sent to a user, query the GitLab production logs with:
 
    ```plaintext
-   json.message: "IdentityVerification::Phone" AND json.username:<username>`
-   ```
-
-1. Search for status update logs associated with `telesign_reference_id` value:
-
-   ```plaintext
-   json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.telesign_reference_id:replace_ref_id_value_here`
+   json.message: "IdentityVerification::Phone" AND json.event: "Telesign transaction status update" AND json.username:<username>`
    ```
 
 Status update logs include the following fields:
@@ -121,7 +113,7 @@ For end-to-end production and staging tests to function properly, GitLab [allows
 ## Additional resources
 
 <!-- markdownlint-disable MD044 -->
-The [Anti-abuse team](https://about.gitlab.com/handbook/engineering/development/data-science/anti-abuse/#team-members) owns identity verification. You can join our channel on Slack: [#g_anti-abuse](https://gitlab.slack.com/archives/C03EH5HCLPR).
+The [Anti-abuse team](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/anti-abuse/#team-members) owns identity verification. You can join our channel on Slack: [#g_anti-abuse](https://gitlab.slack.com/archives/C03EH5HCLPR).
 <!-- markdownlint-enable MD044 -->
 
 For help with Telesign:

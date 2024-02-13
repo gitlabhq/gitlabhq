@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Cascading Settings
 
-> Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/321724).
+> - Introduced in [GitLab 13.11](https://gitlab.com/gitlab-org/gitlab/-/issues/321724).
 
 The cascading settings framework allows groups to essentially inherit settings
 values from ancestors (parent group on up the group hierarchy) and from

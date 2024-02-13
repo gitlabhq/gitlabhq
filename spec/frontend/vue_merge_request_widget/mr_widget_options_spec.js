@@ -391,10 +391,14 @@ describe('MrWidgetOptions', () => {
         });
 
         it('should fetch deployments', async () => {
+          expect(findPipelineContainer().props('mr').deployments).toHaveLength(0);
+          expect(findMergedPipelineContainer().exists()).toBe(false);
           eventHub.$emit('FetchDeployments', {});
           await waitForPromises();
-          expect(wrapper.vm.mr.deployments.length).toEqual(1);
-          expect(wrapper.vm.mr.deployments[0].id).toBe(1);
+          expect(findPipelineContainer().props('isPostMerge')).toBe(false);
+          expect(findMergedPipelineContainer().exists()).toBe(false);
+          expect(findPipelineContainer().props('mr').deployments).toHaveLength(1);
+          expect(findPipelineContainer().props('mr').deployments[0].id).toBe(1);
         });
       });
 

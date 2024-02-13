@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Customer relations management (CRM) **(FREE ALL)**
+# Customer relations management (CRM)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/2256) in GitLab 14.6 [with a flag](../../administration/feature_flags.md) named `customer_relations`. Disabled by default.
 > - In GitLab 14.8 and later, you can [create contacts and organizations only in root groups](https://gitlab.com/gitlab-org/gitlab/-/issues/350634).
@@ -30,9 +34,11 @@ For more information about what is planned for the future, see [issue 2256](http
 
 ## Enable customer relations management (CRM)
 
-Customer relations management features must be enabled at the group level. If your
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108378) in GitLab 16.9.
+
+Customer relations management features are enabled at the group level. If your
 group also contains subgroups, and you want to use CRM features in the subgroup,
-you must enable CRM features for the subgroup.
+CRM features must also be enabled for the subgroup.
 
 To enable customer relations management in a group or subgroup:
 
@@ -53,7 +59,7 @@ Prerequisites:
 To view a group's contacts:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer contacts**.
+1. Select **Plan > Customer relations**.
 
 ![Contacts list](crm_contacts_v14_10.png)
 
@@ -66,7 +72,7 @@ Prerequisites:
 To create a contact:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer contacts**.
+1. Select **Plan > Customer relations**.
 1. Select **New contact**.
 1. Complete all required fields.
 1. Select **Create new contact**.
@@ -83,7 +89,7 @@ Prerequisites:
 To edit an existing contact:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer contacts**.
+1. Select **Plan > Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
 1. Select **Save changes**.
@@ -101,7 +107,7 @@ Each contact can be in one of two states:
 To change the state of a contact:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer contacts**.
+1. Select **Plan > Customer relations**.
 1. Next to the contact you wish to edit, select **Edit** (**{pencil}**).
 1. Select or clear the **Active** checkbox.
 1. Select **Save changes**.
@@ -117,7 +123,8 @@ Prerequisites:
 To view a group's organizations:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer organizations**.
+1. Select **Plan > Customer relations**.
+1. In the upper right, select **Organizations**.
 
 ![Organizations list](crm_organizations_v14_10.png)
 
@@ -130,7 +137,8 @@ Prerequisites:
 To create an organization:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer organizations**.
+1. Select **Plan > Customer relations**.
+1. In the upper right, select **Organizations**.
 1. Select **New organization**.
 1. Complete all required fields.
 1. Select **Create new organization**.
@@ -147,7 +155,8 @@ Prerequisites:
 To edit an existing organization:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer organizations**.
+1. Select **Plan > Customer relations**.
+1. In the upper right, select **Organizations**.
 1. Next to the organization you wish to edit, select **Edit** (**{pencil}**).
 1. Edit the required fields.
 1. Select **Save changes**.
@@ -169,7 +178,7 @@ Prerequisites:
 To view a contact's issues, select a contact from the issue sidebar, or:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer contacts**.
+1. Select **Plan > Customer relations**.
 1. Next to the contact whose issues you wish to view, select **View issues** (**{issues}**).
 
 ### View issues linked to an organization
@@ -181,7 +190,8 @@ Prerequisites:
 To view an organization's issues:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Customer organizations**.
+1. Select **Plan > Customer relations**.
+1. In the upper right, select **Organizations**.
 1. Next to the organization whose issues you wish to view, select **View issues** (**{issues}**).
 
 ### View contacts linked to an issue

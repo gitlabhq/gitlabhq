@@ -4,7 +4,12 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Composer packages in the package registry **(FREE ALL BETA)**
+# Composer packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15886) in GitLab 13.2.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -40,7 +45,7 @@ Prerequisites:
   error (`Validation failed: Version is invalid`) occurs when you publish.
 - A valid `composer.json` file at the project root directory.
 - The Packages feature is enabled in a GitLab repository.
-- The project ID, which is on the project's home page.
+- The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - One of the following token types:
   - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
@@ -121,7 +126,7 @@ When you publish:
 
 ## Install a Composer package
 
-> Authorization to [download a package archive](../../../api/packages/composer.md#download-a-package-archive) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
+> - Authorization to [download a package archive](../../../api/packages/composer.md#download-a-package-archive) was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
 
 Install a package from the package registry so you can use it as a dependency.
 

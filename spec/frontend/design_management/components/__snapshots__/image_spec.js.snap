@@ -6,7 +6,7 @@ exports[`Design management large image component renders SVG with proper height 
 >
   <img
     alt="test"
-    class="img-fluid mh-100"
+    class="gl-max-h-full img-fluid"
     src="mockImage.svg"
   />
 </div>
@@ -18,7 +18,7 @@ exports[`Design management large image component renders image 1`] = `
 >
   <img
     alt="test"
-    class="img-fluid mh-100"
+    class="gl-max-h-full img-fluid"
     src="test.jpg"
   />
 </div>
@@ -31,7 +31,7 @@ exports[`Design management large image component renders loading state 1`] = `
 >
   <img
     alt=""
-    class="img-fluid mh-100"
+    class="gl-max-h-full img-fluid"
     src="null"
   />
 </div>
@@ -51,7 +51,7 @@ exports[`Design management large image component sets correct classes and styles
 >
   <img
     alt="test"
-    class="mh-100"
+    class="gl-max-h-full"
     src="test.jpg"
     style="width: 100px; height: 100px;"
   />
@@ -64,7 +64,7 @@ exports[`Design management large image component zoom sets image style when zoom
 >
   <img
     alt="test"
-    class="mh-100"
+    class="gl-max-h-full"
     src="test.jpg"
     style="width: 200px; height: 200px;"
   />

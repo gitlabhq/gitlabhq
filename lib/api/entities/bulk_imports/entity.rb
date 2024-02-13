@@ -25,6 +25,7 @@ module API
         expose :failures, using: EntityFailure, documentation: { is_array: true }
         expose :migrate_projects, documentation: { type: 'boolean', example: true }
         expose :has_failures, documentation: { type: 'boolean', example: false }
+        expose :checksums, as: :stats, documentation: { type: 'object' }
       end
     end
   end

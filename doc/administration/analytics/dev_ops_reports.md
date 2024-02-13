@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DevOps Reports **(FREE SELF)**
+# DevOps Reports
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 DevOps Reports give you an overview of your entire instance's adoption of
 [DevOps](https://about.gitlab.com/topics/devops/)
@@ -17,7 +21,7 @@ To see DevOps Reports:
 
 ## DevOps Score
 
-> [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
+> - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/20976) from Conversational Development Index in GitLab 12.6.
 
 NOTE:
 To see the DevOps score, you must activate your GitLab instance's [Service Ping](../settings/usage_statistics.md#service-ping). DevOps Score is a comparative tool, so your score data must be centrally processed by GitLab Inc. first.
@@ -37,7 +41,11 @@ information is **not sent** to any other GitLab instances.
 If you have just started using GitLab, it might take a few weeks for data to be collected before this
 feature is available.
 
-## DevOps Adoption **(ULTIMATE SELF)**
+## DevOps Adoption
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/247112) in GitLab 13.7 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 > - The Overview tab [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330401) in GitLab 14.1.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline do
+RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline, feature_category: :importers do
   subject(:pipeline) { described_class.new(context) }
 
   let_it_be(:user) { create(:user) }
@@ -14,6 +14,8 @@ RSpec.describe BulkImports::Groups::Pipelines::NamespaceSettingsPipeline do
 
   before do
     group.add_owner(user)
+
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   describe '#run' do

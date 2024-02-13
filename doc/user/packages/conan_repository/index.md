@@ -4,7 +4,12 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Conan packages in the package registry **(FREE ALL EXPERIMENT)**
+# Conan packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/8248) in GitLab 12.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
@@ -39,7 +44,7 @@ and install packages from the package registry.
 
 ### Add a remote for your project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11679) in GitLab 13.4.
 
 Set a remote so you can work with packages in a project without
 having to specify the remote name in every command.
@@ -185,7 +190,7 @@ Prerequisites:
 - A local [Conan package](https://docs.conan.io/en/latest/creating_packages/getting_started.html)
   must exist.
   - For an instance remote, the package must meet the [naming convention](#package-recipe-naming-convention-for-instance-remotes).
-- You must have the project ID, which is on the project's homepage.
+- You must have the project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 To publish the package, use the `conan upload` command:
 

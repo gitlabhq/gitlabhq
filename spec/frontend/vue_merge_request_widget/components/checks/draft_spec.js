@@ -16,7 +16,7 @@ import {
   DRAFT_CHECK_READY,
   DRAFT_CHECK_ERROR,
 } from '~/vue_merge_request_widget/components/checks/i18n';
-import { FAILURE_REASONS } from '~/vue_merge_request_widget/components/checks/message.vue';
+import { FAILURE_REASONS } from '~/vue_merge_request_widget/components/checks/constants';
 
 import draftQuery from '~/vue_merge_request_widget/queries/states/draft.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';

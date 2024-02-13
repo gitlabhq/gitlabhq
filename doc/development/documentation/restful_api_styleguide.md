@@ -31,10 +31,11 @@ In the Markdown doc for a resource (AKA endpoint):
 - Every method must have a cURL example.
 - Every method must have a detailed [description of the response body](#response-body-description).
 - Every method must have a response body example (in JSON format).
-- If an attribute is available only to higher level tiers than the other
-  attributes, add the appropriate inline [tier badge](styleguide/index.md#product-tier-badges).
-  Put the badge in the **Attribute** column, like the
-  `**(<tier>)**` code in the following template.
+- If an attribute is available only to higher level subscription tiers, add the appropriate tier to the **Description**. If an attribute is
+  for Premium, include that it's also available for Ultimate.
+- If an attribute is available only in certain offerings, add the offerings to the **Description**. If the attribute's
+  description also has both offering and tier, combine them. For
+  example: _Self-managed, Premium and Ultimate only._
 
 After a new API documentation page is added, [add an entry in the global navigation](site_architecture/global_nav.md#add-a-navigation-entry). [Example](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/3497).
 
@@ -46,13 +47,13 @@ required attributes first in the table.
 ````markdown
 ## API name
 
-> Version history note.
+> - History note.
 
 One or two sentence description of what endpoint does.
 
 ### Method title
 
-> Version history note.
+> - History note.
 
 Description of the method.
 
@@ -65,7 +66,7 @@ Supported attributes:
 | Attribute                | Type     | Required | Description           |
 |--------------------------|----------|----------|-----------------------|
 | `attribute`              | datatype | Yes      | Detailed description. |
-| `attribute` **(<tier>)** | datatype | No       | Detailed description. |
+| `attribute`              | datatype | No       | Detailed description. |
 | `attribute`              | datatype | No       | Detailed description. |
 | `attribute`              | datatype | No       | Detailed description. |
 
@@ -75,7 +76,7 @@ response attributes:
 | Attribute                | Type     | Description           |
 |--------------------------|----------|-----------------------|
 | `attribute`              | datatype | Detailed description. |
-| `attribute` **(<tier>)** | datatype | Detailed description. |
+| `attribute`              | datatype | Detailed description. |
 
 Example request:
 
@@ -94,22 +95,22 @@ Example response:
 ```
 ````
 
-## Version history
+## History
 
-Add [version history](versions.md#documenting-version-specific-features)
+Add [history](versions.md#documenting-version-specific-features)
 to describe new or updated API calls.
 
-To add version history for an individual attribute, include it in the version history
+To add history for an individual attribute, include it in the history
 for the section. For example:
 
 ```markdown
 ### Edit a widget
 
-> `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
+> - `widget_message` [introduced](<link-to-issue>) in GitLab 14.3.
 ```
 
 If the API or attribute is deployed behind a feature flag,
-[include the feature flag information](feature_flags.md) in the version history.
+[include the feature flag information](feature_flags.md) in the history.
 
 ## Deprecations
 
@@ -118,7 +119,7 @@ To document the deprecation of an API endpoint, follow the steps to
 
 To deprecate an attribute:
 
-1. Add a version history note.
+1. Add a history note.
 
    ```markdown
    > - `widget_name` [deprecated](<link-to-issue>) in GitLab 14.7.
@@ -146,7 +147,7 @@ Sort the table by required attributes first, then alphabetically.
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM ALL)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `assignee_ids`               | integer array | No       | IDs of the users to assign the issue to. Ultimate only. |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 ```
 
@@ -155,7 +156,7 @@ Rendered example:
 | Attribute                    | Type          | Required | Description                                         |
 |------------------------------|---------------|----------|-----------------------------------------------------|
 | `title`                      | string        | Yes      | Title of the issue.                                 |
-| `assignee_ids` **(PREMIUM ALL)** | integer array | No       | IDs of the users to assign the issue to.            |
+| `assignee_ids`               | integer array | No       | IDs of the users to assign the issue to. Premium and Ultimate only. |
 | `confidential`               | boolean       | No       | Sets the issue to confidential. Default is `false`. |
 
 For information about writing attribute descriptions, see the [GraphQL API description style guide](../api_graphql_styleguide.md#description-style-guide).
@@ -181,7 +182,7 @@ Sort the table alphabetically.
 ```markdown
 | Attribute                    | Type          | Description                               |
 |------------------------------|---------------|-------------------------------------------|
-| `assignee_ids` **(PREMIUM ALL)** | integer array | IDs of the users to assign the issue to.  |
+| `assignee_ids`               | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
 ```
@@ -190,7 +191,7 @@ Rendered example:
 
 | Attribute                    | Type          | Description                               |
 |------------------------------|---------------|-------------------------------------------|
-| `assignee_ids` **(PREMIUM ALL)** | integer array | IDs of the users to assign the issue to.  |
+| `assignee_ids`               | integer array | IDs of the users to assign the issue to. Premium and Ultimate only. |
 | `confidential`               | boolean       | Whether the issue is confidential or not. |
 | `title`                      | string        | Title of the issue.                       |
 

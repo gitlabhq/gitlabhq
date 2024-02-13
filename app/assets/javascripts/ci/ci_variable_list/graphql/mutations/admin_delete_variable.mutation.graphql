@@ -1,14 +1,12 @@
 #import "~/ci/ci_variable_list/graphql/fragments/ci_variable.fragment.graphql"
+#import "~/ci/ci_variable_list/graphql/fragments/ci_instance_variable.fragment.graphql"
 
 mutation deleteAdminVariable($variable: CiVariable!, $endpoint: String!) {
   ciVariableMutation: deleteAdminVariable(variable: $variable, endpoint: $endpoint) @client {
     ciVariables {
       nodes {
         ...BaseCiVariable
-        ... on CiInstanceVariable {
-          protected
-          masked
-        }
+        ...BaseCiInstanceVariable
       }
     }
     errors

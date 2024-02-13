@@ -4,10 +4,14 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project integrations **(FREE ALL)**
+# Project integrations
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 NOTE:
-This page contains information about configuring project integrations on GitLab.com. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
+This page contains user documentation for project integrations. For administrator documentation, see [Project integration administration](../../../administration/settings/project_integration_management.md).
 
 You can integrate with external applications to add functionality to GitLab.
 
@@ -128,6 +132,7 @@ To use custom settings for a project or group integration:
 | [Emails on push](emails_on_push.md)                                         | Send commits and diffs on push by email.                              | **{dotted-circle}** No |
 | [Engineering Workflow Management (EWM)](ewm.md)                             | Use EWM as an issue tracker.                                          | **{dotted-circle}** No |
 | [External wiki](../wiki/index.md#link-an-external-wiki)                     | Link an external wiki.                                                | **{dotted-circle}** No |
+| [GitGuardian](git_guardian.md)                                              | Reject commits based on GitGuardian policies.                         | **{dotted-circle}** No |
 | [GitHub](github.md)                                                         | Receive statuses for commits and pull requests.                       | **{dotted-circle}** No |
 | [GitLab for Slack app](gitlab_slack_application.md)                         | Use the native Slack app to receive notifications and run commands.   | **{dotted-circle}** No |
 | [Google Chat](hangouts_chat.md)                                             | Send notifications from your GitLab project to a room in Google Chat. | **{dotted-circle}** No |

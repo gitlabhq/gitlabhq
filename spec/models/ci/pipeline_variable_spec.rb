@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineVariable do
+RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration do
   subject { build(:ci_pipeline_variable) }
 
   it_behaves_like "CI variable"

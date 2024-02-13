@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Object storage **(FREE SELF)**
+# Object storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab supports using an object storage service for holding numerous types of data.
 It's recommended over NFS and
@@ -45,7 +49,7 @@ Specifically, GitLab has been tested by vendors and customers on a number of obj
 
 ## Configure a single storage connection for all object types (consolidated form)
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/4368) in GitLab 13.2.
 
 Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
@@ -254,7 +258,7 @@ AWS KMS keys and SSE-C encryption are
 
 #### Server-side encryption headers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38240) in GitLab 13.3.
 
 Setting a default encryption on an S3 bucket is the easiest way to
 enable encryption, but you may want to
@@ -328,7 +332,7 @@ gitlab_rails['object_store']['connection'] = {
 
 #### GCS example with ADC
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/275979) in GitLab 13.6.
 
 Google Cloud Application Default Credentials (ADC) are typically
 used with GitLab to use the default service account. This eliminates the
@@ -355,7 +359,7 @@ If you use ADC, be sure that:
 
 ### Azure Blob storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 Although Azure uses the word `container` to denote a collection of
 blobs, GitLab standardizes on the term `bucket`. Be sure to configure
@@ -436,7 +440,7 @@ For more information, see [issue #4419](https://gitlab.com/gitlab-org/gitlab/-/i
 NOTE:
 Connections to HCP may return an error stating `SigntureDoesNotMatch - The request signature we calculated does not match the signature you provided. Check your HCP Secret Access key and signing method.` In these cases, set the `endpoint` to the URL of the tenant instead of the namespace, and ensure bucket paths are configured as `<namespace_name>/<bucket_name>`.
 
-[HCP](https://knowledge.hitachivantara.com/Documents/Storage/HCP_for_Cloud_Scale/1.0.0/Adminstering_HCP_for_cloud_scale/Getting_started/02_Support_for_Amazon_S3_API) provides an S3-compatible API. Use the following configuration example:
+[HCP](https://docs.hitachivantara.com/r/en-us/content-platform-for-cloud-scale/2.6.x/mk-hcpcs008/getting-started/introducing-hcp-for-cloud-scale/support-for-the-amazon-s3-api) provides an S3-compatible API. Use the following configuration example:
 
 ```ruby
 gitlab_rails['object_store']['connection'] = {
@@ -985,3 +989,44 @@ to run the following command:
 ```ruby
 Feature.disable(:s3_multithreaded_uploads)
 ```
+
+### Manual testing through Rails Console
+
+In some situations, it may be helpful to test object storage settings using the Rails Console. The following example tests a given set of connection settings, attempts to write a test object, and finally read it.
+
+1. Start a [Rails console](operations/rails_console.md).
+1. Set up the object storage connection, using the same parameters you set up in `/etc/gitlab/gitlab.rb`, in the following example format:
+
+Example connection using access keys:
+
+  ```ruby
+  connection = Fog::Storage.new(
+    {
+      provider: 'AWS',
+      region: `eu-central-1`,
+      aws_access_key_id: '<AWS_ACCESS_KEY_ID>',
+      aws_secret_access_key: '<AWS_SECRET_ACCESS_KEY>'
+    }
+  )
+  ```
+
+Example connection using AWS IAM Profiles:
+
+  ```ruby
+  connection = Fog::Storage.new(
+    {
+      provider: 'AWS',
+      use_iam_profile: true,
+      region: 'us-east-1'
+    }
+  )
+  ```
+
+1. Specify the bucket name to test against, write, and finally read a test file.
+
+  ```ruby
+  dir = connection.directories.new(key: '<bucket-name-here>')
+  f = dir.files.create(key: 'test.txt', body: 'test')
+  pp f
+  pp dir.files.head('test.txt')
+  ```

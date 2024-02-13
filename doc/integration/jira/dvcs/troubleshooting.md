@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Jira DVCS connector **(FREE ALL)**
+# Troubleshooting Jira DVCS connector
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When working with the [Jira DVCS connector](index.md), you might encounter the following issues.
 
@@ -22,8 +26,9 @@ Error obtaining access token. Cannot access https://gitlab.example.com from Jira
 
 When you use GitLab 15.0 and later with Jira Server, you might encounter a
 [session token bug in Jira](https://jira.atlassian.com/browse/JSWSERVER-21389).
+This bug affects Jira Server 8.20.8, 8.22.3, 8.22.4, 9.4.6, and 9.4.14.
 
-To resolve this issue, ensure Jira Server is version 9.1.0 and later or 8.20.11 and later.
+To resolve this issue, ensure you use Jira Server 8.20.11 and later or 9.1.0 and later.
 
 ## SSL and TLS problems
 

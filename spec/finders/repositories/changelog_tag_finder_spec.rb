@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Repositories::ChangelogTagFinder do
+RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_management do
   let(:project) { build_stubbed(:project) }
   let(:finder) { described_class.new(project) }
 
@@ -35,6 +35,10 @@ RSpec.describe Repositories::ChangelogTagFinder do
         expect(finder.execute('1.0.0')).to eq(tag4)
         expect(finder.execute('0.9.0')).to eq(tag6)
         expect(finder.execute('0.6.0')).to eq(tag7)
+
+        # with v at the beginning
+        expect(finder.execute('v2.1.0')).to eq(tag3)
+        expect(finder.execute('wrong_version')).to eq(nil)
       end
     end
 

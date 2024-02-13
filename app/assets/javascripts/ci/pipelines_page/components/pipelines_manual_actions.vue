@@ -1,5 +1,11 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlIcon,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -16,8 +22,8 @@ export default {
   },
   components: {
     GlCountdown,
-    GlDropdown,
-    GlDropdownItem,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     GlIcon,
     GlLoadingIcon,
   },
@@ -52,6 +58,7 @@ export default {
       isLoading: false,
       actions: [],
       hasDropdownBeenShown: false,
+      isDropdownVisible: false,
     };
   },
   computed: {
@@ -101,58 +108,76 @@ export default {
         });
     },
     fetchActions() {
+      this.isDropdownVisible = true;
       this.hasDropdownBeenShown = true;
 
       this.$apollo.queries.actions.refetch();
 
       this.trackClick();
     },
+    hideAction() {
+      this.isDropdownVisible = false;
+    },
     trackClick() {
       this.track('click_manual_actions', { label: TRACKING_CATEGORIES.table });
+    },
+    jobItem(job) {
+      return {
+        text: job.name,
+        extraAttrs: {
+          disabled: !job.canPlayJob,
+        },
+      };
     },
   },
 };
 </script>
 <template>
-  <gl-dropdown
-    v-gl-tooltip
-    :title="__('Run manual or delayed jobs')"
+  <gl-disclosure-dropdown
+    v-gl-tooltip.left="isDropdownVisible ? '' : __('Run manual or delayed jobs')"
     :loading="isLoading"
     data-testid="pipelines-manual-actions-dropdown"
     right
     lazy
     icon="play"
     @shown="fetchActions"
+    @hidden="hideAction"
   >
-    <gl-dropdown-item v-if="isActionsLoading">
-      <div class="gl-display-flex">
-        <gl-loading-icon class="mr-2" />
-        <span>{{ __('Loading...') }}</span>
-      </div>
-    </gl-dropdown-item>
+    <gl-disclosure-dropdown-item v-if="isActionsLoading">
+      <template #list-item>
+        <div class="gl-display-flex">
+          <gl-loading-icon class="mr-2" />
+          <span>{{ __('Loading...') }}</span>
+        </div>
+      </template>
+    </gl-disclosure-dropdown-item>
 
-    <gl-dropdown-item
+    <gl-disclosure-dropdown-item
       v-for="action in actions"
       v-else
       :key="action.id"
-      :disabled="!action.canPlayJob"
-      @click="onClickAction(action)"
+      :item="jobItem(action)"
+      @action="onClickAction(action)"
     >
-      <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
-        {{ action.name }}
-        <span v-if="action.scheduledAt">
-          <gl-icon name="clock" />
-          <gl-countdown :end-date-string="action.scheduledAt" />
-        </span>
-      </div>
-    </gl-dropdown-item>
+      <template #list-item>
+        <div class="gl-display-flex gl-justify-content-space-between gl-flex-wrap">
+          {{ action.name }}
+          <span v-if="action.scheduledAt">
+            <gl-icon name="clock" />
+            <gl-countdown :end-date-string="action.scheduledAt" />
+          </span>
+        </div>
+      </template>
+    </gl-disclosure-dropdown-item>
 
     <template #footer>
-      <gl-dropdown-item v-if="isDropdownLimitReached">
-        <span class="gl-font-sm gl-text-gray-300!" data-testid="limit-reached-msg">
-          {{ __('Showing first 50 actions.') }}
-        </span>
-      </gl-dropdown-item>
+      <gl-disclosure-dropdown-item v-if="isDropdownLimitReached">
+        <template #list-item>
+          <span class="gl-font-sm gl-text-gray-300!" data-testid="limit-reached-msg">
+            {{ __('Showing first 50 actions.') }}
+          </span>
+        </template>
+      </gl-disclosure-dropdown-item>
     </template>
-  </gl-dropdown>
+  </gl-disclosure-dropdown>
 </template>

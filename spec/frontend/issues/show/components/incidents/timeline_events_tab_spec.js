@@ -1,4 +1,4 @@
-import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -45,7 +45,7 @@ describe('TimelineEventsTab', () => {
   };
 
   const findLoadingSpinner = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyState = () => wrapper.find('p');
   const findTimelineEventsList = () => wrapper.findComponent(IncidentTimelineEventsList);
   const findCreateTimelineEvent = () => wrapper.findComponent(CreateTimelineEvent);
   const findAddEventButton = () => wrapper.findByText(timelineTabI18n.addEventButton);
@@ -60,6 +60,7 @@ describe('TimelineEventsTab', () => {
         await waitForPromises();
 
         expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().text()).toBe('No timeline items have been added yet.');
       });
     });
 

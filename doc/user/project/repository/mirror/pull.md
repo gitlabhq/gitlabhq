@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pull from a remote repository **(PREMIUM ALL)**
+# Pull from a remote repository
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 You can use the GitLab interface to browse the content and activity of a repository,
 even if it isn't hosted on GitLab. Create a pull [mirror](index.md) to copy the
@@ -84,7 +88,7 @@ Prerequisites:
 
 ### Overwrite diverged branches
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 To always update your local branches with remote versions, even if they have
 diverged from the remote, select **Overwrite diverged branches** when you
@@ -95,7 +99,7 @@ For mirrored branches, enabling this option results in the loss of local changes
 
 ### Trigger pipelines for mirror updates
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 If this option is enabled, pipelines trigger when branches or tags are
 updated from the remote repository. Depending on the activity of the remote
@@ -105,7 +109,7 @@ assigned when you set up pull mirroring.
 
 ## Trigger an update by using the API
 
-> Moved to GitLab Premium in 13.9.
+> - moved to GitLab Premium in 13.9.
 
 Pull mirroring uses polling to detect new branches and commits added upstream,
 often minutes afterwards. You can notify GitLab using an
@@ -117,7 +121,7 @@ For more information, read
 
 ## Fix hard failures when mirroring
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 After 14 consecutive unsuccessful retries, the mirroring process is marked as a hard failure
 and mirroring attempts stop. This failure is visible in either the:

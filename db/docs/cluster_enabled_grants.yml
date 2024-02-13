@@ -4,7 +4,10 @@ classes:
 - Clusters::ClusterEnabledGrant
 feature_categories:
 - deployment_management
-description: Persists information about namespaces which got an extended life for certificate based clusters
+description: Persists information about namespaces which got an extended life for
+  certificate based clusters
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87149
 milestone: '15.1'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

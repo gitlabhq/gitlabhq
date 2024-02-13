@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Suggest Changes API **(FREE ALL)**
+# Suggest Changes API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page describes the API for [suggesting changes](../user/project/merge_requests/reviews/suggestions.md).
 

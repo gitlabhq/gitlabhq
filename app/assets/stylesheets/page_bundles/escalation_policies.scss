@@ -28,18 +28,18 @@ $stroke-size: 1px;
 
 .escalation-rule-row {
   @media (max-width: $breakpoint-lg) {
-    @include gl-flex-wrap;
+    flex-wrap: wrap;
   }
 }
 
 .rule-condition {
   @media (min-width: $breakpoint-lg) {
     flex-basis: 25%;
-    @include gl-flex-shrink-0;
+    flex-shrink: 0;
   }
 
   @media (max-width: $breakpoint-lg) {
-    @include gl-w-full;
+    width: 100%;
   }
 }
 

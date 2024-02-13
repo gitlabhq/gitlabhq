@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Composer API **(FREE ALL)**
+# Composer API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This is the API documentation for [Composer Packages](../../user/packages/composer_repository/index.md).
 
@@ -262,7 +266,7 @@ Example response:
 
 ## Download a package archive
 
-> Authorization for this endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
+> - Authorization for this endpoint was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331601) in GitLab 14.10.
 
 Download a Composer package. This URL is provided in the [v1](#v1-package-metadata)
 or [v2 package metadata](#v2-package-metadata)

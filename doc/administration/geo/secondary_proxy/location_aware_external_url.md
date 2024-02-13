@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Location-aware public URL **(PREMIUM SELF)**
+# Location-aware public URL
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 With [Geo proxying for secondary sites](index.md), you can provide GitLab users
 with a single URL that automatically uses the Geo site closest to them.

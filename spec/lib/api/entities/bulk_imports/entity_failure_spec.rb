@@ -39,4 +39,18 @@ RSpec.describe API::Entities::BulkImports::EntityFailure, feature_category: :imp
       expect(subject[:exception_message]).to eq(filtered_message.truncate(255))
     end
   end
+
+  describe 'relation' do
+    it 'returns relation' do
+      expect(subject[:relation]).to eq('test')
+    end
+
+    context 'when subrelation is present' do
+      it 'includes subrelation' do
+        failure.update!(subrelation: 'subrelation')
+
+        expect(subject[:relation]).to eq('test, subrelation')
+      end
+    end
+  end
 end

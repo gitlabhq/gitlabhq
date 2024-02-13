@@ -15,8 +15,8 @@ class DetailedStatusEntity < Grape::Entity
     type: 'object',
     example: <<~JSON
       {
-        "image": "illustrations/job_not_triggered.svg",
-        "size": "svg-306",
+        "image": "illustrations/empty-state/empty-job-not-triggered-md.svg",
+        "size": "",
         "title": "This job has not been triggered yet",
         "content": "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
       }

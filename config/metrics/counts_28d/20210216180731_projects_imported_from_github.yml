@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.create.projects_imported_from_github
 description: Count of projects imported from GitHub
 product_section: dev
 product_stage: manage
-product_group: import
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: 28d

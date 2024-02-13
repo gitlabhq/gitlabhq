@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Repository storage **(FREE SELF)**
+# Repository storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab stores [repositories](../user/project/repository/index.md) on repository storage. Repository
 storage is either:
@@ -24,7 +28,7 @@ For more information on:
 
 ## Hashed storage
 
-> **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+> - **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
 
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
@@ -179,7 +183,7 @@ Files stored in an S3-compatible endpoint can have the same advantages as
 #### Avatars
 
 Each file is stored in a directory that matches the `id` assigned to it in the database. The
-file name is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
+filename is always `avatar.png` for user avatars. When an avatar is replaced, the `Upload` model is
 destroyed and a new one takes place with a different `id`.
 
 #### CI/CD artifacts

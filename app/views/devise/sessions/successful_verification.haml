@@ -1,6 +1,9 @@
+- signup_track_label = local_assigns.fetch(:tracking_label, nil)
+- signup_track_data = signup_track_label ? { track_action: 'render', track_label: signup_track_label } : {}
+
 = content_for :meta_tags do
   %meta{ 'http-equiv': 'refresh', content: "3; url=#{@redirect_url}" }
-.gl-text-center.gl-max-w-62.gl-mx-auto
+.gl-text-center.gl-max-w-62.gl-mx-auto{ data: signup_track_data }
   .svg-content.svg-80
     = image_tag 'illustrations/success-sm.svg'
   %h2

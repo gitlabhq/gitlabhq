@@ -26,17 +26,6 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
-  scope :with_confidentiality_check, ->(user) {
-    confidential_query = <<~SQL
-      issues.confidential = FALSE
-      OR (issues.confidential = TRUE
-        AND (issues.author_id = :user_id
-          OR EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = :user_id AND issue_id = issues.id)))
-    SQL
-
-    where(confidential_query, user_id: user.id)
-  }
-
   class << self
     def find_by_namespace_and_iid!(namespace, iid)
       find_by!(namespace: namespace, iid: iid)
@@ -109,7 +98,7 @@ class WorkItem < Issue
 
   def widgets
     strong_memoize(:widgets) do
-      work_item_type.widgets.map do |widget_class|
+      work_item_type.widgets(resource_parent).map do |widget_class|
         widget_class.new(self)
       end
     end
@@ -138,7 +127,7 @@ class WorkItem < Issue
   end
 
   def supported_quick_action_commands
-    commands_for_widgets = work_item_type.widgets.flat_map(&:quick_action_commands).uniq
+    commands_for_widgets = work_item_type.widgets(resource_parent).flat_map(&:quick_action_commands).uniq
 
     COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end
@@ -149,7 +138,7 @@ class WorkItem < Issue
     common_params = command_params.dup
     widget_params = {}
 
-    work_item_type.widgets
+    work_item_type.widgets(resource_parent)
           .filter { |widget| widget.respond_to?(:quick_action_params) }
           .each do |widget|
             widget.quick_action_params
@@ -183,6 +172,10 @@ class WorkItem < Issue
 
   def linked_items_count
     linked_work_items(authorize: false).size
+  end
+
+  def supports_time_tracking?
+    work_item_type.supports_time_tracking?(resource_parent)
   end
 
   private

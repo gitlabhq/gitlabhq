@@ -2,6 +2,7 @@ import { GlDrawer, GlForm, GlFormGroup, GlFormRadioGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import { CATEGORY_OPTIONS } from '~/abuse_reports/components/constants';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   contentTop: jest.fn(),
@@ -54,7 +55,7 @@ describe('AbuseCategorySelector', () => {
     });
 
     it('renders title', () => {
-      expect(findTitle().text()).toBe(wrapper.vm.$options.i18n.title);
+      expect(findTitle().text()).toBe('Report abuse to administrator');
     });
 
     it('emits close-drawer event', async () => {
@@ -88,12 +89,12 @@ describe('AbuseCategorySelector', () => {
 
     it('renders label', () => {
       expect(findFormGroup().exists()).toBe(true);
-      expect(findFormGroup().attributes('label')).toBe(wrapper.vm.$options.i18n.label);
+      expect(findFormGroup().attributes('label')).toBe('Why are you reporting this user?');
     });
 
     it('renders radio group', () => {
       expect(findRadioGroup().exists()).toBe(true);
-      expect(findRadioGroup().props('options')).toEqual(wrapper.vm.$options.categoryOptions);
+      expect(findRadioGroup().props('options')).toEqual(CATEGORY_OPTIONS);
       expect(findRadioGroup().attributes('name')).toBe('abuse_report[category]');
       expect(findRadioGroup().attributes('required')).not.toBeUndefined();
     });
@@ -116,7 +117,7 @@ describe('AbuseCategorySelector', () => {
 
     it('renders submit button', () => {
       expect(findSubmitFormButton().exists()).toBe(true);
-      expect(findSubmitFormButton().text()).toBe(wrapper.vm.$options.i18n.next);
+      expect(findSubmitFormButton().text()).toBe('Next');
     });
   });
 });

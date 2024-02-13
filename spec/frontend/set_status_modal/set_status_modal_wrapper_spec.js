@@ -99,7 +99,6 @@ describe('SetStatusModalWrapper', () => {
     it('renders emoji picker dropdown with custom positioning', () => {
       expect(getEmojiPicker().props()).toMatchObject({
         right: false,
-        boundary: 'viewport',
       });
     });
 

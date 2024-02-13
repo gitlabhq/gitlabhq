@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# VSCode WebIDE is built off an iFrame application therefore we are unable to use `qa-selectors`
+# VSCode WebIDE is built off an iFrame application therefore we are unable to use `data-testids`
 module QA
   module Page
     module Project
@@ -32,7 +32,7 @@ module QA
           end
 
           def within_file_editor(&block)
-            within_element('.monaco-editor', &block)
+            within_element('.monaco-editor .monaco-scrollable-element', &block)
           end
 
           def has_right_click_menu_item?
@@ -65,7 +65,11 @@ module QA
           end
 
           def click_commit_tab
-            click_element('.codicon-source-control-view-icon')
+            if has_element?('.codicon-source-control-view-icon + .badge')
+              click_element('.codicon-source-control-view-icon + .badge')
+            else
+              click_element('.codicon-source-control-view-icon')
+            end
           end
 
           def has_commit_message_box?
@@ -255,32 +259,47 @@ module QA
           end
 
           def wait_until_code_suggestions_enabled
-            wait_until(max_duration: 30, message: 'Wait for Code Suggestions extension to be enabled') do
+            wait_until(max_duration: 30, skip_finished_loading_check_on_refresh: true,
+              message: 'Wait for Code Suggestions extension to be enabled') do
+              raise code_suggestions_error if has_code_suggestions_error?
+
               has_code_suggestions_status?('enabled')
             end
           end
 
-          def has_code_suggestions_status?(status)
-            page.document.has_css?(
-              "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label~=#{status.downcase}]"
-            )
-          end
-
-          def verify_prompt_appears_and_accept(pattern)
+          def wait_for_code_suggestion
             within_vscode_editor do
               within_file_editor do
-                Support::Waiter.wait_until(max_duration: 60, message: 'Wait for suggestion to appear') do
-                  page.text.match?(pattern)
+                wait_until(max_duration: 30, message: 'Waiting for Code Suggestion to start loading') do
+                  has_code_suggestions_status?('loading')
                 end
+
+                # Wait for code suggestion to finish loading
+                wait_until_code_suggestions_enabled
+              end
+            end
+          end
+
+          def accept_code_suggestion
+            within_vscode_editor do
+              within_file_editor do
                 send_keys(:tab)
               end
             end
           end
 
-          def validate_prompt(pattern)
+          def editor_content_length
             within_vscode_editor do
               within_file_editor do
-                page.text.match?(pattern)
+                page.text.length
+              end
+            end
+          end
+
+          def editor_content_lines
+            within_vscode_editor do
+              within_file_editor do
+                page.text.lines.count
               end
             end
           end
@@ -297,6 +316,22 @@ module QA
                 has_text?(item_name)
               end
             end
+          end
+
+          def code_suggestions_icon_selector(status)
+            "#GitLab\\.gitlab-workflow\\.gl\\.status\\.code_suggestions[aria-label*=#{status.downcase}]"
+          end
+
+          def has_code_suggestions_status?(status)
+            page.document.has_css?(code_suggestions_icon_selector(status))
+          end
+
+          def has_code_suggestions_error?
+            !page.document.has_no_css?(code_suggestions_icon_selector('error'))
+          end
+
+          def code_suggestions_error
+            page.document.find(code_suggestions_icon_selector('error'))['aria-label']
           end
         end
       end

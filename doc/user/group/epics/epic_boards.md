@@ -4,7 +4,11 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Epic boards **(PREMIUM ALL)**
+# Epic boards
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5067) in GitLab 13.10.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/290039) in GitLab 14.1.
@@ -55,7 +59,7 @@ To change these options later, [edit the board](#edit-the-scope-of-an-epic-board
 
 ## Delete an epic board
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
 
 Prerequisites:
 
@@ -112,7 +116,7 @@ To remove a list from an epic board:
 
 ### Create an epic from an epic board
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233568) in GitLab 14.0.
 
 Prerequisites:
 
@@ -129,7 +133,7 @@ To create an epic from a list in epic board:
 
 ### Filter epics
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
 
 Use the filters on top of your epic board to show only
 the results you want. It's similar to the filtering used in the epic list,
@@ -142,7 +146,7 @@ You can filter by the following:
 
 ### View count of issues, weight, and progress of an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331330) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331330) in GitLab 14.1.
 
 Epics on an epic board show a summary of their issues, weight, and progress.
 To see the number of open and closed issues and the completed and incomplete
@@ -151,7 +155,7 @@ progress icon **{progress}**.
 
 ### Move epics and lists
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5079) in GitLab 14.0.
 
 You can move epics and lists by dragging them.
 
@@ -167,7 +171,7 @@ You can't move the **Open** and **Closed** lists, but you can hide them when edi
 
 #### Move an epic to the start of the list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
 
 When you have many epics, it's inconvenient to manually drag an epic from the bottom of a board list all
 the way to the top. You can move epics to the top of the list with a menu shortcut.
@@ -181,11 +185,11 @@ Prerequisites:
 To move an epic to the start of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to start of list**.
 
 #### Move an epic to the end of the list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
 
 When you have many epics, it's inconvenient to manually drag an epic from the top of a board list all
 the way to the bottom. You can move epics to the bottom of the list with a menu shortcut.
@@ -199,7 +203,7 @@ Prerequisites:
 To move an epic to the end of the list:
 
 1. In an epic board, hover over the card of the epic you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to end of list**.
 
 #### Dragging epics between lists
 

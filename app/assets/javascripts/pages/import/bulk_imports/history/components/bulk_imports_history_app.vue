@@ -7,13 +7,15 @@ import {
   GlTableLite,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 
 import { s__, __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
-import { joinPaths, getParameterValues } from '~/lib/utils/url_utility';
+import { joinPaths } from '~/lib/utils/url_utility';
 import { getBulkImportHistory, getBulkImportsHistory } from '~/rest_api';
+import { BULK_IMPORT_STATIC_ITEMS } from '~/import/constants';
+import ImportStats from '~/import_entities/components/import_stats.vue';
 import ImportStatus from '~/import_entities/import_groups/components/import_status.vue';
 import { StatusPoller } from '~/import_entities/import_groups/services/status_poller';
 
@@ -47,6 +49,7 @@ export default {
     GlLoadingIcon,
     GlTableLite,
     PaginationBar,
+    ImportStats,
     ImportStatus,
     TimeAgo,
     LocalStorageSync,
@@ -57,6 +60,14 @@ export default {
   },
 
   inject: ['realtimeChangesPath'],
+
+  props: {
+    id: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
 
   data() {
     return {
@@ -79,7 +90,7 @@ export default {
     tableCell({
       key: 'destination_name',
       label: s__('BulkImport|Destination'),
-      thClass: `gl-w-40p`,
+      thClass: `gl-w-30p`,
     }),
     tableCell({
       key: 'created_at',
@@ -88,6 +99,7 @@ export default {
     tableCell({
       key: 'status',
       label: __('Status'),
+      thClass: `gl-w-quarter`,
     }),
   ],
 
@@ -157,11 +169,7 @@ export default {
 
   methods: {
     fetchFn(params) {
-      const bulkImportId = getParameterValues('bulk_import_id')[0];
-
-      return bulkImportId
-        ? getBulkImportHistory(bulkImportId, params)
-        : getBulkImportsHistory(params);
+      return this.id ? getBulkImportHistory(this.id, params) : getBulkImportsHistory(params);
     },
 
     async loadHistoryItems() {
@@ -175,7 +183,7 @@ export default {
         this.pageInfo = parseIntPagination(normalizeHeaders(headers));
         this.historyItems = historyItems;
       } catch (e) {
-        createAlert({ message: DEFAULT_ERROR, captureError: true, error: e });
+        createAlert({ message: e.message || DEFAULT_ERROR, captureError: true, error: e });
       } finally {
         this.loading = false;
       }
@@ -199,6 +207,10 @@ export default {
       return this.pathWithSuffix(fullPath, item);
     },
 
+    hasStats(item) {
+      return !isEmpty(item.stats);
+    },
+
     getEntityTooltip(item) {
       switch (item.entity_type) {
         case WORKSPACE_PROJECT:
@@ -218,6 +230,7 @@ export default {
 
   gitlabLogo: window.gon.gitlab_logo,
   historyPaginationSizePersistKey: HISTORY_PAGINATION_SIZE_PERSIST_KEY,
+  BULK_IMPORT_STATIC_ITEMS,
 };
 </script>
 
@@ -257,14 +270,19 @@ export default {
           <time-ago :time="value" />
         </template>
         <template #cell(status)="{ value, item }">
-          <div
-            class="gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-align-items-flex-start gl-justify-content-space-between gl-gap-3"
-          >
+          <div>
             <import-status
               :id="item.bulk_import_id"
               :entity-id="item.id"
               :has-failures="item.has_failures"
               :status="value"
+            />
+            <import-stats
+              v-if="hasStats(item)"
+              :stats="item.stats"
+              :stats-mapping="$options.BULK_IMPORT_STATIC_ITEMS"
+              :status="value"
+              class="gl-mt-2"
             />
           </div>
         </template>

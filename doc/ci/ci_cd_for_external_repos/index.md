@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD for external repositories **(PREMIUM ALL)**
+# GitLab CI/CD for external repositories
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 >[Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4642) in GitLab 10.6.
 
@@ -34,7 +38,7 @@ the [import sources configuration](../../administration/settings/import_and_expo
 
 ## Pipelines for external pull requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/65139) in GitLab 12.3.
 
 When using GitLab CI/CD with an [external repository on GitHub](github_integration.md),
 it's possible to run a pipeline in the context of a Pull Request.

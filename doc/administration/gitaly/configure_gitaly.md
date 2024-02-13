@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure Gitaly **(FREE SELF)**
+# Configure Gitaly
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Configure Gitaly in one of two ways:
 
@@ -136,16 +140,14 @@ To avoid downtime while rotating the Gitaly token, you can temporarily disable a
 
 Gitaly and GitLab use two shared secrets for authentication:
 
-- _Gitaly token_: used to authenticate gRPC requests to Gitaly
-- _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API
-
-Configure authentication in one of two ways:
+- _Gitaly token_: used to authenticate gRPC requests to Gitaly.
+- _GitLab Shell token_: used for authentication callbacks from GitLab Shell to the GitLab internal API.
 
 ::Tabs
 
 :::TabTitle Linux package (Omnibus)
 
-To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
+1. To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
 
    ```ruby
    gitaly['configuration'] = {
@@ -157,20 +159,20 @@ To configure the _Gitaly token_, edit `/etc/gitlab/gitlab.rb`:
    }
    ```
 
-Configure the _GitLab Shell token_ in one of two ways.
+1. Configure the _GitLab Shell token_ in one of two ways:
 
-Method 1 (recommended):
+   - Method 1 (recommended):
 
-Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
-   (and any other Gitaly clients).
+     Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly servers
+     (and any other Gitaly clients).
 
-Method 2:
+   - Method 2:
 
-Edit `/etc/gitlab/gitlab.rb`:
+     Edit `/etc/gitlab/gitlab.rb`:
 
-   ```ruby
-   gitlab_shell['secret_token'] = 'shellsecret'
-   ```
+     ```ruby
+     gitlab_shell['secret_token'] = 'shellsecret'
+     ```
 
 :::TabTitle Self-compiled (source)
 
@@ -206,7 +208,7 @@ Updates to example must be made at:
 - All reference architecture pages
 -->
 
-Configure Gitaly server in one of two ways:
+Configure Gitaly server.
 
 ::Tabs
 
@@ -880,7 +882,11 @@ result as you did at the start. For example:
 
 `enforced="true"` means that authentication is being enforced.
 
-## Pack-objects cache **(FREE SELF)**
+## Pack-objects cache
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 [Gitaly](index.md), the service that provides storage for Git
 repositories, can be configured to cache a short rolling window of Git
@@ -971,7 +977,7 @@ By default, the cache storage directory is set to a subdirectory of the first Gi
 defined in the configuration file.
 
 Multiple Gitaly processes can use the same directory for cache storage. Each Gitaly process
-uses a unique random string as part of the cache file names it creates. This means:
+uses a unique random string as part of the cache filenames it creates. This means:
 
 - They do not collide.
 - They do not reuse another process's files.
@@ -1010,7 +1016,7 @@ the deleted file have closed it.
 
 #### Minimum key occurrences `min_occurrences`
 
-> [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2222) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2222) in GitLab 15.11.
 
 The `min_occurrences` setting controls how often an identical request
 must occur before we create a new cache entry. The default value is `1`,
@@ -1029,7 +1035,7 @@ the cache hit rate.
 
 ### Observe the cache
 
-> Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
+> - Logs for pack-objects caching was [changed](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/5719) in GitLab 16.0.
 
 You can observe the cache [using metrics](monitoring.md#pack-objects-cache) and in the following logged information. These logs are part of the gRPC logs and can
 be discovered when a call is executed.
@@ -1115,150 +1121,6 @@ sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_
 ```
 
 Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
-
-## Repository consistency checks
-
-Gitaly runs repository consistency checks:
-
-- When triggering a repository check.
-- When changes are fetched from a mirrored repository.
-- When users push changes into repository.
-
-These consistency checks verify that a repository has all required objects and
-that these objects are valid objects. They can be categorized as:
-
-- Basic checks that assert that a repository doesn't become corrupt. This
-  includes connectivity checks and checks that objects can be parsed.
-- Security checks that recognize objects that are suitable to exploit past
-  security-related bugs in Git.
-- Cosmetic checks that verify that all object metadata is valid. Older Git
-  versions and other Git implementations may have produced objects with invalid
-  metadata, but newer versions can interpret these malformed objects.
-
-Removing malformed objects that fail the consistency checks requires a
-rewrite of the repository's history, which often can't be done. Therefore,
-Gitaly by default disables consistency checks for a range of cosmetic issues
-that don't negatively impact repository consistency.
-
-By default, Gitaly doesn't disable basic or security-related checks so
-to not distribute objects that can trigger known vulnerabilities in Git
-clients. This also limits the ability to import repositories containing such
-objects even if the project doesn't have malicious intent.
-
-### Override repository consistency checks
-
-Instance administrators can override consistency checks if they must
-process repositories that do not pass consistency checks.
-
-For Linux package installations, edit `/etc/gitlab/gitlab.rb` and set the
-following keys (in this example, to disable the `hasDotgit` consistency check):
-
-- In [GitLab 15.10](https://gitlab.com/gitlab-org/gitaly/-/issues/4754) and later:
-
-  ```ruby
-  ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
-
-  gitaly['configuration'] = {
-    # ...
-    git: {
-      # ...
-      config: [
-        # Populate a file with one unabbreviated SHA-1 per line.
-        # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
-        { key: "fsck.skipList", value: ignored_blobs },
-        { key: "fetch.fsck.skipList", value: ignored_blobs },
-        { key: "receive.fsck.skipList", value: ignored_blobs },
-
-        { key: "fsck.hasDotgit", value: "ignore" },
-        { key: "fetch.fsck.hasDotgit", value: "ignore" },
-        { key: "receive.fsck.hasDotgit", value: "ignore" },
-        { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
-      ],
-    },
-  }
-  ```
-
-- In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) to GitLab 15.9:
-
-  ```ruby
-  ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
-
-  gitaly['gitconfig'] = [
-
-   # Populate a file with one unabbreviated SHA-1 per line.
-   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
-   { key: "fsck.skipList", value: ignored_blobs },
-   { key: "fetch.fsck.skipList", value: ignored_blobs },
-   { key: "receive.fsck.skipList", value: ignored_blobs },
-
-   { key: "fsck.hasDotgit", value: "ignore" },
-   { key: "fetch.fsck.hasDotgit", value: "ignore" },
-   { key: "receive.fsck.hasDotgit", value: "ignore" },
-   { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
-  ]
-  ```
-
-- In GitLab 15.2 and earlier (legacy method):
-
-  ```ruby
-  ignored_git_errors = [
-    "hasDotgit = ignore",
-    "missingSpaceBeforeEmail = ignore",
-  ]
-  omnibus_gitconfig['system'] = {
-
-   # Populate a file with one unabbreviated SHA-1 per line.
-   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
-    "fsck.skipList" => ignored_blobs
-    "fetch.fsck.skipList" => ignored_blobs,
-    "receive.fsck.skipList" => ignored_blobs,
-
-    "fsck" => ignored_git_errors,
-    "fetch.fsck" => ignored_git_errors,
-    "receive.fsck" => ignored_git_errors,
-  }
-  ```
-
-For self-compiled installations, edit the Gitaly configuration (`gitaly.toml`) to do the
-equivalent:
-
-```toml
-[[git.config]]
-key = "fsck.hasDotgit"
-value = "ignore"
-
-[[git.config]]
-key = "fetch.fsck.hasDotgit"
-value = "ignore"
-
-[[git.config]]
-key = "receive.fsck.hasDotgit"
-value = "ignore"
-
-[[git.config]]
-key = "fsck.missingSpaceBeforeEmail"
-value = "ignore"
-
-[[git.config]]
-key = "fetch.fsck.missingSpaceBeforeEmail"
-value = "ignore"
-
-[[git.config]]
-key = "receive.fsck.missingSpaceBeforeEmail"
-value = "ignore"
-
-[[git.config]]
-key = "fsck.skipList"
-value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
-
-[[git.config]]
-key = "fetch.fsck.skipList"
-value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
-
-[[git.config]]
-key = "receive.fsck.skipList"
-value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
-```
 
 ## Configure commit signing for GitLab UI commits
 
@@ -1358,7 +1220,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
 
 ## Generate configuration using an external command
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4828) in GitLab 15.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4828) in GitLab 15.11.
 
 You can generate parts of the Gitaly configuration using an external command. You might do this:
 

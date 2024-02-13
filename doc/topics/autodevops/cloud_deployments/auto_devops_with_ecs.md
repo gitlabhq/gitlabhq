@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Use Auto DevOps to deploy to Amazon ECS
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/208132) in GitLab 13.0.
 
 You can choose to target AWS ECS as a deployment platform instead of using Kubernetes.
 

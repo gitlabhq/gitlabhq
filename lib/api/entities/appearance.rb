@@ -26,6 +26,7 @@ module API
       end
 
       expose :new_project_guidelines
+      expose :member_guidelines
       expose :profile_image_guidelines
       expose :header_message
       expose :footer_message

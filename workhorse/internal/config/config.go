@@ -23,6 +23,8 @@ import (
 	"golang.org/x/oauth2/google"
 )
 
+const Megabyte = 1 << 20
+
 type TomlURL struct {
 	url.URL
 }
@@ -111,6 +113,10 @@ type ImageResizerConfig struct {
 	MaxFilesize    uint64 `toml:"max_filesize" json:"max_filesize"`
 }
 
+type MetadataConfig struct {
+	ZipReaderLimitBytes int64 `toml:"zip_reader_limit_bytes"`
+}
+
 type TlsConfig struct {
 	Certificate string `toml:"certificate" json:"certificate"`
 	Key         string `toml:"key" json:"key"`
@@ -143,6 +149,7 @@ type Config struct {
 	ObjectStorageCredentials     ObjectStorageCredentials `toml:"object_storage" json:"object_storage"`
 	PropagateCorrelationID       bool                     `toml:"-"`
 	ImageResizerConfig           ImageResizerConfig       `toml:"image_resizer" json:"image_resizer"`
+	MetadataConfig               MetadataConfig           `toml:"metadata" json:"metadata"`
 	AltDocumentRoot              string                   `toml:"alt_document_root" json:"alt_document_root"`
 	ShutdownTimeout              TomlDuration             `toml:"shutdown_timeout" json:"shutdown_timeout"`
 	TrustedCIDRsForXForwardedFor []string                 `toml:"trusted_cidrs_for_x_forwarded_for" json:"trusted_cidrs_for_x_forwarded_for"`
@@ -156,15 +163,41 @@ var DefaultImageResizerConfig = ImageResizerConfig{
 	MaxFilesize:    250 * 1000, // 250kB,
 }
 
+var DefaultMetadataConfig = MetadataConfig{
+	ZipReaderLimitBytes: 100 * Megabyte,
+}
+
+func NewDefaultConfig() *Config {
+	return &Config{
+		ImageResizerConfig: DefaultImageResizerConfig,
+		MetadataConfig:     DefaultMetadataConfig,
+	}
+}
+
+func LoadConfigFromFile(file *string) (*Config, error) {
+	tomlData := ""
+
+	if *file != "" {
+		buf, err := os.ReadFile(*file)
+		if err != nil {
+			return nil, fmt.Errorf("file: %v", err)
+		}
+		tomlData = string(buf)
+	}
+
+	return LoadConfig(tomlData)
+}
+
 func LoadConfig(data string) (*Config, error) {
-	cfg := &Config{ImageResizerConfig: DefaultImageResizerConfig}
+	cfg := NewDefaultConfig()
 
 	if _, err := toml.Decode(data, cfg); err != nil {
 		return nil, err
 	}
 
 	if cfg.ConfigCommand != "" {
-		output, err := exec.Command(cfg.ConfigCommand).Output()
+		cmd, args := splitCommand(cfg.ConfigCommand)
+		output, err := exec.Command(cmd, args...).Output()
 		if err != nil {
 			var exitErr *exec.ExitError
 			if errors.As(err, &exitErr) {
@@ -264,4 +297,10 @@ func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.
 
 	b := []byte(creds.JSONKeyString)
 	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
+}
+
+func splitCommand(cmd string) (string, []string) {
+	cmdAndArgs := strings.Split(cmd, " ")
+
+	return cmdAndArgs[0], cmdAndArgs[1:]
 }

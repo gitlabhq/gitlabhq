@@ -38,11 +38,10 @@ describe('User Lists Edit Actions', () => {
         Api.createFeatureFlagUserList.mockResolvedValue({ data: userList });
       });
 
-      it('should redirect to the user list page', () => {
-        return testAction(actions.createUserList, createdList, state, [], [], () => {
-          expect(Api.createFeatureFlagUserList).toHaveBeenCalledWith('1', createdList);
-          expect(redirectTo).toHaveBeenCalledWith(userList.path); // eslint-disable-line import/no-deprecated
-        });
+      it('should redirect to the user list page', async () => {
+        await testAction(actions.createUserList, createdList, state, [], []);
+        expect(Api.createFeatureFlagUserList).toHaveBeenCalledWith('1', createdList);
+        expect(redirectTo).toHaveBeenCalledWith(userList.path); // eslint-disable-line import/no-deprecated
       });
     });
 
@@ -54,15 +53,15 @@ describe('User Lists Edit Actions', () => {
         Api.createFeatureFlagUserList.mockRejectedValue(error);
       });
 
-      it('should commit RECEIVE_USER_LIST_ERROR', () => {
-        return testAction(
+      it('should commit RECEIVE_USER_LIST_ERROR', async () => {
+        await testAction(
           actions.createUserList,
           createdList,
           state,
           [{ type: types.RECEIVE_CREATE_USER_LIST_ERROR, payload: ['error'] }],
           [],
-          () => expect(Api.createFeatureFlagUserList).toHaveBeenCalledWith('1', createdList),
         );
+        expect(Api.createFeatureFlagUserList).toHaveBeenCalledWith('1', createdList);
       });
     });
   });

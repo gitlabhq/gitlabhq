@@ -1,0 +1,7 @@
+fragment BaseCiProjectVariable on CiProjectVariable {
+  description
+  environmentScope
+  masked
+  protected
+  raw
+}

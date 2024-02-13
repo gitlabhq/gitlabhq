@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Bring a demoted primary site back online **(PREMIUM SELF)**
+# Bring a demoted primary site back online
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 After a failover, it is possible to fail back to the demoted **primary** site to
 restore your original configuration. This process consists of two steps:
@@ -75,3 +79,48 @@ If your objective is to have two sites again, you need to bring your **secondary
 site back online as well by repeating the first step
 ([configure the former **primary** site to be a **secondary** site](#configure-the-former-primary-site-to-be-a-secondary-site))
 for the **secondary** site.
+
+## Skipping re-transfer of data on a **secondary** site
+
+When a secondary site is added, if it contains data that would otherwise be synced from the primary, then Geo avoids re-transferring the data.
+
+- Git repositories are transferred by `git fetch`, which only transfers missing refs.
+- Geo's container registry sync code compares tags and only pulls missing tags.
+- [Blobs/files](#skipping-re-transfer-of-blobs-or-files) are skipped if they exist on the first sync.
+
+Use-cases:
+
+- You do a planned failover and demote the old primary site by attaching it as a secondary site without rebuilding it.
+- You have multiple secondary Geo sites. You do a planned failover and reattach the other secondary Geo sites without rebuilding them.
+- You do a failover test by promoting and demoting a secondary site and reattach it without rebuilding it.
+- You restore a backup and attach the site as a secondary site.
+- You manually copy data to a secondary site to workaround a sync problem.
+- You delete or truncate registry table rows in the Geo tracking database to workaround a problem.
+- You reset the Geo tracking database to workaround a problem.
+
+### Skipping re-transfer of blobs or files
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352530) in GitLab 16.8 [with a flag](../../feature_flags.md) named `geo_skip_download_if_exists`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435788) in GitLab 16.9. Feature flag `geo_skip_download_if_exists` removed.
+
+FLAG:
+On self-managed GitLab, by default this feature is available.
+On GitLab.com, this feature is not available.
+
+When you add a secondary site which has preexisting file data, then the secondary Geo site will avoid re-transferring that data. This applies to:
+
+- CI job artifacts
+- CI pipeline artifacts
+- CI secure files
+- LFS objects
+- Merge request diffs
+- Package files
+- Pages deployments
+- Terraform state versions
+- Uploads
+- Dependency proxy manifests
+- Dependency proxy blobs
+
+If the secondary site's copy is actually corrupted, then background verification will eventually fail, and the file will be resynced.
+
+Files will only be skipped in this manner if they do not have a corresponding registry record in the Geo tracking database. The conditions are strict because resyncing is almost always intentional, and we cannot risk mistakenly skipping a transfer.

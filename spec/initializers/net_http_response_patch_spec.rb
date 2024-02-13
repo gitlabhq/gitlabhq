@@ -17,7 +17,7 @@ RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: 
     end
 
     before do
-      stub_const('Gitlab::BufferedIo::HEADER_READ_TIMEOUT', 0.1)
+      stub_const('Gitlab::HTTP_V2::BufferedIo::HEADER_READ_TIMEOUT', 0.1)
     end
 
     subject(:each_response_header) { Net::HTTPResponse.each_response_header(socket) { |k, v| } }
@@ -46,9 +46,9 @@ RSpec.describe 'Net::HTTPResponse patch header read timeout', feature_category: 
       end
     end
 
-    context 'with Gitlab::BufferedIo' do
+    context 'with Gitlab::HTTP_V2::BufferedIo' do
       let(:mock_io) { StringIO.new(server_response) }
-      let(:socket) { Gitlab::BufferedIo.new(mock_io) }
+      let(:socket) { Gitlab::HTTP_V2::BufferedIo.new(mock_io) }
 
       it 'forwards start time to the socket' do
         allow(socket).to receive(:readuntil).and_call_original

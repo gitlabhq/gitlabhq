@@ -41,7 +41,6 @@ module API
         end
       end
 
-      expose :code_suggestions, documentation: { type: 'boolean' }
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
       expose :archived?, as: :archived, documentation: { type: 'boolean' }
@@ -51,6 +50,7 @@ module API
       expose :container_expiration_policy,
              using: Entities::ContainerExpirationPolicy,
              if: -> (project, _) { project.container_expiration_policy }
+      expose :repository_object_format, documentation: { type: 'string', example: 'sha1' }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level
@@ -160,6 +160,7 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
+      expose :warn_about_potentially_unwanted_characters, documentation: { type: 'boolean' }
 
       expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
 
@@ -178,6 +179,7 @@ module API
                                 .preload(:project_setting)
                                 .preload(:container_expiration_policy)
                                 .preload(:auto_devops)
+                                .preload(:project_repository)
                                 .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,

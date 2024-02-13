@@ -1,0 +1,17 @@
+- title: "Deprecate License Scanning CI templates"
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  breaking_change: true
+  reporter: thiagocsf
+  stage: secure
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439157
+  body: |  # (required) Don't change this line.
+    GitLab 17.0 removes the License Scanning CI templates:
+
+    - [`Jobs/License-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d9956863d3cd066edc50a29767c2cd4a939c6fd/lib/gitlab/ci/templates/Jobs/License-Scanning.gitlab-ci.yml)
+    - [`Jobs/License-Scanning.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d9956863d3cd066edc50a29767c2cd4a939c6fd/lib/gitlab/ci/templates/Jobs/License-Scanning.latest.gitlab-ci.yml)
+    - [`Security/License-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d9956863d3cd066edc50a29767c2cd4a939c6fd/lib/gitlab/ci/templates/Security/License-Scanning.gitlab-ci.yml)
+
+    CI configurations including any of the templates above will stop working in GitLab 17.0.
+
+    Users are advised to use [License scanning of CycloneDX files](https://docs.gitlab.com/ee/user/compliance/license_scanning_of_cyclonedx_files/) instead.

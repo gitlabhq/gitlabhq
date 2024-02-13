@@ -34,6 +34,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   .main-notes-list::before {
     background: var(--gray-50, $gray-50);
+
+    .gl-dark .modal-body & {
+      background: var(--gray-100, $gray-100);
+    }
   }
 
   .timeline-entry:not(.draft-note):last-child::before {
@@ -41,6 +45,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     .gl-dark & {
       background: var(--gray-10);
+    }
+    
+    .gl-dark .modal-body & {
+      background: var(--gray-50, $gray-50);
     }
 
     &.note-comment {
@@ -270,6 +278,13 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     }
   }
 
+  .timeline-entry-inner > li.is-editing {
+    .note-actions,
+    .note-text {
+      display: none;
+    }
+  }
+
   > li {
     display: block;
     position: relative;
@@ -484,10 +499,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
     &:hover {
       background-color: $gray-light;
-    }
-
-    .btn-clipboard {
-      top: 10px;
     }
   }
 
@@ -901,10 +912,6 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   }
 }
 
-.note-action-button {
-  @include emoji-menu-toggle-button;
-}
-
 .discussion-toggle-button {
   padding: 0 $gl-padding-8 0 0;
   background-color: transparent;
@@ -1032,7 +1039,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
   &.is-active {
     svg {
-      @include gl-text-green-500;
+      color: $green-500;
     }
 
     &:hover,
@@ -1126,7 +1133,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .user-activity-content {
-  @include gl-relative;
+  position: relative;
 
   .system-note-image {
     @include gl--flex-center;
@@ -1141,7 +1148,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 }
 
 .user-profile-activity {
-  @include gl-relative;
+  position: relative;
 
   &:not(:last-child)::before {
     @include vertical-line(16px, 10px);

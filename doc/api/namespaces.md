@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Namespaces API **(FREE ALL)**
+# Namespaces API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Usernames and group names fall under a special category called
 [namespaces](../user/namespace/index.md).
@@ -18,7 +22,7 @@ You might also want to view documentation for:
 
 ## List namespaces
 
-> `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
+> - `top_level_only` [introduced](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/7600) in GitLab 16.8.
 
 Get a list of the namespaces of the authenticated user. If the user is an
 administrator, a list of all namespaces in the GitLab instance is shown.

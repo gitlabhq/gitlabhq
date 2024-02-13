@@ -19,7 +19,6 @@ import {
   environmentFetchErrorText,
   genericMutationErrorText,
   variableFetchErrorText,
-  mapMutationActionToToast,
 } from '~/ci/ci_variable_list/constants';
 
 import {
@@ -297,63 +296,39 @@ describe('Ci Variable Shared Component', () => {
           });
         });
 
-        it.each`
-          actionName  | event
-          ${'add'}    | ${'add-variable'}
-          ${'update'} | ${'update-variable'}
-          ${'delete'} | ${'delete-variable'}
-        `(
-          'throws the specific graphql error if present when user performs $actionName variable',
-          async ({ event }) => {
-            const graphQLErrorMessage = 'There is a problem with this graphQL action';
-            mockMutation.mockResolvedValue({
-              ...mockGroupVariables.data,
-              errors: [graphQLErrorMessage],
-            });
+        it('throws the specific graphql error if present when user deletes variable', async () => {
+          const graphQLErrorMessage = 'There is a problem with this graphQL action';
+          mockMutation.mockResolvedValue({
+            ...mockGroupVariables.data,
+            errors: [graphQLErrorMessage],
+          });
 
-            await findCiSettings().vm.$emit(event, newVariable);
-            await waitForPromises();
+          await findCiSettings().vm.$emit('delete-variable', newVariable);
+          await waitForPromises();
 
-            expect(mockMutation).toHaveBeenCalled();
-            expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
-          },
-        );
+          expect(mockMutation).toHaveBeenCalled();
+          expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
+        });
 
-        it.each`
-          actionName  | event
-          ${'add'}    | ${'add-variable'}
-          ${'update'} | ${'update-variable'}
-          ${'delete'} | ${'delete-variable'}
-        `(
-          'throws generic error on failure with no graphql errors and user performs $actionName variable',
-          async ({ event }) => {
-            mockMutation.mockRejectedValue();
+        it('throws generic error on failure with no graphql errors and user deletes variable', async () => {
+          mockMutation.mockRejectedValue();
 
-            await findCiSettings().vm.$emit(event, newVariable);
-            await waitForPromises();
+          await findCiSettings().vm.$emit('delete-variable', newVariable);
+          await waitForPromises();
 
-            expect(mockMutation).toHaveBeenCalled();
-            expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
-          },
-        );
+          expect(mockMutation).toHaveBeenCalled();
+          expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
+        });
 
-        it.each`
-          actionName  | event
-          ${'add'}    | ${'add-variable'}
-          ${'update'} | ${'update-variable'}
-          ${'delete'} | ${'delete-variable'}
-        `(
-          'displays toast message after user performs $actionName variable',
-          async ({ actionName, event }) => {
-            await findCiSettings().vm.$emit(event, newVariable);
-            await waitForPromises();
+        it('displays toast message after user deletes variable', async () => {
+          await findCiSettings().vm.$emit('delete-variable', newVariable);
+          await waitForPromises();
 
-            expect(mockMutation).toHaveBeenCalled();
-            expect(mockToastShow).toHaveBeenCalledWith(
-              mapMutationActionToToast[actionName](newVariable.key),
-            );
-          },
-        );
+          expect(mockMutation).toHaveBeenCalled();
+          expect(mockToastShow).toHaveBeenCalledWith(
+            `Variable ${newVariable.key} has been deleted.`,
+          );
+        });
       });
 
       const setupMockMutations = (mockResolvedMutation) => {
@@ -468,59 +443,81 @@ describe('Ci Variable Shared Component', () => {
       const mockGroupCiVariables = mockGroupVariables.data.group.ciVariables;
       const mockProjectCiVariables = mockProjectVariables.data.project.ciVariables;
 
+      const projectVariablesContext = {
+        mockVariablesValue: mockProjectVariables,
+        mockEnvironmentsValue: mockProjectEnvironments,
+        withEnvironments: true,
+        expectedEnvironments: ['prod', 'dev'],
+        propsFn: createProjectProps,
+        provideFn: createProjectProvide,
+        mutation: null,
+        maxVariableLimit: mockProjectCiVariables.limit,
+      };
+
+      const groupVariablesContext = {
+        mockVariablesValue: mockGroupVariables,
+        mockEnvironmentsValue: [],
+        withEnvironments: false,
+        expectedEnvironments: [],
+        propsFn: createGroupProps,
+        provideFn: createGroupProvide,
+        mutation: getGroupVariables,
+        maxVariableLimit: mockGroupCiVariables.limit,
+      };
+
+      const instanceVariablesContext = {
+        mockVariablesValue: mockAdminVariables,
+        mockEnvironmentsValue: [],
+        withEnvironments: false,
+        expectedEnvironments: [],
+        propsFn: createInstanceProps,
+        provideFn: () => {},
+        mutation: getAdminVariables,
+        maxVariableLimit: 0,
+      };
+
       describe('in a specific context as', () => {
         it.each`
-          name          | mockVariablesValue      | mockEnvironmentsValue      | withEnvironments | expectedEnvironments | propsFn                | provideFn               | mutation             | maxVariableLimit
-          ${'project'}  | ${mockProjectVariables} | ${mockProjectEnvironments} | ${true}          | ${['prod', 'dev']}   | ${createProjectProps}  | ${createProjectProvide} | ${null}              | ${mockProjectCiVariables.limit}
-          ${'group'}    | ${mockGroupVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createGroupProps}    | ${createGroupProvide}   | ${getGroupVariables} | ${mockGroupCiVariables.limit}
-          ${'instance'} | ${mockAdminVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createInstanceProps} | ${() => {}}             | ${getAdminVariables} | ${0}
-        `(
-          'passes down all the required props when its a $name component',
-          async ({
-            mutation,
-            maxVariableLimit,
-            mockVariablesValue,
-            mockEnvironmentsValue,
-            withEnvironments,
-            expectedEnvironments,
-            propsFn,
-            provideFn,
-          }) => {
-            const props = propsFn();
-            const provide = provideFn();
+          name          | context
+          ${'project'}  | ${projectVariablesContext}
+          ${'group'}    | ${groupVariablesContext}
+          ${'instance'} | ${instanceVariablesContext}
+        `('passes down all the required props when its a $name component', async ({ context }) => {
+          const props = context.propsFn();
+          const provide = context.provideFn();
 
-            mockVariables.mockResolvedValue(mockVariablesValue);
+          mockVariables.mockResolvedValue(context.mockVariablesValue);
 
-            if (withEnvironments) {
-              mockEnvironments.mockResolvedValue(mockEnvironmentsValue);
-            }
+          if (context.withEnvironments) {
+            mockEnvironments.mockResolvedValue(context.mockEnvironmentsValue);
+          }
 
-            let customHandlers = null;
+          let customHandlers = null;
 
-            if (mutation) {
-              customHandlers = [[mutation, mockVariables]];
-            }
+          if (context.mutation) {
+            customHandlers = [[context.mutation, mockVariables]];
+          }
 
-            await createComponentWithApollo({
-              customHandlers,
-              props,
-              provide: { ...provide, ...pagesFeatureFlagProvide },
-            });
+          await createComponentWithApollo({
+            customHandlers,
+            props,
+            provide: { ...provide, ...pagesFeatureFlagProvide },
+          });
 
-            expect(findCiSettings().props()).toEqual({
-              areEnvironmentsLoading: false,
-              areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
-              hideEnvironmentScope: defaultProps.hideEnvironmentScope,
-              pageInfo: defaultProps.pageInfo,
-              isLoading: false,
-              maxVariableLimit,
-              variables: wrapper.props().queryData.ciVariables.lookup(mockVariablesValue.data)
-                ?.nodes,
-              entity: props.entity,
-              environments: expectedEnvironments,
-            });
-          },
-        );
+          expect(findCiSettings().props()).toEqual({
+            areEnvironmentsLoading: false,
+            areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
+            entity: props.entity,
+            environments: context.expectedEnvironments,
+            hideEnvironmentScope: defaultProps.hideEnvironmentScope,
+            isLoading: false,
+            pageInfo: defaultProps.pageInfo,
+            mutationResponse: null,
+            maxVariableLimit: context.maxVariableLimit,
+            variables: wrapper.props().queryData.ciVariables.lookup(context.mockVariablesValue.data)
+              ?.nodes,
+          });
+        });
       });
 
       describe('refetchAfterMutation', () => {

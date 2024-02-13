@@ -13,7 +13,6 @@ export default Mark.create({
     return {
       type: {
         default: 'addition',
-        parseHTML: (element) => (element.classList.contains('deletion') ? 'deletion' : 'addition'),
       },
     };
   },
@@ -21,7 +20,12 @@ export default Mark.create({
   parseHTML() {
     return [
       {
-        tag: 'span.idiff',
+        tag: 'span.idiff.addition',
+        attrs: { type: 'addition' },
+      },
+      {
+        tag: 'span.idiff.deletion',
+        attrs: { type: 'deletion' },
       },
     ];
   },

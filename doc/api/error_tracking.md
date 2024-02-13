@@ -4,9 +4,13 @@ group: Observability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Error Tracking settings API **(FREE ALL)**
+# Error Tracking settings API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34940) in GitLab 12.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34940) in GitLab 12.7.
 
 ## Error Tracking project settings
 
@@ -42,6 +46,7 @@ Example response:
 ### Create Error Tracking settings
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393035/) in GitLab 15.10.
+
 The API allows you to create Error Tracking settings for a project. Only for users with Maintainer role for
 the project.
 
@@ -111,7 +116,7 @@ Example response:
 
 ## Error Tracking client keys
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68384) in GitLab 14.3.
 
 For [integrated error tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/329596) feature. Only for users with the
 Maintainer role for the project.

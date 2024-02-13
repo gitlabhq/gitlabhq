@@ -72,7 +72,7 @@ The editor uses the same public API as
 [provided by Monaco editor](https://microsoft.github.io/monaco-editor/docs.html)
 with additional functions on the instance level:
 
-| Function              | Arguments | Description
+| Function              | Arguments | Description |
 | --------------------- | ----- | ----- |
 | `updateModelLanguage` | `path`: String | Updates the instance's syntax highlighting to follow the extension of the passed `path`. Available only on the instance level. |
 | `use`                 | Array of objects | Array of extensions to apply to the instance. Accepts only an array of **objects**. The extensions' ES6 modules must be fetched and resolved in your views or components before they're passed to `use`. Available on the instance and global editor (all instances) levels. |
@@ -92,7 +92,7 @@ with additional functions on the instance level:
 1. Update syntax highlighting if the filename changes.
 
    ```javascript
-   // fileNameEl here is the HTML input element that contains the file name
+   // fileNameEl here is the HTML input element that contains the filename
    fileNameEl.addEventListener('change', () => {
      this.editor.updateModelLanguage(fileNameEl.value);
    });
@@ -137,7 +137,7 @@ with additional functions on the instance level:
 
 Source Editor provides a universal, extensible editing tool to the whole product,
 and doesn't depend on any particular group. Even though the Source Editor's core is owned by
-[Create::Editor FE Team](https://about.gitlab.com/handbook/engineering/development/dev/create/editor/),
+[Create::Editor FE Team](https://handbook.gitlab.com/handbook/engineering/development/dev/create/editor-extensions/),
 any group can own the extensions—the main functional elements. The goal of
 Source Editor extensions is to keep the editor's core slim and stable. Any
 needed features can be added as extensions to this core. Any group can

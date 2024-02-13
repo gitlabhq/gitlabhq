@@ -35,8 +35,7 @@ export default {
         return data.mlModel?.candidates ?? {};
       },
       error(error) {
-        this.errorMessage = makeLoadCandidatesErrorMessage(error.message);
-        Sentry.captureException(error);
+        this.handleError(error);
       },
     },
   },
@@ -67,12 +66,18 @@ export default {
         ...newPageInfo,
       };
 
-      this.$apollo.queries.candidates.fetchMore({
-        variables,
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          return fetchMoreResult;
-        },
-      });
+      this.$apollo.queries.candidates
+        .fetchMore({
+          variables,
+          updateQuery: (previousResult, { fetchMoreResult }) => {
+            return fetchMoreResult;
+          },
+        })
+        .catch(this.handleError);
+    },
+    handleError(error) {
+      this.errorMessage = makeLoadCandidatesErrorMessage(error.message);
+      Sentry.captureException(error);
     },
   },
   i18n: {

@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group import and export API **(FREE ALL)**
+# Group import and export API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the group import and export API to export a group structure and import it to a new location.
 When you use the group import and export API with the [project import and export API](project_import_export.md), you can preserve connections with
@@ -17,7 +21,7 @@ Group exports include the following:
 - Group labels
 - Group badges
 - Group members
-- Group wikis **(PREMIUM SELF)**
+- Group wikis (Premium and Ultimate only)
 - Subgroups. Each subgroup includes all data above
 
 To preserve group-level relationships from imported projects, you should run group export and import first. This way,

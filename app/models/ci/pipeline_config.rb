@@ -3,6 +3,9 @@
 module Ci
   class PipelineConfig < Ci::ApplicationRecord
     include Ci::Partitionable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     self.table_name = 'ci_pipelines_config'
     self.primary_key = :pipeline_id

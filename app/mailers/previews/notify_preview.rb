@@ -130,6 +130,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.new_merge_request_email(user.id, merge_request.id).message
   end
 
+  def new_ssh_key_email
+    cleanup do
+      Notify.new_ssh_key_email(key.id).message
+    end
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, merge_request.id, user.id).message
   end
@@ -237,8 +243,9 @@ class NotifyPreview < ActionMailer::Preview
   def service_desk_new_note_email
     cleanup do
       note = create_note(noteable_type: 'Issue', noteable_id: issue.id, note: 'Issue note content')
+      participant = IssueEmailParticipant.create!(issue: issue, email: 'user@example.com')
 
-      Notify.service_desk_new_note_email(issue.id, note.id, 'someone@gitlab.com').message
+      Notify.service_desk_new_note_email(issue.id, note.id, participant).message
     end
   end
 
@@ -374,7 +381,7 @@ class NotifyPreview < ActionMailer::Preview
   def custom_email_credential
     @custom_email_credential ||= project.service_desk_custom_email_credential || ServiceDesk::CustomEmailCredential.create!(
       project: project,
-      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::UrlBlocker resolves DNS
+      smtp_address: 'smtp.gmail.com', # Use gmail, because Gitlab::HTTP_V2::UrlBlocker resolves DNS
       smtp_port: 587,
       smtp_username: 'user@gmail.com',
       smtp_password: 'supersecret'
@@ -418,6 +425,14 @@ class NotifyPreview < ActionMailer::Preview
 
   def member
     @member ||= Member.last
+  end
+
+  def key
+    @key ||= find_or_create_key
+  end
+
+  def find_or_create_key
+    Key.last || Keys::CreateService.new(user).execute
   end
 
   def create_note(params)

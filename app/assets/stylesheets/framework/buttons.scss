@@ -126,7 +126,7 @@
 }
 
 @mixin btn-with-margin {
-  @include gl-ml-3;
+  margin-left: $gl-spacing-scale-3;
   float: left;
 
   &.inline {
@@ -191,16 +191,6 @@
     color: $gray-700;
   }
 
-  &.dot-highlight::after {
-    content: '';
-    background-color: $blue-500;
-    width: $gl-padding * 0.5;
-    height: $gl-padding * 0.5;
-    display: inline-block;
-    border-radius: 50%;
-    margin-left: 3px;
-  }
-
   svg {
     height: 15px;
     width: 15px;
@@ -243,17 +233,6 @@
   }
 }
 
-.btn-clipboard {
-  border: 0;
-  padding: 0 5px;
-
-  svg {
-    top: auto;
-    width: 16px;
-    height: 16px;
-  }
-}
-
 .input-group-prepend,
 .input-group-append {
   .btn {
@@ -265,11 +244,6 @@
 
     &:active {
       outline: none;
-    }
-
-    &.btn-clipboard {
-      padding-left: 15px;
-      padding-right: 15px;
     }
   }
 
@@ -352,16 +326,16 @@ fieldset[disabled] .btn,
 }
 
 copy-code {
-  @include gl-absolute;
+  position: absolute;
   @include gl-transition-medium;
-  @include gl-opacity-0;
+  opacity: 0;
 
   top: 7px;
   right: $input-horizontal-padding;
 
   .markdown-code-block:hover &,
   &:focus-within {
-    @include gl-opacity-10;
+    opacity: 1;
   }
 }
 

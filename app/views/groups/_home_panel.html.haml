@@ -10,14 +10,14 @@
         = @group.name
         %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
           = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
-        = render_if_exists 'shared/tier_badge', source: @group, namespace_to_track: @group
+        = render_if_exists 'shared/tier_badge', source: @group
 
     - if current_user
       .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }
         - if current_user.admin?
           = render Pajamas::ButtonComponent.new(href: [:admin, @group], icon: 'admin', button_options: { title: _('View group in admin area'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } })
         - if @notification_setting
-          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-vertical-align-top', no_flip: 'true' } }
+          .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-vertical-align-top' } }
         - if can_create_subgroups
           .gl-sm-w-auto.gl-w-full
             = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { testid: 'new-subgroup-button' }, class: 'gl-sm-w-auto gl-w-full'}) do

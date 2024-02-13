@@ -74,8 +74,8 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
         before do
           session[:gitea_access_token] = token
 
-          allow(Gitlab::UrlBlocker).to receive(:validate!).with(https_uri, anything).and_return([Addressable::URI.parse(https_uri), uri])
-          allow(Gitlab::UrlBlocker).to receive(:validate!).with(http_uri, anything).and_return([Addressable::URI.parse(ip_uri), uri])
+          allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(https_uri, anything).and_return([Addressable::URI.parse(https_uri), uri])
+          allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!).with(http_uri, anything).and_return([Addressable::URI.parse(ip_uri), uri])
 
           allow(Gitlab::LegacyGithubImport::Client).to receive(:new).and_return(double('Gitlab::LegacyGithubImport::Client', repos: [], orgs: []))
         end

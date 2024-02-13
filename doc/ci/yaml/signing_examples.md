@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Sigstore for keyless signing and verification **(FREE SAAS)**
+# Use Sigstore for keyless signing and verification
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 The [Sigstore](https://www.sigstore.dev/) project provides a CLI called
 [Cosign](https://docs.sigstore.dev/signing/quickstart/) which can be used for keyless signing of container images built

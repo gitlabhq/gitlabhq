@@ -125,16 +125,6 @@ RSpec.describe 'Query.project.mergeRequest.codequalityReportsComparer', feature_
       post_graphql(query, current_user: user)
     end
 
-    context 'when when sast_reports_in_inline_diff FF is disabled' do
-      before_all do
-        stub_feature_flags(sast_reports_in_inline_diff: false)
-      end
-
-      it 'returns null for codequality_reports_comparer field' do
-        expect(result).to be_nil
-      end
-    end
-
     it 'returns expected data' do
       expect(result).to match(
         a_hash_including(

@@ -19,5 +19,15 @@ class MergeRequestsFinder
         end
       end
     end
+
+    def merge_user
+      strong_memoize(:merge_user) do
+        if merge_user_id?
+          User.find_by_id(params[:merge_user_id])
+        elsif merge_user_username?
+          User.find_by_username(params[:merge_user_username])
+        end
+      end
+    end
   end
 end

@@ -436,8 +436,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
 
         it 'recalculates the variables' do
-          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1' },
-                                                              { key: 'VAR2', value: 'new var 2' })
+          expect(subject[:yaml_variables]).to contain_exactly(
+            { key: 'VAR1', value: 'overridden var 1' },
+            { key: 'VAR2', value: 'new var 2' }
+          )
         end
       end
 
@@ -451,8 +453,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
 
         it 'recalculates the variables' do
-          expect(subject[:yaml_variables]).to contain_exactly({ key: 'VAR1', value: 'overridden var 1' },
-                                                              { key: 'VAR2', value: 'overridden var 2' })
+          expect(subject[:yaml_variables]).to contain_exactly(
+            { key: 'VAR1', value: 'overridden var 1' },
+            { key: 'VAR2', value: 'overridden var 2' }
+          )
         end
 
         context 'when the root_variables_inheritance is false' do

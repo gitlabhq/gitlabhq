@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Groups API **(FREE ALL)**
+# Groups API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Interact with [groups](../user/group/index.md) by using the REST API.
 
@@ -12,7 +16,7 @@ The fields returned in responses vary based on the [permissions](../user/permiss
 
 ## List groups
 
-> Support for keyset pagination introduced in GitLab 14.3.
+> - Support for keyset pagination introduced in GitLab 14.3.
 
 Get a list of visible groups for the authenticated user. When accessed without
 authentication, only public groups are returned.
@@ -38,7 +42,7 @@ Parameters:
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
-| `repository_storage` **(PREMIUM ALL)**    | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3 |
+| `repository_storage`                  | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
 
 ```plaintext
 GET /groups
@@ -204,7 +208,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 ## List a group's descendant groups
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217115) in GitLab 13.5
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217115) in GitLab 13.5
 
 Get a list of visible descendant groups of this group.
 When accessed without authentication, only public groups are returned.
@@ -319,7 +323,7 @@ Parameters:
 | `include_subgroups`                    | boolean        | no       | Include projects in subgroups of this group. Default is `false` |
 | `min_access_level`                     | integer        | no       | Limit to projects where current user has at least this [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`               | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
-| `with_security_reports` **(ULTIMATE ALL)** | boolean    | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
+| `with_security_reports`                | boolean    | no       | Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false`. Ultimate only. |
 
 <html>
 <small>Footnotes:
@@ -516,11 +520,11 @@ Example response:
 
 ## Details of a group
 
-> The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
+> - The `membership_lock` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82271) in GitLab 14.10.
 
 Get all details of a group. This endpoint can be accessed without authentication
 if the group is publicly accessible. In case the user that requests is an administrator
-if the group is publicly accessible. With authentication, it returns the `runners_token`
+if the group is publicly accessible. With authentication, it returns the `runners_token` and `enabled_git_access_protocol`
 for the group too, if the user is an administrator or group owner.
 
 ```plaintext
@@ -568,6 +572,7 @@ Example response:
   "runners_token": "ba324ca7b1c77fc20bb9",
   "file_template_project_id": 1,
   "parent_id": null,
+  "enabled_git_access_protocol": "all",
   "created_at": "2020-01-15T12:36:29.590Z",
   "shared_with_groups": [
     {
@@ -714,7 +719,9 @@ Example response:
       ]
     }
   ],
-  "ip_restriction_ranges": null
+  "ip_restriction_ranges": null,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false
 }
 ```
 
@@ -791,7 +798,11 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
   "https://gitlab.example.com/api/v4/groups/4/avatar"
 ```
 
-### Disable the results limit **(FREE SELF)**
+### Disable the results limit
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -829,6 +840,7 @@ Parameters:
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). Default to the global level default branch protection setting.                                           |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
+| `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead.                                       |
 | `emails_enabled`                                        | boolean | no       | Enable email notifications.                                                                                                                                                                     |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group.                                                                                                                         |
@@ -842,10 +854,10 @@ Parameters:
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role).                                   |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours).                                                                                                                                   |
 | `visibility`                                            | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`.                                                                                                                              |
-| `membership_lock` **(PREMIUM ALL)**                     | boolean | no       | Users cannot be added to projects in this group.                                                                                                                                                |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group.                                                                                                                   |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`.                         |
-| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`.                                                                                                                              |
+| `membership_lock`                                       | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only.                                                                                              |
+| `extra_shared_runners_minutes_limit`                    | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only.                                                                  |
+| `shared_runners_minutes_limit`                          | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only.            |
+| `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.                                                                       |
 
 ### Options for `default_branch_protection`
 
@@ -908,7 +920,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Get groups to which a user can transfer a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 15.4
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 15.4
 
 Retrieve a list of groups to which the user can transfer a group.
 
@@ -952,7 +964,7 @@ Example response:
 
 ## Transfer a group to a new parent group / Turn a subgroup to a top-level group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23831) in GitLab 14.6.
 
 Transfer a group to a new parent group or turn a subgroup to a top-level group. Available to administrators and users:
 
@@ -978,7 +990,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Update group
 
-> `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+> - `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, `unique_project_download_limit_allowlist` and `auto_ban_user_on_excessive_projects_download` are not available.
@@ -1001,6 +1013,7 @@ PUT /groups/:id
 | `default_branch_protection`                             | integer | no       | See [Options for `default_branch_protection`](#options-for-default_branch_protection). |
 | `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
+| `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |
 | `emails_enabled`                                        | boolean | no       | Enable email notifications. |
 | `lfs_enabled`                                           | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
@@ -1014,18 +1027,20 @@ PUT /groups/:id
 | `subgroup_creation_level`                               | string  | no       | Allowed to [create subgroups](../user/group/subgroups/index.md#create-a-subgroup). Can be `owner` (Owners), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                               | integer | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                            | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
-| `extra_shared_runners_minutes_limit` **(PREMIUM SELF)** | integer | no       | Can be set by administrators only. Additional compute minutes for this group. |
-| `file_template_project_id` **(PREMIUM ALL)**                | integer | no       | The ID of a project to load custom file templates from. |
-| `membership_lock` **(PREMIUM ALL)**                         | boolean | no       | Users cannot be added to projects in this group. |
-| `prevent_forking_outside_group` **(PREMIUM ALL)**           | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. |
-| `shared_runners_minutes_limit` **(PREMIUM SELF)**       | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. |
-| `unique_project_download_limit` **(ULTIMATE ALL)** | integer | no | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. |
-| `unique_project_download_limit_interval_in_seconds` **(ULTIMATE ALL)** | integer | no | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). |
-| `unique_project_download_limit_allowlist` **(ULTIMATE ALL)** | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. |
-| `unique_project_download_limit_alertlist` **(ULTIMATE ALL)** | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. |
-| `auto_ban_user_on_excessive_projects_download` **(ULTIMATE ALL)** | boolean | no | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. |
-| `ip_restriction_ranges` **(PREMIUM ALL)**                   | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. |
-| `wiki_access_level` **(PREMIUM ALL)**                       | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. |
+| `extra_shared_runners_minutes_limit`                    | integer | no       | Can be set by administrators only. Additional compute minutes for this group. Self-managed, Premium and Ultimate only. |
+| `file_template_project_id`                              | integer | no       | The ID of a project to load custom file templates from. Premium and Ultimate only. |
+| `membership_lock`                                       | boolean | no       | Users cannot be added to projects in this group. Premium and Ultimate only. |
+| `prevent_forking_outside_group`                         | boolean | no       | When enabled, users can **not** fork projects from this group to external namespaces. Premium and Ultimate only. |
+| `shared_runners_minutes_limit`                          | integer | no       | Can be set by administrators only. Maximum number of monthly compute minutes for this group. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Self-managed, Premium and Ultimate only. |
+| `unique_project_download_limit`                         | integer | no       | Maximum number of unique projects a user can download in the specified time period before they are banned. Available only on top-level groups. Default: 0, Maximum: 10,000. Ultimate only. |
+| `unique_project_download_limit_interval_in_seconds`     | integer | no       | Time period during which a user can download a maximum amount of projects before they are banned. Available only on top-level groups. Default: 0, Maximum: 864,000 seconds (10 days). Ultimate only. |
+| `unique_project_download_limit_allowlist`               | array of strings | no | List of usernames excluded from the unique project download limit. Available only on top-level groups. Default: `[]`, Maximum: 100 usernames. Ultimate only.|
+| `unique_project_download_limit_alertlist`               | array of integers | no | List of user IDs that are emailed when the unique project download limit is exceeded. Available only on top-level groups. Default: `[]`, Maximum: 100 user IDs. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110201) in GitLab 15.9. Ultimate only.|
+| `auto_ban_user_on_excessive_projects_download`          | boolean | no       | When enabled, users are automatically banned from the group when they download more than the maximum number of unique projects specified by `unique_project_download_limit` and `unique_project_download_limit_interval_in_seconds`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94159) in GitLab 15.4. Ultimate only.|
+| `ip_restriction_ranges`                                 | string  | no       | Comma-separated list of IP addresses or subnet masks to restrict group access. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351493) in GitLab 15.4. Premium and Ultimate only.|
+| `wiki_access_level`                                     | string  | no       | The wiki access level. Can be `disabled`, `private`, or `enabled`. Premium and Ultimate only.|
+| `math_rendering_limits_enabled`                         | boolean | no       | Indicates if math rendering limits are used for this group.|
+| `lock_math_rendering_limits_enabled`                    | boolean | no       | Indicates if math rendering limits are locked for all descendent groups.|
 
 NOTE:
 The `projects` and `shared_projects` attributes in the response are deprecated and [scheduled for removal in API v5](https://gitlab.com/gitlab-org/gitlab/-/issues/213797).
@@ -1060,6 +1075,7 @@ Example response:
   "full_path": "h5bp",
   "file_template_project_id": 1,
   "parent_id": null,
+  "enabled_git_access_protocol": "all",
   "created_at": "2020-01-15T12:36:29.590Z",
   "prevent_sharing_groups_outside_hierarchy": false,
   "projects": [ // Deprecated and will be removed in API v5
@@ -1103,7 +1119,9 @@ Example response:
       "request_access_enabled": false
     }
   ],
-  "ip_restriction_ranges": null
+  "ip_restriction_ranges": null,
+  "math_rendering_limits_enabled": true,
+  "lock_math_rendering_limits_enabled": false
 }
 ```
 
@@ -1111,7 +1129,11 @@ The `prevent_sharing_groups_outside_hierarchy` attribute is present in the respo
 
 Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also see the `wiki_access_level` attribute.
 
-### Disable the results limit **(FREE SELF)**
+### Disable the results limit
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -1139,7 +1161,7 @@ The `shared_runners_setting` attribute determines whether shared runners are ena
 
 ### Upload a group avatar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36681) in GitLab 12.9.
 
 To upload an avatar file from your file system, use the `--form` argument. This causes
 curl to post data using the header `Content-Type: multipart/form-data`. The
@@ -1153,7 +1175,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ### Remove a group avatar
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96421) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96421) in GitLab 15.4.
 
 To remove a group avatar, use a blank value for the `avatar` attribute.
 
@@ -1188,17 +1210,21 @@ Parameters:
 | Attribute            | Type             | Required | Description                                                                                                                                                 |
 |----------------------|------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`                 | integer/string   | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding)                                                                                |
-| `permanently_remove` **(PREMIUM ALL)** | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4 |
-| `full_path` **(PREMIUM ALL)**          | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group) |
+| `permanently_remove` | boolean/string   | no       | Immediately deletes a subgroup if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. Premium and Ultimate only. |
+| `full_path`   | string           | no       | Full path of subgroup to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4. To find the subgroup path, see the [group details](groups.md#details-of-a-group). Premium and Ultimate only. |
 
 The response is `202 Accepted` if the user has authorization.
 
 NOTE:
 A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
 
-## Restore group marked for deletion **(PREMIUM ALL)**
+## Restore group marked for deletion
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33257) in GitLab 12.8.
 
 Restores a group marked for deletion.
 
@@ -1231,9 +1257,13 @@ GET /groups?search=foobar
 ]
 ```
 
-## List provisioned users **(PREMIUM ALL)**
+## List provisioned users
 
-> Introduced in GitLab 14.8.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Introduced in GitLab 14.8.
 
 Get a list of users provisioned by a given group. Does not include subgroups.
 
@@ -1304,9 +1334,14 @@ Example response:
 ]
 ```
 
-## List group users **(PREMIUM ALL EXPERIMENT)**
+## List group users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [Experiment](../policy/experiment-beta-support.md).
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [Experiment](../policy/experiment-beta-support.md).
 
 Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
 of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
@@ -1314,7 +1349,7 @@ by the group or subgroups.
 
 This endpoint is an [Experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
 
-Requires at least the Maintainer role in the group.
+Requires Owner role in the group.
 
 ```plaintext
 GET /groups/:id/users
@@ -1385,11 +1420,15 @@ Example response:
 ]
 ```
 
-## Service Accounts **(PREMIUM ALL)**
+## Service Accounts
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ### Create Service Account User
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
 
 Creates a service account user with an auto-generated email address and username.
 
@@ -1413,7 +1452,7 @@ Example response:
 
 ### Create Personal Access Token for Service Account User
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -1446,7 +1485,7 @@ Example response:
 
 ### Rotate a Personal Access Token for Service Account User
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rotate
@@ -1473,7 +1512,11 @@ Example response:
 }
 ```
 
-## Hooks **(PREMIUM ALL)**
+## Hooks
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Also called Group Hooks and Webhooks.
 These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
@@ -1605,11 +1648,19 @@ DELETE /groups/:id/hooks/:hook_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
 
-## Group Audit Events **(PREMIUM ALL)**
+## Group Audit Events
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
 
-## Sync group with LDAP **(PREMIUM SELF)**
+## Sync group with LDAP
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1629,7 +1680,11 @@ See the [Group Members](members.md) documentation.
 
 List, add, and delete LDAP group links.
 
-### List LDAP group links **(PREMIUM SELF)**
+### List LDAP group links
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Lists LDAP group links.
 
@@ -1641,7 +1696,11 @@ GET /groups/:id/ldap_group_links
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 
-### Add LDAP group link with CN or filter **(PREMIUM SELF)**
+### Add LDAP group link with CN or filter
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1660,7 +1719,11 @@ POST /groups/:id/ldap_group_links
 NOTE:
 To define the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-### Delete LDAP group link **(PREMIUM SELF)**
+### Delete LDAP group link
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
 
@@ -1685,7 +1748,11 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 | `cn`      | string         | yes      | The CN of an LDAP group |
 | `provider` | string        | yes      | LDAP provider for the LDAP group link |
 
-### Delete LDAP group link with CN or filter **(PREMIUM SELF)**
+### Delete LDAP group link with CN or filter
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 
@@ -1703,7 +1770,11 @@ DELETE /groups/:id/ldap_group_links
 NOTE:
 To delete the LDAP group link, provide either a `cn` or a `filter`, but not both.
 
-## SAML Group Links **(PREMIUM ALL)**
+## SAML Group Links
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/290367) in GitLab 15.3.0.
 > - `access_level` type [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95607) from `string` to `integer` in GitLab 15.3.3.
@@ -1918,9 +1989,13 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules **(PREMIUM ALL)**
+## Push Rules
 
-> Introduced in GitLab 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Introduced in GitLab 13.4.
 
 ### Get group push rules
 

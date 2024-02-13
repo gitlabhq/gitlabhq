@@ -164,8 +164,8 @@ export default {
     },
 
     onTransaction({ transaction }) {
-      const { filename = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
-      if (this.uploading === filename) {
+      const { uploading = '', progress = 0 } = transaction.getMeta('uploadProgress') || {};
+      if (this.uploading === uploading) {
         this.uploadProgress = Math.round(progress * 100);
       }
     },
@@ -288,7 +288,7 @@ export default {
           @click="replaceMedia"
         />
       </gl-button-group>
-      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-100" @submit.prevent="saveEditedMedia">
+      <gl-form v-else class="bubble-menu-form gl-p-4 gl-w-full" @submit.prevent="saveEditedMedia">
         <gl-form-group :label="__('URL')" label-for="media-src">
           <gl-form-input id="media-src" v-model="mediaCanonicalSrc" data-testid="media-src" />
         </gl-form-group>

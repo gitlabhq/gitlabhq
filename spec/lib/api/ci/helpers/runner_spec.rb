@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Helpers::Runner do
+RSpec.describe API::Ci::Helpers::Runner, feature_category: :runner do
   let(:helper) do
     Class.new do
       include API::Ci::Helpers::Runner

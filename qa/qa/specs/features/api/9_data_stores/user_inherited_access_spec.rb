@@ -132,6 +132,7 @@ module QA
 
         it(
           'is not allowed to create a file in parent group project via the API',
+          :reliable,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/363343'
         ) do
           expect do

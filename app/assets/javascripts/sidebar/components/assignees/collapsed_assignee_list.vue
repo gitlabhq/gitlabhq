@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
@@ -31,6 +31,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
+    GlButton,
     CollapsedAssignee,
     GlIcon,
   },
@@ -125,7 +126,7 @@ export default {
       :user="user"
       :issuable-type="issuableType"
     />
-    <button v-if="hasMoreThanTwoAssignees" class="btn-link gl-button" type="button">
+    <gl-button v-if="hasMoreThanTwoAssignees" variant="link" class="gl-bg-transparent!">
       <span
         class="avatar-counter sidebar-avatar-counter gl-display-flex gl-align-items-center gl-pl-3"
       >
@@ -137,6 +138,6 @@ export default {
         aria-hidden="true"
         class="merge-icon"
       />
-    </button>
+    </gl-button>
   </div>
 </template>

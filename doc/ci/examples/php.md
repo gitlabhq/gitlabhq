@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Testing PHP projects **(FREE ALL)**
+# Testing PHP projects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This guide covers basic building instructions for PHP projects.
 
@@ -269,7 +273,7 @@ gitlab-runner exec shell test:app
 
 We have set up an [Example PHP Project](https://gitlab.com/gitlab-examples/php) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
-[shared runners](../runners/index.md).
+[instance runners](../runners/index.md).
 
 Want to hack on it? Fork it, commit, and push your changes. Within a few
 moments the changes are picked by a public runner and the job begins.

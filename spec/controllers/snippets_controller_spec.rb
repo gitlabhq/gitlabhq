@@ -8,39 +8,18 @@ RSpec.describe SnippetsController do
   let_it_be(:public_snippet) { create(:personal_snippet, :public, :repository, author: user) }
 
   describe 'GET #index' do
-    let(:base_params) { { username: user.username } }
+    it 'redirects to explore snippets page when user is not logged in' do
+      get :index
 
-    context 'when username parameter is present' do
-      it_behaves_like 'paginated collection' do
-        let(:collection) { Snippet.all }
-        let(:params) { { username: user.username } }
-      end
-
-      it 'renders snippets of a user when username is present' do
-        get :index, params: { username: user.username }
-
-        expect(response).to render_template(:index)
-      end
+      expect(response).to redirect_to(explore_snippets_path)
     end
 
-    context 'when username parameter is not present' do
-      it 'redirects to explore snippets page when user is not logged in' do
-        get :index
+    it 'redirects to snippets dashboard page when user is logged in' do
+      sign_in(user)
 
-        expect(response).to redirect_to(explore_snippets_path)
-      end
+      get :index
 
-      it 'redirects to snippets dashboard page when user is logged in' do
-        sign_in(user)
-
-        get :index
-
-        expect(response).to redirect_to(dashboard_snippets_path)
-      end
-    end
-
-    it_behaves_like 'snippets sort order' do
-      let(:params) { base_params }
+      expect(response).to redirect_to(dashboard_snippets_path)
     end
   end
 

@@ -2,6 +2,8 @@
 
 module Integrations
   class Campfire < Integration
+    include HasAvatar
+
     SUBDOMAIN_REGEXP = %r{\A[a-z](?:[a-z0-9-]*[a-z0-9])?\z}i
 
     validates :token, presence: true, if: :activated?

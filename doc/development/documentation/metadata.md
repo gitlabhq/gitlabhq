@@ -25,7 +25,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 To populate the metadata, include this information:
 
-- `stage`: The [Stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+- `stage`: The [Stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
   that the majority of the page's content belongs to.
 - `group`: The [Group](https://about.gitlab.com/company/team/structure/#product-groups)
   that the majority of the page's content belongs to.
@@ -68,7 +68,7 @@ the description is `Users, groups, namespaces, SSH keys.`
 
 For other pages, descriptions are not actively maintained. However, if you want to add one,
 use a short description of what the page is about.
-See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips. 
+See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips.
 
 ## Additional metadata
 

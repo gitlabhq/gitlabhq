@@ -23,7 +23,7 @@ export const DIFF_FILE = {
   cancel: __('Cancel'),
   autoCollapsed: __('Files with large changes are collapsed by default.'),
   autoCollapsedGenerated: __(
-    'Generated files are collapsed by default. This behavior can be overriden via .gitattributes file if required.',
+    'Generated files are collapsed by default. To change this behavior, edit the %{tagStart}.gitattributes%{tagEnd} file. %{linkStart}Learn more.%{linkEnd}',
   ),
   expand: __('Expand file'),
 };

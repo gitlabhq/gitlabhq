@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up GitLab **(FREE SELF)**
+# Back up GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The exact procedure for backing up GitLab depends on many factors. Your particular deployment's usage and configuration determine what kind of data exists, where it is located, and how much there is. These factors influence your options for how to perform a back up, how to store it, and how to restore it.
 
@@ -178,12 +182,13 @@ including:
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
+- Merge request diffs (Helm chart installation only)
 
 Backups do not include:
 
-- [Mattermost data](https://docs.mattermost.com/administration/config-settings.html#file-storage)
+- [Mattermost data](../../integration/mattermost/index.md#back-up-gitlab-mattermost)
 - Redis (and thus Sidekiq jobs)
-- [Object storage](#object-storage)
+- [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
 
 WARNING:
 GitLab does not back up any configuration files (`/etc/gitlab`), TLS keys and certificates, or system
@@ -208,7 +213,7 @@ system. If you installed GitLab:
 ### Backup command
 
 WARNING:
-The backup command does not back up items in [object storage](#object-storage).
+The backup command does not back up items in [object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations.
 
 WARNING:
 The backup command requires [additional parameters](#back-up-and-restore-for-installations-using-pgbouncer) when
@@ -238,8 +243,6 @@ Run the backup task by using `kubectl` to run the `backup-utility` script on the
 :::TabTitle Docker
 
 Run the backup from the host.
-
-- GitLab 12.2 or later:
 
 ```shell
 docker exec -t <container name> gitlab-backup create
@@ -316,14 +319,14 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
-#### Backup file name
+#### Backup filename
 
 WARNING:
-If you use a custom backup file name, you can't
+If you use a custom backup filename, you can't
 [limit the lifetime of the backups](#limit-backup-lifetime-for-local-files-prune-old-backups).
 
-Backup files are created with file names according to [specific defaults](index.md#backup-id). However, you can
-override the `<backup-id>` portion of the file name by setting the `BACKUP`
+Backup files are created with filenames according to [specific defaults](index.md#backup-id). However, you can
+override the `<backup-id>` portion of the filename by setting the `BACKUP`
 environment variable. For example:
 
 ```shell
@@ -347,7 +350,7 @@ Caveats:
 
 - The compression command is used in a pipeline, so your custom command must output to `stdout`.
 - If you specify a command that is not packaged with GitLab, then you must install it yourself.
-- The resultant file names will still end in `.gz`.
+- The resultant filenames will still end in `.gz`.
 - The default decompression command, used during restore, is `gzip -cd`. Therefore if you override the compression command to use a format that cannot be decompressed by `gzip -cd`, you must override the decompression command during restore.
 - [Do not place environment variables after the backup command](https://gitlab.com/gitlab-org/gitlab/-/issues/433227). For example, `gitlab-backup create COMPRESS_CMD="pigz -c --best"` doesn't work as intended.
 
@@ -429,7 +432,7 @@ DECOMPRESS_CMD="zstd --decompress --stdout" sudo gitlab-backup restore
 
 To ensure the generated archive is transferable by rsync, you can set the `GZIP_RSYNCABLE=yes`
 option. This sets the `--rsyncable` option to `gzip`, which is useful only in
-combination with setting [the Backup file name option](#backup-file-name).
+combination with setting [the Backup filename option](#backup-filename).
 
 The `--rsyncable` option in `gzip` isn't guaranteed to be available
 on all distributions. To verify that it's available in your distribution, run
@@ -439,28 +442,45 @@ on all distributions. To verify that it's available in your distribution, run
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
-#### Excluding specific directories from the backup
+#### Excluding specific data from the backup
 
-You can exclude specific directories from the backup by adding the environment variable `SKIP`, whose values are a comma-separated list of the following options:
+Depending on your installation type, slightly different components can be skipped on backup creation.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus) / Docker / Self-compiled
+
+<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/31c3df7ebb65768208772da3e20d32688a6c90ef/lib/backup/manager.rb#L126 -->
 
 - `db` (database)
+- `repositories` (Git repositories data, including wikis)
 - `uploads` (attachments)
 - `builds` (CI job output logs)
 - `artifacts` (CI job artifacts)
+- `pages` (Pages content)
 - `lfs` (LFS objects)
 - `terraform_state` (Terraform states)
 - `registry` (Container registry images)
-- `pages` (Pages content)
-- `repositories` (Git repositories data)
 - `packages` (Packages)
 - `ci_secure_files` (Project-level Secure Files)
 
-NOTE:
-When [backing up and restoring Helm Charts](https://docs.gitlab.com/charts/architecture/backup-restore.html), there is an additional option `packages`, which refers to any packages managed by the GitLab [package registry](../../user/packages/package_registry/index.md).
-For more information see [command line arguments](https://docs.gitlab.com/charts/architecture/backup-restore.html#command-line-arguments).
+:::TabTitle Helm chart (Kubernetes)
 
-All wikis are backed up as part of the `repositories` group. Non-existent
-wikis are skipped during a backup.
+<!-- source: https://gitlab.com/gitlab-org/build/CNG/-/blob/068e146db915efcd875414e04403410b71a2e70c/gitlab-toolbox/scripts/bin/backup-utility#L19 -->
+
+- `db` (database)
+- `repositories` (Git repositories data, including wikis)
+- `uploads` (attachments)
+- `artifacts` (CI job artifacts and output logs)
+- `pages` (Pages content)
+- `lfs` (LFS objects)
+- `terraform_state` (Terraform states)
+- `registry` (Container registry images)
+- `packages` (Package registry)
+- `ci_secure_files` (Project-level Secure Files)
+- `external_diffs` (Merge request diffs)
+
+::EndTabs
 
 ::Tabs
 
@@ -469,6 +489,10 @@ wikis are skipped during a backup.
 ```shell
 sudo gitlab-backup create SKIP=db,uploads
 ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+See [Skipping components](https://docs.gitlab.com/charts/backup-restore/backup.html#skipping-components) in charts backup documentation.
 
 :::TabTitle Self-compiled
 
@@ -604,8 +628,8 @@ to create an incremental backup from:
 
 - In GitLab 14.9 and 14.10, use the `BACKUP=<backup-id>` option to choose the backup to use. The chosen previous backup is overwritten.
 - In GitLab 15.0 and later, use the `PREVIOUS_BACKUP=<backup-id>` option to choose the backup to use. By default, a backup file is created
-  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the file name by setting the
-  [`BACKUP` environment variable](#backup-file-name).
+  as documented in the [Backup ID](index.md#backup-id) section. You can override the `<backup-id>` portion of the filename by setting the
+  [`BACKUP` environment variable](#backup-filename).
 
 To create an incremental backup, run:
 
@@ -629,7 +653,7 @@ sudo gitlab-backup create INCREMENTAL=yes SKIP=tar
 
 #### Back up specific repository storages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86896) in GitLab 15.0.
 
 When using [multiple repository storages](../repository_storage_paths.md),
 repositories from specific repository storages can be backed up separately
@@ -723,7 +747,7 @@ For Linux package (Omnibus):
 
 ##### S3 Encrypted Buckets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64765) in GitLab 14.3.
 
 AWS supports these [modes for server side encryption](https://docs.aws.amazon.com/AmazonS3/latest/userguide/serv-side-encryption.html):
 
@@ -965,7 +989,7 @@ For self-compiled installations:
 
 ##### Using Azure Blob storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25877) in GitLab 13.4.
 
 ::Tabs
 
@@ -1198,7 +1222,7 @@ When troubleshooting backup problems, however, replace `CRON=1` with `--trace` t
 #### Limit backup lifetime for local files (prune old backups)
 
 WARNING:
-The process described in this section doesn't work if you used a [custom file name](#backup-file-name)
+The process described in this section doesn't work if you used a [custom filename](#backup-filename)
 for your backups.
 
 To prevent regular backups from using all your disk space, you may want to set a limited lifetime
@@ -1278,7 +1302,7 @@ There are two ways to fix this:
 
 ###### Environment variable overrides
 
-> Multiple databases support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177) in GitLab 16.5.
+> - Multiple databases support was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133177) in GitLab 16.5.
 
 By default, GitLab uses the database configuration stored in a
 configuration file (`database.yml`). However, you can override the database settings
@@ -1341,7 +1365,7 @@ If you have a specific reason to change the path, it can be configured in the Li
 
 Because every deployment may have different capabilities, you should first review [what data needs to be backed up](#what-data-needs-to-be-backed-up) to better understand if, and how, you can leverage them.
 
-For example, if you use Amazon RDS, you might choose to use its built-in backup and restore features to handle your GitLab [PostgreSQL data](#postgresql-databases), and [exclude PostgreSQL data](#excluding-specific-directories-from-the-backup) when using the [backup command](#backup-command).
+For example, if you use Amazon RDS, you might choose to use its built-in backup and restore features to handle your GitLab [PostgreSQL data](#postgresql-databases), and [exclude PostgreSQL data](#excluding-specific-data-from-the-backup) when using the [backup command](#backup-command).
 
 In the following cases, consider using file system data transfer or snapshots as part of your backup strategy:
 
@@ -1381,7 +1405,7 @@ practical use.
 
 ### Back up repository data separately
 
-First, ensure you back up existing GitLab data while [skipping repositories](#excluding-specific-directories-from-the-backup):
+First, ensure you back up existing GitLab data while [skipping repositories](#excluding-specific-data-from-the-backup):
 
 ::Tabs
 

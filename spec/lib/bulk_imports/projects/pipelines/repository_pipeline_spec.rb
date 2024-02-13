@@ -32,6 +32,8 @@ RSpec.describe BulkImports::Projects::Pipelines::RepositoryPipeline, feature_cat
     allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
       allow(extractor).to receive(:extract).and_return(extracted_data)
     end
+
+    allow(pipeline).to receive(:set_source_objects_counter)
   end
 
   describe '#run' do

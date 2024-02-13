@@ -4,9 +4,13 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group epic boards API **(PREMIUM ALL)**
+# Group epic boards API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385903) in GitLab 15.9.
 
 Every API call to [group epic boards](../user/group/epics/epic_boards.md#epic-boards) must be authenticated.
 
@@ -178,7 +182,7 @@ Example response:
 
 ## List group epic board lists
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
 
 Gets a list of the epic board's lists.
 Does not include `open` and `closed` lists.
@@ -238,7 +242,7 @@ Example response:
 
 ## Single group epic board list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385904) in GitLab 15.9.
 
 Gets a single board list.
 

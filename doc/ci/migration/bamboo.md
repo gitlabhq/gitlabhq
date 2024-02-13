@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating from Bamboo **(FREE ALL)**
+# Migrating from Bamboo
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This migration guide looks at how you can migrate from Atlassian Bamboo to GitLab CI/CD.
 The focus is on [Bamboo Specs YAML](https://docs.atlassian.com/bamboo-specs-docs/8.1.12/specs.html?yaml)

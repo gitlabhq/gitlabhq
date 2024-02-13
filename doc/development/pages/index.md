@@ -245,7 +245,7 @@ make && go test ./ -run TestRedirect
 ### Feature flags
 
 WARNING:
-All newly-introduced feature flags should be [disabled by default](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#feature-flags-in-gitlab-development).
+All newly-introduced feature flags should be [disabled by default](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#how-to-use-feature-flags).
 
 Consider adding a [feature flag](../feature_flags/index.md) for any non-trivial changes.
 Feature flags can make the release and rollback of these changes easier, avoiding
@@ -265,3 +265,57 @@ Example of a merge request enabling a GitLab Pages feature flag:
 ## Related topics
 
 - [Feature flags in the development of GitLab](../feature_flags/index.md)
+
+## Becoming a GitLab Pages maintainer
+
+This document serves as a guideline for GitLab team members that want to become maintainers for the GitLab Pages project.
+Maintainers should have an advanced understanding of the GitLab Pages codebase.
+Prior to applying for maintainer of a project, a person should gain a good feel for the codebase, expertise in one or more functionalities,
+and deep understanding of our coding standards.
+
+### Expectations
+
+The process to [become a maintainer at GitLab is defined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer),
+and it is the baseline for this process. One thing that is expected is a high number of reviews, however;
+the rate of change of the GitLab Pages compared to the GitLab Rails project is too little.
+
+To work around that problem, one must be comfortable in the following areas of the codebase:
+
+Main areas:
+
+- Namespace/project resolution
+- ZIP serving and the virtual file system
+- Authentication
+
+Smaller areas:
+
+- Redirects
+- Artifacts proxying
+- Handling of TLS certificates
+- Rate-limiting
+- Metrics and monitoring
+
+To achieve this, you should try to make relevant contributions in all main areas and 2-3 smaller areas
+mentioned above so that you have a better understanding of the functionality. A relevant contribution may be a bug fix,
+a performance improvement, a new feature, or a significant refactoring.
+
+### Reviewer
+
+Prior to becoming a maintainer, you should first become a reviewer of the project. This should include changes
+to any part of the codebase including the documentation.
+
+To become a reviewer follow the steps [outlined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#reviewer).
+There is no set timeline of how long you should be a reviewer before becoming a maintainer, but you should
+gain enough experience in the areas mentioned in the [expectations section](#expectations) of this document.
+
+### Maintainer
+
+To become a maintainer follow the steps [outlined in the handbook](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#how-to-become-a-project-maintainer).
+You are probably ready to become a maintainer when these statements feel true:
+
+- The MRs you have reviewed consistently make it through maintainer review without significant additionally required changes
+- The MRs you have created consistently make it through reviewer and maintainer review without significant required changes
+- You feel comfortable working through operational tasks
+
+If those subjective requirements are satisfied, [open an MR](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/.gitlab/merge_request_templates/Backend%20maintainer.md)
+promoting you to maintainer and tag the existing maintainers.

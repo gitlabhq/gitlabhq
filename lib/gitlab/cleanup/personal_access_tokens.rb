@@ -56,13 +56,15 @@ module Gitlab
             .active
             .owner_is_human
             .created_before(cut_off_date)
-            .for_users(group.users)
+            .for_users(group.group_members.select(:user_id))
+            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436661")
         else
           PersonalAccessToken
             .active
             .owner_is_human
             .last_used_before_or_unused(cut_off_date)
-            .for_users(group.users)
+            .for_users(group.group_members.select(:user_id))
+            .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436661")
         end
       end
 
@@ -72,9 +74,12 @@ module Gitlab
         # updated
         attrs = access_tokens.as_json(only: [:id, :user_id])
 
-        # Use `update_all` to bypass any validations which might
-        # prevent revocation. Manually specify updated_at.
-        affected_row_count = dry_run ? 0 : access_tokens.update_all(revoked: true, updated_at: @revocation_time)
+        cross_joins_issue = "https://gitlab.com/gitlab-org/gitlab/-/issues/436661"
+        affected_row_count = ::Gitlab::Database.allow_cross_joins_across_databases(url: cross_joins_issue) do
+          # Use `update_all` to bypass any validations which might
+          # prevent revocation. Manually specify updated_at.
+          dry_run ? 0 : access_tokens.update_all(revoked: true, updated_at: @revocation_time)
+        end
 
         message = {
           dry_run: dry_run,

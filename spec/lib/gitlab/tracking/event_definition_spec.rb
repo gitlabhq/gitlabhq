@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Tracking::EventDefinition do
+RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_ping do
   let(:attributes) do
     {
       description: 'Created issues',
@@ -15,8 +15,10 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       product_stage: 'growth',
       product_section: 'dev',
       product_group: 'group::product analytics',
-      distribution: %w[ee ce],
-      tier: %w[free premium ultimate]
+      distributions: %w[ee ce],
+      tiers: %w[free premium ultimate],
+      introduced_by_url: "https://gitlab.com/example/-/merge_requests/123",
+      milestone: '1.6'
     }
   end
 

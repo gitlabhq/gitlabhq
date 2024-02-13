@@ -18,6 +18,7 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
   let(:updated_file) { 'CHANGELOG' }
   let(:deleted_file) { 'README' }
   let(:snippet_gid) { GitlabSchema.id_from_object(snippet).to_s }
+  let(:category) { ::Mutations::Snippets::Update }
   let(:mutation_vars) do
     {
       id: snippet_gid,
@@ -43,7 +44,8 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
 
   shared_examples 'graphql update actions' do
     context 'when the user does not have permission' do
-      let(:current_user) { create(:user) }
+      let(:user) { create(:user) }
+      let(:current_user) { user }
 
       it_behaves_like 'a mutation that returns top-level errors',
         errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
@@ -131,14 +133,18 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
 
     it_behaves_like 'graphql update actions'
     it_behaves_like 'when the snippet is not found'
-    it_behaves_like 'snippet edit usage data counters'
+    it_behaves_like 'snippet edit usage data counters' do
+      let(:user) { current_user }
+    end
+
     it_behaves_like 'has spam protection' do
       let(:mutation_class) { ::Mutations::Snippets::Update }
     end
   end
 
   describe 'ProjectSnippet' do
-    let_it_be(:project) { create(:project, :private) }
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:project) { create(:project, :private, namespace: namespace) }
 
     let(:snippet) do
       create(
@@ -181,7 +187,9 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
         end
       end
 
-      it_behaves_like 'snippet edit usage data counters'
+      it_behaves_like 'snippet edit usage data counters' do
+        let(:user) { current_user }
+      end
 
       it_behaves_like 'has spam protection' do
         let(:mutation_class) { ::Mutations::Snippets::Update }
@@ -193,9 +201,8 @@ RSpec.describe 'Updating a Snippet', feature_category: :source_code_management d
         end
 
         it_behaves_like 'internal event tracking' do
-          let(:event) { ::Gitlab::UsageDataCounters::EditorUniqueCounter::EDIT_BY_SNIPPET_EDITOR }
+          let(:event) { 'g_edit_by_snippet_ide' }
           let(:user) { current_user }
-          let(:namespace) { project.namespace }
         end
       end
     end

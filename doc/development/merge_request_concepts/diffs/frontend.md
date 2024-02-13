@@ -90,7 +90,7 @@ This chart contains several types of items:
     AB["batch_comments~~draft_note.vue"]
     AC["diffs~~diff_comment_cell.vue"]
     AD["diffs~~diff_gutter_avatars.vue"]
-    AE["ee-diffs~~inline_findings_flag_switcher.vue"]
+    AE["ee-diffs~~inline_findings_gutter_icon_dropdown.vue"]
     AF["notes~~noteable_note.vue"]
     AG["notes~~note_actions.vue"]
     AH["notes~~note_body.vue"]
@@ -257,12 +257,12 @@ are published.
 The diffs metadata endpoint exists to fetch the base data the diffs app requires quickly, without
 the need to fetch all the diff files. This includes, but is not limited to:
 
-- Diff file names, including some extra meta data for diff files
+- Diff filenames, including some extra meta data for diff files
 - Added and removed line numbers
 - Branch names
 - Diff versions
 
-The most important part of the metadata response is the diff file names. This data allows the diffs
+The most important part of the metadata response is the diff filenames. This data allows the diffs
 app to render the file browser inside of the diffs app, without waiting for all batch diffs
 requests to complete.
 

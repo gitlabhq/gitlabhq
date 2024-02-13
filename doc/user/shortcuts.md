@@ -4,7 +4,11 @@ group: Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab keyboard shortcuts **(FREE ALL)**
+# GitLab keyboard shortcuts
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab has several keyboard shortcuts you can use to access its different
 features.
@@ -312,7 +316,11 @@ These shortcuts are available when using a [filtered search input](search/index.
 | <kbd>Command</kbd>   | <kbd>Delete</kbd>                      | Clear entire search filter. |
 | <kbd>Option</kbd>    | <kbd>Control</kbd> + <kbd>Delete</kbd> | Clear one token at a time. |
 
-## Epics **(PREMIUM ALL)**
+## Epics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 These shortcuts are available when viewing [epics](group/epics/index.md):
 
@@ -325,7 +333,7 @@ These shortcuts are available when viewing [epics](group/epics/index.md):
 
 ## Disable keyboard shortcuts
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
 
 To disable keyboard shortcuts:
 
@@ -336,7 +344,7 @@ To disable keyboard shortcuts:
 
 ## Enable keyboard shortcuts
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/202494) from the shortcuts page to user preferences in GitLab 16.4.
 
 To enable keyboard shortcuts:
 

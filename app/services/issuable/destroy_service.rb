@@ -24,7 +24,11 @@ module Issuable
     end
 
     def group_for(issuable)
-      issuable.resource_parent.group
+      if issuable.project.present?
+        issuable.project.group
+      else
+        issuable.namespace
+      end
     end
 
     def delete_associated_records(issuable)

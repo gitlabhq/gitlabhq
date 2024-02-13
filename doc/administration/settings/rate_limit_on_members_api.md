@@ -4,9 +4,13 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limit on Members API **(FREE SELF)**
+# Rate limit on Members API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140633) in GitLab 16.9.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140633) in GitLab 16.9.
 
 You can configure the rate limit per group (or project) per user to the
 [delete members API](../../api/members.md#remove-a-member-from-a-group-or-project).

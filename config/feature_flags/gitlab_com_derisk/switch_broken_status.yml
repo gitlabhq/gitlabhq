@@ -1,0 +1,9 @@
+---
+name: switch_broken_status
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385910
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142904
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17480
+milestone: '16.9'
+group: group::code review
+type: gitlab_com_derisk
+default_enabled: false

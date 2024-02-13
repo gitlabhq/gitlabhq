@@ -10,4 +10,7 @@ RSpec.describe Sidebars::Admin::Menus::AdminSettingsMenu, feature_category: :nav
     separated: true
 
   it_behaves_like 'Admin menu with sub menus'
+
+  it_behaves_like 'Admin menu with extra container html options',
+    extra_container_html_options: { testid: 'admin-settings-menu-link' }
 end

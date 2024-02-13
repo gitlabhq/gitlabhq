@@ -12,25 +12,25 @@
 
 <!-- Who will use this feature? If known, include any of the following: types of users (e.g. Developer), personas, or specific company roles (e.g. Release Manager). It's okay to write "Unknown" and fill this field in later.
 
-Personas are described at https://about.gitlab.com/handbook/product/personas/
+Personas are described at https://handbook.gitlab.com/handbook/product/personas/
 
-* [Parker (Product Manager)](https://about.gitlab.com/handbook/product/personas/#parker-product-manager)
-* [Delaney (Development Team Lead)](https://about.gitlab.com/handbook/product/personas/#delaney-development-team-lead)
-* [Presley (Product Designer)](https://about.gitlab.com/handbook/product/personas/#presley-product-designer)
-* [Sasha (Software Developer)](https://about.gitlab.com/handbook/product/personas/#sasha-software-developer)
-* [Priyanka (Platform Engineer)](https://about.gitlab.com/handbook/product/personas/#priyanka-platform-engineer)
-* [Sidney (Systems Administrator)](https://about.gitlab.com/handbook/product/personas/#sidney-systems-administrator)
-* [Rachel (Release Manager)](https://about.gitlab.com/handbook/product/personas/#rachel-release-manager)
-* [Simone (Software Engineer in Test)](https://about.gitlab.com/handbook/product/personas/#simone-software-engineer-in-test)
-* [Allison (Application Ops)](https://about.gitlab.com/handbook/product/personas/#allison-application-ops)
-* [Ingrid (Infrastructure Operator)](https://about.gitlab.com/handbook/product/personas/#ingrid-infrastructure-operator)
-* [Dakota (Application Development Director)](https://about.gitlab.com/handbook/product/personas/#dakota-application-development-director)
-* [Dana (Data Analyst)](https://about.gitlab.com/handbook/product/personas/#dana-data-analyst)
-* [Eddie (Content Editor)](https://about.gitlab.com/handbook/product/personas/#eddie-content-editor)
-* [Amy (Application Security Engineer)](https://about.gitlab.com/handbook/product/personas/#amy-application-security-engineer)
-* [Isaac (Infrastructure Engineer)](https://about.gitlab.com/handbook/product/personas/#isaac-infrastructure-security-engineer)
-* [Alex (Security Operations Engineer)](https://about.gitlab.com/handbook/product/personas/#alex-security-operations-engineer)
-* [Cameron (Compliance Manager)](https://about.gitlab.com/handbook/product/personas/#cameron-compliance-manager)
+* [Parker (Product Manager)](https://handbook.gitlab.com/handbook/product/personas/#parker-product-manager)
+* [Delaney (Development Team Lead)](https://handbook.gitlab.com/handbook/product/personas/#delaney-development-team-lead)
+* [Presley (Product Designer)](https://handbook.gitlab.com/handbook/product/personas/#presley-product-designer)
+* [Sasha (Software Developer)](https://handbook.gitlab.com/handbook/product/personas/#sasha-software-developer)
+* [Priyanka (Platform Engineer)](https://handbook.gitlab.com/handbook/product/personas/#priyanka-platform-engineer)
+* [Sidney (Systems Administrator)](https://handbook.gitlab.com/handbook/product/personas/#sidney-systems-administrator)
+* [Rachel (Release Manager)](https://handbook.gitlab.com/handbook/product/personas/#rachel-release-manager)
+* [Simone (Software Engineer in Test)](https://handbook.gitlab.com/handbook/product/personas/#simone-software-engineer-in-test)
+* [Allison (Application Ops)](https://handbook.gitlab.com/handbook/product/personas/#allison-application-ops)
+* [Ingrid (Infrastructure Operator)](https://handbook.gitlab.com/handbook/product/personas/#ingrid-infrastructure-operator)
+* [Dakota (Application Development Director)](https://handbook.gitlab.com/handbook/product/personas/#dakota-application-development-director)
+* [Dana (Data Analyst)](https://handbook.gitlab.com/handbook/product/personas/#dana-data-analyst)
+* [Eddie (Content Editor)](https://handbook.gitlab.com/handbook/product/personas/#eddie-content-editor)
+* [Amy (Application Security Engineer)](https://handbook.gitlab.com/handbook/product/personas/#amy-application-security-engineer)
+* [Isaac (Infrastructure Engineer)](https://handbook.gitlab.com/handbook/product/personas/#isaac-infrastructure-security-engineer)
+* [Alex (Security Operations Engineer)](https://handbook.gitlab.com/handbook/product/personas/#alex-security-operations-engineer)
+* [Cameron (Compliance Manager)](https://handbook.gitlab.com/handbook/product/personas/#cameron-compliance-manager)
 
 -->
 
@@ -110,7 +110,7 @@ Explore (../../doc/development/internal_analytics/internal_event_instrumentation
 
 ### What is the type of buyer?
 
-<!-- What is the buyer persona for this feature? See https://about.gitlab.com/handbook/product/personas/buyer-persona/
+<!-- What is the buyer persona for this feature? See https://handbook.gitlab.com/handbook/product/personas/buyer-persona/
 In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#three-tiers -->
 
 ### Is this a cross-stage feature?

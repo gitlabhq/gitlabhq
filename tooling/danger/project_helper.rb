@@ -35,7 +35,6 @@ module Tooling
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
-        %r{\Adb/docs/.+\.yml\z} => :docs,
         %r{\Adata/deprecations/} => :none,
         %r{\Adata/removals/} => :none,
 
@@ -49,7 +48,7 @@ module Tooling
           ((ee|jh)/)?app/controllers/(.+/)?oauth/jira/.+ |
           ((ee|jh)/)?app/services/(.+/)?jira.+ |
           ((ee|jh)/)?app/workers/(.+/)?(propagate_integration.+|irker_worker\.rb) |
-          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data|web_hooks)/.+ |
+          ((ee|jh)/)?lib/(.+/)?(atlassian|data_builder|hook_data|web_hooks|slash_commands)/.+ |
           ((ee|jh)/)?lib/(.+/)?.*integration.+ |
           ((ee|jh)/)?lib/(.+/)?api/v3/github\.rb |
           ((ee|jh)/)?lib/(.+/)?api/github/entities\.rb
@@ -100,6 +99,7 @@ module Tooling
 
         %r{\A((ee|jh)/)?db/(geo/)?(?!click_house|fixtures)[^/]+} => [:database],
         %r{\A((ee|jh)/)?db/[^/]+\z} => [:database], # db/ root files
+        %r{\Adb/docs/.+\.yml\z} => [:database],
         %r{\A((ee|jh)/)?lib/(ee/)?gitlab/(database|background_migration|sql)(/|\.rb)} => [:database, :backend],
         %r{\A(app/services/authorized_project_update/find_records_due_for_refresh_service)(/|\.rb)} => [:database, :backend],
         %r{\A(app/models/project_authorization|app/services/users/refresh_authorized_projects_service)(/|\.rb)} => [:database, :backend],

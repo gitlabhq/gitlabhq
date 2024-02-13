@@ -4,11 +4,15 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tags API **(FREE ALL)**
+# Tags API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## List project repository tags
 
-> `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
+> - `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
 
 Get a list of repository tags from a project, sorted by update date and time in
 descending order.
@@ -192,7 +196,7 @@ Parameters:
 
 ## Get X.509 signature of a tag
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
 
 Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.

@@ -159,15 +159,54 @@ RSpec.describe ::Packages::Npm::GenerateMetadataService, feature_category: :pack
       end
 
       context 'with duplicate tags' do
-        let_it_be(:project2) { create(:project, namespace: group) }
-        let_it_be(:package2) { create(:npm_package, version: '3.0.0', project: project2, name: package_name) }
-        let_it_be(:package_tag1) { create(:packages_tag, package: package1, name: 'latest') }
-        let_it_be(:package_tag2) { create(:packages_tag, package: package2, name: 'latest') }
+        context 'when in different projects' do
+          let_it_be(:project2) { create(:project, namespace: group) }
+          let_it_be(:package2) { create(:npm_package, version: '3.0.0', project: project2, name: package_name) }
+          let_it_be(:package_tag1) { create(:packages_tag, package: package1, name: 'latest') }
+          let_it_be(:package_tag2) { create(:packages_tag, package: package2, name: 'latest') }
 
-        let(:packages) { ::Packages::Package.for_projects([project.id, project2.id]).with_name(package_name) }
+          let(:packages) { ::Packages::Package.for_projects([project.id, project2.id]).with_name(package_name) }
 
-        it "returns the tag of the latest package's version" do
-          expect(subject['latest']).to eq(package2.version)
+          it "returns the tag of the latest package's version" do
+            expect(subject['latest']).to eq(package2.version)
+          end
+        end
+
+        context 'when in the same project' do
+          let_it_be(:package_a) { create(:npm_package, version: '1.2.3', project: project, name: package_name) }
+          let_it_be(:package_b) { create(:npm_package, version: '1.1.1', project: project, name: package_name) }
+          let_it_be(:package_tag_a) { create(:packages_tag, package: package_a, name: 'tag', updated_at: 1.week.ago) }
+          let_it_be(:package_tag_b) { create(:packages_tag, package: package_b, name: 'tag') }
+
+          it "returns the most recent tagged package's version" do
+            expect(subject['tag']).to eq(package_b.version)
+          end
+        end
+      end
+
+      context 'when fetching all package tags' do
+        let_it_be(:tags_limit) { 3 }
+
+        before do
+          stub_const('Packages::Tag::FOR_PACKAGES_TAGS_LIMIT', tags_limit)
+        end
+
+        it 'returns all tags' do
+          expect(::Packages::Package).to receive(:preload_tags).and_call_original
+
+          expect(subject.size).to eq(Packages::Tag.count)
+        end
+
+        context 'with disabled package_registry_npm_fetch_all_tags feature flag' do
+          before do
+            stub_feature_flags(package_registry_npm_fetch_all_tags: false)
+          end
+
+          it 'adheres to the tags limit' do
+            expect(::Packages::Package).not_to receive(:preload_tags)
+
+            expect(subject.size).to eq(tags_limit)
+          end
         end
       end
     end

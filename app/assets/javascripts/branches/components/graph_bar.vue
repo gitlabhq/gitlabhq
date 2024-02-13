@@ -56,7 +56,10 @@ export default {
 </script>
 
 <template>
-  <div :class="{ full: isFullWidth }" class="position-relative float-left pt-1 graph-side h-100">
+  <div
+    :class="{ full: isFullWidth }"
+    class="position-relative float-left pt-1 graph-side gl-h-full"
+  >
     <div
       :style="style"
       :class="[roundedClass, positionSideClass]"

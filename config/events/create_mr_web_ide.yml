@@ -1,0 +1,20 @@
+---
+description: Create new MR from WebIDE
+category: InternalEventTracking
+action: create_mr_web_ide
+identifiers:
+  - project
+  - namespace
+  - user
+product_section: growth
+product_stage: growth
+product_group: acquisition
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143036
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

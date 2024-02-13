@@ -17,9 +17,9 @@ The current settings are:
 
 ## Webhooks
 
-A webhook that starts with `https://gitpod.io/` is created to enable prebuilds (see [Enabling Prebuilds](https://www.gitpod.io/docs/configure/authentication/gitlab#enabling-prebuilds) for more details). The webhook is maintained by an [Engineering Productivity team](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/).
+A webhook that starts with `https://gitpod.io/` is created to enable prebuilds (see [Enabling Prebuilds](https://www.gitpod.io/docs/configure/authentication/gitlab#enabling-prebuilds) for more details). The webhook is maintained by an [Engineering Productivity team](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/).
 
-You can find this webhook in [Webhook Settings in `gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/hooks). If you cannot access this setting, chat to the [Engineering Productivity team](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/).
+You can find this webhook in [Webhook Settings in `gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab/-/hooks). If you cannot access this setting, chat to the [Engineering Productivity team](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/).
 
 ### Troubleshooting a failed webhook
 

@@ -15,7 +15,7 @@ module MembersDestroyer
 
     idempotent!
 
-    def perform(user_id, entity_id, entity_type)
+    def perform(user_id, entity_id, entity_type, _requesting_user_id = nil)
       unless ENTITY_TYPES.include?(entity_type)
         logger.error(
           message: "#{entity_type} is not a supported entity.",

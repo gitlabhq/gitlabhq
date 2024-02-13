@@ -40,17 +40,22 @@ export default {
     getColorName(color) {
       return Object.values(color).pop();
     },
+    getStyle(color) {
+      return {
+        backgroundColor: this.getColorCode(color),
+      };
+    },
   },
 };
 </script>
 <template>
-  <div class="dropdown-content gl-px-3">
+  <div class="dropdown-content">
     <div class="suggest-colors suggest-colors-dropdown gl-mt-0!">
       <gl-link
         v-for="(color, index) in suggestedColors"
         :key="index"
         v-gl-tooltip:tooltipcontainer
-        :style="{ backgroundColor: getColorCode(color) }"
+        :style="getStyle(color)"
         :title="getColorName(color)"
         @click.prevent="handleColorClick(getColorCode(color))"
       />

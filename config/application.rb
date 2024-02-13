@@ -11,6 +11,7 @@ require 'action_view/railtie'
 require 'action_mailer/railtie'
 require 'action_cable/engine'
 require 'rails/test_unit/railtie'
+require 'sprockets/railtie'
 
 require 'gitlab/utils/all'
 
@@ -92,11 +93,8 @@ module Gitlab
 
     # This preload is required to:
     #
-    # 1. Convert legacy `database.yml`;
+    # 1. Support providing sensitive DB configuration through an external script;
     # 2. Include Geo post-deployment migrations settings;
-    #
-    # TODO: In 15.0, this preload can be wrapped in a Gitlab.ee block
-    #       since we don't need to convert legacy `database.yml` anymore.
     config.class.prepend(::Gitlab::Patch::DatabaseConfig)
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -257,6 +255,19 @@ module Gitlab
     config.active_record.has_many_inversing = false
     config.active_record.belongs_to_required_by_default = false
 
+    # Switch between cssbundling-rails and sassc-rails conditionally
+    # To activate cssbundling-rails you can set `USE_NEW_CSS_PIPELINE=1`
+    # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
+    # Need to be loaded before initializers
+    config.before_configuration do
+      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"])
+        require 'cssbundling-rails'
+      else
+        require 'fileutils'
+        require 'sassc-rails'
+      end
+    end
+
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -306,7 +317,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/group.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "page_bundles/import.css"
-    config.assets.precompile << "page_bundles/incident_management_list.css"
+    config.assets.precompile << "page_bundles/paginated_table.css"
     config.assets.precompile << "page_bundles/incidents.css"
     config.assets.precompile << "page_bundles/issues_analytics.css"
     config.assets.precompile << "page_bundles/issuable.css"
@@ -545,7 +556,7 @@ module Gitlab
 
     # sprocket-rails adds some precompile assets we actually do not need.
     #
-    # It copies all _non_ js and CSS files from the app/assets/ older.
+    # It copies all _non_ js and CSS files from the app/assets/ folder.
     #
     # In our case this copies for example: Vue, Markdown and Graphql, which we do not need
     # for production.
@@ -609,6 +620,14 @@ module Gitlab
       end
     end
 
+    # Add `app/assets/builds` as the highest precedence to find assets
+    # This is required if cssbundling-rails is used, but should not affect sassc-rails. it would be empty
+    if defined?(Cssbundling)
+      initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
+        app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
+      end
+    end
+
     # We run the contents of active_record.clear_active_connections again
     # because we connect to database from routes
     # https://github.com/rails/rails/blob/fdf840f69a2e33d78a9d40b91d9b7fddb76711e9/activerecord/lib/active_record/railtie.rb#L308
@@ -636,7 +655,8 @@ module Gitlab
         ActiveSupport::TimeWithZone,
         ActiveSupport::TimeZone,
         Gitlab::Color, # https://gitlab.com/gitlab-org/gitlab/-/issues/368844,
-        Hashie::Array # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
+        Hashie::Array, # https://gitlab.com/gitlab-org/gitlab/-/issues/378089
+        Hashie::Mash # https://gitlab.com/gitlab-org/gitlab/-/issues/440316
       ]
       #
       # Restore setting the YAML permitted classes for ActiveRecord

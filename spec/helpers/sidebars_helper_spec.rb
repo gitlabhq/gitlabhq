@@ -157,7 +157,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         },
         settings: {
           has_settings: helper.current_user_menu?(:settings),
-          profile_path: profile_path,
+          profile_path: user_settings_profile_path,
           profile_preferences_path: profile_preferences_path
         },
         user_counts: {
@@ -430,7 +430,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         [
           { title: s_('Navigation|Your work'), link: '/', icon: 'work' },
           public_link,
-          { title: s_('Navigation|Profile'), link: '/-/profile', icon: 'profile' },
+          { title: s_('Navigation|Profile'), link: '/-/user_settings/profile', icon: 'profile' },
           { title: s_('Navigation|Preferences'), link: '/-/profile/preferences', icon: 'preferences' }
         ]
       end

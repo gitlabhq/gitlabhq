@@ -196,6 +196,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_milestone
     enable :admin_issue_board_list
     enable :admin_issue
+    enable :update_issue
     enable :read_metrics_dashboard_annotation
     enable :read_prometheus
     enable :read_package
@@ -232,6 +233,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_group_runners
     enable :register_group_runners
     enable :create_runner
+    enable :destroy_issue
 
     enable :set_note_created_at
     enable :set_emails_disabled
@@ -243,6 +245,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_deploy_token
     enable :update_runners_registration_token
     enable :owner_access
+    enable :update_git_access_protocol
 
     enable :read_billing
     enable :edit_billing

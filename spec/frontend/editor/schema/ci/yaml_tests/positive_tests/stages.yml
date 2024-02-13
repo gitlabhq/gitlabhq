@@ -1,0 +1,41 @@
+stages:
+  - pre-test
+  - - py-test
+  - - go-test
+  - post-test
+  - pre-build
+  - - cloud
+    - client
+  - post-build
+
+pytest:
+  stage: py-test
+  tags:
+    - linux
+    - docker
+  script:
+    - echo "pytest"
+
+gotest:
+  stage: go-test
+  tags:
+    - linux
+    - docker
+  script:
+    - echo "gotest"
+
+server:
+  stage: cloud
+  tags:
+    - linux
+    - docker
+  script:
+    - echo "cloud"
+
+binaries:
+  stage: client
+  tags:
+    - linux
+    - docker
+  script:
+    - echo "client"

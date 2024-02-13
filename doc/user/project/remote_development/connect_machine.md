@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Connect a remote machine to the Web IDE **(FREE ALL)**
+# Tutorial: Connect a remote machine to the Web IDE
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/371084) in GitLab 15.7.
@@ -34,6 +38,10 @@ To connect a remote machine to the Web IDE, you'll:
 To generate Let's Encrypt certificates:
 
 1. Create an `A` record to point a domain to your remote machine (for example, from `example.remote.gitlab.dev` to `10.0.2.2`).
+
+   NOTE:
+   If you do not have access to a domain, you can use a service like [DuckDNS](https://www.duckdns.org/).
+
 1. Install [Certbot](https://certbot.eff.org/) to enable HTTPS:
 
    ```shell
@@ -55,6 +63,10 @@ To generate Let's Encrypt certificates:
      --manual \
      --preferred-challenges dns certonly
    ```
+
+   NOTE:
+   With [DuckDNS](https://www.duckdns.org/), you must use the
+   [Certbot DNS DuckDNS](https://github.com/infinityofspace/certbot_dns_duckdns) plugin.
 
 Now that you've generated the certificates, it's time to create and connect a development environment.
 

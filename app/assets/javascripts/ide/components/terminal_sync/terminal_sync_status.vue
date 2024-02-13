@@ -67,7 +67,7 @@ export default {
     v-gl-tooltip
     :title="status.text"
     role="note"
-    class="d-flex align-items-center"
+    class="d-flex gl-align-items-center"
   >
     <span>{{ __('Terminal') }}:</span>
     <span class="square s16 d-flex-center ml-1" :aria-label="status.text">

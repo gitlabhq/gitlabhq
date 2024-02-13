@@ -24,7 +24,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
   end
 
   describe '#execute' do
-    subject(:fork_of_project) { service.execute }
+    subject(:response) { service.execute }
+
+    let(:fork_of_project) { response[:project] }
 
     before do
       # NOTE: Avatar file is dropped after project reload. Explicitly re-add it for each test.
@@ -37,8 +39,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       end
 
       it 'does not create a fork' do
-        is_expected.not_to be_persisted
-        expect(subject.errors[:forked_from_project_id]).to eq(['is forbidden'])
+        is_expected.to be_error
+        expect(response.errors).to eq(['Forked from project is forbidden'])
       end
 
       it 'does not create a fork network' do
@@ -52,7 +54,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       end
 
       it 'creates a fork of the project' do
-        expect(fork_of_project).to be_persisted
+        is_expected.to be_success
         expect(fork_of_project.errors).to be_empty
         expect(fork_of_project.first_owner).to eq(user)
         expect(fork_of_project.namespace).to eq(user.namespace)
@@ -71,7 +73,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/26158
       it 'after forking the original project still has its avatar' do
         # If we do not fork the project first we cannot detect the bug.
-        expect(fork_of_project).to be_persisted
+        is_expected.to be_success
 
         expect(project.avatar.file).to be_exists
       end
@@ -107,10 +109,16 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         let_it_be(:other_namespace) { create(:group).tap { |group| group.add_owner(user) } }
 
         it 'creates a new project' do
-          fork_of_project = described_class.new(project, user, params).execute
+          fork_response = described_class.new(project, user, params).execute
+          expect(fork_response).to be_success
+
+          fork_of_project = fork_response[:project]
           expect(fork_of_project).to be_persisted
 
-          fork_of_fork = described_class.new(fork_of_project, user, { namespace: other_namespace }).execute
+          fork_of_fork_response = described_class.new(fork_of_project, user, { namespace: other_namespace }).execute
+          expect(fork_of_fork_response).to be_success
+
+          fork_of_fork = fork_of_fork_response[:project]
           expect(fork_of_fork).to be_persisted
 
           expect(fork_of_fork).to be_valid
@@ -122,7 +130,10 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let_it_be(:root_project) { create(:project, :public) }
 
           it 'successfully creates a fork of the fork with correct visibility' do
-            fork_of_project = described_class.new(root_project, user, params).execute
+            fork_response = described_class.new(root_project, user, params).execute
+            expect(fork_response).to be_success
+
+            fork_of_project = fork_response[:project]
             expect(fork_of_project).to be_persisted
 
             root_project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
@@ -130,7 +141,10 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             # Forked project visibility is not affected by root project visibility change
             expect(fork_of_project).to have_attributes(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-            fork_of_fork = described_class.new(fork_of_project, user, { namespace: other_namespace }).execute
+            fork_of_fork_response = described_class.new(fork_of_project, user, { namespace: other_namespace }).execute
+            expect(fork_of_fork_response).to be_success
+
+            fork_of_fork = fork_of_fork_response[:project]
             expect(fork_of_fork).to be_persisted
 
             expect(fork_of_fork).to be_valid
@@ -139,7 +153,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         it_behaves_like 'forks count cache refresh' do
-          let(:from_project) { described_class.new(project, user, { namespace: other_namespace }).execute }
+          let(:from_project) { described_class.new(project, user, { namespace: other_namespace }).execute[:project] }
           let(:to_user) { user }
         end
       end
@@ -149,8 +163,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           existing_project = create(:project, namespace: namespace, path: project.path)
           expect(existing_project).to be_persisted
 
-          expect(fork_of_project).not_to be_persisted
-          expect(fork_of_project.errors[:path]).to eq(['has already been taken'])
+          is_expected.to be_error
+          expect(response.errors).to include('Path has already been taken')
         end
       end
 
@@ -167,17 +181,17 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         it 'does not allow creation' do
-          fork_of_project
+          is_expected.to be_error
 
-          expect(fork_of_project).not_to be_persisted
-          expect(fork_of_project.errors.messages).to have_key(:base)
-          expect(fork_of_project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+          expect(response.errors).to include('There is already a repository with that name on disk')
         end
 
         context 'when repository disk validation is explicitly skipped' do
           let(:params) { super().merge(skip_disk_validation: true) }
 
           it 'allows fork project creation' do
+            is_expected.to be_success
+
             expect(fork_of_project).to be_persisted
             expect(fork_of_project.errors.messages).to be_empty
           end
@@ -189,6 +203,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           it 'inherits default_git_depth from the origin project' do
             project.update!(ci_default_git_depth: 42)
 
+            is_expected.to be_success
             expect(fork_of_project).to be_persisted
             expect(fork_of_project.ci_default_git_depth).to eq(42)
           end
@@ -198,6 +213,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           it 'the fork has git depth set to 0' do
             project.update!(ci_default_git_depth: nil)
 
+            is_expected.to be_success
             expect(fork_of_project).to be_persisted
             expect(fork_of_project.ci_default_git_depth).to eq(0)
           end
@@ -212,6 +228,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           end
 
           it 'creates fork with lowest level' do
+            is_expected.to be_success
             expect(fork_of_project).to be_persisted
             expect(fork_of_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
@@ -223,8 +240,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           end
 
           it "doesn't create a fork" do
-            expect(fork_of_project).not_to be_persisted
-            expect(fork_of_project.errors[:visibility_level]).to eq ['private has been restricted by your GitLab administrator']
+            is_expected.to be_error
+            expect(response.errors).to eq ['Visibility level private has been restricted by your GitLab administrator']
           end
         end
       end
@@ -235,8 +252,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         it 'does not create a fork' do
-          expect(fork_of_project).not_to be_persisted
-          expect(fork_of_project.errors[:forked_from_project_id]).to eq(['is forbidden'])
+          is_expected.to be_error
+          expect(response.errors).to eq(['Forked from project is forbidden'])
         end
       end
 
@@ -245,7 +262,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let_it_be_with_reload(:namespace) { create(:group).tap { |group| group.add_owner(user) } }
 
           it 'creates a fork in the group' do
-            expect(fork_of_project).to be_persisted
+            is_expected.to be_success
+
             expect(fork_of_project.first_owner).to eq(user)
             expect(fork_of_project.namespace).to eq(namespace)
           end
@@ -255,8 +273,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
               existing_project = create(:project, :repository, path: project.path, namespace: namespace)
               expect(existing_project).to be_persisted
 
-              expect(fork_of_project).not_to be_persisted
-              expect(fork_of_project.errors[:path]).to eq(['has already been taken'])
+              is_expected.to be_error
+              expect(response.errors).to include('Path has already been taken')
             end
           end
 
@@ -265,6 +283,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             let_it_be(:project) { create(:project, :public) }
 
             it 'creates the project with the lower visibility level' do
+              is_expected.to be_success
               expect(fork_of_project).to be_persisted
               expect(fork_of_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
             end
@@ -275,8 +294,8 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let_it_be(:namespace) { create(:group).tap { |group| group.add_developer(user) } }
 
           it 'does not create a fork' do
-            expect(fork_of_project).not_to be_persisted
-            expect(fork_of_project.errors[:namespace]).to eq(['is not valid'])
+            is_expected.to be_error
+            expect(response.errors).to match_array(['Namespace is not valid', 'User is not allowed to import projects'])
           end
         end
       end
@@ -285,8 +304,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         let(:params) { super().merge(path: 'forked', name: 'My Fork', description: 'Description', visibility: 'private') }
 
         it 'sets optional attributes to specified values' do
-          expect(fork_of_project).to be_persisted
+          is_expected.to be_success
 
+          expect(fork_of_project).to be_persisted
           expect(fork_of_project.path).to eq('forked')
           expect(fork_of_project.name).to eq('My Fork')
           expect(fork_of_project.description).to eq('Description')
@@ -299,8 +319,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let(:params) { super().merge(visibility: 'unknown') }
 
           it 'sets visibility level to private' do
-            expect(fork_of_project).to be_persisted
+            is_expected.to be_success
 
+            expect(fork_of_project).to be_persisted
             expect(fork_of_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
         end
@@ -311,8 +332,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let(:params) { super().merge(visibility: 'public') }
 
           it 'sets visibility level to project visibility' do
-            expect(fork_of_project).to be_persisted
+            is_expected.to be_success
 
+            expect(fork_of_project).to be_persisted
             expect(fork_of_project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
           end
         end
@@ -322,8 +344,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let_it_be(:namespace) { create(:group, :private).tap { |group| group.add_owner(user) } }
 
           it 'sets visibility level to target namespace visibility level' do
-            expect(fork_of_project).to be_persisted
+            is_expected.to be_success
 
+            expect(fork_of_project).to be_persisted
             expect(fork_of_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
           end
         end
@@ -342,8 +365,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           end
 
           it 'copies project features visibility settings to the fork' do
-            expect(fork_of_project).to be_persisted
+            is_expected.to be_success
 
+            expect(fork_of_project).to be_persisted
             expect(fork_of_project.project_feature.slice(attrs.keys)).to eq(attrs)
           end
         end
@@ -369,7 +393,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
         end
 
         it 'creates a new pool repository after the project is moved to a new shard' do
-          fork_before_move = subject
+          fork_before_move = fork_of_project
 
           storage_move = create(
             :project_repository_storage_move,
@@ -379,8 +403,10 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           )
           Projects::UpdateRepositoryStorageService.new(storage_move).execute
 
-          fork_after_move = described_class.new(project.reload, user, namespace: group).execute
+          fork_after_move_response = described_class.new(project.reload, user, namespace: group).execute
+          expect(fork_after_move_response).to be_success
 
+          fork_after_move = fork_after_move_response[:project]
           pool_repository_before_move = PoolRepository.joins(:shard)
                                           .find_by(source_project: project, shards: { name: 'default' })
           pool_repository_after_move = PoolRepository.joins(:shard)
@@ -396,8 +422,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
         context 'when no pool exists' do
           it 'creates a new object pool' do
-            expect { fork_of_project }.to change { PoolRepository.count }.by(1)
+            expect { response }.to change { PoolRepository.count }.by(1)
 
+            is_expected.to be_success
             expect(fork_of_project.pool_repository).to eq(project.pool_repository)
           end
 
@@ -405,8 +432,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             let_it_be(:project) { create(:project, :private, :repository) }
 
             it 'does not create an object pool' do
-              expect { fork_of_project }.not_to change { PoolRepository.count }
+              expect { response }.not_to change { PoolRepository.count }
 
+              is_expected.to be_success
               expect(fork_of_project.pool_repository).to be_nil
             end
           end
@@ -416,8 +444,9 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
           let!(:pool_repository) { create(:pool_repository, source_project: project) }
 
           it 'joins the object pool' do
-            expect { fork_of_project }.not_to change { PoolRepository.count }
+            expect { response }.not_to change { PoolRepository.count }
 
+            is_expected.to be_success
             expect(fork_of_project.pool_repository).to eq(pool_repository)
           end
         end
@@ -440,7 +469,7 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
 
             expect(forked_from_project(unlinked_fork)).to be_nil
 
-            expect(service.execute(unlinked_fork)).to be_nil
+            expect(service.execute(unlinked_fork)).to be_error
 
             expect(forked_from_project(unlinked_fork)).to be_nil
           end
@@ -467,6 +496,21 @@ RSpec.describe Projects::ForkService, feature_category: :source_code_management 
             BatchLoader::Executor.clear_current
 
             expect(project.forks_count).to eq(1)
+          end
+
+          context 'when user cannot fork' do
+            let(:another_user) { create(:user) }
+
+            it 'returns an error' do
+              expect(unlinked_fork.forked?).to be_falsey
+              expect(forked_from_project(unlinked_fork)).to be_nil
+
+              response = described_class.new(project, another_user, params).execute(unlinked_fork)
+              expect(response).to be_error
+              expect(response.errors).to eq ['Forked from project is forbidden']
+
+              expect(forked_from_project(unlinked_fork)).to be_nil
+            end
           end
 
           context 'if the fork is not allowed' do

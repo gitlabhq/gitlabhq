@@ -11,7 +11,6 @@ module QA
             element 'pipeline-form-ci-variable-key-field'
             element 'pipeline-form-ci-variable-value-field'
             element 'pipeline-form-ci-variable-value-dropdown'
-            element 'ci-variable-value-dropdown-item'
           end
 
           def click_run_pipeline_button
@@ -44,8 +43,8 @@ module QA
           def variable_dropdown_item_with_index(index)
             return unless has_variable_dropdown?
 
-            within_element_by_index('ci-variable-value-dropdown-item', index) do
-              find('p')
+            within_element_by_index('.gl-new-dropdown-item', index) do
+              find('.gl-new-dropdown-item-text-wrapper')
             end
           end
         end

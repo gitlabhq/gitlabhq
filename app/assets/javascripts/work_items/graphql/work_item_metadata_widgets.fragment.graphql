@@ -8,6 +8,8 @@ fragment WorkItemMetadataWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetStartAndDueDate {
     type
+    dueDate
+    startDate
   }
   ... on WorkItemWidgetNotes {
     type

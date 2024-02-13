@@ -85,7 +85,7 @@ export default {
     />
     <local-storage-sync
       :value="mergeRequestFilters"
-      storage-key="mr_activity_filters"
+      storage-key="mr_activity_filters_2"
       @input="localSyncFilters"
     />
     <gl-button-group>

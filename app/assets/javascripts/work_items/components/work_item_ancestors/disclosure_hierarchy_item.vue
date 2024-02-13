@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <li class="disclosure-hierarchy-item">
+  <li class="disclosure-hierarchy-item gl-display-flex gl-min-w-0">
     <gl-link
       :id="itemId"
       :href="item.webUrl"

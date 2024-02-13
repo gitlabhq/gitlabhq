@@ -22,10 +22,10 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
       expect(result.to_a).to match(WorkItems::Type.default.order_by_name_asc)
     end
 
-    context 'when requesting taskable types' do
-      let(:args) { { taskable: true } }
+    context 'when filtering by type name' do
+      let(:args) { { name: 'TASK' } }
 
-      it 'returns only taskable types' do
+      it 'returns type with the given name' do
         expect(result.to_a).to contain_exactly(WorkItems::Type.default_by_type(:task))
       end
     end

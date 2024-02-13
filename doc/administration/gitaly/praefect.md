@@ -4,7 +4,11 @@ group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure Gitaly Cluster **(FREE SELF)**
+# Configure Gitaly Cluster
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Configure Gitaly Cluster using either:
 
@@ -197,7 +201,7 @@ The following options are available:
      [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 Setting up PostgreSQL creates empty Praefect tables. For more information, see the
-[relevant troubleshooting section](troubleshooting.md#relation-does-not-exist-errors).
+[relevant troubleshooting section](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
 
 #### Running GitLab and Praefect databases on the same server
 
@@ -287,7 +291,7 @@ praefect['configuration'] = {
 ```
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
+[troubleshooting steps](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
 
 #### Reads distribution caching
 
@@ -376,7 +380,7 @@ You should use PgBouncer with `session` pool mode. You can use the
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
-you need to prepare PostgreSQL server as documented in [in the setup instructions](#manual-database-setup):
+you need to prepare PostgreSQL server as documented in [the setup instructions](#manual-database-setup):
 
 ```ruby
 pgbouncer['databases'] = {
@@ -491,7 +495,7 @@ praefect['configuration'] = {
 
 ### Praefect
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 13.4, Praefect nodes can no longer be designated as `primary`.
 
 If there are multiple Praefect nodes:
 
@@ -870,7 +874,7 @@ For self-compiled installations:
 
 #### Service discovery
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8971) in GitLab 15.10.
 
 Prerequisites:
 
@@ -941,13 +945,7 @@ You can also appoint an authoritative name server by setting it in this format:
 
 :::TabTitle Linux package (Omnibus)
 
-1. Edit `/etc/gitlab/gitlab.rb` and add:
-
-   ```ruby
-   praefect['consul_service_name'] = 'praefect'
-   ```
-
-1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Add the IP address for each Praefect node to the DNS service discovery address.
 1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `PRAEFECT_SERVICE_DISCOVERY_ADDRESS`
    with Praefect service discovery address, such as `praefect.service.consul`.
@@ -980,6 +978,55 @@ You can also appoint an authoritative name server by setting it in this format:
 1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
 
 ::EndTabs
+
+##### Configure service discovery with Consul
+
+If you already have a Consul server in your architecture then you can add
+a Consul agent on each Praefect node and register the `praefect` service to it.
+This registers each node's IP address to `praefect.service.consul` so it can be found
+by service discovery.
+
+Requirements:
+
+- One or more [Consul](../consul.md) servers to keep track of the Consul agents.
+
+1. On each Praefect server, add the following to your `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   praefect['consul_service_name'] = 'praefect'
+
+   # The following must also be added until this issue is addressed:
+   # https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8321
+   consul['monitoring_service_discovery'] = true
+   praefect['configuration'] = {
+     # ...
+     #
+     prometheus_listen_addr: '0.0.0.0:9652',
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Repeat the above steps on each Praefect server to use with
+   service discovery.
+1. On the Praefect clients (except Gitaly servers), edit `git_data_dirs` in
+   `/etc/gitlab/gitlab.rb` as follows. Replace `CONSUL_SERVER` with the IP or
+   address of a Consul server. The default Consul DNS port is `8600`.
+
+   ```ruby
+   git_data_dirs({
+     "default" => {
+       "gitaly_address" => 'dns://CONSUL_SERVER:8600/praefect.service.consul:2305',
+       "gitaly_token" => 'PRAEFECT_EXTERNAL_TOKEN'
+     }
+   })
+   ```
+
+1. Use `dig` from the Praefect clients to confirm that each IP address has been registered to
+   `praefect.service.consul` with `dig A praefect.service.consul @CONSUL_SERVER -p 8600`.
+   Replace `CONSUL_SERVER` with the value configured above and all Praefect node IP addresses
+   should be present in the output.
+1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Gitaly
 
@@ -1483,7 +1530,7 @@ For a replication factor:
 
 ## Repository verification
 
-> [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4080) in GitLab 15.0.
 
 Praefect stores metadata about the repositories in a database. If the repositories are modified on disk
 without going through Praefect, the metadata can become inaccurate. For example if a Gitaly node is
@@ -1689,7 +1736,7 @@ To migrate existing clusters:
 
    - If downtime is unacceptable:
 
-      1. Determine which Gitaly node is [the current primary](troubleshooting.md#determine-primary-gitaly-node).
+      1. Determine which Gitaly node is [the current primary](troubleshooting_gitaly_cluster.md#determine-primary-gitaly-node).
 
       1. Comment out the secondary Gitaly nodes from the virtual storage's configuration in `/etc/gitlab/gitlab.rb`
       on all Praefect nodes. This ensures there's only one Gitaly node configured, causing both of the election

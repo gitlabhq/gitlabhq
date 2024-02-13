@@ -4,20 +4,47 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Changes in merge requests **(FREE ALL)**
+# Changes in merge requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
 changes are shown as a _diff_ (difference) between the current state and the proposed
-changes.
+changes. By default, the diff compares your proposed changes (the source branch) with
+the target branch. By default, only the changed portions of the files are shown.
 
-By default, the diff view compares the versions of files in the merge request source branch
-to the files in the target branch, and shows only the parts of a file that have changed.
+This example shows changes to a text file. In the default syntax highlighting theme:
 
-![Example screenshot of a source code diff](img/mr-diff-example_v15.png)
+- The _current_ version is shown in red, with a minus (`-`) sign before the line.
+- The _proposed_ version is shown in green with a plus (`+`) sign before the line.
 
-For technical details on how GitLab calculates the diff between the two revisions,
-read [Working with diffs](../../../development/merge_request_concepts/diffs/index.md)
-in our development documentation.
+![Example screenshot of a source code diff](img/mr_diff_example_v16_9.png)
+
+The header for each file in the diff contains:
+
+- **Hide file contents** (**{chevron-down}**) to hide all changes to this file.
+- **Path**: The full path to this file. To copy this path, select
+  **Copy file path** (**{copy-to-clipboard}**).
+- **Lines changed**: The number of lines added and deleted in this file, in the format `+2 -2`.
+- **Viewed**: Select this checkbox to [mark the file as viewed](#mark-files-as-viewed)
+  until more changes are added to it.
+- **Comment on this file** (**{comment}**) to leave a general comment on the file, without
+  pinning the comment to a specific line.
+- **Options**: Select (**{ellipsis_v}**) to display more file viewing options.
+
+The diff also includes navigation and comment aids to the left of the file, in the gutter:
+
+- **Show more context**: Select **Previous 20 lines** (**{expand-up}**) to display
+  the previous 20 unchanged lines, or **Next 20 lines** (**{expand-down}**) to
+  display the next 20 unchanged lines.
+- **Line numbers** are shown in two columns. Previous line numbers are shown on
+  the left, and proposed line numbers on the right. To interact with a line:
+  - To display [comment options](#add-a-comment-to-a-merge-request-file), hover over a line number.
+  - To copy a link to the line, press <kbd>Command</kbd> and select (or right-click)
+    a line number, then select **Copy link address**.
+  - To highlight a line, select the line number.
 
 ## Show all changes in a merge request
 
@@ -34,13 +61,77 @@ To view the diff of changes included in a merge request:
 Files with many changes are collapsed to improve performance. GitLab displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
+### Collapse generated files
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../../administration/feature_flags.md)
+named `collapse_generated_diff_files`.
+On GitLab.com, this feature is not available.
+
+To help reviewers focus on the files needed to perform a code review, GitLab collapses
+several common types of generated files. These files are collapsed by default, because
+they are unlikely to require code reviews:
+
+1. Files with `.nib`, `.xcworkspacedata`, or `.xcurserstate` extensions.
+1. Package lock files such as `package-lock.json` or `Gopkg.lock`.
+1. Files in the `node_modules` folder.
+1. Minified `js` or `css` files.
+1. Source map reference files.
+1. Generated Go files, including the generated files by protocol buffer compiler.
+
+If you want to automatically collapse additional files or file types, you can use
+the `gitlab-generated` attribute, which marks or unmarks certain files/paths as generated. See [overriding syntax highlighting](../highlighting.md#override-syntax-highlighting-for-a-file-type) for more
+detail on how to use override attributes.
+
+#### View a collapsed file
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Below the merge request title, select **Changes**.
+1. Find the file you want to view, and select **Expand file**.
+
+#### Configure collapse behavior for a file type
+
+To change the default collapse behavior for a file type:
+
+1. If a `.gitattributes` file does not exist in the root directory of your project,
+   create a blank file with this name.
+1. For each file type you want to modify, add a line to the `.gitattributes` file
+   declaring the file extension and your desired behavior:
+
+   ```conf
+   # Collapse all files with a .txt extension
+   *.txt gitlab-generated
+
+   # Collapse all files within the docs directory
+   docs/** gitlab-generated
+
+   # Do not collapse package-lock.json
+   package-lock.json -gitlab-generated
+   ```
+
+1. Commit, push, and merge your changes into your default branch.
+
+After the changes merge into your [default branch](../repository/branches/default.md),
+all files of this type in your project use this behavior in merge requests.
+
+For technical details about how generated files are detected, see the
+[`go-enry`](https://github.com/go-enry/go-enry/blob/master/data/generated.go) repository.
+
 ## Show one file at a time
 
 For larger merge requests, you can review one file at a time. You can change this setting
-[temporarily in a merge request](#in-a-merge-request-show-only-one-file-at-a-time), or
-so it [applies to all merge requests](#in-all-merge-requests-show-only-one-file-at-a-time).
+[temporarily in a merge request](#for-this-merge-request-only), or
+so it [applies to all merge requests](#for-all-merge-requests).
 
-### In a merge request, show only one file at a time
+### For this merge request only
 
 To temporarily change your viewing preferences for a specific merge request:
 
@@ -53,7 +144,7 @@ To temporarily change your viewing preferences for a specific merge request:
 This change overrides your choice in your user preferences. It persists until you
 clear your browser's cookies or change this behavior again.
 
-### In all merge requests, show only one file at a time
+### For all merge requests
 
 To view one file at a time for all of your merge requests:
 
@@ -162,7 +253,11 @@ per conflicted file on the merge request diff:
 
 ![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
 
-## Show scanner findings in diff **(ULTIMATE ALL)**
+## Show scanner findings in diff
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 You can show scanner findings in the diff. For details, see:
 
@@ -193,3 +288,8 @@ This comment can also be a thread.
 1. Select the location where you want to comment.
 
 An icon is displayed on the image and a comment field is displayed.
+
+## Resources
+
+- For technical details on how GitLab calculates the diff between the two revisions,
+  see [Working with diffs](../../../development/merge_request_concepts/diffs/index.md).

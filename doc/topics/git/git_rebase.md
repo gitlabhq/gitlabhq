@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Introduction to Git rebase and force push, methods to resolve merge conflicts through the command line."
 ---
 
-# Git rebase and force push **(FREE ALL)**
+# Git rebase and force push
 
 In Git, a rebase updates your branch with the contents of another branch.
 A rebase confirms that changes in your branch don't conflict with
@@ -263,3 +263,35 @@ you can't approve a merge request if you have rebased it.
 - [Numerous undo possibilities in Git](numerous_undo_possibilities_in_git/index.md#undo-staged-local-changes-without-modifying-history)
 - [Git documentation for branches and rebases](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
 - [Project squash and merge settings](../../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project)
+
+## Troubleshooting
+
+### `Unmergeable state` after `/rebase` quick action
+
+The `/rebase` command schedules a background task. The task attempts to rebase
+the changes in the source branch on the latest commit of the target branch.
+If, after using the `/rebase`
+[quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics),
+you see this error, a rebase cannot be scheduled:
+
+```plaintext
+This merge request is currently in an unmergeable state, and cannot be rebased.
+```
+
+This error occurs if any of these conditions are true:
+
+- Conflicts exist between the source and target branches.
+- The source branch contains no commits.
+- Either the source or target branch does not exist.
+- An error has occurred, resulting in no diff being generated.
+
+To resolve the `unmergeable state` error:
+
+1. Resolve any merge conflicts.
+1. Confirm the source branch exists, and has commits.
+1. Confirm the target branch exists.
+1. Confirm the diff has been generated.
+
+### `/merge` quick action ignored after `/rebase`
+
+If `/rebase` is used, `/merge` is ignored to avoid a race condition where the source branch is merged or deleted before it is rebased.

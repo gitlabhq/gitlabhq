@@ -4,9 +4,13 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# ZenTao (deprecated) **(PREMIUM ALL)**
+# ZenTao (deprecated)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338178) in GitLab 14.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/338178) in GitLab 14.5.
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7.

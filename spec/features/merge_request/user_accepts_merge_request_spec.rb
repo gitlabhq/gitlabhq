@@ -109,7 +109,7 @@ RSpec.describe 'User accepts a merge request', :js, :sidekiq_might_not_need_inli
     end
 
     it 'accepts a merge request' do
-      find('[data-testid="widget_edit_commit_message"]').click
+      find_by_testid('widget_edit_commit_message').click
       fill_in('merge-message-edit', with: 'wow such merge')
 
       click_merge_button

@@ -11,7 +11,6 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
   it { is_expected.to have_many(:components).class_name('Ci::Catalog::Resources::Component') }
 
   it { is_expected.to delegate_method(:sha).to(:release) }
-  it { is_expected.to delegate_method(:released_at).to(:release) }
   it { is_expected.to delegate_method(:author_id).to(:release) }
 
   describe 'validations' do
@@ -119,29 +118,6 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     end
   end
 
-  describe '#update_catalog_resource' do
-    let_it_be(:release) { create(:release, project: project1, tag: 'v1') }
-    let(:version) { build(:ci_catalog_resource_version, catalog_resource: resource1, release: release) }
-
-    context 'when a version is created' do
-      it 'calls update_catalog_resource' do
-        expect(version).to receive(:update_catalog_resource).once
-
-        version.save!
-      end
-    end
-
-    context 'when a version is destroyed' do
-      it 'calls update_catalog_resource' do
-        version.save!
-
-        expect(version).to receive(:update_catalog_resource).once
-
-        version.destroy!
-      end
-    end
-  end
-
   describe '#name' do
     it 'is equivalent to release.tag' do
       v1_0.release.update!(name: 'Release v1.0')
@@ -170,6 +146,31 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     it 'returns the correct readme for the version' do
       expect(v1_0.readme.data).to include('Readme v1.0')
       expect(v1_1.readme.data).to include('Readme v1.1')
+    end
+  end
+
+  describe 'synchronizing released_at with `releases` table using model callbacks' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
+
+    let_it_be_with_reload(:release) do
+      create(:release, :with_catalog_resource_version, project: project, tag: 'v1', released_at: '2023-01-01T00:00:00Z')
+    end
+
+    let(:version) { release.catalog_resource_version }
+
+    context 'when the version is created' do
+      it 'updates released_at to match the release' do
+        expect(version.read_attribute(:released_at)).to eq(release.released_at)
+      end
+    end
+
+    context 'when release.released_at is updated' do
+      it 'updates released_at to match the release' do
+        release.update!(released_at: '2023-02-02T00:00:00Z')
+
+        expect(version.read_attribute(:released_at)).to eq(release.released_at)
+      end
     end
   end
 end

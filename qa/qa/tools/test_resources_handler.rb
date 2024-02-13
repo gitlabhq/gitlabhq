@@ -49,7 +49,8 @@ module QA
       end
 
       def run_delete
-        failures = files.flat_map do |file|
+        failures = []
+        files.flat_map do |file|
           resources = read_file(file)
           if resources.nil?
             logger.info("#{file} is empty, next...")
@@ -62,10 +63,13 @@ module QA
             next
           end
 
-          delete_resources(filtered_resources)
+          failures << delete_resources(filtered_resources)
 
           filtered_groups = filtered_resources['QA::Resource::Group']
-          delete_groups_permanently(filtered_groups) unless filtered_groups.nil?
+          failures << delete_resources_permanently(filtered_groups, 'group') unless filtered_groups.nil?
+
+          filtered_projects = filtered_resources['QA::Resource::Project']
+          failures << delete_resources_permanently(filtered_projects, 'project') unless filtered_projects.nil?
         end
 
         return puts "\nDone" if failures.empty?
@@ -176,38 +180,49 @@ module QA
             delete_response = delete(Runtime::API::Request.new(api_client, resource['api_path']).url)
 
             if delete_response.code == 202 || delete_response.code == 204
-              if key == 'QA::Resource::Group' && !resource_not_found?(resource['api_path'])
+              if key == 'QA::Resource::Group' || key == 'QA::Resource::Project' &&
+                  !resource_not_found?(resource['api_path'])
                 logger.info("Successfully marked #{resource_info} for deletion...")
               else
                 logger.info("Deleting #{resource_info}... \e[32mSUCCESS\e[0m")
               end
             else
               logger.info("Deleting #{resource_info}... \e[31mFAILED - #{delete_response}\e[0m")
-              # We might try to delete some groups already marked for deletion, it's fine to ignore these failures
-              failures << resource_info unless key == 'QA::Resource::Group'
+              # We might try to delete some groups or projects already marked for deletion
+              # It's fine to ignore these failures
+              failures << resource_info unless key == 'QA::Resource::Group' || key == 'QA::Resource::Project'
             end
           end
         end
       end
 
-      def delete_groups_permanently(groups)
-        groups.each_with_object([]) do |group, failures|
-          logger.info("Processing QA::Resource::Group #{group['info']}...")
+      def delete_resources_permanently(resources, type)
+        resources.each_with_object([]) do |resource, failures|
+          logger.info("Processing QA::Resource::#{type.capitalize} #{resource['info']}...")
 
-          if resource_not_found?(group['api_path'])
-            logger.info("#{group['api_path']} returns 404, next...")
+          if resource_not_found?(resource['api_path'])
+            logger.info("#{resource['api_path']} returns 404, next...")
             next
           end
 
-          permanent_delete_path = "#{group['api_path']}?permanently_remove=true"\
-                                  "&full_path=#{group['info'].split("'").last}"
+          full_path = resource['info'].split("'").last
+
+          if type == 'project'
+            # We need to get the full path of the project again since marking it for deletion changes the name
+            project_response = get(Runtime::API::Request.new(api_client, resource['api_path'].to_s).url)
+            project = parse_body(project_response)
+            full_path = project[:path_with_namespace]
+          end
+
+          permanent_delete_path = "#{resource['api_path']}?permanently_remove=true"\
+                                  "&full_path=#{full_path}"
           response = delete(Runtime::API::Request.new(api_client, permanent_delete_path).url)
 
           if response.code == 202
-            logger.info("Permanently deleting group #{group['info']}... \e[32mSUCCESS\e[0m")
+            logger.info("Permanently deleting #{type} #{resource['info']}... \e[32mSUCCESS\e[0m")
           else
-            logger.info("Permanently deleting group #{group['info']}... \e[31mFAILED - #{response}\e[0m")
-            failures << "QA::Resource::Group #{group['info']}"
+            logger.info("Permanently deleting #{type} #{resource['info']}... \e[31mFAILED - #{response}\e[0m")
+            failures << "QA::Resource::#{type.capitalize} #{resource['info']}"
           end
         end
       end

@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlBadge, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
@@ -15,7 +15,11 @@ export default {
     GlBadge,
     LdapDropdownFooter: () =>
       import('ee_component/members/components/action_dropdowns/ldap_dropdown_footer.vue'),
-    CustomPermissions: () => import('ee_component/members/components/table/custom_permissions.vue'),
+    ManageRolesDropdownFooter: () =>
+      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['namespace', 'group'],
   props: {
@@ -96,6 +100,9 @@ export default {
       }
     },
   },
+  i18n: {
+    customRole: s__('MemberRole|Custom role'),
+  },
 };
 </script>
 
@@ -113,22 +120,26 @@ export default {
       @select="handleSelect"
     >
       <template #list-item="{ item }">
-        <span data-testid="access-level-link">{{ item.text }}</span>
+        <div data-testid="access-level-link" :class="{ 'gl-font-weight-bold': item.memberRoleId }">
+          {{ item.text }}
+        </div>
+        <div v-if="item.description" class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2">
+          {{ item.description }}
+        </div>
       </template>
       <template #footer>
         <ldap-dropdown-footer
           v-if="permissions.canOverride && member.isOverridden"
           :member-id="member.id"
         />
+        <manage-roles-dropdown-footer />
       </template>
     </gl-collapsible-listbox>
 
-    <gl-badge v-else>{{ member.accessLevel.stringValue }}</gl-badge>
+    <div v-else v-gl-tooltip.ds0="member.accessLevel.description" data-testid="role-text">
+      {{ member.accessLevel.stringValue }}
+    </div>
 
-    <custom-permissions
-      v-if="memberRoleId !== null"
-      :member-role-id="memberRoleId"
-      :custom-permissions="customPermissions"
-    />
+    <gl-badge v-if="memberRoleId" class="gl-mt-3">{{ $options.i18n.customRole }}</gl-badge>
   </div>
 </template>

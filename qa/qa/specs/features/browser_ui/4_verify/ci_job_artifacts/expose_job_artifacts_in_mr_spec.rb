@@ -16,13 +16,12 @@ module QA
         end
 
         let(:merge_request) do
-          Resource::MergeRequest.fabricate_via_api! do |merge_request|
-            merge_request.project = project
-            merge_request.description = 'Simple MR for a simple test'
-            merge_request.target_new_branch = false
-            merge_request.file_name = 'new_file.txt'
-            merge_request.file_content = 'Simple file for a simple MR'
-          end
+          create(:merge_request,
+            project: project,
+            description: 'Simple MR for a simple test',
+            target_new_branch: false,
+            file_name: 'new_file.txt',
+            file_content: 'Simple file for a simple MR')
         end
 
         before do

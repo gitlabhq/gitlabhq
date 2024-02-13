@@ -4,9 +4,13 @@ group: Distribution
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Encrypted Configuration **(FREE SELF)**
+# Encrypted Configuration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45712) in GitLab 13.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45712) in GitLab 13.7.
 
 GitLab can read settings for certain features from encrypted settings files. The supported features are:
 

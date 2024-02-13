@@ -56,26 +56,6 @@ RSpec.describe Bitbucket::Connection, feature_category: :integrations do
         expect { connection.get('/users') }.to raise_error(Bitbucket::ExponentialBackoff::RateLimitError)
       end
     end
-
-    context 'when the bitbucket_importer_exponential_backoff feature flag is disabled' do
-      before do
-        stub_feature_flags(bitbucket_importer_exponential_backoff: false)
-      end
-
-      it 'does not run with exponential backoff' do
-        expect_next_instance_of(described_class) do |instance|
-          expect(instance).not_to receive(:retry_with_exponential_backoff).and_call_original
-        end
-
-        expect_next_instance_of(OAuth2::AccessToken) do |instance|
-          expect(instance).to receive(:get).and_return(double(parsed: true))
-        end
-
-        connection = described_class.new({ token: token })
-
-        connection.get('/users')
-      end
-    end
   end
 
   describe '#expired?' do

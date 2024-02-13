@@ -2,7 +2,6 @@ import { escape } from 'lodash';
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { differenceInMilliseconds } from '~/lib/utils/datetime_utility';
 import { s__, sprintf } from '~/locale';
-import { unrestrictedPages } from './constants';
 
 // Renders math using KaTeX in an element.
 //
@@ -85,15 +84,12 @@ class SafeMathRenderer {
     }
 
     const el = chosenEl || this.queue.shift();
-    const forceRender =
-      Boolean(chosenEl) ||
-      unrestrictedPages.includes(this.pageName) ||
-      !gon.math_rendering_limits_enabled;
+    const forceRender = Boolean(chosenEl) || !gon.math_rendering_limits_enabled;
     const text = el.textContent;
 
     el.removeAttribute('style');
     if (!forceRender && (this.totalMS >= MAX_RENDER_TIME_MS || text.length > MAX_MATH_CHARS)) {
-      // Show unrendered math code
+      // Show un-rendered math code
       const codeElement = document.createElement('pre');
 
       codeElement.className = 'code';

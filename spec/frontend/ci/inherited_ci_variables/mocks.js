@@ -16,6 +16,7 @@ export const mockInheritedCiVariables = ({ withNextPage = false } = {}) => ({
           {
             __typename: `InheritedCiVariable`,
             id: 'gid://gitlab/Ci::GroupVariable/1',
+            description: 'This will be inherited by projects',
             environmentScope: '*',
             groupName: 'group_abc',
             groupCiCdSettingsPath: '/groups/group_abc/-/settings/ci_cd',
@@ -28,6 +29,7 @@ export const mockInheritedCiVariables = ({ withNextPage = false } = {}) => ({
           {
             __typename: `InheritedCiVariable`,
             id: 'gid://gitlab/Ci::GroupVariable/2',
+            description: null,
             environmentScope: '*',
             groupName: 'subgroup_xyz',
             groupCiCdSettingsPath: '/groups/group_abc/subgroup_xyz/-/settings/ci_cd',

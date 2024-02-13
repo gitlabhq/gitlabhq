@@ -132,6 +132,7 @@ export function initAdminLabels() {
     // display the empty state if there are no more labels
     if (labelsCount < 1 && !pagination && emptyState) {
       emptyState.classList.remove('gl-display-none');
+      labelsContainer.classList.add('gl-display-none');
     }
   }
 

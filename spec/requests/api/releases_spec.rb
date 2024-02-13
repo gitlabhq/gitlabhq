@@ -21,19 +21,11 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   describe 'GET /projects/:id/releases', :use_clean_rails_redis_caching do
     context 'when there are two releases' do
       let!(:release_1) do
-        create(:release,
-               project: project,
-               tag: 'v0.1',
-               author: maintainer,
-               released_at: 2.days.ago)
+        create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: 2.days.ago)
       end
 
       let!(:release_2) do
-        create(:release,
-               project: project,
-               tag: 'v0.2',
-               author: maintainer,
-               released_at: 1.day.ago)
+        create(:release, project: project, tag: 'v0.2', author: maintainer, released_at: 1.day.ago)
       end
 
       it 'returns 200 HTTP status' do
@@ -152,6 +144,16 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
       expect(json_response.first['upcoming_release']).to eq(false)
     end
 
+    it 'filters by updated_at' do
+      create(:release, project: project, tag: 'v0.1', author: maintainer, released_at: 1.day.ago, updated_at: 1.day.ago)
+      release = create(:release, project: project, tag: 'v0.2', author: maintainer, released_at: 1.day.ago, updated_at: 4.days.ago)
+
+      get api("/projects/#{project.id}/releases", maintainer), params: { updated_before: 2.days.ago }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.map { |p| p['tag_name'] }).to match([release.tag])
+    end
+
     it 'avoids N+1 queries', :use_sql_query_cache do
       create(:release, :with_evidence, project: project, tag: 'v0.1', author: maintainer)
       create(:release_link, release: project.releases.first)
@@ -233,11 +235,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     context 'when user is a guest' do
       let!(:release) do
-        create(:release,
-               project: project,
-               tag: 'v0.1',
-               author: maintainer,
-               created_at: 2.days.ago)
+        create(:release, project: project, tag: 'v0.1', author: maintainer, created_at: 2.days.ago)
       end
 
       it 'responds 200 OK' do
@@ -311,12 +309,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
   describe 'GET /projects/:id/releases/:tag_name' do
     context 'when there is a release' do
       let!(:release) do
-        create(:release,
-               project: project,
-               tag: 'v0.1',
-               sha: commit.id,
-               author: maintainer,
-               description: 'This is v0.1')
+        create(
+          :release,
+          project: project,
+          tag: 'v0.1',
+          sha: commit.id,
+          author: maintainer,
+          description: 'This is v0.1'
+        )
       end
 
       it 'returns 200 HTTP status' do
@@ -405,10 +405,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
       context 'when release has link asset' do
         let!(:link) do
-          create(:release_link,
-                 release: release,
-                 name: 'release-18.04.dmg',
-                 url: url)
+          create(:release_link, release: release, name: 'release-18.04.dmg', url: url)
         end
 
         let(:url) { 'https://my-external-hosting.example.com/scrambled-url/app.zip' }
@@ -450,11 +447,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
           end
 
           it "exposes tag and commit" do
-            create(:release,
-                   project: project,
-                   tag: 'v0.0.1',
-                   author: maintainer,
-                   created_at: 2.days.ago)
+            create(:release, project: project, tag: 'v0.0.1', author: maintainer, created_at: 2.days.ago)
             get api("/projects/#{project.id}/releases/v0.0.1", guest)
 
             expect(response).to match_response_schema('public_api/v4/release')
@@ -695,21 +688,25 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     context 'when there are more than one release' do
       let!(:release_a) do
-        create(:release,
-                project: project,
-                tag: 'v0.1',
-                author: maintainer,
-                description: 'This is v0.1',
-                released_at: 3.days.ago)
+        create(
+          :release,
+          project: project,
+          tag: 'v0.1',
+          author: maintainer,
+          description: 'This is v0.1',
+          released_at: 3.days.ago
+        )
       end
 
       let!(:release_b) do
-        create(:release,
-                project: project,
-                tag: 'v0.2',
-                author: maintainer,
-                description: 'This is v0.2',
-                released_at: 2.days.ago)
+        create(
+          :release,
+          project: project,
+          tag: 'v0.2',
+          author: maintainer,
+          description: 'This is v0.2',
+          released_at: 2.days.ago
+        )
       end
 
       it 'redirects to the latest release tag' do
@@ -959,8 +956,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     context 'when user is not a project member' do
       it 'forbids the request' do
-        post api("/projects/#{project.id}/releases", non_project_member),
-             params: params
+        post api("/projects/#{project.id}/releases", non_project_member), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -969,8 +965,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         let(:project) { create(:project, :repository, :public) }
 
         it 'forbids the request' do
-          post api("/projects/#{project.id}/releases", non_project_member),
-               params: params
+          post api("/projects/#{project.id}/releases", non_project_member), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -1269,12 +1264,14 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
     let(:params) { { description: 'Best release ever!' } }
 
     let!(:release) do
-      create(:release,
-             project: project,
-             tag: 'v0.1',
-             name: 'New release',
-             released_at: '2018-03-01T22:00:00Z',
-             description: 'Super nice release')
+      create(
+        :release,
+        project: project,
+        tag: 'v0.1',
+        name: 'New release',
+        released_at: '2018-03-01T22:00:00Z',
+        description: 'Super nice release'
+      )
     end
 
     before do
@@ -1385,8 +1382,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
     context 'when user is not a project member' do
       it 'forbids the request' do
-        put api("/projects/#{project.id}/releases/v0.1", non_project_member),
-             params: params
+        put api("/projects/#{project.id}/releases/v0.1", non_project_member), params: params
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
@@ -1395,8 +1391,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
         let(:project) { create(:project, :repository, :public) }
 
         it 'forbids the request' do
-          put api("/projects/#{project.id}/releases/v0.1", non_project_member),
-               params: params
+          put api("/projects/#{project.id}/releases/v0.1", non_project_member), params: params
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -1515,11 +1510,13 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
   describe 'DELETE /projects/:id/releases/:tag_name' do
     let!(:release) do
-      create(:release,
-             project: project,
-             tag: 'v0.1',
-             name: 'New release',
-             description: 'Super nice release')
+      create(
+        :release,
+        project: project,
+        tag: 'v0.1',
+        name: 'New release',
+        description: 'Super nice release'
+      )
     end
 
     it 'accepts the request' do

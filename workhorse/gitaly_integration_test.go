@@ -133,9 +133,7 @@ func TestAllowedClone(t *testing.T) {
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			// Do the git clone
 			tmpDir := t.TempDir()
@@ -161,9 +159,7 @@ func TestAllowedShallowClone(t *testing.T) {
 
 			// Prepare test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			// Shallow git clone (depth 1)
 			tmpDir := t.TempDir()
@@ -189,9 +185,7 @@ func TestAllowedPush(t *testing.T) {
 
 			// Prepare the test server and backend
 			ts := testAuthServer(t, nil, nil, 200, apiResponse)
-			defer ts.Close()
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			// Do the git clone
 			tmpDir := t.TempDir()
@@ -232,7 +226,7 @@ func TestAllowedGetGitBlob(t *testing.T) {
 				jsonGitalyServer(gitalyAddress), apiResponse.Repository.StorageName, apiResponse.Repository.RelativePath, oid,
 			)
 
-			resp, body, err := doSendDataRequest("/something", "git-blob", jsonParams)
+			resp, body, err := doSendDataRequest(t, "/something", "git-blob", jsonParams)
 			require.NoError(t, err)
 			shortBody := string(body[:len(expectedBody)])
 
@@ -265,7 +259,7 @@ func TestAllowedGetGitArchive(t *testing.T) {
 			})
 			jsonParams := buildGitalyRPCParams(gitalyAddress, rpcArg{"ArchivePath", archivePath}, msg)
 
-			resp, body, err := doSendDataRequest("/archive.tar", "git-archive", jsonParams)
+			resp, body, err := doSendDataRequest(t, "/archive.tar", "git-archive", jsonParams)
 			require.NoError(t, err)
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 			requireNginxResponseBuffering(t, "no", resp, "GET %q: nginx response buffering", resp.Request.URL)
@@ -314,7 +308,7 @@ func TestAllowedGetGitArchiveOldPayload(t *testing.T) {
 				jsonGitalyServer(gitalyAddress), repo.StorageName, repo.RelativePath, archivePath, archivePrefix, "HEAD",
 			)
 
-			resp, body, err := doSendDataRequest("/archive.tar", "git-archive", jsonParams)
+			resp, body, err := doSendDataRequest(t, "/archive.tar", "git-archive", jsonParams)
 			require.NoError(t, err)
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
 			requireNginxResponseBuffering(t, "no", resp, "GET %q: nginx response buffering", resp.Request.URL)
@@ -355,7 +349,7 @@ func TestAllowedGetGitDiff(t *testing.T) {
 			})
 			jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
-			resp, body, err := doSendDataRequest("/something", "git-diff", jsonParams)
+			resp, body, err := doSendDataRequest(t, "/something", "git-diff", jsonParams)
 			require.NoError(t, err)
 
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)
@@ -384,7 +378,7 @@ func TestAllowedGetGitFormatPatch(t *testing.T) {
 			})
 			jsonParams := buildGitalyRPCParams(gitalyAddress, msg)
 
-			resp, body, err := doSendDataRequest("/something", "git-format-patch", jsonParams)
+			resp, body, err := doSendDataRequest(t, "/something", "git-format-patch", jsonParams)
 			require.NoError(t, err)
 
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resp.Request.URL)

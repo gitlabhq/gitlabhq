@@ -4,13 +4,17 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Clean up Rake tasks **(FREE SELF)**
+# Clean up Rake tasks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 
 ## Remove unreferenced LFS files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
 
 WARNING:
 Do not run this within 12 hours of a GitLab upgrade. This is to ensure that all background migrations
@@ -51,7 +55,7 @@ later (once a day). If you need to garbage collect them immediately, run
 
 ### Remove unreferenced LFS files immediately
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36628) in GitLab 12.10.
 
 Unreferenced LFS files are removed on a daily basis but you can remove them immediately if
 you need to. For example:
@@ -77,7 +81,7 @@ Clean up project upload files if they don't exist in GitLab database.
 
 ### Clean up project upload files from file system
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20863) in GitLab 11.2.
 
 Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
@@ -115,7 +119,7 @@ If using object storage, run the [All-in-one Rake task](../administration/raketa
 
 ### Clean up project upload files from object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20918) in GitLab 11.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/20918) in GitLab 11.2.
 
 Move object store upload files to a lost and found directory if they don't exist in GitLab database.
 
@@ -206,7 +210,7 @@ level with `NICENESS`. Below are the valid levels, but consult
 
 ## Remove expired ActiveSession lookup keys
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30668) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30668) in GitLab 12.2.
 
 ```shell
 # omnibus-gitlab

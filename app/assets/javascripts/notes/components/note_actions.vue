@@ -22,7 +22,6 @@ import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
 export default {
   i18n: {
-    addReactionLabel: __('Add reaction'),
     editCommentLabel: __('Edit comment'),
     deleteCommentLabel: __('Delete comment'),
     moreActionsLabel: __('More actions'),
@@ -317,9 +316,7 @@ export default {
     />
     <emoji-picker
       v-if="canAwardEmoji"
-      v-gl-tooltip
-      :title="$options.i18n.addReactionLabel"
-      toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
+      toggle-class="add-reaction-button btn-default-tertiary"
       data-testid="note-emoji-button"
       @click="setAwardEmoji"
     />

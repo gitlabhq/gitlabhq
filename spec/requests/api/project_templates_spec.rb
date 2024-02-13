@@ -242,10 +242,7 @@ RSpec.describe API::ProjectTemplates, feature_category: :source_code_management 
   describe 'GET /projects/:id/templates/licenses/:key' do
     it 'fills placeholders in the license' do
       get api("/projects/#{public_project.id}/templates/licenses/agpl-3.0"),
-          params: {
-            project: 'Project Placeholder',
-            fullname: 'Fullname Placeholder'
-          }
+        params: { project: 'Project Placeholder', fullname: 'Fullname Placeholder' }
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('public_api/v4/license')

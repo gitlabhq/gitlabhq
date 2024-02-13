@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Background migrations and upgrades **(FREE SELF)**
+# Background migrations and upgrades
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - Batched background migrations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51332) in GitLab 13.11 [with a flag](../user/feature_flags.md) named `execute_batched_migrations_on_schedule`. Disabled by default.
 > - Feature flag `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
@@ -114,7 +118,7 @@ advanced users who understand the risks of doing so.
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to each feature's version history for more details.
+Refer to each feature's history for more details.
 
 To pause an ongoing batched background migration,
 [disable the batched background migrations feature](../development/database/batched_background_migrations.md#enable-or-disable-background-migrations).
@@ -167,11 +171,11 @@ Use the following database queries to see the state of the current batched backg
 
 #### Automatic batch size optimization
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags.md) named `optimize_batched_migrations`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags.md) named `optimize_batched_migrations`. Enabled by default.
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+Refer to this feature's history for more details.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `optimize_batched_migrations`.
@@ -187,7 +191,7 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 WARNING:
 There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
-Refer to this feature's version history for more details.
+Refer to this feature's history for more details.
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
@@ -208,7 +212,7 @@ If the migration continues to fail with an error, either:
 
 #### Fix and retry the migration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67504) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67504) in GitLab 14.3.
 
 All failed batched background migrations must be resolved to upgrade to a newer
 version of GitLab. If you [check the status](#check-the-status-of-batched-background-migrations)
@@ -251,7 +255,7 @@ on a regular interval.
 
 #### Finish a failed migration manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62634) in GitLab 14.1.
 
 To manually finish a batched background migration that failed with an error,
 use the information in the failure error logs or the database:

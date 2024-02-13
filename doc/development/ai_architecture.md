@@ -11,7 +11,7 @@ GitLab has created a common set of tools to support our product groups and their
 1. Increase the velocity of feature teams by providing a set of high quality, ready to use tools
 1. Ability to switch underlying technologies quickly and easily
 
-AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](../../ee/development/ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
+AI is moving very quickly, and we need to be able to keep pace with changes in the area. We have built an [abstraction layer](ai_features/index.md) to do this, allowing us to take a more "pluggable" approach to the underlying models, data stores, and other technologies.
 
 The following diagram from the [architecture blueprint](../architecture/blueprints/ai_gateway/index.md) shows a simplified view of how the different components in GitLab interact. The abstraction layer helps avoid code duplication within the REST APIs.
 
@@ -117,7 +117,7 @@ The following table documents functionality that Code Suggestions offers today, 
 
 Code Suggestions for self-managed users was introduced as part of the [Cloud Connector MVC](https://gitlab.com/groups/gitlab-org/-/epics/10516).
 
-For more information on the technical solution for this project see the [Cloud Connector MVC documentation](cloud_connector/code_suggestions_for_sm.md).
+For more information on the technical solution for this project see the [Cloud Connector architecture documentation](cloud_connector/architecture.md).
 
 The intention is to evolve this solution to service other AI features under the Cloud Connector product umbrella.
 

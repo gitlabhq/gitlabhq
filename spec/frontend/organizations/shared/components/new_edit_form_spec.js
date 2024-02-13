@@ -41,6 +41,8 @@ describe('NewEditForm', () => {
   const findIdField = () => wrapper.findByLabelText('Organization ID');
   const findUrlField = () => wrapper.findComponent(OrganizationUrlField);
   const findDescriptionField = () => wrapper.findByLabelText('Organization description (optional)');
+  const findDescriptionCharacterCounter = () =>
+    wrapper.findByTestId('description-character-counter');
   const findAvatarField = () => wrapper.findComponent(AvatarUploadDropzone);
 
   const setUrlFieldValue = async (value) => {
@@ -94,6 +96,57 @@ describe('NewEditForm', () => {
         'attach-file',
         'full-screen',
       ],
+    });
+  });
+
+  describe('Organization description character counter', () => {
+    describe('when character count is within 1024 characters', () => {
+      let charactersLeft = 1024;
+      const MOCK_DESCRIPTION = 'asdf';
+
+      beforeEach(() => {
+        createComponent();
+
+        findDescriptionField().setValue(MOCK_DESCRIPTION);
+        charactersLeft -= MOCK_DESCRIPTION.length;
+      });
+
+      it('renders the character counter correctly', () => {
+        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-gray-500']);
+        expect(findDescriptionCharacterCounter().text()).toBe(
+          `${charactersLeft} characters remaining`,
+        );
+      });
+    });
+
+    describe('when character count is over 1024 characters', () => {
+      let charactersLeft = 1024;
+      const MOCK_DESCRIPTION =
+        'abCFgSVTTWxeDCGyabhBdMWMrLvQJdGdUPvRwyvJWYhQieBSMzyJTyAjkEPQLPVhYnMczFeCdbxLqFRiNjEiTNbnUgunuWpBfTtLbRZyJmYgAjrynvxuAbMcfGxPyrPSrnCcKVbJrSANjmFwyKQBbfgifXrnnyaEBFXCGaSjBvhtBSTvNbTNjiJpJLigAaPPZSDvpNyWtqaqJawBWGfFTMqwYMQRxPzNtfBWHznjqkwjhVvdfVLvbWgbBgYRpTWCugAzUfFUeejLpGgmbhGfZgVDCqULGvtPNYwnecMnXuSzygVpWPBALZXjnBWAyYwqmddfwYrqTgZfqYuUAbgXnfxFSpfvpXpwLLirLkfRDhiAYKtivNcmVWRKxgRVSMZkJKfuydkZtFdxDDeaWYGCHEQEzuWQPEiPNPbbSBweQgYEiebAqZTqCwWuDwSnKagPtRYQjznQxxbwjaPVrubBULiZceqZTPLxqidSPRHJbfUKphtpuSYHPQmWzFqpJejrtCtiQEYnQdvLedvyPLBMzctVUwBtwJDqMtZrSvZSdUmJiZakJWmGKUWWmcqUyrAvKZUzAypUUkHcfvXkLQDjnXXHTXyhezqBvTtLmSueFrQSfAXitHCCAGSULMxJcqHvdvkJtBDHEudxjqvKPpJtubKLWhQgfaXebxGkJVGgBtYgjiyYZqVYzftFKPjzBdcMAhAhfKVbXbmXEkdYWURVnaWjTvducTmdNYFVRqvywjjCJxQbngkqQAdmgaJZwukeYHTrRWqVPZQgtmcKCAjXSDQKKrfbdHAiWvVbRGmiMgLzVBCewpdEzrrZyNQUVSFHPSPmrJwjaypweBCDNeRxQcdbgJqafjuDeeZiurzCceDEmetNnfEkGpUSmwAUamnbFCTjaiyUZaQqhJkGFSJUQdcASNDRJZUTdeFJyTNXWNULiLcWNbaeQJuqcmiUAqQMVNiLUDNtEcTAqeJZSmfdivixUiCpcVcRwYBgVWPPuivTmJVkMDjhDEhNfyVncKGKAc';
+
+      beforeEach(() => {
+        createComponent();
+
+        findDescriptionField().setValue(MOCK_DESCRIPTION);
+        charactersLeft -= MOCK_DESCRIPTION.length;
+      });
+
+      it('renders the character counter correctly', () => {
+        expect(findDescriptionCharacterCounter().classes()).toStrictEqual(['gl-text-red-500']);
+        expect(findDescriptionCharacterCounter().text()).toBe(
+          `${Math.abs(charactersLeft)} characters over limit`,
+        );
+      });
+
+      it('renders client-side error when user attempts to submit', async () => {
+        await submitForm();
+
+        expect(
+          wrapper
+            .findByText('Organization description is too long (maximum is 1024 characters).')
+            .exists(),
+        ).toBe(true);
+      });
     });
   });
 

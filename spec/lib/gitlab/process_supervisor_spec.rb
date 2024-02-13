@@ -42,7 +42,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         pids_killed = []
 
         supervisor.supervise(process_ids) do |dead_pids|
-          pids_killed = dead_pids
+          pids_killed += dead_pids
           []
         end
 
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         pids_killed = []
 
         supervisor.supervise(process_ids) do |dead_pids|
-          pids_killed = dead_pids
+          pids_killed += dead_pids
           [42] # Fake starting a new process in place of the terminated one.
         end
 
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         Process.kill('TERM', process_ids.first)
 
         await_condition(sleep_sec: health_check_interval_seconds) do
-          pids_killed == [process_ids.first]
+          pids_killed.include?(process_ids.first)
         end
 
         expect(Gitlab::ProcessManagement.process_alive?(process_ids.first)).to be(false)
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         pids_killed = []
 
         supervisor.supervise(process_ids) do |dead_pids|
-          pids_killed = dead_pids
+          pids_killed += dead_pids
           # Fake a new process having the same pid as one that was just terminated.
           [process_ids.last]
         end
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         Process.kill('TERM', process_ids.first)
 
         await_condition(sleep_sec: health_check_interval_seconds) do
-          pids_killed == [process_ids.first]
+          pids_killed.include?(process_ids.first)
         end
 
         expect(supervisor.supervised_pids).to contain_exactly(process_ids.last)
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         pids_killed = []
 
         supervisor.supervise(process_ids) do |dead_pids|
-          pids_killed = dead_pids
+          pids_killed += dead_pids
           42
         end
 
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::ProcessSupervisor, feature_category: :cloud_connector do
         Process.kill('TERM', process_ids.first)
 
         await_condition(sleep_sec: health_check_interval_seconds) do
-          pids_killed == [process_ids.first]
+          pids_killed.include?(process_ids.first)
         end
 
         expect(supervisor.supervised_pids).to contain_exactly(42, process_ids.last)

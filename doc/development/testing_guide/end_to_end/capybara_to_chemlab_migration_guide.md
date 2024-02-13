@@ -95,12 +95,12 @@ end
 
 ### Element Naming Convention
 
-Since the element type is preserved within the Page Library, there is no need to specify a `_field` or `_button` suffix to the data-qa-selector.
+Since the element type is preserved within the Page Library, there is no need to specify a `_field` or `_button` suffix to the data-testid.
 
 ```html
 <!-- Before -->
 <input type="text" name="first-name" data-testid="first_name_field" />
-<input type="submit" name="continue" value="Continue" data-testid="continue_button" />
+<input type="submit" name="continue" value="Continue" data-testid="continue-button" />
 
 <!-- After -->
 <input type="text" name="first-name" data-testid="first_name" />

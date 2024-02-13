@@ -196,6 +196,39 @@ RSpec.describe GitlabSchema do
     end
   end
 
+  describe '.resolve_type' do
+    let(:object) { build(:user) }
+
+    let(:object_type) { Class.new(Types::BaseObject) }
+    let(:union_type) { Class.new(Types::BaseUnion) }
+
+    it 'returns the type for object types' do
+      expect(described_class.resolve_type(object_type, object, {})).to eq([object_type, object])
+    end
+
+    it 'raises an exception for non-object types' do
+      expect { described_class.resolve_type(union_type, object, {}) }.to raise_error(GraphQL::RequiredImplementationMissingError)
+    end
+
+    context 'when accepts is defined' do
+      let(:object_type) do
+        Class.new(Types::BaseObject) do
+          accepts User
+        end
+      end
+
+      it 'returns the type if the object is accepted' do
+        expect(described_class.resolve_type(object_type, object, {})).to eq([object_type, object])
+      end
+
+      it 'returns nil when object is not accepted' do
+        project = build(:project)
+
+        expect(described_class.resolve_type(object_type, project, {})).to eq([nil, project])
+      end
+    end
+  end
+
   describe 'validate_max_errors' do
     it 'reports at most 5 errors' do
       query = <<~GQL

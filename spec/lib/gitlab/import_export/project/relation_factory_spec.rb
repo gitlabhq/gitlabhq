@@ -559,4 +559,58 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       include_examples 'access levels'
     end
   end
+
+  describe 'diff notes' do
+    context 'when relation is a diff note' do
+      let(:relation_sym) { :notes }
+      let(:line_range) do
+        {
+          "line_range" => {
+            "start_line_code" => "abc_0_1",
+            "start_line_type" => "new",
+            "end_line_code" => "abc_5_10",
+            "end_line_type" => "new"
+          }
+        }
+      end
+
+      let(:relation_hash) do
+        {
+          'note' => 'note',
+          'noteable_type' => 'MergeRequest',
+          'type' => 'DiffNote',
+          'position' => line_range,
+          'original_position' => line_range,
+          'change_position' => line_range
+        }
+      end
+
+      context 'when diff note line_range is in an outdated format' do
+        it 'updates the line_range to the new format' do
+          expect_next_instance_of(described_class) do |relation_factory|
+            expect(relation_factory).to receive(:setup_models).and_call_original
+          end
+
+          expected_line_range = {
+            'start' => {
+              'line_code' => 'abc_0_1',
+              'type' => 'new',
+              'old_line' => nil,
+              'new_line' => 1
+            },
+            'end' => {
+              'line_code' => 'abc_5_10',
+              'type' => 'new',
+              'old_line' => 5,
+              'new_line' => 10
+            }
+          }
+
+          expect(created_object.position.line_range).to eq(expected_line_range)
+          expect(created_object.original_position.line_range).to eq(expected_line_range)
+          expect(created_object.change_position.line_range).to eq(expected_line_range)
+        end
+      end
+    end
+  end
 end

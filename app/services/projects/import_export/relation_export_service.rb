@@ -5,10 +5,12 @@ module Projects
     class RelationExportService
       include Gitlab::ImportExport::CommandLineUtil
 
-      def initialize(relation_export, jid)
+      def initialize(relation_export, user, jid, params = {})
         @relation_export = relation_export
+        @user = user
         @jid = jid
         @logger = Gitlab::Export::Logger.build
+        @params = params
       end
 
       def execute
@@ -33,7 +35,7 @@ module Projects
 
       private
 
-      attr_reader :relation_export, :jid, :logger
+      attr_reader :relation_export, :user, :jid, :logger, :params
 
       delegate :relation, :project_export_job, to: :relation_export
       delegate :project, to: :project_export_job
@@ -60,7 +62,9 @@ module Projects
           Gitlab::ImportExport::Project::RelationSaver.new(
             project: project,
             shared: shared,
-            relation: relation
+            relation: relation,
+            user: user,
+            params: params
           )
         end
       end

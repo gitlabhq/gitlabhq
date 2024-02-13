@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cache, feature_category: :importers do
   let_it_be(:work_item_type_id) { ::WorkItems::Type.default_issue_type.id }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:user_2) { create(:user) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
 
-  let(:project) { create(:project) }
-  let(:client) { double(:client) }
-  let(:user) { create(:user) }
-  let(:milestone) { create(:milestone, project: project) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
@@ -34,14 +35,9 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
 
   describe '.import_if_issue' do
     it 'imports an issuable if it is a regular issue' do
-      importer = double(:importer)
-
-      expect(described_class)
-        .to receive(:new)
-        .with(issue, project, client)
-        .and_return(importer)
-
-      expect(importer).to receive(:execute)
+      expect_next_instance_of(Gitlab::GithubImport::Importer::IssueImporter, issue, project, client) do |importer|
+        expect(importer).to receive(:execute)
+      end
 
       described_class.import_if_issue(issue, project, client)
     end
@@ -58,174 +54,71 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
   describe '#execute' do
     let(:importer) { described_class.new(issue, project, client) }
 
-    it 'creates the issue and assignees and updates_search_data' do
-      expect(importer)
-        .to receive(:create_issue)
-        .and_return(10)
-
-      expect(importer)
-        .to receive(:create_assignees)
-        .with(10)
-
-      expect(importer.issuable_finder)
-        .to receive(:cache_database_id)
-        .with(10)
-
-      expect(importer)
-        .to receive(:update_search_data)
-        .with(10)
-
-      importer.execute
-    end
-
-    it 'caches the created issue ID even if importer later fails' do
-      error = StandardError.new('mocked error')
-
-      allow_next_instance_of(described_class) do |importer|
-        allow(importer)
-          .to receive(:create_issue)
-          .and_return(10)
-        allow(importer)
-          .to receive(:create_assignees)
-          .and_raise(error)
-      end
-
-      expect_next_instance_of(Gitlab::GithubImport::IssuableFinder) do |finder|
-        expect(finder)
-          .to receive(:cache_database_id)
-          .with(10)
-      end
-
-      expect { importer.execute }.to raise_error(error)
-    end
-  end
-
-  describe '#create_issue' do
-    let(:importer) { described_class.new(issue, project, client) }
-
     before do
-      allow(importer.milestone_finder)
-        .to receive(:id_for)
-        .with(issue)
-        .and_return(milestone.id)
-    end
+      allow_next_instance_of(Gitlab::GithubImport::MilestoneFinder) do |finder|
+        allow(finder).to receive(:id_for).with(issue).and_return(milestone.id)
+      end
 
-    it 'creates issues with a work item type id' do
-      allow(importer.user_finder)
-        .to receive(:author_id_for)
-        .with(issue)
-        .and_return([user.id, true])
-
-      issue_id = importer.create_issue
-
-      expect(Issue.find(issue_id).work_item_type_id).to eq(work_item_type_id)
-    end
-
-    context 'when the issue author could be found' do
-      it 'creates the issue with the found author as the issue author' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(issue)
-          .and_return([user.id, true])
-
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .with(
-            {
-              iid: 42,
-              title: 'My Issue',
-              author_id: user.id,
-              project_id: project.id,
-              namespace_id: project.project_namespace_id,
-              description: 'This is my issue',
-              milestone_id: milestone.id,
-              state_id: 1,
-              created_at: created_at,
-              updated_at: updated_at,
-              work_item_type_id: work_item_type_id
-            },
-            project.issues
-          )
-          .and_call_original
-
-        importer.create_issue
+      allow_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+        allow(finder).to receive(:author_id_for).with(issue).and_return([project.creator_id, false])
+        allow(finder).to receive(:user_id_for).and_return(nil)
       end
     end
 
-    context 'when the issue author could not be found' do
-      it 'creates the issue with the project creator as the issue author' do
-        allow(importer.user_finder)
-          .to receive(:author_id_for)
-          .with(issue)
-          .and_return([project.creator_id, false])
-
-        expect(importer)
-          .to receive(:insert_and_return_id)
-          .with(
-            {
-              iid: 42,
-              title: 'My Issue',
-              author_id: project.creator_id,
-              project_id: project.id,
-              namespace_id: project.project_namespace_id,
-              description: "*Created by: alice*\n\nThis is my issue",
-              milestone_id: milestone.id,
-              state_id: 1,
-              created_at: created_at,
-              updated_at: updated_at,
-              work_item_type_id: work_item_type_id
-            },
-            project.issues
-          )
-          .and_call_original
-
-        importer.create_issue
-      end
+    it 'creates the issue' do
+      expect { importer.execute }.to change { Issue.count }.by(1)
+      expect(Issue.last).to have_attributes(
+        iid: 42,
+        title: 'My Issue',
+        author_id: project.creator_id,
+        assignee_ids: [],
+        project_id: project.id,
+        namespace_id: project.project_namespace_id,
+        description: "*Created by: alice*\n\nThis is my issue",
+        milestone_id: milestone.id,
+        state_id: 1,
+        created_at: created_at,
+        updated_at: updated_at,
+        work_item_type_id: work_item_type_id
+      )
     end
 
-    it 'produces a valid Issue' do
-      allow(importer.user_finder)
-        .to receive(:author_id_for)
-        .with(issue)
-        .and_return([user.id, true])
+    it 'caches the created issue ID' do
+      importer.execute
 
-      importer.create_issue
+      database_id = Gitlab::GithubImport::IssuableFinder.new(project, issue).database_id
 
-      expect(project.issues.take).to be_valid
+      expect(database_id).to eq(Issue.last.id)
     end
 
-    it 'returns the ID of the created issue' do
-      allow(importer.user_finder)
-        .to receive(:author_id_for)
-        .with(issue)
-        .and_return([user.id, true])
+    context 'when author is mapped to a user' do
+      it 'sets the author ID to the mapped user and preserves the original issue description' do
+        expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+          expect(finder).to receive(:author_id_for).and_return([user.id, true])
+          expect(finder).to receive(:user_id_for).and_return(nil).twice
+        end
 
-      expect(importer.create_issue).to be_a_kind_of(Numeric)
-    end
-  end
+        importer.execute
 
-  describe '#create_assignees' do
-    it 'inserts the issue assignees in bulk' do
-      importer = described_class.new(issue, project, client)
-
-      allow(importer.user_finder)
-        .to receive(:user_id_for)
-        .with(issue.assignees[0])
-        .and_return(4)
-
-      allow(importer.user_finder)
-        .to receive(:user_id_for)
-        .with(issue.assignees[1])
-        .and_return(5)
-
-      expect(ApplicationRecord)
-        .to receive(:legacy_bulk_insert)
-        .with(
-          IssueAssignee.table_name,
-          [{ issue_id: 1, user_id: 4 }, { issue_id: 1, user_id: 5 }]
+        expect(Issue.last).to have_attributes(
+          description: "This is my issue",
+          author_id: user.id
         )
+      end
+    end
 
-      importer.create_assignees(1)
+    context 'when assigness are mapped to users' do
+      it 'sets the assignee IDs to the mapped users' do
+        expect_next_instance_of(Gitlab::GithubImport::UserFinder) do |finder|
+          expect(finder).to receive(:author_id_for).and_return([user.id, true])
+          expect(finder).to receive(:user_id_for).and_return(user.id)
+          expect(finder).to receive(:user_id_for).and_return(user_2.id)
+        end
+
+        importer.execute
+
+        expect(Issue.last.assignee_ids).to match_array([user.id, user_2.id])
+      end
     end
   end
 end

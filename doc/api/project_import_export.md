@@ -4,12 +4,22 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project import and export API **(FREE ALL)**
+# Project import and export API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the project import and export API to import and export projects using file transfers.
 
 Before using the project import and export API, you might want to use the
 [group import and export API](group_import_export.md).
+
+After using the project import and export API, you might want to use the
+[Project-level CI/CD variables API](project_level_variables.md).
+
+You must still migrate your [Container Registry](../user/packages/container_registry/index.md)
+over a series of Docker pulls and pushes. Re-run any CI/CD pipelines to retrieve any build artifacts.
 
 ## Prerequisites
 
@@ -48,11 +58,11 @@ POST /projects/:id/export
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`                  | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
-| `upload[url]`         | string | yes      | The URL to upload the project.
-| `description`         | string | no | Overrides the project description.
-| `upload`              | hash | no | Hash that contains the information to upload the exported project to a web server.
-| `upload[http_method]` | string | no      | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT`.
+| `id`                  | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `upload[url]`         | string | yes      | The URL to upload the project. |
+| `description`         | string | no | Overrides the project description. |
+| `upload`              | hash | no | Hash that contains the information to upload the exported project to a web server. |
+| `upload[http_method]` | string | no      | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT`. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -77,7 +87,7 @@ GET /projects/:id/export
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -126,7 +136,7 @@ GET /projects/:id/export/download
 
 | Attribute | Type              | Required | Description                              |
 | --------- | ----------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name \
@@ -140,7 +150,7 @@ ls *export.tar.gz
 
 ## Import a file
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 ```plaintext
 POST /projects/import
@@ -205,9 +215,12 @@ NOTE:
 The maximum import file size can be set by the Administrator. It defaults to `0` (unlimited).
 As an administrator, you can modify the maximum import file size. To do so, use the `max_import_size` option in the [Application settings API](settings.md#change-application-settings) or the [Admin Area](../administration/settings/account_and_limit_settings.md). Default [modified](https://gitlab.com/gitlab-org/gitlab/-/issues/251106) from 50 MB to 0 in GitLab 13.8.
 
-## Import a file from a remote object storage **(BETA)**
+## Import a file from a remote object storage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
+DETAILS:
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282503) in GitLab 13.12 in [Beta](../policy/experiment-beta-support.md#beta) [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file`. Enabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `import_project_from_remote_file`.
@@ -219,12 +232,12 @@ POST /projects/remote-import
 
 | Attribute         | Type              | Required | Description                              |
 | ----------------- | ----------------- | -------- | ---------------------------------------- |
-| `path`            | string            | yes      | Name and path for the new project.
-| `url`             | string            | yes      | URL for the file to import.
-| `name`            | string            | no       | The name of the project to import. If not provided, defaults to the path of the project.
-| `namespace`       | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.
-| `overwrite`       | boolean           | no       | Whether to overwrite a project with the same path when importing. Defaults to `false`.
-| `override_params` | Hash              | no       | Supports all fields defined in the [Project API](projects.md).
+| `path`            | string            | yes      | Name and path for the new project. |
+| `url`             | string            | yes      | URL for the file to import. |
+| `name`            | string            | no       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `namespace`       | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `overwrite`       | boolean           | no       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
+| `override_params` | Hash              | no       | Supports all fields defined in the [Project API](projects.md). |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -257,7 +270,7 @@ The `Content-Type` header must be `application/gzip`.
 
 ## Import a file from AWS S3
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://about.gitlab.com/handbook/product/gitlab-the-product/#beta), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.9 in [Beta](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga), [with a flag](../administration/feature_flags.md) named `import_project_from_remote_file_s3`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/348874) in GitLab 14.10.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/350571) in GitLab 15.11. Feature flag `import_project_from_remote_file_s3` removed.
 
@@ -267,14 +280,14 @@ POST /projects/remote-import-s3
 
 | Attribute           | Type           | Required | Description                              |
 | ------------------- | -------------- | -------- | ---------------------------------------- |
-| `access_key_id`     | string         | yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys).
-| `bucket_name`       | string         | yes      | [AWS S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) where the file is stored.
-| `file_key`          | string         | yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file.
-| `path`              | string         | yes      | The full path of the new project.
-| `region`            | string         | yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored.
-| `secret_access_key` | string         | yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys).
-| `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project.
-| `namespace`         | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.
+| `access_key_id`     | string         | yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). |
+| `bucket_name`       | string         | yes      | [AWS S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) where the file is stored. |
+| `file_key`          | string         | yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file. |
+| `path`              | string         | yes      | The full path of the new project. |
+| `region`            | string         | yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
+| `secret_access_key` | string         | yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). |
+| `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `namespace`         | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -341,7 +354,7 @@ GET /projects/:id/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

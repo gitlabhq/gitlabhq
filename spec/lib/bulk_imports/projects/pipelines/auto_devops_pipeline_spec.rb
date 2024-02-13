@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Projects::Pipelines::AutoDevopsPipeline do
+RSpec.describe BulkImports::Projects::Pipelines::AutoDevopsPipeline, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -40,6 +40,8 @@ RSpec.describe BulkImports::Projects::Pipelines::AutoDevopsPipeline do
       allow_next_instance_of(BulkImports::Common::Extractors::NdjsonExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(BulkImports::Pipeline::ExtractedData.new(data: [auto_devops]))
       end
+
+      allow(pipeline).to receive(:set_source_objects_counter)
 
       pipeline.run
 

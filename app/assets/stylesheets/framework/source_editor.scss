@@ -1,9 +1,9 @@
 [data-editor-loading] {
-  @include gl-relative;
-  @include gl-display-flex;
-  @include gl-justify-content-center;
-  @include gl-align-items-center;
-  @include gl-z-index-0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
 
   > * {
     filter: blur(5px);
@@ -12,8 +12,8 @@
   &::before {
     content: '';
     @include spinner-deprecated(32px, 3px);
-    @include gl-absolute;
-    @include gl-z-index-1;
+    position: absolute;
+    z-index: 1;
   }
 
   pre {
@@ -26,17 +26,19 @@
 }
 
 .source-editor-preview {
-  @include gl-display-flex;
+  display: flex;
 
   .md {
-    @include gl-overflow-scroll;
-    @include gl-px-6;
-    @include gl-py-4;
-    @include gl-w-full;
+    overflow: scroll;
+    padding-left: $gl-spacing-scale-6;
+    padding-right: $gl-spacing-scale-6;
+    padding-top: $gl-spacing-scale-4;
+    padding-bottom: $gl-spacing-scale-4;
+    width: 100%;
   }
 
   .gl-source-editor {
-    @include gl-order-n1;
+    order: -1;
     border-radius: 0 0 $border-radius-default $border-radius-default;
   }
 }
@@ -67,17 +69,17 @@
 
   .margin-view-overlays {
     .line-numbers {
-      @include gl-display-flex;
-      @include gl-justify-content-end;
-      @include gl-relative;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
 
       &::before {
-        @include gl-visibility-hidden;
-        @include gl-align-self-center;
-        @include gl-bg-gray-400;
-        @include gl-mr-2;
-        @include gl-w-4;
-        @include gl-h-4;
+        visibility: hidden;
+        align-self: center;
+        background-color: $gray-400;
+        margin-right: $gl-spacing-scale-2;
+        width: $gl-spacing-scale-4;
+        height: $gl-spacing-scale-4;
         mask-image: url('icons-stacked.svg#link');
         mask-repeat: no-repeat;
         mask-size: cover;
@@ -86,35 +88,35 @@
       }
 
       &:hover {
-        @include gl-text-decoration-underline;
+        text-decoration: underline;
         cursor: pointer !important;
       }
 
       &:hover::before {
-        @include gl-visibility-visible;
+        visibility: visible;
       }
 
       &:focus::before {
-        @include gl-visibility-visible;
+        visibility: visible;
         outline: auto;
       }
 
       .link-anchor {
-        @include gl-display-block;
-        @include gl-absolute;
-        @include gl-w-full;
-        @include gl-h-full;
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
       }
     }
   }
 
   // Remove custom focus from element
   .inputarea {
-    @include gl-shadow-none;
+    box-shadow: none;
   }
 }
 
 .active-line-text {
-  @include gl-bg-orange-600;
-  @include gl-opacity-3;
+  background-color: $orange-600;
+  opacity: 0.3;
 }

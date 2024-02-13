@@ -62,9 +62,7 @@ func TestMain(m *testing.M) {
 func TestDeniedClone(t *testing.T) {
 	// Prepare test server and backend
 	ts := testAuthServer(t, nil, nil, 403, "Access denied")
-	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	// Do the git clone
 	cloneCmd := exec.Command("git", "clone", fmt.Sprintf("%s/%s", ws.URL, testRepo), t.TempDir())
@@ -76,9 +74,7 @@ func TestDeniedClone(t *testing.T) {
 func TestDeniedPush(t *testing.T) {
 	// Prepare the test server and backend
 	ts := testAuthServer(t, nil, nil, 403, "Access denied")
-	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	// Perform the git push
 	pushCmd := exec.Command("git", "push", "-v", fmt.Sprintf("%s/%s", ws.URL, testRepo), fmt.Sprintf("master:%s", newBranch()))
@@ -97,8 +93,7 @@ func TestRegularProjectsAPI(t *testing.T) {
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/api/v3/projects/123/repository/not/special",
@@ -138,8 +133,7 @@ func TestAllowedStaticFile(t *testing.T) {
 		w.WriteHeader(404)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/static%20file.txt",
@@ -162,8 +156,7 @@ func TestStaticFileRelativeURL(t *testing.T) {
 	defer ts.Close()
 	backendURLString := ts.URL + "/my-relative-url"
 	log.Info(backendURLString)
-	ws := startWorkhorseServer(backendURLString)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, backendURLString)
 
 	resource := "/my-relative-url/static.txt"
 	resp, body := httpGet(t, ws.URL+resource, nil)
@@ -183,8 +176,7 @@ func TestAllowedPublicUploadsFile(t *testing.T) {
 		w.WriteHeader(200)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/uploads/static%20file.txt",
@@ -208,8 +200,7 @@ func TestDeniedPublicUploadsFile(t *testing.T) {
 		w.WriteHeader(404)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/uploads/static.txt",
@@ -245,8 +236,7 @@ This is a static error page for code 499
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resourcePath := "/error-499"
 	resp, body := httpGet(t, ws.URL+resourcePath, nil)
@@ -274,8 +264,7 @@ func TestGzipAssets(t *testing.T) {
 		w.WriteHeader(404)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
 		content         string
@@ -331,8 +320,7 @@ func TestAltDocumentAssets(t *testing.T) {
 	upstreamConfig := newUpstreamConfig(ts.URL)
 	upstreamConfig.AltDocumentRoot = testAltDocumentRoot
 
-	ws := startWorkhorseServerWithConfig(upstreamConfig)
-	defer ws.Close()
+	ws := startWorkhorseServerWithConfig(t, upstreamConfig)
 
 	testCases := []struct {
 		desc            string
@@ -390,12 +378,11 @@ func sendDataResponder(command string, literalJSON string) *httptest.Server {
 	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), handler)
 }
 
-func doSendDataRequest(path string, command, literalJSON string) (*http.Response, []byte, error) {
+func doSendDataRequest(t *testing.T, path string, command, literalJSON string) (*http.Response, []byte, error) {
 	ts := sendDataResponder(command, literalJSON)
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resp, err := http.Get(ws.URL + path)
 	if err != nil {
@@ -425,7 +412,7 @@ func TestArtifactsGetSingleFile(t *testing.T) {
 	encodedFilename := base64.StdEncoding.EncodeToString([]byte(fileName))
 	jsonParams := fmt.Sprintf(`{"Archive":"%s","Entry":"%s"}`, archivePath, encodedFilename)
 
-	resp, body, err := doSendDataRequest(resourcePath, "artifacts-entry", jsonParams)
+	resp, body, err := doSendDataRequest(t, resourcePath, "artifacts-entry", jsonParams)
 	require.NoError(t, err)
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resourcePath)
@@ -440,7 +427,7 @@ func TestImageResizing(t *testing.T) {
 	jsonParams := fmt.Sprintf(`{"Location":"%s","Width":%d, "ContentType":"%s"}`, imageLocation, requestedWidth, imageFormat)
 	resourcePath := "/uploads/-/system/user/avatar/123/avatar.png?width=40"
 
-	resp, body, err := doSendDataRequest(resourcePath, "send-scaled-img", jsonParams)
+	resp, body, err := doSendDataRequest(t, resourcePath, "send-scaled-img", jsonParams)
 	require.NoError(t, err, "send resize request")
 	require.Equal(t, 200, resp.StatusCode, "GET %q: body: %s", resourcePath, body)
 
@@ -494,7 +481,7 @@ func TestSendURLForArtifacts(t *testing.T) {
 			jsonParams := fmt.Sprintf(`{"URL":%q}`, server.URL)
 
 			resourcePath := `/namespace/project/builds/123/artifacts/file/download`
-			resp, body, err := doSendDataRequest(resourcePath, "send-url", jsonParams)
+			resp, body, err := doSendDataRequest(t, resourcePath, "send-url", jsonParams)
 			require.NoError(t, err)
 
 			require.Equal(t, http.StatusOK, resp.StatusCode, "GET %q: status code", resourcePath)
@@ -515,8 +502,7 @@ func TestApiContentTypeBlock(t *testing.T) {
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	resourcePath := "/something"
 	resp, body := httpGet(t, ws.URL+resourcePath, nil)
@@ -543,8 +529,7 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	// Each of these cases is a specially-handled path in Workhorse that may
 	// actually be a request to be sent to gitlab-rails.
@@ -581,8 +566,7 @@ func TestCorrelationIdHeader(t *testing.T) {
 		w.WriteHeader(200)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/api/v3/projects/123/repository/not/special",
@@ -660,8 +644,7 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 			upstreamConfig.TrustedCIDRsForPropagation = tc.trustedCIDRsForPropagation
 			upstreamConfig.TrustedCIDRsForXForwardedFor = tc.trustedCIDRsForXForwardedFor
 
-			ws := startWorkhorseServerWithConfig(upstreamConfig)
-			defer ws.Close()
+			ws := startWorkhorseServerWithConfig(t, upstreamConfig)
 
 			resource := "/api/v3/projects/123/repository/not/special"
 			propagatedRequestId := "Propagated-RequestId-12345678"
@@ -691,8 +674,7 @@ func TestRejectUnknownMethod(t *testing.T) {
 		w.WriteHeader(200)
 	})
 	defer ts.Close()
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	req, err := http.NewRequest("UNKNOWN", ws.URL+"/api/v3/projects/123/repository/not/special", nil)
 	require.NoError(t, err)
@@ -717,7 +699,7 @@ func newBranch() string {
 }
 
 func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code int, body interface{}) *httptest.Server {
-	return testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
 		require.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
 		// return a 204 No Content response if we don't receive the JWT header
@@ -769,25 +751,35 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 		w.WriteHeader(code)
 		w.Write(data)
 	})
+
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
 func newUpstreamConfig(authBackend string) *config.Config {
-	return &config.Config{
-		Version:            "123",
-		DocumentRoot:       testDocumentRoot,
-		Backend:            helper.URLMustParse(authBackend),
-		ImageResizerConfig: config.DefaultImageResizerConfig,
-	}
+	defaultConfig := config.NewDefaultConfig()
+	defaultConfig.Version = "123"
+	defaultConfig.DocumentRoot = testDocumentRoot
+	defaultConfig.Backend = helper.URLMustParse(authBackend)
+
+	return defaultConfig
 }
 
-func startWorkhorseServer(authBackend string) *httptest.Server {
-	return startWorkhorseServerWithConfig(newUpstreamConfig(authBackend))
+func startWorkhorseServer(t *testing.T, authBackend string) *httptest.Server {
+	return startWorkhorseServerWithConfig(t, newUpstreamConfig(authBackend))
 }
 
-func startWorkhorseServerWithConfig(cfg *config.Config) *httptest.Server {
+func startWorkhorseServerWithConfig(t *testing.T, cfg *config.Config) *httptest.Server {
 	testhelper.ConfigureSecret()
 	u := upstream.NewUpstream(*cfg, logrus.StandardLogger(), nil)
-	return httptest.NewServer(u)
+	newServer := httptest.NewServer(u)
+	t.Cleanup(func() {
+		newServer.Close()
+	})
+	return newServer
 }
 
 func runOrFail(t *testing.T, cmd *exec.Cmd) {
@@ -863,8 +855,7 @@ This is a static error page for code 503
 	})
 	defer ts.Close()
 
-	ws := startWorkhorseServer(ts.URL)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
 		"/-/health",
@@ -883,8 +874,7 @@ This is a static error page for code 503
 
 // TestHealthChecksUnreachable verifies that health endpoints return the correct content-type when the upstream is down
 func TestHealthChecksUnreachable(t *testing.T) {
-	ws := startWorkhorseServer("http://127.0.0.1:99999") // This url should point to nothing for the test to be accurate (equivalent to upstream being down)
-	defer ws.Close()
+	ws := startWorkhorseServer(t, "http://127.0.0.1:99999") // This url should point to nothing for the test to be accurate (equivalent to upstream being down)
 
 	testCases := []struct {
 		path         string
@@ -958,8 +948,7 @@ func TestDependencyProxyInjector(t *testing.T) {
 			})
 			defer ts.Close()
 
-			ws := startWorkhorseServer(ts.URL)
-			defer ws.Close()
+			ws := startWorkhorseServer(t, ts.URL)
 
 			resp, err := http.DefaultClient.Get(ws.URL + "/base")
 			require.NoError(t, err)

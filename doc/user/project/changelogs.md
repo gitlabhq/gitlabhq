@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Changelogs **(FREE ALL)**
+# Changelogs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Changelogs are generated based on commit titles and Git trailers. To be included
 in a changelog, a commit must contain a specific Git trailer. Changelogs are generated
@@ -67,7 +71,7 @@ in the API documentation.
 
 ### From the GitLab CLI
 
-> [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
+> - [Introduced](https://gitlab.com/gitlab-org/cli/-/merge_requests/1222) in `glab` version 1.30.0.
 
 Prerequisites:
 
@@ -75,7 +79,7 @@ Prerequisites:
   version 1.30.0 or later.
 - Your repository's tag naming schema matches
   [the expected tag naming format](#customize-the-tag-format-when-extracting-versions).
-- Commits include [changelog trailers](../../development/changelog.md).
+- Commits include [changelog trailers](#add-a-trailer-to-a-git-commit).
 
 To generate the changelog:
 
@@ -88,7 +92,7 @@ To generate the changelog:
    and append your desired options. Some options include:
 
    - `--config-file [string]`: The path to the changelog configuration file in your project's
-     Git repository. Defaults to `.gitlab/changelog_config.yml`.
+     Git repository. This file must exist in your project's Git repository. Defaults to `.gitlab/changelog_config.yml`.
    - Commit range:
      - `--from [string]`: The start of the range of commits (as a SHA) to use for
        generating the changelog. This commit itself isn't included in the changelog.
@@ -106,8 +110,8 @@ for definitions and usage.
 
 ## Customize the changelog output
 
-To customize the changelog output, edit the changelog configuration file. The default
-location for this configuration is `.gitlab/changelog_config.yml`. The file supports
+To customize the changelog output, edit the changelog configuration file, and commit these changes to your project's Git repository.
+The default location for this configuration is `.gitlab/changelog_config.yml`. The file supports
 these variables:
 
 - `date_format`: The date format, in `strftime` format, used in the title of the newly added changelog data.
@@ -279,7 +283,7 @@ corresponding merge request, no merge request is displayed.
 
 ### Customize the tag format when extracting versions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56889) in GitLab 13.11.
 
 GitLab uses a regular expression (using the
 [re2](https://github.com/google/re2/) engine and syntax) to extract a semantic
@@ -327,7 +331,7 @@ an error is produced when generating a changelog.
 
 ## Reverted commit handling
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55537) in GitLab 13.10.
 
 To be treated as a revert commit, the commit message must contain the string
 `This reverts commit <SHA>`, where `SHA` is the SHA of the commit to be reverted.
@@ -355,5 +359,4 @@ Commit B is skipped.
 
 ## Related topics
 
-- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API
-- Developer documentation for [changelog entries](../../development/changelog.md) in GitLab
+- [Changelog-related endpoints](../../api/repositories.md) in the Repositories API.

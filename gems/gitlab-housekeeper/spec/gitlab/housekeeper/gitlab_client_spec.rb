@@ -23,6 +23,24 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       }
     end
 
+    let(:added_reviewer_note) do
+      {
+        id: 1698248524,
+        body: "requested review from @bob",
+        author: { "id" => 1234 },
+        system: true
+      }
+    end
+
+    let(:removed_reviewer_note) do
+      {
+        id: 1698248524,
+        body: "removed review request for @bob",
+        author: { "id" => 1234 },
+        system: true
+      }
+    end
+
     let(:irrelevant_note1) do
       {
         id: 1698248523,
@@ -138,7 +156,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
 
     context 'when all important things change' do
       let(:notes) do
-        [not_a_system_note, updated_title_note, updated_description_note, added_commit_note]
+        [not_a_system_note, updated_title_note, updated_description_note, added_commit_note, added_reviewer_note]
       end
 
       let(:resource_label_events) do
@@ -146,10 +164,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'returns :title, :description, :code, :labels' do
-        expect(non_housekeeper_changes).to include(:title)
-        expect(non_housekeeper_changes).to include(:description)
-        expect(non_housekeeper_changes).to include(:code)
-        expect(non_housekeeper_changes).to include(:labels)
+        expect(non_housekeeper_changes).to match_array([:title, :description, :code, :labels, :reviewers])
       end
     end
 
@@ -159,10 +174,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'returns :title' do
-        expect(non_housekeeper_changes).to include(:title)
-        expect(non_housekeeper_changes).not_to include(:description)
-        expect(non_housekeeper_changes).not_to include(:code)
-        expect(non_housekeeper_changes).not_to include(:labels)
+        expect(non_housekeeper_changes).to match_array([:title])
       end
     end
 
@@ -172,10 +184,7 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'returns :description' do
-        expect(non_housekeeper_changes).not_to include(:title)
-        expect(non_housekeeper_changes).to include(:description)
-        expect(non_housekeeper_changes).not_to include(:code)
-        expect(non_housekeeper_changes).not_to include(:labels)
+        expect(non_housekeeper_changes).to match_array([:description])
       end
     end
 
@@ -189,10 +198,27 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'returns :labels' do
-        expect(non_housekeeper_changes).not_to include(:title)
-        expect(non_housekeeper_changes).not_to include(:description)
-        expect(non_housekeeper_changes).not_to include(:code)
-        expect(non_housekeeper_changes).to include(:labels)
+        expect(non_housekeeper_changes).to match_array([:labels])
+      end
+    end
+
+    context 'when reviewers are added' do
+      let(:notes) do
+        [not_a_system_note, added_reviewer_note]
+      end
+
+      it 'returns :reviewers' do
+        expect(non_housekeeper_changes).to match_array([:reviewers])
+      end
+    end
+
+    context 'when reviewers are removed' do
+      let(:notes) do
+        [not_a_system_note, removed_reviewer_note]
+      end
+
+      it 'returns :reviewers' do
+        expect(non_housekeeper_changes).to match_array([:reviewers])
       end
     end
 
@@ -204,24 +230,39 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
   end
 
   describe '#create_or_update_merge_request' do
+    let(:reviewer_id) { 999 }
+
+    let(:change) do
+      create_change
+    end
+
     let(:params) do
       {
+        change: change,
         source_project_id: 123,
-        title: 'A new merge request!',
-        labels: %w[label-1 label-2],
-        description: 'This merge request is pretty good.',
         source_branch: 'the-source-branch',
         target_branch: 'the-target-branch',
         target_project_id: 456,
         update_title: true,
         update_description: true,
-        update_labels: true
+        update_labels: true,
+        update_reviewers: true
       }
     end
 
     let(:existing_mrs) { [] }
 
     before do
+      # Stub the user id of the reviewers
+      stub_request(:get, "https://gitlab.com/api/v4/users")
+        .with(
+          query: { username: 'thegitlabreviewer' },
+          headers: {
+            'Private-Token' => 'the-api-token'
+          }
+        )
+        .to_return(status: 200, body: [{ id: reviewer_id }].to_json)
+
       # Stub the check to see if the merge request already exists
       stub_request(:get, "https://gitlab.com/api/v4/projects/456/merge_requests?state=opened&source_branch=the-source-branch&target_branch=the-target-branch&source_project_id=123")
         .with(
@@ -233,25 +274,34 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
     end
 
     it 'calls the GitLab API passing the token' do
+      api_response = {
+        iid: 5678,
+        web_url: 'https://example.com/api/v4/merge_requests/abc123/5678'
+      }
       stub = stub_request(:post, "https://gitlab.com/api/v4/projects/123/merge_requests")
         .with(
           body: {
-            title: "A new merge request!",
-            description: "This merge request is pretty good.",
-            labels: "label-1,label-2",
+            title: "The change title",
+            description: change.mr_description,
+            labels: "some-label-1,some-label-2",
             source_branch: "the-source-branch",
             target_branch: "the-target-branch",
-            target_project_id: 456
+            target_project_id: 456,
+            remove_source_branch: true,
+            reviewer_ids: [reviewer_id]
           },
           headers: {
             'Content-Type' => 'application/json',
             'Private-Token' => 'the-api-token'
           })
-        .to_return(status: 200, body: "")
+            .to_return(status: 200, body: api_response.to_json)
 
-      client.create_or_update_merge_request(**params)
+      result = client.create_or_update_merge_request(**params)
 
       expect(stub).to have_been_requested
+
+      expect(result['iid']).to eq(5678)
+      expect(result['web_url']).to eq('https://example.com/api/v4/merge_requests/abc123/5678')
     end
 
     context 'when the merge request for the branch already exists' do
@@ -260,21 +310,29 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
       end
 
       it 'updates the merge request' do
+        api_response = {
+          iid: 1234,
+          web_url: 'https://example.com/api/v4/merge_requests/abc123/1234'
+        }
         stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
           .with(
             body: {
-              title: "A new merge request!",
-              description: "This merge request is pretty good.",
-              add_labels: "label-1,label-2"
+              title: "The change title",
+              description: change.mr_description,
+              add_labels: "some-label-1,some-label-2",
+              reviewer_ids: [reviewer_id]
             }.to_json,
             headers: {
               'Content-Type' => 'application/json',
               'Private-Token' => 'the-api-token'
             })
-         .to_return(status: 200, body: "")
+         .to_return(status: 200, body: api_response.to_json)
 
-        client.create_or_update_merge_request(**params)
+        result = client.create_or_update_merge_request(**params)
         expect(stub).to have_been_requested
+
+        expect(result['iid']).to eq(1234)
+        expect(result['web_url']).to eq('https://example.com/api/v4/merge_requests/abc123/1234')
       end
 
       context 'when multiple merge requests exist' do
@@ -292,14 +350,15 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
             .with(
               body: {
-                description: "This merge request is pretty good.",
-                add_labels: "label-1,label-2"
+                description: change.mr_description,
+                add_labels: "some-label-1,some-label-2",
+                reviewer_ids: [reviewer_id]
               }.to_json,
               headers: {
                 'Content-Type' => 'application/json',
                 'Private-Token' => 'the-api-token'
               }
-            ).to_return(status: 200, body: "")
+            ).to_return(status: 200, body: '{}')
 
           client.create_or_update_merge_request(**params.merge(update_title: false))
           expect(stub).to have_been_requested
@@ -311,14 +370,15 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
             .with(
               body: {
-                title: "A new merge request!",
-                add_labels: "label-1,label-2"
+                title: "The change title",
+                add_labels: "some-label-1,some-label-2",
+                reviewer_ids: [reviewer_id]
               }.to_json,
               headers: {
                 'Content-Type' => 'application/json',
                 'Private-Token' => 'the-api-token'
               }
-            ).to_return(status: 200, body: "")
+            ).to_return(status: 200, body: '{}')
 
           client.create_or_update_merge_request(**params.merge(update_description: false))
           expect(stub).to have_been_requested
@@ -330,24 +390,49 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
           stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
             .with(
               body: {
-                title: "A new merge request!",
-                description: "This merge request is pretty good."
+                title: "The change title",
+                description: change.mr_description,
+                reviewer_ids: [reviewer_id]
               }.to_json,
               headers: {
                 'Content-Type' => 'application/json',
                 'Private-Token' => 'the-api-token'
               }
-            ).to_return(status: 200, body: "")
+            ).to_return(status: 200, body: '{}')
 
           client.create_or_update_merge_request(**params.merge(update_labels: false))
           expect(stub).to have_been_requested
         end
       end
 
+      context 'when update_reviewers: false' do
+        it 'does not update the reviewers' do
+          stub = stub_request(:put, "https://gitlab.com/api/v4/projects/456/merge_requests/1234")
+            .with(
+              body: {
+                title: "The change title",
+                description: change.mr_description,
+                add_labels: "some-label-1,some-label-2"
+              }.to_json,
+              headers: {
+                'Content-Type' => 'application/json',
+                'Private-Token' => 'the-api-token'
+              }
+            ).to_return(status: 200, body: '{}')
+
+          client.create_or_update_merge_request(**params.merge(update_reviewers: false))
+          expect(stub).to have_been_requested
+        end
+      end
+
       context 'when there is nothing to update' do
         it 'does not make a request' do
-          client.create_or_update_merge_request(**params.merge(update_description: false, update_title: false,
-            update_labels: false))
+          client.create_or_update_merge_request(**params.merge(
+            update_description: false,
+            update_title: false,
+            update_labels: false,
+            update_reviewers: false
+          ))
         end
       end
     end

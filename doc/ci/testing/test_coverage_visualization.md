@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Test coverage visualization **(FREE ALL)**
+# Test coverage visualization
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3708) in GitLab 12.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/249811) in GitLab 13.5.
@@ -74,7 +78,7 @@ The visualization cannot be displayed if the blocking manual job did not run.
 
 ### Data expiration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest data is kept regardless of expiry time.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest data is kept regardless of expiry time.
 
 By default, the data used to draw the visualization on the merge request expires **one week** after creation.
 

@@ -32,15 +32,14 @@ module QA
       end
 
       let(:project_deploy_token) do
-        Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'package-deploy-token'
-          deploy_token.project = project
-          deploy_token.scopes = %w[
+        create(:project_deploy_token,
+          name: 'package-deploy-token',
+          project: project,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
-          ]
-        end
+          ])
       end
 
       let(:project_inbound_job_token_disabled) do
@@ -74,7 +73,7 @@ module QA
           end
         end
 
-        it 'pushes and pulls a maven package via gradle', testcase: params[:testcase] do
+        it 'pushes and pulls a maven package via gradle', :blocking, testcase: params[:testcase] do
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             gradle_publish_install_yaml = ERB.new(read_fixture('package_managers/maven/gradle', 'gradle_upload_install_package.yaml.erb')).result(binding)
             build_gradle = ERB.new(read_fixture('package_managers/maven/gradle', 'build.gradle.erb')).result(binding)

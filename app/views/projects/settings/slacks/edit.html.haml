@@ -17,4 +17,4 @@
       .footer-block.row-content-block
         = form.submit _('Save changes'), pajamas_button: true
         &nbsp;
-        = link_button_to _('Cancel'), edit_project_settings_integration_path(@project, @service)
+        = link_button_to _('Cancel'), edit_project_settings_integration_path(@project, @slack_integration.integration)

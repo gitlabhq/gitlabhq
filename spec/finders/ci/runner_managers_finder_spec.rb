@@ -65,13 +65,37 @@ RSpec.describe Ci::RunnerManagersFinder, '#execute', feature_category: :fleet_vi
     end
   end
 
-  context 'without any filters' do
+  describe 'filter by system_id' do
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner) }
+
+    context "when system_id matches runner_manager1's" do
+      let(:params) { { system_id: runner_manager1.system_xid } }
+
+      it { is_expected.to contain_exactly(runner_manager1) }
+    end
+
+    context "when system_id matches runner_manager2's" do
+      let(:params) { { system_id: runner_manager2.system_xid } }
+
+      it { is_expected.to contain_exactly(runner_manager2) }
+    end
+
+    context "when system_id doesn't match" do
+      let(:params) { { system_id: 'non-matching' } }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  context 'without any arguments' do
     let(:params) { {} }
 
-    let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager1) { create(:ci_runner_machine, runner: runner) }
+    let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner) }
 
-    it 'returns all runner managers' do
-      expect(runner_managers).to contain_exactly(runner_manager)
+    it 'returns all runner managers in id_desc order' do
+      expect(runner_managers).to eq([runner_manager2, runner_manager1])
     end
   end
 end

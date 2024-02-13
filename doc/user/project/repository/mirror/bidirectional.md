@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Bidirectional mirroring **(PREMIUM ALL)**
+# Bidirectional mirroring
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 WARNING:
 Bidirectional mirroring may cause conflicts.
@@ -138,9 +142,13 @@ This sample has a few limitations:
 - The script circumvents the Git hook quarantine environment because the update of `$TARGET_REPO`
   is seen as a ref update, and Git displays warnings about it.
 
-## Mirror with Perforce Helix with Git Fusion **(PREMIUM ALL)**
+## Mirror with Perforce Helix with Git Fusion
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 WARNING:
 Bidirectional mirroring should not be used as a permanent configuration. Refer to

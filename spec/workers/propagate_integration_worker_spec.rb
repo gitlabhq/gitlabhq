@@ -18,9 +18,17 @@ RSpec.describe PropagateIntegrationWorker, feature_category: :integrations do
     end
 
     it 'calls the propagate service with the integration' do
-      expect(Integrations::PropagateService).to receive(:propagate).with(integration)
+      expect_next_instance_of(Integrations::PropagateService, integration) do |service|
+        expect(service).to receive(:execute)
+      end
 
       subject.perform(integration.id)
+    end
+
+    it 'does nothing when the integration does not exist' do
+      expect(Integrations::PropagateService).not_to receive(:new)
+
+      subject.perform(non_existing_record_id)
     end
   end
 end

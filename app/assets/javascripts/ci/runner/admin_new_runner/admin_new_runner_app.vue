@@ -59,7 +59,8 @@ export default {
     <h2 class="gl-font-size-h2 gl-my-5">
       {{ s__('Runners|Platform') }}
     </h2>
-    <runner-platforms-radio-group v-model="platform" />
+
+    <runner-platforms-radio-group v-model="platform" admin />
 
     <hr aria-hidden="true" />
 

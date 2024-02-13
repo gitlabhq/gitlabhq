@@ -3,33 +3,34 @@
 .alert-management-details {
   @include media-breakpoint-down(xs) {
     .alert-details-incident-button {
-      @include gl-w-full;
+      width: 100%;
     }
   }
 
   .toggle-sidebar-mobile-button {
-    @include gl-right-0;
+    right: 0;
   }
 
   .dropdown-menu-toggle {
     &:hover {
-      @include gl-bg-white;
+      background-color: $white;
     }
   }
 
   .dropdown-item {
     &:first-child {
       &::before {
-        @include gl-pt-0;
+        padding-top: 0;
       }
     }
 
     &::before {
-      @include gl-pt-8;
+      padding-top: $gl-spacing-scale-8;
     }
 
     .gl-dropdown-item-text-wrapper {
-      @include gl-py-0;
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 
@@ -38,6 +39,6 @@
   }
 
   .note-header-info {
-    @include gl-mt-1;
+    margin-top: $gl-spacing-scale-1;
   }
 }

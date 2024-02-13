@@ -1,5 +1,6 @@
 import { omitBy, isNil } from 'lodash';
 import { objectToQuery } from '~/lib/utils/url_utility';
+import { sprintf } from '~/locale';
 import {
   ISSUES_CATEGORY,
   MERGE_REQUEST_CATEGORY,
@@ -12,6 +13,15 @@ import {
   PROJECTS_CATEGORY,
   GROUPS_CATEGORY,
   SEARCH_RESULTS_ORDER,
+  COMMAND_PALETTE_SEARCH_SCOPE_HEADER,
+  COMMAND_PALETTE_PAGES_SCOPE_HEADER,
+  COMMAND_PALETTE_USERS_SCOPE_HEADER,
+  COMMAND_PALETTE_PROJECTS_SCOPE_HEADER,
+  COMMAND_PALETTE_FILES_SCOPE_HEADER,
+  COMMAND_PALETTE_PAGES_CHAR,
+  COMMAND_PALETTE_USERS_CHAR,
+  COMMAND_PALETTE_PROJECTS_CHAR,
+  COMMAND_PALETTE_FILES_CHAR,
 } from '~/vue_shared/global_search/constants';
 import { getFormattedItem } from '../utils';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
@@ -208,8 +218,26 @@ export const scopedSearchOptions = (state, getters) => {
 };
 
 export const scopedSearchGroup = (state, getters) => {
-  const items = getters.scopedSearchOptions?.length ? getters.scopedSearchOptions.slice(1) : [];
-  return { items };
+  let name = sprintf(COMMAND_PALETTE_SEARCH_SCOPE_HEADER, { searchTerm: state.search });
+  const items = getters.scopedSearchOptions?.length > 0 ? getters.scopedSearchOptions : [];
+
+  switch (state.commandChar) {
+    case COMMAND_PALETTE_PAGES_CHAR:
+      name = sprintf(COMMAND_PALETTE_PAGES_SCOPE_HEADER, { searchTerm: state.search });
+      break;
+    case COMMAND_PALETTE_USERS_CHAR:
+      name = sprintf(COMMAND_PALETTE_USERS_SCOPE_HEADER, { searchTerm: state.search });
+      break;
+    case COMMAND_PALETTE_PROJECTS_CHAR:
+      name = sprintf(COMMAND_PALETTE_PROJECTS_SCOPE_HEADER, { searchTerm: state.search });
+      break;
+    case COMMAND_PALETTE_FILES_CHAR:
+      name = sprintf(COMMAND_PALETTE_FILES_SCOPE_HEADER, { searchTerm: state.search });
+      break;
+    default:
+      break;
+  }
+  return { name, items };
 };
 
 export const autocompleteGroupedSearchOptions = (state) => {

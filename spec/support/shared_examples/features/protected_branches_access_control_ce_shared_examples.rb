@@ -5,7 +5,8 @@ RSpec.shared_examples "protected branches > access control > CE" do
   let_it_be(:edit_form) { '.js-protected-branch-edit-form' }
 
   ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
-    it "allows creating protected branches that #{access_type_name} can push to" do
+    it "allows creating protected branches that #{access_type_name} can push to",
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/437793' do
       visit project_protected_branches_path(project)
 
       show_add_form

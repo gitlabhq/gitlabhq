@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage.manage.project_imports.bitbucket_server
 description: Count of projects imported from Bitbucket Server
 product_section: dev
 product_stage: manage
-product_group: import
+product_group: import_and_integrate
 value_type: number
 status: active
 time_frame: all

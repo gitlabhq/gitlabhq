@@ -3,13 +3,13 @@
 require "spec_helper"
 
 RSpec.describe WorkItemsHelper, feature_category: :team_planning do
-  describe '#work_items_index_data' do
-    subject(:work_items_index_data) { helper.work_items_index_data(project) }
+  describe '#work_items_show_data' do
+    subject(:work_items_show_data) { helper.work_items_show_data(project) }
 
     let_it_be(:project) { build(:project) }
 
     it 'returns the expected data properties' do
-      expect(work_items_index_data).to include(
+      expect(work_items_show_data).to include(
         {
           full_path: project.full_path,
           issues_list_path: project_issues_path(project),

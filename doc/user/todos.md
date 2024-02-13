@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# To-Do List **(FREE ALL)**
+# To-Do List
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
@@ -60,7 +64,11 @@ To change this behavior, enable
 
 To-do items aren't affected by [GitLab notification email settings](profile/notifications.md).
 
-### Multiple to-do items per object **(FREE SELF)**
+### Multiple to-do items per object
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 <!-- When the feature flag is removed, integrate this topic into the one above. -->
 
@@ -82,7 +90,7 @@ When you enable this feature:
 
 ## Create a to-do item
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390549) in objectives, key results, and tasks in GitLab 16.0.
 
 You can manually add an item to your To-Do List.
 

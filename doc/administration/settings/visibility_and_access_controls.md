@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Control access and visibility **(FREE SELF)**
+# Control access and visibility
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab enables users with administrator access to enforce
 specific controls on branches, projects, snippets, groups, and more.
@@ -32,9 +36,13 @@ on the instance. To alter which roles have permission to create projects:
    - Developers and Maintainers.
 1. Select **Save changes**.
 
-## Restrict project deletion to administrators **(PREMIUM SELF)**
+## Restrict project deletion to administrators
 
-> User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - User interface [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
 By default both administrators and anyone with the **Owner** role can delete a project. To restrict project deletion to only administrators:
 
@@ -47,7 +55,11 @@ By default both administrators and anyone with the **Owner** role can delete a p
    - (GitLab 15.0 and earlier) **Default project deletion protection** and select **Only admins can delete project**.
 1. Select **Save changes**.
 
-## Deletion protection **(PREMIUM SELF)**
+## Deletion protection
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/255449) in GitLab 14.2 for groups created after August 12, 2021.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) from default delayed project deletion in GitLab 15.1.
@@ -60,7 +72,7 @@ Instance-level protection against accidental deletion of groups and projects.
 
 ### Retention period
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
 Groups and projects remain restorable within a defined retention period. By default this is 7 days but it can be changed.
 Setting the retention period to `0` means that groups and project are removed immediately and cannot be restored.
@@ -108,7 +120,7 @@ In GitLab 15.11 and later with the `always_perform_delayed_deletion` feature fla
 
 Alternatively, projects that are marked for removal can be deleted immediately. To do so:
 
-1. [Restore the project](../../user/project/settings/migrate_projects.md#restore-a-project).
+1. [Restore the project](../../user/project/working_with_projects.md#restore-a-project).
 1. Delete the project as described in the
    [Administering Projects page](../admin_area.md#administering-projects).
 
@@ -225,13 +237,12 @@ If only one protocol is enabled:
 GitLab only allows Git actions for the protocols you select.
 
 WARNING:
-GitLab versions [10.7 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021),
-allow the HTTP(S) protocol for Git clone or fetch requests done by GitLab Runner
-from CI/CD jobs, even if you select **Only SSH**.
+GitLab [10.7 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
+allows the HTTP(S) protocol for Git clone or fetch requests performed [with GitLab CI/CD job tokens](../../ci/jobs/ci_job_token.md), even if you select **Only SSH**. This is required for GitLab Runner and CI/CD jobs.
 
 ## Customize Git clone URL for HTTP(S)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18422) in GitLab 12.4.
 
 You can customize project Git clone URLs for HTTP(S), which affects the clone
 panel:

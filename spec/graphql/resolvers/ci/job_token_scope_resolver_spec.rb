@@ -49,6 +49,31 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver, feature_category: :continuo
       end
     end
 
+    context 'when groups list is requested' do
+      let_it_be(:group) { create(:group, :private) }
+      let!(:group_scope_link) { create(:ci_job_token_group_scope_link, source_project: project, target_group: group) }
+
+      context 'with access to scope' do
+        before do
+          project.add_member(current_user, :maintainer)
+        end
+
+        it 'resolves groups' do
+          expect(resolve_scope.groups).to contain_exactly(group)
+        end
+
+        context 'when job token scope is disabled' do
+          before do
+            project.update!(ci_inbound_job_token_scope_enabled: false)
+          end
+
+          it 'resolves groups' do
+            expect(resolve_scope.groups).to contain_exactly(group)
+          end
+        end
+      end
+    end
+
     context 'without access to scope' do
       before do
         project.add_member(current_user, :developer)

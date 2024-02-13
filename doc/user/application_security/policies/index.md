@@ -4,7 +4,11 @@ group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Policies **(ULTIMATE ALL)**
+# Policies
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
 
@@ -116,7 +120,11 @@ Implementation options for SPPs differ slightly between GitLab SaaS and GitLab s
 main difference is that on GitLab SaaS it's only possible to create subgroups. Ensuring separation
 of duties requires more granular permission configuration.
 
-### Enforce policies across subgroups and projects **(ULTIMATE SAAS)**
+### Enforce policies across subgroups and projects
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 To enforce policies against subgroups and projects, create a subgroup to contain the SPPs, separate
 to the subgroups containing the projects. Using separate subgroups allows for separation of duties,
@@ -155,7 +163,11 @@ The high-level workflow for enforcing policies across multiple subgroups:
    path and the project's name should end with "- security policy project". For details, see
    [Link to a security policy project](#link-to-a-security-policy-project).
 
-### Enforce policies across groups, subgroups, and projects **(ULTIMATE SELF)**
+### Enforce policies across groups, subgroups, and projects
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 To enforce policies against multiple groups, create a group to contain the SPPs, separate to the
 groups containing the projects. Using separate groups allows for separation of duties, with the SPP
@@ -249,7 +261,7 @@ policies:
 
 ## Policy editor
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3403) in GitLab 13.4.
 
 You can use the policy editor to create, edit, and delete policies:
 
@@ -305,10 +317,11 @@ The workaround is to amend your group or instance push rules to allow branches f
   Security Policies are designed to require approval when there are no results (no security report),
   as this ensures that no vulnerabilities are introduced. We cannot know if there are any
   vulnerabilities unless the scans enforced by the policy complete successfully and are evaluated.
-- For scan result policies, we require artifacts for each scanner defined in the policy for both the
-  source and target branch. To ensure scan result policies capture the necessary results, confirm
+- For merge request approval policies, we require artifacts for each scanner defined in the policy for both the
+  source and target branch. To ensure merge request approval policies capture the necessary results, confirm
   your scan execution is properly implemented and enforced. If using scan execution policies,
   enforcing on `all branches` often addresses this need.
+- Comparison in merge request approval policies depends on a successful and completed merge base pipeline. If the merge base pipeline is [skipped](../../../ci/pipelines/index.md#skip-a-pipeline), merge requests with the merge base pipeline are blocked.
 - When running scan execution policies based on a SAST action, ensure target repositories contain
   proper code files. SAST runs different analyzers
   [based on the types of files in the repository](../sast/index.md#supported-languages-and-frameworks),
@@ -320,7 +333,7 @@ The workaround is to amend your group or instance push rules to allow branches f
   is not applied for the latter. You can define policies to enforce rules generically on `default`
   branches regardless of the name used in the project or on `all protected branches` to address this
   issue.
-- Scan result policies created at the group or subgroup level can take some time to apply to all
+- Merge request approval policies created at the group or subgroup level can take some time to apply to all
   the merge requests in the group.
 - Scheduled scan execution policies run with a minimum 15 minute cadence. Learn more [about the schedule rule type](../policies/scan-execution-policies.md#schedule-rule-type).
 - When scheduling pipelines, keep in mind that CRON scheduling is based on UTC on GitLab SaaS and is
@@ -335,7 +348,7 @@ The workaround is to amend your group or instance push rules to allow branches f
 - When creating a Scan Result Policy, neither the array `severity_levels` nor the array
   `vulnerability_states` in the [`scan_finding` rule](../policies/scan-result-policies.md#scan_finding-rule-type)
   can be left empty. For a working rule, at least one entry must exist.
-- When configuring pipeline and scan result policies, it's important to remember that security scans
+- When configuring pipeline and merge request approval policies, it's important to remember that security scans
   performed in manual jobs are not verified to determine whether MR approval is required. When you
   run a manual job with security scans, it does not ensure approval even if vulnerabilities are
   introduced.

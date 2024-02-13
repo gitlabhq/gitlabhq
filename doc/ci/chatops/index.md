@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab ChatOps **(FREE ALL)**
+# GitLab ChatOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4466) in GitLab Ultimate 10.6.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/24780) to GitLab Free in 11.9.

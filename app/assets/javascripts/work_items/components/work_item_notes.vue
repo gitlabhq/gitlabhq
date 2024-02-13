@@ -84,6 +84,11 @@ export default {
       type: String,
       required: true,
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isWorkItemConfidential: {
       type: Boolean,
       required: false,
@@ -127,7 +132,8 @@ export default {
       return markdownPreviewPath(this.fullPath, this.workItemIid);
     },
     autocompleteDataSources() {
-      return autocompleteDataSources(this.fullPath, this.workItemIid);
+      const { fullPath, isGroup, workItemIid: iid } = this;
+      return autocompleteDataSources({ fullPath, isGroup, iid });
     },
     workItemCommentFormProps() {
       return {
@@ -139,6 +145,7 @@ export default {
         isNewDiscussion: true,
         markdownPreviewPath: this.markdownPreviewPath,
         autocompleteDataSources: this.autocompleteDataSources,
+        isDiscussionLocked: this.isDiscussionLocked,
         isWorkItemConfidential: this.isWorkItemConfidential,
       };
     },
@@ -383,6 +390,7 @@ export default {
                 :markdown-preview-path="markdownPreviewPath"
                 :assignees="assignees"
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
+                :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="isWorkItemConfidential"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @reportAbuse="reportAbuse(true, $event)"

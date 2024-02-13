@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import BoardApp from '~/boards/components/board_app.vue';
-import eventHub from '~/boards/eventhub';
+import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
@@ -14,6 +14,8 @@ import { rawIssue, boardListsQueryResponse } from '../mock_data';
 describe('BoardApp', () => {
   let wrapper;
   let mockApollo;
+
+  const findBoardTopBar = () => wrapper.findComponent(BoardTopBar);
 
   const errorMessage = 'Failed to fetch lists';
   const boardListQueryHandler = jest.fn().mockResolvedValue(boardListsQueryResponse);
@@ -26,7 +28,7 @@ describe('BoardApp', () => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
-        activeBoardItem: issue,
+        activeBoardItem: { ...issue, listId: 'gid://gitlab/List/1' },
       },
     });
 
@@ -37,9 +39,9 @@ describe('BoardApp', () => {
         initialBoardId: 'gid://gitlab/Board/1',
         initialFilterParams: {},
         issuableType: 'issue',
-        boardType: 'group',
+        boardType: 'project',
         isIssueBoard: true,
-        isGroupBoard: true,
+        isGroupBoard: false,
       },
     });
   };
@@ -66,13 +68,12 @@ describe('BoardApp', () => {
     expect(wrapper.classes()).not.toContain('is-compact');
   });
 
-  it('refetches lists when updateBoard event is received', async () => {
-    jest.spyOn(eventHub, '$on').mockImplementation(() => {});
-
+  it('refetches lists when top bar emits updateBoard event', async () => {
     createComponent();
     await waitForPromises();
+    findBoardTopBar().vm.$emit('updateBoard');
 
-    expect(eventHub.$on).toHaveBeenCalledWith('updateBoard', wrapper.vm.refetchLists);
+    expect(boardListQueryHandler).toHaveBeenCalled();
   });
 
   it('sets error on fetch lists failure', async () => {

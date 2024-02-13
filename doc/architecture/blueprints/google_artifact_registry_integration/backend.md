@@ -32,7 +32,7 @@ We can't build this feature on the GitLab side because this will require to walk
 
 It would be better to centralize the access to the official Ruby client. This way, it's very easy to check for permissions.
 
-We suggest having a custom client class located in `Integrations::GoogleCloudPlatform::ArtifactRegistry::Client`. That class will need to require a `User` and a `Integrations::GoogleCloudPlatform::ArtifactRegistry` (see [Project Integration](#project-integration)).
+We suggest having a custom client class located in `GoogleCloudPlatform::ArtifactRegistry::Client`. That class will need to require a `User` and a `Integrations::GoogleCloudPlatform::ArtifactRegistry` (see [Project Integration](#project-integration)).
 
 The client will then need to expose three functions: `#repository`, `#docker_images` and `#docker_image` that will be mapped to the similarly name functions of the official client.
 
@@ -81,18 +81,18 @@ In order to support the other repository formats in follow ups, we choose to not
 
 All GraphQL changes should be marked as [`alpha`](../../../development/api_graphql_styleguide.md#mark-schema-items-as-alpha).
 
-First, on the [`ProjectType`](../../../api/graphql/reference/index.md#project), we will need a new field `google_cloud_platform_artifact_registry_repository_artifacts`. This will return a list of an [abstract](../../../api/graphql/reference/index.md#abstract-types) new type: `Integrations::GoogleCloudPlatform::ArtifactRegistry::ArtifactType`. This list will have pagination support. Ordering options will be available.
+First, on the [`ProjectType`](../../../api/graphql/reference/index.md#project), we will need a new field `google_cloud_platform_artifact_registry_repository_artifacts`. This will return a list of an [abstract](../../../api/graphql/reference/index.md#abstract-types) new type: `GoogleCloudPlatform::ArtifactRegistry::ArtifactType`. This list will have pagination support. Ordering options will be available.
 
-We will have `Integrations::GoogleCloudPlatform::ArtifactRegistry::DockerImage` as a concrete type of `Integrations::GoogleCloudPlatform::ArtifactRegistry::ArtifactType` with the following fields:
+We will have `GoogleCloudPlatform::ArtifactRegistry::DockerImage` as a concrete type of `GoogleCloudPlatform::ArtifactRegistry::ArtifactType` with the following fields:
 
 - `name`. A string.
 - `uri`. A string.
 - `image_size_bytes`. A integer.
 - `upload_time`. A timestamp.
 
-Then, we will need a new query `Query.google_cloud_platform_registry_registry_artifact_details` that given a name of a `Integrations::GoogleCloudPlatform::ArtifactRegistry::DockerImage` will return a single `Integrations::GoogleCloudPlatform::ArtifactRegistry::ArtifacDetailsType` with the following fields:
+Then, we will need a new query `Query.google_cloud_platform_registry_registry_artifact_details` that given a name of a `GoogleCloudPlatform::ArtifactRegistry::DockerImage` will return a single `GoogleCloudPlatform::ArtifactRegistry::ArtifacDetailsType` with the following fields:
 
-- all fields of `Integrations::GoogleCloudPlatform::ArtifactRegistry::ArtifactType`.
+- all fields of `GoogleCloudPlatform::ArtifactRegistry::ArtifactType`.
 - `tags`. An array of strings.
 - `media_type`. A string.
 - `build_time`. A timestamp.

@@ -104,11 +104,14 @@ export default {
       // remove sha256: from the string, and show only the first 7 char
       return this.tag.digest?.substring(7, 14) ?? NOT_AVAILABLE_TEXT;
     },
+    publishDate() {
+      return this.tag.publishedAt || this.tag.createdAt;
+    },
     publishedDate() {
-      return formatDate(this.tag.createdAt, 'isoDate');
+      return formatDate(this.publishDate, 'isoDate');
     },
     publishedTime() {
-      return formatDate(this.tag.createdAt, 'HH:MM:ss Z');
+      return formatDate(this.publishDate, 'HH:MM:ss Z');
     },
     formattedRevision() {
       // to be removed when API response is adjusted
@@ -182,7 +185,7 @@ export default {
       <span data-testid="time">
         <gl-sprintf :message="$options.i18n.CREATED_AT_LABEL">
           <template #timeInfo>
-            <time-ago-tooltip :time="tag.createdAt" />
+            <time-ago-tooltip :time="publishDate" />
           </template>
         </gl-sprintf>
       </span>

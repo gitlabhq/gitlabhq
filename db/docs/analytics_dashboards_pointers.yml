@@ -3,8 +3,17 @@ table_name: analytics_dashboards_pointers
 classes:
 - Analytics::DashboardsPointer
 feature_categories:
-  - devops_reports
-description: Stores project link with configuration files for Analytics Dashboards group feature.
+- devops_reports
+description: Stores project link with configuration files for Analytics Dashboards
+  group feature.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107673
 milestone: '15.8'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  target_project_id: projects

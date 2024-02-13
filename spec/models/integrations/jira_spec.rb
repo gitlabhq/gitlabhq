@@ -228,9 +228,19 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
       end
     end
 
-    context 'when project_level? is false' do
+    context 'when instance_level? is false' do
       before do
-        allow(integration).to receive(:project_level?).and_return(false)
+        allow(integration).to receive(:instance_level?).and_return(false)
+      end
+
+      it 'includes SECTION_TYPE_JIRA_ISSUES' do
+        expect(sections).to include(described_class::SECTION_TYPE_JIRA_ISSUES)
+      end
+    end
+
+    context 'when instance_level? is true' do
+      before do
+        allow(integration).to receive(:instance_level?).and_return(true)
       end
 
       it 'does not include SECTION_TYPE_JIRA_ISSUES' do

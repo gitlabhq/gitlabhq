@@ -1,0 +1,8 @@
+---
+name: mr_merge_user_filter
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437871
+milestone: '16.9'
+type: development
+group: group::code review
+default_enabled: false

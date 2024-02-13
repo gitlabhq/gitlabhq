@@ -8,6 +8,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { produce } from 'immer';
+import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
@@ -101,7 +102,10 @@ export default {
       });
     },
     author() {
-      return this.note.author;
+      return this.note.author || {};
+    },
+    hasAuthor() {
+      return !isEmpty(this.author);
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
@@ -274,6 +278,7 @@ export default {
     <div class="gl-display-flex gl-justify-content-space-between">
       <div>
         <gl-link
+          v-if="hasAuthor"
           v-once
           :href="author.webUrl"
           class="js-user-link link-inherit-color"
@@ -285,6 +290,7 @@ export default {
           <span v-if="author.status_tooltip_html" v-safe-html="author.status_tooltip_html"></span>
           <span class="note-headline-light">@{{ author.username }}</span>
         </gl-link>
+        <span v-else>{{ __('A deleted user') }}</span>
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
@@ -299,8 +305,7 @@ export default {
         <slot name="resolve-discussion"></slot>
         <emoji-picker
           v-if="canAwardEmoji"
-          toggle-class="note-action-button note-emoji-button btn-icon btn-default-tertiary"
-          boundary="viewport"
+          toggle-class="add-reaction-button btn-default-tertiary"
           :right="false"
           data-testid="note-emoji-button"
           @click="handleAwardEmoji"
@@ -327,6 +332,7 @@ export default {
           no-caret
           left
           :items="dropdownItems"
+          data-testid="more-actions"
         />
       </div>
     </div>

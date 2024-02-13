@@ -476,8 +476,87 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   end
 
   describe '#tag' do
-    it 'has a test tag' do
-      expect(repository.tag('test')).not_to be_nil
+    shared_examples 'returning an instantiated tag' do
+      it 'returns an instantiated tag' do
+        allow(ContainerRegistry::Tag).to receive(:new).and_call_original
+        tag = repository.tag('test')
+
+        expect(tag).to be_a ContainerRegistry::Tag
+        expect(tag).to have_attributes(
+          repository: repository,
+          name: 'test'
+        )
+
+        expect(ContainerRegistry::Tag).to have_received(:new).with(repository, 'test')
+      end
+    end
+
+    context 'when the repository is migrated', :saas do
+      context 'when Gitlab API is supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        end
+
+        context 'when the Gitlab API returns a tag' do
+          let_it_be(:tags_response) do
+            [
+              {
+                name: 'test',
+                digest: 'sha256:6c3c647c6eebdaab7c610cf7d66709b3',
+                size_bytes: 1234567892
+              }
+            ]
+          end
+
+          let_it_be(:response_body) do
+            {
+              pagination: {},
+              response_body: ::Gitlab::Json.parse(tags_response.to_json)
+            }
+          end
+
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return(response_body)
+            allow(ContainerRegistry::Tag).to receive(:new).and_call_original
+          end
+
+          it 'returns an instantiated tag from the response' do
+            tag = repository.tag('test')
+
+            expect(ContainerRegistry::Tag).to have_received(:new).with(repository, 'test', from_api: true)
+
+            expect(tag).to be_a ContainerRegistry::Tag
+            expect(tag).to have_attributes(
+              repository: repository,
+              name: tags_response[0][:name],
+              digest: tags_response[0][:digest],
+              total_size: tags_response[0][:size_bytes]
+            )
+          end
+        end
+
+        context 'when the Gitlab API does not return a tag' do
+          before do
+            allow(repository.gitlab_api_client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
+          end
+
+          it 'returns nil' do
+            expect(repository.tag('test')).to be_nil
+          end
+        end
+      end
+
+      context 'when the Gitlab API is not supported' do
+        before do
+          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        end
+
+        it_behaves_like 'returning an instantiated tag'
+      end
+    end
+
+    context 'when the repository is not migrated' do
+      it_behaves_like 'returning an instantiated tag'
     end
   end
 

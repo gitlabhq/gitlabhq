@@ -728,6 +728,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it { is_expected.to validate_presence_of(:projects_limit) }
+    it { is_expected.to define_enum_for(:project_view).with_values(%i[readme activity files wiki]) }
+    it { is_expected.to validate_inclusion_of(:hide_no_ssh_key).in_array([true, false]) }
+    it { is_expected.to validate_inclusion_of(:hide_no_password).in_array([true, false]) }
+    it { is_expected.to validate_inclusion_of(:notified_of_own_activity).in_array([true, false]) }
     it { is_expected.to validate_numericality_of(:projects_limit) }
     it { is_expected.to allow_value(0).for(:projects_limit) }
     it { is_expected.not_to allow_value(-1).for(:projects_limit) }
@@ -1751,6 +1755,77 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  context 'when after_update_commit :update_default_organization_user on default organization' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+
+    context 'when user is changed to an instance admin' do
+      let_it_be(:user) { create(:user) }
+
+      it 'changes user to owner in the organization' do
+        expect(default_organization.owner?(user)).to be(false)
+
+        expect { user.update!(admin: true) }.not_to change { Organizations::OrganizationUser.count }
+        expect(default_organization.owner?(user)).to be(true)
+      end
+
+      context 'when non admin attribute is updated' do
+        it 'does not change the organization_user' do
+          expect(default_organization.owner?(user)).to be(false)
+
+          expect { user.update!(name: 'Bob') }.not_to change { Organizations::OrganizationUser.count }
+          expect(default_organization.owner?(user)).to be(false)
+        end
+      end
+    end
+
+    context 'when user is changed from admin to regular user' do
+      let_it_be(:user) { create(:admin) }
+
+      it 'changes user to default access_level in organization' do
+        expect(default_organization.owner?(user)).to be(true)
+
+        expect { user.update!(admin: false) }.not_to change { Organizations::OrganizationUser.count }
+        expect(default_organization.owner?(user)).to be(false)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+
+    context 'when user did not already exist in the default organization' do
+      let_it_be(:user) { create(:user, :without_default_org) }
+
+      it 'changes user to owner in the organization' do
+        expect(default_organization.user?(user)).to be(false)
+
+        expect { user.update!(admin: true) }.to change { Organizations::OrganizationUser.count }
+        expect(default_organization.owner?(user)).to be(true)
+      end
+    end
+  end
+
+  context 'when after_create_commit :create_default_organization_user on default organization' do
+    let_it_be(:default_organization) { create(:organization, :default) }
+    let(:user) { create(:user) }
+
+    subject(:create_user) { user }
+
+    context 'when user is created as an instance admin' do
+      let(:user) { create(:admin) }
+
+      it 'adds user to organization_users as an owner of default organization' do
+        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
+        expect(default_organization.owner?(user)).to be(true)
+      end
+    end
+
+    context 'when user is created as a regular user' do
+      it 'adds user to organization_users as a regular user of default organization' do
+        expect { create_user }.to change { Organizations::OrganizationUser.count }.by(1)
+        expect(default_organization.owner?(user)).to be(false)
+        expect(default_organization.user?(user)).to be(true)
+      end
+    end
+  end
+
   describe 'name getters' do
     let(:user) { create(:user, name: 'Kane Martin William') }
 
@@ -2718,6 +2793,25 @@ RSpec.describe User, feature_category: :user_profile do
     it { expect(@user.namespaces).to eq([@user.namespace]) }
   end
 
+  shared_examples 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+    let(:reason) { :user_blocked }
+    let(:include_owned_projects_and_groups) { false }
+    subject(:action) { user.block! }
+
+    it 'calls Ci::DropPipelinesAndDisableSchedules service with correct arguments' do
+      drop_disable_service = double
+
+      expect(Ci::DropPipelinesAndDisableSchedulesForUserService).to receive(:new).and_return(drop_disable_service)
+      expect(drop_disable_service).to receive(:execute).with(
+        user,
+        reason: reason,
+        include_owned_projects_and_groups: include_owned_projects_and_groups
+      )
+
+      action
+    end
+  end
+
   describe 'blocking user' do
     let_it_be_with_refind(:user) { create(:user, name: 'John Smith') }
 
@@ -2727,33 +2821,10 @@ RSpec.describe User, feature_category: :user_profile do
       expect(user.blocked?).to be_truthy
     end
 
-    context 'when user has running CI pipelines' do
-      let(:pipelines) { build_list(:ci_pipeline, 3, :running) }
-
-      it 'drops all running pipelines and related jobs' do
-        drop_service = double
-        disable_service = double
-
-        expect(user).to receive(:pipelines).and_return(pipelines)
-        expect(Ci::DropPipelineService).to receive(:new).and_return(drop_service)
-        expect(drop_service).to receive(:execute_async_for_all).with(pipelines, :user_blocked, user)
-
-        expect(Ci::DisableUserPipelineSchedulesService).to receive(:new).and_return(disable_service)
-        expect(disable_service).to receive(:execute).with(user)
-
-        user.block!
-      end
-
-      it 'does not drop running pipelines if the transaction rolls back' do
-        expect(Ci::DropPipelineService).not_to receive(:new)
-        expect(Ci::DisableUserPipelineSchedulesService).not_to receive(:new)
-
-        User.transaction do
-          user.block
-
-          raise ActiveRecord::Rollback
-        end
-      end
+    it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+      let(:reason) { :user_blocked }
+      let(:include_owned_projects_and_groups) { false }
+      subject(:action) { user.block! }
     end
 
     context 'when user has active CI pipeline schedules' do
@@ -2865,7 +2936,7 @@ RSpec.describe User, feature_category: :user_profile do
   describe 'banning and unbanning a user', :aggregate_failures do
     let(:user) { create(:user) }
 
-    context 'banning a user' do
+    context 'when banning a user' do
       it 'bans and blocks the user' do
         user.ban
 
@@ -2876,6 +2947,35 @@ RSpec.describe User, feature_category: :user_profile do
       it 'creates a BannedUser record' do
         expect { user.ban }.to change { Users::BannedUser.count }.by(1)
         expect(Users::BannedUser.last.user_id).to eq(user.id)
+      end
+
+      context 'when GitLab.com' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+          let(:reason) { :user_banned }
+          let(:include_owned_projects_and_groups) { false }
+          subject(:action) { user.ban! }
+        end
+
+        context 'when user has "deep_clean_ci_usage_when_banned" custom attribute set' do
+          before do
+            create(
+              :user_custom_attribute,
+              key: UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED, value: true.to_s,
+              user_id: user.id
+            )
+            user.reload
+          end
+
+          it_behaves_like 'Ci::DropPipelinesAndDisableSchedulesForUserService called with correct arguments' do
+            let(:reason) { :user_banned }
+            let(:include_owned_projects_and_groups) { true }
+            subject(:action) { user.ban! }
+          end
+        end
       end
     end
 

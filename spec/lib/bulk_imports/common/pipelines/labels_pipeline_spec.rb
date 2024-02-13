@@ -24,6 +24,7 @@ RSpec.describe BulkImports::Common::Pipelines::LabelsPipeline, feature_category:
   let(:tmpdir) { Dir.mktmpdir }
 
   before do
+    allow(subject).to receive(:set_source_objects_counter)
     FileUtils.copy_file(filepath, File.join(tmpdir, 'labels.ndjson.gz'))
     group.add_owner(user)
   end

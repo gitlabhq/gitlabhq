@@ -217,9 +217,11 @@ export default {
     <template #select>
       <group-select
         v-model="groupToBeSharedWith"
+        :source-id="id"
         :groups-filter="groupSelectFilter"
         :parent-group-id="groupSelectParentId"
         :invalid-groups="invalidGroups"
+        :is-project="isProject"
         @input="clearValidation"
         @error="onGroupSelectError"
       />

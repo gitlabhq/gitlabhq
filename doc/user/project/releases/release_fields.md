@@ -64,12 +64,12 @@ Each link as an asset has the following attributes:
 |-------------|--------------------------------------------------------------------------------------------------------------|----------|
 | `name`      | The name of the link.                                                                                        | Yes      |
 | `url`       | The URL to download a file.                                                                                  | Yes      |
-| `filepath`  | The redirect link to the `url`. See [this section](#permanent-links-to-release-assets) for more information. | No       |
+| `filepath`  | The redirect link to the `url`. Must start with a slash (`/`). See [this section](#permanent-links-to-release-assets) for more information. | No       |
 | `link_type` | The content kind of what users can download via `url`. See [this section](#link-types) for more information. | No       |
 
 #### Permanent link to latest release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
 
 Latest release page is accessible through a permanent URL.
 GitLab redirects to the latest release page URL when it is visited.
@@ -91,7 +91,7 @@ By default, GitLab fetches the release using `released_at` time. The use of the 
 
 #### Permanent links to release assets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375489) in GitLab 15.9, links for private releases can be accessed using a Personal Access Token.
 
 The assets associated with a release are accessible through a permanent URL.
 GitLab always redirects this URL to the actual asset
@@ -101,7 +101,7 @@ to use the same URL. This is defined during [link creation](../../../api/release
 The format of the URL is:
 
 ```plaintext
-https://host/namespace/project/-/releases/:release/downloads/:filepath
+https://host/namespace/project/-/releases/:release/downloads:filepath
 ```
 
 If you have an asset for the `v11.9.0-rc2` release in the `gitlab-org`
@@ -128,21 +128,23 @@ If the release is private, you need to provide a Personal Access Token with eith
 a `private_token` query parameter or a `HTTP_PRIVATE_TOKEN` header when making the request. For example:
 
 ```shell
-curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/:release/downloads/:filepath?private_token=<your_access_token>"
-curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/my-group/my-project/-/releases/:release/downloads/:filepath"
+curl --location --output filename "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads</path-to-file>?private_token=<your_access_token>"
+curl --location --output filename --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/my-group/my-project/-/releases/myrelease/downloads</path-to-file>
 ```
 
 #### Permanent links to latest release assets
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16821) in GitLab 14.9.
 
-The `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) can be used in combination with [permanent link to the latest release](#permanent-link-to-latest-release). It is useful when we want to link a permanent URL to download an asset from the *latest release*.
+You can use the `filepath` from [permanent links to release assets](#permanent-links-to-release-assets) in combination with a [permanent link to the latest release](#permanent-link-to-latest-release). The `filepath` must start with a slash (`/`).
 
 The format of the URL is:
 
 ```plaintext
-https://host/namespace/project/-/releases/permalink/latest/downloads/:filepath
+https://host/namespace/project/-/releases/permalink/latest/downloads:filepath
 ```
+
+You can use this format to provide a permanent link to an asset from the latest release.
 
 If you have an asset with [`filepath`](../../../api/releases/links.md#create-a-release-link) for the `v11.9.0-rc2` latest release in the `gitlab-org`
 namespace and `gitlab-runner` project on `gitlab.com`, for example:
@@ -164,7 +166,7 @@ https://gitlab.com/gitlab-org/gitlab-runner/-/releases/permalink/latest/download
 
 #### Link Types
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207257) in GitLab 13.1.
 
 The four types of links are "Runbook," "Package," "Image," and "Other."
 The `link_type` parameter accepts one of the following four values:
@@ -261,9 +263,13 @@ links to a release is not recommended, because artifacts are ephemeral and
 are used to pass data in the same pipeline. This means there's a risk that
 they could either expire or someone might manually delete them.
 
-### Number of new and total features **(FREE SAAS)**
+### Number of new and total features
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235618) in GitLab 13.5.
 
 On [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/releases), you can view the number of new and total features in the project.
 

@@ -54,7 +54,7 @@ module AttrEncrypted
   #                         string instead of just 'true'. See
   #                         http://www.ruby-doc.org/core/classes/Array.html#M002245
   #                         for more encoding directives.
-  #                         Defaults to false unless you're using it with ActiveRecord, DataMapper, or Sequel.
+  #                         Defaults to false unless you're using it with ActiveRecord or Sequel.
   #
   #   encode_iv:            Defaults to true.
 

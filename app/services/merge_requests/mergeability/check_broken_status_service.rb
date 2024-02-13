@@ -6,6 +6,8 @@ module MergeRequests
       description 'Checks whether the merge request is broken'
 
       def execute
+        return inactive if Feature.enabled?(:switch_broken_status, merge_request.project, type: :gitlab_com_derisk)
+
         if merge_request.broken?
           failure
         else

@@ -5,7 +5,11 @@ description: Latest version instructions.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrade GitLab **(FREE SELF)**
+# Upgrade GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Upgrading GitLab is a relatively straightforward process, but the complexity
 can increase based on the installation method you have used, how old your
@@ -39,12 +43,20 @@ There are also instructions when you want to
 
 :::TabTitle Helm chart (Kubernetes)
 
-GitLab can be deployed into a Kubernetes cluster using Helm.
-Instructions on how to upgrade a cloud-native deployment are in
-[a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
+GitLab can be deployed into a Kubernetes cluster using Helm. For production deployments,
+the setup follows the [Cloud Native Hybrid](../administration/reference_architectures/index.md#cloud-native-hybrid)
+guidance where stateless components of cloud-native GitLab run in Kubernetes with
+the GitLab Helm chart, and stateful components are deployed in compute VMs with the
+Linux package.
 
 Use the [version mapping](https://docs.gitlab.com/charts/installation/version_mappings.html)
 from the chart version to GitLab version to determine the [upgrade path](#upgrade-paths).
+
+Follow [Multi-node upgrades with downtime](with_downtime.md) to perform the upgrade in a Cloud Native Hybrid setup.
+
+A full cloud-native deployment is [not supported](../administration/reference_architectures/index.md#stateful-components-in-kubernetes)
+for production. However, instructions on how to upgrade such an environment are in
+[a separate document](https://docs.gitlab.com/charts/installation/upgrade.html).
 
 :::TabTitle Docker
 
@@ -107,10 +119,13 @@ To address the above two scenarios, it is advised to do the following prior to u
    as your GitLab version. Both versions [should be the same](https://docs.gitlab.com/runner/#gitlab-runner-versions).
 1. Unpause your runners and unblock new jobs from starting by reverting the previous `/etc/gitlab/gitlab.rb` change.
 
-## Checking for pending advanced search migrations **(PREMIUM SELF)**
+## Checking for pending advanced search migrations
 
-This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) **(PREMIUM SELF)**.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
+This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md).
 Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)
 to be finished from the most recent minor release in your current version
 before the major version upgrade. You can find pending migrations by
@@ -181,7 +196,7 @@ Upgrading across multiple GitLab versions in one go is *only possible by accepti
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 For a dynamic view of examples of supported upgrade paths, try the [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/)
-maintained by the [GitLab Support team](https://about.gitlab.com/handbook/support/#about-the-support-team). To share
+maintained by the [GitLab Support team](https://handbook.gitlab.com/handbook/support/#about-the-support-team). To share
 feedback and help improve the tool, create an issue or MR in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 
 When upgrading:
@@ -218,9 +233,7 @@ crucial database schema and migration patches may be included in the latest patc
 Required upgrade stops are versions of GitLab that you must upgrade to before upgrading to later versions. Required
 upgrade stops allow required background migrations to finish.
 
-During GitLab 16.x, we are scheduling required upgrade stops beforehand so users can better plan out appropriate upgrade stops and downtime when necessary.
-
-The first scheduled required upgrade stop has been announced for 16.3.x. When planning upgrades, take this into account.
+During GitLab 16.x, we are scheduling required upgrade stops beforehand so you can better plan out appropriate upgrade stops and downtime when necessary. When planning upgrades, take this into account.
 
 ### Earlier GitLab versions
 

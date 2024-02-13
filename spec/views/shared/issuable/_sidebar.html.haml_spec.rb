@@ -11,7 +11,7 @@ RSpec.describe 'shared/issuable/_sidebar.html.haml' do
   end
 
   context 'project in a group' do
-    let_it_be(:group) { create(:group, :crm_enabled) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:incident) { create(:incident, project: project) }

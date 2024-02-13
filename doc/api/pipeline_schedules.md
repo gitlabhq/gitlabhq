@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline schedules API **(FREE ALL)**
+# Pipeline schedules API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
 
@@ -104,7 +108,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get all pipelines triggered by a pipeline schedule
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368566) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368566) in GitLab 15.3.
 
 Get all pipelines triggered by a pipeline schedule in a project.
 

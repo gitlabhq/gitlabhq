@@ -1,5 +1,4 @@
 <script>
-import { getLocationHash } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ASC } from '~/notes/constants';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -68,6 +67,11 @@ export default {
       required: false,
       default: false,
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isWorkItemConfidential: {
       type: Boolean,
       required: false,
@@ -87,20 +91,8 @@ export default {
     note() {
       return this.discussion[0];
     },
-    author() {
-      return this.note.author;
-    },
     noteId() {
       return getIdFromGraphQLId(this.note.id);
-    },
-    noteAnchorId() {
-      return `note_${this.noteId}`;
-    },
-    isTarget() {
-      return this.targetNoteHash === this.noteAnchorId;
-    },
-    targetNoteHash() {
-      return getLocationHash();
     },
     hasReplies() {
       return Boolean(this.replies?.length);
@@ -181,7 +173,7 @@ export default {
             <div class="discussion-notes">
               <ul class="notes">
                 <work-item-note
-                  :is-first-note="true"
+                  is-first-note
                   :note="note"
                   :discussion-id="discussionId"
                   :full-path="fullPath"
@@ -246,6 +238,7 @@ export default {
                       :add-padding="true"
                       :autocomplete-data-sources="autocompleteDataSources"
                       :markdown-preview-path="markdownPreviewPath"
+                      :is-discussion-locked="isDiscussionLocked"
                       :is-internal-thread="note.internal"
                       :is-work-item-confidential="isWorkItemConfidential"
                       @startReplying="showReplyForm"

@@ -19,7 +19,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
 
   subject { described_class.new }
 
-  describe '#perform', :clean_gitlab_redis_cache do
+  describe '#perform', :clean_gitlab_redis_shared_state do
     let(:assignee_ids) { [user.id] }
     let(:issue_attrs) do
       build(:issue, project_id: project.id, namespace_id: project.project_namespace_id, title: 'jira issue').as_json
@@ -30,7 +30,6 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
 
     context 'when any exception raised while inserting to DB' do
       before do
-        allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
         allow(subject).to receive(:insert_and_return_id).and_raise(StandardError)
         expect(Gitlab::JobWaiter).to receive(:notify)
 

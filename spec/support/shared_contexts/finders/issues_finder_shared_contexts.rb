@@ -63,9 +63,9 @@ RSpec.shared_context 'IssuesFinder context' do
     )
   end
 
-  let_it_be(:group_level_item) { create(:issue, :epic, :group_level, namespace: group, author: user) }
+  let_it_be(:group_level_item) { create(:issue, :group_level, namespace: group, author: user) }
   let_it_be(:group_level_confidential_item) do
-    create(:issue, :confidential, :epic, :group_level, namespace: group, author: user2)
+    create(:issue, :confidential, :group_level, namespace: group, author: user2)
   end
 
   let_it_be(:award_emoji1) { create(:award_emoji, name: 'thumbsup', user: user, awardable: item1) }

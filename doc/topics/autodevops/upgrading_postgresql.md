@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrading PostgreSQL for Auto DevOps **(FREE ALL)**
+# Upgrading PostgreSQL for Auto DevOps
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When `POSTGRES_ENABLED` is `true`, Auto DevOps provides an
 [in-cluster PostgreSQL database](customize.md#postgresql-database-support) for your application.

@@ -92,11 +92,13 @@ RSpec.shared_examples 'sorted paginated query' do |conditions = {}|
     end
 
     def end_cursor
-      graphql_dig_at(graphql_data(fresh_response_data), *data_path, :page_info, :end_cursor)
+      cursor = graphql_dig_at(graphql_data(fresh_response_data), *data_path, :page_info, :end_cursor)
+      cursor.is_a?(Array) ? cursor.first : cursor
     end
 
     def start_cursor
-      graphql_dig_at(graphql_data(fresh_response_data), *data_path, :page_info, :start_cursor)
+      cursor = graphql_dig_at(graphql_data(fresh_response_data), *data_path, :page_info, :start_cursor)
+      cursor.is_a?(Array) ? cursor.first : cursor
     end
 
     let(:query) { pagination_query(params) }

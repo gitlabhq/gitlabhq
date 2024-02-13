@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <a v-bind="linkProps" :class="computedLinkClasses">
+  <a v-bind="linkProps" :class="computedLinkClasses" @click="$emit('nav-link-click')">
     <slot :is-active="isActive"></slot>
   </a>
 </template>

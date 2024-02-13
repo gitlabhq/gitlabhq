@@ -1,6 +1,14 @@
 ---
 include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
+  - project: 'gitlab-org/quality/pipeline-common'
+    ref: master
+    file: ci/base.gitlab-ci.yml
+
+stages:
+  - prepare
+  - deploy
+  - qa
 
 release-environments-build-cng-env:
   extends: .build-cng-env
@@ -42,3 +50,15 @@ release-environments-deploy:
     project: gitlab-com/gl-infra/release-environments
     branch: main
     strategy: depend
+
+release-environments-qa:
+  stage: qa
+  extends:
+    - .qa-base
+  timeout: 3h
+  variables:
+    QA_SCENARIO: "Test::Instance::Smoke"
+    RELEASE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab-ee-qa:${CI_COMMIT_SHA}"
+    GITLAB_QA_OPTS: --address "https://gitlab.${ENVIRONMENT}.release.gke.gitlab.net"
+    GITLAB_INITIAL_ROOT_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
+    SIGNUP_DISABLED: "true"

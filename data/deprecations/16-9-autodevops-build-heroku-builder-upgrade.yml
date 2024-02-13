@@ -1,0 +1,19 @@
+- title: "Heroku image upgrade in Auto DevOps build"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: timofurrer
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437937
+  body: |  # (required) Don't change this line.
+    In GitLab 17.0, the `auto-build-image` project will upgrade from the `heroku/builder:20` image to `heroku/builder:22`.
+
+    To test the behavior of the new image, set the CI/CD variable `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to
+    `heroku/builder:22`.
+
+    To continue to use `heroku/builder:20` after GitLab 17.0,
+    set `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER` to `heroku/builder:20`.

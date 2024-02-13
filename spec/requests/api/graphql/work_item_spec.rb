@@ -111,7 +111,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
       it 'returns work item type information' do
         expect(work_item_data['workItemType']).to match(
-          expected_work_item_type_response(work_item.work_item_type).first
+          expected_work_item_type_response(work_item.resource_parent, work_item.work_item_type).first
         )
       end
     end
@@ -650,7 +650,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
 
             let(:first_param) { 1 }
             let(:all_records) { [link1, link2] }
-            let(:data_path) { ['workItem', 'widgets', "linkedItems", -1] }
+            let(:data_path) { %w[workItem widgets linkedItems] }
 
             def widget_fields(args)
               query_graphql_field(
@@ -826,6 +826,267 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               hash_including('body' => group_work_item_note.note)
             )
           end
+        end
+      end
+    end
+
+    describe 'designs widget' do
+      include DesignManagementTestHelpers
+
+      let(:work_item_fields) do
+        query_graphql_field(
+          :widgets, {}, query_graphql_field(
+            'type ... on WorkItemWidgetDesigns', {}, query_graphql_field(
+              :design_collection, nil, design_collection_fields
+            )
+          )
+        )
+      end
+
+      let(:design_collection_fields) { nil }
+
+      let(:post_query) { post_graphql(query, current_user: current_user) }
+
+      let(:design_collection_data) { work_item_data['widgets'].find { |w| w['type'] == 'DESIGNS' }['designCollection'] }
+
+      before do
+        project.add_developer(developer)
+        enable_design_management
+      end
+
+      def id_hash(object)
+        a_graphql_entity_for(object)
+      end
+
+      shared_examples 'fetch a design-like object by ID' do
+        let(:design) { design_a }
+
+        let(:design_fields) do
+          [
+            :filename,
+            query_graphql_field(:project, :id)
+          ]
+        end
+
+        let(:design_collection_fields) do
+          query_graphql_field(object_field_name, object_params, object_fields)
+        end
+
+        let(:object_fields) { design_fields }
+
+        context 'when the ID is passed' do
+          let(:object_params) { { id: global_id_of(object) } }
+          let(:result_fields) { {} }
+
+          let(:expected_fields) do
+            result_fields.merge({ 'filename' => design.filename, 'project' => id_hash(project) })
+          end
+
+          it 'retrieves the object' do
+            post_query
+            data = design_collection_data[GraphqlHelpers.fieldnamerize(object_field_name)]
+
+            expect(data).to match(a_hash_including(expected_fields))
+          end
+
+          context 'when the user is unauthorized' do
+            let(:current_user) { create(:user) }
+
+            it_behaves_like 'a failure to find anything'
+          end
+
+          context 'without parameters' do
+            let(:object_params) { nil }
+
+            it 'raises an error' do
+              post_query
+
+              expect(graphql_errors).to include(no_argument_error)
+            end
+          end
+        end
+
+        context 'when attempting to retrieve an object from a different issue' do
+          let(:object_params) { { id: global_id_of(object_on_other_issue) } }
+
+          it_behaves_like 'a failure to find anything'
+        end
+      end
+
+      context 'when work item is an issue' do
+        let_it_be(:issue_work_item) { create(:work_item, :issue, project: project) }
+        let_it_be(:issue_work_item1) { create(:work_item, :issue, project: project) }
+        let_it_be(:design_a) { create(:design, issue: issue_work_item) }
+        let_it_be(:version_a) { create(:design_version, issue: issue_work_item, created_designs: [design_a]) }
+        let_it_be(:global_id) { issue_work_item.to_gid.to_s }
+
+        describe '.designs' do
+          let(:design_collection_fields) do
+            query_graphql_field('designs', {}, "nodes { id event filename }")
+          end
+
+          it 'returns design data' do
+            post_query
+
+            expect(design_collection_data).to include(
+              'designs' => include(
+                'nodes' => include(
+                  hash_including(
+                    'id' => design_a.to_gid.to_s,
+                    'event' => 'CREATION',
+                    'filename' => design_a.filename
+                  )
+                )
+              )
+            )
+          end
+        end
+
+        describe 'copy_state' do
+          let(:design_collection_fields) do
+            'copyState'
+          end
+
+          it 'returns copyState of designCollection' do
+            post_query
+
+            expect(design_collection_data).to include(
+              'copyState' => 'READY'
+            )
+          end
+        end
+
+        describe '.versions' do
+          let(:design_collection_fields) do
+            query_graphql_field('versions', {}, "nodes { id sha createdAt }")
+          end
+
+          it 'returns versions data' do
+            post_query
+
+            expect(design_collection_data).to include(
+              'versions' => include(
+                'nodes' => include(
+                  hash_including(
+                    'id' => version_a.to_gid.to_s,
+                    'sha' => version_a.sha,
+                    'createdAt' => version_a.created_at.iso8601
+                  )
+                )
+              )
+            )
+          end
+        end
+
+        describe '.version' do
+          let(:version) { version_a }
+
+          let(:design_collection_fields) do
+            query_graphql_field(:version, version_params, 'id sha')
+          end
+
+          context 'with no parameters' do
+            let(:version_params) { nil }
+
+            it 'raises an error' do
+              post_query
+
+              expect(graphql_errors).to include(a_hash_including("message" => "one of id or sha is required"))
+            end
+          end
+
+          shared_examples 'a successful query for a version' do
+            it 'finds the version' do
+              post_query
+
+              data = design_collection_data['version']
+
+              expect(data).to match a_graphql_entity_for(version, :sha)
+            end
+          end
+
+          context 'with (sha: STRING_TYPE)' do
+            let(:version_params) { { sha: version.sha } }
+
+            it_behaves_like 'a successful query for a version'
+          end
+
+          context 'with (id: ID_TYPE)' do
+            let(:version_params) { { id: global_id_of(version) } }
+
+            it_behaves_like 'a successful query for a version'
+          end
+        end
+
+        describe '.design' do
+          it_behaves_like 'fetch a design-like object by ID' do
+            let(:object) { design }
+            let(:object_field_name) { :design }
+
+            let(:no_argument_error) do
+              a_hash_including("message" => "one of id or filename must be passed")
+            end
+
+            let_it_be(:object_on_other_issue) { create(:design, issue: issue_work_item1) }
+          end
+        end
+
+        describe '.designAtVersion' do
+          it_behaves_like 'fetch a design-like object by ID' do
+            let(:object) { build(:design_at_version, design: design, version: version) }
+            let(:object_field_name) { :design_at_version }
+
+            let(:version) { version_a }
+
+            let(:result_fields) { { 'version' => id_hash(version) } }
+            let(:object_fields) do
+              design_fields + [query_graphql_field(:version, :id)]
+            end
+
+            let(:no_argument_error) do
+              a_hash_including("message" => "Field 'designAtVersion' is missing required arguments: id")
+            end
+
+            let(:object_on_other_issue) { build(:design_at_version, issue: issue_work_item1) }
+          end
+        end
+
+        describe 'N+1 query check' do
+          let(:design_collection_fields) do
+            query_graphql_field('designs', {}, "nodes { id event filename}")
+          end
+
+          it 'avoids N+1 queries', :use_sql_query_cache do
+            post_query # warmup
+            control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+              post_query
+            end
+
+            create_list(:work_item, 3, namespace: group) do |item|
+              create(:design, :with_file, issue: item)
+            end
+
+            expect do
+              post_query
+            end.to issue_same_number_of_queries_as(control_count)
+            expect_graphql_errors_to_be_empty
+          end
+        end
+      end
+
+      context 'when work item base type is non issue' do
+        let_it_be(:epic) { create(:work_item, :epic, namespace: group) }
+        let_it_be(:global_id) { epic.to_gid.to_s }
+
+        it 'returns without design' do
+          post_query
+
+          expect(epic&.work_item_type&.base_type).not_to match('issue')
+          expect(work_item_data['widgets']).not_to include(
+            hash_including(
+              'type' => 'DESIGNS'
+            )
+          )
         end
       end
     end

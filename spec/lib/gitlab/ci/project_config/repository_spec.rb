@@ -7,7 +7,10 @@ RSpec.describe Gitlab::Ci::ProjectConfig::Repository, feature_category: :continu
   let(:sha) { project.repository.head_commit.sha }
   let(:files) { { 'README.md' => 'hello' } }
 
-  subject(:config) { described_class.new(project, sha, nil, nil, nil) }
+  subject(:config) do
+    described_class.new(project, sha, nil, nil, nil,
+      nil)
+  end
 
   describe '#content' do
     subject(:content) { config.content }

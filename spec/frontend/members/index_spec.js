@@ -13,7 +13,7 @@ describe('initMembersApp', () => {
     vm = initMembersApp(el, {
       [MEMBER_TYPES.user]: {
         tableFields: ['account'],
-        tableAttrs: { table: { 'data-qa-selector': 'members_list' } },
+        tableAttrs: { table: { 'data-testid': 'members-list' } },
         tableSortableFields: ['account'],
         requestFormatter: () => ({}),
         filteredSearchBar: { show: false },
@@ -61,7 +61,7 @@ describe('initMembersApp', () => {
     setup();
 
     expect(vm.$store.state[MEMBER_TYPES.user].tableAttrs).toEqual({
-      table: { 'data-qa-selector': 'members_list' },
+      table: { 'data-testid': 'members-list' },
     });
   });
 

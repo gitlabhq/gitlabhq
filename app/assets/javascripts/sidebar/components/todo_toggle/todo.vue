@@ -43,7 +43,7 @@ export default {
     buttonClasses() {
       return this.collapsed
         ? 'btn-blank btn-todo sidebar-collapsed-icon js-dont-change-state'
-        : 'gl-button btn btn-default btn-todo issuable-header-btn float-right';
+        : 'gl-button btn btn-default btn-todo issuable-header-btn gl-float-right';
     },
     buttonLabel() {
       return this.isTodo ? MARK_TEXT : TODO_TEXT;

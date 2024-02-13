@@ -4,7 +4,11 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review abuse reports **(FREE SELF)**
+# Review abuse reports
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 View and resolve abuse reports from GitLab users.
 
@@ -30,7 +34,7 @@ To find out more about reporting abuse, see
 
 ## Resolving abuse reports
 
-> **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
+> - **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131102) in GitLab 16.4.
 
 To access abuse reports:
 

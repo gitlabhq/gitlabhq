@@ -78,10 +78,12 @@ module Users
       security_policy_protected_branch_modification: 76, # EE-only
       vulnerability_report_grouping: 77, # EE-only
       new_nav_for_everyone_callout: 78,
-      code_suggestions_ga_non_owner_alert: 79, # EE-only
+      # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
       duo_chat_callout: 80, # EE-only
       code_suggestions_ga_owner_alert: 81, # EE-only
-      product_analytics_dashboard_feedback: 82 # EE-only
+      product_analytics_dashboard_feedback: 82, # EE-only
+      joining_a_project_alert: 83, # EE-only
+      transition_to_jihu_callout: 84
     }
 
     validates :feature_name,

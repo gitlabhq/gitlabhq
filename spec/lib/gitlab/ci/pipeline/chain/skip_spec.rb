@@ -58,9 +58,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip do
 
   context 'when [ci skip] should be ignored' do
     let(:command) do
-      double('command', project: project,
-                        current_user: user,
-                        ignore_skip_ci: true)
+      double('command', project: project, current_user: user, ignore_skip_ci: true)
     end
 
     it 'does not break the chain' do
@@ -72,10 +70,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Skip do
 
   context 'when pipeline should be skipped but not persisted' do
     let(:command) do
-      double('command', project: project,
-                        current_user: user,
-                        ignore_skip_ci: false,
-                        save_incompleted: false)
+      double('command', project: project, current_user: user, ignore_skip_ci: false, save_incompleted: false)
     end
 
     before do

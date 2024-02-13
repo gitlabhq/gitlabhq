@@ -3,8 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
+  include Devise::Test::ControllerHelpers
+
+  let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
+  let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
   let_it_be(:new_group_path) { '/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
   let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
@@ -13,8 +17,10 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:groups_empty_state_svg_path) { 'illustrations/empty-state/empty-groups-md.svg' }
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
+  let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
 
   before do
+    allow(organization).to receive(:to_global_id).and_return(organization_gid)
     allow(helper).to receive(:new_group_path).and_return(new_group_path)
     allow(helper).to receive(:new_project_path).and_return(new_project_path)
     allow(helper).to receive(:image_path).with(organizations_empty_state_svg_path)
@@ -24,30 +30,113 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow(helper).to receive(:image_path).with(groups_empty_state_svg_path).and_return(groups_empty_state_svg_path)
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
     allow(helper).to receive(:preview_markdown_organizations_path).and_return(preview_markdown_organizations_path)
+    allow(helper).to receive(:current_user).and_return(user)
+  end
+
+  shared_examples 'includes that the user can create a group' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('can_create_group' => true)
+    end
+  end
+
+  shared_examples 'includes that the user can create a project' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('can_create_project' => true)
+    end
+  end
+
+  shared_examples 'includes that the organization has groups' do |method|
+    it 'returns expected json' do
+      expect(
+        Gitlab::Json.parse(helper.send(method, organization))
+      ).to include('has_groups' => true)
+    end
+  end
+
+  describe '#organization_layout_nav' do
+    context 'when current controller is not organizations' do
+      it 'returns organization' do
+        allow(helper).to receive(:current_controller?).with('organizations').and_return(false)
+
+        expect(helper.organization_layout_nav).to eq('organization')
+      end
+    end
+
+    context 'when current controller is organizations' do
+      before do
+        allow(helper).to receive(:current_controller?).with('organizations').and_return(true)
+      end
+
+      context 'when current action is index or new' do
+        it 'returns your_work' do
+          allow(helper).to receive(:current_action?).with(:index, :new).and_return(true)
+
+          expect(helper.organization_layout_nav).to eq('your_work')
+        end
+      end
+
+      context 'when current action is not index or new' do
+        it 'returns organization' do
+          allow(helper).to receive(:current_action?).with(:index, :new).and_return(false)
+
+          expect(helper.organization_layout_nav).to eq('organization')
+        end
+      end
+    end
   end
 
   describe '#organization_show_app_data' do
     before do
       allow(helper).to receive(:groups_and_projects_organization_path)
         .with(organization)
-        .and_return('/-/organizations/default/groups_and_projects')
+        .and_return(groups_and_projects_organization_path)
     end
 
-    it 'returns expected json' do
+    context 'when the user can create a group' do
+      before do
+        allow(helper).to receive(:can?).with(user, :create_group, organization).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a group', 'organization_show_app_data'
+    end
+
+    context 'when the user can create a project' do
+      before do
+        allow(user).to receive(:can_create_project?).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a project', 'organization_show_app_data'
+    end
+
+    context 'when the organization has groups' do
+      before do
+        allow(helper).to receive(:has_groups?).and_return(true)
+      end
+
+      include_examples 'includes that the organization has groups', 'organization_show_app_data'
+    end
+
+    it "includes all other non-conditional data" do
       expect(organization).to receive(:avatar_url).with(size: 128).and_return('avatar.jpg')
+
       expect(
         Gitlab::Json.parse(
           helper.organization_show_app_data(organization)
         )
-      ).to eq(
+      ).to include(
         {
+          'organization_gid' => organization_gid,
           'organization' => {
             'id' => organization.id,
             'name' => organization.name,
             'description_html' => organization.description_html,
             'avatar_url' => 'avatar.jpg'
           },
-          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
+          'groups_and_projects_organization_path' => groups_and_projects_organization_path,
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
@@ -63,13 +152,38 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_groups_and_projects_app_data' do
-    it 'returns expected json' do
+    context 'when the user can create a group' do
+      before do
+        allow(helper).to receive(:can?).with(user, :create_group, organization).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a group', 'organization_groups_and_projects_app_data'
+    end
+
+    context 'when the user can create a project' do
+      before do
+        allow(user).to receive(:can_create_project?).and_return(true)
+      end
+
+      include_examples 'includes that the user can create a project', 'organization_groups_and_projects_app_data'
+    end
+
+    context 'when the organization has groups' do
+      before do
+        allow(helper).to receive(:has_groups?).and_return(true)
+      end
+
+      include_examples 'includes that the organization has groups', 'organization_groups_and_projects_app_data'
+    end
+
+    it "includes all other non-conditional data" do
       expect(
         Gitlab::Json.parse(
-          helper.organization_groups_and_projects_app_data
+          helper.organization_groups_and_projects_app_data(organization)
         )
-      ).to eq(
+      ).to include(
         {
+          'organization_gid' => organization_gid,
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
@@ -139,10 +253,38 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_user_app_data(organization))).to eq(
         {
-          'organization_gid' => organization.to_global_id.to_s,
+          'organization_gid' => organization_gid,
           'paths' => {
             'admin_user' => admin_user_path(:id)
           }
+        }
+      )
+    end
+  end
+
+  describe '#organization_groups_new_app_data' do
+    before do
+      allow(helper).to receive(:groups_and_projects_organization_path)
+        .with(organization, { display: 'groups' })
+        .and_return(groups_and_projects_organization_path)
+      allow(helper).to receive(:restricted_visibility_levels).and_return([])
+    end
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_groups_new_app_data(organization))).to eq(
+        {
+          'organization_id' => organization.id,
+          'base_path' => root_url,
+          'groups_organization_path' => groups_and_projects_organization_path,
+          'mattermost_enabled' => false,
+          'available_visibility_levels' => [
+            Gitlab::VisibilityLevel::PRIVATE,
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC
+          ],
+          'restricted_visibility_levels' => [],
+          'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
+          'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }
       )
     end

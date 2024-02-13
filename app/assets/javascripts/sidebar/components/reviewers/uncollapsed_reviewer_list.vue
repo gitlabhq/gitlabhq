@@ -27,7 +27,7 @@ const REVIEW_STATE_ICONS = {
     title: __('Reviewer commented'),
   },
   UNREVIEWED: {
-    name: 'dotted-circle',
+    name: 'dash-circle',
     title: __('Awaiting review'),
   },
 };
@@ -183,7 +183,7 @@ export default {
         :title="$options.i18n.reRequestReview"
         :aria-label="$options.i18n.reRequestReview"
         :loading="loadingStates[user.id] === $options.LOADING_STATE"
-        class="float-right gl-text-gray-500! gl-mr-2"
+        class="gl-float-right gl-text-gray-500! gl-mr-2"
         size="small"
         icon="redo"
         variant="link"
@@ -195,7 +195,7 @@ export default {
           v-gl-tooltip.top.viewport
           :title="reviewStateIcon(user).title"
           :class="reviewStateIcon(user).class"
-          class="float-right gl-my-2 gl-ml-auto gl-flex-shrink-0"
+          class="gl-float-right gl-my-2 gl-ml-auto gl-flex-shrink-0"
         >
           <gl-icon
             :size="reviewStateIcon(user).size || 16"
@@ -212,7 +212,7 @@ export default {
           :size="16"
           :title="approvedByTooltipTitle(user)"
           name="status-success"
-          class="float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
+          class="gl-float-right gl-my-2 gl-ml-auto gl-text-green-500 gl-flex-shrink-0"
           :class="approveAnimation(user.id)"
           data-testid="approved"
         />
@@ -221,8 +221,8 @@ export default {
           v-gl-tooltip.left
           :size="16"
           :title="reviewedButNotApprovedTooltip(user)"
-          name="dotted-circle"
-          class="float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
+          name="dash-circle"
+          class="gl-float-right gl-my-2 gl-ml-auto gl-text-gray-400 gl-flex-shrink-0"
           data-testid="reviewed-not-approved"
         />
       </template>

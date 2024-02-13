@@ -1,4 +1,5 @@
 <script>
+import { isEmpty } from 'lodash';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -108,7 +109,10 @@ export default {
       };
     },
     author() {
-      return this.note.author;
+      return this.note.author || {};
+    },
+    hasAuthor() {
+      return !isEmpty(this.author);
     },
     authorId() {
       return getIdFromGraphQLId(this.author.id);
@@ -352,7 +356,7 @@ export default {
               :show-edit="hasAdminPermission"
               :note-id="note.id"
               :is-author-an-assignee="isAuthorAnAssignee"
-              :show-assign-unassign="canSetWorkItemMetadata"
+              :show-assign-unassign="canSetWorkItemMetadata && hasAuthor"
               :can-report-abuse="!isCurrentUserAuthorOfNote"
               :is-work-item-author="isWorkItemAuthor"
               :work-item-type="workItemType"

@@ -72,6 +72,11 @@ FactoryBot.define do
       status { 'failed' }
     end
 
+    trait :canceled do
+      finished
+      status { 'canceled' }
+    end
+
     trait :skipped do
       started
       status { 'skipped' }

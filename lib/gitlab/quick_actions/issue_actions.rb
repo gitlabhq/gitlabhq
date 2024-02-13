@@ -260,6 +260,27 @@ module Gitlab
           @execution_message[:remove_email] = response.message
         end
 
+        desc { s_('ServiceDesk|Convert issue to Service Desk ticket') }
+        explanation { s_('ServiceDesk|Converts this issue to a Service Desk ticket.') }
+        params 'external-issue-author@example.com'
+        types Issue
+        condition do
+          quick_action_target.persisted? &&
+            Feature.enabled?(:convert_to_ticket_quick_action, parent, type: :beta) &&
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target) &&
+            quick_action_target.respond_to?(:from_service_desk?) &&
+            !quick_action_target.from_service_desk?
+        end
+        command :convert_to_ticket do |email = ""|
+          response = ::Issues::ConvertToTicketService.new(
+            target: quick_action_target,
+            current_user: current_user,
+            email: email
+          ).execute
+
+          @execution_message[:convert_to_ticket] = response.message
+        end
+
         desc { _('Promote issue to incident') }
         explanation { _('Promotes issue to incident') }
         execution_message { _('Issue has been promoted to incident') }

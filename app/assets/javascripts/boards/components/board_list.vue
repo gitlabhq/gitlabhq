@@ -29,6 +29,7 @@ import { shouldCloneCard, moveItemVariables } from '../boards_util';
 import eventHub from '../eventhub';
 import BoardCard from './board_card.vue';
 import BoardNewIssue from './board_new_issue.vue';
+import BoardCutLine from './board_cut_line.vue';
 
 export default {
   draggableItemTypes: DraggableItemTypes,
@@ -42,6 +43,7 @@ export default {
   components: {
     BoardCard,
     BoardNewIssue,
+    BoardCutLine,
     BoardNewEpic: () => import('ee_component/boards/components/board_new_epic.vue'),
     GlLoadingIcon,
     GlIntersectionObserver,
@@ -73,7 +75,6 @@ export default {
   },
   data() {
     return {
-      scrollOffset: 250,
       showCount: false,
       showIssueForm: false,
       showEpicForm: false,
@@ -155,6 +156,16 @@ export default {
     boardListItems() {
       return this.currentList?.[`${this.issuableType}s`].nodes || [];
     },
+    beforeCutLine() {
+      return this.boardItemsSizeExceedsMax
+        ? this.boardListItems.slice(0, this.list.maxIssueCount)
+        : this.boardListItems;
+    },
+    afterCutLine() {
+      return this.boardItemsSizeExceedsMax
+        ? this.boardListItems.slice(this.list.maxIssueCount)
+        : [];
+    },
     listQueryVariables() {
       return {
         fullPath: this.fullPath,
@@ -173,6 +184,11 @@ export default {
         pageSize: this.boardListItems.length,
         total: this.listItemsCount,
         issuableType: this.isEpicBoard ? 'epics' : 'issues',
+      });
+    },
+    wipLimitText() {
+      return sprintf(__('Work in progress limit: %{wipLimit}'), {
+        wipLimit: this.list.maxIssueCount,
       });
     },
     toggleFormEventPrefix() {
@@ -246,10 +262,8 @@ export default {
       handler(id, oldVal) {
         if (id) {
           eventHub.$on(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
-          eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
 
           eventHub.$off(`${this.toggleFormEventPrefix}${oldVal}`, this.toggleForm);
-          eventHub.$off(`scroll-board-list-${oldVal}`, this.scrollToTop);
         }
       },
       immediate: true,
@@ -257,7 +271,6 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off(`${this.toggleFormEventPrefix}${this.list.id}`, this.toggleForm);
-    eventHub.$off(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   methods: {
     listHeight() {
@@ -265,12 +278,6 @@ export default {
     },
     scrollHeight() {
       return this.listRef?.scrollHeight || 0;
-    },
-    scrollTop() {
-      return this.listRef.scrollTop + this.listHeight();
-    },
-    scrollToTop() {
-      this.listRef.scrollTop = 0;
     },
     async loadNextPage() {
       this.isLoadingMore = true;
@@ -620,6 +627,7 @@ export default {
           mutation: setActiveBoardItemMutation,
           variables: {
             boardItem: issuable,
+            listId: this.list.id,
             isIssue: this.isIssueBoard,
           },
         });
@@ -663,7 +671,7 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-bg-red-100 gl-rounded-bottom-left-base gl-rounded-bottom-right-base': boardItemsSizeExceedsMax,
+        'gl-bg-red-50 gl-rounded-bottom-left-base gl-rounded-bottom-right-base': boardItemsSizeExceedsMax,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
       }"
@@ -674,7 +682,32 @@ export default {
       @end="handleDragOnEnd"
     >
       <board-card
-        v-for="(item, index) in boardListItems"
+        v-for="(item, index) in beforeCutLine"
+        ref="issue"
+        :key="item.id"
+        :index="index"
+        :list="list"
+        :item="item"
+        :data-draggable-item-type="$options.draggableItemTypes.card"
+        :show-work-item-type-icon="!isEpicBoard"
+      >
+        <board-card-move-to-position
+          v-if="showMoveToPosition"
+          :item="item"
+          :index="index"
+          :list="list"
+          :list-items-length="boardListItems.length"
+          @moveToPosition="moveToPosition($event, index, item)"
+        />
+        <gl-intersection-observer
+          v-if="isObservableItem(index)"
+          data-testid="board-card-gl-io"
+          @appear="onReachingListBottom"
+        />
+      </board-card>
+      <board-cut-line v-if="boardItemsSizeExceedsMax" :cut-line-text="wipLimitText" />
+      <board-card
+        v-for="(item, index) in afterCutLine"
         ref="issue"
         :key="item.id"
         :index="index"

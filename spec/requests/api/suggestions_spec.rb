@@ -11,26 +11,27 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
   end
 
   let(:position) do
-    Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                               new_path: "files/ruby/popen.rb",
-                               old_line: nil,
-                               new_line: 9,
-                               diff_refs: merge_request.diff_refs)
+    Gitlab::Diff::Position.new(
+      old_path: "files/ruby/popen.rb",
+      new_path: "files/ruby/popen.rb",
+      old_line: nil,
+      new_line: 9,
+      diff_refs: merge_request.diff_refs
+    )
   end
 
   let(:position2) do
-    Gitlab::Diff::Position.new(old_path: "files/ruby/popen.rb",
-                               new_path: "files/ruby/popen.rb",
-                               old_line: nil,
-                               new_line: 15,
-                               diff_refs: merge_request.diff_refs)
+    Gitlab::Diff::Position.new(
+      old_path: "files/ruby/popen.rb",
+      new_path: "files/ruby/popen.rb",
+      old_line: nil,
+      new_line: 15,
+      diff_refs: merge_request.diff_refs
+    )
   end
 
   let(:diff_note) do
-    create(:diff_note_on_merge_request,
-           noteable: merge_request,
-           position: position,
-           project: project)
+    create(:diff_note_on_merge_request, noteable: merge_request, position: position, project: project)
   end
 
   let(:diff_note2) do
@@ -59,8 +60,7 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response)
-          .to include('id', 'from_line', 'to_line', 'appliable', 'applied',
-                      'from_content', 'to_content')
+          .to include('id', 'from_line', 'to_line', 'appliable', 'applied', 'from_content', 'to_content')
       end
     end
 
@@ -130,9 +130,12 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
 
   describe "PUT /suggestions/batch_apply" do
     let(:suggestion2) do
-      create(:suggestion, note: diff_note2,
-                          from_content: "      \"PWD\" => path\n",
-                          to_content: "      *** FOO ***\n")
+      create(
+        :suggestion,
+        note: diff_note2,
+        from_content: "      \"PWD\" => path\n",
+        to_content: "      *** FOO ***\n"
+      )
     end
 
     let(:url) { "/suggestions/batch_apply" }
@@ -146,9 +149,9 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
         put api(url, user), params: { ids: [suggestion.id, suggestion2.id] }
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to all(include('id', 'from_line', 'to_line',
-                                             'appliable', 'applied',
-                                             'from_content', 'to_content'))
+        expect(json_response).to all(
+          include('id', 'from_line', 'to_line', 'appliable', 'applied', 'from_content', 'to_content')
+        )
       end
 
       it 'provides a custom commit message' do
@@ -166,8 +169,7 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
       it 'renders a bad request error and returns json content' do
         project.add_maintainer(user)
 
-        put api(url, user),
-            params: { ids: [suggestion.id, unappliable_suggestion.id] }
+        put api(url, user), params: { ids: [suggestion.id, unappliable_suggestion.id] }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to eq({ 'message' => "Can't apply as this line was changed in a more recent version." })
@@ -200,8 +202,7 @@ RSpec.describe API::Suggestions, feature_category: :code_review_workflow do
       it 'renders a forbidden error and returns json content' do
         project.add_reporter(user)
 
-        put api(url, user),
-            params: { ids: [suggestion.id, suggestion2.id] }
+        put api(url, user), params: { ids: [suggestion.id, suggestion2.id] }
 
         expect(response).to have_gitlab_http_status(:forbidden)
         expect(json_response).to eq({ 'message' => '403 Forbidden' })

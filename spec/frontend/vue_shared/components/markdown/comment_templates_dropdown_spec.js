@@ -21,7 +21,9 @@ let savedRepliesResp;
 function createMockApolloProvider(response) {
   Vue.use(VueApollo);
 
-  savedRepliesResp = jest.fn().mockResolvedValue(response);
+  savedRepliesResp = jest
+    .fn()
+    .mockResolvedValue({ data: { currentUser: { ...response.data.object } } });
 
   const requestHandlers = [[savedRepliesQuery, savedRepliesResp]];
 
@@ -50,7 +52,7 @@ async function selectSavedReply() {
 
   await waitForPromises();
 
-  dropdown.vm.$emit('select', savedRepliesResponse.data.currentUser.savedReplies.nodes[0].id);
+  dropdown.vm.$emit('select', savedRepliesResponse.data.object.savedReplies.nodes[0].id);
 }
 
 useMockLocationHelper();

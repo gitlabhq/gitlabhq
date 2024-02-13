@@ -4,7 +4,6 @@ import { mapActions, mapState } from 'vuex';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   INITIAL_TREE_WIDTH,
   MIN_TREE_WIDTH,
@@ -16,7 +15,6 @@ import TreeList from './tree_list.vue';
 export default {
   name: 'DiffsFileTree',
   components: { TreeList, PanelResizer },
-  mixins: [glFeatureFlagsMixin()],
   minTreeWidth: MIN_TREE_WIDTH,
   maxTreeWidth: window.innerWidth / 2,
   props: {
@@ -60,12 +58,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="renderFileTree"
-    :style="{ width: `${treeWidth}px` }"
-    :class="{ 'is-sidebar-moved': glFeatures.movedMrSidebar }"
-    class="diff-tree-list gl-px-5"
-  >
+  <div v-if="renderFileTree" :style="{ width: `${treeWidth}px` }" class="diff-tree-list gl-px-5">
     <panel-resizer
       :size.sync="treeWidth"
       :start-size="treeWidth"

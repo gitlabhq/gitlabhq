@@ -14,42 +14,38 @@
     %small#js-project-name-description.form-text.text-gl-muted
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-display-none
-  .form-group.project-path.col-sm-6.gl-pr-0
-    = f.label :namespace_id, class: 'label-bold' do
-      %span= _('Project URL')
-    .input-group.gl-flex-nowrap
-      - if current_user.can_select_namespace?
-        - namespace_id = namespace_id_from(params)
-        .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,
-          namespace_id: namespace_id || @current_user_group&.id,
-          input_id: 'project_namespace_id',
-          input_name: 'project[namespace_id]',
-          root_url: root_url,
-          track_label: track_label,
-          user_namespace_id: current_user.namespace_id } }
-      - else
-        .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
-          .input-group-text.border-0
-            #{user_url(current_user.username)}/
-        = f.hidden_field :namespace_id, value: current_user.namespace_id
-      .gl-align-self-center.gl-pl-5 /
-  .form-group.project-path.col-sm-6
-    = f.label :path, class: 'label-bold' do
-      %span= _("Project slug")
-    = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { testid: 'project-path', username: current_user.username }
-.js-group-namespace-error.form-text.gl-text-red-500.gl-display-none
-  = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
-- if current_user.can_create_group?
-  .form-text.text-muted
-    - link_start_group_path = '<a href="%{path}">' % { path: new_group_path }
-    - project_tip = s_('ProjectsNew|Want to organize several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}') % { link_start: link_start_group_path, link_end: '</a>' }
-    = project_tip.html_safe
-= render Pajamas::AlertComponent.new(alert_options: { class: "gl-mb-4 gl-display-none js-user-readme-repo" },
-  dismissible: false,
-  variant: :success) do |c|
-  - c.with_body do
-    - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/index', anchor: 'add-details-to-your-profile-with-a-readme') }
-    = html_escape(_('%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}.')) % { project_path: "<strong>#{current_user.username} / #{current_user.username}</strong>".html_safe, help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
+  .form-group.gl-form-group.gl-w-full.gl-display-flex.gl-flex-wrap
+    .form-group.project-path.col-sm-6.gl-pr-0
+      = f.label :namespace_id, class: 'label-bold' do
+        %span= _('Project URL')
+      .input-group.gl-flex-nowrap
+        - if current_user.can_select_namespace?
+          - namespace_id = namespace_id_from(params)
+          .js-vue-new-project-url-select{ data: { namespace_full_path: GroupFinder.new(current_user).execute(id: namespace_id)&.full_path || @current_user_group&.full_path,
+            namespace_id: namespace_id || @current_user_group&.id,
+            input_id: 'project_namespace_id',
+            input_name: 'project[namespace_id]',
+            root_url: root_url,
+            track_label: track_label,
+            user_namespace_id: current_user.namespace_id } }
+        - else
+          .input-group-prepend.static-namespace.flex-shrink-0.has-tooltip{ title: user_url(current_user.username) + '/' }
+            .input-group-text.border-0
+              #{user_url(current_user.username)}/
+          = f.hidden_field :namespace_id, value: current_user.namespace_id
+        .gl-align-self-center.gl-pl-5 /
+    .form-group.project-path.col-sm-6
+      = f.label :path, class: 'label-bold' do
+        %span= _("Project slug")
+      = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { testid: 'project-path', username: current_user.username }
+    .js-group-namespace-error.gl-mt-3.gl-text-red-500.gl-display-none.col-12
+      = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
+    = render Pajamas::AlertComponent.new(alert_options: { class: "gl-mb-4 gl-display-none js-user-readme-repo" },
+      dismissible: false,
+      variant: :success) do |c|
+      - c.with_body do
+        - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/profile/index', anchor: 'add-details-to-your-profile-with-a-readme') }
+        = html_escape(_('%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}.')) % { project_path: "<strong>#{current_user.username} / #{current_user.username}</strong>".html_safe, help_link_start: help_link_start, help_link_end: '</a>'.html_safe }
 
 - if include_description
   .form-group
@@ -97,12 +93,15 @@
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/index'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
   - if display_sha256_repository
-    .form-group
-      = render Pajamas::CheckboxTagComponent.new(name: 'project[use_sha256_repository]') do |c|
-        - c.with_label do
-          = s_('ProjectsNew|Use SHA-256 as the repository hashing algorithm')
-        - c.with_help_text do
-          = s_('ProjectsNew|Default hashing algorithm is SHA-1.')
+    #js-experimental-setting-accordion.form-group.gl-mb-6
+      = render Pajamas::AccordionItemComponent.new(title: s_("ProjectsNew|Experimental settings"), state: :closed) do
+        = render Pajamas::CheckboxTagComponent.new(name: 'project[use_sha256_repository]') do |c|
+          - c.with_label do
+            = s_('ProjectsNew|Use SHA-256 for repository hashing algorithm')
+            = render_if_exists 'shared/experimental_badge_tag'
+          - c.with_help_text do
+            = s_("ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm.")
+
 
 -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
 = render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label

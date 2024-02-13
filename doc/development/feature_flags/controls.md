@@ -39,7 +39,7 @@ easier to measure the impact of both separately.
 
 The GitLab feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the
-[Feature flags process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
+[Feature flags process](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/) guide) supports rolling out changes to a percentage of
 time to users. This in turn can be controlled using [GitLab ChatOps](../../ci/chatops/index.md).
 
 For an up to date list of feature flag commands see
@@ -102,9 +102,9 @@ This depends on the feature and what sort of impact it might have.
 Guidelines:
 
 - Consider notifying `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
-- If the feature meets the requirements for creating a [Change Management](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+- If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
-- For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://about.gitlab.com/handbook/support/workflows/saas_feature_flags.html).
+- For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
 
 #### Guideline for which percentages to choose during the rollout
 
@@ -198,7 +198,7 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
-Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://about.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
 
 The following `/chatops` commands should be performed in the Slack
 `#production` channel.
@@ -427,7 +427,7 @@ For more detail, see [This is how percentages work in Flipper](https://www.hackw
 
 ### Verifying metrics after enabling feature flag
 
-After turning on the feature flag, you need to [monitor the relevant graphs](https://about.gitlab.com/handbook/engineering/monitoring/) between each step:
+After turning on the feature flag, you need to [monitor the relevant graphs](https://handbook.gitlab.com/handbook/engineering/monitoring/) between each step:
 
 1. Go to [`dashboards.gitlab.net`](https://dashboards.gitlab.net).
 1. Turn on the `feature-flag`.
@@ -463,7 +463,7 @@ Changes to the issue format can be submitted in the
 
 Any feature flag change that affects any GitLab instance is automatically logged in
 [features_json.log](../../administration/logs/index.md#features_jsonlog).
-You can search the change history in [Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html).
+You can search the change history in [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/).
 You can also access the feature flag change history for GitLab.com [in Kibana](https://log.gprd.gitlab.net/goto/d060337c017723084c6d97e09e591fc6).
 
 ## Cleaning up
@@ -492,7 +492,7 @@ To remove a feature flag, open **one merge request** to make the changes. In the
 1. Add the ~"feature flag" label so release managers are aware of the removal.
 1. If the merge request has to be backported into the current version, follow the
    [patch release runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md) process.
-   See [the feature flag process](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
+   See [the feature flag process](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#including-a-feature-behind-feature-flag-in-the-final-release)
    for further details.
 1. Remove all references to the feature flag from the codebase, including tests.
 1. Remove the YAML definition for the feature from the repository.

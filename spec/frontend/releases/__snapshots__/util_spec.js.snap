@@ -43,7 +43,7 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
         "id": Any<String>,
         "username": "user1",
         "webUrl": "http://localhost/user1",
@@ -149,7 +149,7 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
         "id": Any<String>,
         "username": "user1",
         "webUrl": "http://localhost/user1",
@@ -386,7 +386,7 @@ Object {
     },
     "author": Object {
       "__typename": "UserCore",
-      "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
+      "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
       "id": Any<String>,
       "username": "user1",
       "webUrl": "http://localhost/user1",

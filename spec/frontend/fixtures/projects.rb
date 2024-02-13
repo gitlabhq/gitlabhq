@@ -2,16 +2,41 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
+RSpec.describe 'Projects (JavaScript fixtures)', type: :controller, feature_category: :groups_and_projects do
   include ApiHelpers
   include JavaScriptFixturesHelpers
 
   runners_token = 'runnerstoken:intabulasreferre'
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
-  let(:project) { create(:project, namespace: namespace, path: 'builds-project', runners_token: runners_token, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
-  let(:project_with_repo) { create(:project, :repository, description: 'Code and stuff', avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
-  let(:project_variable_populated) { create(:project, namespace: namespace, path: 'builds-project2', runners_token: runners_token) }
+  let(:project) do
+    create(
+      :project,
+      namespace: namespace,
+      path: 'builds-project',
+      runners_token: runners_token,
+      avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')
+    )
+  end
+
+  let(:project_with_repo) do
+    create(
+      :project,
+      :repository,
+      description: 'Code and stuff',
+      avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')
+    )
+  end
+
+  let(:project_variable_populated) do
+    create(
+      :project,
+      namespace: namespace,
+      path: 'builds-project2',
+      runners_token: runners_token
+    )
+  end
+
   let(:user) { project.first_owner }
 
   render_views
@@ -48,7 +73,7 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
   describe GraphQL::Query, type: :request do
     include GraphqlHelpers
 
-    context 'access token projects query' do
+    context 'for access token projects query' do
       before do
         project_variable_populated.add_maintainer(user)
       end
@@ -70,7 +95,7 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
   describe 'Storage', feature_category: :consumables_cost_management do
     describe GraphQL::Query, type: :request do
       include GraphqlHelpers
-      context 'project storage statistics query' do
+      context 'for project storage statistics query' do
         before do
           project.statistics.update!(
             repository_size: 3_900_000,
@@ -89,7 +114,7 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
         query_name = 'project_storage.query.graphql'
 
         it "#{base_output_path}#{query_name}.json" do
-          query = get_graphql_query_as_string("#{base_input_path}#{query_name}")
+          query = get_graphql_query_as_string("#{base_input_path}#{query_name}", ee: Gitlab.ee?)
 
           post_graphql(query, current_user: user, variables: { fullPath: project.full_path })
 

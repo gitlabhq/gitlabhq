@@ -82,16 +82,6 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
       it 'creates a new pipeline' do
         expect { subject }.to change { project.ci_pipelines.count }.by(1)
       end
-
-      context 'with feature flag persist_failed_pipelines_from_schedules disabled' do
-        before do
-          stub_feature_flags(persist_failed_pipelines_from_schedules: false)
-        end
-
-        it 'does not create a new pipeline' do
-          expect { subject }.not_to change { project.ci_pipelines.count }
-        end
-      end
     end
   end
 

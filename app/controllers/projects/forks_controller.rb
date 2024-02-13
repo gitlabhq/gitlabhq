@@ -69,9 +69,13 @@ class Projects::ForksController < Projects::ApplicationController
     @forked_project = fork_namespace.projects.find_by(path: project.path) # rubocop: disable CodeReuse/ActiveRecord
     @forked_project = nil unless @forked_project && @forked_project.forked_from_project == project
 
-    @forked_project ||= fork_service.execute
+    unless @forked_project
+      @fork_response = fork_service.execute
 
-    if !@forked_project.saved? || !@forked_project.forked?
+      @forked_project ||= @fork_response[:project] if @fork_response.success?
+    end
+
+    if defined?(@fork_response) && @fork_response.error?
       render :error
     elsif @forked_project.import_in_progress?
       redirect_to project_import_path(@forked_project, continue: continue_params)

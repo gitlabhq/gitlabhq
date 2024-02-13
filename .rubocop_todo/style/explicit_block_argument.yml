@@ -19,7 +19,6 @@ Style/ExplicitBlockArgument:
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
     - 'ee/app/services/group_saml/identity/destroy_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/base_merge_requests_service.rb'
-    - 'ee/lib/ee/backup/repositories.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'ee/lib/gitlab/audit/events/preloader.rb'
     - 'ee/lib/gitlab/ci/config/security_orchestration_policies/processor.rb'

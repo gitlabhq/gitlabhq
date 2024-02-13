@@ -1,9 +1,9 @@
 import { GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import LanguageSwitcherApp from '~/language_switcher/components/app.vue';
-import { PREFERRED_LANGUAGE_COOKIE_KEY } from '~/language_switcher/constants';
+import { PREFERRED_LANGUAGE_COOKIE_KEY, EN } from '~/language_switcher/constants';
 import * as utils from '~/lib/utils/common_utils';
-import { locales, ES, EN } from '../mock_data';
+import { locales, ES } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
 
@@ -14,7 +14,6 @@ describe('<LanguageSwitcher />', () => {
     wrapper = mountExtended(LanguageSwitcherApp, {
       provide: {
         locales,
-        preferredLocale: EN,
         ...props,
       },
     });
@@ -28,9 +27,11 @@ describe('<LanguageSwitcher />', () => {
   const findLanguageDropdownItem = (code) => wrapper.findByTestId(`language_switcher_lang_${code}`);
   const findFooter = () => wrapper.findByTestId('footer');
 
-  it('preferred language', () => {
+  it('sets English as preferred language by default', () => {
     expect(getPreferredLanguage()).toBe(EN.text);
+  });
 
+  it('sets preferred locale when provided', () => {
     createComponent({
       preferredLocale: ES,
     });

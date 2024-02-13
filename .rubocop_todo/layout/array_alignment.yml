@@ -91,7 +91,6 @@ Layout/ArrayAlignment:
     - 'ee/spec/helpers/billing_plans_helper_spec.rb'
     - 'ee/spec/helpers/boards_helper_spec.rb'
     - 'ee/spec/helpers/ee/application_settings_helper_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/lib/audit/group_merge_request_approval_setting_changes_auditor_spec.rb'
     - 'ee/spec/lib/audit/project_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'

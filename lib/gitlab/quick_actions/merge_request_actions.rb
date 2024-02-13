@@ -311,7 +311,7 @@ module Gitlab
         types MergeRequest
         condition do
           quick_action_target.persisted? &&
-            quick_action_target.reviewers.any? &&
+            reviewers_to_remove?(@updates) &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
         parse_params do |unassign_reviewer_param|
@@ -358,6 +358,10 @@ module Gitlab
         else
           _("No change to this %{noun}'s draft status.")
         end % { verb: verb, noun: noun }
+      end
+
+      def reviewers_to_remove?(updates)
+        quick_action_target.reviewers.any? || updates&.dig(:reviewer_ids)&.any?
       end
 
       def merge_orchestration_service

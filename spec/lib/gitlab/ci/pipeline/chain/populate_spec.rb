@@ -197,8 +197,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
       end
 
       it 'raises error' do
-        expect { run_chain }.to raise_error(ActiveRecord::RecordNotSaved,
-                                            'You cannot call create unless the parent is saved')
+        expect { run_chain }.to raise_error(
+          ActiveRecord::RecordNotSaved,
+          'You cannot call create unless the parent is saved'
+        )
       end
     end
   end

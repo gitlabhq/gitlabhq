@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Onboarding Status",
+  "description": "Onboarding Status items recorded during onboarding/registration",
+  "type": "object",
+  "properties": {
+    "step_url": {
+      "description": "Onboarding step the user is currently on or last step before finishing",
+      "type": "string"
+    },
+    "email_opt_in": {
+      "description": "Setting to guide marketing email opt-ins outside of the product. See https://gitlab.com/gitlab-org/gitlab/-/issues/435741",
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

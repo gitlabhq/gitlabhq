@@ -13,7 +13,7 @@ This documentation will be kept even if we decide not to implement this so that 
 
 # Cells: Group Transfer
 
-> TL;DR
+TL;DR
 
 ## 1. Definition
 

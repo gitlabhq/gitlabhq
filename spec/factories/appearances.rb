@@ -6,6 +6,7 @@ FactoryBot.define do
   factory :appearance do
     title { "GitLab Community Edition" }
     description { "Open source software to collaborate on code" }
+    member_guidelines { "Custom member guidelines" }
     new_project_guidelines { "Custom project guidelines" }
     profile_image_guidelines { "Custom profile image guidelines" }
   end

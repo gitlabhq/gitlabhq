@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 require_relative '../../tooling/danger/rubocop_inline_disable_suggestion'
+require_relative '../../tooling/danger/rubocop_discourage_todo_addition'
+require_relative '../../tooling/danger/rubocop_helper'
 
 module Danger
   class Rubocop < ::Danger::Plugin
-    # Put the helper code somewhere it can be tested
-    def add_suggestions_for(filename)
-      Tooling::Danger::RubocopInlineDisableSuggestion.new(filename, context: self).suggest
-    end
+    include Tooling::Danger::RubocopHelper
   end
 end

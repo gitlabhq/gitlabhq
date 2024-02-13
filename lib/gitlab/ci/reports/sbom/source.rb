@@ -5,7 +5,7 @@ module Gitlab
     module Reports
       module Sbom
         class Source
-          include SourceHelper
+          include ::Sbom::SourceHelper
 
           attr_reader :source_type, :data
 

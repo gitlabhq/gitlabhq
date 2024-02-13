@@ -34,7 +34,7 @@ describe('packages_list_app', () => {
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
 
-  const createStore = ({ filter = [], packageCount = 0 } = {}) => {
+  const createStore = ({ isGroupPage = false, filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
@@ -43,6 +43,7 @@ describe('packages_list_app', () => {
           emptyListIllustration: 'helpSvg',
           emptyListHelpUrl,
           packageHelpUrl: 'foo',
+          isGroupPage,
         },
         filter,
         pagination: {
@@ -53,7 +54,7 @@ describe('packages_list_app', () => {
     store.dispatch = jest.fn();
   };
 
-  const mountComponent = (provide) => {
+  const mountComponent = () => {
     wrapper = shallowMount(PackageListApp, {
       store,
       stubs: {
@@ -63,7 +64,6 @@ describe('packages_list_app', () => {
         GlSprintf,
         GlLink,
       },
-      provide,
     });
   };
 
@@ -145,6 +145,8 @@ describe('packages_list_app', () => {
   });
 
   describe('empty state', () => {
+    const heading = () => findEmptyState().find('h1');
+
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
 
@@ -153,9 +155,18 @@ describe('packages_list_app', () => {
     });
 
     it('includes the right content on the default tab', () => {
-      const heading = findEmptyState().find('h1');
+      expect(heading().text()).toBe('You have no Terraform modules in your project');
+    });
 
-      expect(heading.text()).toBe('There are no packages yet');
+    describe('when group page', () => {
+      beforeEach(() => {
+        createStore({ isGroupPage: true });
+        mountComponent();
+      });
+
+      it('includes the right content', () => {
+        expect(heading().text()).toBe('You have no Terraform modules in your group');
+      });
     });
   });
 

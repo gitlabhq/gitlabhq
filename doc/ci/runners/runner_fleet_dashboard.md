@@ -6,9 +6,13 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Runner Fleet Dashboard **(ULTIMATE)**
+# Runner Fleet Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6
 
 GitLab administrators can use the Runner Fleet Dashboard to assess the health of your instance runners.
 The Runner Fleet Dashboard shows:
@@ -53,7 +57,12 @@ To export compute minutes used by instance runners:
 1. Select **Fleet dashboard**.
 1. Select **Export CSV**.
 
-## Enable more CI analytics features with ClickHouse **(ULTIMATE EXPERIMENT)**
+## Enable more CI analytics features with ClickHouse
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) in GitLab 16.7 with the [flags](../../administration/feature_flags.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/424866) in GitLab 16.8. Feature flag `clickhouse_ci_analytics` removed.

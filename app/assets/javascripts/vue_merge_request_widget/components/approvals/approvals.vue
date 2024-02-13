@@ -61,6 +61,11 @@ export default {
       required: false,
       default: false,
     },
+    hasAllApprovals: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -73,7 +78,7 @@ export default {
       return this.mr.approvalsWidgetType === 'base';
     },
     isApproved() {
-      return Boolean(this.approvals.approved || this.approvedBy.length);
+      return this.hasAllApprovals;
     },
     isOptional() {
       return this.isOptionalDefault !== null ? this.isOptionalDefault : !this.approvedBy.length;
@@ -281,6 +286,7 @@ export default {
                 <gl-button
                   v-if="action"
                   :variant="action.variant"
+                  size="small"
                   :category="action.category"
                   :loading="isApproving"
                   class="gl-mr-3"
@@ -296,6 +302,7 @@ export default {
               <gl-button
                 v-if="action"
                 :variant="action.variant"
+                size="small"
                 :category="action.category"
                 :loading="isApproving"
                 class="gl-mr-3"

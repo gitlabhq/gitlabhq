@@ -113,8 +113,8 @@ describe('Merge request merge checks component', () => {
 
   it.each`
     mergeabilityChecks                                                                               | text
-    ${[{ identifier: 'discussions', status: 'failed' }]}                                             | ${'Merge blocked: 1 check failed'}
-    ${[{ identifier: 'discussions', status: 'failed' }, { identifier: 'rebase', status: 'failed' }]} | ${'Merge blocked: 2 checks failed'}
+    ${[{ identifier: 'discussions', status: 'FAILED' }]}                                             | ${'Merge blocked: 1 check failed'}
+    ${[{ identifier: 'discussions', status: 'FAILED' }, { identifier: 'rebase', status: 'FAILED' }]} | ${'Merge blocked: 2 checks failed'}
   `('renders $text for $mergeabilityChecks', async ({ mergeabilityChecks, text }) => {
     mountComponent({ mergeabilityChecks });
 
@@ -125,8 +125,8 @@ describe('Merge request merge checks component', () => {
 
   it.each`
     status      | statusIcon
-    ${'failed'} | ${'failed'}
-    ${'passed'} | ${'success'}
+    ${'FAILED'} | ${'failed'}
+    ${'PASSED'} | ${'success'}
   `('renders $statusIcon for $status result', async ({ status, statusIcon }) => {
     mountComponent({ mergeabilityChecks: [{ status, identifier: 'discussions' }] });
 
@@ -136,19 +136,19 @@ describe('Merge request merge checks component', () => {
   });
 
   it.each`
-    identifier
-    ${'conflict'}
-    ${'discussions_not_resolved'}
-    ${'need_rebase'}
-    ${'default'}
-  `('renders $identifier merge check', async ({ identifier }) => {
+    identifier                    | componentName
+    ${'conflict'}                 | ${'conflict'}
+    ${'discussions_not_resolved'} | ${'discussions_not_resolved'}
+    ${'need_rebase'}              | ${'need_rebase'}
+    ${'policies_denied'}          | ${'default'}
+  `('renders $identifier merge check', async ({ identifier, componentName }) => {
     shallowMountComponent({ mergeabilityChecks: [{ status: 'failed', identifier }] });
 
     wrapper.findComponent(StateContainer).vm.$emit('toggle');
 
     await waitForPromises();
 
-    const { default: component } = await COMPONENTS[identifier]();
+    const { default: component } = await COMPONENTS[componentName]();
 
     expect(wrapper.findComponent(component).exists()).toBe(true);
   });
@@ -161,5 +161,80 @@ describe('Merge request merge checks component', () => {
     await wrapper.findByTestId('widget-toggle').trigger('click');
 
     expect(wrapper.findByTestId('merge-checks-full').exists()).toBe(true);
+  });
+
+  it('sorts merge checks', async () => {
+    mountComponent({
+      mergeabilityChecks: [
+        { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+        { identifier: 'status_checks_must_pass', status: 'INACTIVE' },
+        { identifier: 'need_rebase', status: 'FAILED' },
+      ],
+    });
+
+    await waitForPromises();
+
+    await wrapper.findByTestId('widget-toggle').trigger('click');
+
+    const mergeChecks = wrapper.findAllByTestId('merge-check');
+
+    expect(mergeChecks.length).toBe(2);
+    expect(mergeChecks.at(0).props('check')).toEqual(expect.objectContaining({ status: 'FAILED' }));
+    expect(mergeChecks.at(1).props('check')).toEqual(
+      expect.objectContaining({ status: 'SUCCESS' }),
+    );
+  });
+
+  it('does not render check component if no message exists', async () => {
+    mountComponent({
+      mergeabilityChecks: [
+        { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+        { identifier: 'fakemessage', status: 'FAILED' },
+      ],
+    });
+
+    await waitForPromises();
+
+    await wrapper.findByTestId('widget-toggle').trigger('click');
+
+    const mergeChecks = wrapper.findAllByTestId('merge-check');
+
+    expect(mergeChecks.length).toBe(1);
+  });
+
+  describe('expansion', () => {
+    const findMergeChecks = () => wrapper.findAllByTestId('merge-check');
+
+    beforeEach(async () => {
+      mountComponent({
+        mergeabilityChecks: [
+          { identifier: 'discussions_not_resolved', status: 'SUCCESS' },
+          { identifier: 'discussions_not_resolved', status: 'INACTIVE' },
+          { identifier: 'need_rebase', status: 'FAILED' },
+        ],
+      });
+
+      await waitForPromises();
+    });
+
+    it('shows failed checks before user expands section', () => {
+      expect(findMergeChecks().length).toBe(1);
+    });
+
+    it('shows all checks when user expands section', async () => {
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(2);
+    });
+
+    it('hides all checks when user collapses section', async () => {
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(2);
+
+      await wrapper.findByTestId('widget-toggle').trigger('click');
+
+      expect(findMergeChecks().length).toBe(0);
+    });
   });
 });

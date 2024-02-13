@@ -44,7 +44,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
 
       it 'has enable submit button, preview button and saves content to local storage' do
         page.within('.js-main-target-form') do
-          page.within('[data-testid="comment-button"]') do
+          within_testid('comment-button') do
             expect(page).to have_css('.gl-button')
             expect(page).not_to have_css('.disabled')
           end
@@ -162,7 +162,7 @@ RSpec.describe 'Merge request > User posts notes', :js, feature_category: :code_
       it 'resets the edit note form textarea with the original content of the note if cancelled' do
         within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
-          find('[data-testid="cancel"]').click
+          find_by_testid('cancel').click
         end
 
         page.within('.modal') do

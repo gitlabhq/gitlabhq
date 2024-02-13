@@ -24,7 +24,8 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
     create(
       :work_item,
       namespace: group,
-      author: reporter
+      author: reporter,
+      title: 'search_term'
     )
   end
 
@@ -57,15 +58,12 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
   end
 
   context 'when filtering by search' do
-    let(:item_filter_params) { { search: 'search_term', in: [:DESCRIPTION] } }
+    let(:item_filter_params) { { search: 'search_term' } }
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/work_items/393126
-    it 'returns an error since search is not implemented at the group level yet' do
+    it 'returns matching work items' do
       post_graphql(query, current_user: current_user)
 
-      expect(graphql_errors).to contain_exactly(
-        hash_including('message' => 'Searching is not available for work items at the namespace level yet')
-      )
+      expect(work_item_ids).to contain_exactly(group_work_item.to_global_id.to_s)
     end
   end
 
@@ -80,6 +78,7 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
       post_graphql(query, current_user: current_user)
 
       expect(work_item_ids).to contain_exactly(
+        project_work_item.to_global_id.to_s,
         group_work_item.to_global_id.to_s
       )
     end
@@ -91,9 +90,11 @@ RSpec.describe 'getting a work_item list for a group', feature_category: :team_p
     it 'returns also confidential work_items' do
       post_graphql(query, current_user: current_user)
 
-      expect(work_item_ids).to eq([
-        confidential_work_item.to_global_id.to_s, group_work_item.to_global_id.to_s
-      ])
+      expect(work_item_ids).to contain_exactly(
+        project_work_item.to_global_id.to_s,
+        confidential_work_item.to_global_id.to_s,
+        group_work_item.to_global_id.to_s
+      )
     end
 
     context 'when the namespace_level_work_items feature flag is disabled' do

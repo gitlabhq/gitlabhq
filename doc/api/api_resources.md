@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# REST API resources **(FREE ALL)**
+# REST API resources
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Available resources for the [GitLab REST API](index.md) can be grouped in the following contexts:
 
@@ -39,7 +43,7 @@ The following API resources are available in the project context:
 | [Deploy tokens](deploy_tokens.md)                                       | `/projects/:id/deploy_tokens` (also available for groups and standalone)                                                                                                                              |
 | [Deployments](deployments.md)                                           | `/projects/:id/deployments`                                                                                                                                                                           |
 | [Discussions](discussions.md) (threaded comments)                       | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` (also available for groups) |
-| [Draft Notes](draft_notes.md) (comments)                                | `/projects/:id/merge_requests/.../draft_notes`
+| [Draft Notes](draft_notes.md) (comments)                                | `/projects/:id/merge_requests/.../draft_notes` |
 | [Emoji reactions](emoji_reactions.md)                                   | `/projects/:id/issues/.../award_emoji`, `/projects/:id/merge_requests/.../award_emoji`, `/projects/:id/snippets/.../award_emoji`                                                                      |
 | [Environments](environments.md)                                         | `/projects/:id/environments`                                                                                                                                                                          |
 | [Error Tracking](error_tracking.md)                                     | `/projects/:id/error_tracking/settings`                                                                                                                                                               |

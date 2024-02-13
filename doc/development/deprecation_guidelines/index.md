@@ -15,11 +15,11 @@ For details about the terms used on this page, see [the terminology](../../updat
 
 Deprecations should be announced on the [Deprecated feature removal schedule](../../update/deprecations.md).
 
-Deprecations should be announced [no later than the third milestone preceding intended removal](https://about.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
+Deprecations should be announced [no later than the third milestone preceding intended removal](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#process-for-deprecating-and-removing-a-feature).
 
 Do not include the deprecation announcement in the merge request that introduces a code change for the deprecation.
 Use a separate MR to create a deprecation entry. For steps to create a deprecation entry, see
-[Deprecations](https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations).
+[Update the deprecations doc](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc).
 
 ![Deprecation, End of Support, Removal process](img/deprecation_removal_process.png)
 
@@ -27,7 +27,7 @@ Use a separate MR to create a deprecation entry. For steps to create a deprecati
 
 Development on deprecated features is restricted to Priority 1 / Severity 1 bug fixes. Any community contributions to deprecated features are unlikely to be prioritized during milestone planning.
 
-However, at GitLab, we [give agency](https://about.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
+However, at GitLab, we [give agency](https://handbook.gitlab.com/handbook/values/#give-agency) to our team members. So, a member of the team associated with the contribution may decide to review and merge it at their discretion.
 
 ## When can a feature be removed/changed?
 
@@ -49,7 +49,7 @@ This maintenance policy is in place to allow our customers to prepare for disrup
 
 Introducing breaking changes in minor releases is against policy because it can disrupt our customers and introduces an element of randomness that requires customers to check for breaking changes every minor release to ensure that their business is not impacted. This does not align with our goal [to make it as easy as possible for customers to do business with GitLab](https://about.gitlab.com/company/yearlies/#fy24-yearlies) and is strongly discouraged.
 
-Breaking changes are deployed to GitLab.com after they are merged into the codebase and do not respect the minor release cadence. Special care must be taken to inform the [Customer Support](https://about.gitlab.com/handbook/support/) and [Customer Success](https://about.gitlab.com/handbook/customer-success/) teams so that we can offer fast resolution to any customers that may be impacted by unexpected breaking changes.
+Breaking changes are deployed to GitLab.com after they are merged into the codebase and do not respect the minor release cadence. Special care must be taken to inform the [Customer Support](https://handbook.gitlab.com/handbook/support/) and [Customer Success](https://handbook.gitlab.com/handbook/customer-success/) teams so that we can offer fast resolution to any customers that may be impacted by unexpected breaking changes.
 
 Breaking our own policies, in particular shipping breaking changes in minor releases, is only reserved for situations in which GitLab establishes that delaying a breaking change would overall have a significantly more negative impact to customers than shipping it in a minor release. The most important lens for evaluating if an exception is granted is customer results.
 
@@ -97,8 +97,8 @@ edited, or removed:
 
 Related Handbook pages:
 
-- <https://about.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
-- <https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-and-removals-page>
+- <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes>
+- <https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#update-the-deprecations-doc>
 
 ## Update the related documentation
 

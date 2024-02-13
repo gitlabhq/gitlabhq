@@ -4,8 +4,6 @@ module Gitlab
   module GithubImport
     module Importer
       class IssueImporter
-        include Gitlab::Import::DatabaseHelpers
-
         attr_reader :project, :issue, :client, :user_finder, :milestone_finder,
                     :issuable_finder
 
@@ -27,29 +25,28 @@ module Gitlab
         end
 
         def execute
-          Issue.transaction do
-            if (issue_id = create_issue)
-              issuable_finder.cache_database_id(issue_id)
-              create_assignees(issue_id)
-              update_search_data(issue_id)
-            end
-          end
+          new_issue = create_issue
+          issuable_finder.cache_database_id(new_issue.id)
+          new_issue
         end
 
+        private
+
         # Creates a new GitLab issue for the current GitHub issue.
-        #
-        # Returns the ID of the created issue as an Integer. If the issue
-        # couldn't be created this method will return `nil` instead.
         def create_issue
           author_id, author_found = user_finder.author_id_for(issue)
 
-          description =
-            MarkdownText.format(issue.description, issue.author, author_found)
+          description = MarkdownText.format(issue.description, issue.author, author_found)
+
+          assignee_ids = issue.assignees.filter_map do |assignee|
+            user_finder.user_id_for(assignee)
+          end
 
           attributes = {
             iid: issue.iid,
             title: issue.truncated_title,
             author_id: author_id,
+            assignee_ids: assignee_ids,
             project_id: project.id,
             namespace_id: project.project_namespace_id,
             description: description,
@@ -60,32 +57,7 @@ module Gitlab
             work_item_type_id: issue.work_item_type_id
           }
 
-          issue = project.issues.new(attributes.merge(importing: true))
-          issue.validate!
-
-          insert_and_return_id(attributes, project.issues)
-        end
-
-        # Stores all issue assignees in the database.
-        #
-        # issue_id - The ID of the created issue.
-        def create_assignees(issue_id)
-          assignees = []
-
-          issue.assignees.each do |assignee|
-            if (user_id = user_finder.user_id_for(assignee))
-              assignees << { issue_id: issue_id, user_id: user_id }
-            end
-          end
-
-          ApplicationRecord.legacy_bulk_insert(IssueAssignee.table_name, assignees) # rubocop:disable Gitlab/BulkInsert
-        end
-
-        #  Adds search data to database (if full_text_search feature is enabled)
-        #
-        # issue_id - The ID of the created issue.
-        def update_search_data(issue_id)
-          project.issues.find(issue_id)&.update_search_data!
+          project.issues.create!(attributes.merge(importing: true))
         end
       end
     end

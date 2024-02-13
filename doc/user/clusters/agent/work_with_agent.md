@@ -4,13 +4,17 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Managing the agent for Kubernetes instances **(FREE ALL)**
+# Managing the agent for Kubernetes instances
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the following tasks when you work with the agent for Kubernetes.
 
 ## View your agents
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, the installed `agentk` version is displayed on the **Agent** tab.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340882) in GitLab 14.8, the installed `agentk` version is displayed on the **Agent** tab.
 
 Prerequisites:
 
@@ -32,7 +36,7 @@ On this page, you can view:
 
 ## View shared agents
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395498) in GitLab 16.1.
 
 In addition to the agents owned by your project, you can also view agents shared with the
 [`ci_access`](ci_cd_workflow.md) and [`user_access`](user_access.md) keywords. Once an agent
@@ -48,7 +52,7 @@ The list of shared agents and their clusters are displayed.
 
 ## View an agent's activity information
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/277323) in GitLab 14.6.
 
 The activity logs help you to identify problems and get the information
 you need for troubleshooting. You can see events from a week before the
@@ -70,7 +74,7 @@ View and provide feedback about the UI in [this epic](https://gitlab.com/groups/
 
 ## Debug the agent
 
-> The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
+> - The `grpc_level` was [introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/669) in GitLab 15.1.
 
 To debug the cluster-side component (`agentk`) of the agent, set the log
 level according to the available options:
@@ -133,7 +137,7 @@ clean up those resources manually.
 
 ### Remove an agent through the GitLab UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323055) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323055) in GitLab 14.7.
 
 To remove an agent from the UI:
 
@@ -197,3 +201,7 @@ To remove an agent from the UI:
    ```shell
    kubectl delete -n gitlab-kubernetes-agent -f ./resources.yml
    ```
+
+## Related topics
+
+- [Manage an agent's workspaces](../../workspace/index.md#manage-workspaces-at-the-agent-level)

@@ -25,6 +25,7 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
         expect(json_response['logo']).to be_nil
         expect(json_response['message_background_color']).to eq('#E75E40')
         expect(json_response['message_font_color']).to eq('#FFFFFF')
+        expect(json_response['member_guidelines']).to eq('')
         expect(json_response['new_project_guidelines']).to eq('')
         expect(json_response['profile_image_guidelines']).to eq('')
         expect(json_response['title']).to eq('')
@@ -49,6 +50,7 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
             pwa_name: "GitLab PWA Test",
             pwa_short_name: "GitLab PWA",
             pwa_description: "This is GitLab as PWA",
+            member_guidelines: "Please read before adding members.",
             new_project_guidelines: "Please read the FAQs for help.",
             profile_image_guidelines: "Custom profile image guidelines"
           }
@@ -64,6 +66,7 @@ RSpec.describe API::Appearance, 'Appearance', :aggregate_failures, feature_categ
           expect(json_response['logo']).to be_nil
           expect(json_response['message_background_color']).to eq('#E75E40')
           expect(json_response['message_font_color']).to eq('#FFFFFF')
+          expect(json_response['member_guidelines']).to eq('Please read before adding members.')
           expect(json_response['new_project_guidelines']).to eq('Please read the FAQs for help.')
           expect(json_response['profile_image_guidelines']).to eq('Custom profile image guidelines')
           expect(json_response['title']).to eq('GitLab Test Instance')

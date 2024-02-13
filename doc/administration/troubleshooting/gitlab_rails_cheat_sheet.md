@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Rails Console Cheat Sheet **(FREE SELF)**
+# GitLab Rails Console Cheat Sheet
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This was the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for posterity,

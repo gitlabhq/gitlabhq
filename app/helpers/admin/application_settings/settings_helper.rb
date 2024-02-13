@@ -13,7 +13,7 @@ module Admin
       end
 
       def project_missing_pipeline_yaml?(project)
-        project.repository&.gitlab_ci_yml.blank?
+        !project.has_ci_config_file?
       end
     end
   end

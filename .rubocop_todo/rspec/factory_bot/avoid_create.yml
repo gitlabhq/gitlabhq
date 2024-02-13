@@ -19,7 +19,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/ee/ci/pipeline_editor_helper_spec.rb'
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
-    - 'ee/spec/helpers/ee/environments_helper_spec.rb'
     - 'ee/spec/helpers/ee/events_helper_spec.rb'
     - 'ee/spec/helpers/ee/feature_flags_helper_spec.rb'
     - 'ee/spec/helpers/ee/gitlab_routing_helper_spec.rb'

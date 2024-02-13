@@ -1,5 +1,5 @@
 <script>
-import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
+import { GlSorting, GlFilteredSearch } from '@gitlab/ui';
 import { SORT_DIRECTION_UI } from '~/search/sort/constants';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
@@ -9,7 +9,6 @@ const DESCENDING_ORDER = 'desc';
 export default {
   components: {
     GlSorting,
-    GlSortingItem,
     GlFilteredSearch,
   },
   props: {
@@ -55,6 +54,9 @@ export default {
     },
     sortDirectionData() {
       return this.isSortAscending ? SORT_DIRECTION_UI.asc : SORT_DIRECTION_UI.desc;
+    },
+    sortOptions() {
+      return this.sortableFields.map(({ orderBy, label }) => ({ text: label, value: orderBy }));
     },
   },
   methods: {
@@ -138,16 +140,10 @@ export default {
       :text="sortText"
       :is-ascending="isSortAscending"
       :sort-direction-tool-tip="sortDirectionData.tooltip"
+      :sort-options="sortOptions"
+      :sort-by="sorting.orderBy"
       @sortDirectionChange="onDirectionChange"
-    >
-      <gl-sorting-item
-        v-for="item in sortableFields"
-        ref="packageListSortItem"
-        :key="item.orderBy"
-        @click="onSortItemClick(item.orderBy)"
-      >
-        {{ item.label }}
-      </gl-sorting-item>
-    </gl-sorting>
+      @sortByChange="onSortItemClick"
+    />
   </div>
 </template>

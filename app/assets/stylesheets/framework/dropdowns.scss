@@ -6,7 +6,7 @@
   // need this style.
   // Issue for the refactoring: https://gitlab.com/gitlab-org/gitlab/-/issues/213327
   &.gl-dropdown button.dropdown-toggle {
-    @include gl-display-inline-flex;
+    display: inline-flex;
   }
 
   .btn-link {
@@ -662,12 +662,14 @@
   display: block;
   width: 100%;
   min-height: 30px;
-  @include gl-py-0;
-  @include gl-px-3;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: $gl-spacing-scale-3;
+  padding-right: $gl-spacing-scale-3;
   color: $gray-700;
   line-height: 30px;
   border: 1px solid $gray-400;
-  @include gl-rounded-base;
+  border-radius: $gl-border-radius-base;
   outline: 0;
 
   &:focus {
@@ -944,7 +946,7 @@
 
   .gl-button-text {
     display: flex;
-    @include gl-w-full;
+    width: 100%;
   }
 }
 

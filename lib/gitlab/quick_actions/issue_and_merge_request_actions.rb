@@ -164,7 +164,7 @@ module Gitlab
         types Issue, MergeRequest
         condition do
           quick_action_target.supports_time_tracking? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         parse_params do |raw_duration|
           Gitlab::TimeTrackingFormatter.parse(raw_duration, keep_zero: true)
@@ -181,7 +181,14 @@ module Gitlab
           spend_time_message(time_spent, time_spent_date, true)
         end
 
-        params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
+        params do
+          base_params = 'time(1h30m | -1h30m) <date(YYYY-MM-DD)>'
+          if Feature.enabled?(:timelog_categories, quick_action_target.project)
+            "#{base_params} <[timecategory:category-name]>"
+          else
+            base_params
+          end
+        end
         types Issue, MergeRequest
         condition do
           quick_action_target.supports_time_tracking? &&
@@ -190,12 +197,13 @@ module Gitlab
         parse_params do |raw_time_date|
           Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
         end
-        command :spend, :spent, :spend_time do |time_spent, time_spent_date|
+        command :spend, :spent, :spend_time do |time_spent, time_spent_date, category|
           if time_spent
             @updates[:spend_time] = {
               duration: time_spent,
               user_id: current_user.id,
-              spent_at: time_spent_date
+              spent_at: time_spent_date,
+              category: category
             }
           end
         end
@@ -206,7 +214,7 @@ module Gitlab
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         command :remove_estimate, :remove_time_estimate do
           @updates[:time_estimate] = 0
@@ -217,7 +225,7 @@ module Gitlab
         execution_message { _('Removed spent time.') }
         condition do
           quick_action_target.persisted? &&
-            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
+            current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         types Issue, MergeRequest
         command :remove_time_spent do

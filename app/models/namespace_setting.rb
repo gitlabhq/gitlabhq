@@ -7,15 +7,17 @@ class NamespaceSetting < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :project_import_level, remove_with: '16.10', remove_after: '2024-02-22'
+  ignore_column :third_party_ai_features_enabled, remove_with: '16.10', remove_after: '2024-02-22'
+  ignore_column %i[delayed_project_removal lock_delayed_project_removal], remove_with: '16.10', remove_after: '2024-02-22'
 
-  cascading_attr :delayed_project_removal
   cascading_attr :toggle_security_policy_custom_ci
   cascading_attr :toggle_security_policies_policy_scope
+  cascading_attr :math_rendering_limits_enabled
 
   belongs_to :namespace, inverse_of: :namespace_settings
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true
-  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2, ssh_certificates: 3 }, _suffix: true
+  enum enabled_git_access_protocol: { all: 0, ssh: 1, http: 2 }, _suffix: true
 
   attribute :default_branch_protection_defaults, default: -> { {} }
 
@@ -39,8 +41,6 @@ class NamespaceSetting < ApplicationRecord
 
   NAMESPACE_SETTINGS_PARAMS = %i[
     default_branch_name
-    delayed_project_removal
-    lock_delayed_project_removal
     resource_access_token_creation_allowed
     prevent_sharing_groups_outside_hierarchy
     new_user_signups_cap
@@ -51,6 +51,8 @@ class NamespaceSetting < ApplicationRecord
     subgroup_runner_token_expiration_interval
     project_runner_token_expiration_interval
     default_branch_protection_defaults
+    math_rendering_limits_enabled
+    lock_math_rendering_limits_enabled
   ].freeze
 
   # matches the size set in the database constraint

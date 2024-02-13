@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline editor **(FREE ALL)**
+# Pipeline editor
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4540) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/270059) in GitLab 13.10.
@@ -60,7 +64,7 @@ reflected in the CI lint. It displays the same results as the existing [CI Lint 
 
 ## Simulate a CI/CD pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
 
 To look for pipeline syntax and logic issues, you can simulate the creation of a
 GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find

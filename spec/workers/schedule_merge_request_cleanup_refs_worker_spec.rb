@@ -19,7 +19,7 @@ RSpec.describe ScheduleMergeRequestCleanupRefsWorker, feature_category: :code_re
       worker.perform
     end
 
-    include_examples 'an idempotent worker' do
+    it_behaves_like 'an idempotent worker' do
       it 'schedules MergeRequestCleanupRefsWorker to be performed with capacity' do
         expect(MergeRequestCleanupRefsWorker).to receive(:perform_with_capacity).twice
 

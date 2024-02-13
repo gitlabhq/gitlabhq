@@ -7,6 +7,9 @@ Rails.application.configure do
 
   config.action_cable.url = Gitlab::Utils.append_path(Gitlab.config.gitlab.relative_url_root, '/-/cable')
   config.action_cable.worker_pool_size = Gitlab::ActionCable::Config.worker_pool_size
+  if Rails.env.development? || Rails.env.test?
+    config.action_cable.allowed_request_origins = [%r{http(s?)://(127\.0\.0\.1|gdk\.test):\d{4}}]
+  end
 end
 
 ActionCable::SubscriptionAdapter::Base.prepend(Gitlab::Patch::ActionCableSubscriptionAdapterIdentifier)

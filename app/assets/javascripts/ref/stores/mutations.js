@@ -36,6 +36,7 @@ export default {
         name: b.name,
         value: state.useSymbolicRefNames ? `refs/heads/${b.name}` : undefined,
         default: b.default,
+        protected: b.protected,
       })),
       totalCount: parseInt(response.headers[X_TOTAL_HEADER], 10),
       error: null,
@@ -54,6 +55,7 @@ export default {
       list: convertObjectPropsToCamelCase(response.data).map((b) => ({
         name: b.name,
         value: state.useSymbolicRefNames ? `refs/tags/${b.name}` : undefined,
+        protected: b.protected,
       })),
       totalCount: parseInt(response.headers[X_TOTAL_HEADER], 10),
       error: null,

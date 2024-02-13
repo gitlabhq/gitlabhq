@@ -4,12 +4,16 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project-level Secure Files API **(FREE ALL)**
+# Project-level Secure Files API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78227) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `ci_secure_files`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
 
-This feature is part of [Mobile DevOps](../ci/mobile_devops.md) developed by [GitLab Incubation Engineering](https://about.gitlab.com/handbook/engineering/incubation/).
+This feature is part of [Mobile DevOps](../ci/mobile_devops.md) developed by [GitLab Incubation Engineering](https://handbook.gitlab.com/handbook/engineering/development/incubation/).
 The feature is still in development, but you can:
 
 - [Request a feature](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=feature_request).
@@ -127,7 +131,7 @@ Supported attributes:
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
 | `file`          | file           | Yes      | The file being uploaded (5 MB limit). |
-| `name`          | string         | Yes      | The name of the file being uploaded. The file name must be unique in the project. |
+| `name`          | string         | Yes      | The name of the file being uploaded. The filename must be unique in the project. |
 | `project_id`    | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
 Example request:

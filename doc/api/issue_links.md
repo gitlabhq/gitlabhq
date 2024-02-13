@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue links API **(FREE ALL)**
+# Issue links API
 
-> The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - The simple "relates to" relationship [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212329) to GitLab Free in 13.4.
 
 ## List issue relations
 
@@ -65,7 +69,7 @@ Parameters:
 
 ## Get an issue link
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88228) in GitLab 15.1.
 
 Gets details about an issue link.
 

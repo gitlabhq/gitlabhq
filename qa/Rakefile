@@ -5,8 +5,9 @@ require_relative "qa"
 Dir['tasks/*.rake'].each { |file| load file }
 
 desc "Deletes subgroups within a provided group"
-task :delete_subgroups do
-  QA::Tools::DeleteSubgroups.new.run
+task :delete_subgroups, [:delete_before] do |_, args|
+  args.with_defaults(delete_before: (Date.today - 3).to_s)
+  QA::Tools::DeleteSubgroups.new(delete_before: args[:delete_before]).run
 end
 
 desc "Initialize GitLab with an access token"
@@ -50,8 +51,9 @@ task :delete_test_ssh_keys, [:title_portion, :delete_before, :dry_run] do |_, ar
 end
 
 desc "Deletes projects directly under the provided group"
-task :delete_projects do
-  QA::Tools::DeleteProjects.new.run
+task :delete_projects, [:delete_before] do |_, args|
+  args.with_defaults(delete_before: (Date.today - 3).to_s)
+  QA::Tools::DeleteProjects.new(delete_before: args[:delete_before]).run
 end
 
 desc "Deletes test users"

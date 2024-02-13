@@ -99,7 +99,7 @@ In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab admin
 
 ## Use a custom name for the initial branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43290) in GitLab 13.6.
 
 When you create a new project in GitLab, a default branch is created with the
 first push. The group owner can
@@ -111,50 +111,38 @@ for the group's projects to meet your group's needs.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18328) in GitLab 12.7.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. To invite a group, you must be a member of it.
-To share a given group, for example, `Frontend` with another group, for example,
-`Engineering`:
+you can share a group with another group by invitation.
+For more information about sharing conditions and behavior, see [Sharing projects and groups](../project/members/sharing_projects_groups.md).
 
-1. Go to the `Frontend` group.
+Prerequisites:
+
+- You must be a member of the inviting group.
+
+To invite a group to your group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select **Invite a group**.
-1. In the **Select a group to invite** list, select `Engineering`.
+1. In the **Select a group to invite** list, select the group you want to invite.
 1. Select a [role](../permissions.md) as maximum access level.
 1. Select **Invite**.
 
-After sharing the `Frontend` group with the `Engineering` group:
+## Remove an invited group
 
-- The **Groups** tab lists the `Engineering` group.
-- The **Groups** tab lists a group regardless of whether it is a public or private group.
-- From [GitLab 16.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134623),
-  the invited group's name and membership source will be masked unless:
-  - the invited group is public, or
-  - the current user is a member of the invited group, or
-  - the current user is a member of the current group.
-- All direct members of the `Engineering` group have access to the `Frontend` group. The least access is granted between the access in the `Engineering` group and the access in the `Frontend` group.
-  - If `Member1` has the Maintainer role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member1` has the Developer role in `Frontend`.
-  - If `Member2` has the Guest role in `Engineering` and `Engineering` is added to `Frontend` with the Developer role, `Member2` has the Guest role in `Frontend`.
-- Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
-- Direct members of the `Engineering` group who have the **Group Invite** badge next to their profile on the group's usage quota page count towards the billable members of the `Frontend` group.
-
-## Remove a shared group
-
-To unshare a group:
+To remove an invited group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Manage > Members**.
 1. Select the **Groups** tab.
 1. To the right of the account you want to remove, select **Remove group** (**{remove}**).
 
-For example, if the `Engineering` group is shared with the `Frontend` group, when
-you unshare the `Engineering` group:
+When you remove the invited group from your group:
 
-- All direct members of the `Engineering` group no longer have access to the `Frontend` group.
-- Members of the `Engineering` group no longer count towards the billable members of the `Frontend` group.
+- All direct members of the invited group no longer have access to the inviting group.
+- Members of the invited group no longer count towards the billable members of the inviting group.
 
 ## Transfer a group
 
@@ -191,7 +179,7 @@ To transfer a group:
 
 ## Disable email notifications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23585) in GitLab 12.2.
 
 You can disable all email notifications related to the group, which includes its subgroups and projects.
 
@@ -205,7 +193,7 @@ To disable email notifications:
 
 ## Disable group mentions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21301) in GitLab 12.6.
 
 You can prevent users from being added to a conversation and getting notified when
 anyone [mentions a group](../discussions/index.md#mentions)
@@ -223,7 +211,11 @@ To disable group mentions:
 1. Select **Group mentions are disabled**.
 1. Select **Save changes**.
 
-## Export members as CSV **(PREMIUM ALL)**
+## Export members as CSV
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/287940) in GitLab 14.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/336520) in GitLab 14.5.
@@ -318,7 +310,11 @@ To ensure that the user cap applies when groups, subgroups, or projects are shar
 
 User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
 
-## Group file templates **(PREMIUM ALL)**
+## Group file templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use group file templates to share a set of templates for common file
 types with every project in a group. It is analogous to the
@@ -340,7 +336,11 @@ To learn how to create templates for issues and merge requests, see
 Define project templates at a group level by setting a group as the template source.
 For more information, see [group-level project templates](custom_project_templates.md).
 
-### Enable group file template **(PREMIUM ALL)**
+### Enable group file template
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To enable group file templates:
 
@@ -350,14 +350,14 @@ To enable group file templates:
 1. Choose a project to act as the template repository.
 1. Select **Save changes**.
 
-## Group merge checks settings **(PREMIUM ALL)**
+## Group merge checks settings
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
-[enable the feature flag](../../administration/feature_flags.md) named `support_group_level_merge_checks_setting`. On GitLab.com, this feature is not
-available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
 Group owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
 
@@ -421,7 +421,11 @@ To enable this setting:
 1. Under **Merge checks**, select **All threads must be resolved**.
 1. Select **Save changes**.
 
-## Group merge request approval settings **(PREMIUM ALL)**
+## Group merge request approval settings
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285458) in GitLab 13.9. [Deployed behind the `group_merge_request_approval_settings_feature_flag` flag](../../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/285410) in GitLab 14.5.
@@ -443,37 +447,21 @@ Approval settings should not be confused with [approval rules](../project/merge_
 for the ability to set merge request approval rules for groups is tracked in
 [epic 4367](https://gitlab.com/groups/gitlab-org/-/epics/4367).
 
-## Enable Code Suggestions for a group **(FREE SAAS)**
+## Enable Experiment and Beta features
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405126) in GitLab 15.11.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/408158) from GitLab Ultimate to GitLab Premium in 16.0.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/410801) from GitLab Premium to GitLab Free in 16.0.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
-You can give all users in a group and its subgroups access to
-[Code Suggestions](../project/repository/code_suggestions/index.md). This setting
-[cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading) in the group.
-
-Code Suggestions are enabled by default at the group level.
-
-To update this setting:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Under **Code Suggestions**, select the **Projects in this group can use Code Suggestions** checkbox.
-1. Select **Save changes**.
-
-Individual users can disable Code Suggestions by disabling the feature in their
-[installed IDE editor extension](../project/repository/code_suggestions/index.md#supported-editor-extensions).
-
-## Enable Experiment and Beta features **(ULTIMATE SAAS)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 
 WARNING:
 [Experiment and Beta features](../../policy/experiment-beta-support.md) may produce unexpected results
 (for example, the results might be low-quality, incomplete, incoherent, offensive, or insensitive,
 and might include insecure code or failed pipelines).
+
+NOTE:
+[GitLab Duo Chat](../../user/gitlab_duo_chat.md) is an only feature available in Premium tier.
 
 You can give all users in a top-level group access to Experiment and Beta features.
 This setting [cascades to all projects](../project/merge_requests/approvals/settings.md#settings-cascading)
@@ -487,9 +475,13 @@ To enable Experiment features for a top-level group:
 1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
 1. Select **Save changes**.
 
-## Group activity analytics **(PREMIUM ALL)**
+## Group activity analytics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207164) in GitLab 12.10 as a [Beta feature](../../policy/experiment-beta-support.md#beta).
 
 For a group, you can view how many merge requests, issues, and members were created in the last 90 days.
 

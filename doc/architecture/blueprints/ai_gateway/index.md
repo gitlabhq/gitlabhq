@@ -32,6 +32,8 @@ translate the content of the redirected request where needed.
 
 ![architecture diagram](img/architecture.png)
 
+**Currently, multi-region deployment is not supported; it's a feature under consideration. The existing diagram illustrates a potential architecture for deploying across multiple regions.**
+
 [Diagram source](https://docs.google.com/drawings/d/1PYl5Q5oWHnQAuxM-Jcw0C3eYoGw8a9w8atFpoLhhEas/edit)
 
 By using a hosted service under the control of GitLab we can ensure
@@ -448,7 +450,7 @@ in:
 - [Epic 10808](https://gitlab.com/groups/gitlab-org/-/epics/10808)
 
 The specific mechanism by which trust is delegated between end-users, GitLab instances,
-and the AI-gateway is covered in the [AI gateway access token validation documentation](../../../development/cloud_connector/code_suggestions_for_sm.md#ai-gateway-access-token-validation).
+and the AI-gateway is covered in the [Cloud Connector access control documentation](../../../development/cloud_connector/architecture.md#access-control).
 
 ## Embeddings
 

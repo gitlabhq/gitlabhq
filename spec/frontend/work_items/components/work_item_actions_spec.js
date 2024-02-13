@@ -20,13 +20,15 @@ import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.
 import {
   STATE_OPEN,
   TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
-  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
-  TEST_ID_DELETE_ACTION,
-  TEST_ID_PROMOTE_ACTION,
-  TEST_ID_COPY_REFERENCE_ACTION,
   TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION,
+  TEST_ID_COPY_REFERENCE_ACTION,
+  TEST_ID_DELETE_ACTION,
+  TEST_ID_LOCK_ACTION,
+  TEST_ID_NOTIFICATIONS_TOGGLE_FORM,
+  TEST_ID_PROMOTE_ACTION,
   TEST_ID_TOGGLE_ACTION,
 } from '~/work_items/constants';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
@@ -35,6 +37,7 @@ import {
   convertWorkItemMutationResponse,
   projectWorkItemTypesQueryResponse,
   convertWorkItemMutationErrorResponse,
+  updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,
 } from '../mock_data';
 
@@ -52,6 +55,7 @@ describe('WorkItemActions component', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findConfidentialityToggleButton = () =>
     wrapper.findByTestId(TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION);
+  const findLockDiscussionButton = () => wrapper.findByTestId(TEST_ID_LOCK_ACTION);
   const findDeleteButton = () => wrapper.findByTestId(TEST_ID_DELETE_ACTION);
   const findPromoteButton = () => wrapper.findByTestId(TEST_ID_PROMOTE_ACTION);
   const findCopyReferenceButton = () => wrapper.findByTestId(TEST_ID_COPY_REFERENCE_ACTION);
@@ -94,15 +98,20 @@ describe('WorkItemActions component', () => {
   const toggleNotificationsFailureHandler = jest
     .fn()
     .mockRejectedValue(new Error('Failed to subscribe'));
+  const lockDiscussionMutationResolver = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponse);
 
   const createComponent = ({
     canUpdate = true,
     canDelete = true,
     isConfidential = false,
+    isDiscussionLocked = false,
     subscribed = false,
     isParentConfidential = false,
     convertWorkItemMutationHandler = convertWorkItemMutationSuccessHandler,
     notificationsMutationHandler,
+    lockDiscussionMutationHandler = lockDiscussionMutationResolver,
     workItemType = 'Task',
     workItemReference = mockWorkItemReference,
     workItemCreateNoteEmail = mockWorkItemCreateNoteEmail,
@@ -113,6 +122,7 @@ describe('WorkItemActions component', () => {
         [projectWorkItemTypesQuery, typesQuerySuccessHandler],
         [convertWorkItemMutation, convertWorkItemMutationHandler],
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
+        [updateWorkItemMutation, lockDiscussionMutationHandler],
       ]),
       propsData: {
         workItemState: STATE_OPEN,
@@ -121,6 +131,7 @@ describe('WorkItemActions component', () => {
         canUpdate,
         canDelete,
         isConfidential,
+        isDiscussionLocked,
         subscribed,
         isParentConfidential,
         workItemType,
@@ -129,7 +140,7 @@ describe('WorkItemActions component', () => {
       },
       provide: {
         isGroup: false,
-        glFeatures: { workItemsMvc2: true },
+        glFeatures: { workItemsMvc: true, workItemsMvc2: true },
       },
       mocks: {
         $toast,
@@ -172,6 +183,10 @@ describe('WorkItemActions component', () => {
         divider: true,
       },
       {
+        testId: TEST_ID_LOCK_ACTION,
+        text: 'Lock discussion',
+      },
+      {
         testId: TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION,
         text: 'Turn on confidentiality',
       },
@@ -195,6 +210,61 @@ describe('WorkItemActions component', () => {
         text: 'Delete task',
       },
     ]);
+  });
+
+  describe('lock discussion action', () => {
+    it.each`
+      isDiscussionLocked | buttonText
+      ${false}           | ${'Lock discussion'}
+      ${true}            | ${'Unlock discussion'}
+    `('renders with text "$buttonText"', ({ isDiscussionLocked, buttonText }) => {
+      createComponent({ isDiscussionLocked });
+
+      expect(findLockDiscussionButton().text()).toBe(buttonText);
+    });
+
+    it.each`
+      isDiscussionLocked | toastMessage
+      ${false}           | ${'Discussion unlocked.'}
+      ${true}            | ${'Discussion locked.'}
+    `(
+      'shows toast when clicked, with message "$toastMessage"',
+      async ({ isDiscussionLocked, toastMessage }) => {
+        createComponent({ isDiscussionLocked });
+
+        findLockDiscussionButton().vm.$emit('action');
+        await waitForPromises();
+
+        expect(toast).toHaveBeenCalledWith(toastMessage);
+      },
+    );
+
+    it('calls update mutation when clicked', async () => {
+      createComponent();
+
+      findLockDiscussionButton().vm.$emit('action');
+      await waitForPromises();
+
+      expect(lockDiscussionMutationResolver).toHaveBeenCalledWith({
+        input: {
+          id: 'gid://gitlab/WorkItem/1',
+          notesWidget: {
+            discussionLocked: true,
+          },
+        },
+      });
+    });
+
+    it('emits error when update mutation fails', async () => {
+      createComponent({
+        lockDiscussionMutationHandler: jest.fn().mockRejectedValue(new Error('oh no!')),
+      });
+
+      findLockDiscussionButton().vm.$emit('action');
+      await waitForPromises();
+
+      expect(wrapper.emitted('error')).toEqual([['oh no!']]);
+    });
   });
 
   describe('toggle confidentiality action', () => {

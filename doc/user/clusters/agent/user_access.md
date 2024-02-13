@@ -4,7 +4,12 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Grant users Kubernetes access **(FREE ALL BETA)**
+# Grant users Kubernetes access
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [Beta](../../../policy/experiment-beta-support.md#beta).
 > - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
@@ -56,7 +61,11 @@ user_access:
     - id: group-3/subgroup
 ```
 
-## Configure access with user impersonation **(PREMIUM ALL)**
+## Configure access with user impersonation
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can grant access to a Kubernetes cluster and transform
 requests into impersonation requests for authenticated users.
@@ -143,7 +152,7 @@ subjects:
 
 ## Access a cluster with the Kubernetes API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131144) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131144) in GitLab 16.4.
 
 You can configure an agent to allow GitLab users to access a cluster with the Kubernetes API.
 

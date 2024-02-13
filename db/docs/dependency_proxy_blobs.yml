@@ -7,4 +7,12 @@ feature_categories:
 description: Dependency proxy blob files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10676
 milestone: '11.11'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  group_id: namespaces

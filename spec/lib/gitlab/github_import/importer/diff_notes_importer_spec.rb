@@ -89,11 +89,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_catego
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
-    before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
-    end
-
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     it 'imports each diff note in parallel' do
       importer = described_class.new(project, client)
 

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlLoadingIcon, GlSprintf, GlAlert } from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlSprintf, GlAlert, GlLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
@@ -8,6 +8,7 @@ import { IdState } from 'vendor/vue-virtual-scroller';
 import DiffContent from 'jh_else_ce/diffs/components/diff_content.vue';
 import { createAlert } from '~/alert';
 import { hasDiff } from '~/helpers/diffs_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { diffViewerErrors } from '~/ide/constants';
 import { scrollToElement, isElementStuck } from '~/lib/utils/common_utils';
 import { sprintf } from '~/locale';
@@ -40,6 +41,7 @@ export default {
     GlLoadingIcon,
     GlSprintf,
     GlAlert,
+    GlLink,
     DiffFileDrafts,
     NoteForm,
     DiffDiscussions,
@@ -90,6 +92,16 @@ export default {
       required: false,
       default: true,
     },
+    codequalityData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    sastData: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   idState() {
     return {
@@ -104,12 +116,7 @@ export default {
     genericError: SOMETHING_WENT_WRONG,
   },
   computed: {
-    ...mapState('diffs', [
-      'currentDiffFileId',
-      'codequalityDiff',
-      'conflictResolutionPath',
-      'canMerge',
-    ]),
+    ...mapState('diffs', ['currentDiffFileId', 'conflictResolutionPath', 'canMerge']),
     ...mapGetters(['isNotesFetched', 'getNoteableData', 'noteableType']),
     ...mapGetters('diffs', ['getDiffFileDiscussions', 'isVirtualScrollingEnabled', 'pinnedFile']),
     isPinnedFile() {
@@ -383,6 +390,9 @@ export default {
   },
   CONFLICT_TEXT,
   FILE_DIFF_POSITION_TYPE,
+  generatedDiffFileDocsPath: helpPagePath('user/project/merge_requests/changes.html', {
+    anchor: 'collapse-generated-files',
+  }),
 };
 </script>
 
@@ -544,7 +554,16 @@ export default {
             class="collapsed-file-warning gl-p-7 gl-bg-orange-50 gl-text-center gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
           >
             <p class="gl-mb-5">
-              {{ expandableWarning }}
+              <gl-sprintf :message="expandableWarning">
+                <template #tag="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+                <template #link="{ content }">
+                  <gl-link :href="$options.generatedDiffFileDocsPath" target="_blank">{{
+                    content
+                  }}</gl-link>
+                </template>
+              </gl-sprintf>
             </p>
             <gl-button data-testid="expand-button" @click.prevent="handleToggle">
               {{ $options.i18n.expand }}
@@ -553,6 +572,8 @@ export default {
           <diff-content
             v-if="showContent"
             :class="hasBodyClasses.content"
+            :codequality-data="codequalityData"
+            :sast-data="sastData"
             :diff-file="file"
             :help-page-path="helpPagePath"
             @load-file="requestDiff"

@@ -6,7 +6,11 @@ remove_date: '2024-02-13'
 redirect_to: 'index.md'
 ---
 
-# Shimo (removed) **(FREE ALL)**
+# Shimo (removed)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377824) in GitLab 15.7
 and [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136143) in 16.7.

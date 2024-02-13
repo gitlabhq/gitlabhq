@@ -4,14 +4,22 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dockerfiles API **(FREE ALL)**
+# Dockerfiles API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides an API endpoint for instance-level Dockerfile templates.
 Default templates are defined at
 [`vendor/Dockerfile`](https://gitlab.com/gitlab-org/gitlab-foss/-/tree/master/vendor/Dockerfile)
 in the GitLab repository.
 
-## Override Dockerfile API templates **(PREMIUM SELF)**
+## Override Dockerfile API templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 In [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/) tiers, GitLab instance
 administrators can override templates in the

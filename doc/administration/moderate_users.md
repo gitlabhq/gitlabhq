@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Moderate users (administration) **(FREE SELF)**
+# Moderate users (administration)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the administration documentation. For information about moderating users at the group level, see the [group-level documentation](../user/group/moderate_users.md).
 
@@ -133,7 +137,7 @@ When you deactivate a user, their projects, groups, and history remain.
 
 ### Deactivate a user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 Prerequisites:
 
@@ -179,7 +183,11 @@ A maximum of 100,000 users can be deactivated per day.
 NOTE:
 GitLab generated bots are excluded from the automatic deactivation of dormant users.
 
-### Automatically delete unconfirmed users **(PREMIUM SELF)**
+### Automatically delete unconfirmed users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352514) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `delete_unconfirmed_users_setting`. Disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124982) in GitLab 16.2.
@@ -209,7 +217,7 @@ A maximum of 240,000 users can be deleted per day.
 
 ### Activate a user
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22257) in GitLab 12.4.
 
 A deactivated user can be activated from the Admin Area.
 
@@ -291,7 +299,7 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 
 ## Trust and untrust users
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
 
 You can trust and untrust users from the Admin Area.
 

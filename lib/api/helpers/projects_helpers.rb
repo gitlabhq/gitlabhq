@@ -58,7 +58,8 @@ module API
         end
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
-        optional :public_builds, type: Boolean, desc: 'Perform public builds'
+        optional :public_builds, type: Boolean, desc: 'Deprecated: Use public_jobs instead.'
+        optional :public_jobs, type: Boolean, desc: 'Perform public builds'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
         optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
         optional :allow_merge_on_skipped_pipeline, type: Boolean, desc: 'Allow to merge if pipeline is skipped'
@@ -80,6 +81,8 @@ module API
         optional :packages_enabled, type: Boolean, desc: 'Enable project packages feature'
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
+        optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
+        optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
       end
 
       params :optional_project_params_ee do
@@ -165,7 +168,8 @@ module API
           :pages_access_level,
           :path,
           :printing_merge_request_link_enabled,
-          :public_builds,
+          :public_builds, # deprecated
+          :public_jobs,
           :remove_source_branch_after_merge,
           :repository_access_level,
           :request_access_enabled,
@@ -199,6 +203,7 @@ module API
           :monitor_access_level,
           :model_experiments_access_level,
           :model_registry_access_level,
+          :warn_about_potentially_unwanted_characters,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

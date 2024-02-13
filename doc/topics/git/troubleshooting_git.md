@@ -4,7 +4,7 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Troubleshooting Git **(FREE ALL)**
+# Troubleshooting Git
 
 Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues

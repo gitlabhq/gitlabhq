@@ -4,24 +4,26 @@ require 'active_support/core_ext/string'
 require 'gitlab/housekeeper/keep'
 require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
+require 'gitlab/housekeeper/change'
+require 'awesome_print'
 require 'digest'
 
 module Gitlab
   module Housekeeper
-    Change = Struct.new(:identifiers, :title, :description, :changed_files, :labels)
-
     class Runner
-      def initialize(max_mrs: 1, dry_run: false, require: [], keeps: nil)
+      def initialize(max_mrs: 1, dry_run: false, keeps: nil, filter_identifiers: [])
         @max_mrs = max_mrs
         @dry_run = dry_run
         @logger = Logger.new($stdout)
-        require_keeps(require)
+        require_keeps
 
         @keeps = if keeps
                    keeps.map { |k| k.is_a?(String) ? k.constantize : k }
                  else
                    all_keeps
                  end
+
+        @filter_identifiers = filter_identifiers
       end
 
       def run
@@ -31,7 +33,20 @@ module Gitlab
           @keeps.each do |keep_class|
             keep = keep_class.new
             keep.each_change do |change|
+              unless change.valid?
+                puts "Ignoring invalid change from: #{keep_class}"
+                next
+              end
+
               branch_name = git.commit_in_branch(change)
+              add_standard_change_data(change)
+
+              # Must be done after we commit so that we don't keep around changed files. We could checkout those files
+              # but then it might be riskier in local development in case we lose unrelated changes.
+              unless change.matches_filters?(@filter_identifiers)
+                puts "Skipping change: #{change.identifiers} due to not matching filter"
+                next
+              end
 
               if @dry_run
                 dry_run(change, branch_name)
@@ -49,18 +64,31 @@ module Gitlab
         puts "Housekeeper created #{created} MRs"
       end
 
+      def add_standard_change_data(change)
+        change.labels ||= []
+        change.labels << 'automation:gitlab-housekeeper-authored'
+      end
+
       def git
         @git ||= ::Gitlab::Housekeeper::Git.new(logger: @logger)
       end
 
-      def require_keeps(files)
-        files.each do |r|
-          require(Pathname(r).expand_path.to_s)
+      def require_keeps
+        Dir.glob("keeps/*.rb").each do |f|
+          require(Pathname(f).expand_path.to_s)
         end
       end
 
       def dry_run(change, branch_name)
-        puts "=> #{change.identifiers.join(': ')}"
+        puts "=> #{change.identifiers.join(': ')}".purple
+
+        puts '=> Title:'.purple
+        puts change.title.purple
+        puts
+
+        puts '=> Description:'
+        puts change.description
+        puts
 
         if change.labels.present?
           puts '=> Attributes:'
@@ -68,16 +96,9 @@ module Gitlab
           puts
         end
 
-        puts '=> Title:'
-        puts change.title
-        puts
-
-        puts '=> Description:'
-        puts change.description
-        puts
-
         puts '=> Diff:'
-        puts Shell.execute('git', '--no-pager', 'diff', 'master', branch_name, '--', *change.changed_files)
+        puts Shell.execute('git', '--no-pager', 'diff', '--color=always', 'master', branch_name, '--',
+          *change.changed_files)
         puts
       end
 
@@ -95,18 +116,19 @@ module Gitlab
           Shell.execute('git', 'push', '-f', 'housekeeper', "#{branch_name}:#{branch_name}")
         end
 
-        gitlab_client.create_or_update_merge_request(
+        mr = gitlab_client.create_or_update_merge_request(
+          change: change,
           source_project_id: housekeeper_fork_project_id,
-          title: change.title,
-          description: change.description,
-          labels: change.labels,
           source_branch: branch_name,
           target_branch: 'master',
           target_project_id: housekeeper_target_project_id,
           update_title: !non_housekeeper_changes.include?(:title),
           update_description: !non_housekeeper_changes.include?(:description),
-          update_labels: !non_housekeeper_changes.include?(:labels)
+          update_labels: !non_housekeeper_changes.include?(:labels),
+          update_reviewers: !non_housekeeper_changes.include?(:reviewers)
         )
+
+        puts "Merge request URL: #{mr['web_url'].yellowish}"
       end
 
       def housekeeper_fork_project_id

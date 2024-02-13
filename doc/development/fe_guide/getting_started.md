@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Getting started
 
-This page will guide you through the Frontend development process and show you what a normal Merge Request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://about.gitlab.com/handbook/engineering/frontend/).
+This page will guide you through the Frontend development process and show you what a normal Merge Request cycle looks like. You can find more about the organization of the frontend team in the [handbook](https://handbook.gitlab.com/handbook/engineering/frontend/).
 
 There are a lot of things to consider for a first merge request and it can feel overwhelming. The [Frontend onboarding course](onboarding_course/index.md) provides a 6-week structured curriculum to learn how to contribute to the GitLab frontend.
 
@@ -14,7 +14,7 @@ There are a lot of things to consider for a first merge request and it can feel 
 
 ### Step 1: Preparing the issue
 
-Before tackling any work, read through the issue that has been assigned to you and make sure that all [required departments](https://about.gitlab.com/handbook/engineering/#engineering-teams) have been involved as they should. Read through the comments as needed and if unclear, post a comment in the issue summarizing **what you think the work is** and ping your Engineering or Product Manager to confirm. Then once everything is clarified, apply the correct workflow labels to the issue and create a merge request branch. If created directly from the issue, the issue and the merge request will be linked by default.
+Before tackling any work, read through the issue that has been assigned to you and make sure that all [required departments](https://handbook.gitlab.com/handbook/engineering/#engineering-teams) have been involved as they should. Read through the comments as needed and if unclear, post a comment in the issue summarizing **what you think the work is** and ping your Engineering or Product Manager to confirm. Then once everything is clarified, apply the correct workflow labels to the issue and create a merge request branch. If created directly from the issue, the issue and the merge request will be linked by default.
 
 ### Step 2: Plan your implementation
 
@@ -24,7 +24,7 @@ Before writing code, make sure to ask yourself the following questions and have 
   - If this is GraphQL, write a query proposal and ask your BE counterpart to confirm they are in agreement.
 - Can I use [GitLab UI components](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/base-accordion--docs)? Which components are appropriate and do they have all of the functionality that I need?
 - Are there existing components or utilities in the GitLab project that I could use?
-- [Should this change live behind a Feature Flag](https://about.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)?
+- [Should this change live behind a Feature Flag](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags)?
 - In which directory should this code live?
 - Should I build part of this feature as reusable? If so, where should it live in the codebase and how do I make it discoverable?
   - Note: For now this is still being considered, but the `vue_shared` folder is still the preferred directory for GitLab-wide components.

@@ -4,9 +4,13 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group labels API **(FREE ALL)**
+# Group labels API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21368) in GitLab 11.8.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/21368) in GitLab 11.8.
 
 This API supports managing [group labels](../user/project/labels.md#types-of-labels).
 It allows users to list, create, update, and delete group labels. Furthermore, users can subscribe to and

@@ -162,7 +162,15 @@ module Participable
     when PersonalSnippet
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)
     else
-      Ability.users_that_can_read_project(participants.to_a, project)
+      return Ability.users_that_can_read_project(participants.to_a, project) if project
+
+      # handling group level work items(issues) that would have a namespace,
+      # We need to make sure that scenarios where some models that do not have a project set and also do not have
+      # a namespace are also handled and exceptions are avoided.
+      namespace_level_participable = respond_to?(:namespace) && namespace.present?
+      return Ability.users_that_can_read_group(participants.to_a, namespace) if namespace_level_participable
+
+      []
     end
   end
 
@@ -171,7 +179,15 @@ module Participable
     when PersonalSnippet
       participant.can?(:read_snippet, self)
     else
-      participant.can?(:read_project, project)
+      return participant.can?(:read_project, project) if project
+
+      # handling group level work items(issues) that would have a namespace,
+      # We need to make sure that scenarios where some models that do not have a project set and also do not have
+      # a namespace are also handled and exceptions are avoided.
+      namespace_level_participable = respond_to?(:namespace) && namespace.present?
+      return participant.can?(:read_group, namespace) if namespace_level_participable
+
+      false
     end
   end
 

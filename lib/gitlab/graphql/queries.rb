@@ -69,12 +69,16 @@ module Gitlab
 
         def print_operation_definition(op, indent: "")
           @in_operation = true
-          out = +"#{indent}#{op.operation_type}"
-          out << " #{op.name}" if op.name
+          print_string("#{indent}#{op.operation_type}")
+          print_string(" #{op.name}") if op.name
 
-          # Do these first, so that we detect any skipped arguments
-          dirs = print_directives(op.directives)
-          sels = print_selections(op.selections, indent: indent)
+          # Do these on a temp instance, so that we detect any skipped arguments
+          # without actually printing the output to the current buffer
+          temp_printer = self.class.new
+          op.directives.each { |d| temp_printer.print(d) }
+          op.selections.each { |s| temp_printer.print(s) }
+          @skipped_arguments |= temp_printer.skipped_arguments
+          @printed_arguments |= temp_printer.printed_arguments
 
           # remove variable definitions only used in skipped (client) fields
           vars = op.variables.reject do |v|
@@ -82,10 +86,16 @@ module Gitlab
           end
 
           if vars.any?
-            out << "(#{vars.map { |v| print_variable_definition(v) }.join(", ")})"
+            print_string("(")
+            vars.each_with_index do |v, i|
+              print_variable_definition(v)
+              print_string(", ") if i < vars.size - 1
+            end
+            print_string(")")
           end
 
-          out + dirs + sels
+          print_directives(op.directives)
+          print_selections(op.selections, indent: indent)
         ensure
           @in_operation = false
         end
@@ -94,24 +104,21 @@ module Gitlab
           if skips? &&
               (field.directives.any? { |d| d.name == 'client' || d.name == 'persist' } || field.name == '__persist')
             skipped = self.class.new(false)
-
-            skipped.print_node(field)
+            skipped.print(field)
             @skipped_fragments |= skipped.used_fragments
             @skipped_arguments |= skipped.printed_arguments
 
-            return ''
+            return
           end
 
-          ret = super
+          super
 
-          @fields_printed += 1 if @in_operation && ret != ''
-
-          ret
+          @fields_printed += 1 if @in_operation
         end
 
         def print_fragment_definition(fragment_def, indent: "")
           if skips? && @skipped_fragments.include?(fragment_def.name) && !@used_fragments.include?(fragment_def.name)
-            return ''
+            return
           end
 
           super

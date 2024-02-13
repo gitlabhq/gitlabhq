@@ -3,7 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe 'Terraform/Base.gitlab-ci.yml' do
-  subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Terraform/Base') }
+  subject(:template) do
+    <<~YAML
+      stages: [test]
+
+      include:
+        - template: 'Terraform/Base.gitlab-ci.yml'
+
+      placeholder:
+        script:
+          - keep pipeline validator happy by having a job when stages are intentionally empty
+    YAML
+  end
 
   describe 'the created pipeline' do
     let(:default_branch) { 'master' }
@@ -15,12 +26,12 @@ RSpec.describe 'Terraform/Base.gitlab-ci.yml' do
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do
-      stub_ci_pipeline_yaml_file(template.content)
+      stub_ci_pipeline_yaml_file(template)
       allow(project).to receive(:default_branch).and_return(default_branch)
     end
 
-    it 'does not create any jobs' do
-      expect(build_names).to be_empty
+    it 'creates deprecation warning job' do
+      expect(build_names).to include('deprecated-and-will-be-removed-in-18.0')
     end
   end
 end

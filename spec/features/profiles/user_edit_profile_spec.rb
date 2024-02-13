@@ -10,7 +10,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   before do
     stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
-    visit(profile_path)
+    visit(user_settings_profile_path)
   end
 
   def submit_settings
@@ -257,7 +257,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
           expect(page).to have_content user_status.message
         end
 
-        visit(profile_path)
+        visit(user_settings_profile_path)
         click_button s_('SetStatusModal|Clear status')
         submit_settings
 
@@ -282,7 +282,7 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
 
         toggle_busy_status
         submit_settings
-        visit profile_path
+        visit user_settings_profile_path
 
         expect(busy_status.checked?).to eq(true)
       end

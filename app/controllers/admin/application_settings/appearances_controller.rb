@@ -89,6 +89,7 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
       pwa_icon_cache
       favicon
       favicon_cache
+      member_guidelines
       new_project_guidelines
       profile_image_guidelines
       updated_by

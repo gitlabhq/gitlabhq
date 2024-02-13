@@ -1,4 +1,4 @@
-import { GlLabel, GlIcon, GlLink, GlButton } from '@gitlab/ui';
+import { GlLabel, GlIcon, GlLink, GlButton, GlAvatarsInline } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -14,7 +14,6 @@ import { WORK_ITEM_TYPE_VALUE_OBJECTIVE } from '~/work_items/constants';
 import {
   workItemTask,
   workItemObjectiveWithChild,
-  workItemObjectiveNoMetadata,
   confidentialWorkItemTask,
   closedWorkItemTask,
   workItemObjectiveMetadataWidgets,
@@ -26,7 +25,8 @@ describe('WorkItemLinkChildContents', () => {
   Vue.use(VueApollo);
 
   let wrapper;
-  const { LABELS } = workItemObjectiveMetadataWidgets;
+  const { LABELS, ASSIGNEES } = workItemObjectiveMetadataWidgets;
+  const mockAssignees = ASSIGNEES.assignees.nodes;
   const mockLabels = LABELS.labels.nodes;
 
   const findStatusIconComponent = () =>
@@ -50,6 +50,7 @@ describe('WorkItemLinkChildContents', () => {
         canUpdate,
         childItem,
         showLabels,
+        workItemFullPath: 'test-project-path',
       },
     });
   };
@@ -79,6 +80,22 @@ describe('WorkItemLinkChildContents', () => {
 
     expect(findConfidentialIconComponent().props('name')).toBe('eye-slash');
     expect(findConfidentialIconComponent().attributes('title')).toBe('Confidential');
+  });
+
+  it('renders avatars for assignees', () => {
+    createComponent();
+
+    const avatars = wrapper.findComponent(GlAvatarsInline);
+
+    expect(avatars.exists()).toBe(true);
+    expect(avatars.props()).toMatchObject({
+      avatars: mockAssignees,
+      collapsed: true,
+      maxVisible: 2,
+      avatarSize: 16,
+      badgeTooltipProp: 'name',
+      badgeSrOnlyText: '',
+    });
   });
 
   describe('item title', () => {
@@ -112,26 +129,17 @@ describe('WorkItemLinkChildContents', () => {
   });
 
   describe('item metadata', () => {
-    beforeEach(() => {
+    it('renders item metadata component when item has metadata present', () => {
       createComponent({
         childItem: workItemObjectiveWithChild,
         workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
       });
-    });
 
-    it('renders item metadata component when item has metadata present', () => {
       expect(findMetadataComponent().props()).toMatchObject({
+        iid: '12',
+        reference: '#12',
         metadataWidgets: workItemObjectiveMetadataWidgets,
       });
-    });
-
-    it('does not render item metadata component when item has no metadata present', () => {
-      createComponent({
-        childItem: workItemObjectiveNoMetadata,
-        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-      });
-
-      expect(findMetadataComponent().exists()).toBe(false);
     });
   });
 

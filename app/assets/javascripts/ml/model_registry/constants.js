@@ -1,6 +1,10 @@
 import { s__ } from '~/locale';
 
 export const LIST_KEY_CREATED_AT = 'created_at';
+export const LIST_KEY_VERSION = 'version';
+export const SORT_KEY_CREATED_AT = 'CREATED_AT';
+export const SORT_KEY_ORDER = 'DESC';
+
 export const BASE_SORT_FIELDS = Object.freeze([
   {
     orderBy: 'name',

@@ -1,20 +1,3 @@
-import { MarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
-import editorExtensions from './editor_extensions';
+import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 
-const nodes = editorExtensions.nodes.reduce(
-  (ns, { name, toMarkdown }) => ({
-    ...ns,
-    [name]: toMarkdown,
-  }),
-  {},
-);
-
-const marks = editorExtensions.marks.reduce(
-  (ms, { name, toMarkdown }) => ({
-    ...ms,
-    [name]: toMarkdown,
-  }),
-  {},
-);
-
-export default new MarkdownSerializer(nodes, marks);
+export default new MarkdownSerializer();

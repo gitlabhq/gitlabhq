@@ -62,7 +62,7 @@ module Gitlab
           return
         end
 
-        RefreshImportJidWorker.perform_in_the_future(project.id, jid)
+        Import::RefreshImportJidWorker.perform_in_the_future(project.id, jid)
 
         client = GithubImport.new_client_for(project)
 

@@ -40,7 +40,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
       expect(export.batched?).to eq(false)
       expect(export.batches_count).to eq(0)
       expect(export.batches.count).to eq(0)
-      expect(export.total_objects_count).to eq(0)
+      expect(export.total_objects_count).to eq(1)
     end
 
     it 'removes temp export files' do

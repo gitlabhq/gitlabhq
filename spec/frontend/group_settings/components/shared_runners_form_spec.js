@@ -106,7 +106,7 @@ describe('group_settings/components/shared_runners_form', () => {
       'toggle %# is disabled',
       (findToggle) => {
         expect(findToggle().props('disabled')).toBe(true);
-        expect(findToggle().text()).toContain(s__('Runners|Shared runners are disabled.'));
+        expect(findToggle().text()).toContain(s__('Runners|Instance runners are disabled.'));
 
         if (isParentLinkExpected) {
           expect(findToggle().text()).toContain(

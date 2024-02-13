@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Install and secure a single node GitLab instance **(FREE SELF)**
+# Tutorial: Install and secure a single node GitLab instance
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 In this tutorial you will learn how to install and securely configure a single
 node GitLab instance that can accommodate up to

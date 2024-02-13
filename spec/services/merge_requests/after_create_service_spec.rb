@@ -69,8 +69,15 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
       execute_service
     end
 
-    it 'executes hooks with default action' do
-      expect(project).to receive(:execute_hooks)
+    it 'executes hooks and integrations' do
+      expected_payload = hash_including(
+        object_kind: 'merge_request',
+        event_type: 'merge_request',
+        object_attributes: be_present
+      )
+
+      expect(project).to receive(:execute_hooks).with(expected_payload, :merge_request_hooks)
+      expect(project).to receive(:execute_integrations).with(expected_payload, :merge_request_hooks)
 
       execute_service
     end
@@ -104,6 +111,19 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
 
       it 'checks for mergeability' do
         expect(merge_request).to receive(:check_mergeability).with(async: true)
+
+        execute_service
+      end
+
+      it 'executes hooks and integrations with correct merge_status' do
+        expected_payload = hash_including(
+          object_attributes: hash_including(
+            merge_status: 'checking'
+          )
+        )
+
+        expect(project).to receive(:execute_hooks).with(expected_payload, :merge_request_hooks)
+        expect(project).to receive(:execute_integrations).with(expected_payload, :merge_request_hooks)
 
         execute_service
       end

@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrate GitLab groups and projects by using direct transfer **(FREE ALL)**
+# Migrate GitLab groups and projects by using direct transfer
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
@@ -59,8 +63,10 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 
 ## Known issues
 
-See [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629) for a list of known issues for migrating by direct
-transfer.
+- Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.
+- In GitLab 16.1 and earlier, you should **not** use direct transfer with
+  [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
+- For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
 
 ## Estimating migration duration
 
@@ -111,7 +117,7 @@ If you are migrating large projects and encounter problems with timeouts or dura
 
 ## Limits
 
-> Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
+> - Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
 
 Hardcoded limits apply on migration by direct transfer.
 
@@ -152,9 +158,17 @@ After migration:
 If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
+## Ensure projects can be imported
+
+You cannot import groups with projects when the source instance or group has **Default project creation protection** set to **No one**. If required, this setting can
+be changed:
+
+- For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+- For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
+
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 To migrate groups by direct transfer:
 
@@ -209,7 +223,7 @@ Create the group you want to import to and connect the source GitLab instance:
 
 ## Select the groups and projects to import
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385689) in GitLab 15.8, option to import groups with or without projects.
 
 After you have authorized access to the source GitLab instance, you are redirected to the GitLab group
 importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
@@ -217,7 +231,7 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**.
+   - **Import with projects**. If this is not available, see [Ensure projects can be imported](#ensure-projects-can-be-imported).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
@@ -228,7 +242,7 @@ ready for production use.
 
 ## Group import history
 
-> **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
+> - **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
 
 You can view all groups migrated by you by direct transfer listed on the group import history page. This list includes:
 
@@ -310,7 +324,10 @@ Some group items are excluded from migration because they either:
 - May contain sensitive information: CI/CD variables, webhooks, and deploy tokens.
 - Are not supported: push rules.
 
-## Migrated project items **(BETA)**
+## Migrated project items
+
+DETAILS:
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
@@ -469,7 +486,7 @@ You can also see all migrated entities with any failures related to them using a
 
 ### Stale imports
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352985) in GitLab 14.10.
 
 When troubleshooting group migration, an import may not complete because the import workers took
 longer than 8 hours to execute. In this case, the `status` of either a `BulkImport` or
@@ -527,8 +544,3 @@ Distributing projects in different groups helps to avoid timeouts. If several la
 1. Start separate migrations each group and subgroup.
 
 The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.
-
-## Automate group and project import **(PREMIUM ALL)**
-
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](../../project/import/index.md#automate-group-and-project-import).

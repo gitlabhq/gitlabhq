@@ -76,10 +76,9 @@ module Gitlab
       push_frontend_feature_flag(:security_auto_fix)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:vscode_web_ide, current_user)
-      push_frontend_feature_flag(:key_contacts_management, current_user)
+      push_frontend_feature_flag(:ui_for_organizations, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:custom_emoji)
       push_frontend_feature_flag(:encoding_logs_tree)
       push_frontend_feature_flag(:group_user_saml)
     end
@@ -95,6 +94,14 @@ module Gitlab
       push_to_gon_attributes(:features, name, enabled)
     end
 
+    def push_frontend_ability(ability:, user:, resource: :global)
+      push_to_gon_attributes(
+        :abilities,
+        ability,
+        Ability.allowed?(user, ability, resource)
+      )
+    end
+
     # Exposes the state of a feature flag to the frontend code.
     # Can be used for more complex feature flag checks.
     #
@@ -102,6 +109,12 @@ module Gitlab
     # enabled - Boolean to be pushed directly to the frontend. Should be fetched by checking a feature flag.
     def push_force_frontend_feature_flag(name, enabled)
       push_to_gon_attributes(:features, name, !!enabled)
+    end
+
+    def push_namespace_setting(key, object)
+      return unless object&.namespace_settings.respond_to?(key)
+
+      gon.push({ key => object.namespace_settings.public_send(key) }) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def push_to_gon_attributes(key, name, enabled)
@@ -123,8 +136,7 @@ module Gitlab
     end
 
     def add_browsersdk_tracking
-      return unless Gitlab.com? && Feature.enabled?(:gl_analytics_tracking,
-Feature.current_request)
+      return unless Gitlab.com?
 
       return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?
 

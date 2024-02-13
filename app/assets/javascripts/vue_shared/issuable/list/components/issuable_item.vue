@@ -345,7 +345,12 @@ export default {
           </span>
           <slot name="timeframe"></slot>
         </span>
-        <p v-if="labels.length" role="group" :aria-label="__('Labels')" class="gl-mt-1 gl-mb-0">
+        <p
+          v-if="labels.length"
+          role="group"
+          :aria-label="__('Labels')"
+          class="gl-mt-1 gl-mb-0 gl-display-flex gl-flex-wrap gl-gap-2"
+        >
           <gl-label
             v-for="(label, index) in labels"
             :key="index"
@@ -354,7 +359,6 @@ export default {
             :description="label.description"
             :scoped="scopedLabel(label)"
             :target="labelTarget(label)"
-            class="gl-mr-2"
             size="sm"
           />
         </p>

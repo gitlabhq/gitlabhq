@@ -208,4 +208,10 @@ RSpec.describe Gitlab::Config::Loader::Yaml, feature_category: :pipeline_composi
       end
     end
   end
+
+  describe '#raw' do
+    it 'returns the unparsed YAML' do
+      expect(loader.raw).to eq(yml)
+    end
+  end
 end

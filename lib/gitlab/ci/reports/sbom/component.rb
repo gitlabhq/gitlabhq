@@ -8,14 +8,15 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           attr_reader :component_type, :version, :path
-          attr_accessor :properties
+          attr_accessor :properties, :purl, :source_package_name
 
-          def initialize(type:, name:, purl:, version:, properties: nil)
+          def initialize(type:, name:, purl:, version:, properties: nil, source_package_name: nil)
             @component_type = type
             @name = name
-            @raw_purl = purl
+            @purl = purl
             @version = version
             @properties = properties
+            @source_package_name = source_package_name
           end
 
           def <=>(other)
@@ -25,13 +26,6 @@ module Gitlab
           def ingestible?
             supported_component_type? && supported_purl_type?
           end
-
-          def purl
-            return unless @raw_purl
-
-            ::Sbom::PackageUrl.parse(@raw_purl)
-          end
-          strong_memoize_attr :purl
 
           def purl_type
             purl.type
@@ -45,6 +39,10 @@ module Gitlab
             return @name unless purl
 
             [purl.namespace, purl.name].compact.join('/')
+          end
+
+          def name_without_namespace
+            @name
           end
 
           def key

@@ -33,6 +33,7 @@ class MergeRequestsFinder < IssuableFinder
   extend ::Gitlab::Utils::Override
 
   include MergedAtFilter
+  include MergeUserFilter
 
   def self.scalar_params
     @scalar_params ||= super + [
@@ -42,6 +43,8 @@ class MergeRequestsFinder < IssuableFinder
       :deployed_before,
       :draft,
       :environment,
+      :merge_user_id,
+      :merge_user_username,
       :merged_after,
       :merged_before,
       :reviewer_id,
@@ -69,6 +72,7 @@ class MergeRequestsFinder < IssuableFinder
     items = by_source_branch(items)
     items = by_draft(items)
     items = by_target_branch(items)
+    items = by_merge_user(items)
     items = by_merged_at(items)
     items = by_approvals(items)
     items = by_deployments(items)

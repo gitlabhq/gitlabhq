@@ -1,25 +1,27 @@
 @import 'mixins_and_variables_and_functions';
 
+.html-devise-layout {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  
+  body {
+    &.with-system-header {
+      padding-top: $system-header-height;
+    }
+    
+    &.with-system-footer {
+      .footer-container {
+        padding-bottom: $system-footer-height;
+      }
+    }
+  }
+}
+
 /* Login Page */
 .login-page {
   .container {
     max-width: 960px;
-  }
-
-  .navbar-gitlab .container {
-    max-width: none;
-  }
-
-  .flash-container {
-    margin-bottom: $gl-padding;
-    position: relative;
-    top: 8px;
-  }
-
-  .borderless {
-    .login-box {
-      box-shadow: none;
-    }
   }
 
   .g-recaptcha {
@@ -30,40 +32,22 @@
   }
 
   .new-session-tabs {
-    &.nav-links-unboxed {
-      border-color: transparent;
-      box-shadow: none;
+    display: flex;
+    border-color: transparent;
 
-      .nav-item {
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 1px solid $gray-100;
-        background-color: transparent;
+    .nav-item {
+      border-bottom: 1px solid $gray-100;
+
+      .nav-link.active {
+        .gl-dark & {
+          background-color: var(--gray-100);
+        }
       }
     }
-
-    display: flex;
-    box-shadow: 0 0 0 1px $border-color;
-    border-top-right-radius: $border-radius-default;
-    border-top-left-radius: $border-radius-default;
 
     li {
       flex: 1;
       text-align: center;
-      border-left: 1px solid $border-color;
-
-      &:first-of-type {
-        border-left: 0;
-        border-top-left-radius: $border-radius-default;
-      }
-
-      &:last-of-type {
-        border-top-right-radius: $border-radius-default;
-      }
-
-      &:not(.active) {
-        background-color: $gray-light;
-      }
 
       a {
         width: 100%;
@@ -76,55 +60,15 @@
     }
   }
 
-  input[type='submit'] {
-    margin-bottom: 0;
-    display: block;
-    width: 100%;
-  }
 
   .devise-errors {
-    h2 {
-      margin-top: 0;
-      font-size: 14px;
-      color: $red-700;
-    }
-  }
-
-  .omniauth-divider {
-    @include omniauth-divider;
-  }
-}
-
-@include media-breakpoint-down(xs) {
-  .login-page {
-    .col-md-5.float-right {
-      float: none !important;
-      margin-bottom: 45px;
-    }
-  }
-}
-
-.html-devise-layout {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-
-  body {
-    &.with-system-header {
-      padding-top: $system-header-height;
-    }
-
-    &.with-system-footer {
-      .footer-container {
-        padding-bottom: $system-footer-height;
-      }
-    }
+    @include devise-errors;
   }
 }
 
 @include media-breakpoint-down(sm) {
   .sm-bg-gray {
-    @include gl-bg-gray-10;
+    background-color: $gray-10;
 
     .gl-dark & {
       background-color: var(--gray-100);

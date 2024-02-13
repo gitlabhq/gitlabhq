@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# DevOps Research and Assessment (DORA) key metrics API **(ULTIMATE ALL)**
+# DevOps Research and Assessment (DORA) key metrics API
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 > - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
@@ -54,7 +58,7 @@ Example response:
 
 ## Get group-level DORA metrics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 
 Get group-level DORA metrics.
 

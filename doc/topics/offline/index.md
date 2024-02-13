@@ -5,7 +5,11 @@ description: Isolated installation.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Offline GitLab **(FREE SELF)**
+# Offline GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Computers in an offline environment are isolated from the public internet as a security measure. This
 page lists all the information available for running GitLab in an offline environment.

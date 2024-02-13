@@ -12,7 +12,7 @@ NOTE:
 Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
 
 1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Ensure the embedding database is configured](index.md#set-up-the-embedding-database).
+1. [Ensure the embedding database is configured](index.md#embeddings-database).
 1. Ensure that your current branch is up-to-date with `master`.
 1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
 
@@ -216,7 +216,36 @@ GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
 [Staging Ref](https://staging-ref.gitlab.com/) GitLab environments.
 
 Because GitLab Duo Chat is currently only available to members of groups in the
-Ultimate tier, Staging Ref may be an easier place to test changes as a GitLab
+Premium and Ultimate tiers, Staging Ref may be an easier place to test changes as a GitLab
 team member because
-[you can make yourself an instance Admin in Staging Ref](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
+[you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
+
+## Product Analysis
+
+To better understand how the feature is used, each production user input message is analyzed using LLM and Ruby,
+and the analysis is tracked as a Snowplow event.
+
+The analysis can contain any of the attributes defined in the latest [iglu schema](https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/ai_question_category/jsonschema).
+
+- All possible "category" and "detailed_category" are listed [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml).
+- The following are yet to be implemented:
+  - "is_proper_sentence"
+  - "asked_on_the_same_page"
+- The following are deprecated:
+  - "number_of_questions_in_history"
+  - "length_of_questions_in_history"
+  - "time_since_first_question"
+
+[Dashboards](https://handbook.gitlab.com/handbook/engineering/development/data-science/duo-chat/#-dashboards-internal-only) can be created to visualize the collected data.
+
+## How `access_duo_chat` policy works
+
+In the table below I present what requirements must be fulfilled so the `access_duo_chat` policy would return `true` in different
+contexts.
+
+|                                                                      | on SaaS                                                                                                                                                                  | on Self-managed                                                                                                                                                                      |
+|----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| for user (`user.can?(:access_duo_chat)`)                             | User need to belong to at least one group on Ultimate tier and with `experiment_and_beta_features` group setting switched on                                             | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on                                                         |
+| for user in group context (`user.can?(:access_duo_chat, group)`)     | User need to be a member of that group, root ancestor group of this group needs to be on Ultimate tier and with `experiment_and_beta_features` group setting switched on | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on, user needs to have at least _read_ permission to group |
+| for user in project context (`user.can?(:access_duo_chat, project)`) | User need to be a member of that project, project needs to have root ancestor group on Ultimate tier and with `experiment_and_beta_features` group setting switched on   | Instance need to be on Ultimate tier and instance need to have `instance_level_ai_beta_features_enabled` setting switched on, user needs to have at least _read_ permission to project |

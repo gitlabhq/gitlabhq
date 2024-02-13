@@ -4,7 +4,10 @@ classes:
 - Namespaces::SyncEvent
 feature_categories:
 - cell
-description: Used as a queue of data that needs to be synchronized between the `ci` and `main` database
+description: Used as a queue of data that needs to be synchronized between the `ci`
+  and `main` database
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75517
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Inactive project deletion **(FREE SELF)**
+# Inactive project deletion
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0 [with a flag](../administration/feature_flags.md) named `inactive_projects_deletion`. Disabled by default.
 > - [Feature flag `inactive_projects_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96803) removed in GitLab 15.4.
@@ -34,7 +38,7 @@ To configure deletion of inactive projects:
 
 Inactive projects that meet the criteria are scheduled for deletion and a warning email is sent. If the
 projects remain inactive, they are deleted after the specified duration. These projects are deleted even if
-[the project is archived](../user/project/settings/migrate_projects.md#archive-a-project).
+[the project is archived](../user/project/working_with_projects.md#archive-a-project).
 
 ### Configuration example
 

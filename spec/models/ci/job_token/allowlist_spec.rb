@@ -42,6 +42,28 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     end
   end
 
+  context 'when no groups are added to the scope' do
+    subject(:groups) { allowlist.groups }
+
+    it 'returns an empty list' do
+      expect(groups).to be_empty
+    end
+  end
+
+  context 'when groups are added to the scope' do
+    subject(:groups) { allowlist.groups }
+
+    let_it_be(:target_group) { create(:group) }
+
+    include_context 'with projects that are with and without groups added in allowlist'
+
+    with_them do
+      it 'returns all groups that are allowed access in the job token scope' do
+        expect(groups).to contain_exactly(target_group)
+      end
+    end
+  end
+
   describe 'add!' do
     let_it_be(:added_project) { create(:project) }
     let_it_be(:user) { create(:user) }
@@ -64,8 +86,24 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
     end
   end
 
-  describe '#includes?' do
-    subject { allowlist.includes?(includes_project) }
+  describe 'add_group!' do
+    let_it_be(:added_group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    subject { allowlist.add_group!(added_group, user: user) }
+
+    it 'adds the group' do
+      subject
+
+      expect(allowlist.groups).to contain_exactly(added_group)
+      expect(subject.added_by_id).to eq(user.id)
+      expect(subject.source_project_id).to eq(source_project.id)
+      expect(subject.target_group_id).to eq(added_group.id)
+    end
+  end
+
+  describe '#includes_project?' do
+    subject { allowlist.includes_project?(includes_project) }
 
     context 'without scoped projects' do
       let(:unscoped_project) { build(:project) }
@@ -100,6 +138,43 @@ RSpec.describe Ci::JobToken::Allowlist, feature_category: :continuous_integratio
 
       with_them do
         it { is_expected.to be result }
+      end
+    end
+
+    describe '#includes_group' do
+      subject { allowlist.includes_group?(target_project) }
+
+      let_it_be(:target_group) { create(:group) }
+      let_it_be(:target_project) do
+        create(:project,
+          ci_inbound_job_token_scope_enabled: true,
+          group: target_group
+        )
+      end
+
+      context 'without scoped groups' do
+        let_it_be(:unscoped_project) { build(:project) }
+
+        where(:source_project, :result) do
+          ref(:unscoped_project) | false
+        end
+
+        with_them do
+          it { is_expected.to be result }
+        end
+      end
+
+      context 'with a group in each allowlist' do
+        include_context 'with projects that are with and without groups added in allowlist'
+
+        where(:source_project, :result) do
+          ref(:project_with_target_project_group_in_allowlist) | true
+          ref(:project_wo_target_project_group_in_allowlist) | false
+        end
+
+        with_them do
+          it { is_expected.to be result }
+        end
       end
     end
   end

@@ -1032,6 +1032,7 @@ PushRule:
   - commit_committer_check
   - regexp_uses_re2
   - reject_non_dco_commits
+  - organization_id
 MergeRequest::CleanupSchedule:
 - id
 - scheduled_at

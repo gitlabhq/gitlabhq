@@ -23,9 +23,9 @@ module Diffs
       text = _("Plain diff")
 
       if commit?
-        link_to text, project_commit_path(@project, @commit, format: :diff), class: button_classes
+        link_button_to text, project_commit_path(@project, @commit, format: :diff), class: 'gl-mr-3'
       elsif merge_request?
-        link_to text, merge_request_path(@merge_request, format: :diff), class: button_classes
+        link_button_to text, merge_request_path(@merge_request, format: :diff), class: 'gl-mr-3'
       end
     end
 
@@ -33,9 +33,9 @@ module Diffs
       text = _("Email patch")
 
       if commit?
-        link_to text, project_commit_path(@project, @commit, format: :patch), class: button_classes
+        link_button_to text, project_commit_path(@project, @commit, format: :patch)
       elsif merge_request?
-        link_to text, merge_request_path(@merge_request, format: :patch), class: button_classes
+        link_button_to text, merge_request_path(@merge_request, format: :patch)
       end
     end
 
@@ -57,10 +57,6 @@ module Diffs
         "For a faster browsing experience, only %{strong_open}%{display_size} of %{real_size}%{strong_close} " \
         "files are shown. Download one of the files below to see all changes."
       )
-    end
-
-    def button_classes
-      "btn gl-alert-action btn-default gl-button btn-default-secondary"
     end
   end
 end

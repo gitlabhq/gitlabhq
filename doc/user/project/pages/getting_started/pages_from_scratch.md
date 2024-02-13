@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create a GitLab Pages website from scratch **(FREE ALL)**
+# Tutorial: Create a GitLab Pages website from scratch
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial shows you how to create a Pages site from scratch using
 the [Jekyll](https://jekyllrb.com/) Static Site Generator (SSG). You start with

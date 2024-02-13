@@ -8,6 +8,7 @@ module Sidebars
         def configure_menu_items
           add_item(packages_registry_menu_item)
           add_item(container_registry_menu_item)
+          add_item(infrastructure_registry_menu_item)
           add_item(harbor_registry_menu_item)
           add_item(dependency_proxy_menu_item)
           true
@@ -53,6 +54,18 @@ module Sidebars
             super_sidebar_parent: ::Sidebars::Groups::SuperSidebarMenus::DeployMenu,
             active_routes: { controller: 'groups/registry/repositories' },
             item_id: :container_registry
+          )
+        end
+
+        def infrastructure_registry_menu_item
+          return nil_menu_item(:infrastructure_registry) unless context.group.packages_feature_enabled?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Terraform modules'),
+            link: group_infrastructure_registry_index_path(context.group),
+            super_sidebar_parent: Sidebars::Groups::SuperSidebarMenus::OperationsMenu,
+            active_routes: { controller: :infrastructure_registry },
+            item_id: :infrastructure_registry
           )
         end
 

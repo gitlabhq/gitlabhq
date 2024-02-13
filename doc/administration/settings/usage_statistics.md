@@ -4,13 +4,17 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Usage statistics **(FREE SELF)**
+# Usage statistics
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab Inc. periodically collects information about your instance in order
 to perform various actions.
 
 For free self-managed instances, all usage statistics are [opt-out](#enable-or-disable-service-ping).
-For information about other tiers, see [Customer Product Usage Information](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
+For information about other tiers, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 
 ## Service Ping
 
@@ -118,9 +122,6 @@ sequenceDiagram
     participant GitLab instance
     participant Version Application
     GitLab instance->>Version Application: Is there a version update?
-    loop Version Check
-        Version Application->>Version Application: Record version info
-    end
     Version Application->>GitLab instance: Response (PNG/SVG)
 ```
 
@@ -145,7 +146,7 @@ To enable or disable Service Ping:
 1. Select **Save changes**.
 
 NOTE:
-The effect of disabling Service Ping depends on the instance's tier. For more information, see [Customer Product Usage Information](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
+The effect of disabling Service Ping depends on the instance's tier. For more information, see [Customer Product Usage Information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/#service-ping-formerly-known-as-usage-ping).
 Service Ping settings only control whether the data is being shared with GitLab, or limited to only internal use by the instance.
 Even if you disable Service Ping, the `gitlab_service_ping_worker` background job still periodically generates a Service Ping payload for your instance.
 The payload is available in the [Metrics and profiling](#manually-upload-service-ping-payload) admin section.

@@ -8,7 +8,7 @@ export const generateFakeEntry = ({ id, status, hasFailures = false, message, ..
   fullName: `fake_name_${id}`,
   lastImportTarget: {
     id,
-    targetNamespace: 'root',
+    targetNamespace: 'Commit451',
     newName: `group${id}`,
   },
   id,
@@ -60,10 +60,11 @@ export const statusEndpointFixture = {
   },
 };
 
-const makeGroupMock = ({ id, fullPath }) => ({
+const makeGroupMock = ({ id, fullPath, projectCreationLevel = null }) => ({
   id,
   fullPath,
   name: fullPath,
+  projectCreationLevel: projectCreationLevel || 'maintainer',
   visibility: 'public',
   webUrl: `http://gdk.test:3000/groups/${fullPath}`,
   __typename: 'Group',
@@ -72,8 +73,8 @@ const makeGroupMock = ({ id, fullPath }) => ({
 export const AVAILABLE_NAMESPACES = [
   makeGroupMock({ id: 24, fullPath: 'Commit451' }),
   makeGroupMock({ id: 22, fullPath: 'gitlab-org' }),
-  makeGroupMock({ id: 23, fullPath: 'gnuwget' }),
-  makeGroupMock({ id: 25, fullPath: 'jashkenas' }),
+  makeGroupMock({ id: 23, fullPath: 'gnuwget', projectCreationLevel: 'noone' }),
+  makeGroupMock({ id: 25, fullPath: 'jashkenas', projectCreationLevel: 'developer' }),
 ];
 
 export const availableNamespacesFixture = {

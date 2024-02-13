@@ -51,7 +51,7 @@ export default {
 <template>
   <div
     v-if="user"
-    class="js-user-link gl-display-inline-block"
+    class="js-user-popover gl-display-inline-block"
     :data-user-id="user.id"
     :data-username="user.username"
   >

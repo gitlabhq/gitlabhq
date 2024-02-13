@@ -18,6 +18,12 @@ module AdminModeHelper
   def enable_admin_mode!(user, use_ui: false)
     if use_ui
       visit new_admin_session_path
+
+      # When JavaScript is enabled, wait for the password field, with class `.js-password`,
+      # to be replaced by the Vue passsword component,
+      # `app/assets/javascripts/authentication/password/components/password_input.vue`.
+      expect(page).not_to have_selector('.js-password') if javascript_test?
+
       fill_in 'user_password', with: user.password
       click_button 'Enter admin mode'
 

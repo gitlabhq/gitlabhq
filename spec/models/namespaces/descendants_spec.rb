@@ -65,4 +65,44 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
       end
     end
   end
+
+  describe '.load_outdated_batch' do
+    let_it_be(:cache1) { create(:namespace_descendants, :outdated) }
+    let_it_be(:cache2) { create(:namespace_descendants, :up_to_date) }
+    let_it_be(:cache3) { create(:namespace_descendants, :outdated) }
+    let_it_be(:cache4) { create(:namespace_descendants, :outdated) }
+    let_it_be(:cache5) { create(:namespace_descendants, :up_to_date) }
+
+    it 'returns outdated namespace_descendants ids' do
+      ids = described_class.load_outdated_batch(2)
+
+      expect(ids.size).to eq(2)
+      expect([cache1.namespace_id, cache3.namespace_id, cache4.namespace_id]).to include(*ids)
+
+      expect(described_class.load_outdated_batch(10)).to match_array([cache1.namespace_id, cache3.namespace_id,
+        cache4.namespace_id])
+    end
+  end
+
+  describe '.upsert_with_consistent_data' do
+    let_it_be(:cache) { create(:namespace_descendants, :outdated, calculated_at: nil, traversal_ids: [100, 200]) }
+
+    it 'updates the namespace descendant record', :freeze_time do
+      described_class.upsert_with_consistent_data(
+        namespace: cache.namespace,
+        self_and_descendant_group_ids: [1, 2, 3],
+        all_project_ids: [5, 6, 7]
+      )
+
+      cache.reload
+
+      expect(cache).to have_attributes(
+        traversal_ids: cache.namespace.traversal_ids,
+        self_and_descendant_group_ids: [1, 2, 3],
+        all_project_ids: [5, 6, 7],
+        outdated_at: nil,
+        calculated_at: Time.current
+      )
+    end
+  end
 end

@@ -4,6 +4,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffForPath
   include DiffHelper
   include RendersCommits
+  include ProductAnalyticsTracking
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
@@ -24,6 +25,12 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :branch_from,
     :branch_to
   ]
+
+  track_internal_event :new, name: 'create_mr_web_ide', conditions: -> { webide_source? }
+
+  track_internal_event :new,
+    name: 'visit_after_push_link_or_create_mr_banner',
+    conditions: -> { after_push_link? }
 
   def new
     define_new_vars
@@ -160,10 +167,27 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def incr_count_webide_merge_request
-    return if params[:nav_source] != 'webide'
+  def webide_source?
+    params[:nav_source] == 'webide'
+  end
 
-    Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
+  def after_push_link?
+    # Link in the console after you push changes:
+    # .../-/merge_requests/new?merge_request%5Bsource_branch%5D=branch-name
+    request.query_parameters.keys == ['merge_request'] &&
+      request.query_parameters['merge_request'].keys == ['source_branch']
+  end
+
+  def incr_count_webide_merge_request
+    webide_source? && Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
+  end
+
+  def tracking_project_source
+    @project
+  end
+
+  def tracking_namespace_source
+    @project.namespace
   end
 end
 

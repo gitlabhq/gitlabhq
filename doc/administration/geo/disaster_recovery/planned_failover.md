@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Disaster recovery for planned failover **(PREMIUM SELF)**
+# Disaster recovery for planned failover
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The primary use-case of Disaster Recovery is to ensure business continuity in
 the event of unplanned outage, but it can be used in conjunction with a planned
@@ -60,7 +64,7 @@ the container registry on the primary site and restore it onto the secondary
 site:
 
 1. On your primary site, back up only the registry and
-   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-directories-from-the-backup):
+   [exclude specific directories from the backup](../../../administration/backup_restore/backup_gitlab.md#excluding-specific-data-from-the-backup):
 
    ```shell
    # Create a backup in the /var/opt/gitlab/backups folder
@@ -182,6 +186,10 @@ On the **primary** site:
    takes to finish syncing.
 1. Select **Add broadcast message**.
 
+### Runner failover
+
+If you have any runners connected to your current secondary, see [how to handle them](../secondary_proxy/runners.md#handling-a-planned-failover-with-secondary-runners) during the failover.
+
 ## Prevent updates to the **primary** site
 
 To ensure that all data is replicated to a secondary site, updates (write requests) need to
@@ -192,8 +200,12 @@ be disabled on the **primary** site:
 1. Select **Monitoring > Background Jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
-1. Select `Enable` for the `geo_sidekiq_cron_config_worker` cron job.
-   This job re-enables several other cron jobs that are essential for planned
+1. Select `Enable` for the following cronjobs:
+   - `geo_metrics_update_worker`
+   - `geo_prune_event_log_worker`
+   - `geo_verification_cron_worker`
+   - `repository_check_worker`
+   This re-enables several cron jobs that are essential for planned
    failover to complete successfully.
 
 ## Finish replicating and verifying all data

@@ -23,7 +23,7 @@ A user story is a requirement for any functionality or feature and follows this 
 
 - _As a `<user role/customer>`, I want to `<JTBD>` so that I can `<achieve a benefit or result>`._
 
-Please try to include one user story for the main [persona](https://about.gitlab.com/handbook/product/personas/#list-of-user-personas) who needs this feature.
+Please try to include one user story for the main [persona](https://handbook.gitlab.com/handbook/product/personas/#list-of-user-personas) who needs this feature.
 -->
 
 

@@ -11,7 +11,7 @@ module Gitlab
       include ::Singleton
 
       Parsed = Struct.new(
-        :sql, :connection, :pg
+        :sql, :connection, :pg, :event_name
       )
 
       attr_reader :all_analyzers
@@ -20,12 +20,15 @@ module Gitlab
         @all_analyzers = []
       end
 
+      # @info most common event names are:
+      #       Model Load, Model Create, Model Update, Model Pluck, Model Destroy, Model Insert, Model Delete All
+      #       Model Exists?, nil, TRANSACTION, SCHEMA
       def hook!
         @subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |event|
           # In some cases analyzer code might trigger another SQL call
           # to avoid stack too deep this detects recursive call of subscriber
           with_ignored_recursive_calls do
-            process_sql(event.payload[:sql], event.payload[:connection])
+            process_sql(event.payload[:sql], event.payload[:connection], event.payload[:name].to_s)
           end
         end
       end
@@ -76,11 +79,11 @@ module Gitlab
         Thread.current[:query_analyzer_enabled_analyzers] ||= []
       end
 
-      def process_sql(sql, connection)
+      def process_sql(sql, connection, event_name)
         analyzers = enabled_analyzers
         return unless analyzers&.any?
 
-        parsed = parse(sql, connection)
+        parsed = parse(sql, connection, event_name)
         return unless parsed
 
         analyzers.each do |analyzer|
@@ -93,12 +96,12 @@ module Gitlab
         end
       end
 
-      def parse(sql, connection)
+      def parse(sql, connection, event_name)
         parsed = PgQuery.parse(sql)
         return unless parsed
 
         normalized = PgQuery.normalize(sql)
-        Parsed.new(normalized, connection, parsed)
+        Parsed.new(normalized, connection, parsed, normalize_event_name(event_name))
       rescue PgQuery::ParseError => e
         # Ignore PgQuery parse errors (due to depth limit or other reasons)
         Gitlab::ErrorTracking.track_exception(e)
@@ -115,6 +118,12 @@ module Gitlab
         ensure
           Thread.current[:query_analyzer_recursive] = nil
         end
+      end
+
+      def normalize_event_name(event_name)
+        split_event_name = event_name.to_s.downcase.split(' ')
+
+        split_event_name.size > 1 ? split_event_name.from(1).join('_') : split_event_name.join('_')
       end
     end
   end

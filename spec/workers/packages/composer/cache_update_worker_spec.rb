@@ -19,7 +19,7 @@ RSpec.describe Packages::Composer::CacheUpdateWorker, type: :worker, feature_cat
       stub_composer_cache_object_storage
     end
 
-    include_examples 'an idempotent worker' do
+    it_behaves_like 'an idempotent worker' do
       context 'creating a package' do
         it 'does nothing' do
           expect { subject }.to change { Packages::Composer::CacheFile.count }.by(0)

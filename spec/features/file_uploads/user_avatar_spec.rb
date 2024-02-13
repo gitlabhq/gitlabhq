@@ -10,7 +10,7 @@ RSpec.describe 'Upload a user avatar', :js, feature_category: :user_profile do
   before do
     stub_feature_flags(edit_user_profile_vue: false)
     sign_in(user)
-    visit(profile_path)
+    visit(user_settings_profile_path)
     attach_file('user_avatar-trigger', file.path, make_visible: true)
     click_button 'Set new profile picture'
   end
@@ -27,7 +27,7 @@ RSpec.describe 'Upload a user avatar', :js, feature_category: :user_profile do
       expect(page).to have_content 'Profile was successfully updated'
       expect(user.reload.avatar.file).to be_present
       expect(user.avatar).to be_instance_of AvatarUploader
-      expect(page).to have_current_path(profile_path, ignore_query: true)
+      expect(page).to have_current_path(user_settings_profile_path, ignore_query: true)
     end
   end
 

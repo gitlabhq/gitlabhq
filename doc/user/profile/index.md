@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# User account **(FREE ALL)**
+# User account
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Each GitLab account has a user profile, which contains information about you and your GitLab activity.
 
@@ -36,7 +40,7 @@ Prerequisites:
 - Your namespace must not:
   - Contain a project with [Container Registry](../packages/container_registry/index.md) tags.
   - Have a project that hosts [GitLab Pages](../project/pages/index.md). For more information,
-  see [changing your username in the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
+  see [changing your username in the GitLab Team Handbook](https://handbook.gitlab.com/handbook/tools-and-tips/#change-your-username-at-gitlabcom).
 - Your username must be between 2 and 255 characters in length, and must not:
   - Contain special characters or emoji.
   - End with `.<reserved file extension>`, for example `jon.png`. However, `jonpng` is valid.
@@ -64,6 +68,27 @@ To add new email to your account:
 NOTE:
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,
 [project imports](../project/import/index.md), and [group migrations](../group/import/index.md).
+
+## Delete emails from your user profile
+
+You can delete a secondary email address from your account. You cannot delete your
+primary email address.
+
+If the deleted email address is used for any user emails, those user emails are
+sent to the primary email address instead.
+
+NOTE:
+Because of [issue 438600](https://gitlab.com/gitlab-org/gitlab/-/issues/438600), group notifications are still sent to
+the deleted email address.
+
+To delete an email address from your account:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Emails**.
+1. Select **Delete** (**{remove}**) and confirm you want to **Remove**.
+
+You can also [use the API to delete a secondary email address](../../api/users.md#delete-email-for-current-user).
 
 ## Make your user profile page private
 
@@ -99,7 +124,7 @@ user profiles are only visible to authenticated users.
 
 ## Add details to your profile with a README
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232157) in GitLab 14.5.
 
 You can add more information to your profile page with a README file. When you populate
 the README file with information, it's included on your profile page.
@@ -164,7 +189,7 @@ To show private contributions:
 
 ## Add your gender pronouns
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332405) in GitLab 14.0.
 
 You can add your gender pronouns to your GitLab account to be displayed next to
 your name in your profile.
@@ -178,7 +203,7 @@ To specify your pronouns:
 
 ## Add your name pronunciation
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25742) in GitLab 14.2.
 
 You can add your name pronunciation to your GitLab account. This is displayed in your profile, below
 your name.
@@ -192,7 +217,7 @@ To add your name pronunciation:
 
 ## Set your current status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56649) in GitLab 13.10, users can schedule the clearing of their status.
 
 You can provide a custom status message for your user profile along with an emoji that describes it.
 This may be helpful when you are out of office or otherwise not available.
@@ -334,9 +359,9 @@ When this feature is being disabled, all current followed/following connections 
 
 ## Advanced code search with zoekt
 
-### Disable searching code with zoekt
+### Disable searching code with Zoekt
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
 
 You can disable searching with Zoekt and use Elasticsearch instead.
 
@@ -386,7 +411,7 @@ GitLab administrators can
 
 ### Stay signed in indefinitely
 
-> Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
+> - Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
 
 To remain signed in indefinitely, select the **Remember me** checkbox on the GitLab sign-in page.
 
@@ -398,7 +423,7 @@ that require sessions to expire periodically for security or compliance purposes
 
 ### Cookies used for sign-in
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/20340) in GitLab 13.1.
 
 When you sign in, three cookies are set:
 

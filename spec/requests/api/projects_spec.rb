@@ -60,28 +60,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
   let_it_be(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let_it_be(:user4) { create(:user, username: 'user.withdot') }
   let_it_be(:project3, reload: true) do
-    create(:project,
-    :private,
-    :repository,
-    creator_id: user.id,
-    namespace: user.namespace,
-    merge_requests_enabled: false,
-    issues_enabled: false, wiki_enabled: false,
-    builds_enabled: false,
-    snippets_enabled: false)
+    create(
+      :project,
+      :private,
+      :repository,
+      creator_id: user.id,
+      namespace: user.namespace,
+      merge_requests_enabled: false,
+      issues_enabled: false, wiki_enabled: false,
+      builds_enabled: false,
+      snippets_enabled: false
+    )
   end
 
   let_it_be(:project_member2) do
-    create(:project_member,
-    user: user4,
-    project: project3,
-    access_level: ProjectMember::MAINTAINER)
+    create(
+      :project_member,
+      user: user4,
+      project: project3,
+      access_level: ProjectMember::MAINTAINER
+    )
   end
 
   let_it_be(:project4, reload: true) do
-    create(:project,
-    creator_id: user4.id,
-    namespace: user4.namespace)
+    create(:project, creator_id: user4.id, namespace: user4.namespace)
   end
 
   let(:user_projects) { [public_project, project, project2, project3] }
@@ -758,10 +760,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         context 'including membership filter' do
           before do
-            create(:project_member,
-                   user: user,
-                   project: project5,
-                   access_level: ProjectMember::MAINTAINER)
+            create(:project_member, user: user, project: project5, access_level: ProjectMember::MAINTAINER)
           end
 
           it 'returns only projects that satisfy all query parameters' do
@@ -1642,6 +1641,55 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       post api(path, user), params: project
 
       expect(response).to have_gitlab_http_status(:created)
+    end
+
+    context 'with repository_object_format' do
+      context 'when sha1' do
+        it 'creates a project with SHA1 repository' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'sha1')
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['repository_object_format']).to eq 'sha1'
+        end
+      end
+
+      context 'when sha256' do
+        it 'creates a project with SHA256 repository' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'sha256')
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['repository_object_format']).to eq 'sha256'
+        end
+
+        context 'when "support_sha256_repositories" FF is disabled' do
+          before do
+            stub_feature_flags(support_sha256_repositories: false)
+          end
+
+          it 'creates a project with SHA1 repository' do
+            project = attributes_for(:project)
+
+            post api(path, user), params: project.merge(repository_object_format: 'sha256')
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['repository_object_format']).to eq 'sha1'
+          end
+        end
+      end
+
+      context 'when unknown format' do
+        it 'rejects a project creation' do
+          project = attributes_for(:project)
+
+          post api(path, user), params: project.merge(repository_object_format: 'unknown')
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
     end
 
     context 'when a visibility level is restricted' do
@@ -2679,6 +2727,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['feature_flags_access_level']).to be_present
         expect(json_response['infrastructure_access_level']).to be_present
         expect(json_response['monitor_access_level']).to be_present
+        expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
       end
@@ -2792,6 +2841,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['readme_url']).to eq(project.readme_url)
         expect(json_response).to have_key 'packages_enabled'
         expect(json_response['keep_latest_artifact']).to be_present
+        expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
       end
 
       it 'returns a group link with expiration date' do
@@ -2996,11 +3046,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
 
         it 'filters related URIs when their feature is not enabled' do
-          project = create(:project, :public,
-                           :merge_requests_disabled,
-                           :issues_disabled,
-                           creator_id: user.id,
-                           namespace: user.namespace)
+          project = create(
+            :project,
+            :public,
+            :merge_requests_disabled,
+            :issues_disabled,
+            creator_id: user.id,
+            namespace: user.namespace
+          )
 
           get api("/projects/#{project.id}", user)
 
@@ -3461,6 +3514,33 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           expect(response).to have_gitlab_http_status(:conflict)
           expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
           expect(project_fork_target).to be_forked
+        end
+
+        context 'when forking process fails' do
+          before do
+            allow_next_instance_of(Projects::ForkService) do |instance|
+              allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'Error'))
+            end
+          end
+
+          it 'fails with 400 error' do
+            expect(project_fork_target).not_to be_forked
+
+            post api(path, admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq "Error"
+            expect(project_fork_target).not_to be_forked
+          end
+        end
+
+        context 'when fork target and source are the same' do
+          it 'returns an error' do
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_target.id}", admin, admin_mode: true)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).to eq 'Target project cannot be equal to source project'
+          end
         end
       end
     end
@@ -4161,17 +4241,41 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
 
+      it 'updates public_builds (deprecated)' do
+        project3.update!({ public_builds: false })
+        project_param = { public_builds: 'true' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['public_jobs']).to be_truthy
+      end
+
+      it 'updates public_jobs' do
+        project3.update!({ public_builds: false })
+        project_param = { public_jobs: 'true' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['public_jobs']).to be_truthy
+      end
+
       context 'with changes to the avatar' do
         let_it_be(:avatar_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
         let_it_be(:alternate_avatar_file) { fixture_file_upload('spec/fixtures/rails_sample.png', 'image/png') }
         let_it_be(:project_with_avatar, reload: true) do
-          create(:project,
-                 :private,
-                 :repository,
-                 name: 'project-with-avatar',
-                 creator_id: user.id,
-                 namespace: user.namespace,
-                 avatar: avatar_file)
+          create(
+            :project,
+            :private,
+            :repository,
+            name: 'project-with-avatar',
+            creator_id: user.id,
+            namespace: user.namespace,
+            avatar: avatar_file
+          )
         end
 
         it 'uploads avatar to project without an avatar' do
@@ -4966,8 +5070,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{new_project.id}/fork", user)
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['name']).to eq(['has already been taken'])
-        expect(json_response['message']['path']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Path has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'fails if project to fork from does not exist' do
@@ -5119,7 +5228,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{project2.id}/fork", user2), params: { path: 'foobar' }
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['path']).to eq(['has already been taken'])
+        expect(json_response['message']).to eq(['Path has already been taken'])
       end
 
       it 'accepts custom parameters for the target project' do
@@ -5149,7 +5258,12 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api("/projects/#{project2.id}/fork", user2), params: { name: 'My Random Project' }
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['name']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'forks to the same namespace with alternative path and name' do
@@ -5168,8 +5282,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         post api(path, user)
 
         expect(response).to have_gitlab_http_status(:conflict)
-        expect(json_response['message']['path']).to eq(['has already been taken'])
-        expect(json_response['message']['name']).to eq(['has already been taken'])
+        expect(json_response['message']).to match_array(
+          [
+            'Name has already been taken',
+            'Path has already been taken',
+            'Project namespace name has already been taken'
+          ]
+        )
       end
 
       it 'fails to fork with an unknown visibility level' do
@@ -5446,15 +5565,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let_it_be(:shared_to_guest_group) { create(:group) }
 
         before do
-          create(:group_group_link, :owner,
-                 shared_with_group: owner_group,
-                 shared_group: shared_to_owner_group
-          )
-
-          create(:group_group_link, :guest,
-                 shared_with_group: guest_group,
-                 shared_group: shared_to_guest_group
-          )
+          create(:group_group_link, :owner, shared_with_group: owner_group, shared_group: shared_to_owner_group)
+          create(:group_group_link, :guest, shared_with_group: guest_group, shared_group: shared_to_guest_group)
         end
 
         it 'only includes groups arising from group shares where the user has permission to transfer a project to' do

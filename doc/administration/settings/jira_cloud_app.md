@@ -4,10 +4,14 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab for Jira Cloud app administration **(FREE SELF)**
+# GitLab for Jira Cloud app administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
-This page contains information about administering the GitLab for Jira Cloud app for self-managed instances. For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
+This page contains administrator documentation for the GitLab for Jira Cloud app. For user documentation, see [GitLab for Jira Cloud app](../../integration/jira/connect-app.md).
 
 With the [GitLab for Jira Cloud](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud) app, you can connect GitLab and Jira Cloud to sync development information in real time. You can view this information in the [Jira development panel](../../integration/jira/development_panel.md).
 
@@ -53,7 +57,7 @@ To create an OAuth application on your self-managed instance:
 
 ## Jira user requirements
 
-> Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
+> - Support for the `org-admins` group [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420687) in GitLab 16.6.
 
 In your [Atlassian organization](https://admin.atlassian.com), you must ensure that the Jira user that is used to set up the GitLab for Jira Cloud app is a member of
 either:
@@ -75,7 +79,7 @@ If necessary:
 
 ## Connect the GitLab for Jira Cloud app
 
-> Introduced in GitLab 15.7.
+> - Introduced in GitLab 15.7.
 
 You can link your self-managed instance after you install the GitLab for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.

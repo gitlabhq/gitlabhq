@@ -107,7 +107,7 @@
   .wiki-list {
     padding: $gl-spacing-scale-2 $gl-spacing-scale-3;
     margin-bottom: $gl-spacing-scale-1;
-    @include gl-rounded-base;
+    border-radius: $gl-border-radius-base;
 
     &:hover {
       background: var(--gray-50, $gray-50);

@@ -15,7 +15,7 @@ RSpec.describe Mutations::Groups::Update do
   describe '#resolve' do
     subject { described_class.new(object: group, context: { current_user: user }, field: nil).resolve(**params) }
 
-    RSpec.shared_examples 'updating the group shared runners setting' do
+    shared_examples 'updating the group shared runners setting' do
       it 'updates the group shared runners setting' do
         expect { subject }
           .to change { group.reload.shared_runners_setting }.from('enabled').to(Namespace::SR_DISABLED_AND_UNOVERRIDABLE)
@@ -42,7 +42,19 @@ RSpec.describe Mutations::Groups::Update do
       end
     end
 
-    RSpec.shared_examples 'denying access to group shared runners setting' do
+    shared_examples 'updating the group math rendering settings' do
+      it 'updates the settings' do
+        expect { subject }
+          .to change { group.reload.math_rendering_limits_enabled? }.to(false)
+          .and change { group.reload.lock_math_rendering_limits_enabled? }.to(true)
+      end
+
+      it 'returns no errors' do
+        expect(subject).to eq(errors: [], group: group)
+      end
+    end
+
+    shared_examples 'denying access to group' do
       it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
@@ -56,10 +68,38 @@ RSpec.describe Mutations::Groups::Update do
 
       where(:user_role, :shared_examples_name) do
         :owner      | 'updating the group shared runners setting'
-        :developer  | 'denying access to group shared runners setting'
-        :reporter   | 'denying access to group shared runners setting'
-        :guest      | 'denying access to group shared runners setting'
-        :anonymous  | 'denying access to group shared runners setting'
+        :maintainer | 'denying access to group'
+        :developer  | 'denying access to group'
+        :reporter   | 'denying access to group'
+        :guest      | 'denying access to group'
+        :anonymous  | 'denying access to group'
+      end
+
+      with_them do
+        before do
+          group.send("add_#{user_role}", user) unless user_role == :anonymous
+        end
+
+        it_behaves_like params[:shared_examples_name]
+      end
+    end
+
+    context 'changing math rendering settings' do
+      let_it_be(:params) do
+        {
+          full_path: group.full_path,
+          math_rendering_limits_enabled: false,
+          lock_math_rendering_limits_enabled: true
+        }
+      end
+
+      where(:user_role, :shared_examples_name) do
+        :owner      | 'updating the group math rendering settings'
+        :maintainer | 'denying access to group'
+        :developer  | 'denying access to group'
+        :reporter   | 'denying access to group'
+        :guest      | 'denying access to group'
+        :anonymous  | 'denying access to group'
       end
 
       with_them do

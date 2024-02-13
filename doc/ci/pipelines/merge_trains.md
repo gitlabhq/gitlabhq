@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge trains **(PREMIUM ALL)**
+# Merge trains
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
 
@@ -90,7 +94,7 @@ are cancelled.
 
 ## Enable merge trains
 
-> `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
+> - `disable_merge_trains` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/282477) in GitLab 16.5.
 
 Prerequisites:
 

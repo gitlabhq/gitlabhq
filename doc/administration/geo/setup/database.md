@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo database replication **(PREMIUM SELF)**
+# Geo database replication
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This document describes the minimal required steps to replicate your primary
 GitLab database to a secondary site's database. You may have to change some
@@ -943,187 +947,20 @@ synchronization is required.
 
 ### Configuring Patroni cluster for the tracking PostgreSQL database
 
-**Secondary** sites use a separate PostgreSQL installation as a tracking database to
+**Secondary** Geo sites use a separate PostgreSQL installation as a tracking database to
 keep track of replication status and automatically recover from potential replication issues.
-The Linux package automatically configures a tracking database when `roles(['geo_secondary_role'])` is set.
 
-If you want to run this database in a highly available configuration, don't use the `geo_secondary_role` above.
-Instead, follow the instructions below.
+If you want to run the Geo tracking database on a single node, see
+[Configure the Geo tracking database on the Geo secondary site](../replication/multiple_servers.md#step-2-configure-the-geo-tracking-database-on-the-geo-secondary-site).
 
-If you want to run the Geo tracking database on a single node, see [Configure the Geo tracking database on the Geo secondary site](../replication/multiple_servers.md#step-3-configure-the-geo-tracking-database-on-the-geo-secondary-site).
+The Linux package does not support running the Geo tracking database in a highly available configuration.
+In particular, failover does not work properly. See the
+[feature request issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 
-A production-ready and secure setup for the tracking PostgreSQL DB requires at least three Consul nodes: two
-Patroni nodes, and one PgBouncer node on the secondary site.
-
-Consul can track multiple services, so you can choose to reuse the nodes used for the Standby Cluster database, though the instructions below do not show how to combine configurations when reusing Consul nodes.
-
-Be sure to use [password credentials](../../postgresql/replication_and_failover.md#database-authorization-for-patroni)
-and other database best practices.
-
-#### Step 1. Configure PgBouncer nodes on the secondary site
-
-On each node running the PgBouncer service for the PostgreSQL tracking database:
-
-1. SSH into your PgBouncer node and log in as root:
-
-   ```shell
-   sudo -i
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
-
-   ```ruby
-   # Disable all components except Pgbouncer and Consul agent
-   roles(['pgbouncer_role'])
-
-   # PgBouncer configuration
-   pgbouncer['users'] = {
-     'pgbouncer': {
-       password: 'PGBOUNCER_PASSWORD_HASH'
-     }
-   }
-
-   pgbouncer['databases'] = {
-     gitlabhq_geo_production: {
-       user: 'pgbouncer',
-       password: 'PGBOUNCER_PASSWORD_HASH'
-     }
-   }
-
-   # Consul configuration
-   consul['watchers'] = %w(postgresql)
-
-   consul['configuration'] = {
-     retry_join: %w[CONSUL_TRACKINGDB1_IP CONSUL_TRACKINGDB2_IP CONSUL_TRACKINGDB3_IP]
-   }
-
-   consul['monitoring_service_discovery'] =  true
-
-   # GitLab database settings
-   gitlab_rails['db_database'] = 'gitlabhq_geo_production'
-   gitlab_rails['db_username'] = 'gitlab_geo'
-   ```
-
-1. Reconfigure GitLab for the changes to take effect:
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
-
-1. Create a `.pgpass` file so Consul is able to reload PgBouncer. Enter the `PLAIN_TEXT_PGBOUNCER_PASSWORD` twice when asked:
-
-   ```shell
-   gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
-   ```
-
-1. Restart the PgBouncer service:
-
-   ```shell
-   gitlab-ctl restart pgbouncer
-   ```
-
-#### Step 2. Configure a Patroni cluster
-
-On each node running a Patroni instance on the secondary site for the PostgreSQL tracking database:
-
-1. SSH into your Patroni node and log in as root:
-
-   ```shell
-   sudo -i
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following:
-
-   ```ruby
-   # Disable all components except PostgreSQL, Patroni, and Consul
-   roles(['patroni_role'])
-
-   # Consul configuration
-   consul['services'] = %w(postgresql)
-
-   consul['configuration'] = {
-     server: true,
-     retry_join: %w[CONSUL_TRACKINGDB1_IP CONSUL_TRACKINGDB2_IP CONSUL_TRACKINGDB3_IP]
-   }
-
-   # PostgreSQL configuration
-   postgresql['listen_address'] = '0.0.0.0'
-   postgresql['hot_standby'] = 'on'
-   postgresql['wal_level'] = 'replica'
-
-   postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
-   postgresql['sql_replication_password'] = 'POSTGRESQL_REPLICATION_PASSWORD_HASH'
-   postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
-
-   postgresql['md5_auth_cidr_addresses'] = [
-      'PATRONI_TRACKINGDB1_IP/32', 'PATRONI_TRACKINGDB2_IP/32', 'PATRONI_TRACKINGDB3_IP/32', 'PATRONI_TRACKINGDB_PGBOUNCER/32',
-      # Any other instance that needs access to the database as per documentation
-   ]
-
-   # Add patroni nodes to the allowlist
-   patroni['allowlist'] = %w[
-     127.0.0.1/32
-     PATRONI_TRACKINGDB1_IP/32 PATRONI_TRACKINGDB2_IP/32 PATRONI_TRACKINGDB3_IP/32
-   ]
-
-   # Patroni configuration
-   patroni['username'] = 'PATRONI_API_USERNAME'
-   patroni['password'] = 'PATRONI_API_PASSWORD'
-   patroni['replication_password'] = 'PLAIN_TEXT_POSTGRESQL_REPLICATION_PASSWORD'
-   patroni['postgresql']['max_wal_senders'] = 5 # A minimum of three for one replica, plus two for each additional replica
-
-   # GitLab database settings
-   gitlab_rails['db_database'] = 'gitlabhq_geo_production'
-   gitlab_rails['db_username'] = 'gitlab_geo'
-   gitlab_rails['enable'] = true
-
-   # Disable automatic database migrations
-   gitlab_rails['auto_migrate'] = false
-   ```
-
-1. Reconfigure GitLab for the changes to take effect.
-   This step is required to bootstrap PostgreSQL users and settings:
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
-
-#### Step 3. Configure the tracking database on the secondary sites
-
-For each node running the `gitlab-rails`, `sidekiq`, and `geo-logcursor` services:
-
-1. SSH into your node and log in as root:
-
-   ```shell
-   sudo -i
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb` and add the following attributes. You may have other attributes set, but the following must be set.
-
-   ```ruby
-   # Tracking database settings
-   geo_secondary['db_username'] = 'gitlab_geo'
-   geo_secondary['db_password'] = 'PLAIN_TEXT_PGBOUNCER_PASSWORD'
-   geo_secondary['db_database'] = 'gitlabhq_geo_production'
-   geo_secondary['db_host'] = 'PATRONI_TRACKINGDB_PGBOUNCER_IP'
-   geo_secondary['db_port'] = 6432
-   geo_secondary['auto_migrate'] = false
-
-   # Disable the tracking database service
-   geo_postgresql['enable'] = false
-   ```
-
-1. Reconfigure GitLab for the changes to take effect.
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
-
-1. Run the tracking database migrations:
-
-   ```shell
-   gitlab-rake db:migrate:geo
-   ```
+If you want to run the Geo tracking database in a highly available configuration, you can connect the
+secondary site to an external PostgreSQL database, such as a cloud-managed database, or a manually
+configured [Patroni](https://patroni.readthedocs.io/en/latest/) cluster (not managed by the GitLab Linux package).
+Follow [Geo with external PostgreSQL instances](external_database.md#configure-the-tracking-database).
 
 ## Troubleshooting
 

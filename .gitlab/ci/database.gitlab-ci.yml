@@ -36,7 +36,7 @@ db:rollback:
     - .db-job-base
     - .rails:rules:db-rollback
   script:
-    - bundle exec rake db:migrate VERSION=20221111123146  # 15.7
+    - bundle exec rake db:migrate VERSION=20230216060333  # 16.0 First migration
     - bundle exec rake db:migrate
 
 db:rollback single-db:
@@ -44,6 +44,60 @@ db:rollback single-db:
     - db:rollback
     - .single-db
     - .rails:rules:single-db
+
+db:migrate:multi-version-upgrade-1:
+  stage: test
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-docker-${DOCKER_VERSION}
+  extends:
+    - .db-job-base
+    - .use-docker-in-docker
+  variables:
+    UPGRADE_STOP: 16.3.6-ee
+    UPGRADE_STOP_IMAGE: gitlab/gitlab-ee:${UPGRADE_STOP}.0
+    UPGRADE_STOP_TAG: v${UPGRADE_STOP}
+  before_script:
+    # pull, seed, and export data from previous Upgrade Stop
+    - docker pull "${UPGRADE_STOP_IMAGE}"
+    - |
+      docker run \
+        -d \
+        -v ./scripts/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/scripts/data_seeder \
+        -v ./ee/db/seeds/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/ee/db/seeds/data_seeder \
+        -v ./ee/lib/tasks/gitlab/seed:/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/gitlab/seed \
+        --name gitlab \
+        "${UPGRADE_STOP_IMAGE}"
+    - docker exec gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; REF='${UPGRADE_STOP_TAG}' . scripts/data_seeder/test_resources.sh"
+    - |
+      docker exec gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; echo \"gem 'gitlab-rspec', path: 'gems/gitlab-rspec'\" >> Gemfile"
+    - docker exec gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; ruby scripts/data_seeder/globalize_gems.rb; bundle install"
+    - docker exec gitlab bash -c "gitlab-ctl reconfigure"
+    - docker exec gitlab gitlab-rake "ee:gitlab:seed:data_seeder[bulk_data.rb]"
+
+    # dump
+    - docker exec gitlab bash -c "mkdir /tmp/xfer; chown gitlab-psql /tmp/xfer"
+    - |
+      docker exec gitlab bash -c " \
+        runuser -l gitlab-psql -c \"pg_dump -U gitlab-psql -h '/var/opt/gitlab/postgresql' gitlabhq_production | gzip > /tmp/xfer/gitlabhq_production.gz\" \
+      "
+  script:
+    - docker cp gitlab:/tmp/xfer/gitlabhq_production.gz .
+  artifacts:
+    paths: ["gitlabhq_production.gz"]
+    expire_in: 3d
+  when: manual
+  allow_failure: true
+
+db:migrate:multi-version-upgrade-2:
+  stage: test
+  extends:
+    - .db-job-base
+  script:
+    - gunzip gitlabhq_production.gz
+    - bundle exec rake db:drop db:create
+    - apt-get update -qq && apt-get install -y -qq postgresql
+    - psql -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
+    - bundle exec rake gitlab:db:configure
+  needs: ["db:migrate:multi-version-upgrade-1"]
 
 db:migrate:reset:
   extends: .db-job-base

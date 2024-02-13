@@ -9,16 +9,7 @@ RSpec.describe BulkImports::Common::Graphql::GetMembersQuery, feature_category: 
 
   subject(:query) { described_class.new(context: context) }
 
-  it 'has a valid query' do
-    parsed_query = GraphQL::Query.new(
-      GitlabSchema,
-      query.to_s,
-      variables: query.variables
-    )
-    result = GitlabSchema.static_validator.validate(parsed_query)
-
-    expect(result[:errors]).to be_empty
-  end
+  it_behaves_like 'a valid Direct Transfer GraphQL query'
 
   describe '#data_path' do
     it 'returns data path' do

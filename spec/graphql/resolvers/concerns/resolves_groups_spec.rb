@@ -26,15 +26,16 @@ RSpec.describe ResolvesGroups do
     <<~FIELDS
       containerRepositoriesCount
       customEmoji { nodes { id } }
-      fullPath
-      groupMembersCount
-      path
       dependencyProxyBlobCount
       dependencyProxyBlobs { nodes { fileName } }
       dependencyProxyImageCount
       dependencyProxyImageTtlPolicy { enabled }
       dependencyProxySetting { enabled }
       descendantGroupsCount
+      fullPath
+      groupMembersCount
+      maxAccessLevel { integerValue }
+      path
       projectsCount
     FIELDS
   end

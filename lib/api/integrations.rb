@@ -9,15 +9,7 @@ module API
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
     if Gitlab.dev_or_test_env?
-      integrations['mock-ci'] = [
-        {
-          required: true,
-          name: :mock_service_url,
-          type: String,
-          desc: 'URL to the mock integration'
-        }
-      ]
-      integrations['mock-deployment'] = []
+      integrations['mock-ci'] = ::Integrations::MockCi.api_fields
       integrations['mock-monitoring'] = []
 
       integration_classes += Helpers::IntegrationsHelpers.development_integration_classes
@@ -38,20 +30,8 @@ module API
     end
 
     SLASH_COMMAND_INTEGRATIONS = {
-      'mattermost-slash-commands' => [
-        {
-          name: :token,
-          type: String,
-          desc: 'The Mattermost token'
-        }
-      ],
-      'slack-slash-commands' => [
-        {
-          name: :token,
-          type: String,
-          desc: 'The Slack token'
-        }
-      ]
+      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
+      'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_fields
     }.freeze
 
     helpers do
@@ -110,10 +90,23 @@ module API
             end
           end
           put "#{path}/#{slug}" do
+            if slug == "git-guardian" && Feature.disabled?(:git_guardian_integration)
+              render_api_error!('GitGuardian feature is disabled', 400)
+            end
+
             integration = user_project.find_or_initialize_integration(slug.underscore)
+
             params = declared_params(include_missing: false).merge(active: true)
 
-            if integration.update(params)
+            if integration.is_a?(::Integrations::GitlabSlackApplication)
+              if integration.new_record?
+                render_api_error!('You cannot create the GitLab for Slack app from the API', 422)
+              end
+
+              params.delete(:active)
+            end
+
+            if integration&.update(params)
               present integration, with: Entities::ProjectIntegration
             else
               render_api_error!('400 Bad Request', 400)
@@ -135,7 +128,13 @@ module API
           requires :slug, type: String, values: INTEGRATIONS.keys, desc: 'The name of the integration'
         end
         delete "#{path}/:slug" do
+          if params[:slug] == "git-guardian" && Feature.disabled?(:git_guardian_integration)
+            render_api_error!('GitGuardian feature is disabled', 400)
+          end
+
           integration = user_project.find_or_initialize_integration(params[:slug].underscore)
+
+          not_found!('Integration') unless integration&.persisted?
 
           destroy_conditionally!(integration) do
             attrs = integration_attributes(integration).index_with do |attr|

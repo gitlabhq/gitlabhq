@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:runner) { build_stubbed(:ci_runner) }
   let(:aud) { described_class::DEFAULT_AUD }
+  let(:wlif) { nil }
 
   let(:build) do
     build_stubbed(
@@ -26,7 +27,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
     )
   end
 
-  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud) }
+  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud, wlif: wlif) }
 
   it { is_expected.to be_a Gitlab::Ci::Jwt }
 
@@ -45,31 +46,11 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
       expect(payload).not_to include(:user_identities)
     end
 
-    context 'when oidc_issuer_url is disabled' do
-      before do
-        stub_feature_flags(oidc_issuer_url: false)
-      end
-
-      it 'has correct values for the standard JWT attributes' do
-        aggregate_failures do
-          expect(payload[:iss]).to eq(Settings.gitlab.base_url)
-          expect(payload[:aud]).to eq(Settings.gitlab.base_url)
-          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
-        end
-      end
-    end
-
-    context 'when oidc_issuer_url is enabled' do
-      before do
-        stub_feature_flags(oidc_issuer_url: true)
-      end
-
-      it 'has correct values for the standard JWT attributes' do
-        aggregate_failures do
-          expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
-          expect(payload[:aud]).to eq(Settings.gitlab.base_url)
-          expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
-        end
+    it 'has correct values for the standard JWT attributes' do
+      aggregate_failures do
+        expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
+        expect(payload[:aud]).to eq(Settings.gitlab.base_url)
+        expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
       end
     end
 
@@ -78,6 +59,18 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
 
       it 'uses that aud in the payload' do
         expect(payload[:aud]).to eq('AWS')
+      end
+
+      it 'does not use wlif claim in the payload' do
+        expect(payload.include?(:wlif)).to be_falsey
+      end
+    end
+
+    context 'when given an wlif claim' do
+      let(:wlif) { '//iam.googleapis.com/foo' }
+
+      it 'uses specified wlif in the payload' do
+        expect(payload[:wlif]).to eq(wlif)
       end
     end
 

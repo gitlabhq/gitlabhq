@@ -4,7 +4,11 @@ group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Integrate GitLab with Kerberos **(FREE SELF)**
+# Integrate GitLab with Kerberos
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab can integrate with [Kerberos](https://web.mit.edu/kerberos/) as an authentication mechanism.
 
@@ -101,7 +105,7 @@ set up GitLab to create a new account when a Kerberos user tries to sign in.
 
 ### Link a Kerberos account to an existing GitLab account
 
-> Kerberos SPNEGO [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335) to Kerberos in GitLab 15.4.
+> - Kerberos SPNEGO [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96335) to Kerberos in GitLab 15.4.
 
 If you're an administrator, you can link a Kerberos account to an
 existing GitLab account. To do so:

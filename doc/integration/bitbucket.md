@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Integrate your GitLab server with Bitbucket Cloud **(FREE SELF)**
+# Integrate your GitLab server with Bitbucket Cloud
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can set up Bitbucket.org as an OAuth 2.0 provider to use your Bitbucket.org
 account credentials to sign in to GitLab. You can also import your projects from

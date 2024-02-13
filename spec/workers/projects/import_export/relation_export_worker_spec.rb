@@ -4,7 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feature_category: :importers do
   let(:project_relation_export) { create(:project_relation_export) }
-  let(:job_args) { [project_relation_export.id] }
+  let(:user) { create(:user) }
+  let(:job_args) { [project_relation_export.id, user.id] }
 
   it_behaves_like 'an idempotent worker'
 
@@ -17,7 +18,7 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
           expect(service).to receive(:execute)
         end
 
-        worker.perform(project_relation_export.id)
+        worker.perform(*job_args)
       end
     end
 
@@ -29,7 +30,7 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
           expect(service).to receive(:execute)
         end
 
-        worker.perform(project_relation_export.id)
+        worker.perform(*job_args)
 
         expect(project_relation_export.reload.queued?).to eq(true)
       end
@@ -41,13 +42,13 @@ RSpec.describe Projects::ImportExport::RelationExportWorker, type: :worker, feat
       it 'does not export the relation' do
         expect(Projects::ImportExport::RelationExportService).not_to receive(:new)
 
-        worker.perform(project_relation_export.id)
+        worker.perform(*job_args)
       end
     end
   end
 
   describe '.sidekiq_retries_exhausted' do
-    let(:job) { { 'args' => [project_relation_export.id], 'error_message' => 'Error message' } }
+    let(:job) { { 'args' => job_args, 'error_message' => 'Error message' } }
 
     it 'sets relation export status to `failed`' do
       described_class.sidekiq_retries_exhausted_block.call(job)

@@ -7,17 +7,16 @@ module QA
 
       let(:project) { create(:project, :private, name: 'project-with-registry', template_name: 'express') }
       let(:project_deploy_token) do
-        Resource::ProjectDeployToken.fabricate_via_api! do |deploy_token|
-          deploy_token.name = 'registry-deploy-token'
-          deploy_token.project = project
-          deploy_token.scopes = %w[
+        create(:project_deploy_token,
+          name: 'registry-deploy-token',
+          project: project,
+          scopes: %w[
             read_repository
             read_package_registry
             write_package_registry
             read_registry
             write_registry
-          ]
-        end
+          ])
       end
 
       let!(:runner) do

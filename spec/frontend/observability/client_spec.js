@@ -14,20 +14,26 @@ describe('buildClient', () => {
   let axiosMock;
 
   const tracingUrl = 'https://example.com/tracing';
+  const tracingAnalyticsUrl = 'https://example.com/tracing/analytics';
   const provisioningUrl = 'https://example.com/provisioning';
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
   const metricsUrl = 'https://example.com/metrics';
   const metricsSearchUrl = 'https://example.com/metrics/search';
+  const metricsSearchMetadataUrl = 'https://example.com/metrics/searchmetadata';
+  const logsSearchUrl = 'https://example.com/metrics/logs/search';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
     tracingUrl,
+    tracingAnalyticsUrl,
     provisioningUrl,
     servicesUrl,
     operationsUrl,
     metricsUrl,
     metricsSearchUrl,
+    metricsSearchMetadataUrl,
+    logsSearchUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -263,6 +269,10 @@ describe('buildClient', () => {
               { operator: '!=', value: 'not-service' },
             ],
             period: [{ operator: '=', value: '5m' }],
+            status: [
+              { operator: '=', value: 'ok' },
+              { operator: '!=', value: 'error' },
+            ],
             traceId: [
               { operator: '=', value: 'trace-id' },
               { operator: '!=', value: 'not-trace-id' },
@@ -276,7 +286,8 @@ describe('buildClient', () => {
             '&service_name=service&not[service_name]=not-service' +
             '&period=5m' +
             '&trace_id=trace-id&not[trace_id]=not-trace-id' +
-            '&attr_name=name1&attr_value=value1',
+            '&attr_name=name1&attr_value=value1' +
+            '&status=ok&not[status]=error',
         );
       });
       describe('date range time filter', () => {
@@ -380,6 +391,196 @@ describe('buildClient', () => {
         });
 
         expect(getQueryParam()).toBe(`sort=${SORTING_OPTIONS.TIMESTAMP_DESC}`);
+      });
+    });
+  });
+
+  describe('fetchTracesAnalytics', () => {
+    it('fetches analytics from the tracesAnalytics URL', async () => {
+      const mockResponse = {
+        results: [
+          {
+            Interval: 1705039800,
+            count: 5,
+            p90_duration_nano: 50613502867,
+            p95_duration_nano: 50613502867,
+            p75_duration_nano: 49756727928,
+            p50_duration_nano: 41610120929,
+            error_count: 324,
+            trace_rate: 2.576111111111111,
+            error_rate: 0.09,
+          },
+        ],
+      };
+
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, mockResponse);
+
+      const result = await client.fetchTracesAnalytics();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(tracingAnalyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+      });
+      expect(result).toEqual(mockResponse.results);
+    });
+
+    it('returns empty array if analytics are missing', async () => {
+      axiosMock.onGet(tracingAnalyticsUrl).reply(200, {});
+
+      expect(await client.fetchTracesAnalytics()).toEqual([]);
+    });
+
+    describe('query filter', () => {
+      beforeEach(() => {
+        axiosMock.onGet(tracingAnalyticsUrl).reply(200, {
+          results: [],
+        });
+      });
+
+      it('does not set any query param without filters', async () => {
+        await client.fetchTracesAnalytics();
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('converts filter to proper query params', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: [
+              { operator: '>', value: '100' },
+              { operator: '<', value: '1000' },
+            ],
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '!=', value: 'not-op' },
+            ],
+            service: [
+              { operator: '=', value: 'service' },
+              { operator: '!=', value: 'not-service' },
+            ],
+            period: [{ operator: '=', value: '5m' }],
+            status: [
+              { operator: '=', value: 'ok' },
+              { operator: '!=', value: 'error' },
+            ],
+            traceId: [
+              { operator: '=', value: 'trace-id' },
+              { operator: '!=', value: 'not-trace-id' },
+            ],
+            attribute: [{ operator: '=', value: 'name1=value1' }],
+          },
+        });
+        expect(getQueryParam()).toContain(
+          'gt[duration_nano]=100000000&lt[duration_nano]=1000000000' +
+            '&operation=op&not[operation]=not-op' +
+            '&service_name=service&not[service_name]=not-service' +
+            '&period=5m' +
+            '&trace_id=trace-id&not[trace_id]=not-trace-id' +
+            '&attr_name=name1&attr_value=value1' +
+            '&status=ok&not[status]=error',
+        );
+      });
+      describe('date range time filter', () => {
+        it('handles custom date range period filter', async () => {
+          await client.fetchTracesAnalytics({
+            filters: {
+              period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+            },
+          });
+          expect(getQueryParam()).not.toContain('period=');
+          expect(getQueryParam()).toContain(
+            'start_time=2023-01-01T00:00:00.000Z&end_time=2023-02-01T00:00:00.000Z',
+          );
+        });
+
+        it.each([
+          'invalid - 2023-02-01',
+          '2023-02-01 - invalid',
+          'invalid - invalid',
+          '2023-01-01 / 2023-02-01',
+          '2023-01-01 2023-02-01',
+          '2023-01-01 - 2023-02-01 - 2023-02-01',
+        ])('ignore invalid values', async (val) => {
+          await client.fetchTracesAnalytics({
+            filters: {
+              period: [{ operator: '=', value: val }],
+            },
+          });
+
+          expect(getQueryParam()).not.toContain('start_time=');
+          expect(getQueryParam()).not.toContain('end_time=');
+          expect(getQueryParam()).not.toContain('period=');
+        });
+      });
+
+      it('handles repeated params', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            operation: [
+              { operator: '=', value: 'op' },
+              { operator: '=', value: 'op2' },
+            ],
+          },
+        });
+        expect(getQueryParam()).toContain('operation=op&operation=op2');
+      });
+
+      it('ignores unsupported filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores empty filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: null,
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores non-array filters', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            traceId: { operator: '=', value: 'foo' },
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
+      });
+
+      it('ignores unsupported operators', async () => {
+        await client.fetchTracesAnalytics({
+          filters: {
+            durationMs: [
+              { operator: '*', value: 'foo' },
+              { operator: '=', value: 'foo' },
+              { operator: '!=', value: 'foo' },
+            ],
+            operation: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            service: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+            period: [{ operator: '!=', value: 'foo' }],
+            traceId: [
+              { operator: '>', value: 'foo' },
+              { operator: '<', value: 'foo' },
+            ],
+          },
+        });
+
+        expect(getQueryParam()).toBe(``);
       });
     });
   });
@@ -581,6 +782,191 @@ describe('buildClient', () => {
       expect(result).toEqual(data.results);
     });
 
+    describe('query filter params', () => {
+      beforeEach(() => {
+        axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+      });
+
+      describe('attribute filter', () => {
+        it('converts filter to proper query params', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              attributes: {
+                attr_1: [
+                  { operator: '=', value: 'foo' },
+                  { operator: '!=', value: 'bar' },
+                ],
+                attr_2: [
+                  { operator: '=~', value: 'foo' },
+                  { operator: '!~', value: 'bar' },
+                ],
+              },
+            },
+          });
+          expect(getQueryParam()).toBe(
+            'mname=name&mtype=type' +
+              '&attr_1=foo&not[attr_1]=bar' +
+              '&like[attr_2]=foo&not_like[attr_2]=bar',
+          );
+        });
+
+        it('handles repeated params', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              attributes: {
+                attr_1: [
+                  { operator: '=', value: 'v1' },
+                  { operator: '=', value: 'v2' },
+                ],
+              },
+            },
+          });
+          expect(getQueryParam()).toContain('attr_1=v1&attr_1=v2');
+        });
+
+        it('ignores empty filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { attributes: [] },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined dimension filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { attributes: undefined },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores non-array filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              attributes: {
+                attr_1: { operator: '=', value: 'foo' },
+              },
+            },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores unsupported operators', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              attributes: {
+                attr_1: [
+                  { operator: '*', value: 'foo' },
+                  { operator: '>', value: 'foo' },
+                  { operator: '<', value: 'foo' },
+                ],
+              },
+            },
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: undefined,
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores null filters', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: null,
+          });
+
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+      });
+
+      describe('date range filter', () => {
+        it('handle predefined date range value', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { dateRange: { value: '5m' } },
+          });
+          expect(getQueryParam()).toContain(`period=5m`);
+        });
+
+        it('handle custom date range value', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: {
+              dateRange: {
+                endDate: new Date('2020-07-06'),
+                startDate: new Date('2020-07-05'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+          );
+        });
+      });
+
+      it('ignores empty filter', async () => {
+        await client.fetchMetric('name', 'type', {
+          filters: { dateRange: {} },
+        });
+        expect(getQueryParam()).toBe('mname=name&mtype=type');
+      });
+
+      it('ignores undefined filter', async () => {
+        await client.fetchMetric('name', 'type', {
+          filters: { dateRange: undefined },
+        });
+        expect(getQueryParam()).toBe('mname=name&mtype=type');
+      });
+
+      describe('group by filter', () => {
+        it('handle group by func', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { func: 'sum' } },
+          });
+          expect(getQueryParam()).toContain(`groupby_fn=sum`);
+        });
+
+        it('handle group by attribute', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { attributes: ['attr_1'] } },
+          });
+          expect(getQueryParam()).toContain(`groupby_attrs=attr_1`);
+        });
+
+        it('handle group by multiple attributes', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { attributes: ['attr_1', 'attr_2'] } },
+          });
+          expect(getQueryParam()).toContain(`groupby_attrs=attr_1,attr_2`);
+        });
+        it('ignores empty filter', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: {} },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores empty list', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: { attributes: [] } },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+
+        it('ignores undefined filter', async () => {
+          await client.fetchMetric('name', 'type', {
+            filters: { groupBy: undefined },
+          });
+          expect(getQueryParam()).toBe('mname=name&mtype=type');
+        });
+      });
+    });
+
     it('rejects if results is missing from the response', async () => {
       axiosMock.onGet(metricsSearchUrl).reply(200, {});
       const e = 'metrics are missing/invalid in the response';
@@ -599,6 +985,85 @@ describe('buildClient', () => {
       const e = 'fetchMetric() - metric type is required.';
       await expect(client.fetchMetric('name')).rejects.toThrow(e);
       expectErrorToBeReported(new Error(e));
+    });
+  });
+
+  describe('fetchMetricSearchMetadata', () => {
+    it('fetches the metric metadata from the API', async () => {
+      const data = {
+        name: 'system.network.packets',
+        type: 'sum',
+        description: 'System network packets',
+        attribute_keys: ['device', 'direction'],
+        last_ingested_at: 1706338215873651200,
+        supported_aggregations: ['1m', '1h', '1d'],
+        supported_functions: ['avg', 'sum', 'min', 'max', 'count'],
+        default_group_by_attributes: ['*'],
+        default_group_by_function: 'sum',
+      };
+
+      axiosMock.onGet(metricsSearchMetadataUrl).reply(200, data);
+
+      const result = await client.fetchMetricSearchMetadata('name', 'type');
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchMetadataUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+      });
+      expect(result).toEqual(data);
+    });
+  });
+
+  describe('fetchLogs', () => {
+    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
+    it('fetches logs from the tracing URL', async () => {
+      const mockResponse = {
+        results: [
+          {
+            timestamp: '2024-01-28T10:36:08.2960655Z',
+            trace_id: 'trace-id',
+            span_id: 'span-id',
+            trace_flags: 1,
+            severity_text: 'Information',
+            severity_number: 1,
+            service_name: 'a/service/name',
+            body: 'GetCartAsync called with userId={userId} ',
+            resource_attributes: {
+              'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
+              'k8s.deployment.name': 'otel-demo-cartservice',
+              'k8s.namespace.name': 'otel-demo-app',
+            },
+            log_attributes: {
+              userId: '',
+            },
+          },
+        ],
+      };
+
+      axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+
+      const result = await client.fetchLogs();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
+        withCredentials: true,
+      });
+      expect(result).toEqual(mockResponse.results);
+    });
+
+    it('rejects if logs are missing', async () => {
+      axiosMock.onGet(logsSearchUrl).reply(200, {});
+
+      await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
+    });
+
+    it('rejects if logs are invalid', async () => {
+      axiosMock.onGet(logsSearchUrl).reply(200, { logs: 'invalid' });
+
+      await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
+      expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
     });
   });
 });

@@ -56,7 +56,7 @@ default:
 workflow:
   name: '$PIPELINE_NAME'
   rules:
-    - if: '$CI_PROJECT_PATH == "gitlab-org/gitaly" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $GITALY_TEST'
+    - if: '$CI_PIPELINE_SOURCE == "pipeline" && $GITALY_TEST'
       variables:
         <<: *default-ruby-variables
         PIPELINE_NAME: 'Gitaly Rails Test Pipeline'
@@ -181,9 +181,9 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
-  DEBIAN_VERSION: "bullseye"
+  DEBIAN_VERSION: "bookworm"
   UBI_VERSION: "8.6"
-  CHROME_VERSION: "119"
+  CHROME_VERSION: "120"
   DOCKER_VERSION: "24.0.5"
   RUBYGEMS_VERSION: "3.4"
   BUNDLER_VERSION: "2.5"
@@ -218,7 +218,6 @@ variables:
   BUNDLER_CHECKSUM_VERIFICATION_OPT_IN: "1"
   CACHE_CLASSES: "true"
   CHECK_PRECOMPILED_ASSETS: "true"
-  FF_USE_FASTZIP: "true"
   RETRY_FAILED_TESTS_IN_NEW_PROCESS: "true"
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
@@ -226,15 +225,10 @@ variables:
   DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review.app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
-  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ruby-3.0:gcloud-383-kubectl-1.23-helm-3.5"
+  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bookworm-ruby-3.0:gcloud-383-kubectl-1.26-helm-3.9"
   REVIEW_APPS_DOMAIN: "gitlab-review.app"
   REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
   REVIEW_APPS_GCP_REGION: "us-central1"
-
-  CACHE_ASSETS_AS_PACKAGE: "true"
-  REUSE_FRONTEND_FIXTURES_ENABLED: "true"
-  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
-  SIMPLECOV: "true"
 
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
@@ -249,6 +243,15 @@ variables:
   # Workaround for https://gitlab.com/gitlab-org/gitlab/-/issues/390313. This can be dropped whenever
   # https://github.com/ruby/ruby/pull/7663 lands in the Ruby interpreter.
   NOKOGIRI_LIBXML_MEMORY_MANAGEMENT: default
+
+  # CI jobs behavior can be changed by changing the value of these variables in the project's CI/CD variables
+  AVERAGE_KNAPSACK_REPORT: "true"
+  ENABLE_DEPSASTER: "true"
+  ENABLE_DEPSCORE: "true"
+  CACHE_ASSETS_AS_PACKAGE: "true"
+  REUSE_FRONTEND_FIXTURES_ENABLED: "true"
+  BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
+  SIMPLECOV: "true"
 
 include:
   - local: .gitlab/ci/_skip.yml

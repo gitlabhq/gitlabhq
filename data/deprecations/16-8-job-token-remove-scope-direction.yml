@@ -1,0 +1,36 @@
+# ----- DELETE EVERYTHING ABOVE THIS LINE -----
+
+- title: "The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "18.0"
+  announcement_milestone: "16.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: jocelynjane
+  stage: verify
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/383084
+  body: |  # (required) Don't change this line.
+    The `direction` GraphQL argument for the `ciJobTokenScopeRemoveProject` mutation is deprecated. Following the [default CI/CD job token scope change](https://docs.gitlab.com/ee/update/deprecations.html#default-cicd-job-token-ci_job_token-scope-changed) announced in GitLab 15.9, the `direction` argument will default to `INBOUND` and `OUTBOUND` will no longer be valid in GitLab 17.0. We will remove the `direction` argument in GitLab 18.0.
+
+    If you are using `OUTBOUND` with the `direction` argument to control the direction of your project's token access, your pipeline that use job tokens risk failing authentication. To ensure pipelines continue to run as expected, you will need to explicitly [add the other projects to your project's allowlist](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#add-a-project-to-the-job-token-allowlist).
+
+# ==============================
+# OPTIONAL END-OF-SUPPORT FIELDS
+# ==============================
+#
+# If an End of Support period applies:
+# 1) Share this announcement in the `#spt_managers` Support channel in Slack
+# 2) Mention `@gitlab-com/support` in this merge request.
+#
+  # When support for this feature ends, in XX.YY milestone format.
+  end_of_support_milestone:
+  # Array of tiers the feature is currently available to,
+  # like [Free, Silver, Gold, Core, Premium, Ultimate]
+  tiers: [Free, Premium, Ultimate]
+  # Links to documentation and thumbnail image
+  documentation_url: https://docs.gitlab.com/ee/api/graphql/reference/#mutationcijobtokenscoperemoveproject
+  image_url:
+  # Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg
+  video_url:

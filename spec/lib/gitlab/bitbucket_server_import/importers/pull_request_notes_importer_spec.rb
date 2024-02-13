@@ -17,7 +17,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   let_it_be(:pull_request_data) { Gitlab::Json.parse(fixture_file('importers/bitbucket_server/pull_request.json')) }
   let_it_be(:pull_request) { BitbucketServer::Representation::PullRequest.new(pull_request_data) }
   let_it_be(:note_author) { create(:user, username: 'note_author', email: 'note_author@example.org') }
-  let(:mentions_converter) { Gitlab::BitbucketServerImport::MentionsConverter.new(project) }
+  let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket_server', project) }
 
   let!(:pull_request_author) do
     create(:user, username: 'pull_request_author', email: 'pull_request_author@example.org')
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
   end
 
   before do
-    allow(Gitlab::BitbucketServerImport::MentionsConverter).to receive(:new).and_return(mentions_converter)
+    allow(Gitlab::Import::MentionsConverter).to receive(:new).and_return(mentions_converter)
   end
 
   subject(:importer) { described_class.new(project.reload, pull_request.to_hash) }
@@ -179,18 +179,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           end
         end
 
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
-
-            subject.execute
-          end
-        end
-
         it 'logs its progress' do
           expect_log(stage: 'import_standalone_pr_comments', message: 'starting')
           expect_log(stage: 'import_standalone_pr_comments', message: 'finished')
@@ -271,18 +259,6 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(reply_note.updated_at).to eq(reply.created_at)
           expect(reply_note.position.old_line).to be_nil
           expect(reply_note.position.new_line).to eq(pr_inline_note.new_pos)
-        end
-
-        context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_server_convert_mentions_to_users: false)
-          end
-
-          it 'does not convert mentions' do
-            expect(mentions_converter).not_to receive(:convert)
-
-            subject.execute
-          end
         end
 
         it 'logs its progress' do

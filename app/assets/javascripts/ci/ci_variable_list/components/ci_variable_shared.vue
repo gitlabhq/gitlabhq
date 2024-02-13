@@ -103,6 +103,7 @@ export default {
       isInitialLoading: true,
       isLoadingMoreItems: false,
       loadingCounter: 0,
+      mutationResponse: null,
       maxVariableLimit: 0,
       pageInfo: {},
       sortDirection: SORT_DIRECTIONS.ASC,
@@ -259,9 +260,26 @@ export default {
 
         if (data.ciVariableMutation?.errors?.length) {
           const { errors } = data.ciVariableMutation;
-          createAlert({ message: errors[0] });
+          const errorMessage = errors[0];
+
+          if (mutationAction === DELETE_MUTATION_ACTION) {
+            createAlert({ message: errorMessage });
+          } else {
+            this.mutationResponse = {
+              hasError: true,
+              message: errorMessage,
+            };
+          }
         } else {
-          this.$toast.show(mapMutationActionToToast[mutationAction](variable.key));
+          const successMessage = mapMutationActionToToast[mutationAction](variable.key);
+          if (mutationAction === DELETE_MUTATION_ACTION) {
+            this.$toast.show(successMessage);
+          } else {
+            this.mutationResponse = {
+              hasError: false,
+              message: successMessage,
+            };
+          }
 
           if (this.refetchAfterMutation) {
             // The writing to cache for admin variable is not working
@@ -271,7 +289,14 @@ export default {
           }
         }
       } catch (e) {
-        createAlert({ message: genericMutationErrorText });
+        if (mutationAction === DELETE_MUTATION_ACTION) {
+          createAlert({ message: genericMutationErrorText });
+        } else {
+          this.mutationResponse = {
+            hasError: true,
+            message: genericMutationErrorText,
+          };
+        }
       }
     },
   },
@@ -290,6 +315,7 @@ export default {
     :hide-environment-scope="hideEnvironmentScope"
     :is-loading="isLoading"
     :max-variable-limit="maxVariableLimit"
+    :mutation-response="mutationResponse"
     :page-info="pageInfo"
     :variables="ciVariables"
     @add-variable="addVariable"

@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit event streaming **(ULTIMATE ALL)**
+# Audit event streaming
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - UI [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336411) in GitLab 14.9.
 > - [Subgroup events recording](https://gitlab.com/gitlab-org/gitlab/-/issues/366878) fixed in GitLab 15.2.
@@ -130,7 +134,7 @@ To delete only the custom HTTP headers for a streaming destination:
 
 #### Verify event authenticity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360814) in GitLab 15.2.
 
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
@@ -152,7 +156,7 @@ To list streaming destinations and see the verification tokens:
 
 #### Update event filters
 
-> Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
+> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413581) in GitLab 16.1.
 
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -171,7 +175,7 @@ To update a streaming destination's event filters:
 
 #### Update namespace filters
 
-> Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
+> - Namespace filtering in the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390133) in GitLab 16.7.
 
 When this feature is enabled for a group, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -200,7 +204,7 @@ To override the `content-type` header default value for a top-level group stream
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124384) in GitLab 16.2.
 
 Manage Google Cloud Logging destinations for top-level groups.
 
@@ -245,7 +249,7 @@ To list Google Cloud Logging streaming destinations for a top-level group:
 
 #### Update a Google Cloud Logging destination
 
-> Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
+> - Button to add private key [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419675) in GitLab 16.3.
 
 Prerequisites:
 
@@ -354,7 +358,11 @@ To delete AWS S3 streaming destinations to a top-level group:
 1. Select **Delete destination**.
 1. Confirm by selecting **Delete destination** in the dialog.
 
-## Instance streaming destinations **(ULTIMATE SELF)**
+## Instance streaming destinations
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398107) in GitLab 16.1 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
@@ -482,7 +490,7 @@ To list streaming destinations for an instance and see the verification tokens:
 
 #### Update event filters
 
-> Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
+> - Event type filtering in the UI with a defined list of audit event types [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415013) in GitLab 16.3.
 
 When this feature is enabled, you can permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -511,7 +519,7 @@ To override the `content-type` header default value for an instance streaming de
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131851) in GitLab 16.5.
 
 Manage Google Cloud Logging destinations for an entire instance.
 
@@ -662,69 +670,3 @@ To delete AWS S3 streaming destinations on an instance:
 1. Select the AWS S3 stream to expand.
 1. Select **Delete destination**.
 1. Confirm by selecting **Delete destination** in the dialog.
-
-## Payload schema
-
-> Documentation for an audit event streaming schema was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358149) in GitLab 15.3.
-
-Streamed audit events have a predictable schema in the body of the response.
-
-| Field            | Description                                                | Notes                                                                             |
-|------------------|------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| `author_id`      | User ID of the user who triggered the event                |                                                                                   |
-| `author_name`    | Human-readable name of the author that triggered the event | Helpful when the author no longer exists                                          |
-| `created_at`     | Timestamp when event was triggered                         |                                                                                   |
-| `details`        | JSON object containing additional metadata                 | Has no defined schema but often contains additional information about an event    |
-| `entity_id`      | ID of the audit event's entity                             |                                                                                   |
-| `entity_path`    | Full path of the entity affected by the auditable event    |                                                                                   |
-| `entity_type`    | String representation of the type of entity                | Acceptable values include `User`, `Group`, and `Key`. This list is not exhaustive |
-| `event_type`     | String representation of the type of audit event           |                                                                                   |
-| `id`             | Unique identifier for the audit event                      | Can be used for deduplication if required                                         |
-| `ip_address`     | IP address of the host used to trigger the event           |                                                                                   |
-| `target_details` | Additional details about the target                        |                                                                                   |
-| `target_id`      | ID of the audit event's target                             |                                                                                   |
-| `target_type`    | String representation of the target's type                 |                                                                                   |
-
-### JSON payload schema
-
-```json
-{
-  "properties": {
-    "id": {
-      "type": "string"
-    },
-    "author_id": {
-      "type": "integer"
-    },
-    "author_name": {
-      "type": "string"
-    },
-    "details": {},
-    "ip_address": {
-      "type": "string"
-    },
-    "entity_id": {
-      "type": "integer"
-    },
-    "entity_path": {
-      "type": "string"
-    },
-    "entity_type": {
-      "type": "string"
-    },
-    "event_type": {
-      "type": "string"
-    },
-    "target_id": {
-      "type": "integer"
-    },
-    "target_type": {
-      "type": "string"
-    },
-    "target_details": {
-      "type": "string"
-    },
-  },
-  "type": "object"
-}
-```

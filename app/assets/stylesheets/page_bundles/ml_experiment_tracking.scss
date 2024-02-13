@@ -7,7 +7,7 @@ table.ml-candidate-table {
     min-width: 100px;
 
     > * {
-      @include gl-display-block;
+      display: block;
       @include gl-text-truncate;
     }
   }

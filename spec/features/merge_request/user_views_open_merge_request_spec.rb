@@ -114,25 +114,6 @@ RSpec.describe 'User views an open merge request', feature_category: :code_revie
     end
   end
 
-  context 'XSS source branch' do
-    let(:project) { create(:project, :public, :repository) }
-    let(:source_branch) { "&#39;&gt;&lt;iframe/srcdoc=&#39;&#39;&gt;&lt;/iframe&gt;" }
-
-    before do
-      stub_feature_flags(moved_mr_sidebar: false)
-
-      project.repository.create_branch(source_branch, "master")
-
-      mr = create(:merge_request, source_project: project, target_project: project, source_branch: source_branch)
-
-      visit(merge_request_path(mr))
-    end
-
-    it 'encodes branch name' do
-      expect(find("[data-testid='ref-name']")[:title]).to eq(source_branch)
-    end
-  end
-
   context 'when user preferred language has changed', :use_clean_rails_memory_store_fragment_caching do
     let(:project) { create(:project, :public, :repository) }
     let(:user) { create(:user) }

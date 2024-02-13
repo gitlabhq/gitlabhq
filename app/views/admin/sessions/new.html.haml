@@ -4,17 +4,15 @@
 .row.gl-mt-5.justify-content-center
   .col-md-5
     .login-page
-      .borderless
-        - if any_form_based_providers_enabled?
-          = render 'devise/shared/tabs_ldap', show_password_form: allow_admin_mode_password_authentication_for_web?, render_signup_link: false
-        .tab-content
-          - if allow_admin_mode_password_authentication_for_web? || ldap_sign_in_enabled? || crowd_enabled?
-            = render 'admin/sessions/signin_box'
+      - if any_form_based_providers_enabled?
+        = render 'devise/shared/tabs_ldap', admin_mode: true
+      - elsif allow_admin_mode_password_authentication_for_web?
+        = render 'devise/sessions/new_base', admin_mode: true
 
-        -# Show a message if none of the mechanisms above are enabled
-        - if !allow_admin_mode_password_authentication_for_web? && !ldap_sign_in_enabled? && !omniauth_enabled?
-          .gl-mt-3.center
-            = _('No authentication methods configured.')
+      -# Show a message if none of the mechanisms above are enabled
+      - if !allow_admin_mode_password_authentication_for_web? && !ldap_sign_in_enabled? && !omniauth_enabled?
+        .gl-mt-3.center
+          = _('No authentication methods configured.')
 
-        - if omniauth_enabled? && button_based_providers_enabled?
-          = render 'devise/shared/omniauth_box', render_remember_me: false
+      - if omniauth_enabled? && button_based_providers_enabled?
+        = render 'devise/shared/omniauth_box', render_remember_me: false

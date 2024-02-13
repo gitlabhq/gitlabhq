@@ -4,9 +4,13 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Insights **(ULTIMATE ALL)**
+# Insights
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 12.0.
 
 Configure insights for your projects and groups to explore data such as:
 
@@ -16,7 +20,7 @@ Configure insights for your projects and groups to explore data such as:
 
 You can also create custom Insights reports that are relevant for your group.
 
-## View project insights
+## View insights
 
 Prerequisites:
 
@@ -66,9 +70,10 @@ To exclude a dimension, from the legend below the chart, select the name of the 
 
 ### Drill down on charts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372215/) in GitLab 16.7.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436704) to extend support to all `issuables` charts in GitLab 16.9.
 
-You can drill down into the data of the **Bugs created per month by priority** and **Bugs created per month by severity** charts from the [default configuration file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/fixtures/insights/default.yml).
+You can drill down into the data of all charts whose `query.data_source` is `issuables`.
 
 To view a drill-down report of the data for a specific priority or severity in a month:
 
@@ -249,7 +254,7 @@ monthlyBugsCreated:
 
 #### `query.data_source`
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/725) in GitLab 15.3.
 
 Use `data_source` to define the data source that exposes the data.
 
@@ -310,9 +315,6 @@ monthlyBugsCreated:
 
 Use `query.params.collection_labels` to group issuables by the configured labels.
 Grouping is not applied by default.
-
-When using this parameter, you must
-set `type` to `line` or `stacked-bar`.
 
 **Example:**
 
@@ -382,7 +384,7 @@ you may see `created_at` in place of `merged_at`. `created_at` is used instead.
 
 #### `DORA` query parameters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367248) in GitLab 15.3.
 
 Use DORA-specific queries with the `dora` data source to create a DORA chart definition.
 

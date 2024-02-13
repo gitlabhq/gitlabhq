@@ -22,7 +22,7 @@ RSpec.describe PurgeDependencyProxyCacheWorker, feature_category: :dependency_pr
 
     context 'an admin user' do
       context 'when admin mode is enabled', :enable_admin_mode do
-        include_examples 'an idempotent worker' do
+        it_behaves_like 'an idempotent worker' do
           let(:job_args) { [user.id, group_id] }
 
           it 'marks the blobs as pending_destruction and returns ok', :aggregate_failures do

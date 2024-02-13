@@ -53,14 +53,6 @@ RSpec.describe CustomEmoji do
     let_it_be(:group) { create(:group) }
     let_it_be(:custom_emoji) { create(:custom_emoji, namespace: group) }
 
-    context 'when custom_emoji feature flag is disabled' do
-      before do
-        stub_feature_flags(custom_emoji: false)
-      end
-
-      it { expect(described_class.for_resource(group)).to eq([]) }
-    end
-
     context 'when group is nil' do
       let_it_be(:group) { nil }
 

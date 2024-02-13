@@ -11,7 +11,11 @@ RSpec.describe 'GroupUpdate', feature_category: :groups_and_projects do
   let(:variables) do
     {
       full_path: group.full_path,
-      shared_runners_setting: 'DISABLED_AND_OVERRIDABLE'
+      shared_runners_setting: 'DISABLED_AND_OVERRIDABLE',
+
+      # set to `false` since the default of this cascaded setting is `true`
+      math_rendering_limits_enabled: false,
+      lock_math_rendering_limits_enabled: true
     }
   end
 
@@ -32,7 +36,7 @@ RSpec.describe 'GroupUpdate', feature_category: :groups_and_projects do
 
     context 'when a non-admin group member' do
       before do
-        group.add_developer(user)
+        group.add_maintainer(user)
       end
 
       it_behaves_like 'unauthorized'
@@ -42,6 +46,15 @@ RSpec.describe 'GroupUpdate', feature_category: :groups_and_projects do
   context 'when authorized' do
     before do
       group.add_owner(user)
+    end
+
+    it 'updates math rendering settings' do
+      post_graphql_mutation(mutation, current_user: user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(graphql_errors).to be_nil
+      expect(group.reload.math_rendering_limits_enabled?).to be_falsey
+      expect(group.reload.lock_math_rendering_limits_enabled?).to be_truthy
     end
 
     it 'updates shared runners settings' do

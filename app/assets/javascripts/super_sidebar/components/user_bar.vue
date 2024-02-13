@@ -1,11 +1,13 @@
 <script>
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
   destroyUserCountsManager,
   createUserCountsManager,
   userCounts,
 } from '~/super_sidebar/user_counts_manager';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import { JS_TOGGLE_COLLAPSE_CLASS } from '../constants';
 import CreateMenu from './create_menu.vue';
@@ -35,6 +37,8 @@ export default {
     SuperSidebarToggle,
     BrandLogo,
     GlIcon,
+    OrganizationSwitcher: () =>
+      import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
   },
   i18n: {
     issues: __('Issues'),
@@ -52,6 +56,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['isImpersonating'],
   props: {
     hasCollapseButton: {
@@ -69,6 +74,7 @@ export default {
       mrMenuShown: false,
       searchTooltip: this.$options.i18n.searchKbdHelp,
       userCounts,
+      isLoggedIn: isLoggedIn(),
     };
   },
   computed: {
@@ -149,6 +155,7 @@ export default {
         data-testid="stop-impersonation-btn"
       />
     </div>
+    <organization-switcher v-if="glFeatures.uiForOrganizations && isLoggedIn" />
     <div
       v-if="sidebarData.is_logged_in"
       class="gl-display-flex gl-justify-content-space-between gl-gap-2"

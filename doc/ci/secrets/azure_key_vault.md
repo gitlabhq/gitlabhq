@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Azure Key Vault secrets in GitLab CI/CD **(PREMIUM ALL)**
+# Use Azure Key Vault secrets in GitLab CI/CD
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271271) in GitLab and GitLab Runner 16.3. Due to [issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) this feature did not work as expected.
 > - [Issue 424746](https://gitlab.com/gitlab-org/gitlab/-/issues/424746) resolved and this feature made generally available in GitLab Runner 16.6.
@@ -15,7 +19,7 @@ in your GitLab CI/CD pipelines.
 Prerequisites:
 
 - Have a [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-portal) on Azure.
-  - Your IAM user must be granted [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
+  - Your IAM user must be [granted the **Key Vault Administrator** role assignment](https://learn.microsoft.com/en-us/azure/role-based-access-control/quickstart-assign-role-user-portal#grant-access)
     for the **resource group** assigned to the Key Vault. Otherwise, you can't create secrets inside the Key Vault.
 - [Configure OpenID Connect in Azure to retrieve temporary credentials](../../ci/cloud_services/azure/index.md). These
   steps include instructions on how to create an Azure AD application for Key Vault access.

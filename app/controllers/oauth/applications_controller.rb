@@ -56,7 +56,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   def verify_user_oauth_applications_enabled
     return if Gitlab::CurrentSettings.user_oauth_applications?
 
-    redirect_to profile_path
+    redirect_to user_settings_profile_path
   end
 
   def set_index_vars

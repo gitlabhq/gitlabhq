@@ -22,8 +22,7 @@ module Types
           type: Types::CustomEmojiType.connection_type,
           null: true,
           resolver: Resolvers::CustomEmojiResolver,
-          description: 'Custom emoji in this namespace.',
-          alpha: { milestone: '13.6' }
+          description: 'Custom emoji in this namespace.'
 
     field :share_with_group_lock,
           type: GraphQL::Types::Boolean,
@@ -61,6 +60,15 @@ module Types
           type: GraphQL::Types::Boolean,
           null: true,
           description: 'Indicates if a group has email notifications disabled.'
+
+    field :emails_enabled,
+          type: GraphQL::Types::Boolean,
+          null: true,
+          description: 'Indicates if a group has email notifications enabled.'
+
+    field :max_access_level, Types::AccessLevelType,
+          null: false,
+          description: 'The maximum access level of the current user in the group.'
 
     field :mentions_disabled,
           type: GraphQL::Types::Boolean,
@@ -303,6 +311,18 @@ module Types
           resolver: Resolvers::AutocompleteUsersResolver,
           description: 'Search users for autocompletion'
 
+    field :lock_math_rendering_limits_enabled,
+          GraphQL::Types::Boolean,
+          null: true,
+          method: :lock_math_rendering_limits_enabled?,
+          description: 'Indicates if math rendering limits are locked for all descendant groups.'
+
+    field :math_rendering_limits_enabled,
+          GraphQL::Types::Boolean,
+          null: true,
+          method: :math_rendering_limits_enabled?,
+          description: 'Indicates if math rendering limits are used for this group.'
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder
@@ -361,6 +381,10 @@ module Types
       end
     end
 
+    def emails_disabled
+      !group.emails_enabled?
+    end
+
     def projects_count
       BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
         projects_counts = Group.id_in(group_ids).projects_counts
@@ -372,6 +396,16 @@ module Types
       BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
         members_counts = Group.id_in(group_ids).group_members_counts
         members_counts.each { |group_id, count| loader.call(group_id, count) }
+      end
+    end
+
+    def max_access_level
+      return Gitlab::Access::NO_ACCESS if current_user.nil?
+
+      BatchLoader::GraphQL.for(object.id).batch do |group_ids, loader|
+        current_user.max_member_access_for_group_ids(group_ids).each do |group_id, max_access_level|
+          loader.call(group_id, max_access_level)
+        end
       end
     end
 

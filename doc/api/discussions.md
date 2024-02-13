@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Discussions API **(FREE ALL)**
+# Discussions API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Discussions are a set of related notes on:
 
@@ -190,7 +194,7 @@ Parameters:
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `issue_iid`     | integer        | yes      | The IID of an issue. |
 | `note_id`       | integer        | yes      | The ID of a thread note. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights.
+| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -356,7 +360,7 @@ Parameters:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion item.
+| `discussion_id` | integer        | yes      | The ID of a discussion item. |
 | `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `snippet_id`    | integer        | yes      | The ID of an snippet. |
 
@@ -457,7 +461,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
   "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/636"
 ```
 
-## Epics **(ULTIMATE ALL)**
+## Epics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 ### List group epic discussion items
 
@@ -979,7 +987,7 @@ Parameters for multiline comments only:
 
 A line code is of the form `<SHA>_<old>_<new>`, like this: `adc83b19e793491b1c6ea0fd8b46cd9f32e292fc_5_5`
 
-- `<SHA>` is the SHA1 hash of the file name.
+- `<SHA>` is the SHA1 hash of the filename.
 - `<old>` is the line number before the change.
 - `<new>` is the line number after the change.
 

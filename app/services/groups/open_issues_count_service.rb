@@ -29,13 +29,15 @@ module Groups
     end
 
     def relation_for_count
+      confidential_filter = public_only? ? false : nil
+
       IssuesFinder.new(
         user,
         group_id: group.id,
         state: 'opened',
         non_archived: true,
         include_subgroups: true,
-        public_only: public_only?
+        confidential: confidential_filter
       ).execute
     end
 

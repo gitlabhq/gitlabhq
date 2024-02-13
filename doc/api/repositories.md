@@ -4,11 +4,15 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Repositories API **(FREE ALL)**
+# Repositories API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## List repository tree
 
-> Iterating pages of results with a number (`?page=2`) [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509) in GitLab 14.3.
+> - Iterating pages of results with a number (`?page=2`) [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67509) in GitLab 14.3.
 
 Get a list of repository files and directories in a project. This endpoint can
 be accessed without authentication if the repository is publicly accessible.
@@ -362,6 +366,9 @@ If the `version` attribute is `2.1.0`, GitLab uses tag `v2.0.0`. And when the
 version is `1.1.1`, or `1.2.0`, GitLab uses tag v1.1.0. The tag `v1.0.0-pre1` is
 never used, because pre-release tags are ignored.
 
+The `version` attribute can start with `v`. For example: `v1.0.0`.
+The response is the same as for `version` value `1.0.0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/437616) in GitLab 16.9.
+
 If `from` is unspecified and no tag to use is found, the API produces an error.
 To solve such an error, you must explicitly specify a value for the `from`
 attribute.
@@ -415,7 +422,7 @@ curl --request POST --header "PRIVATE-TOKEN: token" \
 
 ## Generate changelog data
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345934) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345934) in GitLab 14.6.
 
 Generate changelog data based on commits in a repository, without committing
 them to a changelog file.

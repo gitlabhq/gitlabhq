@@ -228,6 +228,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:bulk_imports_stale_import
+  :worker_name: BulkImports::StaleImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:bulk_imports_stuck_import
   :worker_name: BulkImports::StuckImportWorker
   :feature_category: :importers
@@ -345,8 +354,26 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:click_house_audit_events_sync
+  :worker_name: ClickHouse::AuditEventsSyncWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:click_house_event_authors_consistency_cron
   :worker_name: ClickHouse::EventAuthorsConsistencyCronWorker
+  :feature_category: :value_stream_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:click_house_event_paths_consistency_cron
+  :worker_name: ClickHouse::EventPathsConsistencyCronWorker
   :feature_category: :value_stream_management
   :has_external_dependencies: true
   :urgency: :low
@@ -358,6 +385,24 @@
   :worker_name: ClickHouse::EventsSyncWorker
   :feature_category: :value_stream_management
   :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:click_house_rebuild_materialized_view_cron
+  :worker_name: ClickHouse::RebuildMaterializedViewCronWorker
+  :feature_category: :value_stream_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:concurrency_limit_resume
+  :worker_name: ConcurrencyLimit::ResumeWorker
+  :feature_category: :global_search
+  :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -618,6 +663,15 @@
 - :name: cronjob:metrics_global_metrics_update
   :worker_name: Metrics::GlobalMetricsUpdateWorker
   :feature_category: :metrics
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:namespaces_process_outdated_namespace_descendants_cron
+  :worker_name: Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2811,6 +2865,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: click_house_audit_event_partition_sync
+  :worker_name: ClickHouse::AuditEventPartitionSyncWorker
+  :feature_category: :compliance_management
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: counters_cleanup_refresh
   :worker_name: Counters::CleanupRefreshWorker
   :feature_category: :not_owned
@@ -3142,6 +3205,15 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: import_refresh_import_jid
+  :worker_name: Gitlab::Import::RefreshImportJidWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: true
   :tags: []
 - :name: incident_management_close_incident

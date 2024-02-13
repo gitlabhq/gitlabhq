@@ -1,11 +1,12 @@
 <script>
 import { GlButton, GlAlert } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { s__ } from '~/locale';
-import Autosave from '~/autosave';
+import { s__, __ } from '~/locale';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { getIdFromGraphQLId, isGid } from '~/graphql_shared/utils';
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
+import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import {
   ADD_DISCUSSION_COMMENT_ERROR,
@@ -27,7 +28,7 @@ export default {
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   components: {
-    MarkdownField,
+    MarkdownEditor,
     GlButton,
     GlAlert,
   },
@@ -78,6 +79,14 @@ export default {
       noteUpdateDirty: false,
       isLoggedIn: isLoggedIn(),
       errorMessage: '',
+      formFieldProps: {
+        id: 'design-reply',
+        name: 'design-reply',
+        'aria-label': __('Description'),
+        placeholder: __('Write a comment…'),
+        'data-testid': 'note-textarea',
+        class: 'note-textarea js-gfm-input js-autosize markdown-area',
+      },
     };
   },
   computed: {
@@ -92,9 +101,16 @@ export default {
     shortDiscussionId() {
       return isGid(this.discussionId) ? getIdFromGraphQLId(this.discussionId) : this.discussionId;
     },
-  },
-  mounted() {
-    this.focusInput();
+    autosaveKey() {
+      if (this.isLoggedIn) {
+        return [
+          s__('DesignManagement|Discussion'),
+          getIdFromGraphQLId(this.noteableId),
+          this.shortDiscussionId,
+        ].join('/');
+      }
+      return '';
+    },
   },
   beforeDestroy() {
     /**
@@ -104,9 +120,7 @@ export default {
      * so we're safe to clear autosave data here conditionally.
      */
     this.$nextTick(() => {
-      if (!this.noteUpdateDirty) {
-        this.autosaveDiscussion?.reset();
-      }
+      markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
     });
   },
   methods: {
@@ -181,20 +195,7 @@ export default {
       }
 
       this.$emit('cancel-form');
-      this.autosaveDiscussion.reset();
-    },
-    focusInput() {
-      this.$refs.textarea.focus();
-      this.initAutosaveComment();
-    },
-    initAutosaveComment() {
-      if (this.isLoggedIn) {
-        this.autosaveDiscussion = new Autosave(this.$refs.textarea, [
-          s__('DesignManagement|Discussion'),
-          getIdFromGraphQLId(this.noteableId),
-          this.shortDiscussionId,
-        ]);
-      }
+      markdownEditorEventHub.$emit(CLEAR_AUTOSAVE_ENTRY_EVENT, this.autosaveKey);
     },
   },
 };
@@ -207,31 +208,19 @@ export default {
         {{ errorMessage }}
       </gl-alert>
     </div>
-    <markdown-field
-      :markdown-preview-path="markdownPreviewPath"
-      :enable-autocomplete="true"
-      :textarea-value="noteText"
+    <markdown-editor
+      v-model="noteText"
+      autofocus
       :markdown-docs-path="$options.markdownDocsPath"
-      class="bordered-box"
-    >
-      <template #textarea>
-        <textarea
-          ref="textarea"
-          v-model.trim="noteText"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
-          dir="auto"
-          data-supports-quick-actions="false"
-          data-testid="note-textarea"
-          :aria-label="__('Description')"
-          :placeholder="__('Write a comment…')"
-          @input="handleInput"
-          @keydown.meta.enter="submitForm"
-          @keydown.ctrl.enter="submitForm"
-          @keyup.esc.stop="cancelComment"
-        >
-        </textarea>
-      </template>
-    </markdown-field>
+      :render-markdown-path="markdownPreviewPath"
+      :enable-autocomplete="true"
+      :supports-quick-actions="false"
+      :form-field-props="formFieldProps"
+      @input="handleInput"
+      @keydown.meta.enter="submitForm"
+      @keydown.ctrl.enter="submitForm"
+      @keydown.esc.stop="cancelComment"
+    />
     <slot name="resolve-checkbox"></slot>
     <div class="note-form-actions gl-display-flex gl-mt-4!">
       <gl-button

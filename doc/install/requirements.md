@@ -5,7 +5,11 @@ description: Prerequisites for installation.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Installation system requirements **(FREE SELF)**
+# Installation system requirements
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page includes information about the minimum requirements you need to install and use GitLab.
 
@@ -79,13 +83,22 @@ available, though the exact requirements [depend on the number of users](../admi
 We highly recommend using at least the minimum PostgreSQL versions (as specified in
 the following table) as these were used for development and testing:
 
-| GitLab version | Minimum PostgreSQL version |
-|----------------|----------------------------|
-| 13.0           | 11                         |
-| 14.0           | 12.7                       |
-| 15.0           | 12.10                      |
-| 16.0           | 13.6                       |
-| 17.0 (planned) | 14.8                       |
+| GitLab version | Minimum PostgreSQL version<sup>1</sup> | Maximum PostgreSQL version<sup>2</sup> |
+|----------------|----------------------------------------|----------------------------------------|
+| 13.0           | 11                                     | <sup>2</sup>                                       |
+| 14.0           | 12.7                                   | <sup>2</sup>                                       |
+| 15.0           | 12.10                                  | 13.x (14.x<sup>3</sup>)                |
+| 16.0           | 13.6                                   | 15.x<sup>4</sup>                       |
+| 17.0 (planned) | 14.9                                   | 15.x<sup>4</sup>                       |
+
+1. PostgreSQL minor release upgrades (for example 14.8 to 14.9) [include only bug and security fixes](https://www.postgresql.org/support/versioning/).
+   Patch levels in this table are not prescriptive. Always deploy the most recent patch level
+   to avoid [known bugs in PostgreSQL that might be triggered by GitLab](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
+1. If you want to run a later major release of PostgreSQL than the specified minimum
+   [check if a more recent version shipped with Linux package (Omnibus) GitLab](http://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html).
+   `postgresql-new` is a later version that's definitely supported.
+1. PostgreSQL 14.x [tested against GitLab 15.11 only](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114624).
+1. [Tested against GitLab 16.1 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119344).
 
 You must also ensure the following extensions are loaded into every
 GitLab database. [Read more about this requirement, and troubleshooting](postgresql_extensions.md).
@@ -107,10 +120,12 @@ Support for [PostgreSQL 9.6 and 10 was removed in GitLab 13.0](https://about.git
 
 #### Additional requirements for GitLab Geo
 
-If you're using [GitLab Geo](../administration/geo/index.md), we strongly
-recommend running instances installed by using the Linux package, as we actively develop and
-test based on those. We try to be compatible with most external (not managed by a Linux package installation) databases
-(for example, [AWS Relational Database Service (RDS)](https://aws.amazon.com/rds/)), but we can't guarantee compatibility.
+If you're using [GitLab Geo](../administration/geo/index.md), we strongly recommend running instances installed by using the Linux package or using
+[validated cloud-managed instances](../administration/reference_architectures/index.md#recommended-cloud-providers-and-services),
+as we actively develop and test based on those.
+We cannot guarantee compatibility with other external databases.
+
+It is recommended to review the [full requirements for running Geo](../administration/geo/index.md#requirements-for-running-geo).
 
 #### Operating system locale compatibility and silent index corruption
 
@@ -135,7 +150,7 @@ exclusive use of GitLab. Do not make direct changes to the database, schemas, us
 properties except when following procedures in the GitLab documentation or following the directions
 of GitLab Support or other GitLab engineers.
 
-- The main GitLab application currently uses three schemas:
+- The main GitLab application uses three schemas:
 
   - The default `public` schema
   - `gitlab_partitions_static` (automatically created)
@@ -184,7 +199,7 @@ Take for example the following scenarios:
   [
   the lowest number from
     - number of cores: 2
-    - memory limit: (8 - 1.5) = 6
+    - memory limit: (8 - 1.5) = 6.5
   ]
   ```
 
@@ -247,13 +262,15 @@ Redis stores all user sessions and the background task queue.
 
 The requirements for Redis are as follows:
 
-- Redis 6.x or 7.x is required in GitLab 16.0 and later.
-- Redis Cluster mode is not supported. Redis Standalone must be used.
+- Redis 6.x or 7.x is required in GitLab 16.0 and later. However, you should upgrade to
+Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
+- Redis Cluster mode is not supported. Redis Standalone must be used, with or without HA.
 - Storage requirements for Redis are minimal, about 25 kB per user on average.
+- [Redis eviction mode](../administration/redis/replication_and_failover_external.md#setting-the-eviction-policy) set appropriately.
 
 ## Sidekiq
 
-Sidekiq processes the background jobs with a multithreaded process.
+Sidekiq processes the background jobs with a multi-threaded process.
 This process starts with the entire Rails stack (200 MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 billable users) the Sidekiq process can use 1 GB+ of memory.
 

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 50,000 users **(PREMIUM SELF)**
+# Reference architecture: up to 50,000 users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes the GitLab reference architecture designed for the load of up to 50,000 users
 with notable headroom.
@@ -22,22 +26,22 @@ specifically the [Before you start](index.md#before-you-start) and [Deciding whi
 > - **Cloud Native Hybrid Alternative:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-use)
 
-| Service                                  | Nodes | Configuration           | GCP              | AWS           |
-|------------------------------------------|-------|-------------------------|------------------|---------------|
-| External load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  |
-| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    |
-| PostgreSQL<sup>1</sup>                   | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`  |
-| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    |
-| Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  |
-| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
-| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
-| Gitaly<sup>5</sup>                       | 3     | 64 vCPU, 240 GB memory<sup>6</sup> | `n1-standard-64` | `m5.16xlarge` |
-| Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   |
-| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    |
-| Sidekiq<sup>7</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   |
-| GitLab Rails<sup>7</sup>                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  |
-| Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   |
-| Object storage<sup>4</sup>               | -     | -                       | -                | -             |
+| Service                                  | Nodes | Configuration           | GCP              | AWS           | Azure     |
+|------------------------------------------|-------|-------------------------|------------------|---------------|-----------|
+| External load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  | `F8s v2`  |
+| Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| PostgreSQL<sup>1</sup>                   | 3     | 32 vCPU, 120 GB memory  | `n1-standard-32` | `m5.8xlarge`  | `D32s v3` |
+| PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| Internal load balancing node<sup>3</sup> | 1     | 8 vCPU, 7.2 GB memory   | `n1-highcpu-8`   | `c5.2xlarge`  | `F8s v2`  |
+| Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| Gitaly<sup>5</sup>                       | 3     | 64 vCPU, 240 GB memory<sup>6</sup> | `n1-standard-64` | `m5.16xlarge` | `D64s v3` |
+| Praefect<sup>5</sup>                     | 3     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
+| Praefect PostgreSQL<sup>1</sup>          | 1+    | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`   | `c5.large`    | `F2s v2`  |
+| Sidekiq<sup>7</sup>                      | 4     | 4 vCPU, 15 GB memory    | `n1-standard-4`  | `m5.xlarge`   | `D4s v3`  |
+| GitLab Rails<sup>7</sup>                 | 12    | 32 vCPU, 28.8 GB memory | `n1-highcpu-32`  | `c5.9xlarge`  | `F32s v2` |
+| Monitoring node                          | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`   | `F4s v2`  |
+| Object storage<sup>4</sup>               | -     | -                       | -                | -             | -         |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -650,9 +654,6 @@ in the second step, do not supply the `EXTERNAL_URL` value.
    patroni['username'] = '<patroni_api_username>'
    patroni['password'] = '<patroni_api_password>'
 
-   # Replace 10.6.0.0/24 with Network Addresses for your other patroni nodes
-   patroni['allowlist'] = %w(10.6.0.0/24 127.0.0.1/32)
-
    # Replace 10.6.0.0/24 with Network Address
    postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/24 127.0.0.1/32)
 
@@ -873,7 +874,7 @@ You can optionally use a [third party external service for the Redis Cache and P
 
 - A reputable provider or solution should be used for this. [Google Memorystore](https://cloud.google.com/memorystore/docs/redis/redis-overview) and [AWS ElastiCache](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html) are known to work.
 - Redis Cluster mode is specifically not supported, but Redis Standalone with HA is.
-- The Redis Cache instance should be configured accordingly to be an [Least Recently Used cache](../redis/replication_and_failover_external.md#setting-the-redis-cache-instance-as-an-lru) (LRU).
+- You must set the [Redis eviction mode](../redis/replication_and_failover_external.md#setting-the-eviction-policy) according to your setup.
 
 For more information, see [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services).
 
@@ -1407,11 +1408,11 @@ To configure the Praefect nodes, on each one:
    NOTE:
    You can't remove the `default` entry from `virtual_storages` because [GitLab requires it](../gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage).
 
-<!--
-Updates to example must be made at:
-- https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
-- all reference architecture pages
--->
+   <!--
+   Updates to example must be made at:
+   - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
+   - all reference architecture pages
+   -->
 
    ```ruby
    # Avoid running unnecessary services on the Praefect server
@@ -1571,12 +1572,12 @@ On each node:
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
-<!--
-Updates to example must be made at:
-- https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
-- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
-- all reference architecture pages
--->
+   <!--
+   Updates to example must be made at:
+   - https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/gitaly/index.md#gitaly-server-configuration
+   - all reference architecture pages
+   -->
 
    ```ruby
    # Avoid running unnecessary services on the Gitaly server
@@ -1802,11 +1803,11 @@ To configure the Sidekiq nodes, on each one:
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
-<!--
-Updates to example must be made at:
-- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
-- all reference architecture pages
--->
+   <!--
+   Updates to example must be made at:
+   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
+   - all reference architecture pages
+   -->
 
    ```ruby
    # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
@@ -1863,9 +1864,6 @@ Updates to example must be made at:
 
    ## Set number of Sidekiq queue processes to the same number as available CPUs
    sidekiq['queue_groups'] = ['*'] * 4
-
-   ## Set number of Sidekiq threads per queue process to the recommend number of 20
-   sidekiq['max_concurrency'] = 20
 
    # Monitoring
    consul['enable'] = true

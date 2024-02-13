@@ -4,9 +4,13 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Sidekiq queues administration API **(FREE SELF)**
+# Sidekiq queues administration API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25998) in GitLab 12.9
 
 Delete jobs from a Sidekiq queue that match the given
 [metadata](../development/logging.md#logging-context-metadata-through-rails-or-grape-requests).

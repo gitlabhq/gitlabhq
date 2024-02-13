@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using GitLab CI/CD with a Kubernetes cluster **(FREE ALL)**
+# Using GitLab CI/CD with a Kubernetes cluster
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327409) in GitLab 14.1.
 > - The pre-configured variable `$KUBECONFIG` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/324275) in GitLab 14.2.
@@ -66,7 +70,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
 
 1. On the left sidebar, select **Search or go to** and find the project that contains the [agent configuration file](install/index.md#create-an-agent-configuration-file) (`config.yaml`).
 1. Edit the `config.yaml` file. Under the `ci_access` keyword, add the `projects` attribute.
-1. For the `id`, add the path to the project. Do not wrap the path in quotation marks.
+1. For the `id`, add the path to the project.
 
    ```yaml
    ci_access:
@@ -196,7 +200,11 @@ To configure your client, do one of the following:
 - Place the certificates in an appropriate location in the job container by updating the container image or mounting via the runner.
 - Not recommended. Configure the Kubernetes client with `--insecure-skip-tls-verify=true`.
 
-## Restrict project and group access by using impersonation **(PREMIUM ALL)**
+## Restrict project and group access by using impersonation
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345014) in GitLab 14.5.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/357934) in GitLab 15.5 to add impersonation support for environment tiers.
@@ -300,9 +308,13 @@ The identity can be specified with the following keys:
 
 See the [official Kubernetes documentation for details](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
 
-## Restrict project and group access to specific environments **(FREE ALL)**
+## Restrict project and group access to specific environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343885) in GitLab 15.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343885) in GitLab 15.7.
 
 By default, if your agent is [available to a project](#authorize-the-agent), all of the project's CI/CD jobs can use that agent.
 

@@ -1,10 +1,14 @@
 ---
 stage: Deploy
 group: Environments
-info: A tutorial for deploying a GitLab repository using Flux
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Deploy a Git repository using Flux **(FREE ALL)**
+# Tutorial: Deploy a Git repository using Flux
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In this tutorial, you'll create a GitLab project that builds and deploys an application
 to a Kubernetes cluster using Flux. You'll set up a sample manifest project, configure it to

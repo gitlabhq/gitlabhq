@@ -4,7 +4,12 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Debian packages in the package registry **(FREE SELF EXPERIMENT)**
+# Debian packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Experiment
 
 > - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
 > - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
@@ -175,7 +180,7 @@ dput --config=dput.cf --unchecked --no-upload-log gitlab <your_package>.changes
 
 ## Upload a package with explicit distribution and component
 
-> Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
+> - Upload with explicit distribution and component [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101838) in GitLab 15.9.
 
 When you don't have access to `.changes` file, you can directly upload a `.deb` by passing
 distribution `codename` and target `component` as parameters with

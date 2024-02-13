@@ -3,13 +3,17 @@
 module Organizations
   class CreateService < ::Organizations::BaseService
     def execute
-      return error_no_permissions unless current_user&.can?(:create_organization)
+      return error_no_permissions unless can?(current_user, :create_organization)
 
-      organization = Organization.create(params)
+      add_organization_owner_attributes
+      organization = Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification
+                       .allow_cross_database_modification_within_transaction(
+                         url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438757'
+                       ) do
+        Organization.create(params)
+      end
 
       if organization.persisted?
-        add_organization_owner(organization)
-
         ServiceResponse.success(payload: { organization: organization })
       else
         error_creating(organization)
@@ -18,8 +22,8 @@ module Organizations
 
     private
 
-    def add_organization_owner(organization)
-      organization.organization_users.create(user: current_user, access_level: :owner)
+    def add_organization_owner_attributes
+      @params[:organization_users_attributes] = [{ user: current_user, access_level: :owner }]
     end
 
     def error_no_permissions

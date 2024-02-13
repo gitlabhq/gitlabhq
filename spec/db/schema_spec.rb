@@ -16,7 +16,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
-    users: [%w[accepted_term_id]]
+    users: [%w[accepted_term_id]],
+    ci_builds: [%w[partition_id stage_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds: [%w[partition_id stage_id]] # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -100,6 +102,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_ci_finished_build_ch_sync_events: %w[build_id],
+    p_ci_job_artifacts: %w[partition_id project_id job_id],
+    p_ci_pipeline_variables: %w[partition_id],
     product_analytics_events_experimental: %w[event_id txn_id user_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
@@ -134,7 +138,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     webauthn_registrations: %w[u2f_registration_id], # this column will be dropped
     ml_candidates: %w[internal_id],
     value_stream_dashboard_counts: %w[namespace_id],
-    zoekt_indices: %w[namespace_id] # needed for cells sharding key
+    zoekt_indices: %w[namespace_id], # needed for cells sharding key
+    zoekt_repositories: %w[namespace_id project_identifier] # needed for cells sharding key
   }.with_indifferent_access.freeze
 
   context 'for table' do

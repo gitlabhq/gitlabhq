@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Feature flags API **(FREE ALL)**
+# Feature flags API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9566) in GitLab Premium 12.5.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212318) to GitLab Free in 13.5.
@@ -171,19 +175,19 @@ Creates a new feature flag.
 POST /projects/:id/feature_flags
 ```
 
-| Attribute           | Type             | Required   | Description                                                                            |
-| ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).       |
-| `name`              | string           | yes        | The name of the feature flag.                                                          |
-| `version`           | string           | yes        | The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag. |
-| `description`       | string           | no         | The description of the feature flag.                                                   |
-| `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later. |
-| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies). |
+| Attribute           | Type             | Required   | Description                                                                                                                                                                                                                                                                              |
+| ------------------- | ---------------- | ---------- |------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                                     |
+| `name`              | string           | yes        | The name of the feature flag.                                                                                                                                                                                                                                                            |
+| `version`           | string           | yes        | **Deprecated** The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.                                                                                                                                                                        |
+| `description`       | string           | no         | The description of the feature flag.                                                                                                                                                                                                                                                     |
+| `active`            | boolean          | no         | The active state of the flag. Defaults to true. [Supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38350) in GitLab 13.3 and later.                                                                                                                                       |
+| `strategies`        | array of strategy JSON objects | no         | The feature flag [strategies](../operations/feature_flags.md#feature-flag-strategies).                                                                                                                                                                                                   |
 | `strategies:name`   | JSON             | no         | The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In [GitLab 13.5](https://gitlab.com/gitlab-org/gitlab/-/issues/36380) and later, can be [`flexibleRollout`](https://docs.getunleash.io/user_guide/activation_strategy/#gradual-rollout). |
-| `strategies:parameters` | JSON         | no         | The strategy parameters.                                                               |
-| `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                           |
-| `strategies:scopes:environment_scope` | string | no | The environment scope of the scope.                                                    |
-| `strategies:user_list_id` | integer/string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                 |
+| `strategies:parameters` | JSON         | no         | The strategy parameters.                                                                                                                                                                                                                                                                 |
+| `strategies:scopes` | JSON             | no         | The scopes for the strategy.                                                                                                                                                                                                                                                             |
+| `strategies:scopes:environment_scope` | string | no | The environment scope of the scope.                                                                                                                                                                                                                                                      |
+| `strategies:user_list_id` | integer/string | no     | The ID of the feature flag user list. If strategy is `gitlabUserList`.                                                                                                                                                                                                                   |
 
 ```shell
 curl "https://gitlab.example.com/api/v4/projects/1/feature_flags" \

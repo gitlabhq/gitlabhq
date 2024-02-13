@@ -19,11 +19,10 @@
         = render Pajamas::ButtonComponent.new(href: update_milestone_path(milestone, { state_event: :activate }), method: :put, button_options: { class: 'gl-display-none gl-md-display-inline-block' }) do
           = _('Reopen milestone')
 
-      .btn-group.gl-md-ml-3.gl-display-flex.dropdown.gl-dropdown.gl-md-w-auto.gl-w-full
-        = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret has-tooltip gl-display-none! gl-md-display-inline-flex!", data: { toggle: 'dropdown', title: _('Milestone actions'), testid: 'milestone-actions', 'aria-label': _('Milestone actions') }, aria: { label: _('Milestone actions') } do
-          = sprite_icon "ellipsis_v", size: 16, css_class: "dropdown-icon gl-icon"
-        = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md btn-block gl-button gl-dropdown-toggle gl-md-display-none!", data: { 'toggle' => 'dropdown' } do
-          %span.gl-dropdown-button-text= _('Milestone actions')
+      .gl-md-ml-3.gl-display-flex.dropdown.gl-dropdown.gl-md-w-auto.gl-w-full
+        = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'ellipsis_v', button_options: { class: 'has-tooltip gl-display-none! gl-md-display-inline-flex!', 'aria-label': _('Milestone actions'), data: { toggle: 'dropdown', title: _('Milestone actions'), testid: 'milestone-actions' } })
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-block gl-md-display-none!', data: { toggle: 'dropdown' } }) do
+          = _('Milestone actions')
           = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon"
         .dropdown-menu.dropdown-menu-right
           .gl-dropdown-inner

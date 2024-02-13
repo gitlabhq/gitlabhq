@@ -2,21 +2,11 @@
 
 - offset = defined?(first_line_number) ? first_line_number : 1
 - highlight = defined?(highlight_line) && highlight_line ? highlight_line - offset : nil
-- line_class = "js-line-links"
-- blame_path = project_blame_path(@project, tree_join(@ref, blob.path))
 
 - highlighted_blob = blob.present.highlight
 
 #blob-content.file-content.code.js-syntax-highlight
-  .line-numbers{ class: "gl-px-0!", data: { blame_path: blame_path } }
-    - if blob.data.present?
-      - highlighted_blob.lines.count.times do |index|
-        - i = index + offset
-
-        %a.file-line-num.diff-line-num{ class: line_class, href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
-          = i
-
   .blob-content{ data: { blob_id: blob.id, path: blob.path, highlight_line: highlight } }
-    %pre.code.highlight
-      %code
+    %pre{ class: "code highlight gl-border-none!" }
+      %code.gl-border-none
         = highlighted_blob

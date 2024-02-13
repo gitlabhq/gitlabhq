@@ -4,9 +4,13 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Interactive web terminals **(FREE ALL)**
+# Interactive web terminals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50144) in GitLab 11.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. You can think of it like a method for
@@ -16,7 +20,7 @@ is deployed, some [security precautions](../../administration/integration/termin
 taken to protect the users.
 
 NOTE:
-[Shared runners on GitLab.com](../runners/index.md) do not
+[Instance runners on GitLab.com](../runners/index.md) do not
 provide an interactive web terminal. Follow
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/24674) for progress on
 adding support. For groups and projects hosted on GitLab.com, interactive web

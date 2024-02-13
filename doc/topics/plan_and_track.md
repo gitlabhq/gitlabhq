@@ -5,7 +5,11 @@ description: Epics, issues, milestones, labels.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Plan and track work **(FREE ALL)**
+# Plan and track work
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Plan your work by creating requirements, issues, and epics. Schedule work
 with milestones and track your team's time. Learn how to save time with

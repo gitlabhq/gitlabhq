@@ -29,6 +29,7 @@ const DEFAULT_PROPS = {
     id: 1,
     username: 'root',
     name: 'Administrator',
+    email: null,
     location: 'Vienna',
     localTime: '2:30 PM',
     webUrl: '/root',
@@ -125,7 +126,17 @@ describe('User Popover Component', () => {
   describe('job data', () => {
     const findWorkInformation = () => wrapper.findComponent({ ref: 'workInformation' });
     const findBio = () => wrapper.findComponent({ ref: 'bio' });
+    const findEmail = () => wrapper.findComponent({ ref: 'email' });
     const bio = 'My super interesting bio';
+    const email = 'my@email.com';
+
+    it('should show email', () => {
+      const user = { ...DEFAULT_PROPS.user, email };
+
+      createWrapper({ user });
+
+      expect(findEmail().text()).toBe(email);
+    });
 
     it('should show only bio if work information is not available', () => {
       const user = { ...DEFAULT_PROPS.user, bio };

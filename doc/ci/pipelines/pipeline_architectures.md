@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pipeline architecture **(FREE ALL)**
+# Pipeline architecture
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Pipelines are the fundamental building blocks for CI/CD in GitLab. This page documents
 some of the important concepts related to them.

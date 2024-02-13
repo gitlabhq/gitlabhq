@@ -16,14 +16,14 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
     it 'can close an issue' do
       expect(page).to have_selector('[data-testid="issue-state-badge"]')
 
-      expect(find('[data-testid="issue-state-badge"]')).to have_content 'Open'
+      expect(find_by_testid('issue-state-badge')).to have_content 'Open'
 
       within selector do
         click_button 'Close issue'
         wait_for_requests
       end
 
-      expect(find('[data-testid="issue-state-badge"]')).to have_content 'Closed'
+      expect(find_by_testid('issue-state-badge')).to have_content 'Closed'
     end
   end
 
@@ -31,14 +31,14 @@ RSpec.describe 'issue state', :js, feature_category: :team_planning do
     it 'can reopen an issue' do
       expect(page).to have_selector('[data-testid="issue-state-badge"]')
 
-      expect(find('[data-testid="issue-state-badge"]')).to have_content 'Closed'
+      expect(find_by_testid('issue-state-badge')).to have_content 'Closed'
 
       within selector do
         click_button 'Reopen issue'
         wait_for_requests
       end
 
-      expect(find('[data-testid="issue-state-badge"]')).to have_content 'Open'
+      expect(find_by_testid('issue-state-badge')).to have_content 'Open'
     end
   end
 

@@ -179,6 +179,8 @@
   - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
+- - click_house_audit_event_partition_sync
+  - 1
 - - click_house_ci_finished_builds_sync
   - 1
 - - cluster_agent
@@ -208,6 +210,8 @@
 - - compliance_management_standards_gitlab_prevent_approval_by_committer
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_committer_group
+  - 1
+- - compliance_management_standards_refresh
   - 1
 - - compliance_management_update_default_framework
   - 1
@@ -369,6 +373,8 @@
   - 1
 - - import_issues_csv
   - 2
+- - import_refresh_import_jid
+  - 1
 - - incident_management
   - 2
 - - incident_management_apply_incident_sla_exceeded_label
@@ -454,6 +460,8 @@
 - - merge_requests_create_approval_event
   - 1
 - - merge_requests_create_approval_note
+  - 1
+- - merge_requests_create_approvals_reset_note
   - 1
 - - merge_requests_delete_source_branch
   - 1
@@ -651,6 +659,8 @@
   - 1
 - - search_elastic_group_association_deletion
   - 1
+- - search_elastic_trigger_indexing
+  - 1
 - - search_namespace_index_integrity
   - 1
 - - search_project_index_integrity
@@ -742,6 +752,8 @@
 - - users_track_namespace_visits
   - 1
 - - vulnerabilities_mark_dropped_as_resolved
+  - 1
+- - vulnerabilities_process_transfer_events
   - 1
 - - vulnerabilities_remove_all_vulnerabilities
   - 1

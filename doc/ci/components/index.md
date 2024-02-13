@@ -4,7 +4,12 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# CI/CD components **(FREE ALL BETA)**
+# CI/CD components
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - Introduced as an [experimental feature](../../policy/experiment-beta-support.md) in GitLab 16.0, [with a flag](../../administration/feature_flags.md) named `ci_namespace_catalog_experimental`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/-/epics/9897) in GitLab 16.2.
@@ -27,6 +32,10 @@ but have several advantages:
 Instead of creating your own components, you can also search for published components
 that have the functionality you need in the [CI/CD Catalog](#cicd-catalog).
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an introduction and hands-on examples, see [Efficient DevSecOps workflows with reusable CI/CD components](https://www.youtube.com/watch?v=-yvfSFKAgbA).
+<!-- Video published on 2024-01-22. DRI: Developer Relations, https://gitlab.com/groups/gitlab-com/marketing/developer-relations/-/epics/399 -->
+
 ## Component project
 
 A component project is a GitLab project with a repository that hosts one or more components.
@@ -39,7 +48,12 @@ to a dedicated component project.
 
 To create a component project, you must:
 
-1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file.
+1. [Create a new project](../../user/project/index.md#create-a-blank-project) with a `README.md` file:
+   - Ensure the description gives a clear introduction to the component.
+   - Optional. After the project is created, you can [add a project avatar](../../user/project/working_with_projects.md#edit-project-name-and-description).
+
+   Components published to the [CI/CD catalog](#cicd-catalog) use both the description and avatar when displaying the component project's summary.
+
 1. Add a YAML configuration file for each component, following the [required directory structure](#directory-structure).
    For example:
 
@@ -67,6 +81,9 @@ The repository must contain:
   - In single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
   - In sub-directories containing `template.yml` files as entry points, for components
     that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
+
+NOTE:
+Optionally, each component can also have its own `README.md` file that provides more detailed information, and can be linked from the top-level `README.md` file. This helps to provide a better overview of your component project and how to use it.
 
 You should also:
 
@@ -151,7 +168,12 @@ a patch fix like `1.5.1`, then `~latest` returns the `1.5.1` release.
 [Issue #427286](https://gitlab.com/gitlab-org/gitlab/-/issues/427286) proposes to
 change this behavior.
 
-## CI/CD Catalog **(FREE ALL BETA)**
+## CI/CD Catalog
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407249) in GitLab 16.1 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/432045) to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 16.7.
@@ -255,6 +277,38 @@ To publish the component project in the catalog again, you need to [publish a ne
 
 This section describes some best practices for creating high quality component projects.
 
+### Write a clear `README.md`
+
+Each component project should have clear and comprehensive documentation. To
+write a good `README.md` file:
+
+- The documentation should start with a summary of the capabilities that the components in the project provide.
+- If the project contains multiple components, use a [table of contents](../../user/markdown.md#table-of-contents)
+   to help users quickly jump to a specific component's details.
+- Add a `## Components` section with sub-sections like `### Component A` for each component in the project.
+- In each component section:
+  - Add a description of what the component does.
+  - Add at least one YAML example showing how to use it.
+  - If the component uses inputs, add a table showing all inputs with name, description, type, and default value.
+  - If the component uses any variables or secrets, those should be documented too.
+- A `## Contribute` section is recommended if contributions are welcome.
+
+If a component needs more instructions, add additional documentation in a Markdown file
+in the component directory and link to it from the main `README.md` file. For example:
+
+```plaintext
+README.md    # with links to the specific docs.md
+templates/
+├── component-1/
+│   ├── template.yml
+│   └── docs.md
+└── component-2/
+    ├── template.yml
+    └── docs.md
+```
+
+For an example of a component `README.md`, see the [Deploy to AWS with GitLab CI/CD component's `README.md`](https://gitlab.com/components/aws/-/blob/main/README.md).
+
 ### Test the component
 
 Testing CI/CD components as part of the development workflow is strongly recommended
@@ -269,7 +323,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: gitlab.com/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
+  - component: $CI_SERVER_HOST/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
     inputs:
       stage: build
 
@@ -283,7 +337,7 @@ ensure-job-added:
   image: badouralix/curl-jq
   script:
     - |
-      route="https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
+      route="${CI_API_V4_URL}/projects/$CI_PROJECT_ID/pipelines/$CI_PIPELINE_ID/jobs"
       count=`curl --silent --header "PRIVATE-TOKEN: $API_TOKEN" $route | jq 'map(select(.name | contains("component-job"))) | length'`
       if [ "$count" != "1" ]; then
         exit 1
@@ -304,6 +358,17 @@ create-release:
 
 After committing and pushing changes, the pipeline tests the component, then creates
 a release if the earlier jobs pass.
+
+#### Test a component against sample files
+
+In some cases, components require source files to interact with. For example, a component
+that builds Go source code likely needs some samples of Go to test against. Alternatively,
+a component that builds Docker images likely needs some sample Dockerfiles to test against.
+
+You can include sample files like these directly in the component project, to be used
+during component testing.
+
+You can learn more in [examples for testing a component](examples.md#test-a-component).
 
 ### Avoid using global keywords
 
@@ -478,6 +543,8 @@ can be converted to a CI/CD component:
      or making it [more efficient](../pipelines/pipeline_efficiency.md).
 1. Leverage the `.gitlab-ci.yml` in the components repository to [test changes to the component](index.md#test-the-component).
 1. Tag and [release the component](#publish-a-new-release).
+
+You can learn more by following a practical example for [migrating the Go CI/CD template to CI/CD component](examples.md#cicd-component-migration-example-go).
 
 ## Troubleshooting
 

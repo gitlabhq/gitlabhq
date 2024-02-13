@@ -21,7 +21,7 @@ module Gitlab
             [timestamp_projection]
           end
 
-          def include_in(query)
+          def include_in(query, **)
             super.left_joins(:metrics)
           end
         end

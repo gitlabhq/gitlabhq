@@ -23,15 +23,19 @@ RSpec.describe Gitlab::Ci::Reports::Security::FindingKey do
 
       with_them do
         let(:finding_key_1) do
-          build(:ci_reports_security_finding_key,
-                location_fingerprint: location_fp_1,
-                identifier_fingerprint: identifier_fp_1)
+          build(
+            :ci_reports_security_finding_key,
+            location_fingerprint: location_fp_1,
+            identifier_fingerprint: identifier_fp_1
+          )
         end
 
         let(:finding_key_2) do
-          build(:ci_reports_security_finding_key,
-                location_fingerprint: location_fp_2,
-                identifier_fingerprint: identifier_fp_2)
+          build(
+            :ci_reports_security_finding_key,
+            location_fingerprint: location_fp_2,
+            identifier_fingerprint: identifier_fp_2
+          )
         end
 
         subject { finding_key_1 == finding_key_2 }

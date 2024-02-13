@@ -16,12 +16,8 @@
 .snippet-file-content {
   border-radius: 3px;
 
-  .file-content {
-    overflow-y: auto;
-  }
-
   + .snippet-file-content {
-    @include gl-mt-5;
+    margin-top: $gl-spacing-scale-5;
   }
 
   &:last-of-type {

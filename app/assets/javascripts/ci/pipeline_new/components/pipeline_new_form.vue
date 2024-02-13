@@ -3,8 +3,7 @@ import {
   GlAlert,
   GlIcon,
   GlButton,
-  GlDropdown,
-  GlDropdownItem,
+  GlCollapsibleListbox,
   GlForm,
   GlFormGroup,
   GlFormInput,
@@ -50,10 +49,6 @@ const i18n = {
 };
 
 export default {
-  typeOptions: {
-    [VARIABLE_TYPE]: __('Variable'),
-    [FILE_TYPE]: __('File'),
-  },
   i18n,
   formElementClasses: 'gl-mr-3 gl-mb-3 gl-flex-basis-quarter gl-flex-shrink-0 gl-flex-grow-0',
   // this height value is used inline on the textarea to match the input field height
@@ -63,8 +58,7 @@ export default {
     GlAlert,
     GlIcon,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlForm,
     GlFormGroup,
     GlFormInput,
@@ -227,6 +221,18 @@ export default {
     ccRequiredError() {
       return this.error === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
+    variableTypeListboxItems() {
+      return [
+        {
+          value: VARIABLE_TYPE,
+          text: s__('Pipeline|Variable'),
+        },
+        {
+          value: FILE_TYPE,
+          text: s__('Pipeline|File'),
+        },
+      ];
+    },
   },
   methods: {
     addEmptyVariable(refValue) {
@@ -369,6 +375,12 @@ export default {
       this.ccAlertDismissed = true;
       this.error = null;
     },
+    createListItemsFromVariableOptions(key) {
+      return this.configVariablesWithDescription.options[key].map((option) => ({
+        text: option,
+        value: option,
+      }));
+    },
   },
 };
 </script>
@@ -443,19 +455,15 @@ export default {
         <div
           class="gl-display-flex gl-align-items-stretch gl-flex-direction-column gl-md-flex-direction-row"
         >
-          <gl-dropdown
-            :text="$options.typeOptions[variable.variable_type]"
+          <gl-collapsible-listbox
+            :items="variableTypeListboxItems"
+            :selected="variable.variable_type"
+            block
+            fluid-width
             :class="$options.formElementClasses"
             data-testid="pipeline-form-ci-variable-type"
-          >
-            <gl-dropdown-item
-              v-for="type in Object.keys($options.typeOptions)"
-              :key="type"
-              @click="setVariableAttribute(variable.key, 'variable_type', type)"
-            >
-              {{ $options.typeOptions[type] }}
-            </gl-dropdown-item>
-          </gl-dropdown>
+            @select="setVariableAttribute(variable.key, 'variable_type', $event)"
+          />
           <gl-form-input
             v-model="variable.key"
             :placeholder="s__('CiVariables|Input variable key')"
@@ -463,22 +471,17 @@ export default {
             data-testid="pipeline-form-ci-variable-key-field"
             @change="addEmptyVariable(refFullName)"
           />
-          <gl-dropdown
+          <gl-collapsible-listbox
             v-if="shouldShowValuesDropdown(variable.key)"
-            :text="variable.value"
+            :items="createListItemsFromVariableOptions(variable.key)"
+            :selected="variable.value"
+            block
+            fluid-width
             :class="$options.formElementClasses"
             class="gl-flex-grow-1 gl-mr-0!"
             data-testid="pipeline-form-ci-variable-value-dropdown"
-          >
-            <gl-dropdown-item
-              v-for="option in configVariablesWithDescription.options[variable.key]"
-              :key="option"
-              data-testid="ci-variable-value-dropdown-item"
-              @click="setVariableAttribute(variable.key, 'value', option)"
-            >
-              {{ option }}
-            </gl-dropdown-item>
-          </gl-dropdown>
+            @select="setVariableAttribute(variable.key, 'value', $event)"
+          />
           <gl-form-textarea
             v-else
             v-model="variable.value"

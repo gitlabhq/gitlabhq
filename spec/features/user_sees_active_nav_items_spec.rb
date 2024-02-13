@@ -12,7 +12,7 @@ RSpec.describe 'User sees correct active nav items in the super sidebar', :js, f
   describe 'profile pages' do
     context 'when visiting profile page' do
       before do
-        visit profile_path
+        visit user_settings_profile_path
       end
 
       it 'renders the side navigation with the correct submenu set as active' do

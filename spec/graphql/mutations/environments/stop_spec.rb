@@ -42,7 +42,7 @@ RSpec.describe Mutations::Environments::Stop, feature_category: :environment_man
         expect(subject)
           .to eq({
             environment: environment,
-            errors: ['Attemped to stop the environment but failed to change the status']
+            errors: ['Attempted to stop the environment but failed to change the status']
           })
       end
     end

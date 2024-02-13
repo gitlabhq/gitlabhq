@@ -24,4 +24,14 @@ RSpec.describe Gitlab::Diff::FileCollection::Base do
       end
     end
   end
+
+  describe '#raw_diff_files' do
+    let(:max_blob_size) { 10 }
+
+    it 'returns diffs that contain a maximum of max_blob_size of data' do
+      allow(described_class).to receive(:max_blob_size).and_return(max_blob_size)
+
+      expect(described_class.new(diffable, project: merge_request.project).raw_diff_files.all? { |file| file.max_blob_size == max_blob_size }).to be_truthy
+    end
+  end
 end

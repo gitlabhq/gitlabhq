@@ -24,20 +24,20 @@ To view versions that are not available on `docs.gitlab.com`:
 
 ## Documenting version-specific features
 
-When a feature is added or updated, you can include its version information
-either as a **Version history** list item or as an inline text reference.
+When a feature is added or updated, update the documentation with
+a **History** list item or as an inline text reference.
 
-You do not need to add version information on the pages in the `/development` directory.
+You do not need to add historical information on the pages in the `/development` directory.
 
-### Add a **Version history** item
+### Add a **History** item
 
-If all content in a topic is related, add a version history item after the topic title.
+If all content in a topic is related, add a history item after the topic title.
 For example:
 
 ```markdown
 ## Feature name
 
-> [Introduced](<link-to-issue>) in GitLab 11.3.
+> - [Introduced](<link-to-issue>) in GitLab 11.3.
 
 This feature does something.
 ```
@@ -48,8 +48,16 @@ The item text must include these words in order. Capitalization doesn't matter.
 - `in` or `to`
 - `GitLab` (or, for external projects, the name of the project)
 
-If possible, include a link to the related issue, merge request, or epic.
-Do not link to the pricing page. Do not include the subscription tier.
+The docs site uses [Ruby code](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/lib/filters/introduced_in.rb)
+to render the notes based on these words.
+
+In addition:
+
+- Try to be consistent with other notes on the page, or other notes on the docs site.
+- Ensure that the output generates properly.
+- If possible, include a link to the related issue, merge request, or epic.
+- Do not link to the pricing page. Do not include the subscription tier.
+- Even if you have only one item, ensure it begins with `> -`.
 
 #### Introducing a new feature
 
@@ -84,9 +92,9 @@ If the feature status changes, use `changed`:
 When features are introduced behind feature flags, you must add details about the feature flag to the documentation.
 For more information, see [Document features deployed behind feature flags](feature_flags.md).
 
-### Inline version text
+### Inline history text
 
-If you're adding content to an existing topic, you can add version information
+If you're adding content to an existing topic, you can add historical information
 inline with the existing text. If possible, include a link to the related issue,
 merge request, or epic. For example:
 
@@ -111,17 +119,21 @@ To deprecate a page or topic:
    when it will be removed, and the replacement feature.
 
    ```markdown
-   ## Title (deprecated) **(ULTIMATE SELF)**
+   ## Title (deprecated)
+
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
    ```
 
    If you're not sure when the feature will be removed or no
    replacement feature exists, you don't need to add this information.
 
-1. If the deprecation is a breaking change, add this text:
+1. If the deprecation is a [breaking change](../../update/terminology.md#breaking-change), add this text:
 
    ```markdown
    This change is a breaking change.
@@ -135,11 +147,15 @@ To deprecate a page or topic:
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (deprecated) **(ULTIMATE SELF)**
+   ## Title (deprecated)
+
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-issue>) instead.
+   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
 
    <!--- end_remove -->
    ```
@@ -153,7 +169,7 @@ The title and a removed indicator remains until three months after the removal.
 
 To remove a page:
 
-1. Leave the page title. Remove all other content, including the version history items and the word `WARNING:`.
+1. Leave the page title. Remove all other content, including the history items and the word `WARNING:`.
 1. After the title, change `(deprecated)` to `(removed)`.
 1. Update the YAML metadata:
    - For `remove_date`, set the value to a date three months after
@@ -170,24 +186,28 @@ To remove a page:
    redirect_to: '../newpath/to/file/index.md'
    ---
 
-   # Title (removed) **(ULTIMATE SELF)**
+   # Title (removed)
+
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-issue>) instead.
+   Use [feature X](<link-to-docs>) instead.
    ```
 
 1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ### Remove a topic
 
 To remove a topic:
 
 1. Leave the title and the details of the deprecation and removal. Remove all other content,
-   including the version history items and the word `WARNING:`.
+   including the history items and the word `WARNING:`.
 1. Add `(removed)` after the title.
 1. Add the following HTML comments above and below the topic.
    For `remove_date`, set a date three months after the release where it was removed.
@@ -195,17 +215,21 @@ To remove a topic:
    ```markdown
    <!--- start_remove The following content will be removed on remove_date: 'YYYY-MM-DD' -->
 
-   ## Title (removed) **(ULTIMATE SELF)**
+   ## Title (removed)
+
+   DETAILS:
+   **Tier:** Premium, Ultimate
+   **Offering:** SaaS, self-managed
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-issue>) instead.
+   Use [feature X](<link-to-docs>) instead.
 
    <!--- end_remove -->
    ```
 
 This content is removed from the documentation as part of the Technical Writing team's
-[regularly scheduled tasks](https://about.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
+[regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
 ## Which versions are removed
 
@@ -215,7 +239,11 @@ GitLab 16.0, 15.0, and 14.0 are supported.
 
 [View the list of supported versions](https://about.gitlab.com/support/statement-of-support/#version-support).
 
-If you see version history items or inline text that refers to unsupported versions, you can remove it.
+If you see history items or inline text that refers to unsupported versions, you can remove it.
+
+In the history, remove information about [features behind feature flags](feature_flags.md)
+only if all events related to the feature flag happened in unsupported versions.
+If the flag hasn't been removed, readers should know when it was introduced.
 
 Historical feature information is available in [release posts](https://about.gitlab.com/releases/)
 or by searching for the issue or merge request where the work was done.

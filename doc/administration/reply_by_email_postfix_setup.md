@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Set up Postfix for incoming email **(FREE SELF)**
+# Set up Postfix for incoming email
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This document takes you through the steps of setting up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with [incoming email](incoming_email.md).
@@ -97,7 +101,7 @@ The instructions make the assumption that you are using the email address `incom
    If you receive an error after entering `rcpt to: incoming@localhost`
    then your Postfix `my_network` configuration is not correct. The error will
    say 'Temporary lookup failure'. See
-   [Configure Postfix to receive email from the Internet](#configure-postfix-to-receive-email-from-the-internet)._
+   [Configure Postfix to receive email from the Internet](#configure-postfix-to-receive-email-from-the-internet).
 
 1. Check if the `incoming` user received the email:
 

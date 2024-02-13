@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group-level protected environments API **(PREMIUM ALL)**
+# Group-level protected environments API
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/215888) in GitLab 14.0. [Deployed behind the `group_level_protected_environments` flag](../administration/feature_flags.md), disabled by default.
 > - [Feature flag `group_level_protected_environments`](https://gitlab.com/gitlab-org/gitlab/-/issues/331085) removed in GitLab 14.3.
@@ -150,7 +154,7 @@ to `production` only after the QA group `"group_id": 134` and security group
 
 ## Update a protected environment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351854) in GitLab 15.4.
 
 Updates a single environment.
 

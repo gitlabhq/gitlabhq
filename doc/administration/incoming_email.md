@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Incoming email **(FREE SELF)**
+# Incoming email
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab has several features based on receiving incoming email messages:
 
@@ -795,7 +799,7 @@ incoming_email:
 
 #### Microsoft Graph
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214900) in GitLab 13.11.
 
 GitLab can read incoming email using the Microsoft Graph API instead of
 IMAP. Because [Microsoft is deprecating IMAP usage with Basic Authentication](https://techcommunity.microsoft.com/t5/exchange-team-blog/announcing-oauth-2-0-support-for-imap-and-smtp-auth-protocols-in/ba-p/1330432), the Microsoft Graph API is be required for new Microsoft Exchange Online mailboxes.
@@ -826,7 +830,7 @@ This example for Linux package installations assumes you're using the following 
 
 ##### Configure Microsoft Graph
 
-> Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
+> - Alternative Azure deployments [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5978) in GitLab 14.9.
 
 ```ruby
 gitlab_rails['incoming_email_enabled'] = true
@@ -870,7 +874,7 @@ The Microsoft Graph API is not yet supported in self-compiled installations. See
 
 ### Use encrypted credentials
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108279) in GitLab 15.9.
 
 Instead of having the incoming email credentials stored in plaintext in the configuration files, you can optionally
 use an encrypted file for the incoming email credentials.

@@ -5,6 +5,7 @@ import {
   nSecondsAfter,
   nSecondsBefore,
   isToday,
+  isInTimePeriod,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -91,5 +92,23 @@ describe('getCurrentUtcDate', () => {
 
   it('returns the date at midnight', () => {
     expect(getCurrentUtcDate()).toEqual(new Date('2022-12-05T00:00:00.000Z'));
+  });
+});
+
+describe('isInTimePeriod', () => {
+  const date = '2022-03-22T01:23:45.000Z';
+
+  it.each`
+    start                         | end                           | expected
+    ${'2022-03-21'}               | ${'2022-03-23'}               | ${true}
+    ${'2022-03-20'}               | ${'2022-03-21'}               | ${false}
+    ${'2022-03-23'}               | ${'2022-03-24'}               | ${false}
+    ${date}                       | ${'2022-03-24'}               | ${true}
+    ${'2022-03-21'}               | ${date}                       | ${true}
+    ${'2022-03-22T00:23:45.000Z'} | ${'2022-03-22T02:23:45.000Z'} | ${true}
+    ${'2022-03-22T00:23:45.000Z'} | ${'2022-03-22T00:25:45.000Z'} | ${false}
+    ${'2022-03-22T02:23:45.000Z'} | ${'2022-03-22T03:25:45.000Z'} | ${false}
+  `('returns $expected for range: $start -> $end', ({ start, end, expected }) => {
+    expect(isInTimePeriod(new Date(date), new Date(start), new Date(end))).toBe(expected);
   });
 });

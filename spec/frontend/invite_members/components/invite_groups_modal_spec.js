@@ -271,4 +271,17 @@ describe('InviteGroupsModal', () => {
       expect(wrapper.findComponent(GlAlert).text()).toBe(GroupSelect.i18n.errorMessage);
     });
   });
+
+  it('renders `GroupSelect` component and passes correct props', () => {
+    createComponent({ isProject: true });
+
+    expect(findGroupSelect().props()).toStrictEqual({
+      selectedGroup: {},
+      groupsFilter: 'all',
+      isProject: true,
+      sourceId: '1',
+      parentGroupId: null,
+      invalidGroups: [],
+    });
+  });
 });

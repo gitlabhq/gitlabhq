@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'getting organization information', feature_category: :cell do
   include GraphqlHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let(:query) { graphql_query_for(:organization, { id: organization.to_global_id }, organization_fields) }
   let(:current_user) { user }
@@ -154,8 +155,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
       end
 
       context 'with `sort` argument' do
-        using RSpec::Parameterized::TableSyntax
-
         let(:authorized_groups) { [public_group, private_group, other_group] }
 
         where(:field, :direction, :sorted_groups) do
@@ -216,14 +215,46 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         expect(projects).to contain_exactly(a_graphql_entity_for(project))
       end
 
-      it_behaves_like 'sorted paginated query' do
-        include_context 'no sort argument'
-
+      describe 'project sorting' do
         let_it_be(:another_project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
         let_it_be(:another_project2) { create(:project, organization: organization) { |p| p.add_developer(user) } }
-        let(:first_param) { 2 }
-        let(:data_path) { [:organization, :projects] }
-        let(:all_records) { [another_project2, another_project, project].map { |p| global_id_of(p).to_s } }
+        let_it_be(:all_projects) { [another_project2, another_project, project] }
+        let_it_be(:first_param) { 2 }
+        let_it_be(:data_path) { [:organization, :projects] }
+
+        where(:field, :direction, :sorted_projects) do
+          'id'   | 'asc'  | lazy { all_projects.sort_by(&:id) }
+          'id'   | 'desc' | lazy { all_projects.sort_by(&:id).reverse }
+          'name' | 'asc'  | lazy { all_projects.sort_by(&:name) }
+          'name' | 'desc' | lazy { all_projects.sort_by(&:name).reverse }
+          'path' | 'asc'  | lazy { all_projects.sort_by(&:path) }
+          'path' | 'desc' | lazy { all_projects.sort_by(&:path).reverse }
+        end
+
+        with_them do
+          it_behaves_like 'sorted paginated query' do
+            let(:sort_param) { "#{field}_#{direction}" }
+            let(:all_records) { sorted_projects.map { |p| global_id_of(p).to_s } }
+          end
+        end
+
+        context 'with project_path_sort disabled sorts the projects by id_desc' do
+          before do
+            stub_feature_flags(project_path_sort: false)
+          end
+
+          where(:field, :direction) do
+            'path' | 'asc'
+            'path' | 'desc'
+          end
+
+          with_them do
+            it_behaves_like 'sorted paginated query' do
+              let(:sort_param) { "#{field}_#{direction}" }
+              let(:all_records) { all_projects.sort_by(&:id).reverse.map { |p| global_id_of(p).to_s } }
+            end
+          end
+        end
       end
 
       def pagination_query(params)

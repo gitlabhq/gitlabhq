@@ -4,14 +4,18 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Dependency Scanning **(FREE ALL)**
+# Troubleshooting Dependency Scanning
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When working with dependency scanning, you might encounter the following issues.
 
 ## Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../index.md#debug-level-logging).
+[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
 
 ### Working around missing support for certain languages or package managers
 
@@ -65,17 +69,17 @@ Consider updating to Docker `19.03.1` or greater. Older versions are not
 affected. Read more in
 [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/13830#note_211354992 "Current SAST container fails").
 
-## Limitation when using rules:exists
+## Dependency scanning jobs are running unexpectedly
 
 The [dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 uses the [`rules:exists`](../../../ci/yaml/index.md#rulesexists)
 syntax. This directive is limited to 10000 checks and always returns `true` after reaching this
 number. Because of this, and depending on the number of files in your repository, a dependency
-scanning job might be triggered even if the scanner doesn't support your project.
+scanning job might be triggered even if the scanner doesn't support your project. For more details about this limitation, see [the `rules:exists` documentation](../../../ci/yaml/index.md#rulesexists).
 
 ## Error: `dependency_scanning is used for configuration only, and its script should not be executed`
 
-For information, see the [GitLab Secure troubleshooting section](../index.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
+For information, see the [GitLab Secure troubleshooting section](../../application_security/troubleshooting_application_security.md#error-job-is-used-for-configuration-only-and-its-script-should-not-be-executed).
 
 ## Import multiple certificates for Java-based projects
 
@@ -188,7 +192,7 @@ To avoid this error, follow [Poetry's configuration advice](https://python-poetr
 
 ## Error: Project has `<number>` unresolved dependencies
 
-The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, There is an [open issue](https://gitlab.com/gitlab-org/gitlab/-/issues/337083) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this issue has been resolved, consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
+The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, there is an [open epic](https://gitlab.com/groups/gitlab-org/-/epics/12361) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this epic has been resolved, consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
 
 ## Setting build constraints when scanning Go projects
 

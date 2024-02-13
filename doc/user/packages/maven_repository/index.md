@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Maven packages in the package registry **(FREE ALL)**
+# Maven packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Publish [Maven](https://maven.apache.org) artifacts in your project's package registry.
 Then, install the packages whenever you need to use them as a dependency.
@@ -289,7 +293,7 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 | Endpoint | Endpoint URL for `pom.xml`                                               | Additional information |
 |----------|--------------------------------------------------------------------------|------------------------|
-| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your project's homepage. |
+| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id). |
 | Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage. |
 | Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name. |
 
@@ -603,7 +607,7 @@ To delete older package versions, consider using the Packages API or the UI.
 
 ### Do not allow duplicate Maven packages
 
-> Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
+> - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) from Developer to Maintainer in GitLab 15.0.
 
 To prevent users from publishing duplicate Maven packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings) or the UI.
 

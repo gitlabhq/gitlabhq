@@ -7,6 +7,7 @@ Style/HashAsLastArrayItem:
     - 'app/controllers/admin/users_controller.rb'
     - 'app/controllers/concerns/issuable_actions.rb'
     - 'app/controllers/concerns/issuable_collections.rb'
+    - 'app/controllers/user_settings/profiles_controller.rb'
     - 'app/controllers/profiles_controller.rb'
     - 'app/controllers/projects/feature_flags_controller.rb'
     - 'app/controllers/projects/merge_requests/application_controller.rb'

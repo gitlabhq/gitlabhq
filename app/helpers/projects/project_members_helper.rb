@@ -1,18 +1,8 @@
 # frozen_string_literal: true
 
 module Projects::ProjectMembersHelper
-  def project_members_app_data_json(project, members:, invited:, access_requests:, include_relations:, search:)
-    {
-      user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
-      group: project_group_links_list_data(project, include_relations, search),
-      invite: project_members_list_data(project, invited.nil? ? [] : invited),
-      access_request: project_members_list_data(project, access_requests.nil? ? [] : access_requests),
-      source_id: project.id,
-      can_manage_members: Ability.allowed?(current_user, :admin_project_member, project),
-      can_manage_access_requests: Ability.allowed?(current_user, :admin_member_access_request, project),
-      group_name: project.group&.name,
-      group_path: project.group&.full_path
-    }.to_json
+  def project_members_app_data_json(...)
+    project_members_app_data(...).to_json
   end
 
   def project_member_header_subtext(project)
@@ -27,6 +17,20 @@ module Projects::ProjectMembersHelper
   end
 
   private
+
+  def project_members_app_data(project, members:, invited:, access_requests:, include_relations:, search:)
+    {
+      user: project_members_list_data(project, members, { param_name: :page, params: { search_groups: nil } }),
+      group: project_group_links_list_data(project, include_relations, search),
+      invite: project_members_list_data(project, invited.nil? ? [] : invited),
+      access_request: project_members_list_data(project, access_requests.nil? ? [] : access_requests),
+      source_id: project.id,
+      can_manage_members: Ability.allowed?(current_user, :admin_project_member, project),
+      can_manage_access_requests: Ability.allowed?(current_user, :admin_member_access_request, project),
+      group_name: project.group&.name,
+      group_path: project.group&.full_path
+    }
+  end
 
   def share_project_description(project)
     share_with_group   = project.allowed_to_share_with_group?

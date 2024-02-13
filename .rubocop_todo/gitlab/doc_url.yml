@@ -22,7 +22,6 @@ Gitlab/DocUrl:
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'
-    - 'lib/backup/database.rb'
     - 'lib/feature.rb'
     - 'lib/gitlab/audit/auditor.rb'
     - 'lib/gitlab/ci/config/entry/processable.rb'

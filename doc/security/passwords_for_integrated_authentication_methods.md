@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Generated passwords for users created through integrated authentication **(FREE ALL)**
+# Generated passwords for users created through integrated authentication
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab allows users to set up accounts through integration with external [authentication and authorization providers](../administration/auth/index.md).
 

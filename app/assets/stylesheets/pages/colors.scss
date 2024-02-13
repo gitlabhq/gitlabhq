@@ -1,16 +1,16 @@
 .color-item {
-  @include gl-display-flex;
+  display: flex;
 }
 
 .color-item-color {
-  @include gl-flex-shrink-0;
-  @include gl-mr-3;
-  @include gl-top-0;
+  flex-shrink: 0;
+  margin-right: $gl-spacing-scale-3;
+  top: 0;
 }
 
 .right-sidebar-collapsed {
   .color-item {
-    @include gl-pt-3;
+    padding-top: $gl-spacing-scale-3;
   }
 
   .color-item-color {

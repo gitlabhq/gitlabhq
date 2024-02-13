@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :object_storage, product_group: :package_registry do
+  RSpec.describe 'Package', :object_storage, product_group: :package_registry,
+    quarantine: { only: { pipeline: %i[staging staging-canary canary production] },
+                  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439376',
+                  type: :broken } do
     describe 'Composer Repository', :external_api_calls do
       include Runtime::Fixtures
 
@@ -49,11 +52,7 @@ module QA
 
       it(
         'publishes a composer package and deletes it',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016',
-        quarantine: {
-          type: :broken,
-          issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/421885"
-        }
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348016'
       ) do
         Page::Project::Menu.perform(&:go_to_package_registry)
 

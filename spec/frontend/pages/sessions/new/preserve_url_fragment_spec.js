@@ -1,13 +1,12 @@
-import $ from 'jquery';
 import htmlSessionsNew from 'test_fixtures/sessions/new.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
+import {
+  appendUrlFragment,
+  appendRedirectQuery,
+  toggleRememberMeQuery,
+} from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
-  const findFormAction = (selector) => {
-    return $(`.js-oauth-login ${selector}`).parent('form').attr('action');
-  };
-
   beforeEach(() => {
     setHTMLFixture(htmlSessionsNew);
   });
@@ -16,41 +15,75 @@ describe('preserve_url_fragment', () => {
     resetHTMLFixture();
   });
 
-  it('adds the url fragment to the login form actions', () => {
-    preserveUrlFragment('#L65');
+  describe('non-OAuth login forms', () => {
+    describe('appendUrlFragment', () => {
+      const findFormAction = () => document.querySelector('.js-non-oauth-login form').action;
 
-    expect($('#new_user').attr('action')).toBe('http://test.host/users/sign_in#L65');
+      it('adds the url fragment to the login form actions', () => {
+        appendUrlFragment('#L65');
+
+        expect(findFormAction()).toBe('http://test.host/users/sign_in#L65');
+      });
+
+      it('does not add an empty url fragment to the login form actions', () => {
+        appendUrlFragment();
+
+        expect(findFormAction()).toBe('http://test.host/users/sign_in');
+      });
+    });
   });
 
-  it('does not add an empty url fragment to the login form actions', () => {
-    preserveUrlFragment();
+  describe('OAuth login forms', () => {
+    const findFormAction = (selector) =>
+      document.querySelector(`.js-oauth-login [data-testid=${selector}-login-button]`).parentElement
+        .action;
 
-    expect($('#new_user').attr('action')).toBe('http://test.host/users/sign_in');
-  });
+    describe('appendRedirectQuery', () => {
+      it('does not add an empty query parameter to the login form actions', () => {
+        appendRedirectQuery();
 
-  it('does not add an empty query parameter to OmniAuth login buttons', () => {
-    preserveUrlFragment();
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
+      });
 
-    expect(findFormAction('#oauth-login-auth0')).toBe('http://test.host/users/auth/auth0');
-  });
+      describe('adds "redirect_fragment" query parameter to the login form actions', () => {
+        it('when "remember_me" is not present', () => {
+          appendRedirectQuery('#L65');
 
-  describe('adds "redirect_fragment" query parameter to OmniAuth login buttons', () => {
-    it('when "remember_me" is not present', () => {
-      preserveUrlFragment('#L65');
+          expect(findFormAction('github')).toBe(
+            'http://test.host/users/auth/github?redirect_fragment=L65',
+          );
+        });
 
-      expect(findFormAction('#oauth-login-auth0')).toBe(
-        'http://test.host/users/auth/auth0?redirect_fragment=L65',
-      );
+        it('when "remember_me" is present', () => {
+          document
+            .querySelectorAll('form')
+            .forEach((form) => form.setAttribute('action', `${form.action}?remember_me=1`));
+
+          appendRedirectQuery('#L65');
+
+          expect(findFormAction('github')).toBe(
+            'http://test.host/users/auth/github?remember_me=1&redirect_fragment=L65',
+          );
+        });
+      });
     });
 
-    it('when "remember-me" is present', () => {
-      $('.js-oauth-login form').attr('action', (i, href) => `${href}?remember_me=1`);
+    describe('toggleRememberMeQuery', () => {
+      const rememberMe = () => document.querySelector('#js-remember-me-omniauth');
 
-      preserveUrlFragment('#L65');
+      it('toggles "remember_me" query parameter', () => {
+        toggleRememberMeQuery();
 
-      expect(findFormAction('#oauth-login-auth0')).toBe(
-        'http://test.host/users/auth/auth0?remember_me=1&redirect_fragment=L65',
-      );
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
+
+        rememberMe().click();
+
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github?remember_me=1');
+
+        rememberMe().click();
+
+        expect(findFormAction('github')).toBe('http://test.host/users/auth/github');
+      });
     });
   });
 });

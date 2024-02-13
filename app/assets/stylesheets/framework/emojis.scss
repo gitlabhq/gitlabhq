@@ -26,7 +26,7 @@ gl-emoji {
 }
 
 .emoji-picker-category-header {
-  @include gl-sticky;
+  position: sticky;
   background: linear-gradient(to bottom, $white 50%, transparent 100%);
 }
 
@@ -40,7 +40,7 @@ gl-emoji {
 
   &:hover,
   &:focus {
-    @include gl-z-index-2;
+    z-index: 2;
     transform: scale(1.3) !important;
   }
 
@@ -50,8 +50,9 @@ gl-emoji {
   }
 }
 
-.emoji-picker .gl-dropdown .dropdown-menu {
-  width: 350px;
+.emoji-picker .gl-dropdown .dropdown-menu,
+.emoji-picker .gl-new-dropdown .gl-new-dropdown-panel {
+  width: 350px !important;
 }
 
 .emoji-picker-category-tab {

@@ -4,16 +4,20 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Job Artifacts API **(FREE ALL)**
+# Job Artifacts API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use the job artifacts API to download or delete job artifacts.
 
-Authentication with a [CI/CD job token](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline)
+Authentication with a [CI/CD job token](../ci/jobs/job_artifacts.md#with-a-cicd-job-token)
 available in the Premium and Ultimate tier.
 
 ## Get job artifacts
 
-> The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
 Get the job's artifacts zipped archive of a project.
 
@@ -28,7 +32,7 @@ GET /projects/:id/jobs/:job_id/artifacts
 |-------------------------------|----------------|----------|-------------|
 | `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                      | integer        | Yes      | ID of a job. |
-| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -72,7 +76,7 @@ Possible response status codes:
 
 ## Download the artifacts archive
 
-> The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
+> - The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2346) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.5.
 
 Download the artifacts zipped archive from the latest **successful** pipeline for
 the given reference name and job, provided the job finished successfully. This
@@ -98,7 +102,7 @@ Parameters
 | `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job`                         | string         | Yes      | The name of the job. |
 | `ref_name`                    | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. |
-| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request using the `PRIVATE-TOKEN` header:
 
@@ -161,7 +165,7 @@ Parameters
 | `artifact_path`               | string         | Yes      | Path to a file inside the artifacts archive. |
 | `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job_id`                      | integer        | Yes      | The unique job identifier. |
-| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request:
 
@@ -208,7 +212,7 @@ Parameters:
 | `id`                          | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `job`                         | string         | Yes      | The name of the job. |
 | `ref_name`                    | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. |
-| `job_token` **(PREMIUM ALL)** | string         | No       | To be used with [triggers](../ci/jobs/ci_job_token.md#download-an-artifact-from-a-different-pipeline) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. |
+| `job_token`                   | string         | No       | To be used with [triggers](../ci/jobs/job_artifacts.md#with-a-cicd-job-token) for multi-project pipelines. It should be invoked only in a CI/CD job defined in the `.gitlab-ci.yml` file. The value is always `$CI_JOB_TOKEN`. The job associated with the `$CI_JOB_TOKEN` must be running when this token is used. Premium and Ultimate only. |
 
 Example request:
 

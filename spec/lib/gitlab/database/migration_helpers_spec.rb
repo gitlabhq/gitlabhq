@@ -1055,11 +1055,16 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
       around do |ex|
         model.transaction do
-          require_migration!('add_columns_to_postgres_foreign_keys')
-          AddColumnsToPostgresForeignKeys.new.down
+          require_relative '../../../fixtures/migrations/db/migrate/schema_cache_migration_test'
+
+          # Uses the init_schema migration, as it is always present in the codebase (not affected by squashing process)
+          require_migration!('init_schema')
+
+          InitSchema.prepend(SchemaCacheMigrationTest)
+          InitSchema.new.down
           Gitlab::Database::PostgresForeignKey.reset_column_information
           Gitlab::Database::PostgresForeignKey.columns_hash # Force populate the column hash in the old schema
-          AddColumnsToPostgresForeignKeys.new.up
+          InitSchema.new.up
 
           # Rolling back reverts the schema cache information, so we need to run the example here before the rollback.
           ex.run

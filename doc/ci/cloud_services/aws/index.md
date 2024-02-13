@@ -4,7 +4,11 @@ group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure OpenID Connect in AWS to retrieve temporary credentials **(FREE ALL)**
+# Configure OpenID Connect in AWS to retrieve temporary credentials
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 WARNING:
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
@@ -101,3 +105,23 @@ This error can occur for multiple reasons:
 - The cloud administrator has not configured the project to use OIDC with GitLab.
 - The role is restricted from being run on the branch or tag. See [configure a conditional role](../index.md).
 - `StringEquals` is used instead of `StringLike` when using a wildcard condition. See [related issue](https://gitlab.com/guided-explorations/aws/configure-openid-connect-in-aws/-/issues/2#note_852901934).
+
+### `Could not connect to openid configuration of provider` error
+
+After adding the Identity Provider in AWS IAM, you might get the following error:
+
+```plaintext
+Your request has a problem. Please see the following details.
+  - Could not connect to openid configuration of provider: `https://gitlab.example.com`
+```
+
+This error occurs when the OIDC identity provider's issuer presents a certificate chain
+that's out of order, or includes duplicate or additional certificates.
+
+Verify your GitLab instance's certificate chain. The chain must start with the domain or issuer URL,
+then the intermediate certificate, and end with the root certificate. Use this command to
+review the certificate chain, replacing `gitlab.example.com` with your GitLab hostname:
+
+```shell
+echo | /opt/gitlab/embedded/bin/openssl s_client -connect gitlab.example.com:443
+```

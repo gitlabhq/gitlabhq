@@ -4,7 +4,11 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge requests **(FREE ALL)**
+# Merge requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
@@ -82,6 +86,7 @@ or:
 > - Filtering by potential approvers was moved to GitLab Premium in 13.9.
 > - Filtering by `approved-by` moved to GitLab Premium in 13.9.
 > - Filtering by `source-branch` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134555) in GitLab 16.6.
+> - Filtering by `merged-by` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 16.9. Available only when the feature flag `mr_merge_user_filter` is enabled.
 
 To filter the list of merge requests:
 
@@ -92,9 +97,10 @@ To filter the list of merge requests:
    - [**By environment or deployment date**](#by-environment-or-deployment-date).
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
-     - **Approved-By**, for merge requests already approved by a user. **(PREMIUM ALL)**.
+     - **Approved-By**, for merge requests already approved by a user. Premium and Ultimate only.
      - **Approver**, for merge requests that this user is eligible to approve.
-       (For more information, read about [Code owners](../codeowners/index.md)). **(PREMIUM ALL)**
+       (For more information, read about [Code owners](../codeowners/index.md)). Premium and Ultimate only.
+     - **Merged-By**, for merge requests merged by this user.
      - **Reviewer**, for merge requests reviewed by this user.
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
@@ -109,7 +115,7 @@ To filter the list of merge requests:
 
 ### By environment or deployment date
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/44041) in GitLab 13.6.
 
 To filter merge requests by deployment data, such as the environment or a date,
 you can type (or select from the dropdown list) the following:
@@ -164,9 +170,13 @@ a merge request, or:
 
 The merge request is added to the user's assigned merge request list.
 
-### Assign multiple users **(PREMIUM ALL)**
+### Assign multiple users
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 GitLab enables multiple assignees for merge requests, if multiple people are
 accountable for it:
@@ -222,11 +232,16 @@ You can delete the source branch for a merge request:
 
 An administrator can make this option the default in the project's settings.
 
-### Update merge requests when target branch merges **(FREE SELF)**
+### Update merge requests when target branch merges
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 > - [Disabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320902) in GitLab 13.9.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/320895) GitLab 13.10.
+> - Chained merge requests [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/323329) to automatically rebase on the new target branch in GitLab 16.9.
 
 Merge requests are often chained together, with one merge request depending on
 the code added or changed in another merge request. To support keeping individual
@@ -238,7 +253,7 @@ target branch merges into `main`. For example:
 
 If these merge requests are open at the same time, and merge request 1 (`feature-alpha`)
 merges into `main`, GitLab updates the destination of merge request 2 from `feature-alpha`
-to `main`.
+to `main` and then rebases the source branch onto the new target branch.
 
 Merge requests with interconnected content updates are usually handled in one of these ways:
 
@@ -305,6 +320,7 @@ For a web developer writing a webpage for your company's website:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/387070) in GitLab 16.0.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126998) in GitLab 16.3 by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132355) in GitLab 16.5. Feature flag `mr_activity_filters` removed.
+> - Filtering bot comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128473) in GitLab 16.9.
 
 To understand the history of a merge request, filter its activity feed to show you
 only the items that are relevant to you.
@@ -320,7 +336,8 @@ only the items that are relevant to you.
 
    - Assignees & Reviewers
    - Approvals
-   - Comments
+   - Comments (from bots)
+   - Comments (from users)
    - Commits & branches
    - Edits
    - Labels
@@ -336,7 +353,7 @@ sort order by clicking the sort button on the right.
 
 ## Resolve a thread
 
-> Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
+> - Resolving comments individually was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/28750) in GitLab 13.6.
 
 In a merge request, you can [resolve a thread](../../discussions/index.md#resolve-a-thread) when you want to finish a conversation.
 
@@ -391,7 +408,11 @@ with a new push.
 Threads are now resolved if a push makes a diff section outdated.
 Threads on lines that don't change and top-level resolvable threads are not resolved.
 
-## Move notifications and to-dos **(FREE SELF)**
+## Move notifications and to-dos
+
+DETAILs:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
 > - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
@@ -416,105 +437,3 @@ When this feature flag is enabled, the notifications and to-do item buttons are 
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/index.md)
 - [Push options](../push_options.md) for merge requests
-
-## Troubleshooting
-
-### Rebase a merge request from the Rails console **(FREE SELF)**
-
-In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
-users with access to the [Rails console](../../../administration/operations/rails_console.md)
-can rebase a merge request from the Rails console. Replace `<username>`,
-`<namespace/project>`, and `<iid>` with appropriate values:
-
-WARNING:
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-```ruby
-u = User.find_by_username('<username>')
-p = Project.find_by_full_path('<namespace/project>')
-m = p.merge_requests.find_by(iid: <iid>)
-MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
-```
-
-### Fix incorrect merge request status **(FREE SELF)**
-
-If a merge request remains **Open** after its changes are merged,
-users with access to the [Rails console](../../../administration/operations/rails_console.md)
-can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
-and `<iid>` with appropriate values:
-
-WARNING:
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-```ruby
-u = User.find_by_username('<username>')
-p = Project.find_by_full_path('<namespace/project>')
-m = p.merge_requests.find_by(iid: <iid>)
-MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
-```
-
-Running this command against a merge request with unmerged changes causes the
-merge request to display an incorrect message: `merged into <branch-name>`.
-
-### Close a merge request from the Rails console **(FREE SELF)**
-
-If closing a merge request doesn't work through the UI or API, you might want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-WARNING:
-Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
-
-```ruby
-u = User.find_by_username('<username>')
-p = Project.find_by_full_path('<namespace/project>')
-m = p.merge_requests.find_by(iid: <iid>)
-MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
-```
-
-### Delete a merge request from the Rails console **(FREE SELF)**
-
-If deleting a merge request doesn't work through the UI or API, you might want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
-
-WARNING:
-Any command that changes data directly could be damaging if not run correctly,
-or under the right conditions. We highly recommend running them in a test environment
-with a backup of the instance ready to be restored, just in case.
-
-```ruby
-u = User.find_by_username('<username>')
-p = Project.find_by_full_path('<namespace/project>')
-m = p.merge_requests.find_by(iid: <iid>)
-Issuable::DestroyService.new(container: m.project, current_user: u).execute(m)
-```
-
-### Merge request pre-receive hook failed
-
-If a merge request times out, you might see messages that indicate a Puma worker
-timeout problem:
-
-- In the GitLab UI:
-
-  ```plaintext
-  Something went wrong during merge pre-receive hook.
-  500 Internal Server Error. Try again.
-  ```
-
-- In the `gitlab-rails/api_json.log` log file:
-
-  ```plaintext
-  Rack::Timeout::RequestTimeoutException
-  Request ran for longer than 60000ms
-  ```
-
-This error can happen if your merge request:
-
-- Contains many diffs.
-- Is many commits behind the target branch.
-- References a Git LFS file that is locked.
-
-Users in self-managed installations can request an administrator review server logs
-to determine the cause of the error. GitLab SaaS users should
-[contact Support](https://about.gitlab.com/support/#contact-support) for help.

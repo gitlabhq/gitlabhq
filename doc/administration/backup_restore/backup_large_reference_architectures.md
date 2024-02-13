@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up and restore large reference architectures **(FREE SELF)**
+# Back up and restore large reference architectures
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This document describes how to:
 
@@ -21,15 +25,81 @@ This document is intended for environments using:
 
 ## Configure daily backups
 
-### Configure backup of PostgreSQL and object storage data
+### Configure backup of PostgreSQL data
 
 The [backup command](backup_gitlab.md) uses `pg_dump`, which is [not appropriate for databases over 100 GB](backup_gitlab.md#postgresql-databases). You must choose a PostgreSQL solution which has native, robust backup capabilities.
 
-[Object storage](../object_storage.md), ([not NFS](../nfs.md)) is recommended for storing GitLab data, including [blobs](backup_gitlab.md#blobs) and [Container registry](backup_gitlab.md#container-registry).
+::Tabs
 
-1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) to back up both RDS and S3 data. For maximum protection, [configure continuous backups as well as snapshot backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/point-in-time-recovery.html).
+:::TabTitle AWS
+
+1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) to back up RDS (and S3) data. For maximum protection, [configure continuous backups as well as snapshot backups](https://docs.aws.amazon.com/aws-backup/latest/devguide/point-in-time-recovery.html).
 1. Configure AWS Backup to copy backups to a separate region. When AWS takes a backup, the backup can only be restored in the region the backup is stored.
 1. After AWS Backup has run at least one scheduled backup, then you can [create an on-demand backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/recov-point-create-on-demand-backup.html) as needed.
+
+:::TabTitle Google
+
+Schedule [automated daily backups of Google Cloud SQL data](https://cloud.google.com/sql/docs/postgres/backup-recovery/backing-up#schedulebackups).
+Daily backups [can be retained](https://cloud.google.com/sql/docs/postgres/backup-recovery/backups#retention) for up to one year, and transaction logs can be retained for 7 days by default for point-in-time recovery.
+
+::EndTabs
+
+### Configure backup of object storage data
+
+[Object storage](../object_storage.md), ([not NFS](../nfs.md)) is recommended for storing GitLab data, including [blobs](backup_gitlab.md#blobs) and [Container registry](backup_gitlab.md#container-registry).
+
+::Tabs
+
+:::TabTitle AWS
+
+Configure AWS Backup to back up S3 data. This can be done at the same time when [configuring the backup of PostgreSQL data](#configure-backup-of-postgresql-data).
+
+:::TabTitle Google
+
+1. [Create a backup bucket in GCS](https://cloud.google.com/storage/docs/creating-buckets).
+1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) which copy each GitLab object storage bucket to a backup bucket. You can create these jobs once, and [schedule them to run daily](https://cloud.google.com/storage-transfer/docs/schedule-transfer-jobs). However this mixes new and old object storage data, so files that were deleted in GitLab will still exist in the backup. This wastes storage after restore, but it is otherwise not a problem. These files would be inaccessible to GitLab users since they do not exist in the GitLab database. You can delete [some of these orphaned files](../../raketasks/cleanup.md#clean-up-project-upload-files-from-object-storage) after restore, but this clean up Rake task only operates on a subset of files.
+   1. For `When to overwrite`, choose `Never`. GitLab object stored files are intended to be immutable. This selection could be helpful if a malicious actor succeeded at mutating GitLab files.
+   1. For `When to delete`, choose `Never`. If you sync the backup bucket to source, then you cannot recover if files are accidentally or maliciously deleted from source.
+1. Alternatively, it is possible to backup object storage into buckets or subdirectories segregated by day. This avoids the problem of orphaned files after restore, and supports backup of file versions if needed. But it greatly increases backup storage costs. This can be done with [a Cloud Function triggered by Cloud Scheduler](https://cloud.google.com/scheduler/docs/tut-pub-sub), or with a script run by a cronjob. A partial example:
+
+   ```shell
+   # Set GCP project so you don't have to specify it in every command
+   gcloud config set project example-gcp-project-name
+
+   # Grant the Storage Transfer Service's hidden service account permission to write to the backup bucket. The integer 123456789012 is the GCP project's ID.
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.objectAdmin gs://backup-bucket
+
+   # Grant the Storage Transfer Service's hidden service account permission to list and read objects in the source buckets. The integer 123456789012 is the GCP project's ID.
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-artifacts
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-ci-secure-files
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-dependency-proxy
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-lfs
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-mr-diffs
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-packages
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-pages
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-registry
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-terraform-state
+   gsutil iam ch serviceAccount:project-123456789012@storage-transfer-service.iam.gserviceaccount.com:roles/storage.legacyBucketReader,roles/storage.objectViewer gs://gitlab-bucket-uploads
+
+   # Create transfer jobs for each bucket, targeting a subdirectory in the backup bucket.
+   today=$(date +%F)
+   gcloud transfer jobs create gs://gitlab-bucket-artifacts/ gs://backup-bucket/$today/artifacts/ --name "$today-backup-artifacts"
+   gcloud transfer jobs create gs://gitlab-bucket-ci-secure-files/ gs://backup-bucket/$today/ci-secure-files/ --name "$today-backup-ci-secure-files"
+   gcloud transfer jobs create gs://gitlab-bucket-dependency-proxy/ gs://backup-bucket/$today/dependency-proxy/ --name "$today-backup-dependency-proxy"
+   gcloud transfer jobs create gs://gitlab-bucket-lfs/ gs://backup-bucket/$today/lfs/ --name "$today-backup-lfs"
+   gcloud transfer jobs create gs://gitlab-bucket-mr-diffs/ gs://backup-bucket/$today/mr-diffs/ --name "$today-backup-mr-diffs"
+   gcloud transfer jobs create gs://gitlab-bucket-packages/ gs://backup-bucket/$today/packages/ --name "$today-backup-packages"
+   gcloud transfer jobs create gs://gitlab-bucket-pages/ gs://backup-bucket/$today/pages/ --name "$today-backup-pages"
+   gcloud transfer jobs create gs://gitlab-bucket-registry/ gs://backup-bucket/$today/registry/ --name "$today-backup-registry"
+   gcloud transfer jobs create gs://gitlab-bucket-terraform-state/ gs://backup-bucket/$today/terraform-state/ --name "$today-backup-terraform-state"
+   gcloud transfer jobs create gs://gitlab-bucket-uploads/ gs://backup-bucket/$today/uploads/ --name "$today-backup-uploads"
+   ```
+
+   1. These Transfer Jobs are not automatically deleted after running. You could implement clean up of old jobs in the script.
+   1. The example script does not delete old backups. You could implement clean up of old backups according to your desired retention policy.
+1. Ensure that backups are performed at the same time or later than Cloud SQL backups, to reduce data inconsistencies.
+
+::EndTabs
 
 ### Configure backup of Git repositories
 
@@ -48,8 +118,8 @@ There is a feature proposal to add the ability to back up repositories directly 
 
   1. Spin up a VM with 8 vCPU and 7.2 GB memory. This node will be used to back up Git repositories. Note that
      [a Praefect node cannot be used to back up Git data](https://gitlab.com/gitlab-org/gitlab/-/issues/396343#note_1385950340).
-  1. Configure the node as another **GitLab Rails** node as defined in your [reference architecture](../reference_architectures/index.md).
-     As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster.
+  1. Configure the node as another **GitLab Rails (webservice)** node as defined in your [reference architecture](../reference_architectures/index.md).
+     As with other GitLab Rails nodes, this node must have access to your main PostgreSQL database, Redis, object storage, and Gitaly Cluster. Find your reference architecture and see the "Configure GitLab Rails" section of an example how to set the server up. You might need to translate some [Helm chart values](https://docs.gitlab.com/charts/charts/globals.html) to the Linux package equivalent ones.
   1. Ensure the GitLab application isn't running on this node by disabling most services:
 
      1. Edit `/etc/gitlab/gitlab.rb` to ensure the following services are disabled.
@@ -89,14 +159,14 @@ To back up the Git repositories:
    - A 7 GB archive file of all Git data.
 1. SSH into the GitLab Rails node.
 1. [Configure uploading backups to remote cloud storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage).
-1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) for this bucket, or use a bucket in the same account and region as your production data object storage buckets, and ensure this bucket is included in your [preexisting AWS Backup](#configure-backup-of-postgresql-and-object-storage-data).
+1. [Configure AWS Backup](https://docs.aws.amazon.com/aws-backup/latest/devguide/creating-a-backup-plan.html) for this bucket, or use a bucket in the same account and region as your production data object storage buckets, and ensure this bucket is included in your [preexisting AWS Backup](#configure-backup-of-object-storage-data).
 1. Run the [backup command](backup_gitlab.md#backup-command), skipping PostgreSQL data:
 
    ```shell
    sudo gitlab-backup create SKIP=db
    ```
 
-   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the file name will end in `_gitlab_backup.tar`](index.md#backup-id).
+   The resulting tar file will include only the Git repositories and some metadata. Blobs such as uploads, artifacts, and LFS do not need to be explicitly skipped, because the command does not back up object storage by default. The tar file will be created in the [`/var/opt/gitlab/backups` directory](https://docs.gitlab.com/omnibus/settings/backups.html#creating-an-application-backup) and [the filename will end in `_gitlab_backup.tar`](index.md#backup-id).
 
    Since we configured uploading backups to remote cloud storage, the tar file will be uploaded to the remote region and deleted from disk.
 
@@ -212,6 +282,10 @@ Before restoring a backup:
 
 ### Restore object storage data
 
+::Tabs
+
+:::TabTitle AWS
+
 Each bucket exists as a separate backup within AWS and each backup can be restored to an existing or
 new bucket.
 
@@ -228,7 +302,19 @@ new bucket.
 1. You can move on to [Restore PostgreSQL data](#restore-postgresql-data) while the restore job is
    running.
 
+:::TabTitle Google
+
+1. [Create Storage Transfer Service jobs](https://cloud.google.com/storage-transfer/docs/create-transfers) to transfer backed up data to the GitLab buckets.
+1. You can move on to [Restore PostgreSQL data](#restore-postgresql-data) while the transfer jobs are
+   running.
+
+::EndTabs
+
 ### Restore PostgreSQL data
+
+::Tabs
+
+:::TabTitle AWS
 
 1. [Restore the AWS RDS database using built-in tooling](https://docs.aws.amazon.com/aws-backup/latest/devguide/restoring-rds.html),
    which creates a new RDS instance.
@@ -242,6 +328,21 @@ new bucket.
      [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/index.html).
 
 1. Before moving on, wait until the new RDS instance is created and ready to use.
+
+:::TabTitle Google
+
+1. [Restore the Google Cloud SQL database using built-in tooling](https://cloud.google.com/sql/docs/postgres/backup-recovery/restoring).
+1. If you restore to a new database instance, then reconfigure GitLab to point to the new database:
+
+   - For Linux package installations, follow
+     [Using a non-packaged PostgreSQL database management server](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
+
+   - For Helm chart (Kubernetes) installations, follow
+     [Configure the GitLab chart with an external database](https://docs.gitlab.com/charts/advanced/external-db/index.html).
+
+1. Before moving on, wait until the Cloud SQL instance is ready to use.
+
+::EndTabs
 
 ### Restore Git repositories
 

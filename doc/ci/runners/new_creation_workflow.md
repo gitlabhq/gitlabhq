@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating to the new runner registration workflow **(FREE ALL)**
+# Migrating to the new runner registration workflow
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
@@ -59,7 +63,7 @@ workflow will break.
 
 To avoid a broken workflow, you must:
 
-1. [Create a shared runner](runners_scope.md#create-a-shared-runner-with-a-runner-authentication-token) and obtain the authentication token.
+1. [Create an instance runner](runners_scope.md#create-an-instance-runner-with-a-runner-authentication-token) and obtain the authentication token.
 1. Replace the registration token in your runner registration workflow with the
    authentication token.
 

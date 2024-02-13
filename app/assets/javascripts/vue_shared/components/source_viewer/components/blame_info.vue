@@ -21,7 +21,7 @@ export default {
 };
 </script>
 <template>
-  <div class="blame gl-bg-gray-10">
+  <div class="blame gl-bg-gray-10 gl-border-r">
     <div class="blame-commit gl-border-none!">
       <commit-info
         v-for="(blame, index) in blameInfo"
@@ -30,6 +30,7 @@ export default {
         class="gl-display-flex gl-absolute gl-px-3"
         :style="{ top: blame.blameOffset }"
         :commit="blame.commit"
+        :span="blame.span"
         :prev-blame-link="blame.commitData && blame.commitData.projectBlameLink"
       />
     </div>

@@ -215,13 +215,6 @@ class MergeRequest < ApplicationRecord
     state :locked, value: MergeRequest.available_states[:locked]
   end
 
-  # Alias to state machine .with_state_id method
-  # This needs to be defined after the state machine block to avoid errors
-  class << self
-    alias_method :with_state, :with_state_id
-    alias_method :with_states, :with_state_ids
-  end
-
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_preparing do
       transition unchecked: :preparing
@@ -319,7 +312,7 @@ class MergeRequest < ApplicationRecord
     from_fork.where('source_project_id = ? OR target_project_id = ?', project.id, project.id)
   end
   scope :merged, -> { with_state(:merged) }
-  scope :open_and_closed, -> { with_states(:opened, :closed) }
+  scope :open_and_closed, -> { with_state(:opened, :closed) }
   scope :drafts, -> { where(draft: true) }
   scope :from_source_branches, ->(branches) { where(source_branch: branches) }
   scope :by_sorted_source_branches, ->(branches) do
@@ -1268,6 +1261,7 @@ class MergeRequest < ApplicationRecord
       ::MergeRequests::Mergeability::CheckOpenStatusService,
       ::MergeRequests::Mergeability::CheckDraftStatusService,
       ::MergeRequests::Mergeability::CheckBrokenStatusService,
+      ::MergeRequests::Mergeability::CheckCommitsStatusService,
       ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
       ::MergeRequests::Mergeability::CheckCiStatusService
     ]
@@ -1905,6 +1899,10 @@ class MergeRequest < ApplicationRecord
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha
   end
 
+  def squash_commit
+    @squash_commit ||= project.commit(squash_commit_sha) if squash_commit_sha
+  end
+
   def short_merge_commit_sha
     Commit.truncate_sha(merge_commit_sha) if merge_commit_sha
   end
@@ -1922,9 +1920,32 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  # Exists only for merged merge requests
+  def commit_to_revert
+    return unless merged?
+
+    # By default, it's equal to a merge commit
+    return merge_commit if merge_commit
+
+    # But in case of fast-forward merge merge commits are not created
+    # To solve that we can use `squash_commit` if the merge request was squashed
+    return squash_commit if squash_commit
+
+    # Edge case: one commit in the merge request without merge or squash commit
+    return project.commit(diff_head_sha) if commits_count == 1
+
+    nil
+  end
+
+  def commit_to_cherry_pick
+    commit_to_revert
+  end
+
   def can_be_reverted?(current_user)
-    return false unless merge_commit
     return false unless merged_at
+
+    commit = commit_to_revert
+    return false unless commit
 
     # It is not guaranteed that Note#created_at will be strictly later than
     # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
@@ -1934,7 +1955,7 @@ class MergeRequest < ApplicationRecord
 
     notes_association = notes_with_associations.where('created_at >= ?', cutoff)
 
-    !merge_commit.has_been_reverted?(current_user, notes_association)
+    !commit.has_been_reverted?(current_user, notes_association)
   end
 
   def merged_at
@@ -1949,7 +1970,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def can_be_cherry_picked?
-    merge_commit.present?
+    commit_to_cherry_pick.present?
   end
 
   def has_complete_diff_refs?

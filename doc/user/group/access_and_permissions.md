@@ -8,7 +8,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Configure your groups to control group permissions and access.
 
-## Group push rules **(PREMIUM ALL)**
+## Group push rules
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/34370) in GitLab 12.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/224129) in GitLab 13.4.
@@ -52,7 +56,11 @@ To change the permitted Git access protocols for a group:
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
 
-## Restrict group access by IP address **(PREMIUM ALL)**
+## Restrict group access by IP address
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
@@ -106,13 +114,17 @@ Keep in mind that restricting group access by IP address has the following impli
 
 ### GitLab.com access restrictions
 
-On GitLab.com shared runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
+On GitLab.com instance runners are added to the [global allowlist](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges), so that they are available regardless of IP restrictions.
 
 Artifact and Registry downloading from runners is sourced from any Google or, in the case of MacOS runners, Amazon IP address in that region.
 The download is therefore not added to the global allowlist.
 To allow runner downloading, add the [outbound runner CIDR ranges](../gitlab_com/index.md#ip-range) to your group allowlist.
 
-## Restrict group access by domain **(PREMIUM ALL)**
+## Restrict group access by domain
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Support for specifying multiple email domains [added](https://gitlab.com/gitlab-org/gitlab/-/issues/33143) in GitLab 13.1.
 > - Support for restricting access to projects in the group [added](https://gitlab.com/gitlab-org/gitlab/-/issues/14004) in GitLab 14.1.2.
@@ -204,9 +216,13 @@ your group.
 1. Clear the **Allow users to request access** checkbox.
 1. Select **Save changes**.
 
-## Prevent project forking outside group **(PREMIUM ALL)**
+## Prevent project forking outside group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216987) in GitLab 13.3.
 
 By default, projects in a group can be forked.
 Optionally, on [GitLab Premium and Ultimate tiers](https://about.gitlab.com/pricing/),
@@ -226,7 +242,11 @@ To prevent projects from being forked outside the group:
 
 Existing forks are not removed.
 
-## Prevent members from being added to projects in a group **(PREMIUM ALL)**
+## Prevent members from being added to projects in a group
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As a group Owner, you can prevent any new project membership for all
 projects in a group, allowing tighter control over project membership.
@@ -254,11 +274,18 @@ After you lock the membership for a group:
 - All users who previously had permissions can no longer add members to a group.
 - API requests to add a new user to a project are not possible.
 
-## Manage group memberships via LDAP **(PREMIUM SELF)**
+## Manage group memberships via LDAP
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
-Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group.
+Group links can be created by using either a CN or a filter. To create these group links, go to the group's **Settings > LDAP Synchronization** page. After configuring the link, it may take more than an hour for the users to sync with the GitLab group. After you have configured the link:
+
+- In GitLab 16.7 and earlier, group Owners cannot add members to or remove members from the group. The LDAP server is considered the single source of truth for group membership for all users who have signed in with LDAP credentials.
+- In GitLab 16.8 and later, group Owners can use the [member roles API](../../api/member_roles.md) to add a service account user to or remove a service account user from the group, even when LDAP synchronization is enabled for the group. Group Owners cannot add or remove non-service account users.
 
 If a user is a member of two configured LDAP groups for the same GitLab group, they are granted the higher of the roles associated with the two LDAP groups.
 For example:
@@ -274,7 +301,11 @@ When you add LDAP synchronization, if an LDAP user is a group member and they ar
 
 You can use a workaround to [manage project access through LDAP groups](../project/working_with_projects.md#manage-project-access-through-ldap-groups).
 
-### Create group links via CN **(PREMIUM SELF)**
+### Create group links via CN
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 To create group links via CN:
 
@@ -288,7 +319,11 @@ To create group links via CN:
 
 <!-- vale gitlab.Spelling = YES -->
 
-### Create group links via filter **(PREMIUM SELF)**
+### Create group links via filter
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 To create group links via filter:
 
@@ -298,7 +333,11 @@ To create group links via filter:
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
-### Override user permissions **(PREMIUM SELF)**
+### Override user permissions
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

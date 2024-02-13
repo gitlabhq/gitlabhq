@@ -31,6 +31,7 @@ class RemoveExpiredMembersWorker # rubocop:disable Scalability/IdempotentWorker
       end
     rescue StandardError => ex
       logger.error("Expired Member ID=#{member.id} cannot be removed - #{ex}")
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex)
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

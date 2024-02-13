@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# npm packages in the package registry **(FREE ALL)**
+# npm packages in the package registry
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 For documentation of the specific API endpoints that the npm package manager client uses, see the [npm API documentation](../../../api/packages/npm.md).
 
@@ -16,7 +20,7 @@ Watch a [video demo](https://youtu.be/yvLxtkvsFDA) of how to publish npm package
 
 ### Authentication to the package registry
 
-You need an token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
+You need a token to publish a package. There are different tokens available depending on what you're trying to achieve. For more information, review the [guidance on tokens](../../../user/packages/package_registry/index.md#authenticate-with-the-registry).
 
 - If your organization uses two factor authentication (2FA), you must use a personal access token with the scope set to `api`.
 - If you are publishing a package via CI/CD pipelines, you must use a CI job token.
@@ -66,7 +70,7 @@ Create or edit the `.npmrc` file in the same directory as your `package.json`. I
 
 - Replace `@scope` with the [root level group](#naming-convention) of the project you're publishing to the package to.
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-- Replace `your_project_id` is your project ID, found on the project's home page.
+- Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - `"${NPM_TOKEN}"` is associated with the token you created later in the process.
 
 WARNING:
@@ -158,7 +162,7 @@ In these examples:
 
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
 - Replace `your_group_id` with your group ID, found on the group's home page.
-- Replace `your_project_id` is your project ID, found on the project's home page.
+- Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
 
 NOTE:
@@ -224,7 +228,7 @@ To install a package from the instance level, the package must have been publish
 
    - Replace `@scope` with the [root level group](#naming-convention) of the project you're installing to the package from.
    - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the project's home page.
+   - Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 1. Install the package
 
@@ -234,7 +238,7 @@ To install a package from the instance level, the package must have been publish
 
 ### Package forwarding to npmjs.com
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/55344) in GitLab 12.9.
 
 When an npm package is not found in the package registry, GitLab responds with an HTTP redirect so the requesting client can resend the request to [npmjs.com](https://www.npmjs.com/).
 
@@ -246,7 +250,7 @@ Improvements are tracked in [epic 3608](https://gitlab.com/groups/gitlab-org/-/e
 
 ## Deprecate a package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396763) in GitLab 16.0.
 
 You can deprecate a package so that a deprecation warning displays when the package is fetched.
 
@@ -331,7 +335,7 @@ npm install @scope/package@my-tag              # Install a specific tag
 
 #### From CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/258835) in GitLab 15.10.
 
 You can use a [`CI_JOB_TOKEN`](../../../ci/jobs/ci_job_token.md) or [deploy token](../../project/deploy_tokens/index.md)
 to run `npm dist-tag` commands in a GitLab CI/CD job. For example:

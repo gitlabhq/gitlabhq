@@ -174,7 +174,7 @@ For example, if your project contains a large number of tags that your CI/CD job
 you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags)
 to the extra flags to make your fetches faster and more compact.
 
-Also in the case where you repository does _not_ contain a lot of
+Also in the case where your repository does _not_ contain a lot of
 tags, `--no-tags` can [make a big difference in some cases](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746).
 If your CI/CD builds do not depend on Git tags, setting `--no-tags` is worth trying.
 
@@ -264,8 +264,8 @@ following sections for information on solving:
 ### Large number of references
 
 [References in Git](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
-are branch and tag names that point to a particular commit. You can use the `git
-for-each-ref` command to list all references present in a repository. A large
+are branch and tag names that point to a particular commit. You can use the `git for-each-ref`
+command to list all references present in a repository. A large
 number of references in a repository can have detrimental impact on the command's
 performance. To understand why, we need to understand how Git stores references
 and uses them.

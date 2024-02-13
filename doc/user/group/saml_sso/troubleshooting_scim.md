@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting SCIM **(FREE ALL)**
+# Troubleshooting SCIM
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This section contains possible solutions for problems you might encounter.
 
@@ -99,7 +103,11 @@ When the SCIM app changes:
      - In GitLab self-managed, blocks users.
   1. Turn on sync for the new SCIM app to [link existing users](scim_setup.md#link-scim-and-saml-identities).
 
-## SCIM app returns `"User has already been taken","status":409` error **(PREMIUM SAAS)**
+## SCIM app returns `"User has already been taken","status":409` error
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -131,10 +139,14 @@ To resolve this issue, you can do either of the following:
 - Disable the [Restrict group access by domain](../access_and_permissions.md)
   feature by removing all domains.
 
-## Search Rails logs for SCIM requests **(PREMIUM SAAS)**
+## Search Rails logs for SCIM requests
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
-[Kibana](https://about.gitlab.com/handbook/support/workflows/kibana.html#using-kibana). Use the following filters based
+[Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based
 on the internal [group SCIM API](../../../development/internal_api/index.md#group-scim-api):
 
 - `json.path`: `/scim/v2/groups/<group-path>`
@@ -238,7 +250,7 @@ error. The error response can include a HTML result of the GitLab URL `https://g
 
 This error is harmless and occurs because group provisioning was turned on but GitLab SCIM integration does not support
 it nor require it. To remove the error, follow the instructions in the Azure configuration guide to disable the option
-to [synchronize Azure Active Directory groups to AppName](scim_setup.md#configure-azure-active-directory).
+to [synchronize Azure Active Directory groups to AppName](scim_setup.md#configure-microsoft-entra-id-formerly-azure-active-directory).
 
 ## Okta
 

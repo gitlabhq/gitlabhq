@@ -11,10 +11,10 @@ To help ensure consistency in the documentation, the Technical Writing team
 recommends these word choices. In addition:
 
 - The GitLab handbook contains a list of
-  [top misused terms](https://about.gitlab.com/handbook/communication/top-misused-terms/).
+  [top misused terms](https://handbook.gitlab.com/handbook/communication/top-misused-terms/).
 - The documentation [style guide](../styleguide#language) includes details
   about language and capitalization.
-- The GitLab handbook provides guidance on the [use of third-party trademarks](https://about.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
+- The GitLab handbook provides guidance on the [use of third-party trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
 For guidance not on this page, we defer to these style guides:
 
@@ -434,6 +434,12 @@ Use:
 Do not use **currently** when talking about the product or its features. The documentation describes the product as it is today.
 ([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
+## custom role
+
+Use **custom role** when referring to a role created with specific customized permissions.
+
+When referring to a non-custom role, use [**default role**](#default-role).
+
 ## data
 
 Use **data** as a singular noun.
@@ -447,6 +453,20 @@ Instead of:
 
 - Data are collected.
 - The data show a performance increase.
+
+## default role
+
+Use **default role** when referring to the following predefined roles that have
+no customized permissions added:
+
+- Guest
+- Reporter
+- Developer
+- Maintainer
+- Owner
+- Minimal Access
+
+Do not use **static role**, **built-in role**, or **predefined role**.
 
 ## delete
 
@@ -504,7 +524,7 @@ See also [**on**](#on).
 ## disable
 
 See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/disable-disabled) for guidance on **disable**.
-Use **inactive** or **off** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+Use **inactive** or **off** instead.
 
 ## disallow
 
@@ -582,7 +602,11 @@ Instead of:
 
 ## email
 
-Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+Do not use **e-mail** with a hyphen. When plural, use **emails** or **email messages**. ([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+
+## email address
+
+Use **email address** when referring to addresses used in emails. Do not shorten to **email**, which are messages.
 
 ## emoji
 
@@ -591,7 +615,7 @@ Use **emoji** to refer to the plural form of **emoji**.
 ## enable
 
 See the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/e/enable-enables) for guidance on **enable**.
-Use **active** or **on** instead. ([Vale](../testing.md#vale) rule: [`InclusionAbleism.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionAbleism.yml))
+Use **active** or **on** instead.
 
 ## enter
 
@@ -704,9 +728,9 @@ of the fields at once. For example:
 
 Learn more about [documenting multiple fields at once](index.md#documenting-multiple-fields-at-once).
 
-## file name
+## filename
 
-Use two words for **file name**. When using file name as a variable, use `<file_name>`.
+Use one word for **filename**. When using filename as a variable, use `<filename>`.
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
@@ -758,7 +782,7 @@ Thereafter, use **Git suggestions** by itself.
 
 ## GitLab
 
-Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://about.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
+Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
 
 ## GitLab Dedicated
 
@@ -792,10 +816,16 @@ the following are the names of GitLab Duo features:
 
 After the first use, use the feature name without **GitLab Duo**.
 
+## GitLab Duo Pro
+
+Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless approved by legal.
+
+You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
+and should leave it off when you can.
+
 ## GitLab Flavored Markdown
 
 When possible, spell out [**GitLab Flavored Markdown**](../../../user/markdown.md).
-([Vale](../testing.md#vale) rule: [`GLFM.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 If you must abbreviate, do not use **GFM**. Use **GLFM** instead.
 
@@ -963,6 +993,11 @@ Thereafter, use **Issue description generation** by itself.
 ## issue weights
 
 Use lowercase for **issue weights**.
+
+## IP address
+
+Use **IP address** when refering to addresses used with Internet Protocal (IP). Do not refer to an IP address as an
+**IP**.
 
 ## it
 
@@ -1184,7 +1219,7 @@ Do not use **navigate**. Use **go** instead. For example:
 - Go to this webpage.
 - Open a terminal and go to the `runner` directory.
 
-([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## need to
 
@@ -1412,7 +1447,7 @@ Use **press** when talking about keyboard keys. For example:
 
 ## profanity
 
-Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://about.gitlab.com/handbook/values/#diversity-inclusion).
+Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
 
 ## provision
 
@@ -1523,6 +1558,8 @@ Use lowercase for **review app**.
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
+There are two types of roles: [custom](#custom-role) and [default](#default-role).
+
 Roles are not the same as [**access levels**](#access-level).
 
 ## Root cause analysis
@@ -1544,6 +1581,12 @@ Use lowercase for **runners**. These are the agents that run CI/CD jobs. See als
 
 When referring to runners, if you have to specify that the runners are installed on a customer's GitLab instance,
 use **self-managed** rather than **self-hosted**.
+
+When referring to the scope of runners, use:
+
+- **project runner**: Associated with specific projects.
+- **group runner**: Available to all projects and subgroups in a group.
+- **instance runner**: Available to all groups and projects in a GitLab instance.
 
 ## runner manager, runner managers
 
@@ -1711,7 +1754,10 @@ Gitaly storages have physical paths and virtual storages have virtual paths.
 
 ## subgroup
 
-Use **subgroup** (no hyphen) instead of **sub-group**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+Use **subgroup** (no hyphen) instead of **sub-group**.
+Also, avoid using alternative terms for subgroups, such as **child group** or **low-level group**.
+
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## subscription tier
 
@@ -1927,7 +1973,7 @@ For example:
 ## utilize
 
 Do not use **utilize**. Use **use** instead. It's more succinct and easier for non-native English speakers to understand.
-([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+([Vale](../testing.md#vale) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## Value stream forecasting
 
@@ -1964,8 +2010,6 @@ Use:
 Instead of:
 
 - We created a feature for you to add widgets.
-
-([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
 ## workaround
 
@@ -2009,7 +2053,6 @@ Sometimes you might need to use **yet** when writing a task. If you use
 in present tense, active voice.
 
 [View guidance about how to write about future features](../versions.md#promising-features-in-future-versions).
-([Vale](../testing.md#vale) rule: [`CurrentStatus.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/CurrentStatus.yml))
 
 ## you, your, yours
 

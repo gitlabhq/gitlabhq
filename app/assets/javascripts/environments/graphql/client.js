@@ -7,7 +7,6 @@ import environmentToRollbackQuery from './queries/environment_to_rollback.query.
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
 import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
-import k8sWorkloadsQuery from './queries/k8s_workloads.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationStatusQuery from './queries/flux_kustomization_status.query.graphql';
 import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
@@ -91,6 +90,11 @@ export const apolloProvider = (endpoint) => {
   cache.writeQuery({
     query: k8sPodsQuery,
     data: {
+      metadata: {
+        name: null,
+        namespace: null,
+        creationTimestamp: null,
+      },
       status: {
         phase: null,
       },
@@ -109,57 +113,6 @@ export const apolloProvider = (endpoint) => {
         clusterIP: null,
         externalIP: null,
         ports: [],
-      },
-    },
-  });
-  cache.writeQuery({
-    query: k8sWorkloadsQuery,
-    data: {
-      DeploymentList: {
-        status: {
-          conditions: [],
-        },
-      },
-      DaemonSetList: {
-        status: {
-          numberMisscheduled: 0,
-          numberReady: 0,
-          desiredNumberScheduled: 0,
-        },
-      },
-      StatefulSetList: {
-        status: {
-          readyReplicas: 0,
-        },
-        spec: {
-          replicas: 0,
-        },
-      },
-      ReplicaSetList: {
-        status: {
-          readyReplicas: 0,
-        },
-        spec: {
-          replicas: 0,
-        },
-      },
-      JobList: {
-        status: {
-          failed: 0,
-          succeeded: 0,
-        },
-        spec: {
-          completions: 0,
-        },
-      },
-      CronJobList: {
-        status: {
-          active: 0,
-          lastScheduleTime: '',
-        },
-        spec: {
-          suspend: false,
-        },
       },
     },
   });

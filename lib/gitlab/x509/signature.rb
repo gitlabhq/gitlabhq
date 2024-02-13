@@ -159,6 +159,8 @@ module Gitlab
         key_identifier = get_certificate_extension('authorityKeyIdentifier')
         return if key_identifier.nil?
 
+        # In an effort to reduce allocations, we mutate below.
+        # Context: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144252#note_1765403453
         key_identifier.gsub!("keyid:", "")
         key_identifier.chomp!
         key_identifier

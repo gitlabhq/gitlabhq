@@ -4,13 +4,17 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project access tokens API **(FREE ALL)**
+# Project access tokens API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can read more about [project access tokens](../user/project/settings/project_access_tokens.md).
 
 ## List project access tokens
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Get a list of [project access tokens](../user/project/settings/project_access_tokens.md).
 
@@ -46,7 +50,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get a project access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82714) in GitLab 14.10.
 
 Get a [project access token](../user/project/settings/project_access_tokens.md) by ID.
 
@@ -135,7 +139,11 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Rotate a project access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/403042) in GitLab 16.0
+
+Prerequisites:
+
+- You must have a [personal access token with the `api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 
 Rotate a project access token. Revokes the previous token and creates a new token that expires in one week.
 
@@ -150,6 +158,9 @@ POST /projects/:id/access_tokens/:token_id/rotate
 | `id` | integer/string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
 | `token_id` | integer/string | yes | ID of the project access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
+
+NOTE:
+Non-administrators can rotate their own tokens. Administrators can rotate tokens of any user in the project.
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>/rotate"
@@ -189,7 +200,7 @@ for more information.
 
 ## Revoke a project access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238991) in GitLab 13.9.
 
 Revoke a [project access token](../user/project/settings/project_access_tokens.md).
 

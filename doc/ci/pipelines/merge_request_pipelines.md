@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 
-# Merge request pipelines **(FREE ALL)**
+# Merge request pipelines
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merge requests` to `merge request pipelines` in GitLab 14.8.
 
@@ -25,7 +29,7 @@ Branch pipelines:
 Merge request pipelines:
 
 - **Do not run by default**. The jobs in the CI/CD configuration file [must be configured](#prerequisites)
-  to run in merge request pipelines.
+  to run in merge request pipelines. Some configurations can [accidentally cause merge request pipelines to run](#two-pipelines-when-pushing-to-a-branch).
 - If configured, merge request pipelines run when you:
   - Create a new merge request from a source branch with one or more commits.
   - Push a new commit to the source branch for a merge request.
@@ -175,7 +179,7 @@ To use the UI to run a pipeline in the parent project for a merge request from a
 
 ### Prevent pipelines from fork projects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.
 
 To prevent users from running new pipelines for fork projects in the parent project
 use [the projects API](../../api/projects.md#edit-project) to disable the `ci_allow_fork_pipelines_to_run_in_parent_project`

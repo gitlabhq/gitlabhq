@@ -15,7 +15,6 @@ describe('CiResourcesList', () => {
       currentPage: 1,
       resources: nodes,
       pageInfo,
-      totalCount: 20,
     };
 
     wrapper = shallowMountExtended(CiResourcesList, {
@@ -29,7 +28,6 @@ describe('CiResourcesList', () => {
     });
   };
 
-  const findPageCount = () => wrapper.findByTestId('pageCount');
   const findResourcesListItems = () => wrapper.findAllComponents(CiResourcesListItem);
   const findPrevBtn = () => wrapper.findByTestId('prevButton');
   const findNextBtn = () => wrapper.findByTestId('nextButton');
@@ -39,7 +37,7 @@ describe('CiResourcesList', () => {
 
     beforeEach(async () => {
       await createComponent({
-        props: { currentPage: 1, resources: nodes, pageInfo, totalCount: nodes.length },
+        props: { currentPage: 1, resources: nodes, pageInfo },
       });
     });
 
@@ -54,20 +52,15 @@ describe('CiResourcesList', () => {
     it('hides the keyset control for next page', () => {
       expect(findNextBtn().exists()).toBe(false);
     });
-
-    it('shows the correct count of current page', () => {
-      expect(findPageCount().text()).toContain('1 of 1');
-    });
   });
 
   describe.each`
-    hasPreviousPage | hasNextPage | pageText    | currentPage
-    ${false}        | ${true}     | ${'1 of 3'} | ${1}
-    ${true}         | ${true}     | ${'2 of 3'} | ${2}
-    ${true}         | ${false}    | ${'3 of 3'} | ${3}
-  `('when on page $pageText', ({ currentPage, pageText, hasPreviousPage, hasNextPage }) => {
+    hasPreviousPage | hasNextPage | currentPage
+    ${false}        | ${true}     | ${1}
+    ${true}         | ${true}     | ${2}
+    ${true}         | ${false}    | ${3}
+  `('when on page $pageText', ({ currentPage, hasPreviousPage, hasNextPage }) => {
     const { nodes, pageInfo } = catalogResponseBody.data.ciCatalogResources;
-    const count = 50; // We want 3 pages of data to test. There are 20 items per page.
 
     const previousPageState = hasPreviousPage ? 'enabled' : 'disabled';
     const nextPageState = hasNextPage ? 'enabled' : 'disabled';
@@ -78,7 +71,6 @@ describe('CiResourcesList', () => {
           currentPage,
           resources: nodes,
           pageInfo: { ...pageInfo, hasPreviousPage, hasNextPage },
-          totalCount: count,
         },
       });
     });
@@ -105,20 +97,6 @@ describe('CiResourcesList', () => {
       } else {
         expect(disableAttr).toBeUndefined();
       }
-    });
-
-    it('shows the correct count of current page', () => {
-      expect(findPageCount().text()).toContain(pageText);
-    });
-  });
-
-  describe('when there is an error getting the page count', () => {
-    beforeEach(() => {
-      createComponent({ props: { totalCount: 0 } });
-    });
-
-    it('hides the page count', () => {
-      expect(findPageCount().exists()).toBe(false);
     });
   });
 

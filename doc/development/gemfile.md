@@ -80,14 +80,14 @@ For gems not listed in this table, it's still recommended but not required that 
 
 | Gem | Requires approval by |
 | ------ | ------ |
-| `doorkeeper` | [Manage:Authentication and Authorization](https://about.gitlab.com/handbook/product/categories/#authentication-and-authorization-group) |
-| `doorkeeper-openid_connect` | [Manage:Authentication and Authorization](https://about.gitlab.com/handbook/product/categories/#authentication-and-authorization-group)  |
+| `doorkeeper` | [Manage:Authentication and Authorization](https://handbook.gitlab.com/handbook/product/categories/#authentication-and-authorization-group) |
+| `doorkeeper-openid_connect` | [Manage:Authentication and Authorization](https://handbook.gitlab.com/handbook/product/categories/#authentication-and-authorization-group)  |
 
 ## Request an Appsec review
 
 When adding a new gem to our `Gemfile` or even changing versions in
-`Gemfile.lock` it is strongly recommended that you
-[request a Security review](https://about.gitlab.com/handbook/security/#how-to-request-a-security-review).
+`Gemfile.lock` we strongly recommend that you
+[request a Security review](https://handbook.gitlab.com/handbook/security/product-security/application-security/appsec-reviews/#adding-features-to-the-queue--requesting-a-security-review).
 New gems add an extra security risk for GitLab, and it is important to
 evaluate this risk before we ship this to production. Technically, just adding
 a new gem and pushing to a branch in our main `gitlab` project is a security

@@ -27,7 +27,7 @@ module Gitlab
         copy_archive
 
         wait_for_archived_file do
-          validate_decompressed_archive_size if Feature.enabled?(:validate_import_decompressed_archive_size)
+          validate_decompressed_archive_size
           decompress_archive
         end
       rescue StandardError => e

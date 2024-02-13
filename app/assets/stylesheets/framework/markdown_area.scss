@@ -125,7 +125,7 @@
 }
 
 .suggestions.md > .markdown-code-block {
-  @include gl-static;
+  position: static;
 }
 
 .md-suggestion-header {
@@ -137,8 +137,11 @@
   border-radius: $border-radius-default $border-radius-default 0 0;
 }
 
+/* these two styles are important to prevent certain LaTeX from
+   hijacking a page: https://gitlab.com/gitlab-org/gitlab/-/issues/394770
+*/
 .math-content-inline {
-  overflow: auto;
+  overflow: hidden;
   display: inline-flex;
 }
 

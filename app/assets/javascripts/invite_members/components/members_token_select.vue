@@ -24,11 +24,6 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    canUseEmailToken: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     placeholder: {
       type: String,
       required: false,
@@ -62,7 +57,7 @@ export default {
       required: false,
       default: '',
     },
-    rootGroupId: {
+    groupId: {
       type: String,
       required: true,
     },
@@ -78,10 +73,6 @@ export default {
   },
   computed: {
     emailIsValid() {
-      if (!this.canUseEmailToken) {
-        return false;
-      }
-
       const regex = /^\S+@\S+$/;
 
       return this.originalInput.match(regex) !== null;
@@ -149,7 +140,7 @@ export default {
     },
     retrieveUsersRequest() {
       if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID && this.glFeatures.groupUserSaml) {
-        return getGroupUsers(this.query, this.rootGroupId, this.queryOptions);
+        return getGroupUsers(this.query, this.groupId, this.queryOptions);
       }
 
       return getUsers(this.query, this.queryOptions);

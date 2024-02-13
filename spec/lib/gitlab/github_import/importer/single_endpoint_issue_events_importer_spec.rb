@@ -85,7 +85,7 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     end
   end
 
-  describe '#each_object_to_import', :clean_gitlab_redis_cache do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:issue_event) do
       struct = Struct.new(:id, :event, :created_at, :issue, keyword_init: true)
       struct.new(id: 1, event: event_name, created_at: '2022-04-26 18:30:53 UTC')
@@ -107,7 +107,6 @@ RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter
     let(:extended_events) { true }
 
     before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(client).to receive(:each_page).once.with(:issue_timeline,
         project.import_source, issuable.iid, { state: 'all', sort: 'created', direction: 'asc', page: 1 }
       ).and_yield(page)

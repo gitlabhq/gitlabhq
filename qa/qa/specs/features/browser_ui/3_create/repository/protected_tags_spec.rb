@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Repository tags', :reliable, product_group: :source_code do
+    describe 'Repository tags', :reliable, product_group: :source_code, quarantine: {
+      type: :flaky,
+      issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/438349",
+      only: { job: /gdk-qa-.*/ }
+    } do
       let(:project) { create(:project, :with_readme, name: 'project-for-tags') }
       let(:developer_user) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)

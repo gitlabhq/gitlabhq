@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "How to create merge requests in GitLab."
 ---
 
-# Creating merge requests **(FREE ALL)**
+# Creating merge requests
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides many different ways to create a merge request.
 
@@ -30,7 +34,7 @@ already exists for this branch, a link to the existing merge request is shown.
 
 ## From an issue
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) the behavior of the **Create merge request** button to open the merge request creation form in GitLab 14.8.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/349566) the behavior of the **Create merge request** button to open the merge request creation form in GitLab 14.8.
 
 If your development workflow requires an issue for every merge
 request, you can create a branch directly from the issue to speed the process up.
@@ -178,9 +182,9 @@ For more information, [see the forking workflow documentation](../repository/for
 
 ### Set the default target project
 
-By default, merge requests originating from a fork target your fork, not the upstream project.
-If you frequently contribute back to the upstream project, and want to target it
-by default, change the default target for your fork.
+By default, merge requests originating from a fork target the upstream project, not the forked project.
+
+You can configure your forked project to be the default target rather than the upstream project.
 
 Prerequisites:
 
@@ -234,7 +238,7 @@ A merge request is created.
 Add commits to a merge request by adding patches as attachments to the email.
 
 - The combined size of the patches must be 2 MB or less.
-- To be considered a patch, the attachment's file name must end in `.patch`.
+- To be considered a patch, the attachment's filename must end in `.patch`.
 - Patches are processed in order by name.
 - If the source branch from the subject does not exist, it is
   created from the repository's `HEAD`, or the default target branch.

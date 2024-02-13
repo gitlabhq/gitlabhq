@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Browser Performance Testing **(PREMIUM ALL)**
+# Browser Performance Testing
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 If your application offers a web interface and you're using
 [GitLab CI/CD](../index.md), you can quickly determine the rendering performance
@@ -56,7 +60,7 @@ job ran in the latest pipeline for the Merge request.
 
 ## Configuring Browser Performance Testing
 
-> Support for the `SITESPEED_DOCKER_OPTIONS` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134024) in GitLab 16.6.
+> - Support for the `SITESPEED_DOCKER_OPTIONS` variable [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134024) in GitLab 16.6.
 
 This example shows how to run the [sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/)
 on your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)

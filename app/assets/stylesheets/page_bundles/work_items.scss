@@ -2,7 +2,7 @@
 @import 'system_note_styles';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
-$work-item-overview-right-sidebar-width: 23rem;
+$work-item-overview-right-sidebar-width: 20rem;
 $work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
@@ -135,24 +135,34 @@ $work-item-overview-gap-width: 2rem;
 
 .work-item-notifications-form {
   .gl-toggle {
-    @include gl-ml-auto;
+    margin-left: auto;
   }
 
   .gl-toggle-label {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
   }
 }
 
 .work-item-overview {
   @include media-breakpoint-up(md) {
     display: grid;
-    grid-template-columns: 1fr $work-item-overview-right-sidebar-width;
-    gap: $work-item-overview-gap-width;
+    // allow the main content area to shrink
+    // grid items have "max-width: auto" so without the minmax the content can
+    // spill outside of the overview container
+    grid-template-columns: minmax(0, 1fr) $work-item-overview-right-sidebar-width;
+    column-gap: $work-item-overview-gap-width;
   }
 }
 
 .work-item-overview-right-sidebar {
+  margin-top: $gl-spacing-scale-5;
+
   @include media-breakpoint-up(md) {
+    margin-top: 0;
+    grid-row-start: 1;
+    grid-column-start: 2;
+    grid-row-end: 4;
+
     &.is-modal {
       .work-item-attributes-wrapper {
         top: 0;
@@ -167,10 +177,15 @@ $work-item-overview-gap-width: 2rem;
       top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
       height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
       margin-bottom: calc(#{$content-wrapper-padding} * -1);
+      padding-inline: 0.5rem;
       position: sticky;
       overflow-y: auto;
       overflow-x: hidden;
     }
+  }
+
+  .work-item-date-picker {
+    max-width: 175px;
   }
 }
 
@@ -237,8 +252,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 @mixin hierarchy-path-chevron {
   content: '';
-  @include gl-absolute;
-  @include gl-reset-bg;
+  position: absolute;
+  background-color: inherit;
   top: 0.39rem;
   right: px-to-rem(-9px);
   width: $disclosure-hierarchy-chevron-dimension;
@@ -246,34 +261,43 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   transform: rotate(45deg) skew(14deg, 14deg);
 }
 
-.disclosure-hierarchy-button {
-  @include gl-pl-4;
-  @include gl-py-3;
-  @include gl-display-flex;
-  @include gl-relative;
-  @include gl-font-sm;
-  border: 1px solid var(--gray-100, $gray-100);
-  @include gl-border-r-none;
-  @include gl-border-l-none;
-  @include gl-line-height-normal;
-  padding-right: $grid-size;
-  max-width: $gl-spacing-scale-20;
-  background: var(--gray-10, $white);
-
+.disclosure-hierarchy {
   @include media-breakpoint-up(sm) {
-    max-width: $gl-spacing-scale-48;
+    margin-right: $gl-spacing-scale-7;
   }
+}
+
+.disclosure-hierarchy-item:first-child,
+.disclosure-hierarchy-item:last-child {
+  flex-shrink: 1;
+}
+
+.disclosure-hierarchy-button {
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: $gl-spacing-scale-48;
+  padding-left: $gl-spacing-scale-4;
+  padding-top: calc(#{$gl-spacing-scale-3} - 1px);
+  padding-bottom: calc(#{$gl-spacing-scale-3} - 1px);
+  display: flex;
+  position: relative;
+  font-size: $gl-font-size-sm;
+  border: 1px solid var(--gray-100, $gray-100);
+  border-right-style: none;
+  border-left-style: none;
+  line-height: $gl-line-height-16;
+  padding-right: $grid-size;
+  background: var(--gray-10, $white);
 
   &::before,
   &::after {
     @include hierarchy-path-chevron;
     border: 1px solid var(--gray-100, $gray-100);
     border-color: inherit;
-    @include gl-border-b-transparent;
-    @include gl-border-l-transparent;
-    @include gl-reset-bg;
-    @include gl-rounded-top-left-small;
-    @include gl-rounded-bottom-right-small;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-top-left-radius: $gl-border-radius-small;
+    border-bottom-right-radius: $gl-border-radius-small;
   }
 
   &::before {
@@ -287,13 +311,13 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   .disclosure-hierarchy-item:first-child & {
-    @include gl-pl-3;
+    padding-left: $gl-spacing-scale-3;
     border-left: 1px solid var(--gray-100, $gray-100);
-    @include gl-rounded-top-left-base;
-    @include gl-rounded-bottom-left-base;
+    border-top-left-radius: $gl-border-radius-base;
+    border-bottom-left-radius: $gl-border-radius-base;
 
     &::before {
-      @include gl-display-none;
+      display: none;
     }
 
     &:active,
@@ -305,10 +329,10 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   .disclosure-hierarchy-item:last-child & {
-    @include gl-pr-4;
+    padding-right: $gl-spacing-scale-4;
     border-right: 1px solid var(--gray-100, $gray-100);
-    @include gl-rounded-top-right-base;
-    @include gl-rounded-bottom-right-base;
+    border-top-right-radius: $gl-border-radius-base;
+    border-bottom-right-radius: $gl-border-radius-base;
 
     &::after {
       display: none;
@@ -317,11 +341,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
   &[disabled] {
     color: $gl-text-color-disabled;
-    @include gl-cursor-not-allowed;
+    cursor: not-allowed;
   }
 
   &:not([disabled]):hover {
-    @include gl-border-gray-400;
+    border-color: var(--gray-400, $gray-400);
     @include hierarchy-active-item-color;
     color: var(--gray-900, $gray-900);
 
@@ -342,7 +366,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     border-bottom: 1px solid var(--gray-400, $gray-400);
     @include hierarchy-active-item-color;
     z-index: 2;
-    @include gl-rounded-small;
+    border-radius: $gl-border-radius-small;
 
     &::before, &::after {
       box-shadow: 2px -2px 0 1px $blue-400;

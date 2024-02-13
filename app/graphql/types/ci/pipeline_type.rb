@@ -31,7 +31,8 @@ module Types
       end
 
       field :before_sha, GraphQL::Types::String, null: true,
-                                                 description: 'Base SHA of the source branch.'
+                                                 description: 'Base SHA of the source branch.',
+                                                 calls_gitaly: true
 
       field :complete, GraphQL::Types::Boolean, null: false, method: :complete?,
                                                 description: 'Indicates if a pipeline is complete.'
@@ -198,6 +199,10 @@ module Types
       field :merge_request, Types::MergeRequestType, null: true, description: "The MR which the Pipeline is attached to"
 
       field :stuck, GraphQL::Types::Boolean, method: :stuck?, null: false, description: "If the pipeline is stuck."
+
+      field :yaml_errors, GraphQL::Types::Boolean, method: :yaml_errors?, null: false, description: "If the pipeline has YAML errors."
+
+      field :trigger, GraphQL::Types::Boolean, method: :trigger?, null: false, description: "If the pipeline was created by a Trigger request."
 
       def commit
         BatchLoader::GraphQL.wrap(object.commit)

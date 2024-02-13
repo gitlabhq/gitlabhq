@@ -1,10 +1,14 @@
 ---
-stage: Data Stores
+stage: Systems
 group: Cloud Connector
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Performance bar **(FREE SELF)**
+# Performance bar
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
 > - The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.
@@ -17,7 +21,7 @@ For example:
 
 ## Available information
 
-> Rugged calls [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421591) in GitLab 16.6.
+> - Rugged calls [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/421591) in GitLab 16.6.
 
 From left to right, the performance bar displays:
 
@@ -93,7 +97,7 @@ For non-administrators to display the performance bar, it must be
 
 ## Request warnings
 
-> [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
+> - [Warning icon in the request selector removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/82187) in GitLab 14.9.
 
 Requests that exceed predefined limits display a warning **{warning}** icon and
 explanation next to the metric. In this example, the Gitaly call duration

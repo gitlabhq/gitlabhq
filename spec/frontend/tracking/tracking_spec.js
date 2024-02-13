@@ -612,20 +612,35 @@ describe('Tracking', () => {
         expect(mixin.computed.trackingOptions()).toEqual({ foo: 'baz', baz: 'bar' });
       });
 
-      it('includes experiment data if linked to an experiment', () => {
+      describe('experiment', () => {
         const mockExperimentData = {
           variant: 'candidate',
           experiment: 'darkMode',
         };
-        getExperimentData.mockReturnValue(mockExperimentData);
 
-        const mixin = Tracking.mixin({ foo: 'bar', experiment: 'darkMode' });
-        expect(mixin.computed.trackingOptions()).toEqual({
+        const expectedOptions = {
           foo: 'bar',
           context: {
             schema: TRACKING_CONTEXT_SCHEMA,
             data: mockExperimentData,
           },
+        };
+
+        beforeEach(() => {
+          getExperimentData.mockReturnValue(mockExperimentData);
+        });
+
+        it('includes experiment data if linked to an experiment', () => {
+          const mixin = Tracking.mixin({ foo: 'bar', experiment: 'darkMode' });
+
+          expect(mixin.computed.trackingOptions()).toEqual(expectedOptions);
+        });
+
+        it('includes experiment data if local tracking value provides experiment name', () => {
+          const mixin = Tracking.mixin({ foo: 'bar' });
+          mixin.computed.tracking = { experiment: 'darkMode' };
+
+          expect(mixin.computed.trackingOptions()).toEqual(expectedOptions);
         });
       });
 

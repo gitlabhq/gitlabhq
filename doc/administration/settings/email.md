@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Email **(FREE SELF)**
+# Email
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can customize some of the content in emails sent from your GitLab instance.
 
@@ -12,7 +16,11 @@ You can customize some of the content in emails sent from your GitLab instance.
 
 The logo in the header of some emails can be customized, see the [logo customization section](../../administration/appearance.md#customize-your-homepage-button).
 
-## Include author name in email notification email body **(PREMIUM SELF)**
+## Include author name in email notification email body
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 By default, GitLab overrides the email address in notification emails with the email address
 of the issue, merge request, or comment author. Enable this setting to include the author's email
@@ -26,7 +34,11 @@ To include the author's email address in the email body:
 1. Select the **Include author name in email notification email body** checkbox.
 1. Select **Save changes**.
 
-## Enable multipart email **(PREMIUM SELF)**
+## Enable multipart email
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab can send email in multipart format (HTML and plain text) or plain text only.
 
@@ -38,9 +50,13 @@ To enable multipart email:
 1. Select **Enable multipart email**.
 1. Select **Save changes**.
 
-## Custom hostname for private commit emails **(PREMIUM SELF)**
+## Custom hostname for private commit emails
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
 This configuration option sets the email hostname for [private commit emails](../../user/profile/index.md#use-an-automatically-generated-private-commit-email).
  By default it is set to `users.noreply.YOUR_CONFIGURED_HOSTNAME`.
@@ -58,7 +74,11 @@ After the hostname is configured, every private commit email using the previous 
 recognized by GitLab. This can directly conflict with certain [Push rules](../../user/project/repository/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 
-## Custom additional text **(PREMIUM SELF)**
+## Custom additional text
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can add additional text at the bottom of any email that GitLab sends. This additional text
 can be used for legal, auditing, or compliance reasons, for example.
@@ -83,7 +103,11 @@ To disable these notifications:
 1. Clear the **Enable user deactivation emails** checkbox.
 1. Select **Save changes**.
 
-### Custom additional text in deactivation emails **(FREE SELF)**
+### Custom additional text in deactivation emails
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
 > - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.

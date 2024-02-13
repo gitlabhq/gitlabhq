@@ -3,6 +3,9 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
+import RegistrySearch from '~/vue_shared/components/registry/registry_search.vue';
+import { BASE_SORT_FIELDS } from '~/ml/model_registry/constants';
+import * as urlHelpers from '~/lib/utils/url_utility';
 import { defaultPageInfo } from '../mock_data';
 
 describe('ml/model_registry/components/searchable_list.vue', () => {
@@ -14,12 +17,23 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
   const findEmptyState = () => wrapper.findByTestId('empty-state-slot');
   const findFirstRow = () => wrapper.findByTestId('element');
   const findRows = () => wrapper.findAllByTestId('element');
+  const findSearch = () => wrapper.findComponent(RegistrySearch);
+
+  const expectedFirstPage = {
+    after: 'eyJpZCI6IjIifQ',
+    first: 30,
+    last: null,
+    orderBy: 'created_at',
+    sort: 'desc',
+  };
 
   const defaultProps = {
     items: ['a', 'b', 'c'],
     pageInfo: defaultPageInfo,
     isLoading: false,
     errorMessage: '',
+    showSearch: false,
+    sortableFields: [],
   };
 
   const mountComponent = (props = {}) => {
@@ -143,6 +157,12 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
   describe('when user interacts with pagination', () => {
     beforeEach(() => mountComponent());
 
+    it('when it is created emits fetch-page to get first page', () => {
+      mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
+
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage]]);
+    });
+
     it('when list emits next-page emits fetchPage with correct pageInfo', () => {
       findRegistryList().vm.$emit('next-page');
 
@@ -150,9 +170,11 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
         after: 'eyJpZCI6IjIifQ',
         first: 30,
         last: null,
+        orderBy: 'created_at',
+        sort: 'desc',
       };
 
-      expect(wrapper.emitted('fetch-page')).toEqual([[expectedNewPageInfo]]);
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage], [expectedNewPageInfo]]);
     });
 
     it('when list emits prev-page emits fetchPage with correct pageInfo', () => {
@@ -162,9 +184,77 @@ describe('ml/model_registry/components/searchable_list.vue', () => {
         before: 'eyJpZCI6IjE2In0',
         first: null,
         last: 30,
+        orderBy: 'created_at',
+        sort: 'desc',
       };
 
-      expect(wrapper.emitted('fetch-page')).toEqual([[expectedNewPageInfo]]);
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage], [expectedNewPageInfo]]);
+    });
+  });
+
+  describe('search', () => {
+    beforeEach(() => {
+      jest.spyOn(urlHelpers, 'updateHistory').mockImplementation(() => {});
+    });
+
+    it('does not show search bar when showSearch is false', () => {
+      mountComponent({ showSearch: false });
+
+      expect(findSearch().exists()).toBe(false);
+    });
+
+    it('mounts search correctly', () => {
+      mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
+
+      expect(findSearch().props()).toMatchObject({
+        filters: [],
+        sorting: {
+          orderBy: 'created_at',
+          sort: 'desc',
+        },
+        sortableFields: BASE_SORT_FIELDS,
+      });
+    });
+
+    it('on search submit, emits fetch-page with correct variables', () => {
+      mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
+
+      findSearch().vm.$emit('filter:submit');
+
+      const expectedVariables = {
+        orderBy: 'created_at',
+        sort: 'desc',
+      };
+
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage], [expectedVariables]]);
+    });
+
+    it('on sorting changed, emits fetch-page with correct variables', () => {
+      mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
+
+      const orderBy = 'name';
+      findSearch().vm.$emit('sorting:changed', { orderBy });
+
+      const expectedVariables = {
+        orderBy: 'name',
+        sort: 'desc',
+      };
+
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage], [expectedVariables]]);
+    });
+
+    it('on direction changed, emits fetch-page with correct variables', () => {
+      mountComponent({ showSearch: true, sortableFields: BASE_SORT_FIELDS });
+
+      const sort = 'asc';
+      findSearch().vm.$emit('sorting:changed', { sort });
+
+      const expectedVariables = {
+        orderBy: 'created_at',
+        sort: 'asc',
+      };
+
+      expect(wrapper.emitted('fetch-page')).toEqual([[expectedFirstPage], [expectedVariables]]);
     });
   });
 });

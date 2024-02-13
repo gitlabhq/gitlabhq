@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Using MySQL **(FREE ALL)**
+# Using MySQL
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Many applications depend on MySQL as their database, and you may
 need it for your tests to run.
@@ -127,5 +131,5 @@ GitLab Runner with the Shell executor.
 ## Example project
 
 To view a MySQL example, create a fork of this [sample project](https://gitlab.com/gitlab-examples/mysql).
-This project uses publicly-available [shared runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
+This project uses publicly-available [instance runners](../runners/index.md) on [GitLab.com](https://gitlab.com).
 Update the README.md file, commit your changes, and view the CI/CD pipeline to see it in action.

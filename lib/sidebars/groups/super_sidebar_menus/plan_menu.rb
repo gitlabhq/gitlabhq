@@ -25,8 +25,7 @@ module Sidebars
             :milestones,
             :iterations,
             :group_wiki,
-            :crm_contacts,
-            :crm_organizations
+            :crm_contacts
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

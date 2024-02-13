@@ -4,7 +4,10 @@ classes:
 - Ci::BuildReportResult
 feature_categories:
 - code_testing
-description: Stores data related to the build that finished, including junit test data.
+description: Stores data related to the build that finished, including junit test
+  data.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32991
 milestone: '13.1'
 gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

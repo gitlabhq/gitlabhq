@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Protected tags API **(FREE ALL)**
+# Protected tags API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 **Valid access levels**
 
@@ -16,7 +20,7 @@ These access levels are recognized:
 
 ## List protected tags
 
-> Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
+> - Deploy key information [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116846) in GitLab 16.0.
 
 Gets a list of [protected tags](../user/project/protected_tags.md) from a project.
 This function takes pagination parameters `page` and `per_page` to restrict the list of protected tags.

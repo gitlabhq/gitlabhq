@@ -209,7 +209,7 @@ export default {
   <div>
     <div class="gl-display-flex gl-align-items-center">
       <!-- hide header when editing, since we then have a form label. Keep it reachable for screenreader nav  -->
-      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-scale-5">
+      <h3 :class="{ 'gl-sr-only': isEditing }" class="gl-mb-0! gl-heading-5">
         {{ __('Parent') }}
       </h3>
       <gl-loading-icon
@@ -224,7 +224,7 @@ export default {
         data-testid="edit-parent"
         category="tertiary"
         size="small"
-        class="gl-ml-auto gl-mr-2"
+        class="gl-ml-auto"
         :disabled="updateInProgress"
         @click="isEditing = true"
         >{{ __('Edit') }}</gl-button
@@ -237,7 +237,6 @@ export default {
           data-testid="apply-parent"
           category="tertiary"
           size="small"
-          class="gl-mr-2"
           :disabled="updateInProgress"
           @click="isEditing = false"
           >{{ __('Apply') }}</gl-button

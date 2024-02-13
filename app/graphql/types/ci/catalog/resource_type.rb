@@ -42,15 +42,16 @@ module Types
           description: 'Latest version of the catalog resource.',
           alpha: { milestone: '16.1' }
 
+        field :verification_level, Types::Ci::Catalog::Resources::Components::VerificationLevelEnum, null: true,
+          description: 'Verification level of the catalog resource.',
+          alpha: { milestone: '16.9' }
+
         field :latest_released_at, Types::TimeType, null: true,
           description: "Release date of the catalog resource's latest version.",
           alpha: { milestone: '16.5' }
 
         field :star_count, GraphQL::Types::Int, null: false,
           description: 'Number of times the catalog resource has been starred.',
-          alpha: { milestone: '16.1' }
-
-        markdown_field :readme_html, null: false,
           alpha: { milestone: '16.1' }
 
         def open_issues_count

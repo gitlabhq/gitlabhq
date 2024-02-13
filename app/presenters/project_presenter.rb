@@ -384,7 +384,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   def autodevops_anchor_data(show_auto_devops_callout: false)
     return unless project.feature_available?(:builds, current_user)
 
-    if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
+    if current_user && can?(current_user, :admin_pipeline, project) && !project.has_ci_config_file? && !show_auto_devops_callout
       if auto_devops_enabled?
         AnchorData.new(
           false,
@@ -425,7 +425,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     if cicd_missing?
       AnchorData.new(false, content_tag(:span, statistic_icon('plus', 'gl-mr-3') + _('Set up CI/CD')), project_ci_pipeline_editor_path(project))
-    elsif repository.gitlab_ci_yml.present?
+    elsif project.has_ci_config_file?
       AnchorData.new(false, statistic_icon('rocket') + _('CI/CD configuration'), project_ci_pipeline_editor_path(project), 'btn-default')
     end
   end
@@ -491,7 +491,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def cicd_missing?
-    current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
+    current_user && can_current_user_push_code? && !project.has_ci?
   end
 
   def can_instantiate_cluster?

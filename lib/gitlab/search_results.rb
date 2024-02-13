@@ -91,7 +91,7 @@ module Gitlab
       # and confidential issues user has access to, is too complex.
       # It's faster to try to fetch all public issues first, then only
       # if necessary try to fetch all issues.
-      sum = limited_count(issues(public_only: true))
+      sum = limited_count(issues(confidential: false))
       @limited_issues_count = sum < count_limit ? limited_count(issues) : sum
     end
 

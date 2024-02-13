@@ -97,7 +97,6 @@ RSpec.shared_context 'project navbar structure' do
           _('CI/CD'),
           _('Packages and registries'),
           _('Monitor'),
-          (_('Analytics') if Gitlab.ee?),
           s_('UsageQuota|Usage Quotas')
         ]
       }
@@ -148,6 +147,16 @@ RSpec.shared_context 'group navbar structure' do
 
   let(:plan_nav_items) do
     [_("Issues"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
+  end
+
+  let(:customer_relations_nav_item) do
+    {
+      nav_item: _('Customer relations'),
+      nav_sub_items: [
+        _('Contacts'),
+        _('Organizations')
+      ]
+    }
   end
 
   let(:structure) do

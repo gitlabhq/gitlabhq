@@ -8,7 +8,11 @@ author_gitlab: mehranrasulian
 
 <!-- vale off -->
 
-# Test and deploy Laravel applications with GitLab CI/CD and Envoy **(FREE ALL)**
+# Test and deploy Laravel applications with GitLab CI/CD and Envoy
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ## Introduction
 

@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Working with the bundled PgBouncer service **(FREE SELF)**
+# Working with the bundled PgBouncer service
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 PgBouncer is bundled in the `gitlab-ee` package, but is free to use.
@@ -91,7 +95,7 @@ Do not backup or restore GitLab through a PgBouncer connection: it causes a GitL
 
 ## Enable Monitoring
 
-> [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
+> - [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3786) in GitLab 12.0.
 
 If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 

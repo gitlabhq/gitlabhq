@@ -242,7 +242,10 @@ describe('WorkItemNotes component', () => {
 
       expect(firstCommentNote.props()).toMatchObject({
         discussion: mockDiscussions[commentIndex].notes.nodes,
-        autocompleteDataSources: autocompleteDataSources('test-path', mockWorkItemIid),
+        autocompleteDataSources: autocompleteDataSources({
+          fullPath: 'test-path',
+          iid: mockWorkItemIid,
+        }),
         markdownPreviewPath: markdownPreviewPath('test-path', mockWorkItemIid),
       });
     });

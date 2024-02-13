@@ -146,8 +146,7 @@ module Gitlab
 
           context 'when retry count is specified by default' do
             let(:config) do
-              YAML.dump(default: { retry: { max: 1 } },
-                        rspec: { script: 'rspec' })
+              YAML.dump(default: { retry: { max: 1 } }, rspec: { script: 'rspec' })
             end
 
             it 'does use the default value' do
@@ -157,8 +156,9 @@ module Gitlab
 
           context 'when retry count default value is overridden' do
             let(:config) do
-              YAML.dump(default: { retry: { max: 1 } },
-                        rspec: { script: 'rspec', retry: { max: 2 } })
+              YAML.dump(
+                default: { retry: { max: 1 } }, rspec: { script: 'rspec', retry: { max: 2 } }
+              )
             end
 
             it 'does use the job value' do
@@ -171,9 +171,7 @@ module Gitlab
           context 'when job is a manual action' do
             context 'when allow_failure is defined' do
               let(:config) do
-                YAML.dump(rspec: { script: 'rspec',
-                                   when: 'manual',
-                                   allow_failure: false })
+                YAML.dump(rspec: { script: 'rspec', when: 'manual', allow_failure: false })
               end
 
               it 'is not allowed to fail' do
@@ -183,8 +181,7 @@ module Gitlab
 
             context 'when allow_failure is not defined' do
               let(:config) do
-                YAML.dump(rspec: { script: 'rspec',
-                                   when: 'manual' })
+                YAML.dump(rspec: { script: 'rspec', when: 'manual' })
               end
 
               it 'is allowed to fail' do
@@ -194,9 +191,7 @@ module Gitlab
 
             context 'when allow_failure has exit_codes' do
               let(:config) do
-                YAML.dump(rspec: { script: 'rspec',
-                                   when: 'manual',
-                                   allow_failure: { exit_codes: 1 } })
+                YAML.dump(rspec: { script: 'rspec', when: 'manual', allow_failure: { exit_codes: 1 } })
               end
 
               it 'is not allowed to fail' do
@@ -213,8 +208,7 @@ module Gitlab
           context 'when job is not a manual action' do
             context 'when allow_failure is defined' do
               let(:config) do
-                YAML.dump(rspec: { script: 'rspec',
-                                   allow_failure: false })
+                YAML.dump(rspec: { script: 'rspec', allow_failure: false })
               end
 
               it 'is not allowed to fail' do
@@ -234,8 +228,7 @@ module Gitlab
 
             context 'when allow_failure is dynamically specified' do
               let(:config) do
-                YAML.dump(rspec: { script: 'rspec',
-                                   allow_failure: { exit_codes: 1 } })
+                YAML.dump(rspec: { script: 'rspec', allow_failure: { exit_codes: 1 } })
               end
 
               it 'is not allowed to fail' do
@@ -3300,13 +3293,13 @@ module Gitlab
         context 'returns errors if stages is not an array' do
           let(:config) { YAML.dump({ stages: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'stages config should be an array of strings'
+          it_behaves_like 'returns errors', 'stages config should be an array of strings or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if stages is not an array of strings' do
           let(:config) { YAML.dump({ stages: [true, "test"], rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'stages config should be an array of strings'
+          it_behaves_like 'returns errors', 'stages config should be an array of strings or a nested array of strings up to 10 levels deep'
         end
 
         context 'returns errors if variables is not a map' do

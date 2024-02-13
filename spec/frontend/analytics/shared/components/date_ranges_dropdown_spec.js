@@ -135,6 +135,11 @@ describe('DateRangesDropdown', () => {
         expect(wrapper.findByText(`${expectedDaysCount} days selected`).exists()).toBe(true);
       },
     );
+
+    it('should not rendered the indicator if disableSelectedDayCount is set', () => {
+      createComponent({ props: { disableSelectedDayCount: true, selected: lastWeekValue } });
+      expect(findDaysSelectedCount().exists()).toBe(false);
+    });
   });
 
   describe('when the `tooltip` prop is set', () => {

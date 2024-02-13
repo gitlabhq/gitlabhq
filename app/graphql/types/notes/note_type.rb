@@ -27,7 +27,7 @@ module Types
         description: 'Project associated with the note.'
 
       field :author, Types::UserType,
-        null: false,
+        null: true,
         description: 'User who wrote this note.'
 
       field :system, GraphQL::Types::Boolean,

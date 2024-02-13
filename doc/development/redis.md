@@ -154,7 +154,7 @@ is run manually on an as-needed basis.
 
 ## N+1 calls problem
 
-> Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
+> - Introduced in [`spec/support/helpers/redis_commands/recorder.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/support/helpers/redis_commands/recorder.rb) via [`f696f670`](https://gitlab.com/gitlab-org/gitlab/-/commit/f696f670005435472354a3dc0c01aa271aef9e32)
 
 `RedisCommands::Recorder` is a tool for detecting Redis N+1 calls problem from tests.
 

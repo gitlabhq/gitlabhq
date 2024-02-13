@@ -31,7 +31,7 @@ Feature flags can be used for different purposes:
   to be hidden from anyone. In that case, the feature flag allows to merge all the changes to the main branch without actually using
   the feature yet.
 - Beta features: We might
-  [not be confident we'll be able to scale, support, and maintain a feature](https://about.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
+  [not be confident we'll be able to scale, support, and maintain a feature](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
   in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
   There are also scenarios where a feature is not complete enough to be considered an MVC.
   Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.

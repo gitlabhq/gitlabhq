@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SaaS runners on Linux **(FREE SAAS)**
+# SaaS runners on Linux
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 When you run jobs on SaaS runners on Linux, the runners are on auto-scaled ephemeral virtual machine (VM) instances.
 The default region for the VMs is `us-east1`.
@@ -21,9 +25,9 @@ For Free, Premium, and Ultimate plan customers, jobs on these instances consume 
 |-----------------------------------------------|-------|--------|---------|
 | `saas-linux-small-amd64`                      | 2     | 8 GB   | 25 GB   |
 | `saas-linux-medium-amd64`                     | 4     | 16 GB  | 50 GB   |
-| `saas-linux-large-amd64` **(PREMIUM SAAS)**   | 8     | 32 GB  | 100 GB  |
-| `saas-linux-xlarge-amd64` **(PREMIUM SAAS)**  | 16    | 64 GB  | 200 GB  |
-| `saas-linux-2xlarge-amd64` **(PREMIUM SAAS)** | 32    | 128 GB | 200 GB  |
+| `saas-linux-large-amd64` (Premium and Ultimate only)  | 8     | 32 GB  | 100 GB  |
+| `saas-linux-xlarge-amd64` (Premium and Ultimate only) | 16    | 64 GB  | 200 GB  |
+| `saas-linux-2xlarge-amd64` (Premium and Ultimate only) | 32    | 128 GB | 200 GB  |
 
 The `small` machine type is set as default. If no [tag](../../yaml/index.md#tags) keyword in your `.gitlab-ci.yml` file is specified,
 the jobs will run on this default runner.

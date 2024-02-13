@@ -8,7 +8,7 @@ owning-stage: "~devops::configure"
 participating-stages: []
 ---
 
-# GitLab to Kubernetes communication **(FREE ALL)**
+# GitLab to Kubernetes communication
 
 The goal of this document is to define how GitLab can communicate with Kubernetes
 and in-cluster services through the GitLab agent.

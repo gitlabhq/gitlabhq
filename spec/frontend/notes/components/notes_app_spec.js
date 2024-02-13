@@ -3,6 +3,7 @@ import AxiosMockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import { nextTick } from 'vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import batchComments from '~/batch_comments/stores/modules/batch_comments';
@@ -10,6 +11,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import * as urlUtility from '~/lib/utils/url_utility';
+import notesEventHub from '~/notes/event_hub';
 import CommentForm from '~/notes/components/comment_form.vue';
 import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
@@ -450,6 +452,41 @@ describe('note_app', () => {
           per_page: 20,
           persist_filter: false,
         });
+      });
+    });
+  });
+
+  describe('draft comments', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      window.mrTabs = { eventHub: notesEventHub };
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+      wrapper = mountComponent();
+    });
+
+    describe('when adding a new comment to an existing review', () => {
+      it('sends the correct tracking event', () => {
+        notesEventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'merge_request_click_add_to_review_on_overview_tab',
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('when adding a comment to a new review', () => {
+      it('sends the correct tracking event', () => {
+        notesEventHub.$emit('noteFormStartReview', { name: 'noteFormStartReview' });
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'merge_request_click_start_review_on_overview_tab',
+          expect.any(Object),
+        );
       });
     });
   });

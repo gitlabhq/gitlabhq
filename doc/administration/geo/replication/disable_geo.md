@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Disabling Geo **(PREMIUM SELF)**
+# Disabling Geo
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 If you want to revert to a regular Linux package installation setup after a test, or you have encountered a Disaster Recovery
 situation and you want to disable Geo momentarily, you can use these instructions to disable your

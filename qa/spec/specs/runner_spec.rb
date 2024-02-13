@@ -10,7 +10,7 @@ RSpec.describe QA::Specs::Runner do
   end
 
   before do
-    stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated --tag ~transient --tag ~sanity_feature_flags].freeze)
+    stub_const('DEFAULT_SKIPPED_TAGS', %w[--tag ~orchestrated --tag ~transient].freeze)
   end
 
   describe '#perform' do

@@ -14,7 +14,7 @@
 #
 # 2. Header timeouts
 #   When the use_read_total_timeout option is used, that means the receiver
-#   of the HTTP request cannot be trusted. Gitlab::BufferedIo will be used,
+#   of the HTTP request cannot be trusted. Gitlab::HTTP_V2::BufferedIo will be used,
 #   to read header data. It is a modified version of Net::BufferedIO that
 #   raises a timeout error if reading header data takes too much time.
 
@@ -62,7 +62,7 @@ module Gitlab
       def validate_url_with_proxy!(url)
         UrlBlocker.validate_url_with_proxy!(url, **url_blocker_options)
       rescue UrlBlocker::BlockedUrlError => e
-        raise HTTP_V2::BlockedUrlError, "URL is blocked: #{e.message}"
+        raise BlockedUrlError, "URL is blocked: #{e.message}"
       end
 
       def url_blocker_options

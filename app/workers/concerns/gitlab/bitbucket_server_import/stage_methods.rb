@@ -14,7 +14,9 @@ module Gitlab
 
         data_consistency :always
 
-        sidekiq_options dead: false, retry: 3
+        sidekiq_options dead: false, retry: 6
+
+        sidekiq_options status_expiration: Gitlab::Import::StuckImportJob::IMPORT_JOBS_EXPIRATION
 
         sidekiq_retries_exhausted do |msg, e|
           Gitlab::Import::ImportFailureService.track(
@@ -30,6 +32,8 @@ module Gitlab
         info(project_id, message: 'starting stage')
 
         return unless (project = find_project(project_id))
+
+        Import::RefreshImportJidWorker.perform_in_the_future(project_id, jid)
 
         import(project)
 

@@ -96,6 +96,10 @@ module QA
           element 'pipeline-container'
         end
 
+        view 'app/assets/javascripts/ci/pipelines_page/components/pipelines_artifacts.vue' do
+          element 'artifacts-dropdown'
+        end
+
         view 'app/assets/javascripts/vue_shared/components/markdown/apply_suggestion.vue' do
           element 'apply-suggestion-dropdown'
           element 'commit-message-field'
@@ -408,7 +412,7 @@ module QA
           # Revisit after merge page re-architect is done https://gitlab.com/gitlab-org/gitlab/-/issues/300042
           # To remove page refresh logic if possible
           wait_until_ready_to_merge
-          wait_until { !find_element('merge-button').text.include?('when pipeline succeeds') } # rubocop:disable Rails/NegateInclude
+          wait_until { !find_element('merge-button').text.include?('auto-merge') } # rubocop:disable Rails/NegateInclude
 
           click_element('merge-button')
         end
@@ -499,7 +503,7 @@ module QA
 
         def click_artifacts_dropdown_button
           wait_for_requests
-          within_element('pipeline-container') do
+          within_element('artifacts-dropdown') do
             click_element('base-dropdown-toggle')
           end
         end

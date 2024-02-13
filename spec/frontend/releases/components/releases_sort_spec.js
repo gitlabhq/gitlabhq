@@ -1,8 +1,16 @@
-import { GlSorting, GlSortingItem } from '@gitlab/ui';
+import { GlSorting } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { assertProps } from 'helpers/assert_props';
 import ReleasesSort from '~/releases/components/releases_sort.vue';
-import { RELEASED_AT_ASC, RELEASED_AT_DESC, CREATED_ASC, CREATED_DESC } from '~/releases/constants';
+import {
+  RELEASED_AT,
+  RELEASED_AT_ASC,
+  RELEASED_AT_DESC,
+  CREATED_AT,
+  CREATED_ASC,
+  CREATED_DESC,
+  SORT_OPTIONS,
+} from '~/releases/constants';
 
 describe('releases_sort.vue', () => {
   let wrapper;
@@ -12,31 +20,18 @@ describe('releases_sort.vue', () => {
       propsData: {
         value: valueProp,
       },
-      stubs: {
-        GlSortingItem,
-      },
     });
   };
 
   const findSorting = () => wrapper.findComponent(GlSorting);
-  const findSortingItems = () => wrapper.findAllComponents(GlSortingItem);
-  const findReleasedDateItem = () =>
-    findSortingItems().wrappers.find((item) => item.text() === 'Released date');
-  const findCreatedDateItem = () =>
-    findSortingItems().wrappers.find((item) => item.text() === 'Created date');
-  const getSortingItemsInfo = () =>
-    findSortingItems().wrappers.map((item) => ({
-      label: item.text(),
-      active: item.attributes().active === 'true',
-    }));
 
   describe.each`
-    valueProp           | text               | isAscending | items
-    ${RELEASED_AT_ASC}  | ${'Released date'} | ${true}     | ${[{ label: 'Released date', active: true }, { label: 'Created date', active: false }]}
-    ${RELEASED_AT_DESC} | ${'Released date'} | ${false}    | ${[{ label: 'Released date', active: true }, { label: 'Created date', active: false }]}
-    ${CREATED_ASC}      | ${'Created date'}  | ${true}     | ${[{ label: 'Released date', active: false }, { label: 'Created date', active: true }]}
-    ${CREATED_DESC}     | ${'Created date'}  | ${false}    | ${[{ label: 'Released date', active: false }, { label: 'Created date', active: true }]}
-  `('component states', ({ valueProp, text, isAscending, items }) => {
+    valueProp           | text               | isAscending
+    ${RELEASED_AT_ASC}  | ${'Released date'} | ${true}
+    ${RELEASED_AT_DESC} | ${'Released date'} | ${false}
+    ${CREATED_ASC}      | ${'Created date'}  | ${true}
+    ${CREATED_DESC}     | ${'Created date'}  | ${false}
+  `('component states', ({ valueProp, text, isAscending }) => {
     beforeEach(() => {
       createComponent(valueProp);
     });
@@ -49,14 +44,10 @@ describe('releases_sort.vue', () => {
         }),
       );
     });
-
-    it(`when the sort is ${valueProp}, renders the expected dropdown items`, () => {
-      expect(getSortingItemsInfo()).toEqual(items);
-    });
   });
 
-  const clickReleasedDateItem = () => findReleasedDateItem().vm.$emit('click');
-  const clickCreatedDateItem = () => findCreatedDateItem().vm.$emit('click');
+  const clickReleasedDateItem = () => findSorting().vm.$emit('sortByChange', RELEASED_AT);
+  const clickCreatedDateItem = () => findSorting().vm.$emit('sortByChange', CREATED_AT);
   const clickSortDirectionButton = () => findSorting().vm.$emit('sortDirectionChange');
 
   const releasedAtDropdownItemDescription = 'released at dropdown item';
@@ -95,6 +86,19 @@ describe('releases_sort.vue', () => {
       expect(() => {
         assertProps(ReleasesSort, { value: 'not a valid value' });
       }).toThrow('Invalid prop: custom validator check failed');
+    });
+  });
+
+  describe('dropdown options', () => {
+    it('sets sort options', () => {
+      createComponent(RELEASED_AT_ASC);
+
+      expect(findSorting().props()).toMatchObject({
+        text: 'Released date',
+        isAscending: true,
+        sortBy: RELEASED_AT,
+        sortOptions: SORT_OPTIONS,
+      });
     });
   });
 });

@@ -146,7 +146,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           click_button "Insert suggestion"
         end
 
-        within '[data-testid="content-editor"]' do
+        within_testid('content-editor') do
           expect(page).to have_content('Suggested change From line')
         end
       end

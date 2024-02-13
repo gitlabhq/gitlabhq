@@ -3,9 +3,13 @@ stage: Govern
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# SCIM API **(PREMIUM SAAS)**
+# SCIM API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98354) in GitLab 15.5.
 
 The GitLab SCIM API manages SCIM identities within groups and provides the `/groups/:groups_id/scim/identities` and `/groups/:groups_id/scim/:uid` endpoints. The base URL is `<http|https>://<GitLab host>/api/v4`.
 
@@ -26,7 +30,7 @@ This API is different to the [internal group SCIM API](../development/internal_a
 
 ## Get SCIM identities for a group
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 ```plaintext
 GET /groups/:id/scim/identities
@@ -68,7 +72,7 @@ curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/
 
 ## Get a single SCIM identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123591) in GitLab 16.1.
 
 ```plaintext
 GET /groups/:id/scim/:uid
@@ -99,7 +103,7 @@ Example response:
 
 ## Update `extern_uid` field for a SCIM identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
 Fields that can be updated are:
 
@@ -128,7 +132,7 @@ curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/sci
 
 ## Delete a single SCIM identity
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423592) in GitLab 16.5.
 
 ```plaintext
 DELETE /groups/:id/scim/:uid

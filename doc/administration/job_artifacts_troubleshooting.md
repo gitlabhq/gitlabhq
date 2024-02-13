@@ -276,9 +276,9 @@ You can manually remove job artifacts associated with multiple completed jobs wh
 **retaining their job logs** from the [Rails console](operations/rails_console.md).
 A completed job is any job with the status of success, failed, canceled, or skipped.
 
-To delete jobs completed before a specific date:
+To delete job artifacts from jobs completed before a specific date:
 
-1. Select jobs to be deleted:
+1. Select the jobs with artifacts to be deleted:
 
    To select all jobs with artifacts for a single project:
 
@@ -333,9 +333,9 @@ You can manually remove job artifacts associated with multiple completed jobs wh
 **retaining their job logs** from the [Rails console](operations/rails_console.md).
 A completed job is any job with the status of success, failed, canceled, or skipped.
 
-To delete jobs completed before a specific date:
+To delete job artifacts and logs from jobs completed before a specific date:
 
-1. Select the jobs to be deleted:
+1. Select the jobs with artifacts and logs to be deleted:
 
    To select jobs with artifacts for a single project:
 
@@ -446,7 +446,7 @@ For more information, [see the investigation details](https://gitlab.com/gitlab-
 
 ## Usage quota shows incorrect artifact storage usage
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238536) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238536) in GitLab 14.10.
 
 Sometimes the [artifacts storage usage](../user/usage_quotas.md) displays an incorrect
 value for the total storage space used by artifacts. To recalculate the artifact

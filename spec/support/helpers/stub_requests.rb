@@ -8,7 +8,7 @@ module StubRequests
   #
   # It expects the final request to go to the `ip_address` instead the given url.
   # That's primarily a DNS rebind attack prevention of Gitlab::HTTP
-  # (see: Gitlab::UrlBlocker).
+  # (see: Gitlab::HTTP_V2::UrlBlocker).
   #
   def stub_full_request(url, ip_address: IP_ADDRESS_STUB, port: 80, method: :get)
     stub_dns(url, ip_address: ip_address, port: port)
@@ -18,17 +18,11 @@ module StubRequests
   end
 
   def stub_dns(url, ip_address:, port: 80)
-    DebugWithPuts.debug_with_puts "beginning of stub_dns"
     url = parse_url(url)
-    DebugWithPuts.debug_with_puts "before socket = Socket.sockaddr_in"
     socket = Socket.sockaddr_in(port, ip_address)
-    DebugWithPuts.debug_with_puts "after socket = Socket.sockaddr_in"
-
-    DebugWithPuts.debug_with_puts "before addr = Addrinfo.new(socket)"
     addr = Addrinfo.new(socket)
-    DebugWithPuts.debug_with_puts "after addr = Addrinfo.new(socket)"
 
-    # See Gitlab::UrlBlocker
+    # See Gitlab::HTTP_V2::UrlBlocker
     allow(Addrinfo).to receive(:getaddrinfo)
                          .with(url.hostname, url.port, nil, :STREAM)
                          .and_return([addr])
@@ -40,7 +34,7 @@ module StubRequests
     socket = Socket.sockaddr_in(port, ip_address)
     addr = Addrinfo.new(socket)
 
-    # See Gitlab::UrlBlocker
+    # See Gitlab::HTTP_V2::UrlBlocker
     allow(Addrinfo).to receive(:getaddrinfo).and_call_original
     allow(Addrinfo).to receive(:getaddrinfo)
       .with(url.hostname, anything, nil, :STREAM)

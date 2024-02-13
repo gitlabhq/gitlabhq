@@ -46,7 +46,11 @@ module Integrations::Actions
   end
 
   def test
-    render json: {}, status: :ok
+    if integration.testable?
+      render json: integration_test_response, status: :ok
+    else
+      render json: {}, status: :not_found
+    end
   end
 
   def reset
@@ -79,5 +83,26 @@ module Integrations::Actions
     integration
       .as_json(only: integration.json_fields)
       .merge(errors: integration.errors.as_json)
+  end
+
+  def integration_test_response
+    result = if integration.project_level?
+               ::Integrations::Test::ProjectService.new(integration, current_user, params[:event]).execute
+             elsif integration.group_level?
+               ::Integrations::Test::GroupService.new(integration, current_user, params[:event]).execute
+             else
+               {}
+             end
+
+    unless result[:success]
+      return {
+        error: true,
+        message: s_('Integrations|Connection failed. Check your integration settings.'),
+        service_response: result[:result].to_s,
+        test_failed: true
+      }
+    end
+
+    result[:data].presence || {}
   end
 end

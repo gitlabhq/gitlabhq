@@ -4,7 +4,11 @@ group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Web Editor **(FREE ALL)**
+# Web Editor
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can use the Web Editor to make changes to a single file directly from the GitLab UI.
 To make changes to multiple files, see [Web IDE](../web_ide/index.md).
@@ -56,7 +60,7 @@ To edit a text file in the Web Editor:
 
 ### Preview Markdown
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
 
 To preview a Markdown file in the Web Editor:
 
@@ -72,7 +76,7 @@ To close the preview panel, select the **Write** tab.
 ### Link to specific lines
 
 To link to single or multiple lines in the Web Editor, add hash
-information to the file name segment of the URL. For example:
+information to the filename segment of the URL. For example:
 
 - `MY_FILE.js#L3` highlights line 3 in `MY_FILE.js`.
 - `MY_FILE.js#L3-10` highlights lines 3 to 10 in `MY_FILE.js`.

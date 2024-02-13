@@ -224,7 +224,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
           it '"Set up CI/CD" button linked to new file populated for a .gitlab-ci.yml' do
             visit project_path(project)
 
-            expect(project.repository.gitlab_ci_yml).to be_nil
+            expect(project.has_ci_config_file?).to eq(false)
 
             page.within('.project-buttons') do
               expect(page).to have_link('Set up CI/CD', href: project_ci_pipeline_editor_path(project))
@@ -242,7 +242,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
               file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
             ).execute
 
-            expect(project.repository.gitlab_ci_yml).not_to be_nil
+            expect(project.has_ci_config_file?).to eq(true)
 
             visit project_path(project)
 
@@ -311,7 +311,7 @@ RSpec.describe 'Projects > Show > User sees setup shortcut buttons', feature_cat
               file_content: File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
             ).execute
 
-            expect(project.repository.gitlab_ci_yml).not_to be_nil
+            expect(project.has_ci_config_file?).to eq(true)
 
             visit project_path(project)
 

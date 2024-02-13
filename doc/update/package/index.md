@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Upgrade GitLab by using the GitLab package **(FREE SELF)**
+# Upgrade GitLab by using the GitLab package
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can upgrade GitLab to a new version by using the
 GitLab package.
@@ -141,21 +145,27 @@ or upgrade command:
 
    ```shell
    # Ubuntu/Debian
-   sudo apt install gitlab-ee=<version>
+   sudo apt install gitlab-ee=<version>-ee.0
 
    # RHEL/CentOS 7 and Amazon Linux 2
-   yum install gitlab-ee-<version>
+   sudo yum install gitlab-ee-<version>-ee.0.el7
 
-   # RHEL/Almalinux 8/9 and Amazon Linux 2023
-   dnf install gitlab-ee-<version>
+   # RHEL/Almalinux 8/9
+   sudo dnf install gitlab-ee-<version>-ee.0.el8
 
-   # SUSE
-   zypper install gitlab-ee=<version>
+   # Amazon Linux 2023
+   sudo dnf install gitlab-ee-<version>-ee.0.amazon2023
+
+   # OpenSUSE Leap 15.5
+   sudo zypper install gitlab-ee=<version>-ee.sles15
+
+   # SUSE Enterprise Server 12.2/12.5
+   sudo zypper install gitlab-ee=<version>-ee.0.sles12
    ```
 
 NOTE:
-For the GitLab Community Edition, replace `gitlab-ee` with
-`gitlab-ce`.
+For the GitLab Community Edition, replace `ee` with
+`ce`.
 
 ## Upgrade using a manually-downloaded package
 

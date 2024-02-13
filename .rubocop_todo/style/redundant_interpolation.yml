@@ -3,7 +3,6 @@
 Style/RedundantInterpolation:
   Exclude:
     - 'lib/backup/manager.rb'
-    - 'lib/backup/task.rb'
     - 'lib/gitlab/application_rate_limiter.rb'
     - 'lib/gitlab/chat/responder/mattermost.rb'
     - 'lib/gitlab/ci/build/releaser.rb'

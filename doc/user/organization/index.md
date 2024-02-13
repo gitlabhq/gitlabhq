@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Organization
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409913) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
 This feature is not ready for production use.
@@ -71,7 +71,10 @@ To view the organizations you have access to:
 
 1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to manage.
 1. Select **Manage > Groups and projects**.
-1. To switch between groups and projects, use the **Display** filter next to the search box.
+1. Optional. Filter the results:
+   - To search for specific groups or projects, in the search box enter your search term.
+   - To view only groups or projects, from the **Display** dropdown list select an option.
+1. Optional. To sort the results by name, date created, or date updated, from the dropdown list select an option. Then select ascending (**{sort-lowest}**) or descending (**{sort-highest}**) order.
 
 ## Manage users
 

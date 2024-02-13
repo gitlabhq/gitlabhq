@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::PopulateProjectsStarCount, schema: 20221111123146 do
+RSpec.describe Gitlab::BackgroundMigration::PopulateProjectsStarCount, schema: 20230216060333 do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:users) { table(:users) }

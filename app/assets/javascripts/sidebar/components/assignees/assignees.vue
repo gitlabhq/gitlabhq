@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { GlButton } from '@gitlab/ui';
 import { TYPE_ISSUE } from '~/issues/constants';
 import CollapsedAssigneeList from './collapsed_assignee_list.vue';
 import UncollapsedAssigneeList from './uncollapsed_assignee_list.vue';
@@ -9,6 +10,7 @@ export default {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   name: 'Assignees',
   components: {
+    GlButton,
     CollapsedAssigneeList,
     UncollapsedAssigneeList,
   },
@@ -54,14 +56,14 @@ export default {
         {{ __('None') }}
         <template v-if="editable">
           -
-          <button
-            type="button"
-            class="gl-button btn-link gl-reset-color!"
+          <gl-button
+            variant="link"
+            class="gl-reset-color!"
             data-testid="assign-yourself"
             @click="assignSelf"
           >
             {{ __('assign yourself') }}
-          </button>
+          </gl-button>
         </template>
       </span>
 

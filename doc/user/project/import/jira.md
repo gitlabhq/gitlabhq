@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your Jira project issues to GitLab **(FREE ALL)**
+# Import your Jira project issues to GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Using GitLab Jira importer, you can import your Jira issues to GitLab.com or to
 your self-managed GitLab instance.

@@ -17,6 +17,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::MonitorMenu, feature_categ
     expect(items.map(&:item_id)).to eq([
       :tracing,
       :metrics,
+      :logs,
       :error_tracking,
       :alert_management,
       :incidents,

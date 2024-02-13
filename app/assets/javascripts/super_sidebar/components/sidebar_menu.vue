@@ -4,7 +4,7 @@ import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { PANELS_WITH_PINS } from '../constants';
+import { PANELS_WITH_PINS, PINNED_NAV_STORAGE_KEY } from '../constants';
 import NavItem from './nav_item.vue';
 import PinnedSection from './pinned_section.vue';
 import MenuSection from './menu_section.vue';
@@ -58,6 +58,10 @@ export default {
     return {
       showFlyoutMenus: false,
 
+      // This is used to detect if user came to this page by clicking a
+      // nav item in the pinned section.
+      wasPinnedNav: this.readAndResetPinnedNav(),
+
       // This is used as a provide and injected into the nav items.
       // Note: It has to be an object to be reactive.
       changedPinnedItemIds: { ids: this.pinnedItemIds },
@@ -73,17 +77,15 @@ export default {
     },
 
     // Returns only the items that aren't static at the top and makes sure no
-    // section shows as active (and expanded) when one of its items is pinned.
+    // section shows as active (and expanded) when a pinned nav item was used.
+
     nonStaticItems() {
       if (!this.supportsPins) return this.items;
 
       return this.items
         .filter((item) => item.items && item.items.length > 0)
         .map((item) => {
-          const hasActivePinnedChild = item.items.some((childItem) => {
-            return childItem.is_active && this.changedPinnedItemIds.ids.includes(childItem.id);
-          });
-          const showAsActive = item.is_active && !hasActivePinnedChild;
+          const showAsActive = item.is_active && !this.wasPinnedNav;
 
           return { ...item, is_active: showAsActive };
         });
@@ -166,6 +168,11 @@ export default {
     decideFlyoutState() {
       this.showFlyoutMenus = GlBreakpointInstance.windowWidth() >= breakpoints.md;
     },
+    readAndResetPinnedNav() {
+      const wasPinnedNav = sessionStorage.getItem(PINNED_NAV_STORAGE_KEY);
+      sessionStorage.removeItem(PINNED_NAV_STORAGE_KEY);
+      return wasPinnedNav === 'true';
+    },
   },
 };
 </script>
@@ -183,6 +190,7 @@ export default {
       v-if="supportsPins"
       :items="pinnedItems"
       :has-flyout="showFlyoutMenus"
+      :was-pinned-nav="wasPinnedNav"
       @pin-remove="destroyPin"
       @pin-reorder="movePin"
     />

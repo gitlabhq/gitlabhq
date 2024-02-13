@@ -45,7 +45,7 @@ RSpec.describe 'Merge request > User awards emoji', :js, feature_category: :code
 
     it 'adds awards to note' do
       page.within('.note-actions') do
-        first('.note-emoji-button').click
+        first('.add-reaction-button').click
 
         # make sure emoji popup is visible
         execute_script("window.scrollBy(0, 200)")

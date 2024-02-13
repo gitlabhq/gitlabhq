@@ -24,6 +24,10 @@ export default {
       required: false,
       default: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -32,7 +36,7 @@ export default {
     <h4
       v-if="heading"
       data-testid="work-items-list-heading"
-      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mx-2 gl-mt-3 gl-mb-2"
+      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mt-3 gl-mb-0!"
     >
       {{ heading }}
     </h4>
@@ -46,8 +50,8 @@ export default {
           <work-item-link-child-contents
             :child-item="linkedItem.workItem"
             :can-update="canUpdate"
-            :show-task-icon="true"
             :show-labels="showLabels"
+            :work-item-full-path="workItemFullPath"
             @click="$emit('showModal', { event: $event, child: linkedItem.workItem })"
             @removeChild="$emit('removeLinkedItem', linkedItem.workItem)"
           />

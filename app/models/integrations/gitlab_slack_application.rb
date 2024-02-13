@@ -71,6 +71,10 @@ module Integrations
       super.drop(1)
     end
 
+    def self.webhook_help
+      # no-op
+    end
+
     override :configurable_events
     def configurable_events
       return [] unless editable?

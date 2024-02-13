@@ -45,8 +45,23 @@ ClickHouse::Client.select('SELECT 1', :main)
 
 ## Database schema and migrations
 
-There are `bundle exec rake gitlab:clickhouse:migrate` and `bundle exec rake gitlab:clickhouse:rollback` tasks
-(introduced in [!136103](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136103)).
+To run database migrations, execute:
+
+```shell
+bundle exec rake gitlab:clickhouse:migrate
+```
+
+To rollback last N migrations, execute:
+
+```shell
+bundle exec rake gitlab:clickhouse:rollback:main STEP=N
+```
+
+Or use the following command to rollback all migrations:
+
+```shell
+bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+```
 
 You can create a migration by creating a Ruby migration file in `db/click_house/migrate` folder. It should be prefixed with a timestamp in the format `YYYYMMDDHHMMSS_description_of_migration.rb`
 
@@ -73,17 +88,6 @@ class CreateIssues < ClickHouse::Migration
     SQL
   end
 end
-```
-
-When you're working locally in your development environment, you can create or re-create your table schema by
-executing `rake gitlab:clickhouse:rollback` and `rake gitlab:clickhouse:migrate`.
-Alternatively, you can use the following snippet in the Rails console:
-
-```ruby
-require_relative 'spec/support/database/click_house/hooks.rb'
-
-# Drops and re-creates all tables
-ClickHouseTestRunner.new.ensure_schema
 ```
 
 ## Writing database queries
@@ -204,6 +208,69 @@ end
 
 NOTE:
 It's important to test and verify efficient batching of database records from PostgreSQL. Consider using the techniques described in the [Iterating tables in batches](../iterating_tables_in_batches.md).
+
+## Iterating over tables
+
+You can use the `ClickHouse::Iterator` class for batching over large volumes of data in ClickHouse. The iterator works a bit differently than existing tooling for the PostgreSQL database (see [iterating tables in batches docs](../iterating_tables_in_batches.md)), as the tool does not rely on database indexes and uses fixed size numeric ranges.
+
+Requirements:
+
+- Single integer column.
+- No huge gaps between the column values, the ideal columns would be auto-incrementing PostgreSQL primary keys.
+- Duplicated values are not a problem if the data duplication is minimal.
+
+Usage:
+
+```ruby
+connection = ClickHouse::Connection.new(:main)
+builder = ClickHouse::QueryBuilder.new('events')
+
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
+iterator.each_batch(column: :id, of: 100_000) do |scope|
+  records = connection.select(scope.to_sql)
+end
+```
+
+In case you want to iterate over specific rows, you could add filters to the query builder object. Be advised that efficient filtering and iteration might require a different database table schema optimized for the use case. When introducing such iteration, always ensure that the database queries are not scanning the whole database table.
+
+```ruby
+connection = ClickHouse::Connection.new(:main)
+builder = ClickHouse::QueryBuilder.new('events')
+
+# filtering by target type and stringified traversal ids/path
+builder = builder.where(target_type: 'Issue')
+builder = builder.where(path: '96/97/') # points to a specific project
+
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection)
+iterator.each_batch(column: :id, of: 10) do |scope, min, max|
+  puts "processing range: #{min} - #{max}"
+  puts scope.to_sql
+  records = connection.select(scope.to_sql)
+end
+```
+
+### Min-max strategies
+
+As the first step, the iterator determines the data range which will be used as condition in the iteration database queries. The data range is
+determined using `MIN(column)` and `MAX(column)` aggregations. For some database tables this strategy causes inefficient database queries (full table scan). One example would be partitioned database tables.
+
+Example query:
+
+```sql
+SELECT MIN(id) AS min, MAX(id) AS max FROM events;
+```
+
+Alternatively a different min-max strategy can be used which uses `ORDER BY + LIMIT` for determining the data range.
+
+```ruby
+iterator = ClickHouse::Iterator.new(query_builder: builder, connection: connection, min_max_strategy: :order_limit)
+```
+
+Example query:
+
+```sql
+SELECT (SELECT id FROM events ORDER BY id ASC LIMIT 1) AS min, (SELECT id FROM events ORDER BY id DESC LIMIT 1) AS max;
+```
 
 ## Implementing Sidekiq workers
 

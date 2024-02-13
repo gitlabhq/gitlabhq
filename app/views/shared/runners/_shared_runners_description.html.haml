@@ -1,7 +1,7 @@
-- shared_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('ci/runners/runners_scope', anchor: 'shared-runners') }
+- shared_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('ci/runners/runners_scope', anchor: 'instance-runners') }
 
 %h4
-  = _('Shared runners')
+  = s_('Runners|Instance runners')
 
 .bs-callout{ data: { testid: 'shared-runners-description' } }
   %p= s_('Runners|%{link_start}These runners%{link_end} are available to all groups and projects.').html_safe % { link_start: shared_link_start, link_end: '</a>'.html_safe }

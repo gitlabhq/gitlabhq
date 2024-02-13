@@ -185,7 +185,6 @@ export default {
         <emoji-picker
           dropdown-class="gl-h-full"
           toggle-class="btn emoji-menu-toggle-button gl-px-4! gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
-          boundary="viewport"
           :right="false"
           @click="handleEmojiClick"
         >
@@ -218,7 +217,7 @@ export default {
 
     <gl-form-checkbox
       :checked="availability"
-      class="gl-mb-5"
+      class="gl-mb-3"
       data-testid="user-availability-checkbox"
       @input="$emit('availability-input', $event)"
     >

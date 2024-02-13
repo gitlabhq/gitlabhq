@@ -4,7 +4,16 @@ classes:
 - AllowedEmailDomain
 feature_categories:
 - groups_and_projects
-description: Stores email domains for group, only members with email from those domains can be added to the group
+description: Stores email domains for group, only members with email from those domains
+  can be added to the group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14800
 milestone: '12.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  group_id: namespaces

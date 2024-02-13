@@ -15,7 +15,7 @@ module QA
             fill_in 'app_otp', with: current_otp
 
             if has_text?('Two-factor authentication failed', wait: 2)
-              new_otp = OnePassword::CLI.instance.new_otp(otp)
+              new_otp = OnePassword::CLI.instance.new_otp(current_otp)
 
               fill_in 'app_otp', with: new_otp
             end

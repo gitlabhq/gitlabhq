@@ -66,7 +66,6 @@ RSpec.shared_context 'WorkItemsFinder context' do
   let_it_be(:group_level_item) do
     create(
       :work_item,
-      :epic,
       namespace: group,
       author: user
     )
@@ -76,7 +75,6 @@ RSpec.shared_context 'WorkItemsFinder context' do
     create(
       :work_item,
       :confidential,
-      :epic,
       namespace: group,
       author: user2
     )

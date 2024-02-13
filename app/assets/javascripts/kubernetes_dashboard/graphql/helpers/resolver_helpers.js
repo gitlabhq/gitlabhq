@@ -137,6 +137,7 @@ export const getK8sPods = ({
   configuration,
   namespace = '',
   enableWatch = false,
+  mapFn = mapWorkloadItem,
 }) => {
   const config = new Configuration(configuration);
 
@@ -160,7 +161,7 @@ export const getK8sPods = ({
       }
 
       const data = res?.items || [];
-      return data.map(mapWorkloadItem);
+      return data.map(mapFn);
     })
     .catch(async (err) => {
       try {

@@ -2,20 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/sessions/two_factor.html.haml' do
+RSpec.describe 'admin/sessions/two_factor.html.haml', feature_category: :system_access do
   before do
-    allow(view).to receive(:current_user).and_return(user)
-  end
-
-  context 'user has no two factor auth' do
-    let(:user) { create(:admin) }
-
-    it 'shows tab' do
-      render
-
-      expect(rendered).to have_no_field('user[otp_attempt]')
-      expect(rendered).to have_no_field('user[device_response]')
-    end
+    assign(:user, user)
   end
 
   context 'user has otp active' do

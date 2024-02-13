@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Product Qualified Lead (PQL) development guidelines
 
-The Product Qualified Lead (PQL) funnel connects our users with our team members. Read more about [PQL product principles](https://about.gitlab.com/handbook/product/product-principles/#product-qualified-leads-pqls).
+The Product Qualified Lead (PQL) funnel connects our users with our team members. Read more about [PQL product principles](https://handbook.gitlab.com/handbook/product/product-principles/#product-qualified-leads-pqls).
 
 A hand-raise PQL is a user who requests to speak to sales from within the product.
 
@@ -119,7 +119,7 @@ The flow of a PQL lead is as follows:
 1. A user triggers a [`HandRaiseLeadButton` component](#embed-a-hand-raise-lead-form) on `gitlab.com`.
 1. The `HandRaiseLeadButton` submits any information to the following API endpoint: `/-/subscriptions/hand_raise_leads`.
 1. That endpoint reposts the form to the CustomersDot `trials/create_hand_raise_lead` endpoint.
-1. CustomersDot records the form data to the `leads` table and posts the form to [Workato](https://about.gitlab.com/handbook/marketing/marketing-operations/workato/).
+1. CustomersDot records the form data to the `leads` table and posts the form to [Workato](https://handbook.gitlab.com/handbook/marketing/marketing-operations/workato/).
 1. Workato sends the form to Marketo.
 1. Marketo does scoring and sends the form to Salesforce.
 1. Our Sales team uses Salesforce to connect to the leads.

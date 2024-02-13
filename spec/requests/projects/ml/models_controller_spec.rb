@@ -6,9 +6,6 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { project.first_owner }
   let_it_be(:model1) { create(:ml_models, :with_versions, project: project) }
-  let_it_be(:model2) { create(:ml_models, project: project) }
-  let_it_be(:model3) { create(:ml_models, project: project) }
-  let_it_be(:model_in_different_project) { create(:ml_models) }
 
   let(:read_model_registry) { true }
   let(:write_model_registry) { true }
@@ -37,75 +34,11 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
       expect(index_request).to render_template('projects/ml/models/index')
     end
 
-    it 'fetches the models using the finder' do
-      expect(::Projects::Ml::ModelFinder).to receive(:new).with(project, {}).and_call_original
-
-      index_request
-    end
-
-    it 'fetches the correct variables', :aggregate_failures do
-      stub_const("Projects::Ml::ModelsController::MAX_MODELS_PER_PAGE", 2)
-
-      index_request
-
-      page_models = [model3, model2]
-      all_models = [model3, model2, model1]
-
-      expect(assigns(:paginator).records).to match_array(page_models)
-      expect(assigns(:model_count)).to be all_models.count
-    end
-
-    it 'does not perform N+1 sql queries' do
-      list_models
-
-      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_models }
-
-      create_list(:ml_model_versions, 2, model: model1)
-      create_list(:ml_model_versions, 2, model: model2)
-      create_list(:ml_models, 4, project: project)
-
-      expect { list_models }.not_to exceed_all_query_limit(control_count)
-    end
-
     context 'when user does not have access' do
       let(:read_model_registry) { false }
 
       it 'renders 404' do
         is_expected.to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'with search params' do
-      let(:params) { { name: 'some_name', order_by: 'name', sort: 'asc' } }
-
-      it 'passes down params to the finder' do
-        expect(Projects::Ml::ModelFinder).to receive(:new).and_call_original do |_exp, params|
-          expect(params.to_h).to include({
-            name: 'some_name',
-            order_by: 'name',
-            sort: 'asc'
-          })
-        end
-
-        index_request
-      end
-    end
-
-    describe 'pagination' do
-      before do
-        stub_const("Projects::Ml::ModelsController::MAX_MODELS_PER_PAGE", 2)
-      end
-
-      it 'paginates', :aggregate_failures do
-        list_models
-
-        paginator = assigns(:paginator)
-
-        expect(paginator.records).to match_array([model3, model2])
-
-        list_models({ cursor: paginator.cursor_for_next_page })
-
-        expect(assigns(:paginator).records.first).to eq(model1)
       end
     end
   end
@@ -140,7 +73,7 @@ RSpec.describe Projects::Ml::ModelsController, feature_category: :mlops do
     end
 
     context 'when model project does not match project id' do
-      let(:request_project) { model_in_different_project.project }
+      let(:request_project) { create(:project) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end

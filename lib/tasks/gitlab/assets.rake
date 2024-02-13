@@ -101,6 +101,8 @@ namespace :gitlab do
         # gettext:compile needs to run before rake:assets:precompile because
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
+        # Skip Yarn Install when using Cssbundling
+        Rake::Task["css:install"].clear if defined?(Cssbundling)
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']
@@ -108,12 +110,12 @@ namespace :gitlab do
         cmd = 'yarn webpack'
         cmd += " > #{log_path}" if log_path
 
+        puts "Written webpack stdout log to #{log_path}" if log_path
+        puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
+
         unless system(cmd)
           abort 'Error: Unable to compile webpack production bundle.'.color(:red)
         end
-
-        puts "Written webpack stdout log to #{log_path}" if log_path
-        puts "You can inspect the webpack log here: #{ENV['CI_JOB_URL']}/artifacts/file/#{log_path}" if log_path && ENV['CI_JOB_URL']
 
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:fix_urls')
         Gitlab::TaskHelpers.invoke_and_time_task('gitlab:assets:check_page_bundle_mixins_css_for_sideeffects')

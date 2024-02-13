@@ -8,6 +8,16 @@ RSpec.describe UserPreference, feature_category: :user_profile do
   let(:user_preference) { create(:user_preference, user: user) }
 
   describe 'validations' do
+    it { is_expected.to validate_inclusion_of(:time_display_relative).in_array([true, false]) }
+    it { is_expected.to validate_inclusion_of(:render_whitespace_in_code).in_array([true, false]) }
+
+    it do
+      is_expected.to validate_numericality_of(:tab_width)
+                       .only_integer
+                       .is_greater_than_or_equal_to(Gitlab::TabWidth::MIN)
+                       .is_less_than_or_equal_to(Gitlab::TabWidth::MAX)
+    end
+
     describe 'diffs_deletion_color and diffs_addition_color' do
       using RSpec::Parameterized::TableSyntax
 
@@ -156,20 +166,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       expect(pref.tab_width).to eq(8)
     end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:tab_width, nil)
-
-      expect(pref.reload.tab_width).to eq(8)
-    end
-
-    it do
-      is_expected.to validate_numericality_of(:tab_width)
-        .only_integer
-        .is_greater_than_or_equal_to(1)
-        .is_less_than_or_equal_to(12)
-    end
   end
 
   describe '#tab_width=' do
@@ -197,13 +193,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(time_display_relative: nil)
 
       expect(pref.time_display_relative).to eq(true)
-    end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:time_display_relative, nil)
-
-      expect(pref.reload.time_display_relative).to eq(true)
     end
 
     it 'returns assigned value' do
@@ -266,13 +255,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(render_whitespace_in_code: nil)
 
       expect(pref.render_whitespace_in_code).to eq(false)
-    end
-
-    it 'returns default value when the value is NULL' do
-      pref = create(:user_preference, user: user)
-      pref.update_column(:render_whitespace_in_code, nil)
-
-      expect(pref.reload.render_whitespace_in_code).to eq(false)
     end
 
     it 'returns assigned value' do

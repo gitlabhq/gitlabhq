@@ -76,7 +76,7 @@ module QA
       end
 
       context 'when at the project level' do
-        it 'publishes and installs a pypi package', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
+        it 'publishes and installs a pypi package', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348015' do
           Page::Project::Menu.perform(&:go_to_package_registry)
 
           Page::Project::Packages::Index.perform do |index|

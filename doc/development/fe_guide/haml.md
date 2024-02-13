@@ -101,7 +101,7 @@ Currently only the listed components are available but more components are plann
 
 This component supports [ViewComponent slots](https://viewcomponent.org/guide/slots.html).
 
-| Slot | Description
+| Slot | Description |
 |---|---|
 | `label` | Checkbox label content. This slot can be used instead of the `label` argument. |
 | `help_text` | Help text content displayed below the checkbox. This slot can be used instead of the `help_text` argument. |
@@ -125,7 +125,7 @@ This component supports [ViewComponent slots](https://viewcomponent.org/guide/sl
 
 This component supports [ViewComponent slots](https://viewcomponent.org/guide/slots.html).
 
-| Slot | Description
+| Slot | Description |
 |---|---|
 | `label` | Checkbox label content. This slot can be used instead of the `label` argument. |
 | `help_text` | Help text content displayed below the radio button. This slot can be used instead of the `help_text` argument. |

@@ -50,7 +50,7 @@ describe('Board card', () => {
     mockApollo.clients.defaultClient.cache.writeQuery({
       query: activeBoardItemQuery,
       data: {
-        activeBoardItem,
+        activeBoardItem: { ...activeBoardItem, listId: 'gid://gitlab/List/1' },
       },
     });
 
@@ -113,7 +113,7 @@ describe('Board card', () => {
   });
 
   it('should highlight the card with a correct style when selected', async () => {
-    mountComponent({ activeBoardItem: mockIssue });
+    mountComponent({ activeBoardItem: { ...mockIssue, listId: 'gid://gitlab/List/1' } });
     await waitForPromises();
 
     expect(wrapper.classes()).toContain('is-active');
@@ -141,6 +141,7 @@ describe('Board card', () => {
           {},
           {
             boardItem: mockIssue,
+            listId: 'gid://gitlab/List/2',
           },
           expect.anything(),
           expect.anything(),

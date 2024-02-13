@@ -30,9 +30,9 @@ export default {
           count: this.resourceCounts.all,
         },
         {
-          text: s__('CiCatalog|Your resources'),
+          text: s__('CiCatalog|Your groups'),
           scope: SCOPE.namespaces,
-          testId: 'resources-your-tab',
+          testId: 'resources-group-tab',
           count: this.resourceCounts.namespaces,
         },
       ];

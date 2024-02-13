@@ -1,15 +1,15 @@
-import { GlModal, GlSearchBoxByType, GlToken, GlIcon } from '@gitlab/ui';
+import { GlModal, GlSearchBoxByType } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { s__, sprintf } from '~/locale';
 import GlobalSearchModal from '~/super_sidebar/components/global_search/components/global_search.vue';
 import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_search/components/global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from '~/super_sidebar/components/global_search/components/global_search_default_items.vue';
 import GlobalSearchScopedItems from '~/super_sidebar/components/global_search/components/global_search_scoped_items.vue';
 import FakeSearchInput from '~/super_sidebar/components/global_search/command_palette/fake_search_input.vue';
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
+import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
@@ -18,12 +18,7 @@ import {
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
-  ICON_PROJECT,
-  ICON_GROUP,
-  ICON_SUBGROUP,
-  SCOPE_TOKEN_MAX_LENGTH,
 } from '~/super_sidebar/components/global_search/constants';
-import { truncate } from '~/lib/utils/text_utility';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   ENTER_KEY,
@@ -98,23 +93,9 @@ describe('GlobalSearchModal', () => {
     });
   };
 
-  const formatScopeName = (scopeName) => {
-    if (!scopeName) {
-      return false;
-    }
-    const searchResultsScope = s__('GlobalSearch|in %{scope}');
-    return truncate(
-      sprintf(searchResultsScope, {
-        scope: scopeName,
-      }),
-      SCOPE_TOKEN_MAX_LENGTH,
-    );
-  };
-
   const findGlobalSearchModal = () => wrapper.findComponent(GlModal);
 
   const findGlobalSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
-  const findScopeToken = () => wrapper.findComponent(GlToken);
   const findGlobalSearchDefaultItems = () => wrapper.findComponent(GlobalSearchDefaultItems);
   const findGlobalSearchScopedItems = () => wrapper.findComponent(GlobalSearchScopedItems);
   const findGlobalSearchAutocompleteItems = () =>
@@ -123,6 +104,7 @@ describe('GlobalSearchModal', () => {
   const findSearchResultsDescription = () => wrapper.findByTestId(SEARCH_RESULTS_DESCRIPTION);
   const findCommandPaletteItems = () => wrapper.findComponent(CommandPaletteItems);
   const findFakeSearchInput = () => wrapper.findComponent(FakeSearchInput);
+  const findScrollScrim = () => wrapper.findComponent(ScrollScrim);
 
   describe('template', () => {
     describe('always renders', () => {
@@ -140,6 +122,9 @@ describe('GlobalSearchModal', () => {
 
       it('Search Results Description', () => {
         expect(findSearchResultsDescription().exists()).toBe(true);
+      });
+      it('renders the ScrollScrim component', () => {
+        expect(findScrollScrim().exists()).toBe(true);
       });
     });
 
@@ -205,75 +190,6 @@ describe('GlobalSearchModal', () => {
       },
     );
 
-    describe('input box', () => {
-      describe.each`
-        search         | hasToken
-        ${MOCK_SEARCH} | ${true}
-        ${'te'}        | ${false}
-        ${'x'}         | ${false}
-        ${''}          | ${false}
-      `('token', ({ search, hasToken }) => {
-        beforeEach(() => {
-          window.gon.current_username = MOCK_USERNAME;
-          createComponent({ initialState: { search } });
-          findGlobalSearchInput().vm.$emit('click');
-        });
-
-        it(`${hasToken ? 'is' : 'is NOT'} rendered when search query is "${search}"`, () => {
-          expect(findScopeToken().exists()).toBe(hasToken);
-        });
-      });
-
-      describe.each(MOCK_SCOPED_SEARCH_OPTIONS)('token content', (searchOption) => {
-        beforeEach(() => {
-          window.gon.current_username = MOCK_USERNAME;
-          createComponent({
-            initialState: { search: MOCK_SEARCH },
-            mockGetters: {
-              searchOptions: () => [searchOption],
-            },
-          });
-          findGlobalSearchInput().vm.$emit('click');
-        });
-
-        it(`is correctly rendered`, () => {
-          if (searchOption.scope) {
-            expect(findScopeToken().text()).toBe(formatScopeName(searchOption.scope));
-          } else {
-            expect(findScopeToken().text()).toBe(formatScopeName(searchOption.description));
-          }
-        });
-      });
-
-      describe.each`
-        searchOptions                      | iconName
-        ${[MOCK_SCOPED_SEARCH_OPTIONS[0]]} | ${ICON_PROJECT}
-        ${[MOCK_SCOPED_SEARCH_OPTIONS[2]]} | ${ICON_GROUP}
-        ${[MOCK_SCOPED_SEARCH_OPTIONS[3]]} | ${ICON_SUBGROUP}
-        ${[MOCK_SCOPED_SEARCH_OPTIONS[4]]} | ${false}
-      `('token', ({ searchOptions, iconName }) => {
-        beforeEach(() => {
-          window.gon.current_username = MOCK_USERNAME;
-          createComponent({
-            initialState: { search: MOCK_SEARCH },
-            mockGetters: {
-              searchOptions: () => searchOptions,
-            },
-          });
-          findGlobalSearchInput().vm.$emit('click');
-        });
-
-        it(`renders ${iconName ? `"${iconName}"` : 'NO'} icon for "${
-          searchOptions[0]?.text
-        }" scope`, () => {
-          expect(
-            findScopeToken().findComponent(GlIcon).exists() &&
-              findScopeToken().findComponent(GlIcon).attributes('name'),
-          ).toBe(iconName);
-        });
-      });
-    });
-
     describe('Command palette', () => {
       describe.each([...COMMON_HANDLES, PATH_HANDLE])('when search handle is %s', (handle) => {
         beforeEach(() => {
@@ -291,10 +207,6 @@ describe('GlobalSearchModal', () => {
           expect(findGlobalSearchInput().attributes('placeholder')).toBe(
             SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
           );
-        });
-
-        it('should not render the scope token', () => {
-          expect(findScopeToken().exists()).toBe(false);
         });
       });
     });

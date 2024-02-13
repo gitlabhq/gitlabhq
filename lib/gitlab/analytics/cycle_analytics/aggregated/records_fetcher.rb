@@ -42,7 +42,6 @@ module Gitlab
               # InOperatorOptimization::QueryBuilder only columns
               # used in ORDER BY statement would be selected by Arel.star operation
               selections = [stage_event_model.arel_table[Arel.star]]
-              selections << duration_in_seconds.as('total_time') if params[:sort] != :duration # duration sorting already exposes this data
 
               records = limited_query.select(*selections)
 

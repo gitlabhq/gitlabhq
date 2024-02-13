@@ -6,17 +6,9 @@ class PipelineSerializer < BaseSerializer
 
   # rubocop: disable CodeReuse/ActiveRecord
   def represent(resource, opts = {})
-    if resource.is_a?(ActiveRecord::Relation)
-      resource = resource.preload(preloaded_relations)
-    end
-
-    if paginated?
-      resource = paginator.paginate(resource)
-    end
-
-    if opts.delete(:preload)
-      resource = Gitlab::Ci::Pipeline::Preloader.preload!(resource)
-    end
+    resource = resource.preload(preloaded_relations(**opts)) if resource.is_a?(ActiveRecord::Relation)
+    resource = paginator.paginate(resource) if paginated?
+    resource = Gitlab::Ci::Pipeline::Preloader.preload!(resource) if opts.delete(:preload)
 
     super(resource, opts)
   end
@@ -38,15 +30,15 @@ class PipelineSerializer < BaseSerializer
 
   private
 
-  def preloaded_relations
+  def preloaded_relations(preload_statuses: true, preload_downstream_statuses: true, **)
     [
       :pipeline_metadata,
       :cancelable_statuses,
       :retryable_builds,
       :stages,
-      :latest_statuses,
       :trigger_requests,
       :user,
+      (:latest_statuses if preload_statuses),
       {
         manual_actions: :metadata,
         scheduled_actions: :metadata,
@@ -59,15 +51,15 @@ class PipelineSerializer < BaseSerializer
         project: [:route, { namespace: :route }],
         triggered_by_pipeline: [{ project: [:route, { namespace: :route }] }, :user],
         triggered_pipelines: [
+          (:latest_statuses if preload_downstream_statuses),
           {
             project: [:route, { namespace: :route }]
           },
           :source_job,
-          :latest_statuses,
           :user
-        ]
+        ].compact
       }
-    ]
+    ].compact
   end
 end
 

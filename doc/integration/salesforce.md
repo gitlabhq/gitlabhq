@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use Salesforce as an OAuth 2.0 authentication provider **(FREE SELF)**
+# Use Salesforce as an OAuth 2.0 authentication provider
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can integrate your GitLab instance with [Salesforce](https://www.salesforce.com/) to enable users to sign in to your GitLab instance with their Salesforce account.
 

@@ -4,7 +4,11 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
+# GitLab Git Large File Storage (LFS) Administration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page contains information about configuring Git LFS in self-managed GitLab instances.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).

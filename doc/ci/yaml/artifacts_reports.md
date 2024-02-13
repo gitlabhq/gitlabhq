@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab CI/CD artifacts reports types **(FREE ALL)**
+# GitLab CI/CD artifacts reports types
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use [`artifacts:reports`](index.md#artifactsreports) to:
 
@@ -41,7 +45,7 @@ For more information, see [Accessibility testing](../testing/accessibility_testi
 
 ## `artifacts:reports:annotations`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/38337) in GitLab 16.3.
 
 The `annotations` report is used to attach auxiliary data to a job.
 
@@ -88,19 +92,27 @@ The following is an example of what a job annotations report might look like:
 }
 ```
 
-## `artifacts:reports:api_fuzzing` **(ULTIMATE ALL)**
+## `artifacts:reports:api_fuzzing`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `api_fuzzing` report collects [API Fuzzing bugs](../../user/application_security/api_fuzzing/index.md)
 as artifacts.
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [security widget](../../user/application_security/api_fuzzing/index.md#view-details-of-an-api-fuzzing-vulnerability).
+- The merge request [security widget](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#view-details-of-an-api-fuzzing-vulnerability).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
-- The [security dashboard](../../user/application_security/api_fuzzing/index.md#security-dashboard).
+- The [security dashboard](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#security-dashboard).
 
-## `artifacts:reports:browser_performance` **(PREMIUM ALL)**
+## `artifacts:reports:browser_performance`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/225914) from `artifacts:reports:performance` in GitLab 14.0.
 
@@ -114,7 +126,7 @@ GitLab cannot display the combined results of multiple `browser_performance` rep
 
 ## `artifacts:reports:coverage_report`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344533) in GitLab 14.10.
 
 Use `coverage_report` to collect coverage report in Cobertura format.
 
@@ -139,7 +151,7 @@ GitLab can display the results of coverage report in the merge request
 
 ## `artifacts:reports:codequality`
 
-> Support for multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
+> - Support for multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
 
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
@@ -152,7 +164,11 @@ GitLab can display the results of one or more reports in:
 
 The [`artifacts:expire_in`](../yaml/index.md#artifactsexpire_in) value is set to `1 week`.
 
-## `artifacts:reports:container_scanning` **(ULTIMATE ALL)**
+## `artifacts:reports:container_scanning`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `container_scanning` report collects [Container Scanning vulnerabilities](../../user/application_security/container_scanning/index.md).
 The collected Container Scanning report uploads to GitLab as an artifact.
@@ -164,7 +180,11 @@ GitLab can display the results of one or more reports in:
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 
-## `artifacts:reports:coverage_fuzzing` **(ULTIMATE ALL)**
+## `artifacts:reports:coverage_fuzzing`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `coverage_fuzzing` report collects [coverage fuzzing bugs](../../user/application_security/coverage_fuzzing/index.md).
 The collected coverage fuzzing report uploads to GitLab as an artifact.
@@ -177,7 +197,7 @@ GitLab can display the results of one or more reports in:
 
 ## `artifacts:reports:cyclonedx`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
 
 This report is a Software Bill of Materials describing the components of a project
 following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.
@@ -200,7 +220,11 @@ artifacts:
       - gl-sbom-bundler-gem.cdx.json
 ```
 
-## `artifacts:reports:dast` **(ULTIMATE ALL)**
+## `artifacts:reports:dast`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `dast` report collects [DAST vulnerabilities](../../user/application_security/dast/index.md). The collected DAST
 report uploads to GitLab as an artifact.
@@ -212,7 +236,11 @@ GitLab can display the results of one or more reports in:
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/index.md).
 
-## `artifacts:reports:dependency_scanning` **(ULTIMATE ALL)**
+## `artifacts:reports:dependency_scanning`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `dependency_scanning` report collects [Dependency Scanning vulnerabilities](../../user/application_security/dependency_scanning/index.md).
 The collected Dependency Scanning report uploads to GitLab as an artifact.
@@ -255,7 +283,7 @@ The exceptions to the [original dotenv rules](https://github.com/motdotla/dotenv
 
 ## `artifacts:reports:junit`
 
-The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/adfz/developer-for-zos/14.1.0?topic=formats-junit-xml-format).
+The `junit` report collects [JUnit report format XML files](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format).
 The collected Unit test reports upload to GitLab as an artifact. Although JUnit was originally developed in Java, there
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
@@ -286,7 +314,11 @@ concatenate them into a single file. Use either:
 - A combination of both (`junit: [rspec.xml, test-results/TEST-*.xml]`).
 - Directories are not supported(`junit: test-results`, `junit: test-results/**`).
 
-## `artifacts:reports:load_performance` **(PREMIUM ALL)**
+## `artifacts:reports:load_performance`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The `load_performance` report collects [Load Performance Testing metrics](../testing/load_performance_testing.md).
 The report is uploaded to GitLab as an artifact.
@@ -296,7 +328,11 @@ GitLab can display the results of only one report in the merge request
 
 GitLab cannot display the combined results of multiple `load_performance` reports.
 
-## `artifacts:reports:metrics` **(PREMIUM ALL)**
+## `artifacts:reports:metrics`
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The `metrics` report collects [Metrics](../testing/metrics_reports.md). The collected Metrics report uploads to GitLab as an
 artifact.
@@ -304,7 +340,11 @@ artifact.
 GitLab can display the results of one or more reports in the merge request
 [metrics reports widget](../testing/metrics_reports.md#metrics-reports).
 
-## `artifacts:reports:requirements` **(ULTIMATE ALL)**
+## `artifacts:reports:requirements`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 The `requirements` report collects `requirements.json` files. The collected Requirements report uploads to GitLab as an
 artifact and existing [requirements](../../user/project/requirements/index.md) are marked as Satisfied.
@@ -312,15 +352,19 @@ artifact and existing [requirements](../../user/project/requirements/index.md) a
 GitLab can display the results of one or more reports in the
 [project requirements](../../user/project/requirements/index.md#view-a-requirement).
 
-## `artifacts:reports:repository_xray` **(ULTIMATE ALL)**
+## `artifacts:reports:repository_xray`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432235) in GitLab 16.7.
 
 The `repository_xray` report collects information about your repository for use by AI in code suggestions.
 
 ## `artifacts:reports:sast`
 
-> [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
+> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md).
 The collected SAST report uploads to GitLab as an artifact.

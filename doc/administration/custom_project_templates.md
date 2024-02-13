@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom instance-level project templates **(PREMIUM SELF)**
+# Custom instance-level project templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 As an administrator, you can configure a group that contains projects available for
 use as the source of project templates on your instance. You can then

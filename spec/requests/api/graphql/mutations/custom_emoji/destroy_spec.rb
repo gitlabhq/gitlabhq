@@ -68,20 +68,6 @@ RSpec.describe 'Deletion of custom emoji', feature_category: :shared do
       end
 
       it_behaves_like 'deletes custom emoji'
-
-      context 'when the custom_emoji feature flag is disabled' do
-        before do
-          stub_feature_flags(custom_emoji: false)
-        end
-
-        it_behaves_like 'does not delete custom emoji'
-
-        it 'returns an error' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect_graphql_errors_to_include('Custom emoji feature is disabled')
-        end
-      end
     end
   end
 end

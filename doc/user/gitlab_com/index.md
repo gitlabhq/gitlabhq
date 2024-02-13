@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab.com settings **(FREE SAAS)**
+# GitLab.com settings
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
@@ -69,12 +73,16 @@ gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAA
 GitLab.com sends emails from the `mg.gitlab.com` domain by using [Mailgun](https://www.mailgun.com/),
 and has its own dedicated IP addresses:
 
-- `161.38.202.219`
-- `159.135.226.146`
-- `192.237.158.143`
-- `198.61.254.136`
 - `23.253.183.236`
 - `69.72.35.190`
+- `69.72.44.107`
+- `159.135.226.146`
+- `161.38.202.219`
+- `192.237.158.143`
+- `192.237.159.239`
+- `198.61.254.136`
+- `198.61.254.160`
+- `209.61.151.122`
 
 The IP addresses for `mg.gitlab.com` are subject to change at any time.
 
@@ -87,7 +95,7 @@ settings.
 
 ## Backups
 
-[See our backup strategy](https://about.gitlab.com/handbook/engineering/infrastructure/production/#backups).
+[See our backup strategy](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/#backups).
 
 To back up an entire project on GitLab.com, you can export it either:
 
@@ -106,7 +114,11 @@ Similarly, you can clone a project's wiki to back it up. All files
 [uploaded after August 22, 2020](../project/wiki/index.md#create-a-new-wiki-page)
 are included when cloning.
 
-## Delayed group deletion **(PREMIUM SAAS)**
+## Delayed group deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 After May 08, 2023, all groups have delayed deletion enabled by default.
 
@@ -114,7 +126,11 @@ Groups are permanently deleted after a seven-day delay.
 
 If you are on the Free tier, your groups are immediately deleted, and you will not be able to restore them.
 
-## Delayed project deletion **(PREMIUM SAAS)**
+## Delayed project deletion
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 After May 08, 2023, all groups have delayed project deletion enabled by default.
 
@@ -239,18 +255,6 @@ which GitLab you use:
 - GitLab self-managed: no import sources are enabled by default and must be
   [enabled](../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
-| Import source                                                                                       | GitLab.com default     | GitLab self-managed default |
-|:----------------------------------------------------------------------------------------------------|:-----------------------|:----------------------------|
-| [Bitbucket Cloud](../project/import/bitbucket.md)                                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Bitbucket Server](../project/import/bitbucket_server.md)                                           | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [FogBugz](../project/import/fogbugz.md)                                                             | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Gitea](../project/import/gitea.md)                                                                 | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitLab by direct transfer](../group/import/index.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitLab using file exports](../project/settings/import_export.md)                                   | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [GitHub](../project/import/github.md)                                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Manifest file](../project/import/manifest.md)                                                      | **{check-circle}** Yes | **{dotted-circle}** No      |
-| [Repository by URL](../project/import/repo_by_url.md)                                               | **{check-circle}** Yes | **{dotted-circle}** No      |
-
 ## IP range
 
 GitLab.com uses the IP ranges `34.74.90.64/28` and `34.74.226.0/24` for traffic from its Web/API
@@ -260,7 +264,7 @@ from those IPs and allow them.
 GitLab.com is fronted by Cloudflare. For incoming connections to GitLab.com, you might need to allow CIDR blocks of Cloudflare ([IPv4](https://www.cloudflare.com/ips-v4/) and [IPv6](https://www.cloudflare.com/ips-v6/)).
 
 For outgoing connections from CI/CD runners, we are not providing static IP addresses.
-All GitLab.com shared runners are deployed into Google Cloud Platform (GCP) in `us-east1`.
+All GitLab.com instance runners are deployed into Google Cloud Platform (GCP) in `us-east1`.
 Any IP-based firewall can be configured by looking up
 [IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#find_ip_range).
 
@@ -339,26 +343,27 @@ code. The client should wait before attempting the request again. There
 are also informational headers with this response detailed in
 [rate limiting responses](#rate-limiting-responses).
 
-The following table describes the rate limits for GitLab.com, both before and
-after the limits change in January, 2021:
+The following table describes the rate limits for GitLab.com:
 
-| Rate limit                                                                 | From 2021-02-12               | From 2022-02-03                      |
-|:---------------------------------------------------------------------------|:------------------------------|:-------------------------------------|
-| **Protected paths** (for a given **IP address**)                           | **10** requests per minute    | **10** requests per minute           |
-| **Raw endpoint** traffic (for a given **project, commit, and file path**)  | **300** requests per minute   | **300** requests per minute          |
-| **Unauthenticated** traffic (from a given **IP address**)                  | **500** requests per minute   | **500** requests per minute          |
-| **Authenticated** API traffic (for a given **user**)                       | **2,000** requests per minute | **2,000** requests per minute        |
-| **Authenticated** non-API HTTP traffic (for a given **user**)              | **1,000** requests per minute | **1,000** requests per minute        |
-| **All** traffic (from a given **IP address**)                              | **2,000** requests per minute | **2,000** requests per minute        |
-| **Issue creation**                                                         | **300** requests per minute   | **200** requests per minute          |
-| **Note creation** (on issues and merge requests)                           | **60** requests per minute    | **60** requests per minute           |
-| **Advanced, project, and group search** API (for a given **IP address**)   | **10** requests per minute    | **10** requests per minute           |
-| **GitLab Pages** requests (for a given **IP address**)                     |                               | **1000** requests per **50 seconds** |
-| **GitLab Pages** requests (for a given **GitLab Pages domain**)            |                               | **5000** requests per **10 seconds** |
-| **GitLab Pages** TLS connections (for a given **IP address**)              |                               | **1000** requests per **50 seconds** |
-| **GitLab Pages** TLS connections (for a given **GitLab Pages domain**)     |                               | **400** requests per **10 seconds**  |
-| **Pipeline creation** requests (for a given **project, user, and commit**) |                               | **25** requests per minute           |
-| **Alert integration endpoint** requests (for a given **project**)          |                               | **3600** requests per hour           |
+| Rate limit                                                                 | Setting                              |
+|:---------------------------------------------------------------------------|:-------------------------------------|
+| **Protected paths** (for a given **IP address**)                           | **10** requests per minute           |
+| **Raw endpoint** traffic (for a given **project, commit, and file path**)  | **300** requests per minute          |
+| **Unauthenticated** traffic (from a given **IP address**)                  | **500** requests per minute          |
+| **Authenticated** API traffic (for a given **user**)                       | **2,000** requests per minute        |
+| **Authenticated** non-API HTTP traffic (for a given **user**)              | **1,000** requests per minute        |
+| **All** traffic (from a given **IP address**)                              | **2,000** requests per minute        |
+| **Issue creation**                                                         | **200** requests per minute          |
+| **Note creation** (on issues and merge requests)                           | **60** requests per minute           |
+| **Advanced, project, and group search** API (for a given **IP address**)   | **10** requests per minute           |
+| **GitLab Pages** requests (for a given **IP address**)                     | **1000** requests per **50 seconds** |
+| **GitLab Pages** requests (for a given **GitLab Pages domain**)            | **5000** requests per **10 seconds** |
+| **GitLab Pages** TLS connections (for a given **IP address**)              | **1000** requests per **50 seconds** |
+| **GitLab Pages** TLS connections (for a given **GitLab Pages domain**)     | **400** requests per **10 seconds**  |
+| **Pipeline creation** requests (for a given **project, user, and commit**) | **25** requests per minute           |
+| **Alert integration endpoint** requests (for a given **project**)          | **3600** requests per hour           |
+| **[Pull mirroring](../project/repository/mirror/pull.md)** intervals       | **5** minutes                        |
+| **API Requests** (from a given **user**) to `/api/v4/users/:id`            | **300** requests per **10 minutes**  |
 
 More details are available on the rate limits for
 [protected paths](#protected-paths-throttle) and

@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { groupBy } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -13,7 +13,6 @@ const NO_USER_ID = -1;
 export default {
   components: {
     GlButton,
-    GlIcon,
     EmojiPicker,
   },
   directives: {
@@ -44,11 +43,6 @@ export default {
       type: String,
       required: false,
       default: 'selected',
-    },
-    boundary: {
-      type: String,
-      required: false,
-      default: '',
     },
   },
   data() {
@@ -197,28 +191,12 @@ export default {
     </gl-button>
     <div v-if="canAwardEmoji" class="award-menu-holder gl-my-2">
       <emoji-picker
-        v-gl-tooltip.viewport
-        :title="__('Add reaction')"
-        :toggle-class="['add-reaction-button btn-icon gl-relative!', { 'is-active': isMenuOpen }]"
         :right="false"
-        :boundary="boundary"
         data-testid="emoji-picker"
         @click="handleAward"
         @shown="setIsMenuOpen(true)"
         @hidden="setIsMenuOpen(false)"
-      >
-        <template #button-content>
-          <span class="reaction-control-icon reaction-control-icon-neutral">
-            <gl-icon name="slight-smile" />
-          </span>
-          <span class="reaction-control-icon reaction-control-icon-positive">
-            <gl-icon name="smiley" />
-          </span>
-          <span class="reaction-control-icon reaction-control-icon-super-positive">
-            <gl-icon name="smile" />
-          </span>
-        </template>
-      </emoji-picker>
+      />
     </div>
   </div>
 </template>

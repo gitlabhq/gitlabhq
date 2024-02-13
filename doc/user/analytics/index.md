@@ -5,7 +5,11 @@ description: Instance, group, and project analytics.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Analyze GitLab usage **(FREE ALL)**
+# Analyze GitLab usage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab provides different types of analytics insights at the instance, group, and project level.
 These insights appear on the left sidebar, under [**Analyze**](../project/settings/project_features_permissions.md#disable-project-analytics).
@@ -17,14 +21,14 @@ so that you can view information across multiple projects and groups in one plac
 
 ## Group-level analytics
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 Use group-level analytics to get insights into your groups':
 
 - [Security Dashboards](../application_security/security_dashboard/index.md)
 - [Contribution analytics](../group/contribution_analytics/index.md)
 - [DevOps adoption](../group/devops_adoption/index.md)
-- [Insights](../group/insights/index.md)
+- [Insights](../project/insights/index.md)
 - [Issue analytics](../group/issues_analytics/index.md)
 - [Productivity analytics](productivity_analytics.md)
 - [Repositories analytics](../group/repositories_analytics/index.md)
@@ -40,7 +44,7 @@ Use project-level analytics to get insights into your projects':
 - [Code review analytics](code_review_analytics.md)
 - [Contributor analytics](../../user/analytics/contributor_analytics.md)
 - [Insights](../project/insights/index.md)
-- [Issue analytics](../../user/analytics/issue_analytics.md)
+- [Issue analytics](../group/issues_analytics/index.md)
 - [Merge request analytics](merge_request_analytics.md), enabled with the `project_merge_request_analytics`
   [feature flag](../../development/feature_flags/index.md#enabling-a-feature-flag-locally-in-development)
 - [Repository analytics](repository_analytics.md)

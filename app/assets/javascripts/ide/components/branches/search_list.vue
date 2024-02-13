@@ -78,13 +78,16 @@ export default {
         size="lg"
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
-      <ul v-else class="mb-0 w-100">
+      <ul v-else class="mb-0 gl-w-full">
         <template v-if="hasBranches">
           <li v-for="item in branches" :key="item.name">
             <item :item="item" :project-id="currentProjectId" :is-active="isActiveBranch(item)" />
           </li>
         </template>
-        <li v-else class="ide-search-list-empty d-flex align-items-center justify-content-center">
+        <li
+          v-else
+          class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
+        >
           <template v-if="hasNoSearchResults">
             {{ __('No branches found') }}
           </template>

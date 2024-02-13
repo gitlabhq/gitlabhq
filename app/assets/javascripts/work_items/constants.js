@@ -1,6 +1,5 @@
 import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
-import { ASC, DESC } from '~/notes/constants';
 
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
@@ -10,8 +9,6 @@ export const STATE_EVENT_CLOSE = 'CLOSE';
 
 export const TRACKING_CATEGORY_SHOW = 'workItems:show';
 
-export const TASK_TYPE_NAME = 'Task';
-
 export const WIDGET_TYPE_ASSIGNEES = 'ASSIGNEES';
 export const WIDGET_TYPE_DESCRIPTION = 'DESCRIPTION';
 export const WIDGET_TYPE_AWARD_EMOJI = 'AWARD_EMOJI';
@@ -20,6 +17,7 @@ export const WIDGET_TYPE_CURRENT_USER_TODOS = 'CURRENT_USER_TODOS';
 export const WIDGET_TYPE_LABELS = 'LABELS';
 export const WIDGET_TYPE_START_AND_DUE_DATE = 'START_AND_DUE_DATE';
 export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
+export const WIDGET_TYPE_PARTICIPANTS = 'PARTICIPANTS';
 export const WIDGET_TYPE_PROGRESS = 'PROGRESS';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
@@ -27,6 +25,7 @@ export const WIDGET_TYPE_ITERATION = 'ITERATION';
 export const WIDGET_TYPE_NOTES = 'NOTES';
 export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
+export const WIDGET_TYPE_COLOR = 'COLOR';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -45,9 +44,6 @@ export const WORK_ITEM_TYPE_VALUE_TEST_CASE = 'Test case';
 export const WORK_ITEM_TYPE_VALUE_REQUIREMENTS = 'Requirements';
 export const WORK_ITEM_TYPE_VALUE_KEY_RESULT = 'Key Result';
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
-
-export const NAMESPACE_GROUP = 'group';
-export const NAMESPACE_PROJECT = 'project';
 
 export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
@@ -271,14 +267,15 @@ export const WORK_ITEM_ACTIVITY_FILTER_OPTIONS = [
 ];
 
 export const WORK_ITEM_ACTIVITY_SORT_OPTIONS = [
-  { value: DESC, text: __('Newest first') },
-  { value: ASC, text: __('Oldest first') },
+  { value: 'desc', text: __('Newest first') },
+  { value: 'asc', text: __('Oldest first') },
 ];
 
 export const TEST_ID_CONFIDENTIALITY_TOGGLE_ACTION = 'confidentiality-toggle-action';
 export const TEST_ID_NOTIFICATIONS_TOGGLE_FORM = 'notifications-toggle-form';
 export const TEST_ID_DELETE_ACTION = 'delete-action';
 export const TEST_ID_PROMOTE_ACTION = 'promote-action';
+export const TEST_ID_LOCK_ACTION = 'lock-action';
 export const TEST_ID_COPY_REFERENCE_ACTION = 'copy-reference-action';
 export const TEST_ID_COPY_CREATE_NOTE_EMAIL_ACTION = 'copy-create-note-email-action';
 export const TEST_ID_TOGGLE_ACTION = 'state-toggle-action';
@@ -324,3 +321,7 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
 };
+
+export const LINKED_ITEMS_ANCHOR = 'linkeditems';
+export const CHILD_ITEMS_ANCHOR = 'childitems';
+export const TASKS_ANCHOR = 'tasks';

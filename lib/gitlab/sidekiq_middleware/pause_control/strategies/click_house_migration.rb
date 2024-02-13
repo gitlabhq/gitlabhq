@@ -9,7 +9,7 @@ module Gitlab
           def should_pause?
             return false unless Feature.enabled?(:pause_clickhouse_workers_during_migration)
 
-            ClickHouse::MigrationSupport::ExclusiveLock.pause_workers?
+            ::ClickHouse::MigrationSupport::ExclusiveLock.pause_workers?
           end
         end
       end

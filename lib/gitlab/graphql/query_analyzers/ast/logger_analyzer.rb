@@ -32,6 +32,7 @@ module Gitlab
             results[:duration_s] = duration(results[:time_started])
             results[:used_fields] = field_usages[:used_fields]
             results[:used_deprecated_fields] = field_usages[:used_deprecated_fields]
+            results[:used_deprecated_arguments] = field_usages[:used_deprecated_arguments]
 
             push_to_request_store(results)
 

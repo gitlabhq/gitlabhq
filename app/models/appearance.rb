@@ -12,6 +12,7 @@ class Appearance < MainClusterwide::ApplicationRecord
   attribute :pwa_name, default: ''
   attribute :pwa_short_name, default: ''
   attribute :pwa_description, default: ''
+  attribute :member_guidelines, default: ''
   attribute :new_project_guidelines, default: ''
   attribute :profile_image_guidelines, default: ''
   attribute :header_message, default: ''
@@ -21,6 +22,7 @@ class Appearance < MainClusterwide::ApplicationRecord
   attribute :email_header_and_footer_enabled, default: false
 
   cache_markdown_field :description
+  cache_markdown_field :member_guidelines
   cache_markdown_field :new_project_guidelines
   cache_markdown_field :profile_image_guidelines
   cache_markdown_field :header_message, pipeline: :broadcast_message

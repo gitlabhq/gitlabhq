@@ -10,14 +10,14 @@ class StageEntity < Grape::Entity
   end
 
   expose :groups,
-    if: -> (_, opts) { opts[:grouped] },
+    if: ->(_, opts) { opts[:grouped] },
     with: JobGroupEntity
 
-  expose :latest_statuses, if: -> (_, opts) { opts[:details] }, with: Ci::JobEntity do |stage|
+  expose :latest_statuses, if: ->(_, opts) { opts[:details] }, with: Ci::JobEntity do |_stage|
     latest_statuses
   end
 
-  expose :retried, if: -> (_, opts) { opts[:retried] }, with: Ci::JobEntity do |stage|
+  expose :retried, if: ->(_, opts) { opts[:retried] }, with: Ci::JobEntity do |_stage|
     retried_statuses
   end
 
@@ -67,7 +67,12 @@ class StageEntity < Grape::Entity
   end
 
   def preload_metadata(statuses)
-    Preloaders::CommitStatusPreloader.new(statuses).execute([:metadata, :pipeline])
+    relations = [:metadata, :pipeline]
+    if Feature.enabled?(:preload_ci_bridge_downstream_pipelines, stage.pipeline.project, type: :gitlab_com_derisk)
+      relations << { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }
+    end
+
+    Preloaders::CommitStatusPreloader.new(statuses).execute(relations)
 
     statuses
   end

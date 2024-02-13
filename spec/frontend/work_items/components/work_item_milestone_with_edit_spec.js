@@ -5,7 +5,6 @@ import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/share
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -99,8 +98,6 @@ describe('WorkItemMilestoneWithEdit component', () => {
 
     it('calls successSearchQueryHandler with variables when dropdown is opened', async () => {
       showDropdown();
-      await nextTick();
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
       await waitForPromises();
 
@@ -114,8 +111,6 @@ describe('WorkItemMilestoneWithEdit component', () => {
 
     it('shows the skeleton loader when the items are being fetched on click', async () => {
       showDropdown();
-      await nextTick();
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
       await nextTick();
 
@@ -124,8 +119,6 @@ describe('WorkItemMilestoneWithEdit component', () => {
 
     it('shows the milestones in dropdown when the items have finished fetching', async () => {
       showDropdown();
-      await nextTick();
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
       await waitForPromises();
 
@@ -135,14 +128,11 @@ describe('WorkItemMilestoneWithEdit component', () => {
       );
     });
 
-    it('changes the milestone to null when clicked on no milestone', async () => {
-      showDropdown();
-      await nextTick();
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-
+    it('changes the milestone to null when clicked on Clear', async () => {
       findSidebarDropdownWidget().vm.$emit('updateValue', null);
 
       await nextTick();
+
       expect(findSidebarDropdownWidget().props('updateInProgress')).toBe(true);
 
       await waitForPromises();
@@ -154,15 +144,13 @@ describe('WorkItemMilestoneWithEdit component', () => {
       const milestoneAtIndex = projectMilestonesResponse.data.workspace.attributes.nodes[0];
 
       showDropdown();
-      await nextTick();
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
 
       await waitForPromises();
       findSidebarDropdownWidget().vm.$emit('updateValue', milestoneAtIndex.id);
 
       await nextTick();
 
-      expect(findSidebarDropdownWidget().props('itemValue').title).toBe(milestoneAtIndex.title);
+      expect(findSidebarDropdownWidget().props('itemValue')).toBe(milestoneAtIndex.id);
     });
   });
 

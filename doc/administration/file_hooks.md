@@ -4,7 +4,11 @@ group: Import and Integrate
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# File hooks **(FREE SELF)**
+# File hooks
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Use custom file hooks (not to be confused with [server hooks](server_hooks.md) or [system hooks](system_hooks.md)),
 to introduce custom integrations without modifying the GitLab source code.

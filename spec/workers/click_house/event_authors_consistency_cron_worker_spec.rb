@@ -7,7 +7,7 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
   context 'when ClickHouse is disabled' do
     it 'does nothing' do
-      allow(ClickHouse::Client).to receive(:database_configured?).and_return(false)
+      allow(Gitlab::ClickHouse).to receive(:configured?).and_return(false)
 
       expect(worker).not_to receive(:log_extra_metadata_on_done)
 
@@ -17,7 +17,7 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
   context 'when the event_sync_worker_for_click_house feature flag is off' do
     it 'does nothing' do
-      allow(ClickHouse::Client).to receive(:database_configured?).and_return(true)
+      allow(Gitlab::ClickHouse).to receive(:configured?).and_return(true)
       stub_feature_flags(event_sync_worker_for_click_house: false)
 
       expect(worker).not_to receive(:log_extra_metadata_on_done)
@@ -73,10 +73,10 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
         User.where(id: [user1.id, user2.id]).delete_all
 
         stub_const("#{described_class}::MAX_AUTHOR_DELETIONS", 2)
-        stub_const("#{described_class}::POSTGRESQL_BATCH_SIZE", 1)
+        stub_const("#{ClickHouse::Concerns::ConsistencyWorker}::POSTGRESQL_BATCH_SIZE", 1)
 
         expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-          { status: :deletion_limit_reached, deletions: 2 })
+          { status: :limit_reached, modifications: 2 })
 
         worker.perform
 
@@ -87,13 +87,13 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
     context 'when time limit is reached' do
       it 'stops the processing earlier' do
-        stub_const("#{described_class}::POSTGRESQL_BATCH_SIZE", 1)
+        stub_const("#{ClickHouse::Concerns::ConsistencyWorker}::POSTGRESQL_BATCH_SIZE", 1)
 
         # stop at the third author_id
-        allow_next_instance_of(Analytics::CycleAnalytics::RuntimeLimiter) do |runtime_limiter|
+        allow_next_instance_of(Gitlab::Metrics::RuntimeLimiter) do |runtime_limiter|
           allow(runtime_limiter).to receive(:over_time?).and_return(false, false, true)
         end
-        expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { status: :over_time, deletions: 1 })
+        expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { status: :over_time, modifications: 1 })
 
         worker.perform
 

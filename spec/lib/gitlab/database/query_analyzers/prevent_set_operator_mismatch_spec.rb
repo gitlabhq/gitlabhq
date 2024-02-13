@@ -9,7 +9,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventSetOperatorMismatch, que
   def process_sql(sql, model = ApplicationRecord)
     Gitlab::Database::QueryAnalyzer.instance.within([analyzer]) do
       # Skip load balancer and retrieve connection assigned to model
-      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection)
+      Gitlab::Database::QueryAnalyzer.instance.send(:process_sql, sql, model.retrieve_connection, 'load')
     end
   end
 

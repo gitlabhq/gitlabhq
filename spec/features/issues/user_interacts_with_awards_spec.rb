@@ -134,7 +134,7 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
       it 'allows adding a new emoji' do
         resize_window(1200, 800)
         page.within('.note-actions') do
-          find('.note-emoji-button').click
+          find('.add-reaction-button').click
         end
 
         # make sure emoji popup is visible

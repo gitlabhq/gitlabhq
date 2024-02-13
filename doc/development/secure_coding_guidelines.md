@@ -23,7 +23,7 @@ used in defined mitigations. If you have questions or when ready for a review, p
 ### Description
 
 Application permissions are used to determine who can access what and what actions they can perform.
-For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [EE docs on permissions](../../ee/user/permissions.md).
+For more information about the permission model at GitLab, see [the GitLab permissions guide](permissions.md) or the [user docs on permissions](../user/permissions.md).
 
 ### Impact
 
@@ -258,7 +258,7 @@ the mitigations for a new feature.
 
 #### URL blocker & validation libraries
 
-[`Gitlab::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/url_blocker.rb) can be used to validate that a
+[`Gitlab::HTTP_V2::UrlBlocker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-http/lib/gitlab/http_v2/url_blocker.rb) can be used to validate that a
 provided URL meets a set of constraints. Importantly, when `dns_rebind_protection` is `true`, the method returns a known-safe URI where the hostname
 has been replaced with an IP address. This prevents DNS rebinding attacks, because the DNS record has been resolved. However, if we ignore this returned
 value, we **will not** be protected against DNS rebinding.
@@ -410,7 +410,7 @@ References:
 - When updating the content of an HTML element using JavaScript, mark user-controlled values as `textContent` or `nodeValue` instead of `innerHTML`.
 - Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/directives/safe_html.js) instead.
 - Render unsafe or unsanitized content using [`dompurify`](fe_guide/security.md#sanitize-html-output).
-- Consider using [`gl-sprintf`](../../ee/development/i18n/externalization.md#interpolation) to interpolate translated strings securely.
+- Consider using [`gl-sprintf`](i18n/externalization.md#interpolation) to interpolate translated strings securely.
 - Avoid `__()` with translations that contain user-controlled values.
 - When working with `postMessage`, ensure the `origin` of the message is allowlisted.
 - Consider using the [Safe Link Directive](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-link-directive--default) to generate secure hyperlinks by default.
@@ -882,13 +882,13 @@ In 2018, the security company Snyk [released a blog post](https://security.snyk.
 
 A Zip Slip vulnerability happens when an application extracts an archive without validating and sanitizing the filenames inside the archive for directory traversal sequences that change the file location when the file is extracted.
 
-Example malicious file names:
+Example malicious filenames:
 
 - `../../etc/passwd`
 - `../../root/.ssh/authorized_keys`
 - `../../etc/gitlab/gitlab.rb`
 
-If a vulnerable application extracts an archive file with any of these file names, the attacker can overwrite these files with arbitrary content.
+If a vulnerable application extracts an archive file with any of these filenames, the attacker can overwrite these files with arbitrary content.
 
 ### Insecure archive extraction examples
 
@@ -910,7 +910,7 @@ tar_extract.rewind
 tar_extract.each do |entry|
   next unless entry.file? # Only process files in this example for simplicity.
 
-  destination = "/tmp/extracted/#{entry.full_name}" # Oops! We blindly use the entry file name for the destination.
+  destination = "/tmp/extracted/#{entry.full_name}" # Oops! We blindly use the entry filename for the destination.
   File.open(destination, "wb") do |out|
     out.write(entry.read)
   end
@@ -941,7 +941,7 @@ func unzip(src, dest string) error {
     }
     defer rc.Close()
 
-    path := filepath.Join(dest, f.Name) // Oops! We blindly use the entry file name for the destination.
+    path := filepath.Join(dest, f.Name) // Oops! We blindly use the entry filename for the destination.
     os.MkdirAll(filepath.Dir(path), f.Mode())
     f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
     if err != nil {
@@ -1234,7 +1234,7 @@ These types of bugs are often seen in environments which allow multi-threading a
 
 **Example 1:** you have a model which accepts a URL as input. When the model is created you verify that the URL host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
 
-GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d).
+GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::HTTP_V2::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/85c6a73598e72ab104ab29b72bf83661cd961646).
 
 **Example 2:** you have a feature which schedules jobs. When the user schedules the job, they have permission to do so. But imagine if, between the time they schedule the job and the time it is run, their permissions are restricted. Unless you re-check permissions at time of use, you could inadvertently allow unauthorized activity.
 
@@ -1264,9 +1264,9 @@ end
 - Use your framework's validations and database features to impose constraints and atomic reads and writes.
 - Read about [Server Side Request Forgery (SSRF) and DNS rebinding](#server-side-request-forgery-ssrf)
 
-An example of well implemented `Gitlab::UrlBlocker.validate!` call that prevents TOCTOU bug:
+An example of well implemented `Gitlab::HTTP_V2::UrlBlocker.validate!` call that prevents TOCTOU bug:
 
-1. [Preventing DNS rebinding in Gitea importer](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d)
+1. [Preventing DNS rebinding in Gitea importer](https://gitlab.com/gitlab-org/gitlab/-/commit/85c6a73598e72ab104ab29b72bf83661cd961646)
 
 ### Resources
 
@@ -1294,8 +1294,8 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/security/security-engineering/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-standards).
-- To store and/or share credentials between teams, refer to [1Password for Teams](https://about.gitlab.com/handbook/security/#1password-for-teams) and follow [the 1Password Guidelines](https://about.gitlab.com/handbook/security/#1password-guidelines).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](hhttps://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
+- To store and/or share credentials between teams, refer to [1Password for Teams](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams) and follow [the 1Password Guidelines](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 
 ### In transit
@@ -1304,7 +1304,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Avoid including credentials as part of an HTTP response unless it is absolutely necessary as part of the workflow. For example, generating a PAT for users.
 - Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
 
-In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
+In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://handbook.gitlab.com/handbook/security/security-operations/sirt/).
 
 ### Token prefixes
 
@@ -1329,7 +1329,7 @@ Add the new prefix to:
 Encrypting a token with `attr_encrypted` so that the plaintext can be retrieved
 and used later. Use a binary column to store `attr_encrypted` attributes in the database,
 and then set both `encode` and `encode_iv` to `false`. For recommended algorithms, see
-the [GitLab Cryptography Standard](https://about.gitlab.com/handbook/security/cryptographic-standard.html#algorithmic-standards).
+the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards).
 
 ```ruby
 module AlertManagement
@@ -1380,7 +1380,7 @@ When an attribute is protected with `prevent_from_serialization`, it is not incl
 For more guidance on serialization:
 
 - [Why using a serializer is important](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/serializers/README.md#why-using-a-serializer-is-important).
-- Always use [Grape entities](../../ee/development/api_styleguide.md#entities) for the API.
+- Always use [Grape entities](api_styleguide.md#entities) for the API.
 
 To `serialize` an `ActiveRecord` column:
 
@@ -1399,7 +1399,7 @@ prevent_from_serialization(*strategy.token_fields) if respond_to?(:prevent_from_
 ## Artificial Intelligence (AI) features
 
 When planning and developing new AI experiments or features, we recommend creating an
-[Application Security Review](https://about.gitlab.com/handbook/engineering/security/security-engineering-and-research/application-security/appsec-reviews.html) issue.
+[Application Security Review](https://handbook.gitlab.com/handbook/security/product-security/application-security/appsec-reviews/) issue.
 
 There are a number of risks to be mindful of:
 
@@ -1412,7 +1412,7 @@ There are a number of risks to be mindful of:
 - Rendering unsanitized responses
   - Assume all responses could be malicious. See also: [XSS guidelines](#xss-guidelines)
 - Training our own models
-  - Be familiar with the GitLab [AI strategy and legal restrictions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://about.gitlab.com/handbook/security/data-classification-standard.html)
+  - Be familiar with the GitLab [AI strategy and legal restrictions](https://internal-handbook.gitlab.io/handbook/product/ai-strategy/ai-integration-effort/) (GitLab team members only) and the [Data Classification Standard](https://handbook.gitlab.com/handbook/security/data-classification-standard/)
   - Understand that the data you train on may be malicious ("tainted models")
 - Insecure design
   - How is the user or system authenticated and authorized to API / model endpoints?
@@ -1527,11 +1527,11 @@ Also see this [real-life usage](https://gitlab.com/gitlab-org/gitlab/-/blob/bdba
 
 ## Who to contact if you have questions
 
-For general guidance, contact the [Application Security](https://about.gitlab.com/handbook/security/security-engineering/application-security/) team.
+For general guidance, contact the [Application Security](https://handbook.gitlab.com/handbook/security/product-security/application-security/) team.
 
 ## Related topics
 
 - [Log system in GitLab](../administration/logs/index.md)
 - [Audit event development guidelines](../development/audit_event_guide/index.md))
-- [Security logging overview](https://about.gitlab.com/handbook/security/security-engineering/security-logging/)
+- [Security logging overview](https://handbook.gitlab.com/handbook/security/product-security/security-logging/)
 - [OWASP logging cheat sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)

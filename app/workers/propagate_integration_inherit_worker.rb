@@ -17,7 +17,7 @@ class PropagateIntegrationInheritWorker
 
     batch = Integration.where(id: min_id..max_id).by_type(integration.type).inherit_from_id(integration.id)
 
-    BulkUpdateIntegrationService.new(integration, batch).execute
+    Integrations::Propagation::BulkUpdateService.new(integration, batch).execute
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

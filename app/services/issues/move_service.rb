@@ -6,12 +6,13 @@ module Issues
 
     MoveError = Class.new(StandardError)
 
-    def execute(issue, target_project)
+    def execute(issue, target_project, move_any_issue_type = false)
+      @move_any_issue_type = move_any_issue_type
       @target_project = target_project
 
       verify_can_move_issue!(issue, target_project)
 
-      super
+      super(issue, target_project)
 
       notify_participants
 
@@ -27,10 +28,32 @@ module Issues
 
     private
 
-    attr_reader :target_project
+    attr_reader :target_project, :move_any_issue_type
+
+    override :after_clone_actions
+    def after_clone_actions
+      move_children
+    end
+
+    def move_children
+      return if Feature.disabled?(:move_issue_children, original_entity.resource_parent, type: :beta)
+
+      WorkItems::ParentLink.for_parents(original_entity).each do |link|
+        new_child = self.class.new(
+          container: container,
+          current_user: current_user
+        ).execute(
+          ::Issue.find(link.work_item_id),
+          target_project,
+          true
+        )
+
+        WorkItems::ParentLink.create!(work_item_id: new_child.id, work_item_parent_id: new_entity.id)
+      end
+    end
 
     def verify_can_move_issue!(issue, target_project)
-      unless issue.supports_move_and_clone?
+      unless issue.supports_move_and_clone? || move_any_issue_type
         raise MoveError, s_('MoveIssue|Cannot move issues of \'%{issue_type}\' type.') % { issue_type: issue.issue_type }
       end
 
@@ -44,10 +67,13 @@ module Issues
     end
 
     def update_service_desk_sent_notifications
-      return unless original_entity.from_service_desk?
+      context = { project_id: new_entity.project_id, noteable_id: new_entity.id }
 
-      original_entity
-        .sent_notifications.update_all(project_id: new_entity.project_id, noteable_id: new_entity.id)
+      original_entity.run_after_commit_or_now do
+        next unless from_service_desk?
+
+        sent_notifications.update_all(**context)
+      end
     end
 
     def copy_email_participants
@@ -137,7 +163,11 @@ module Issues
     end
 
     def notify_participants
-      notification_service.async.issue_moved(original_entity, new_entity, @current_user)
+      context = { original: original_entity, new: new_entity, user: @current_user, service: notification_service }
+
+      original_entity.run_after_commit_or_now do
+        context[:service].async.issue_moved(context[:original], context[:new], context[:user])
+      end
     end
 
     def add_note_from

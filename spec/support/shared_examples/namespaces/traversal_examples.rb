@@ -284,6 +284,14 @@ RSpec.shared_examples 'namespace traversal' do
     end
   end
 
+  describe 'all_project_ids' do
+    it 'is a AR relation' do
+      expect(group.all_project_ids).to be_kind_of(ActiveRecord::Relation)
+    end
+
+    it_behaves_like 'recursive version', :all_project_ids
+  end
+
   describe '#self_and_descendant_ids' do
     subject { group.self_and_descendant_ids.pluck(:id) }
 

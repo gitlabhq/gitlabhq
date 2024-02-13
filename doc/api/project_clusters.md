@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Project clusters API (certificate-based) (deprecated) **(FREE ALL)**
+# Project clusters API (certificate-based) (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/23922) in GitLab 11.7.
 > - [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
@@ -201,7 +205,7 @@ Parameters:
 | `platform_kubernetes_attributes[ca_cert]`            | string  | no       | TLS certificate. Required if API is using a self-signed TLS certificate.                              |
 | `platform_kubernetes_attributes[namespace]`          | string  | no       | The unique namespace related to the project                                                           |
 | `platform_kubernetes_attributes[authorization_type]` | string  | no       | The cluster authorization type: `rbac`, `abac` or `unknown_authorization`. Defaults to `rbac`.        |
-| `environment_scope`                                  | string  | no       | The associated environment to the cluster. Defaults to `*` **(PREMIUM ALL)**                              |
+| `environment_scope`                                  | string  | no       | The associated environment to the cluster. Defaults to `*`. Premium and Ultimate only.                         |
 
 Example request:
 

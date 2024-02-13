@@ -279,14 +279,14 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   context 'when fetching work item notifications widget' do
     let(:fields) do
       <<~GRAPHQL
-          nodes {
-            widgets {
-              type
-              ... on WorkItemWidgetNotifications {
-                subscribed
-              }
+        nodes {
+          widgets {
+            type
+            ... on WorkItemWidgetNotifications {
+              subscribed
             }
           }
+        }
       GRAPHQL
     end
 
@@ -307,22 +307,22 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   context 'when fetching work item award emoji widget' do
     let(:fields) do
       <<~GRAPHQL
-          nodes {
-            widgets {
-              type
-              ... on WorkItemWidgetAwardEmoji {
-                awardEmoji {
-                  nodes {
-                    name
-                    emoji
-                    user { id }
-                  }
+        nodes {
+          widgets {
+            type
+            ... on WorkItemWidgetAwardEmoji {
+              awardEmoji {
+                nodes {
+                  name
+                  emoji
+                  user { id }
                 }
-                upvotes
-                downvotes
               }
+              upvotes
+              downvotes
             }
           }
+        }
       GRAPHQL
     end
 
@@ -404,6 +404,54 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
       expect_graphql_errors_to_be_empty
       expect { post_graphql(query, current_user: current_user) }
         .not_to exceed_all_query_limit(control)
+    end
+  end
+
+  context 'when fetching work item participants widget' do
+    let_it_be(:other_project) { create(:project, group: group) }
+    let_it_be(:project) { other_project }
+    let_it_be(:users) { create_list(:user, 3) }
+    let_it_be(:work_items) { create_list(:work_item, 3, project: project, assignees: users) }
+
+    let(:fields) do
+      <<~GRAPHQL
+        nodes {
+          id
+          widgets {
+            type
+            ... on WorkItemWidgetParticipants {
+              participants {
+                nodes {
+                  id
+                  username
+                }
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    before do
+      project.add_guest(current_user)
+    end
+
+    it 'returns participants' do
+      post_graphql(query, current_user: current_user)
+
+      participants_usernames = graphql_dig_at(items_data, 'widgets', 'participants', 'nodes', 'username')
+      expect(participants_usernames).to match_array(work_items.flat_map(&:participants).map(&:username))
+    end
+
+    it 'executes limited number of N+1 queries', :use_sql_query_cache do
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create_list(:work_item, 2, project: project, assignees: users)
+
+      expect_graphql_errors_to_be_empty
+      expect { post_graphql(query, current_user: current_user) }.not_to exceed_all_query_limit(control)
     end
   end
 

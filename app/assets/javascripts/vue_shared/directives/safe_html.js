@@ -19,7 +19,12 @@ const transform = (el, binding) => {
   }
 };
 
+const clear = (el) => {
+  el.textContent = '';
+};
+
 export default {
   bind: transform,
   update: transform,
+  unbind: clear,
 };

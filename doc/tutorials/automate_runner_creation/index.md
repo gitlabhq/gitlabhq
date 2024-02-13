@@ -4,7 +4,11 @@ group: Tutorials
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Automate runner creation and registration **(FREE ALL)**
+# Tutorial: Automate runner creation and registration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial describes how to automate runner creation and registration.
 
@@ -24,7 +28,7 @@ method that uses registration tokens. For more information, see
 ## Before you begin
 
 - GitLab Runner must be installed on your GitLab instance.
-- To create shared runners, you must be an administrator.
+- To create instance runners, you must be an administrator.
 - To create group runners, you must be an administrator or have the Owner role for the group.
 - To create project runners, you must be an administrator or have the Maintainer role for the project.
 
@@ -150,7 +154,7 @@ REST endpoint to create a runner:
 1. Save the returned `token` value in a secure location or your secrets management
    solution. The `token` value is returned only once in the API response.
 
-## With the `gitlab_user_runner` Terraform resource
+### With the `gitlab_user_runner` Terraform resource
 
 To create the runner configuration with Terraform, use the
 [`gitlab_user_runner` Terraform resource](https://gitlab.com/gitlab-org/terraform-provider-gitlab/-/blob/main/docs/resources/user_runner.md?ref_type=heads)
@@ -173,7 +177,7 @@ runner installation and registration.
 
 After you create a runner and its configuration, you can use the same runner
 authentication token to register multiple runners with the same configuration.
-For example, you can deploy multiple shared runners with the same executor type
+For example, you can deploy multiple instance runners with the same executor type
 and job tags to the target compute host. Each runner registered with the same runner
 authentication token has a unique `system_id`, which GitLab Runner
 generates randomly and stores in your local file system.

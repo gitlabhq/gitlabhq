@@ -29,7 +29,11 @@ module QA
         Runtime::Feature.disable(:rubygem_packages, project: project)
       end
 
-      it 'publishes a Ruby gem', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649' do
+      it 'publishes a Ruby gem', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366099',
+          type: :flaky
+        } do
         Flow::Login.sign_in
 
         Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

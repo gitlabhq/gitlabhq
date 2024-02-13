@@ -6,7 +6,7 @@ module ClickHouse
 
     def initialize(
       last_record_id:, max_records_per_batch:,
-      runtime_limiter: Analytics::CycleAnalytics::RuntimeLimiter.new)
+      runtime_limiter: Gitlab::Metrics::RuntimeLimiter.new)
       @last_record_id = last_record_id
       @runtime_limiter = runtime_limiter
       @max_records_per_batch = max_records_per_batch

@@ -1,4 +1,5 @@
 <script>
+import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -7,15 +8,19 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_MILESTONE,
+  WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_COLOR,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
 } from '../constants';
-import WorkItemDueDate from './work_item_due_date.vue';
-import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemAssigneesInline from './work_item_assignees_inline.vue';
+import WorkItemAssigneesWithEdit from './work_item_assignees_with_edit.vue';
+import WorkItemDueDateInline from './work_item_due_date_inline.vue';
+import WorkItemDueDateWithEdit from './work_item_due_date_with_edit.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
@@ -24,11 +29,14 @@ import WorkItemParent from './work_item_parent_with_edit.vue';
 
 export default {
   components: {
+    Participants,
     WorkItemLabels,
     WorkItemMilestoneInline,
     WorkItemMilestoneWithEdit,
-    WorkItemAssignees,
-    WorkItemDueDate,
+    WorkItemAssigneesInline,
+    WorkItemAssigneesWithEdit,
+    WorkItemDueDateInline,
+    WorkItemDueDateWithEdit,
     WorkItemParent,
     WorkItemParentInline,
     WorkItemWeightInline: () =>
@@ -44,6 +52,8 @@ export default {
       import('ee_component/work_items/components/work_item_health_status_with_edit.vue'),
     WorkItemHealthStatusInline: () =>
       import('ee_component/work_items/components/work_item_health_status_inline.vue'),
+    WorkItemColorInline: () =>
+      import('ee_component/work_items/components/work_item_color_inline.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -78,6 +88,9 @@ export default {
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
     },
+    workItemParticipants() {
+      return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
+    },
     workItemProgress() {
       return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
     },
@@ -103,6 +116,9 @@ export default {
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
+    workItemColor() {
+      return this.isWidgetPresent(WIDGET_TYPE_COLOR);
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -114,17 +130,31 @@ export default {
 
 <template>
   <div class="work-item-attributes-wrapper">
-    <work-item-assignees
-      v-if="workItemAssignees"
-      :can-update="canUpdate"
-      :full-path="fullPath"
-      :work-item-id="workItem.id"
-      :assignees="workItemAssignees.assignees.nodes"
-      :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-      :work-item-type="workItemType"
-      :can-invite-members="workItemAssignees.canInviteMembers"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemAssignees">
+      <work-item-assignees-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        @error="$emit('error', $event)"
+      />
+      <work-item-assignees-inline
+        v-else
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :assignees="workItemAssignees.assignees.nodes"
+        :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+        :work-item-type="workItemType"
+        :can-invite-members="workItemAssignees.canInviteMembers"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <work-item-labels
       v-if="workItemLabels"
       :can-update="canUpdate"
@@ -133,15 +163,26 @@ export default {
       :work-item-iid="workItem.iid"
       @error="$emit('error', $event)"
     />
-    <work-item-due-date
-      v-if="workItemDueDate"
-      :can-update="canUpdate"
-      :due-date="workItemDueDate.dueDate"
-      :start-date="workItemDueDate.startDate"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemDueDate">
+      <work-item-due-date-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-type="workItemType"
+        :work-item="workItem"
+        @error="$emit('error', $event)"
+      />
+      <work-item-due-date-inline
+        v-else
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemMilestone">
       <work-item-milestone-with-edit
         v-if="glFeatures.workItemsMvc2"
@@ -261,5 +302,18 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <work-item-color-inline
+      v-if="workItemColor"
+      class="gl-mb-5"
+      :work-item="workItem"
+      :can-update="canUpdate"
+      @error="$emit('error', $event)"
+    />
+    <participants
+      v-if="workItemParticipants && glFeatures.workItemsMvc"
+      class="gl-mb-5"
+      :number-of-less-participants="10"
+      :participants="workItemParticipants.participants.nodes"
+    />
   </div>
 </template>

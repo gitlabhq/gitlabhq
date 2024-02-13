@@ -1,35 +1,32 @@
 - page_title _("Labels")
 - add_page_specific_style 'page_bundles/labels'
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card labels other-labels js-toggle-container js-admin-labels-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper.gl-flex-direction-column
-      %h5.gl-new-card-title
-        = _('Labels')
-        .gl-new-card-count
-          = sprite_icon('label', css_class: 'gl-mr-2')
-          %span.js-admin-labels-count= @labels.count
-      .gl-new-card-description
-        = s_('AdminLabels|Labels created here will be automatically added to new projects.')
-    .gl-new-card-actions
-      = render Pajamas::ButtonComponent.new(variant: :default,
-        size: :small,
-        href: new_admin_label_path) do
-        = _('New label')
-  - c.with_body do
-    - if @labels.present?
+- if @labels.present?
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card labels other-labels js-toggle-container js-admin-labels-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper.gl-flex-direction-column
+        %h5.gl-new-card-title
+          = _('Labels')
+          .gl-new-card-count
+            = sprite_icon('label', css_class: 'gl-mr-2')
+            %span.js-admin-labels-count= @labels.count
+        .gl-new-card-description
+          = s_('AdminLabels|Labels created here will be automatically added to new projects.')
+      .gl-new-card-actions
+        = render Pajamas::ButtonComponent.new(variant: :default,
+          size: :small,
+          href: new_admin_label_path) do
+          = _('New label')
+    - c.with_body do
       %ul.manage-labels-list.js-other-labels.gl-px-3.gl-rounded-base
         = render @labels
-    .js-admin-labels-empty-state{ class: ('gl-display-none' if @labels.present?) }
-      %section.row.empty-state.gl-text-center
-        .col-12
-          .svg-content.svg-150
-            = image_tag 'illustrations/empty-state/empty-labels-md.svg'
-        .col-12
-          .gl-mx-auto.gl-my-0.gl-p-5
-            %h1.gl-font-size-h-display.gl-line-height-36.h4
-              = s_('AdminLabels|Define your default set of project labels')
-            %p.gl-text-secondary
-              = s_('AdminLabels|They can be used to categorize issues and merge requests.')
+.js-admin-labels-empty-state{ class: ('gl-display-none' if @labels.present?) }
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
+    title: s_('AdminLabels|Define your default set of project labels'),
+    primary_button_text: _('New label'),
+    primary_button_link: new_admin_label_path) do |c|
+
+    - c.with_description do
+      = s_('AdminLabels|They can be used to categorize issues and merge requests.')
 
 .gl-mt-5= paginate @labels, theme: 'gitlab'

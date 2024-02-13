@@ -139,7 +139,12 @@ export default {
       return markdownPreviewPath(this.fullPath, this.workItem.iid);
     },
     autocompleteDataSources() {
-      return autocompleteDataSources(this.fullPath, this.workItem.iid);
+      const {
+        fullPath,
+        isGroup,
+        workItem: { iid },
+      } = this;
+      return autocompleteDataSources({ fullPath, isGroup, iid });
     },
     saveButtonText() {
       return this.editMode ? __('Save changes') : __('Save');

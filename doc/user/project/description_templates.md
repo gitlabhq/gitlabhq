@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Description templates **(FREE ALL)**
+# Description templates
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can define templates to use as descriptions
 for your [issues](issues/index.md) and [merge requests](merge_requests/index.md).
@@ -86,7 +90,7 @@ For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_templat
 
 ### Supported variables in merge request templates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89810) in GitLab 15.7.
 
 NOTE:
 This feature is available only for
@@ -104,7 +108,11 @@ your merge request template with their values:
 | `%{source_branch}` | The name of the branch being merged. | `my-feature-branch`  |
 | `%{target_branch}` | The name of the branch that the changes are applied to. | `main` |
 
-### Set instance-level description templates **(PREMIUM SELF)**
+### Set instance-level description templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).
@@ -113,7 +121,11 @@ You can also use the instance template repository for file templates.
 You might also be interested in [project templates](../../administration/custom_project_templates.md)
 that you can use when creating a new project in the instance.
 
-### Set group-level description templates **(PREMIUM ALL)**
+### Set group-level description templates
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.
@@ -142,7 +154,7 @@ You might also be interested in templates for various
 
 ### Set a default template for merge requests and issues
 
-> `Default.md` (case insensitive) template [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302) in GitLab 14.8.
+> - `Default.md` (case insensitive) template [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78302) in GitLab 14.8.
 
 In a project, you can choose a default description template for new issues and merge requests.
 As a result, every time a new merge request or issue is created, it's pre-filled with the text you

@@ -94,7 +94,7 @@ export default {
 
 <template>
   <div class="d-flex flex-column flex-fill min-height-0 pr-3">
-    <div class="top-bar d-flex border-left-0 align-items-center">
+    <div class="top-bar d-flex border-left-0 gl-align-items-center">
       <div v-if="loadingText">
         <gl-loading-icon size="sm" :inline="true" />
         <span>{{ loadingText }}</span>
@@ -111,7 +111,7 @@ export default {
     <div class="terminal-wrapper d-flex flex-fill min-height-0">
       <div
         ref="terminal"
-        class="ide-terminal-trace flex-fill min-height-0 w-100"
+        class="ide-terminal-trace flex-fill min-height-0 gl-w-full"
         :data-project-path="terminalPath"
       ></div>
     </div>

@@ -42,10 +42,8 @@ class Group < Namespace
     foreign_key: :member_namespace_id, inverse_of: :group, class_name: 'GroupMember'
   alias_method :members, :group_members
 
-  has_many :users, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
-    through: :group_members
-  has_many :owners, -> { allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/432604") },
-    through: :all_owner_members, source: :user
+  has_many :users, through: :group_members
+  has_many :owners, through: :all_owner_members, source: :user
 
   has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember' # rubocop:disable Cop/ActiveRecordDependent
   has_many :namespace_requesters, -> { where.not(requested_at: nil).unscope(where: %i[source_id source_type]) },
@@ -213,7 +211,11 @@ class Group < Namespace
     where(project_creation_level: project_creation_levels)
   end
 
-  scope :project_creation_allowed, -> do
+  scope :excluding_restricted_visibility_levels_for_user, -> (user) do
+    user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
+  end
+
+  scope :project_creation_allowed, -> (user) do
     project_creation_allowed_on_levels = [
       ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
       ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
@@ -229,7 +231,7 @@ class Group < Namespace
       project_creation_allowed_on_levels.delete(nil)
     end
 
-    with_project_creation_levels(project_creation_allowed_on_levels)
+    with_project_creation_levels(project_creation_allowed_on_levels).excluding_restricted_visibility_levels_for_user(user)
   end
 
   scope :shared_into_ancestors, -> (group) do
@@ -534,7 +536,7 @@ class Group < Namespace
     owners = []
 
     members_from_hiearchy.all_owners.non_invite.each_batch do |relation|
-      owners += relation.preload(:user).load.reject do |member|
+      owners += relation.preload(:user, :source).load.reject do |member|
         member.user.nil? || member.user.project_bot?
       end
     end
@@ -852,7 +854,7 @@ class Group < Namespace
   end
 
   def crm_enabled?
-    crm_settings&.enabled?
+    crm_settings.nil? || crm_settings.enabled?
   end
 
   def shared_with_group_links_visible_to_user(user)

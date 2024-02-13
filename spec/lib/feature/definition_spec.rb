@@ -55,11 +55,11 @@ RSpec.describe Feature::Definition do
   end
 
   describe '#valid_usage!' do
-    context 'validates type' do
-      it 'raises exception for invalid type' do
-        expect { definition.valid_usage!(type_in_code: :invalid) }
-          .to raise_error(/The `type:` of `feature_flag` is not equal to config/)
-      end
+    it 'raises exception for invalid type' do
+      expect { definition.valid_usage!(type_in_code: :invalid) }
+        .to raise_error(
+          /The given `type: :invalid` for `feature_flag` is not equal to the :development set in its definition file./
+        )
     end
   end
 

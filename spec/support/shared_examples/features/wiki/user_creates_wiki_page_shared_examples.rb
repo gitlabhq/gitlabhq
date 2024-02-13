@@ -44,7 +44,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       click_link("link test")
 
-      expect(page).to have_content("Create New Page")
+      expect(page).to have_content("New Page")
     end
 
     it "shows non-escaped link in the pages list", :js do
@@ -85,7 +85,7 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_current_path(wiki_page_path(wiki, "test"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("Create New Page")
+        expect(page).to have_content("New Page")
       end
 
       click_link("Home")
@@ -97,7 +97,7 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_current_path(wiki_page_path(wiki, "api"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("Create")
+        expect(page).to have_content("New Page")
       end
 
       click_link("Home")
@@ -109,7 +109,7 @@ RSpec.shared_examples 'User creates wiki page' do
       expect(page).to have_current_path(wiki_page_path(wiki, "raketasks"), ignore_query: true)
 
       page.within(:css, ".wiki-page-header") do
-        expect(page).to have_content("Create")
+        expect(page).to have_content("New Page")
       end
     end
 

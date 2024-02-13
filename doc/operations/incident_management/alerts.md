@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Alerts **(FREE ALL)**
+# Alerts
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
@@ -96,7 +100,7 @@ If you add a link, it is shown above the uploaded image.
 
 ### Activity feed tab
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 The **Activity feed** tab is a log of activity on the alert. When you take action on an alert, this is logged as a system note. This gives you a linear
 timeline of the alert's investigation and assignment history.
@@ -153,7 +157,11 @@ When you [close an incident](manage_incidents.md#close-an-incident) that is link
 GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
-#### As an on-call responder **(PREMIUM ALL)**
+#### As an on-call responder
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 On-call responders can respond to [alert pages](paging.md#escalating-an-alert)
 by changing the alert status.
@@ -170,7 +178,7 @@ the incident status is independent and does not update when the alert status cha
 
 ### Assign an alert
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 In large teams, where there is shared ownership of an alert, it can be
 difficult to track who is investigating and working on it. Assigning alerts eases collaboration and delegation by indicating which user is owning the alert. GitLab supports only a single assignee per alert.
@@ -199,14 +207,18 @@ and clear the user from the list of assignees, or select **Unassigned**.
 
 ### Create a to-do item from an alert
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
 You can manually create a [to-do item](../../user/todos.md) for yourself
 from an alert, and view it later on your **To-Do List**.
 
 To add a to-do item, on the right sidebar, select **Add a to do**.
 
-### Trigger actions from alerts **(ULTIMATE ALL)**
+### Trigger actions from alerts
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - Introduced in GitLab 13.1: incidents are not created automatically by default.
 > - Mapping common severity values from the alert payload [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9.

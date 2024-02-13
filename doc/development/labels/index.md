@@ -39,7 +39,7 @@ labels, you can _always_ add the type, stage, group, and often the category/feat
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one and only one.
 
-The SSOT for type and subtype labels is [available in the handbook](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification).
+The SSOT for type and subtype labels is [available in the handbook](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification).
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
@@ -50,11 +50,11 @@ already reserved for category labels).
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
 
-The GitLab handbook documents [when something is a bug](https://about.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://about.gitlab.com/handbook/product/product-processes/#feature-issues).
+The GitLab handbook documents [when something is a bug](https://handbook.gitlab.com/handbook/product/product-processes/#bug-issues) and [when it is a feature request](https://handbook.gitlab.com/handbook/product/product-processes/#feature-issues).
 
 ## Stage labels
 
-Stage labels specify which [stage](https://about.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
+Stage labels specify which [stage](https://handbook.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
 
 ### Naming and color convention
 
@@ -79,7 +79,7 @@ Group labels specify which [groups](https://about.gitlab.com/company/team/struct
 
 It's highly recommended to add a group label, as it's used by our triage
 automation to
-[infer the correct stage label](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-labelling-of-issues-and-merge-requests).
+[infer the correct stage label](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues-and-merge-requests).
 
 ### Naming and color convention
 
@@ -98,7 +98,7 @@ The current group labels can be found by [searching the labels list for `group::
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels)
 and thus are mutually exclusive.
 
-You can find the groups listed in the [Product Stages, Groups, and Categories](https://about.gitlab.com/handbook/product/categories/) page.
+You can find the groups listed in the [Product Stages, Groups, and Categories](https://handbook.gitlab.com/handbook/product/categories/) page.
 
 We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
@@ -106,7 +106,7 @@ As a team needs some way to collect the work their members are planning to be as
 ## Category labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
 > Categories are high-level capabilities that may be a standalone product at
@@ -114,7 +114,7 @@ another company, such as Portfolio Management, for example.
 
 It's highly recommended to add a category label, as it's used by our triage
 automation to
-[infer the correct group and stage labels](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-labelling-of-issues).
+[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues).
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -132,13 +132,13 @@ For instance, the "DevOps Reports" category is represented by the
 `devops_reports.name` value is "DevOps Reports".
 
 If a category's label doesn't respect this naming convention, it should be specified
-with [the `label` attribute](https://about.gitlab.com/handbook/marketing/digital-experience/website/#category-attributes)
+with [the `label` attribute](https://handbook.gitlab.com/handbook/marketing/digital-experience/website/#category-attributes)
 in <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml>.
 
 ## Feature labels
 
 From the handbook's
-[Product stages, groups, and categories](https://about.gitlab.com/handbook/product/categories/#hierarchy)
+[Product stages, groups, and categories](https://handbook.gitlab.com/handbook/product/categories/#hierarchy)
 page:
 
 > Features: Small, discrete functionalities, for example Issue weights. Some common
@@ -146,7 +146,7 @@ features are listed within parentheses to facilitate finding responsible PMs by 
 
 It's highly recommended to add a feature label if no category label applies, as
 it's used by our triage automation to
-[infer the correct group and stage labels](https://about.gitlab.com/handbook/engineering/quality/triage-operations/#auto-labelling-of-issues).
+[infer the correct group and stage labels](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/#auto-labelling-of-issues).
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
@@ -252,7 +252,7 @@ We have the following priority labels:
 - `~"priority::3"`
 - `~"priority::4"`
 
-Refer to the issue triage [priority label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
+Refer to the issue triage [priority label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority) section in our handbook to see how it's used.
 
 ## Severity labels
 
@@ -263,7 +263,7 @@ We have the following severity labels:
 - `~"severity::3"`
 - `~"severity::4"`
 
-Refer to the issue triage [severity label](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
+Refer to the issue triage [severity label](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity) section in our handbook to see how it's used.
 
 ## Label for community contributors
 

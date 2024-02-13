@@ -13,7 +13,7 @@ describe('AdminUserAvatar component', () => {
 
   const findNote = () => wrapper.findComponent(GlIcon);
   const findAvatar = () => wrapper.findComponent(GlAvatarLabeled);
-  const findUserLink = () => wrapper.find('.js-user-link');
+  const findUserLink = () => wrapper.find('.js-user-popover');
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
   const findTooltip = () => getBinding(findNote().element, 'gl-tooltip');
 

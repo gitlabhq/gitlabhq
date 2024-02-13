@@ -97,21 +97,6 @@ RSpec.shared_examples 'issue boards sidebar' do
 
       expect(subscription_button).to have_css("button:not(.is-checked)")
     end
-
-    context 'when notifications have been disabled' do
-      before do
-        project.update_attribute(:emails_enabled, false)
-
-        refresh_and_click_first_card
-      end
-
-      it 'displays a message that notifications have been disabled' do
-        page.within('[data-testid="sidebar-notifications"]') do
-          expect(page).to have_selector('[data-testid="subscription-toggle"]', class: 'is-disabled')
-          expect(page).to have_content('Disabled by project owner')
-        end
-      end
-    end
   end
 
   context 'confidentiality' do

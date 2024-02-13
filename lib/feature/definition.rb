@@ -74,10 +74,13 @@ module Feature
     end
 
     def valid_usage!(type_in_code:)
-      unless Array(type).include?(type_in_code.to_s)
+      return if type_in_code.nil?
+
+      if type != type_in_code.to_s
         # Raise exception in test and dev
-        raise Feature::InvalidFeatureFlagError, "The `type:` of `#{key}` is not equal to config: " \
-          "#{type_in_code} vs #{type}. Ensure to use valid type in #{path} or ensure that you use " \
+        raise Feature::InvalidFeatureFlagError,
+          "The given `type: :#{type_in_code}` for `#{key}` is not equal to the " \
+          ":#{type} set in its definition file. Ensure to use a valid type in #{path} or ensure that you use " \
           "a valid syntax: #{TYPES.dig(type, :example)}"
       end
     end
@@ -122,7 +125,7 @@ module Feature
 
       def log_states?(key)
         return false if key == :feature_flag_state_logs
-        return false if Feature.disabled?(:feature_flag_state_logs, type: :ops)
+        return false if Feature.disabled?(:feature_flag_state_logs)
         return false unless (feature = get(key))
 
         feature.force_log_state_changes? || feature.for_upcoming_milestone?
@@ -131,6 +134,8 @@ module Feature
       def valid_usage!(key, type:)
         if definition = get(key)
           definition.valid_usage!(type_in_code: type)
+        elsif type.nil?
+          raise InvalidFeatureFlagError, "Missing type for undefined feature `#{key}`"
         elsif type_definition = self::TYPES[type]
           raise InvalidFeatureFlagError, "Missing feature definition for `#{key}`" unless type_definition[:optional]
         else

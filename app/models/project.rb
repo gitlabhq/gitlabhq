@@ -107,6 +107,9 @@ class Project < ApplicationRecord
     snippets: gitlab_config_features.snippets
   }.freeze
 
+  # List of attributes that, when updated, should be considered as Project Activity
+  PROJECT_ACTIVITY_ATTRIBUTES = %w[description name].freeze
+
   cache_markdown_field :description, pipeline: :description
 
   attribute :packages_enabled, default: true
@@ -132,6 +135,7 @@ class Project < ApplicationRecord
   before_validation :ensure_project_namespace_in_sync
   before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
   before_validation :remove_leading_spaces_on_name
+  before_validation :set_last_activity_at
   after_validation :check_pending_delete
   before_save :ensure_runners_token
 
@@ -200,6 +204,7 @@ class Project < ApplicationRecord
   has_one :asana_integration, class_name: 'Integrations::Asana'
   has_one :assembla_integration, class_name: 'Integrations::Assembla'
   has_one :bamboo_integration, class_name: 'Integrations::Bamboo'
+  has_one :beyond_identity_integration, class_name: 'Integrations::BeyondIdentity'
   has_one :bugzilla_integration, class_name: 'Integrations::Bugzilla'
   has_one :buildkite_integration, class_name: 'Integrations::Buildkite'
   has_one :campfire_integration, class_name: 'Integrations::Campfire'
@@ -347,6 +352,8 @@ class Project < ApplicationRecord
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project, class_name: 'ProjectMember'
 
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
+  has_many :member_approvals, through: :members_and_requesters
+
   has_many :namespace_members_and_requesters, -> { unscope(where: %i[source_id source_type]) },
     primary_key: :project_namespace_id, foreign_key: :member_namespace_id, inverse_of: :project,
     class_name: 'ProjectMember'
@@ -554,6 +561,7 @@ class Project < ApplicationRecord
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
       delegate :code_suggestions, :code_suggestions=
+      delegate :duo_features_enabled, :duo_features_enabled=
     end
   end
 
@@ -627,13 +635,25 @@ class Project < ApplicationRecord
         .or(arel_table[:storage_version].eq(nil)))
   end
 
-  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['updated_at'].asc) }
-  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['updated_at'].desc) }
+  scope :sorted_by_activity, -> { reorder(self.arel_table['last_activity_at'].desc) }
+  scope :sorted_by_updated_asc, -> { reorder(self.arel_table['last_activity_at'].asc) }
+  scope :sorted_by_updated_desc, -> { reorder(self.arel_table['last_activity_at'].desc) }
   scope :sorted_by_stars_desc, -> { reorder(self.arel_table['star_count'].desc) }
   scope :sorted_by_stars_asc, -> { reorder(self.arel_table['star_count'].asc) }
+  scope :sorted_by_path_asc, -> { reorder(self.arel_table['path'].asc) }
+  scope :sorted_by_path_desc, -> { reorder(self.arel_table['path'].desc) }
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
+  scope :order_by_storage_size, -> (direction) do
+    build_keyset_order_on_joined_column(
+      scope: joins(:statistics),
+      attribute_name: 'project_statistics_storage_size',
+      column: ::ProjectStatistics.arel_table[:storage_size],
+      direction: direction,
+      nullable: :nulls_first
+    )
+  end
 
   scope :sorted_by_similarity_desc, -> (search, include_in_select: false) do
     order_expression = Gitlab::Database::SimilarityScore.build_expression(
@@ -953,6 +973,10 @@ class Project < ApplicationRecord
         sorted_by_updated_desc
       when 'latest_activity_asc'
         sorted_by_updated_asc
+      when 'path_asc'
+        sorted_by_path_asc
+      when 'path_desc'
+        sorted_by_path_desc
       when 'stars_desc'
         sorted_by_stars_desc
       when 'stars_asc'
@@ -1667,10 +1691,6 @@ class Project < ApplicationRecord
     last_event
   end
 
-  def last_activity_date
-    updated_at
-  end
-
   def project_id
     self.id
   end
@@ -1723,7 +1743,7 @@ class Project < ApplicationRecord
 
   def find_or_initialize_integrations
     Integration
-      .available_integration_names
+      .available_integration_names(include_instance_specific: false)
       .difference(disabled_integrations)
       .map { find_or_initialize_integration(_1) }
       .sort_by(&:title)
@@ -1740,7 +1760,8 @@ class Project < ApplicationRecord
   end
 
   def find_or_initialize_integration(name)
-    return if disabled_integrations.include?(name) || Integration.available_integration_names.exclude?(name)
+    return if disabled_integrations.include?(name)
+    return if Integration.available_integration_names(include_instance_specific: false).exclude?(name)
 
     find_integration(integrations, name) || build_from_instance(name) || build_integration(name)
   end
@@ -1938,8 +1959,17 @@ class Project < ApplicationRecord
   end
 
   def track_project_repository
-    repository = project_repository || build_project_repository
-    repository.update!(shard_name: repository_storage, disk_path: disk_path)
+    (project_repository || build_project_repository).tap do |proj_repo|
+      attributes = { shard_name: repository_storage, disk_path: disk_path }
+
+      if Feature.enabled?(:store_object_format, namespace, type: :gitlab_com_derisk)
+        object_format = repository.object_format
+
+        attributes[:object_format] = object_format if object_format.present?
+      end
+
+      proj_repo.update!(**attributes)
+    end
 
     cleanup
   end
@@ -2367,7 +2397,13 @@ class Project < ApplicationRecord
   end
 
   def has_ci?
-    repository.gitlab_ci_yml || auto_devops_enabled?
+    has_ci_config_file? || auto_devops_enabled?
+  end
+
+  def has_ci_config_file?
+    strong_memoize(:has_ci_config_file) do
+      ci_config_for('HEAD').present?
+    end
   end
 
   def predefined_variables
@@ -2824,10 +2860,6 @@ class Project < ApplicationRecord
     JiraConnectSubscription.for_project(self).exists?
   end
 
-  def uses_default_ci_config?
-    ci_config_path.blank? || Gitlab::FileDetector.type_of(ci_config_path) == :gitlab_ci
-  end
-
   def limited_protected_branches(limit)
     protected_branches.limit(limit)
   end
@@ -3067,6 +3099,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def parent_groups
+    Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
+  end
+
   def enforced_runner_token_expiration_interval
     all_parent_groups = Gitlab::ObjectHierarchy.new(Group.where(id: group)).base_and_ancestors
     all_group_settings = NamespaceSetting.where(namespace_id: all_parent_groups)
@@ -3196,17 +3232,16 @@ class Project < ApplicationRecord
     errors.add(:path, s_('Project|already in use'))
   end
 
+  def repository_object_format
+    project_repository&.object_format
+  end
+
   def instance_runner_running_jobs_count
     # excluding currently started job
     ::Ci::RunningBuild.instance_type.where(project_id: self.id)
                       .limit(INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET + 1).count - 1
   end
   strong_memoize_attr :instance_runner_running_jobs_count
-
-  def code_suggestions_enabled?
-    code_suggestions && (group.nil? || group.code_suggestions)
-  end
-  strong_memoize_attr :code_suggestions_enabled?
 
   # Overridden in EE
   def allows_multiple_merge_request_assignees?
@@ -3220,6 +3255,11 @@ class Project < ApplicationRecord
 
   # Overridden in EE
   def on_demand_dast_available?
+    false
+  end
+
+  # Overridden in EE
+  def code_suggestions_enabled?
     false
   end
 
@@ -3324,7 +3364,7 @@ class Project < ApplicationRecord
   end
 
   def set_timestamps_for_create
-    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
+    update_columns(last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)
@@ -3466,6 +3506,16 @@ class Project < ApplicationRecord
 
   def remove_leading_spaces_on_name
     name&.lstrip!
+  end
+
+  def set_last_activity_at
+    return if last_activity_at_changed?
+
+    if new_record? || (changed & PROJECT_ACTIVITY_ATTRIBUTES).any?
+      self.last_activity_at = Time.current
+    elsif last_activity_at.nil?
+      self.last_activity_at = created_at
+    end
   end
 
   def set_package_registry_access_level

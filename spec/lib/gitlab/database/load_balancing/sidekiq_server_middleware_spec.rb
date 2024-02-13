@@ -13,7 +13,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
   let(:none_caught_up) { Gitlab::Database::LoadBalancing::LoadBalancer::NONE_CAUGHT_UP }
 
   before do
-    skip_feature_flags_yaml_validation
     skip_default_enabled_yaml_check
 
     replication_lag!(false)

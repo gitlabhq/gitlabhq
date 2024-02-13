@@ -4,7 +4,11 @@ group: Optimize
 info: For assistance with this tutorial, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Tutorial: Set up an analytics-powered website project **(ULTIMATE ALL)**
+# Tutorial: Set up an analytics-powered website project
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 When you work on a complex project (for example, a website), you likely collaborate with other people to build and maintain it.
 The way you collaborate and communicate in your team can make or break the project, so you want processes in place that help team members follow and achieve the common goal.

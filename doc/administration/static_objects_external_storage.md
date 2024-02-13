@@ -4,9 +4,13 @@ group: IDE
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# External storage for static objects **(FREE SELF)**
+# External storage for static objects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/31025) in GitLab 12.3.
 
 Configure GitLab to serve repository static objects (such as archives or raw blobs) from external
 storage such as a content delivery network (CDN).

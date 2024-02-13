@@ -208,7 +208,7 @@ export default {
     @hidden="setDropdownVisible(false)"
   >
     <template #toggle>
-      <gl-button variant="info" category="primary">
+      <gl-button variant="confirm" category="primary">
         {{ __('Finish review') }}
         <gl-icon class="dropdown-chevron" name="chevron-up" />
       </gl-button>

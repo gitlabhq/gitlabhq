@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages redirects **(FREE ALL)**
+# GitLab Pages redirects
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/24) in GitLab Pages 1.25.0 and GitLab 13.4 behind a feature flag, disabled by default.
 > - [Became enabled by default](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/367) in GitLab 13.5.
@@ -19,7 +23,7 @@ are supported.
 
 | Feature | Supported | Example |
 | ------- | --------- | ------- |
-| [Redirects (`301`, `302`)](#redirects) | **{check-circle}** Yes  | `/wardrobe.html /narnia.html 302`
+| [Redirects (`301`, `302`)](#redirects) | **{check-circle}** Yes  | `/wardrobe.html /narnia.html 302` |
 | [Rewrites (`200`)](#rewrites)          | **{check-circle}** Yes  | `/* / 200` |
 | [Splats](#splats)                      | **{check-circle}** Yes  | `/news/*  /blog/:splat` |
 | [Placeholders](#placeholders)          | **{check-circle}** Yes  | `/news/:year/:month/:date /blog-:year-:month-:date.html` |
@@ -106,7 +110,7 @@ and an [HTTP status code](#http-status-codes):
 
 ## Rewrites
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_PLACEHOLDERS`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3 [with a flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_PLACEHOLDERS`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/619) in GitLab 15.2.
 
 Provide a status code of `200` to serve the content of the `to` path when the
@@ -121,7 +125,13 @@ rewrite the URL.
 
 ## Domain-level redirects
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/936) in GitLab 16.8 [with a flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_DOMAIN_REDIRECT`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/k8s-workloads/gitlab-com/-/merge_requests/3395) in GitLab 16.9.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, an administrator can [enable the feature flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_DOMAIN_REDIRECT`.
+On GitLab.com, this feature is available.
 
 To create a domain-level redirect, add a domain-level path (beginning with `http://`
 or `https://`) to either:
@@ -146,7 +156,7 @@ to dynamically rewrite the URL path.
 
 ## Splats
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
 
 A rule with an asterisk (`*`) in its `from` path, known as a splat, matches
 anything at the start, middle, or end of the requested path. This example
@@ -204,7 +214,7 @@ rule like:
 
 ## Placeholders
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/merge_requests/458) in GitLab 14.3.
 
 Use placeholders in rules to match portions of the requested URL and use these
 matches when rewriting or redirecting to a new URL.

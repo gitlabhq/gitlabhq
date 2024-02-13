@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Choose when to run jobs **(FREE ALL)**
+# Choose when to run jobs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs should run in that pipeline. You can configure jobs to run depending on
@@ -17,7 +21,7 @@ earlier jobs it depends on finish running.
 
 ## Specify when jobs run with `rules`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27863) in GitLab 12.3.
 
 Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
 
@@ -339,7 +343,7 @@ You can use the `$` character for both variables and paths. For example, if the
 
 ### Reuse rules in different jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322992) in GitLab 14.3.
 
 Use [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) to reuse rules in different
 jobs. You can combine `!reference` rules with regular job-defined rules:
@@ -465,7 +469,7 @@ build:
 If you change multiple files, but only one file ends in `.md`,
 the `build` job is still skipped. The job does not run for any of the files.
 
-With some configurations that use `changes`, [jobs or pipelines might run unexpectedly](#jobs-or-pipelines-run-unexpectedly-when-using-changes)
+With some configurations that use `changes`, [jobs or pipelines might run unexpectedly](job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes)
 
 #### Use `only:changes` with merge request pipelines
 
@@ -616,7 +620,11 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
-### Protect manual jobs **(PREMIUM ALL)**
+### Protect manual jobs
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Use [protected environments](../environments/protected_environments.md)
 to define a list of users authorized to run a manual job. You can authorize only
@@ -655,7 +663,7 @@ by authorized users.
 
 ## Run a job after a delay
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/51352) in GitLab 11.4.
 
 Use [`when: delayed`](../yaml/index.md#when) to execute scripts after a waiting period, or if you want to avoid
 jobs immediately entering the `pending` state.
@@ -726,7 +734,7 @@ Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26362) in GitLab 13.5.
 
 You can create a one-dimensional matrix of parallel jobs:
 
@@ -745,7 +753,7 @@ You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix
 
 ### Run a matrix of parallel trigger jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270957) in GitLab 13.10.
 
 You can run a [trigger](../yaml/index.md#trigger) job multiple times in parallel in a single pipeline,
 but with different variable values for each instance of the job.
@@ -779,7 +787,7 @@ deploystacks: [vultr, data]
 
 ### Select different runner tags for each parallel matrix job
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/239737) in GitLab 14.1.
 
 You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/index.md#tags)
 keyword for dynamic runner selection:
@@ -833,7 +841,7 @@ Quotes around the `dependencies` entry are required.
 
 ## Specify a parallelized job using needs with multiple parallelized jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254821) in GitLab 16.3.
 
 You can use variables defined in [`needs:parallel:matrix`](../yaml/index.md#needsparallelmatrix) with multiple parallelized jobs.
 
@@ -1117,7 +1125,7 @@ regex-job2:
 
 ### Join variable expressions together with `&&` or `||`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/62867) in GitLab 12.0
 
 You can join multiple expressions using `&&` (and) or `||` (or), for example:
 
@@ -1145,122 +1153,3 @@ For example:
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2) && ($VARIABLE3 =~ /thing$/ || $VARIABLE4)`
 - `($VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/) && $VARIABLE3`
 - `$CI_COMMIT_BRANCH == "my-branch" || (($VARIABLE1 == "thing" || $VARIABLE2 == "thing") && $VARIABLE3)`
-
-## Troubleshooting
-
-### Jobs or pipelines run unexpectedly when using `changes:`
-
-You might have jobs or pipelines that run unexpectedly when using [`rules: changes`](../yaml/index.md#ruleschanges)
-or [`only: changes`](../yaml/index.md#onlychanges--exceptchanges) without
-[merge request pipelines](../pipelines/merge_request_pipelines.md).
-
-Pipelines on branches or tags that don't have an explicit association with a merge request
-use a previous SHA to calculate the diff. This calculation is equivalent to `git diff HEAD~`
-and can cause unexpected behavior, including:
-
-- The `changes` rule always evaluates to true when pushing a new branch or a new tag to GitLab.
-- When pushing a new commit, the changed files are calculated by using the previous commit
-  as the base SHA.
-
-Additionally, rules with `changes` always evaluate as true in [scheduled pipelines](../pipelines/schedules.md).
-All files are considered to have changed when a scheduled pipeline runs, so jobs
-might always be added to scheduled pipelines that use `changes`.
-
-### File paths in CI/CD variables
-
-Be careful when using file paths in CI/CD variables. A trailing slash can appear correct
-in the variable definition, but can become invalid when expanded in `script:`, `changes:`,
-or other keywords. For example:
-
-```yaml
-docker_build:
-  variables:
-    DOCKERFILES_DIR: 'path/to/files/'  # This variable should not have a trailing '/' character
-  script: echo "A docker job"
-  rules:
-    - changes:
-        - $DOCKERFILES_DIR/*
-```
-
-When the `DOCKERFILES_DIR` variable is expanded in the `changes:` section, the full
-path becomes `path/to/files//*`. The double slashes might cause unexpected behavior
-depending on factors like the keyword used, or the shell and OS of the runner.
-
-### `You are not allowed to download code from this project.` error message
-
-You might see pipelines fail when a GitLab administrator runs a protected manual job
-in a private project.
-
-CI/CD jobs usually clone the project when the job starts, and this uses [the permissions](../../user/permissions.md#job-permissions)
-of the user that runs the job. All users, including administrators, must be direct members
-of a private project to clone the source of that project. [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/23130)
-to change this behavior.
-
-To run protected manual jobs:
-
-- Add the administrator as a direct member of the private project (any role)
-- [Impersonate a user](../../administration/admin_area.md#user-impersonation) who is a
-  direct member of the project.
-
-### A CI/CD job does not use newer configuration when run again
-
-The configuration for a pipeline is only fetched when the pipeline is created.
-When you rerun a job, uses the same configuration each time. If you update configuration files,
-including separate files added with [`include`](../yaml/index.md#include), you must
-start a new pipeline to use the new configuration.
-
-### `Job may allow multiple pipelines to run for a single action` warning
-
-When you use [`rules`](../yaml/index.md#rules) with a `when` clause without an `if`
-clause, multiple pipelines may run. Usually this occurs when you push a commit to
-a branch that has an open merge request associated with it.
-
-To [prevent duplicate pipelines](#avoid-duplicate-pipelines), use
-[`workflow: rules`](../yaml/index.md#workflow) or rewrite your rules to control
-which pipelines can run.
-
-### `This GitLab CI configuration is invalid` for variable expressions
-
-You might receive one of several `This GitLab CI configuration is invalid` errors
-when working with [CI/CD variable expressions](#cicd-variable-expressions).
-These syntax errors can be caused by incorrect usage of quote characters.
-
-In variable expressions, strings should be quoted, while variables should not be quoted.
-For example:
-
-```yaml
-variables:
-  ENVIRONMENT: production
-
-job:
-  script: echo
-  rules:
-    - if: $ENVIRONMENT == "production"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-```
-
-In this example, both `if:` clauses are valid because the `production` string is quoted,
-and the CI/CD variables are unquoted.
-
-On the other hand, these `if:` clauses are all invalid:
-
-```yaml
-variables:
-  ENVIRONMENT: production
-
-job:
-  script: echo
-  rules:       # These rules all cause YAML syntax errors:
-    - if: ${ENVIRONMENT} == "production"
-    - if: "$ENVIRONMENT" == "production"
-    - if: $ENVIRONMENT == production
-    - if: "production" == "production"
-```
-
-In this example:
-
-- `if: ${ENVIRONMENT} == "production"` is invalid, because `${ENVIRONMENT}` is not valid
-  formatting for CI/CD variables in `if:`.
-- `if: "$ENVIRONMENT" == "production"` is invalid, because the variable is quoted.
-- `if: $ENVIRONMENT == production` is invalid, because the string is not quoted.
-- `if: "production" == "production"` is invalid, because there is no CI/CD variable to compare.

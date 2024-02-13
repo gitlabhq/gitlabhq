@@ -50,6 +50,10 @@ module Ci
         yield(pipelines_project_merge_request_path(merge_request))
         yield(merge_request_widget_path(merge_request))
       end
+
+      pipeline.project.merge_requests.by_merged_or_merge_or_squash_commit_sha(pipeline.sha).each do |merge_request|
+        yield(merge_request_widget_path(merge_request))
+      end
     end
 
     def graphql_pipeline_path(pipeline)

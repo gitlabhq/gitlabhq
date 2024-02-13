@@ -6,8 +6,11 @@ module Security
       private
 
       def action
-        Security::CiConfiguration::DependencyScanningBuildAction.new(project.auto_devops_enabled?, existing_gitlab_ci_content,
-                                                                     project.ci_config_path).generate
+        Security::CiConfiguration::DependencyScanningBuildAction.new(
+          project.auto_devops_enabled?,
+          existing_gitlab_ci_content,
+          project.ci_config_path
+        ).generate
       end
 
       def next_branch

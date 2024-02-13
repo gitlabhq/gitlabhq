@@ -51,9 +51,9 @@ class Packages::Package < ApplicationRecord
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
-  has_one :rubygems_metadatum, inverse_of: :package, class_name: 'Packages::Rubygems::Metadatum'
   has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
+  has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
   has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
@@ -190,6 +190,7 @@ class Packages::Package < ApplicationRecord
   scope :preload_files, -> { preload(:installable_package_files) }
   scope :preload_nuget_files, -> { preload(:installable_nuget_package_files) }
   scope :preload_pipelines, -> { preload(pipelines: :user) }
+  scope :preload_tags, -> { preload(:tags) }
   scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
   scope :select_distinct_name, -> { select(:name).distinct }
 
@@ -221,7 +222,8 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column = 'package_type'
 
   def self.inheritance_column_to_class_map = {
-    ml_model: 'Packages::MlModel::Package'
+    ml_model: 'Packages::MlModel::Package',
+    rubygems: 'Packages::Rubygems::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)

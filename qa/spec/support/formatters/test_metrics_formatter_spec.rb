@@ -19,6 +19,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:run_type) { 'staging-full' }
   let(:smoke) { 'false' }
   let(:reliable) { 'false' }
+  let(:blocking) { 'false' }
   let(:quarantined) { 'false' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
@@ -48,6 +49,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         status: :passed,
         smoke: smoke,
         reliable: reliable,
+        blocking: blocking,
         quarantined: quarantined,
         retried: 'false',
         job_name: 'test-job',
@@ -146,6 +148,19 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       it 'exports data to influxdb with correct reliable tag' do
         run_spec do
           it('spec', :reliable, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
+        end
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [data])
+      end
+    end
+
+    context 'with blocking spec' do
+      let(:blocking) { 'true' }
+
+      it 'exports data to influxdb with correct blocking tag' do
+        run_spec do
+          it('spec', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
@@ -310,7 +325,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       end
     end
 
-    context 'with fabrication resources' do
+    context 'with fabrication resources' do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:fabrication_resources) do
         {
           'QA::Resource::Project' => [{

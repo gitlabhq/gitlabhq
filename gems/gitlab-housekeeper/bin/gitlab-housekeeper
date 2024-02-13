@@ -16,12 +16,12 @@ OptionParser.new do |opts|
     options[:dry_run] = true
   end
 
-  opts.on('-r lib/foo.rb lib/bar.rb', '--require lib/foo.rb lib/bar.rb', Array, 'Require keeps specified') do |r|
-    options[:require] = r
-  end
-
   opts.on('-k OverdueFinalizeBackgroundMigration,AnotherKeep', '--keeps OverdueFinalizeBackgroundMigration,AnotherKeep', Array, 'Require keeps specified') do |k|
     options[:keeps] = k
+  end
+
+  opts.on('--filter-identifiers some-identifier-regex,another-regex', Array, 'Skip any changes where none of the identifiers match these regexes. The identifiers is an array, so at least one element must match at least one regex.') do |filters|
+    options[:filter_identifiers] = filters.map { |f| Regexp.new(f) }
   end
 
   opts.on('-h', '--help', 'Prints this help') do

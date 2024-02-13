@@ -13,8 +13,8 @@ RSpec.describe PropagateIntegrationProjectWorker do
     let(:job_args) { [integration.id, project1.id, project3.id] }
 
     it_behaves_like 'an idempotent worker' do
-      it 'calls to BulkCreateIntegrationService' do
-        expect(BulkCreateIntegrationService).to receive(:new)
+      it 'calls to Integrations::Propagation::BulkCreateService' do
+        expect(Integrations::Propagation::BulkCreateService).to receive(:new)
           .with(integration, match_array([project1, project2, project3]), 'project').twice
           .and_return(double(execute: nil))
 
@@ -24,8 +24,8 @@ RSpec.describe PropagateIntegrationProjectWorker do
       context 'with a group integration' do
         let_it_be(:integration) { create(:redmine_integration, :group, group: group) }
 
-        it 'calls to BulkCreateIntegrationService' do
-          expect(BulkCreateIntegrationService).to receive(:new)
+        it 'calls to Integrations::Propagation::BulkCreateService' do
+          expect(Integrations::Propagation::BulkCreateService).to receive(:new)
             .with(integration, match_array([project2, project3]), 'project').twice
             .and_return(double(execute: nil))
 
@@ -36,7 +36,7 @@ RSpec.describe PropagateIntegrationProjectWorker do
 
     context 'with an invalid integration id' do
       it 'returns without failure' do
-        expect(BulkCreateIntegrationService).not_to receive(:new)
+        expect(Integrations::Propagation::BulkCreateService).not_to receive(:new)
 
         subject.perform(0, 1, 100)
       end

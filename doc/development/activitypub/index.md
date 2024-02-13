@@ -4,9 +4,12 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# ActivityPub **(EXPERIMENT)**
+# ActivityPub
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127023) in GitLab 16.5 [with two flags](../../administration/feature_flags.md) named `activity_pub` and `activity_pub_project`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127023) in GitLab 16.5 [with two flags](../../administration/feature_flags.md) named `activity_pub` and `activity_pub_project`. Disabled by default. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -16,7 +19,7 @@ On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 
 Usage of ActivityPub in GitLab is governed by the
-[GitLab Testing Agreement](https://about.gitlab.com/handbook/legal/testing-agreement/).
+[GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 The goal of those documents is to provide an implementation path for adding
 Fediverse capabilities to GitLab.

@@ -13,7 +13,7 @@ module Gitlab
       # Returns the SHA of the first common ancestor
       def sha
         if unknown_refs.any?
-          raise UnknownRef, "Can't find merge base for unknown refs: #{unknown_refs.inspect}"
+          raise ReferenceNotFoundError, "Can't find merge base for unknown refs: #{unknown_refs.inspect}"
         end
 
         strong_memoize(:sha) do

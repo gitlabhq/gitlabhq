@@ -34,7 +34,7 @@ A service would connect to the SCM, registry or issues through release artifacts
 a specific version of the given release artifact is deployed (or being deployed).
 
 Having a concept of services allows our users to track their applications in production, not only in CI/CD pipelines. This opens up possibilities, like cost management.
-The current work in [Analyze:Observability](https://about.gitlab.com/handbook/product/categories/#observability-group) could be integrated into GitLab if it supports services.
+The current work in [Analyze:Observability](https://handbook.gitlab.com/handbook/product/categories/#observability-group) could be integrated into GitLab if it supports services.
 
 ### Goals
 
@@ -60,7 +60,7 @@ The current work in [Analyze:Observability](https://about.gitlab.com/handbook/pr
 
 - Metrics related to a service should be customizable and configurable by project maintainers (developers?). Metrics might differ from service to service both in the query and in the meaning. (e.g. traffic does not make sense for a queue).
 - Metrics should integrate with various external tools, like OpenTelemetry/Prometheus, Datadog, etc.
-- We don't want to tackle GitLab observability solution built by [Analyze:Observability](https://about.gitlab.com/handbook/product/categories/#observability-group). The proposal here should treat it as one observability integration backend.
+- We don't want to tackle GitLab observability solution built by [Analyze:Observability](https://handbook.gitlab.com/handbook/product/categories/#observability-group). The proposal here should treat it as one observability integration backend.
 - We don't want to cover alerting, SLOs, SLAs and incident management.
 - Some infrastructures might already have better support within GitLab than others (Kubernetes is supported better than pure AWS). There is no need to discuss functionalities that we provide or plan to provide for Kubernetes and how to achieve feature parity with other infrastructures.
 - Services can be filtered by metadata (e.g. tenant, region). These could vary by customer or even by group.
@@ -110,7 +110,7 @@ and grouping it by the **name** of the environments. For example:
 classDiagram
     Group "1" o-- "*" Project : There may be multiple projects with services in a group
     Project "1" <.. "*" Service : A service is part of a project
-    Project "1" <.. "*" Environment : 
+    Project "1" <.. "*" Environment : An environment is part of project
     Environment "*" .. "*" Service : A service is linked to 1+ environments
     Service "1" <|-- "*" ReleaseArtifact : A release artifact packages a specific version of a service
     ReleaseArtifact "1" <|-- "*" Deployment : A release artifact can be deployed
@@ -126,4 +126,3 @@ See [Glossary](https://about.gitlab.com/direction/delivery/glossary.html) for mo
 - [Add dynamically populated organization-level environments page](https://gitlab.com/gitlab-org/gitlab/-/issues/241506).
   This approach was concluded as no-go in favor of Service concept.
 - There is an alternative proposal to introduce [Group Environment entity](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129696#note_1557477581) for [Group-level environment views](#aggregate-environments-and-services-at-group-level).
-  

@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Jira issue integration **(FREE ALL)**
+# Troubleshooting Jira issue integration
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When working with the [Jira issue integration](configure.md), you might encounter the following issues.
 
@@ -137,7 +141,10 @@ To change all Jira projects to use instance-level integration settings:
        integration.inherit_from_id = default_integration.id
 
        if integration.save(context: :manual_change)
-         BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+         # In GitLab 16.9 and later:
+         Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+         # In GitLab 16.8 and earlier, instead do:
+         # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
        end
      end
      ```
@@ -171,7 +178,10 @@ To change all Jira projects in a group (and its subgroups) to use group-level in
     integration.inherit_from_id = default_integration.id
 
     if integration.save(context: :manual_change)
-      BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+      # In GitLab 16.9 and later:
+      Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
+      # In GitLab 16.8 and earlier, instead do:
+      # BulkUpdateIntegrationService.new(default_integration, [integration]).execute
     end
   end
 
@@ -207,7 +217,7 @@ end
 
 ## Jira issue list
 
-When [viewing Jira issues](issues.md#view-jira-issues) in GitLab, you might encounter the following issues.
+When [viewing Jira issues](configure.md#view-jira-issues) in GitLab, you might encounter the following issues.
 
 ### `500 We're sorry` when accessing a Jira issue in GitLab
 

@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Proxying assets **(FREE SELF)**
+# Proxying assets
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 A possible security concern when managing a public-facing GitLab instance is
 the ability to steal a user's IP address by referencing images in issues and comments.

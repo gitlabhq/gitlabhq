@@ -39,6 +39,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return render_404 unless artifact_file
 
     log_artifacts_filesize(artifact_file.model)
+    audit_download(build, artifact_file.filename)
+
     send_upload(artifact_file, attachment: artifact_file.filename, proxy: params[:proxy])
   end
 
@@ -105,6 +107,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   private
+
+  def audit_download(build, filename)
+    # overridden in EE
+  end
 
   def extract_ref_name_and_path
     return unless params[:ref_name_and_path]
@@ -184,3 +190,5 @@ class Projects::ArtifactsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :read_job_artifacts, job_artifact)
   end
 end
+
+Projects::ArtifactsController.prepend_mod

@@ -219,7 +219,7 @@ export default {
 
       <div v-if="release.assets.links.length !== 1" class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
         <gl-button
-          class="remove-button w-100 form-control"
+          class="remove-button gl-w-full form-control"
           :aria-label="__('Remove asset link')"
           :title="__('Remove asset link')"
           @click="onRemoveClicked(link.id)"

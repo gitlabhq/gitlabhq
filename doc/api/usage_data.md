@@ -4,13 +4,49 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Data API **(FREE SELF)**
+# Service Data API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The Service Data API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
+## Export Service Ping data
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141446) in GitLab 16.9.
+
+Requires a Personal Access Token with `read_service_ping` scope.
+
+Returns the JSON payload collected in Service Ping. If no payload data is available in the application cache, it returns empty response.
+If payload data is empty, make sure the [Service Ping feature is enabled](../administration/settings/usage_statistics.md#enable-or-disable-service-ping) and
+wait for the cron job to be executed, or [generate payload data manually](../development/internal_analytics/service_ping/troubleshooting.md#generate-service-ping).
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/usage_data/service_ping"
+```
+
+Example response:
+
+```json
+  "recorded_at": "2024-01-15T23:33:50.387Z",
+  "license": {},
+  "counts": {
+    "assignee_lists": 0,
+    "ci_builds": 463,
+    "ci_external_pipelines": 0,
+    "ci_pipeline_config_auto_devops": 0,
+    "ci_pipeline_config_repository": 0,
+    "ci_triggers": 0,
+    "ci_pipeline_schedules": 0
+...
+```
+
 ## Export metric definitions as a single YAML file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57270) in GitLab 13.11.
 
 Export all metric definitions as a single YAML file, similar to the [Metrics Dictionary](https://metrics.gitlab.com/), for easier importing.
 

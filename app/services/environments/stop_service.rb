@@ -20,7 +20,7 @@ module Environments
 
       unless environment.saved_change_to_attribute?(:state)
         return ServiceResponse.error(
-          message: 'Attemped to stop the environment but failed to change the status',
+          message: 'Attempted to stop the environment but failed to change the status',
           payload: { environment: environment }
         )
       end

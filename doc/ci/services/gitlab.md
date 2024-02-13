@@ -4,7 +4,11 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Use GitLab as a microservice **(FREE ALL)**
+# Use GitLab as a microservice
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Many applications need to access JSON APIs, so application tests might need access
 to APIs too. The following example shows how to use GitLab as a microservice to give

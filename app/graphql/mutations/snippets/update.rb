@@ -7,6 +7,7 @@ module Mutations
 
       include ServiceCompatibility
       include Mutations::SpamProtection
+      include Gitlab::InternalEventsTracking
 
       argument :id, ::Types::GlobalIDType[::Snippet],
                required: true,
@@ -42,7 +43,11 @@ module Mutations
 
         # Only when the user is not an api user and the operation was successful
         if !api_user? && service_response.success?
-          ::Gitlab::UsageDataCounters::EditorUniqueCounter.track_snippet_editor_edit_action(author: current_user, project: snippet.project)
+          track_internal_event(
+            'g_edit_by_snippet_ide',
+            user: current_user,
+            project: snippet.project
+          )
         end
 
         snippet = service_response.payload[:snippet]

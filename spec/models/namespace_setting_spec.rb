@@ -12,7 +12,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   it { is_expected.to define_enum_for(:jobs_to_be_done).with_values([:basics, :move_repository, :code_storage, :exploring, :ci, :other]).with_suffix }
-  it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_suffix }
+  it { is_expected.to define_enum_for(:enabled_git_access_protocol).with_values([:all, :ssh, :http]).with_suffix }
 
   describe 'default values' do
     subject(:setting) { described_class.new }
@@ -448,8 +448,16 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     end
   end
 
-  describe '#delayed_project_removal' do
-    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :delayed_project_removal
+  describe '#toggle_security_policy_custom_ci' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policy_custom_ci
+  end
+
+  describe '#toggle_security_policies_policy_scope' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :toggle_security_policies_policy_scope
+  end
+
+  describe '#math_rendering_limits_enabled' do
+    it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :math_rendering_limits_enabled
   end
 
   describe 'default_branch_protection_defaults' do

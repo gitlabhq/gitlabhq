@@ -27,8 +27,8 @@ inherit_mode:
     - AllowedPatterns
 
 AllCops:
-  # Target the current Ruby version. For example, "3.0" or "3.1".
-  TargetRubyVersion: <%= RUBY_VERSION[/^\d+\.\d+/, 0] %>
+  # The oldest supported Ruby version.
+  TargetRubyVersion: 3.0
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
@@ -865,12 +865,6 @@ Migration/ReferToIndexByName:
     - !ruby/regexp /\Adb\/(post_)?migrate\/20200[1-7].*\.rb\z/
     - !ruby/regexp /\Aee\/db\/geo\/(post_)?migrate\/201.*\.rb\z/
 
-Migration/CreateTableWithForeignKeys:
-  # Disable this cop for all the existing migrations
-  Exclude:
-    - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
-    - !ruby/regexp /\Adb\/(post_)?migrate\/2022[1-11].*\.rb\z/
-
 Migration/PreventIndexCreation:
   Exclude:
     - !ruby/regexp /\Adb\/(post_)?migrate\/201.*\.rb\z/
@@ -882,6 +876,12 @@ Migration/SchemaAdditionMethodsNoPost:
   Include:
     - db/post_migrate/*.rb
   EnforcedSince: 20221024034228
+
+Migration/AsyncPostMigrateOnly:
+  Enabled: true
+  Include:
+    - db/**/*.rb
+  EnforcedSince: 20240115115029
 
 Gitlab/RailsLogger:
   Exclude:
@@ -1126,3 +1126,11 @@ Gitlab/LicenseAvailableUsage:
     - 'app/models/application_setting.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'lib/gitlab/current_settings.rb'
+
+Gitlab/TokenWithoutPrefix:
+  Enabled: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'ee/app/**/*'
+    - 'ee/lib/**/*'

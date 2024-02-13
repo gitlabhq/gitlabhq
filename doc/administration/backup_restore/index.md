@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Back up and restore GitLab **(FREE SELF)**
+# Back up and restore GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Your software or organization depends on the data in your GitLab instance. You need to ensure this data is protected from adverse events such as:
 
@@ -65,10 +69,10 @@ Backup IDs identify individual backup archives. You need the backup ID of a back
 Backup archives are saved in a directory set in `backup_path`, which is specified in the `config/gitlab.yml` file.
 
 - By default, backup archives are stored in `/var/opt/gitlab/backups`.
-- By default, backup archive file names are `<backup-id>_gitlab_backup.tar` where `<backup-id>` identifies the time when the
+- By default, backup archive filenames are `<backup-id>_gitlab_backup.tar` where `<backup-id>` identifies the time when the
   backup archive was created, the GitLab version, and the GitLab edition.
 
-For example, if the archive file name is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+For example, if the archive filename is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
 the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
 
 ## Backup staging directory

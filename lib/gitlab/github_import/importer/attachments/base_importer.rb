@@ -52,8 +52,6 @@ module Gitlab
           end
 
           def has_attachments?(object)
-            return true if Feature.disabled?(:github_importer_attachments, project, type: :gitlab_com_derisk)
-
             object_representation(object).has_attachments?
           end
         end

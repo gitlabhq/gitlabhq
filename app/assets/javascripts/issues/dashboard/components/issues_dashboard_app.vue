@@ -103,6 +103,13 @@ export default {
     'isSignedIn',
     'rssPath',
   ],
+  props: {
+    eeTypeTokenOptions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     const state = getParameterByName(PARAM_STATE);
 
@@ -295,7 +302,7 @@ export default {
           title: TOKEN_TITLE_TYPE,
           icon: 'issues',
           token: GlFilteredSearchToken,
-          options: defaultTypeTokenOptions,
+          options: this.typeTokenOptions,
         },
       ];
 
@@ -366,6 +373,9 @@ export default {
         [STATUS_CLOSED]: closedIssues?.count,
         [STATUS_ALL]: allIssues?.count,
       };
+    },
+    typeTokenOptions() {
+      return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
     },
     urlFilterParams() {
       return convertToUrlParams(this.filterTokens);

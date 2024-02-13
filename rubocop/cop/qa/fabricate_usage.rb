@@ -28,23 +28,35 @@ module RuboCop
       class FabricateUsage < RuboCop::Cop::Base
         MESSAGE = "Prefer create(:%{factory}[, ...]) here."
         RESOURCES_TO_CHECK = {
-          'Resource::Project' => :project,
-          'Resource::Group' => :group,
-          'Resource::Issue' => :issue,
-          'Resource::User' => :user,
-          'Resource::Pipeline' => :pipeline,
-          'Resource::Job' => :job,
+          'Resource::CiVariable' => :ci_variable,
+          'Resource::Commit' => :commit,
+          'Resource::Design' => :design,
           'Resource::File' => :file,
+          'Resource::Group' => :group,
           'Resource::GroupAccessToken' => :group_access_token,
-          'Resource::ProjectAccessToken' => :project_access_token,
+          'Resource::GroupDeployToken' => :group_deploy_token,
           'Resource::GroupLabel' => :group_label,
-          'Resource::ProjectLabel' => :project_label,
-          'Resource::GroupRunner' => :group_runner,
-          'Resource::ProjectRunner' => :project_runner,
           'Resource::GroupMilestone' => :group_milestone,
+          'Resource::GroupRunner' => :group_runner,
+          'Resource::GroupWikiPage' => :group_wiki_page,
+          'Resource::Issue' => :issue,
+          'Resource::Job' => :job,
+          'Resource::MergeRequest' => :merge_request,
+          'Resource::Package' => :package,
+          'Resource::Pipeline' => :pipeline,
+          'Resource::PipelineSchedule' => :pipeline_schedule,
+          'Resource::Project' => :project,
+          'Resource::ProjectAccessToken' => :project_access_token,
+          'Resource::ProjectDeployToken' => :project_deploy_token,
+          'Resource::ProjectLabel' => :project_label,
           'Resource::ProjectMilestone' => :project_milestone,
+          'Resource::ProjectRunner' => :project_runner,
+          'Resource::ProjectSnippet' => :project_snippet,
+          'Resource::ProjectWikiPage' => :project_wiki_page,
+          'Resource::Sandbox' => :sandbox,
           'Resource::Snippet' => :snippet,
-          'Resource::ProjectSnippet' => :project_snippet
+          'Resource::Tag' => :tag,
+          'Resource::User' => :user
         }.freeze
 
         RESTRICT_ON_SEND = %i[fabricate_via_api!].freeze

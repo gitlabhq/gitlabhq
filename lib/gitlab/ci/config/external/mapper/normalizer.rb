@@ -25,8 +25,10 @@ module Gitlab
                   location = variables_expander.expand(location)
 
                   normalize_location_string(location)
-                else
+                elsif location.is_a?(Hash)
                   location.deep_symbolize_keys
+                else
+                  raise Mapper::InvalidTypeError, 'Each include must be a hash or a string'
                 end
               end
             end

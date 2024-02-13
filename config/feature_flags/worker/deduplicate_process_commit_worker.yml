@@ -1,0 +1,8 @@
+---
+name: deduplicate_process_commit_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128233
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/420750
+milestone: '16.3'
+type: worker
+group: group::source code
+default_enabled: false

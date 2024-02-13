@@ -15,6 +15,8 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
 
   def perform(current_user_id, project_id, after_export_strategy = {}, params = {})
     current_user = User.find(current_user_id)
+    params.symbolize_keys!
+
     project = Project.find(project_id)
     export_job = project.export_jobs.safe_find_or_create_by(jid: self.jid)
     after_export = build!(after_export_strategy)

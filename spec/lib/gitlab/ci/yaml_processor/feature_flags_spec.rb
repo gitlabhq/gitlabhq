@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
+RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags, feature_category: :pipeline_composition do
   let(:feature_flag) { :my_feature_flag }
 
   context 'when the actor is set' do
@@ -11,9 +11,17 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
 
     it 'checks the feature flag using the given actor' do
       described_class.with_actor(actor) do
-        expect(Feature).to receive(:enabled?).with(feature_flag, actor)
+        expect(Feature).to receive(:enabled?).with(feature_flag, actor, type: :development)
 
         described_class.enabled?(feature_flag)
+      end
+    end
+
+    it 'checks the feature flag using the given type' do
+      described_class.with_actor(actor) do
+        expect(Feature).to receive(:enabled?).with(feature_flag, actor, type: :beta)
+
+        described_class.enabled?(feature_flag, type: :beta)
       end
     end
 
@@ -28,12 +36,12 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
     it 'restores the existing actor if any' do
       described_class.with_actor(actor) do
         described_class.with_actor(another_actor) do
-          expect(Feature).to receive(:enabled?).with(feature_flag, another_actor)
+          expect(Feature).to receive(:enabled?).with(feature_flag, another_actor, type: anything)
 
           described_class.enabled?(feature_flag)
         end
 
-        expect(Feature).to receive(:enabled?).with(feature_flag, actor)
+        expect(Feature).to receive(:enabled?).with(feature_flag, actor, type: anything)
         described_class.enabled?(feature_flag)
       end
     end
@@ -59,7 +67,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
         end
 
         it 'checks the feature flag without actor' do
-          expect(Feature).to receive(:enabled?).with(feature_flag, nil)
+          expect(Feature).to receive(:enabled?).with(feature_flag, nil, type: anything)
           expect(Gitlab::ErrorTracking)
             .to receive(:track_and_raise_for_dev_exception)
             .and_call_original
@@ -71,7 +79,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
 
     context 'when yaml_processor_feature_flag_corectness is not used' do
       it 'checks the feature flag without actor' do
-        expect(Feature).to receive(:enabled?).with(feature_flag, nil)
+        expect(Feature).to receive(:enabled?).with(feature_flag, nil, type: anything)
         expect(Gitlab::ErrorTracking)
           .to receive(:track_exception)
 
@@ -83,7 +91,7 @@ RSpec.describe Gitlab::Ci::YamlProcessor::FeatureFlags do
   context 'when actor is explicitly nil' do
     it 'checks the feature flag without actor' do
       described_class.with_actor(nil) do
-        expect(Feature).to receive(:enabled?).with(feature_flag, nil)
+        expect(Feature).to receive(:enabled?).with(feature_flag, nil, type: anything)
 
         described_class.enabled?(feature_flag)
       end

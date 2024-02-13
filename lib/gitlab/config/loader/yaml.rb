@@ -13,7 +13,10 @@ module Gitlab
 
         include Gitlab::Utils::StrongMemoize
 
+        attr_reader :raw
+
         def initialize(config, additional_permitted_classes: [])
+          @raw = config
           @config = YAML.safe_load(config,
             permitted_classes: [Symbol, *additional_permitted_classes],
             permitted_symbols: [],

@@ -33,13 +33,15 @@ module Projects
         Gitlab::Export::Logger.error(log_payload)
       end
 
-      def perform(project_relation_export_id)
+      def perform(project_relation_export_id, user_id, params = {})
+        user = User.find(user_id)
+        params.symbolize_keys!
         relation_export = Projects::ImportExport::RelationExport.find(project_relation_export_id)
 
         relation_export.retry! if relation_export.started?
 
         if relation_export.queued?
-          Projects::ImportExport::RelationExportService.new(relation_export, jid).execute
+          Projects::ImportExport::RelationExportService.new(relation_export, user, jid, params).execute
         end
       end
     end

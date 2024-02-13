@@ -1,11 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { throttle } from 'lodash';
 import DiffView from '~/diffs/components/diff_view.vue';
-import DiffLine from '~/diffs/components/diff_line.vue';
-import { diffCodeQuality } from '../mock_data/inline_findings';
 
 jest.mock('lodash/throttle', () => jest.fn((fn) => fn));
 const lodash = jest.requireActual('lodash');
@@ -19,7 +17,7 @@ describe('DiffView', () => {
   const setSelectedCommentPosition = jest.fn();
   const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
 
-  const createWrapper = ({ props, flag = false } = {}) => {
+  const createWrapper = ({ props } = {}) => {
     Vue.use(Vuex);
 
     const batchComments = {
@@ -51,21 +49,10 @@ describe('DiffView', () => {
       diffFile: { file_hash: '123' },
       diffLines: [],
       ...props,
-      provide: {
-        glFeatures: {
-          sastReportsInInlineDiff: flag,
-        },
-      },
-    };
-
-    const provide = {
-      glFeatures: {
-        sastReportsInInlineDiff: flag,
-      },
     };
 
     const stubs = { DiffExpansionCell, DiffRow, DiffCommentCell, DraftNote };
-    return shallowMount(DiffView, { propsData, provide, store, stubs });
+    return shallowMount(DiffView, { propsData, store, stubs });
   };
 
   beforeEach(() => {
@@ -74,32 +61,6 @@ describe('DiffView', () => {
 
   afterEach(() => {
     throttle.mockReset();
-  });
-
-  it('does not render a diff-line component when there is no finding', () => {
-    const wrapper = createWrapper();
-    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
-  });
-
-  it('does render a diff-line component with the correct props when there is a finding', async () => {
-    const wrapper = createWrapper({ props: diffCodeQuality });
-    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
-    await nextTick();
-    expect(wrapper.findComponent(DiffLine).props('line')).toBe(diffCodeQuality.diffLines[2]);
-  });
-
-  it('does not render a diff-line component when there is a finding and sastReportsInInlineDiff flag is true', async () => {
-    const wrapper = createWrapper({ props: diffCodeQuality, flag: true });
-    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
-    await nextTick();
-    expect(wrapper.findComponent(DiffLine).exists()).toBe(false);
-  });
-
-  it('does render a diff-line component when there is a finding and sastReportsInInlineDiff flag is false', async () => {
-    const wrapper = createWrapper({ props: diffCodeQuality });
-    wrapper.findComponent(DiffRow).vm.$emit('toggleCodeQualityFindings', 2);
-    await nextTick();
-    expect(wrapper.findComponent(DiffLine).exists()).toBe(true);
   });
 
   it.each`

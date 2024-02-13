@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo security review (Q&A) **(PREMIUM SELF)**
+# Geo security review (Q&A)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 The following security review of the Geo feature set focuses on security aspects of
 the feature as they apply to customers running their own GitLab instances. The review
@@ -36,7 +40,7 @@ from [owasp.org](https://owasp.org/).
   private projects. Geo replicates them all indiscriminately. "Selective sync"
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** site if desired.
-- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/security/data-classification-standard.html).
+- See also: [GitLab data classification policy](https://handbook.gitlab.com/handbook/security/data-classification-standard/).
 
 ### What data backup and retention requirements have been defined for the application?
 
@@ -226,7 +230,7 @@ from [owasp.org](https://owasp.org/).
 
 ### What data does the application store and how?
 
-- Git repositories and files, tracking information related to the them, and the GitLab database contents.
+- Git repositories and files, tracking information related to them, and the GitLab database contents.
 
 ### What data is or may need to be encrypted and what key management requirements have been defined?
 

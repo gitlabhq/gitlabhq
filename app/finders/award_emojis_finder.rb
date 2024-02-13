@@ -33,14 +33,7 @@ class AwardEmojisFinder
   def validate_params
     return unless params.present?
 
-    validate_name_param unless Feature.enabled?(:custom_emoji)
     validate_awarded_by_param
-  end
-
-  def validate_name_param
-    return unless params[:name]
-
-    raise ArgumentError, 'Invalid name param' unless TanukiEmoji.find_by_alpha_code(params[:name].to_s)
   end
 
   def validate_awarded_by_param

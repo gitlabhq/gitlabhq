@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reset a user's password **(FREE SELF)**
+# Reset a user's password
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can reset user passwords by using the UI, a Rake task, a Rails console, or the
 [Users API](../api/users.md#user-modification).
@@ -29,7 +33,7 @@ A confirmation is displayed.
 
 ## Use a Rake task
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52347) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52347) in GitLab 13.9.
 
 Use the following Rake task to reset a user's password.
 

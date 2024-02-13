@@ -17,10 +17,7 @@ module Projects
           features: features,
           help_page_path: help_page_path('user/application_security/index'),
           latest_pipeline_path: latest_pipeline_path,
-          # TODO: gitlab_ci_present will incorrectly report `false` if the CI/CD configuration file name
-          # has been customized and a file with the given custom name exists in the repo. This edge case
-          # will be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/342465
-          gitlab_ci_present: project.repository.gitlab_ci_yml.present?,
+          gitlab_ci_present: project.has_ci_config_file?,
           gitlab_ci_history_path: gitlab_ci_history_path,
           auto_fix_enabled: autofix_enabled,
           can_toggle_auto_fix_settings: can_toggle_autofix,

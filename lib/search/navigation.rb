@@ -23,13 +23,13 @@ module Search
         projects: {
           sort: 1,
           label: _("Projects"),
-          data: { qa_selector: 'projects_tab' },
+          data: { testid: 'projects-tab' },
           condition: project.nil?
         },
         blobs: {
           sort: 2,
           label: _("Code"),
-          data: { qa_selector: 'code_tab' },
+          data: { testid: 'code-tab' },
           condition: show_code_search_tab?
         },
         #  sort: 3 is reserved for EE items

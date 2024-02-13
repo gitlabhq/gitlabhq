@@ -5,8 +5,8 @@ toc: false
 
 # Architecture at GitLab
 
-- [Architecture at GitLab](https://about.gitlab.com/handbook/engineering/architecture/)
-- [Architecture Workflow](https://about.gitlab.com/handbook/engineering/architecture/workflow/)
+- [Architecture at GitLab](https://handbook.gitlab.com/handbook/engineering/architecture/)
+- [Architecture Workflow](https://handbook.gitlab.com/handbook/engineering/architecture/workflow/)
 
 ## Contributing
 

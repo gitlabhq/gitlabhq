@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Trigger pipelines by using the API **(FREE ALL)**
+# Trigger pipelines by using the API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 To trigger a pipeline for a specific branch or tag, you can use an API call
 to the [pipeline triggers API endpoint](../../api/pipeline_triggers.md).
@@ -39,10 +43,12 @@ To create a trigger token:
    - You can only see the first 4 characters for tokens created by other project members.
 
 WARNING:
-It is a security risk to save tokens in plain text in public projects. Potential
-attackers could use a trigger token exposed in the `.gitlab-ci.yml` file to impersonate
-the user that created the token. Use [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
-to improve the security of trigger tokens.
+It is a security risk to save tokens in plain text in public projects, or store them
+in a way that malicious users could access them. A leaked trigger token could be
+used to force an unscheduled deployment, attempt to access CI/CD variables,
+or other malicious uses. [Masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+help improve the security of trigger tokens. For more information about keeping tokens secure,
+see the [security considerations](../../security/token_overview.md#security-considerations).
 
 ## Trigger a pipeline
 
@@ -76,7 +82,7 @@ In each example, replace:
 - `<token>` with your trigger token.
 - `<ref_name>` with a branch or tag name, like `main`.
 - `<project_id>` with your project ID, like `123456`. The project ID is displayed
-  at the top of every project's landing page.
+  on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 
 ### Use a CI/CD job
 
@@ -98,8 +104,8 @@ trigger_pipeline:
 
 In this example:
 
-- `1234` is the project ID for `project-B`. The project ID is displayed at the top
-  of every project's landing page.
+- `1234` is the project ID for `project-B`. The project ID is displayed on the
+  [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - The [`rules`](../yaml/index.md#rules) cause the job to run every time a tag is added to `project-A`.
 - `MY_TRIGGER_TOKEN` is a [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
   that contains the trigger token.
@@ -117,7 +123,7 @@ Replace:
 
 - The URL with `https://gitlab.com` or the URL of your instance.
 - `<project_id>` with your project ID, like `123456`. The project ID is displayed
-  at the top of the project's landing page.
+  on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
 - `<ref_name>` with a branch or tag name, like `main`. This value takes precedence over the `ref_name` in the webhook payload.
   The payload's `ref` is the branch that fired the trigger in the source repository.
   You must URL-encode the `ref_name` if it contains slashes.

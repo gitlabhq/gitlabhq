@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Linux cheat sheet **(FREE SELF)**
+# Linux cheat sheet
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This is the GitLab Support Team's collection of information regarding Linux, that they
 sometimes use while troubleshooting. It is listed here for transparency,
@@ -78,7 +82,7 @@ env
 
 ## Searching
 
-### File names
+### Filenames
 
 ```shell
 # search for a file in a filesystem
@@ -267,7 +271,7 @@ PID 16815
 
   Slowest file open times for PID 16815:
 
-    dur (ms)       timestamp            error         file name
+    dur (ms)       timestamp            error         filename
   ----------    ---------------    ---------------    ---------
        0.045    22:46:16.771318           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml
        0.043    22:46:26.877954           -           /opt/gitlab/embedded/service/gitlab-rails/config/database.yml

@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!--- start_remove The following content will be removed on remove_date: '2024-05-16' -->
 
-# List repository directories Rake task (deprecated) **(FREE SELF)**
+# List repository directories Rake task (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/384361) in GitLab 16.7 and is planned for removal in 17.0.

@@ -99,7 +99,7 @@ Packages can be configured to use object storage, therefore your code must suppo
 
 ## MVC Approach
 
-The way new package systems are integrated in GitLab is using an [MVC](https://about.gitlab.com/handbook/values/#minimum-viable-change-mvc). Therefore, the first iteration should support the bare minimum user actions:
+The way new package systems are integrated in GitLab is using an [MVC](https://handbook.gitlab.com/handbook/values/#minimal-viable-change-mvc). Therefore, the first iteration should support the bare minimum user actions:
 
 - Authentication with a GitLab job, personal access, project access, or deploy token
 - Uploading a package and displaying basic metadata in the user interface

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestPolicy do
+RSpec.describe MergeRequestPolicy, feature_category: :code_review_workflow do
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:guest) { create(:user) }
@@ -23,7 +23,8 @@ RSpec.describe MergeRequestPolicy do
                 create_todo
                 approve_merge_request
                 create_note
-                update_subscription].freeze
+                update_subscription
+                mark_note_as_internal].freeze
 
   shared_examples_for 'a denied user' do
     let(:perms) { permissions(subject, merge_request) }
@@ -47,6 +48,7 @@ RSpec.describe MergeRequestPolicy do
       :create_merge_request_from | false
       :approve_merge_request     | false
       :update_merge_request      | false
+      :mark_note_as_internal     | true
     end
 
     with_them do

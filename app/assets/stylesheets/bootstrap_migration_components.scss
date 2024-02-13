@@ -117,6 +117,10 @@ input[type='file'] {
   border-radius: 4px;
   margin-bottom: 16px;
 
+  .ref-list {
+    border-color: $well-inner-border;
+  }
+  
   .well-segment {
     padding: 1rem;
 

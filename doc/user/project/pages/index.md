@@ -5,7 +5,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages **(FREE ALL)**
+# GitLab Pages
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With GitLab Pages, you can publish static websites directly from a repository
 in GitLab.
@@ -155,9 +159,14 @@ By default, every project in a group shares the same domain, for example, `group
 
 To ensure each project uses different cookies, enable the Pages [unique domains](introduction.md#enable-unique-domains) feature for your project.
 
-## Create multiple deployments **(PREMIUM ALL EXPERIMENT)**
+## Create multiple deployments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,

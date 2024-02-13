@@ -519,6 +519,32 @@ entry.
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
 
+## 16.7.5 (2024-02-07)
+
+### Fixed (1 change)
+
+- [Update dependency prometheus-client-mmap to '~> 1.1', '>= 1.1.1'](gitlab-org/security/gitlab@41326f12836b409735f0745d57b135fd952b54e0)
+
+### Security (3 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@7b29c348a90b3311c5661b57572cbedf6160d02a) ([merge request](gitlab-org/security/gitlab!3855))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@5f8202c849059e28370d79aa79cd94a851abd61a) ([merge request](gitlab-org/security/gitlab!3838))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@95c1de1c1c297ba59e7e52485e9703b01d8ad552) ([merge request](gitlab-org/security/gitlab!3827))
+
+## 16.7.4 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Bring legacy verification behavior back for repositories](gitlab-org/security/gitlab@0f3c5e6c2867cb9ea5ca40cf6a0f1526d6018ad1) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@ae7844052f79e4fa987818bf642313fb6e47388f) ([merge request](gitlab-org/security/gitlab!3800))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@9abe7c6ca865c4884ad25db17c02ee7feb5c6c91) ([merge request](gitlab-org/security/gitlab!3803))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@58ab3f89b3298a248640bddbf94a5c3fdf27a867) ([merge request](gitlab-org/security/gitlab!3785))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@ced4fa77abf8a05cbc015b6128220d783d11c3a2) ([merge request](gitlab-org/security/gitlab!3788))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@d374f84266d2ca14a79a3924f458e244b50191e4) ([merge request](gitlab-org/security/gitlab!3792))
+
 ## 16.7.3 (2024-01-13)
 
 ### Fixed (1 change)
@@ -1445,6 +1471,28 @@ entry.
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
 
+## 16.6.7 (2024-02-07)
+
+### Security (3 changes)
+
+- [Fix CI component input Regexp](gitlab-org/security/gitlab@4aea3a2d7f371d57a00eef647f84dce2b6963dc6) ([merge request](gitlab-org/security/gitlab!3856))
+- [Make scan result policies block renaming branches](gitlab-org/security/gitlab@6ea7b750df3a5c2505717555db0875be6b0b3cd0) ([merge request](gitlab-org/security/gitlab!3840))
+- [Limit vulnerabilitiesCountByDay date range to 1 year](gitlab-org/security/gitlab@4896b80a35e3a31b2cf0df28a3545ba5caf9cc6f) ([merge request](gitlab-org/security/gitlab!3831))
+
+## 16.6.6 (2024-01-24)
+
+### Fixed (1 change)
+
+- [Bring legacy verification behavior back for repositories](gitlab-org/security/gitlab@36bcdbdd83f726f9e4b89352d5c2c5d3d6a0aed8) **GitLab Enterprise Edition**
+
+### Security (5 changes)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@d99a6dd3b4db37b4de1e3064059d769233c71ebd) ([merge request](gitlab-org/security/gitlab!3801))
+- [Use public email in tags atom feed](gitlab-org/security/gitlab@0c6e04dd2ad28ea1630e11903b74d74c177fc128) ([merge request](gitlab-org/security/gitlab!3804))
+- [Fix improper username sanitization](gitlab-org/security/gitlab@13d91b4e6248be0f326d0e476e2291360be7a1eb) ([merge request](gitlab-org/security/gitlab!3786))
+- [Escape user input before building regex for linker](gitlab-org/security/gitlab@fa1f908f65d7e2de0f5a5d99d4641e13bad92b10) ([merge request](gitlab-org/security/gitlab!3789))
+- [Do not allow non-team member to set MR assignees/reviewers](gitlab-org/security/gitlab@632f6852c312f29984fb1eebb5fc7e9d1a6de1ae) ([merge request](gitlab-org/security/gitlab!3793))
+
 ## 16.6.5 (2024-01-13)
 
 No changes.
@@ -2047,6 +2095,12 @@ No changes.
 - [Raise rate limit error with type](gitlab-org/gitlab@68e071cdea7a7874f4975d1555c384ef920c0dee) ([merge request](gitlab-org/gitlab!134511))
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
+
+## 16.5.8 (2024-01-24)
+
+### Security (1 change)
+
+- [Devfile parser arbitrary file write](gitlab-org/security/gitlab@0a831ae0ed0eb32b42ab69652010815e9dffec51) ([merge request](gitlab-org/security/gitlab!3802))
 
 ## 16.5.7 (2024-01-13)
 

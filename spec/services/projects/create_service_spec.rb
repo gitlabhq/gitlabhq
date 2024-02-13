@@ -181,6 +181,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     end
 
     it 'logs creation' do
+      allow(Gitlab::AppLogger).to receive(:info)
       expect(Gitlab::AppLogger).to receive(:info).with(/#{user.name} created a new project/)
 
       create_project(user, opts)
@@ -822,6 +823,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
     it 'creates a repository with SHA256 commit hashes', :aggregate_failures do
       expect(project.repository.commit_count).to be(1)
+      expect(project.project_repository.object_format).to eq 'sha256'
       expect(project.commit.id.size).to eq 64
     end
 
@@ -832,6 +834,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
       it 'creates a repository with default SHA1 commit hash' do
         expect(project.repository.commit_count).to be(1)
+        expect(project.project_repository.object_format).to eq 'sha1'
         expect(project.commit.id.size).to eq 40
       end
     end

@@ -95,20 +95,6 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
             end
           end
         end
-
-        context "when pipeline was not persisted" do
-          let(:service_response) { instance_double(ServiceResponse, error?: true, message: "Error", payload: pipeline) }
-          let(:pipeline) { instance_double(Ci::Pipeline, persisted?: false) }
-
-          it "logs a pipeline creation error" do
-            expect(worker)
-              .to receive(:log_extra_metadata_on_done)
-              .with(:pipeline_creation_error, service_response.message)
-              .and_call_original
-
-            expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response.message)
-          end
-        end
       end
 
       context 'when schedule is already executed' do
@@ -125,25 +111,6 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integrat
         it 'creates a pipeline' do
           expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
           expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: pipeline_schedule).and_return(service_response)
-
-          worker.perform(pipeline_schedule.id, user.id)
-        end
-      end
-
-      context 'with feature flag persist_failed_pipelines_from_schedules disabled' do
-        before do
-          stub_feature_flags(persist_failed_pipelines_from_schedules: false)
-        end
-
-        it 'does not save_on_errors' do
-          expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-
-          expect(create_pipeline_service).to receive(:execute).with(
-            :schedule,
-            ignore_skip_ci: true,
-            save_on_errors: false,
-            schedule: pipeline_schedule
-          )
 
           worker.perform(pipeline_schedule.id, user.id)
         end

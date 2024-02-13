@@ -13,6 +13,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
@@ -33,7 +34,7 @@ type MultipartClaims struct {
 // MultipartFormProcessor abstracts away implementation differences
 // between generic MIME multipart file uploads and CI artifact uploads.
 type MultipartFormProcessor interface {
-	ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer) error
+	ProcessFile(ctx context.Context, formName string, file *destination.FileHandler, writer *multipart.Writer, cfg *config.Config) error
 	ProcessField(ctx context.Context, formName string, writer *multipart.Writer) error
 	Finalize(ctx context.Context) error
 	Name() string
@@ -43,13 +44,13 @@ type MultipartFormProcessor interface {
 
 // interceptMultipartFiles is the core of the implementation of
 // Multipart.
-func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, filter MultipartFormProcessor, fa fileAuthorizer, p Preparer) {
+func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Handler, filter MultipartFormProcessor, fa fileAuthorizer, p Preparer, cfg *config.Config) {
 	var body bytes.Buffer
 	writer := multipart.NewWriter(&body)
 	defer writer.Close()
 
 	// Rewrite multipart form data
-	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p)
+	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p, cfg)
 	if err != nil {
 		switch err {
 		case http.ErrNotMultipart:

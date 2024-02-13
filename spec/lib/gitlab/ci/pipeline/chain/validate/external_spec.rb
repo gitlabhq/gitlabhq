@@ -56,6 +56,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
     let(:validation_service_url) { 'https://validation-service.external/' }
 
     before do
+      stub_feature_flags(external_pipeline_validation_migration: false)
       stub_env('EXTERNAL_VALIDATION_SERVICE_URL', validation_service_url)
       allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('correlation-id')
     end
@@ -81,6 +82,42 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::External, feature_category
         end
 
         perform!
+      end
+    end
+
+    context 'when :external_pipeline_validation_migration feature flag is enabled' do
+      let(:migrated_validation_service_url) { 'https://runway.validation-service.external/' }
+
+      before do
+        stub_feature_flags(external_pipeline_validation_migration: project)
+      end
+
+      context 'when EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL is NOT present' do
+        before do
+          stub_env('EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL', nil)
+        end
+
+        it 'fallbacks to existing validation service URL' do
+          expect(::Gitlab::HTTP).to receive(:post) do |url, _params|
+            expect(url).to eq(validation_service_url)
+          end
+
+          perform!
+        end
+      end
+
+      context 'when EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL is present' do
+        before do
+          stub_env('EXTERNAL_VALIDATION_SERVICE_RUNWAY_URL', migrated_validation_service_url)
+        end
+
+        it 'uses migrated validation service URL' do
+          expect(::Gitlab::HTTP).to receive(:post) do |url, _params|
+            expect(url).to eq(migrated_validation_service_url)
+          end
+
+          perform!
+        end
       end
     end
 

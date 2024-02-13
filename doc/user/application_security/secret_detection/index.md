@@ -4,7 +4,11 @@ group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Secret Detection **(FREE ALL)**
+# Secret Detection
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [In GitLab 14.0](https://gitlab.com/gitlab-org/gitlab/-/issues/297269), Secret Detection jobs `secret_detection_default_branch` and `secret_detection` were consolidated into one job, `secret_detection`.
 
@@ -140,7 +144,8 @@ your GitLab CI/CD configuration file is complex.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
 
    ```yaml
    include:
@@ -286,7 +291,7 @@ In previous GitLab versions, the following variables were also available:
 
 #### Use FIPS-enabled images
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
 The default scanner images are built off a base Alpine image for size and maintainability. GitLab
 offers [Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
@@ -322,7 +327,11 @@ pipeline.
 
 To enable full history Secret Detection, set the variable `SECRET_DETECTION_HISTORIC_SCAN` to `true` in your `.gitlab-ci.yml` file.
 
-## Custom rulesets **(ULTIMATE ALL)**
+## Custom rulesets
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.
@@ -512,11 +521,15 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/example-ruleset-project"
 ```
 
-For more information on the syntax of remote configurations, see the
+For more information on the syntax of remote configurations and how to troubleshoot, see the
 [specify a private remote configuration example](../sast/customize_rulesets.md#specify-a-private-remote-configuration)
 on the SAST customize rulesets page.
 
-## Running Secret Detection in an offline environment **(PREMIUM SELF)**
+## Running Secret Detection in an offline environment
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For self-managed GitLab instances in such an environment, Secret Detection requires
@@ -597,8 +610,7 @@ variable, or as a CI/CD variable.
 ## Warnings for potential leaks in text content
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
-> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146)
-in GitLab 16.1. GitLab self-managed only.
+> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146) in GitLab 16.1. GitLab self-managed only.
 
 When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
 For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
@@ -622,7 +634,7 @@ This feature is separate from Secret Detection scanning, which checks your Git r
 ### Debug-level logging
 
 Debug-level logging can help when troubleshooting. For details, see
-[debug-level logging](../index.md#debug-level-logging).
+[debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging).
 
 ### Warning: `gl-secret-detection-report.json: no matching files`
 
@@ -640,7 +652,7 @@ For example, you could have a pipeline triggered from a merge request containing
 clone is not deep enough to contain all of the relevant commits. To verify the current value, see
 [pipeline configuration](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
-To confirm this as the cause of the error, enable [debug-level logging](../index.md#debug-level-logging),
+To confirm this as the cause of the error, enable [debug-level logging](../../application_security/troubleshooting_application_security.md#debug-level-logging),
 then rerun the pipeline. The logs should look similar to the following example. The text
 "object not found" is a symptom of this error.
 

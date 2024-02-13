@@ -157,7 +157,7 @@ usually a good idea.
 
 When we have a flaky test in `master`:
 
-1. Create [a ~"failure::flaky-test" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
+1. Create [a ~"failure::flaky-test" issue](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) with the relevant group label.
 1. Quarantine the test after the first failure.
    If the test cannot be fixed in a timely fashion, there is an impact on the
    productivity of all the developers, so it should be quarantined.
@@ -338,7 +338,7 @@ It could help to split the large RSpec files in multiple files in order to narro
 Reproducing a job failure in CI always helps with troubleshooting why and how a test fails. This require us running the same test files with the same spec order. Since we use Knapsack to distribute tests across parallelized jobs, and files can be distributed differently between two pipelines, we can hardcode this job distribution through the following steps:
 
 1. Find a job that you want to reproduce, identify the commit that it ran against, set your local `gitlab-org/gitlab` branch to the same commit to ensure we are running with the same copy of the project.
-1. In the job log, locate the list of spec files that were distributed by Knapsack - you can search for `Running command: bundle exec rspec`, the last argument of this command should contain a list of file names. Copy this list.
+1. In the job log, locate the list of spec files that were distributed by Knapsack - you can search for `Running command: bundle exec rspec`, the last argument of this command should contain a list of filenames. Copy this list.
 1. Go to `tooling/lib/tooling/parallel_rspec_runner.rb` where the test file distribution happens. Have a look at [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137924/diffs) as an example, store the file list you copied from step 2 into a `TEST_FILES` constant and have RSpec run this list by updating the `rspec_command` method as done in the example MR.
 1. Skip the tests in `spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb` so it doesn't cause your pipeline to fail early.
 1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.

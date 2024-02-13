@@ -19,6 +19,7 @@ module Gitlab
       EMPTY_REPOSITORY_CHECKSUM = '0000000000000000000000000000000000000000'
 
       NoRepository = Class.new(::Gitlab::Git::BaseError)
+      CommitNotFound = Class.new(::Gitlab::Git::BaseError)
       RepositoryExists = Class.new(::Gitlab::Git::BaseError)
       InvalidRepository = Class.new(::Gitlab::Git::BaseError)
       InvalidBlobName = Class.new(::Gitlab::Git::BaseError)
@@ -139,7 +140,7 @@ module Gitlab
         # `CommandError` by the wrapper. This has been converted in v15.3.0 to instead return a structured
         # error with a `tag_not_found` error, so rescuing from `Internal` errors can be removed in v15.4.0 and
         # later.
-      rescue Gitlab::Git::UnknownRef
+      rescue Gitlab::Git::ReferenceNotFoundError
         # This is the new error returned by `find_tag`, which knows to translate the structured error returned
         # by Gitaly when the tag does not exist.
       end
@@ -380,8 +381,13 @@ module Gitlab
           raise ArgumentError, "invalid Repository#log limit: #{limit.inspect}"
         end
 
-        wrapped_gitaly_errors do
-          gitaly_commit_client.find_commits(options)
+        # call Gitaly client to fetch commits, if a NotFound happens we return an empty array
+        begin
+          wrapped_gitaly_errors do
+            gitaly_commit_client.find_commits(options)
+          end
+        rescue Gitlab::Git::Repository::CommitNotFound
+          []
         end
       end
 
@@ -398,7 +404,7 @@ module Gitlab
       end
 
       def new_blobs(newrevs, dynamic_timeout: nil)
-        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::SHA1_BLANK_SHA }
+        newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || Gitlab::Git.blank_ref?(rev) }
         return [] if newrevs.empty?
 
         newrevs = newrevs.uniq.sort
@@ -416,7 +422,7 @@ module Gitlab
       # GitalyClient.medium_timeout and dynamic timeout if the dynamic
       # timeout is set, otherwise it'll always use the medium timeout.
       def blobs(revisions, with_paths: false, dynamic_timeout: nil)
-        revisions = revisions.reject { |rev| rev.blank? || rev == ::Gitlab::Git::SHA1_BLANK_SHA }
+        revisions = revisions.reject { |rev| rev.blank? || Gitlab::Git.blank_ref?(rev) }
 
         return [] if revisions.blank?
 
@@ -458,7 +464,7 @@ module Gitlab
 
         @raw_changes_between[[old_rev, new_rev]] ||=
           begin
-            return [] if new_rev.blank? || new_rev == Gitlab::Git::SHA1_BLANK_SHA
+            return [] if new_rev.blank? || Gitlab::Git.blank_ref?(new_rev)
 
             wrapped_gitaly_errors do
               gitaly_repository_client.raw_changes_between(old_rev, new_rev)
@@ -1225,6 +1231,10 @@ module Gitlab
       def detect_generated_files(base, head, changed_paths)
         return Set.new if changed_paths.blank?
 
+        # We only display diffs upto the diff_max_files size so we can avoid
+        # checking the rest if it exceeds the limit.
+        changed_paths = changed_paths.take(Gitlab::CurrentSettings.diff_max_files)
+
         # Check .gitattributes overrides first
         checked_files = get_file_attributes(
           base,
@@ -1242,14 +1252,16 @@ module Gitlab
           .pluck(:path)
           .to_set
 
-      rescue Gitlab::Git::CommandError => e
+      rescue Gitlab::Git::CommandError, Gitlab::Git::ResourceExhaustedError => e
         # An exception can be raised due to an unknown revision or paths.
+        # Gitlab::Git::ResourceExhaustedError could be raised if the request payload is too large.
         Gitlab::ErrorTracking.track_exception(
           e,
           gl_project_path: @gl_project_path,
           base: base,
           head: head,
-          paths: changed_paths.map(&:path)
+          paths_count: changed_paths.count,
+          paths_bytesize: changed_paths.map(&:path).join.bytesize
         )
 
         Set.new

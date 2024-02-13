@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab release and maintenance policy
 
+The [Delivery Group](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/) are the owners of the maintenance policy and must approve any requested updates. This follows our [DRI model](https://handbook.gitlab.com/handbook/people-group/directly-responsible-individuals/) and is in place to ensure predictability for customers.
+
 GitLab has strict policies governing version naming, as well as release pace for major, minor,
 patch, and security releases. New releases are announced on the [GitLab blog](https://about.gitlab.com/releases/categories/releases/).
 

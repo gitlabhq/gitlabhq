@@ -4018,9 +4018,60 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
 
     context 'for SHA256 repository' do
-      let(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+      let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
 
       it { is_expected.to eq('sha256') }
+    end
+
+    context 'for missing repository' do
+      let(:project) { build_stubbed(:project) }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'caching', :request_store, :clean_gitlab_redis_cache do
+      let(:cache_key) { "object_format:#{repository.full_path}" }
+      let(:request_store_cache) { repository.__send__(:request_store_cache) }
+
+      it 'only calls out to Gitaly once' do
+        expect(repository.raw).to receive(:object_format).once
+
+        2.times { repository.object_format }
+      end
+
+      it 'calls out to Gitaly again after expiration' do
+        expect(repository.raw).to receive(:object_format).once
+
+        repository.object_format
+
+        request_store_cache.expire(cache_key)
+
+        expect(repository.raw).to receive(:object_format).once
+
+        2.times { repository.object_format }
+      end
+
+      it 'returns the value from the request store' do
+        request_store_cache.write(cache_key, Repository::FORMAT_SHA1)
+
+        expect(repository.object_format).to eq(Repository::FORMAT_SHA1)
+      end
+    end
+  end
+
+  describe '#blank_ref' do
+    subject { repository.blank_ref }
+
+    context 'for existing repository' do
+      context 'for SHA1 repository' do
+        it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
+      end
+
+      context 'for SHA256 repository' do
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+
+        it { is_expected.to eq(::Gitlab::Git::SHA256_BLANK_SHA) }
+      end
     end
 
     context 'for missing repository' do
@@ -4028,7 +4079,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
         allow(repository).to receive(:exists?).and_return(false)
       end
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq(::Gitlab::Git::SHA1_BLANK_SHA) }
     end
   end
 

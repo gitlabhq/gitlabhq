@@ -1,0 +1,16 @@
+- title: "Deprecate `version` field in feature flag API"
+  # The milestones for the deprecation announcement, and the removal.
+  removal_milestone: "17.0"
+  announcement_milestone: "16.9"
+  # Change breaking_change to false if needed.
+  breaking_change: true
+  # The stage and GitLab username of the person reporting the change,
+  # and a link to the deprecation issue
+  reporter: timofurrer
+  stage: deploy
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437986
+  body: |  # (required) Don't change this line.
+    The `version` field in the [feature flag REST API](https://docs.gitlab.com/ee/api/feature_flags.html)
+    is deprecated and will be removed in GitLab 17.0.
+
+    After the `version` field is removed, there won't be a way to create legacy feature flags.

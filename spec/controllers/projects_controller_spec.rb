@@ -207,9 +207,9 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           end
         end
 
-        context 'when redirect_with_ref_type is disabled' do
+        context 'when ambiguous_ref_modal is disabled' do
           before do
-            stub_feature_flags(redirect_with_ref_type: false)
+            stub_feature_flags(ambiguous_ref_modal: false)
           end
 
           context 'when there is a tag with the same name as the default branch' do

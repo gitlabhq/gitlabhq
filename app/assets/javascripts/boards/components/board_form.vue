@@ -2,7 +2,6 @@
 import { GlModal, GlAlert } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
-import eventHub from '~/boards/eventhub';
 import { formType } from '../constants';
 
 import { setError } from '../graphql/cache_updates';
@@ -221,7 +220,7 @@ export default {
         try {
           const board = await this.createOrUpdateBoard();
           if (this.board.id) {
-            eventHub.$emit('updateBoard', board);
+            this.$emit('updateBoard', board);
           } else {
             this.$emit('addBoard', board);
           }

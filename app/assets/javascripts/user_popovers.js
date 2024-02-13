@@ -13,13 +13,14 @@ const removeTitle = (el) => {
 
 const getPreloadedUserInfo = (dataset) => {
   const userId = dataset.user || dataset.userId;
-  const { username, name, avatarUrl } = dataset;
+  const { username, name, avatarUrl, email } = dataset;
 
   return {
     userId,
     username,
     name,
     avatarUrl,
+    email,
   };
 };
 
@@ -118,14 +119,15 @@ function launchPopover(el, mountPopover) {
   mountPopover(popoverInstance);
 }
 
-const userLinkSelector = 'a.js-user-link[data-user], a.js-user-link[data-user-id]';
+const userPopoverSelector =
+  'a.js-user-link[data-user], a.js-user-link[data-user-id], .js-user-popover';
 
-const getUserLinkNode = (node) => node.closest(userLinkSelector);
+const getUserPopoverNode = (node) => node.closest(userPopoverSelector);
 
 const lazyLaunchPopover = debounce((mountPopover, event) => {
-  const userLink = getUserLinkNode(event.target);
-  if (userLink) {
-    launchPopover(userLink, mountPopover);
+  const userPopover = getUserPopoverNode(event.target);
+  if (userPopover) {
+    launchPopover(userPopover, mountPopover);
   }
 }, USER_POPOVER_DELAY);
 

@@ -221,10 +221,6 @@ module BulkImports
 
       remaining_batch_numbers = all_batch_numbers - created_batch_numbers
 
-      if Feature.disabled?(:bulk_import_limit_concurrent_batches, context.portable)
-        return LimitedBatches.new(numbers: remaining_batch_numbers, final?: true)
-      end
-
       limit = next_batch_count
 
       LimitedBatches.new(

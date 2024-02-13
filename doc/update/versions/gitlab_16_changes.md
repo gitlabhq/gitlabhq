@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab 16 changes **(FREE SELF)**
+# GitLab 16 changes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab 16.
 Ensure you review these instructions for:
@@ -60,6 +64,26 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
 
+## 16.8.0
+
+- In GitLab 16.8.0 and 16.8.1, the Sidekiq gem was upgraded, and the newer version requires Redis 6.2 or later. If you are using Redis 6.0, upgrade
+  directly to 16.8.2, which [restores compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
+- NOTE: You should upgrade to Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
+
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+
 ## 16.7.0
 
 - GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
@@ -93,8 +117,20 @@ Specific information applies to Linux package installations:
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
+  | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
+  | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
   | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
 
 ## 16.6.0
 
@@ -110,14 +146,38 @@ Specific information applies to Linux package installations:
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
+  | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
+  | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
   | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
 
 ## 16.5.0
 
 - Git 2.42.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 - A regression may sometimes cause an [HTTP 500 error when navigating a group](https://gitlab.com/gitlab-org/gitlab/-/issues/431659). Upgrading to GitLab 16.6 or later resolves the issue.
 - A regression may cause [Unselected Advanced Search facets to not load](https://gitlab.com/gitlab-org/gitlab/-/issues/428246). Upgrading to 16.6 or later resolves the issue.
+- The `unique_batched_background_migrations_queued_migration_version` index was
+  introduced in 16.5, and the post deployment migration
+  `DeleteOrphansScanFindingLicenseScanningApprovalRules2`
+  has the potential to break this unique constraint while doing a zero-downtime upgrade.
+  A workaround is available in [issue #437291](https://gitlab.com/gitlab-org/gitlab/-/issues/437291#to-unblock)
+  which fixes the error:
+
+  ```plaintext
+  PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
+  "unique_batched_background_migrations_queued_migration_version"
+  DETAIL:  Key (queued_migration_version)=(20230721095222) already exists.
+  ```
 
 ### Linux package installations
 
@@ -208,8 +268,20 @@ Specific information applies to installations using Geo:
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
+  | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
+  | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
+
+- Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
+  See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
   | 16.6                    |  All                    | None     |
   | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
 
 ## 16.4.0
 
@@ -358,8 +430,8 @@ Specific information applies to installations using Geo:
   | ----------------------- | ----------------------- | -------- |
   | 16.4                    |  All                    | None     |
   | 16.5                    |  All                    | None     |
-  | 16.6                    |  All                    | None     |
-  | 16.7                    |  All                    | None     |
+  | 16.6                    |  16.6.0 - 16.6.5        | 16.6.6   |
+  | 16.7                    |  16.7.0 - 16.7.3        | 16.7.4   |
 
 ## 16.3.0
 
@@ -593,7 +665,11 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Specific information applies to installations using Geo:
 
@@ -656,9 +732,8 @@ Specific information applies to Linux package installations:
   Prior to upgrading, administrators of Linux package installations must ensure the installation is using
   [PostgreSQL 13](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server).
 
-- Grafana that was bundled with GitLab is deprecated and is no longer supported. It is
-  [removed](../../administration/monitoring/performance/grafana_configuration.md#grafana-bundled-with-gitlab-removed) in
-  GitLab 16.3.
+- Grafana that was bundled with GitLab is deprecated and is no longer supported.
+  It is removed in GitLab 16.3.
 - This upgrades `openssh-server` to `1:8.9p1-3`.
 
   Using `ssh-keyscan -t rsa` with older OpenSSH clients to obtain public key information is no longer viable because of
@@ -672,7 +747,11 @@ Specific information applies to Linux package installations:
 - [Migrate your Gitaly configuration to the new structure](#gitaly-configuration-structure-change)
   to ensure all your `gitaly['..']` settings continue to work in GitLab 16.0 and later.
 
-### Geo installations **(PREMIUM SELF)**
+### Geo installations
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Specific information applies to installations using Geo:
 

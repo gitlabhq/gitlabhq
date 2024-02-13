@@ -1,0 +1,9 @@
+---
+name: gcp_runner
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437901
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141521
+rollout_issue_url:
+milestone: '16.9'
+group: group::runner
+type: wip
+default_enabled: false

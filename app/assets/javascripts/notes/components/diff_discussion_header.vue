@@ -118,7 +118,7 @@ export default {
         <gl-avatar :src="author.avatar_url" :alt="author.name" :size="32" />
       </gl-avatar-link>
     </div>
-    <div class="timeline-content w-100 gl-ml-3" :class="toggleClass">
+    <div class="timeline-content gl-w-full gl-ml-3" :class="toggleClass">
       <note-header
         :author="author"
         :created-at="firstNote.created_at"

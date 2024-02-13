@@ -30,4 +30,18 @@ RSpec.describe GpgKeys::CreateService, feature_category: :source_code_management
       expect(gpg_key.subkeys.count).to eq(2)
     end
   end
+
+  context 'invalid key' do
+    let(:params) { {} }
+
+    it 'returns an invalid key' do
+      expect_next_instance_of(GpgKeys::ValidateIntegrationsService) do |instance|
+        expect(instance).to receive(:execute)
+      end
+
+      gpg_key = subject.execute
+
+      expect(gpg_key).not_to be_persisted
+    end
+  end
 end

@@ -144,7 +144,6 @@ describe('WorkItemAwardEmoji component', () => {
 
     expect(findAwardsList().exists()).toBe(true);
     expect(findAwardsList().props()).toEqual({
-      boundary: '',
       canAwardEmoji: true,
       currentUserId: 5,
       defaultAwards: [EMOJI_THUMBSUP, EMOJI_THUMBSDOWN],

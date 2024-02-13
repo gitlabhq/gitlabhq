@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Debian API **(FREE SELF)**
+# Debian API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - Debian API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42670) in GitLab 13.5.
 > - Debian group API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66188) in GitLab 14.2.
@@ -80,7 +84,7 @@ curl --request PUT \
 
 ## Download a package
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a package file.
 
@@ -94,7 +98,7 @@ GET projects/:id/packages/debian/pool/:distribution/:letter/:package_name/:packa
 | `letter`          | string | yes      | The Debian Classification (first-letter or lib-first-letter). |
 | `package_name`    | string | yes      | The source package name. |
 | `package_version` | string | yes      | The source package version. |
-| `file_name`       | string | yes      | The file name. |
+| `file_name`       | string | yes      | The filename. |
 
 ```shell
 curl --header "Private-Token: <personal_access_token>" "https://gitlab.example.com/api/v4/projects/1/packages/debian/pool/my-distro/a/my-pkg/1.0.0/example_1.0.0~alpha2_amd64.deb"
@@ -108,7 +112,7 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Route prefix
 
@@ -142,7 +146,7 @@ The examples in this document all use the project-level prefix.
 
 ## Download a distribution Release file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
 Download a Debian distribution file.
 
@@ -166,11 +170,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a signed distribution Release file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64067) in GitLab 14.1.
 
 Download a signed Debian distribution file.
 
@@ -194,11 +198,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a release file signature
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a Debian release file signature.
 
@@ -222,11 +226,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/64923) in GitLab 14.2.
 
 Download a packages index.
 
@@ -252,11 +256,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a packages index by hash.
 
@@ -283,11 +287,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a Debian Installer packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
 
 Download a Debian Installer packages index.
 
@@ -313,11 +317,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a Debian Installer packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a Debian Installer packages index by hash.
 
@@ -343,11 +347,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a source packages index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71918) in GitLab 15.4.
 
 Download a source packages index.
 
@@ -372,11 +376,11 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.
 
 ## Download a source packages index by hash
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96947) in GitLab 15.4.
 
 Download a source packages index by hash.
 
@@ -401,4 +405,4 @@ curl --header "Private-Token: <personal_access_token>" \
      --remote-name
 ```
 
-This writes the downloaded file using the remote file name in the current directory.
+This writes the downloaded file using the remote filename in the current directory.

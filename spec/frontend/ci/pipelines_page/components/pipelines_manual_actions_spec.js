@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -48,14 +48,14 @@ describe('Pipeline manual actions', () => {
         iid: 100,
       },
       stubs: {
-        GlDropdown,
+        GlDisclosureDropdown,
       },
       apolloProvider: createMockApollo([[getPipelineActionsQuery, queryHandler]]),
     });
   };
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
+  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findAllDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findAllCountdowns = () => wrapper.findAllComponents(GlCountdown);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findLimitMessage = () => wrapper.findByTestId('limit-reached-msg');
@@ -101,14 +101,16 @@ describe('Pipeline manual actions', () => {
     });
 
     it("displays a disabled action when it's not playable", () => {
-      expect(findAllDropdownItems().at(0).attributes('disabled')).toBeDefined();
+      expect(findAllDropdownItems().at(0).props('item')).toMatchObject({
+        extraAttrs: { disabled: true },
+      });
     });
 
     describe('on action click', () => {
       it('makes a request and toggles the loading state', async () => {
         mock.onPost(mockPath).reply(HTTP_STATUS_OK);
 
-        findAllDropdownItems().at(1).vm.$emit('click');
+        findAllDropdownItems().at(1).vm.$emit('action');
 
         await nextTick();
 
@@ -122,7 +124,7 @@ describe('Pipeline manual actions', () => {
       it('makes a failed request and toggles the loading state', async () => {
         mock.onPost(mockPath).reply(HTTP_STATUS_INTERNAL_SERVER_ERROR);
 
-        findAllDropdownItems().at(1).vm.$emit('click');
+        findAllDropdownItems().at(1).vm.$emit('action');
 
         await nextTick();
 
@@ -163,7 +165,7 @@ describe('Pipeline manual actions', () => {
 
         confirmAction.mockResolvedValueOnce(true);
 
-        findAllDropdownItems().at(2).vm.$emit('click');
+        findAllDropdownItems().at(2).vm.$emit('action');
 
         expect(confirmAction).toHaveBeenCalled();
 
@@ -177,7 +179,7 @@ describe('Pipeline manual actions', () => {
 
         confirmAction.mockResolvedValueOnce(false);
 
-        findAllDropdownItems().at(2).vm.$emit('click');
+        findAllDropdownItems().at(2).vm.$emit('action');
 
         expect(confirmAction).toHaveBeenCalled();
 

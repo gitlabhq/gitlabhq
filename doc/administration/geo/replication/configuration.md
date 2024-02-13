@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo configuration **(PREMIUM SELF)**
+# Geo configuration
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 ## Configuring a new **secondary** site
 
@@ -401,7 +405,7 @@ Selective synchronization:
 
 ### Git operations on unreplicated repositories
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10 for HTTP(S) and in GitLab 13.0 for SSH.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2562) in GitLab 12.10 for HTTP(S) and in GitLab 13.0 for SSH.
 
 Git clone, pull, and push operations over HTTP(S) and SSH are supported for repositories that
 exist on the **primary** site but not on **secondary** sites. This situation can occur

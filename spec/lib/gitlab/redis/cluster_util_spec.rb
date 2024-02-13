@@ -23,7 +23,6 @@ RSpec.describe Gitlab::Redis::ClusterUtil, feature_category: :scalability do
         allow(redis_cluster).to receive(:id).and_return(1)
 
         allow(Gitlab::Redis::MultiStore).to receive(:same_redis_store?).and_return(false)
-        skip_feature_flags_yaml_validation
         skip_default_enabled_yaml_check
       end
 

@@ -1,13 +1,15 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
+import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
+import { useFakeDate } from 'helpers/fake_date';
 import { mockKasTunnelUrl } from './mock_data';
-import { k8sPodsMock } from './graphql/mock_data';
+import { k8sPodsMock, k8sPodsStatsData, k8sPodsTableData } from './graphql/mock_data';
 
 Vue.use(VueApollo);
 
@@ -23,7 +25,9 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findTab = () => wrapper.findComponent(GlTab);
   const findWorkloadStats = () => wrapper.findComponent(WorkloadStats);
+  const findWorkloadTable = () => wrapper.findComponent(WorkloadTable);
 
   const createApolloProvider = () => {
     const mockResolvers = {
@@ -39,10 +43,19 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
     wrapper = shallowMount(KubernetesPods, {
       propsData: { namespace, configuration },
       apolloProvider,
+      stubs: {
+        GlTab,
+      },
     });
   };
 
   describe('mounted', () => {
+    it('renders pods tab', () => {
+      createWrapper();
+
+      expect(findTab().text()).toMatchInterpolatedText('Pods 0');
+    });
+
     it('shows the loading icon', () => {
       createWrapper();
 
@@ -66,28 +79,20 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
   });
 
   describe('when gets pods data', () => {
+    useFakeDate(2023, 10, 23, 10, 10);
+
     it('renders workload stats with the correct data', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findWorkloadStats().props('stats')).toEqual([
-        {
-          value: 2,
-          title: 'Running',
-        },
-        {
-          value: 1,
-          title: 'Pending',
-        },
-        {
-          value: 1,
-          title: 'Succeeded',
-        },
-        {
-          value: 2,
-          title: 'Failed',
-        },
-      ]);
+      expect(findWorkloadStats().props('stats')).toEqual(k8sPodsStatsData);
+    });
+
+    it('renders workload table with the correct data', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      expect(findWorkloadTable().props('items')).toMatchObject(k8sPodsTableData);
     });
 
     it('emits a update-failed-state event for each pod', async () => {
@@ -123,6 +128,10 @@ describe('~/environments/components/kubernetes_pods.vue', () => {
 
     it("doesn't show pods stats", () => {
       expect(findWorkloadStats().exists()).toBe(false);
+    });
+
+    it("doesn't show pods table", () => {
+      expect(findWorkloadTable().exists()).toBe(false);
     });
 
     it('emits an error message', () => {

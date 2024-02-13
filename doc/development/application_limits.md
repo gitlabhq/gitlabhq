@@ -15,7 +15,7 @@ First of all, you have to gather information and decide which are the different
 limits that are set for the different GitLab tiers. Coordinate with others to [document](../administration/instance_limits.md)
 and communicate those limits.
 
-There is a guide about [introducing application limits](https://about.gitlab.com/handbook/product/product-processes/#introducing-application-limits).
+There is a guide about [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits).
 
 ## Implement plan limits
 
@@ -139,7 +139,7 @@ end
 
 ### Subscription Plans
 
-> The `opensource` plan was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346399) in GitLab 14.7.
+> - The `opensource` plan was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346399) in GitLab 14.7.
 
 Self-managed:
 
@@ -167,7 +167,9 @@ This applies to Rails controllers, Grape endpoints, and any other Rack requests.
 
 The process for adding a new throttle is loosely:
 
-1. Add new columns to the `ApplicationSetting` model (`*_enabled`, `*_requests_per_period`, `*_period_in_seconds`).
+1. Add new fields to the [rate_limits JSONB column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/models/application_setting.rb#L603)
+in the `ApplicationSetting` model.
+1. Update the JSON schema validator for the [rate_limits column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
 1. Extend `Gitlab::RackAttack` and `Gitlab::RackAttack::Request` to configure the new rate limit,
   and apply it to the desired requests.
 1. Add the new settings to the Admin Area form in `app/views/admin/application_settings/_ip_limits.html.haml`.

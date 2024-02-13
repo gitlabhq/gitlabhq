@@ -1,7 +1,15 @@
-query getOrganizationProjects {
-  organization @client {
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getOrganizationProjects(
+  $id: OrganizationsOrganizationID!
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+) {
+  organization(id: $id) {
     id
-    projects {
+    projects(first: $first, last: $last, before: $before, after: $after) {
       nodes {
         id
         nameWithNamespace
@@ -11,14 +19,21 @@ query getOrganizationProjects {
         avatarUrl
         starCount
         visibility
+        openMergeRequestsCount
         openIssuesCount
         descriptionHtml
-        issuesAccessLevel
-        forkingAccessLevel
-        isForked
-        accessLevel {
-          integerValue
+        mergeRequestsAccessLevel {
+          stringValue
         }
+        issuesAccessLevel {
+          stringValue
+        }
+        forkingAccessLevel {
+          stringValue
+        }
+      }
+      pageInfo {
+        ...PageInfo
       }
     }
   }

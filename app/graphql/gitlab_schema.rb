@@ -79,7 +79,11 @@ class GitlabSchema < GraphQL::Schema
     def resolve_type(type, object, ctx = :__undefined__)
       return if type.respond_to?(:assignable?) && !type.assignable?(object)
 
-      super
+      if type.kind.object?
+        type
+      else
+        super
+      end
     end
 
     # Find an object by looking it up from its 'GlobalID'.

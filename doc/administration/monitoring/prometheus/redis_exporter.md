@@ -4,7 +4,11 @@ group: Shared responsibility based on functional area
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Redis exporter **(FREE SELF)**
+# Redis exporter
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 The [Redis exporter](https://github.com/oliver006/redis_exporter) enables you to measure
 various [Redis](https://redis.io) metrics. For more information on what is exported,

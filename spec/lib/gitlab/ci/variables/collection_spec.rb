@@ -323,8 +323,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :secrets_man
         .append(key: 'TEST2', value: 'test-2')
         .append(key: 'TEST1', value: 'test-3')
 
-      expect(collection.to_hash).to eq('TEST1' => 'test-3',
-                                       'TEST2' => 'test-2')
+      expect(collection.to_hash).to eq('TEST1' => 'test-3', 'TEST2' => 'test-2')
 
       expect(collection.to_hash).to include(TEST1: 'test-3')
       expect(collection.to_hash).not_to include(TEST1: 'test-1')

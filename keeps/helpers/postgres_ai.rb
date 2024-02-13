@@ -11,7 +11,7 @@ module Keeps
 
       def fetch_background_migration_status(job_class_name)
         query = <<~SQL
-        SELECT id, created_at, updated_at, finished_at, started_at, status, job_class_name
+        SELECT id, created_at, updated_at, finished_at, started_at, status, job_class_name, gitlab_schema
         FROM batched_background_migrations
         WHERE job_class_name = $1::text
         SQL

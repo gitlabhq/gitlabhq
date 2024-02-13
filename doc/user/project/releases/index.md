@@ -4,7 +4,11 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Releases **(FREE ALL)**
+# Releases
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 In GitLab, a release enables you to create a snapshot of your project for your users, including
 installation packages and release notes. You can create a GitLab release on any branch. Creating a
@@ -165,7 +169,7 @@ project.
 
 ## Upcoming releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/38105) in GitLab 12.1.
 
 You can create a release ahead of time by using the [Releases API](../../../api/releases/index.md#upcoming-releases).
 When you set a future `released_at` date, an **Upcoming Release** badge is displayed next to the
@@ -175,7 +179,7 @@ release tag. When the `released_at` date and time has passed, the badge is autom
 
 ## Historical releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/199429) in GitLab 15.2.
 
 You can create a release in the past using either the
 [Releases API](../../../api/releases/index.md#historical-releases) or the UI. When you set
@@ -201,7 +205,7 @@ In the UI:
 
 ## Delete a release
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213862) in GitLab 15.2
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213862) in GitLab 15.2
 
 When you delete a release, its assets are also deleted. However, the associated
 Git tag is not deleted.
@@ -260,7 +264,7 @@ more, read issue #328054,
 
 ## Get notified when a release is created
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26001) in GitLab 12.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/26001) in GitLab 12.4.
 
 You can be notified by email when a new release is created for your project.
 
@@ -337,11 +341,11 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ## Release permissions
 
-> Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
+> - Fixes to the permission model for create, update and delete actions [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327505) in GitLab 14.1.
 
 ### View a release and download assets
 
-> Changes to the Guest role [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
+> - Changes to the Guest role [were introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335209) in GitLab 14.5.
 
 - Users with at least the Reporter role
   have read and download access to the project releases.
@@ -353,7 +357,7 @@ For more information, see [Deployment safety](../../../ci/environments/deploymen
 
 ### Publish releases without giving access to source code
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216485) in GitLab 15.6.
 
 Releases can be made accessible to non-project members while keeping repository-related information such as
 [source code](release_fields.md#source-code) and [release evidence](release_evidence.md) private. Use this for
@@ -377,9 +381,13 @@ users with at least the Maintainer role
 to create, update, and delete releases by protecting the tag with a wildcard (`*`),
 and set **Maintainer** in the **Allowed to create** column.
 
-## Release Metrics **(ULTIMATE ALL)**
+## Release Metrics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/259703) in GitLab Premium 13.9.
 
 Group-level release metrics are available by navigating to **Group > Analytics > CI/CD**.
 These metrics include:

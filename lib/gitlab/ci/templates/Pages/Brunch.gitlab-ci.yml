@@ -5,14 +5,15 @@
 
 default:
   # Full project: https://gitlab.com/pages/brunch
-  image: node:4.2.2
+  image: node:16
 
 pages:
   cache:
     paths:
       - node_modules/
   script:
-    - npm install -g brunch
+    - npm update
+    - npm install -g brunch@4.0.2
     - brunch build --production
   artifacts:
     paths:

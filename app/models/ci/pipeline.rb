@@ -95,12 +95,13 @@ module Ci
     has_many :job_artifacts, through: :builds
     has_many :build_trace_chunks, class_name: 'Ci::BuildTraceChunk', through: :builds, source: :trace_chunks
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id, inverse_of: :pipeline # rubocop:disable Cop/ActiveRecordDependent
-    has_many :variables, class_name: 'Ci::PipelineVariable'
+    has_many :variables, ->(pipeline) { in_partition(pipeline) }, class_name: 'Ci::PipelineVariable', inverse_of: :pipeline, partition_foreign_key: :partition_id
     has_many :latest_builds, ->(pipeline) { in_partition(pipeline).latest.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Build'
     has_many :downloadable_artifacts, -> do
       not_expired.or(where_exists(Ci::Pipeline.artifacts_locked.where("#{Ci::Pipeline.quoted_table_name}.id = #{Ci::Build.quoted_table_name}.commit_id"))).downloadable.with_job
     end, through: :latest_builds, source: :job_artifacts
     has_many :latest_successful_jobs, ->(pipeline) { in_partition(pipeline).latest.success.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
+    has_many :latest_finished_jobs, ->(pipeline) { in_partition(pipeline).latest.finished.with_project_and_metadata }, foreign_key: :commit_id, inverse_of: :pipeline, class_name: 'Ci::Processable'
 
     has_many :messages, class_name: 'Ci::PipelineMessage', inverse_of: :pipeline
 
@@ -165,6 +166,7 @@ module Ci
     validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
+    after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
     use_fast_destroy :job_artifacts
@@ -579,9 +581,7 @@ module Ci
     end
 
     def self.use_partition_id_filter?
-      ::Gitlab::SafeRequestStore.fetch(:ci_builds_partition_id_query_filter) do
-        ::Feature.enabled?(:ci_builds_partition_id_query_filter)
-      end
+      true
     end
 
     def uses_needs?
@@ -620,7 +620,7 @@ module Ci
     end
 
     def valid_commit_sha
-      if self.sha == Gitlab::Git::SHA1_BLANK_SHA
+      if Gitlab::Git.blank_ref?(self.sha)
         self.errors.add(:sha, " cant be 00000000 (branch removal)")
       end
     end
@@ -674,7 +674,7 @@ module Ci
     end
 
     def before_sha
-      super || Gitlab::Git::SHA1_BLANK_SHA
+      super || project.repository.blank_ref
     end
 
     def short_sha
@@ -1461,6 +1461,14 @@ module Ci
     def object_hierarchy(options = {})
       ::Gitlab::Ci::PipelineObjectHierarchy
         .new(self.class.unscoped.where(id: id), options: options)
+    end
+
+    def internal_pipeline?
+      source != "external"
+    end
+
+    def track_ci_pipeline_created_event
+      Gitlab::InternalEvents.track_event('create_ci_internal_pipeline', project: project, user: user)
     end
   end
 end

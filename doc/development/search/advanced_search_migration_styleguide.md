@@ -13,7 +13,7 @@ This functionality is only supported for indices created in GitLab 13.0 and late
 
 ### With a script
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414674) in GitLab 16.3.
 
 Execute `scripts/elastic-migration` and follow the prompts to create:
 
@@ -23,7 +23,7 @@ Execute `scripts/elastic-migration` and follow the prompts to create:
 
 ### Manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/234046) in GitLab 13.6.
 
 In the [`ee/elastic/migrate/`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/elastic/migrate) folder, create a new file with the filename format `YYYYMMDDHHMMSS_migration_name.rb`. This format is the same for Rails database migrations.
 

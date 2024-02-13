@@ -4,7 +4,11 @@ group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Create and run your first GitLab CI/CD pipeline **(FREE ALL)**
+# Tutorial: Create and run your first GitLab CI/CD pipeline
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
 
@@ -26,7 +30,7 @@ To create and run your first pipeline:
 
 1. [Ensure you have runners available](#ensure-you-have-runners-available) to run your jobs.
 
-   If you're using GitLab.com, you can skip this step. GitLab.com provides shared runners for you.
+   If you're using GitLab.com, you can skip this step. GitLab.com provides instance runners for you.
 
 1. [Create a `.gitlab-ci.yml` file](#create-a-gitlab-ciyml-file)
    at the root of your repository. This file is where you define the CI/CD jobs.

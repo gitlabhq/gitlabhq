@@ -36,6 +36,7 @@ export default {
         data-testid="emoji-button"
         button-text-classes="gl-display-none!"
         @click="clickEmoji(emoji)"
+        @keydown.enter="clickEmoji(emoji)"
       >
         <template #emoji>
           <gl-emoji :data-name="emoji" class="gl-mr-0!" />

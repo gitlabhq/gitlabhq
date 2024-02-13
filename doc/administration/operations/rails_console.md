@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rails console **(FREE SELF)**
+# Rails console
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 At the heart of GitLab is a web application
 [built using the Ruby on Rails framework](https://about.gitlab.com/blog/2018/10/29/why-we-use-rails-to-build-gitlab/).
@@ -718,7 +722,7 @@ irb(#<Project>)> web_url
 
 The `gitlab-rails` command executes Rails Runner using a non-root account and group, by default: `git:git`.
 
-If the non-root account cannot find the Ruby script file name passed to `gitlab-rails runner`
+If the non-root account cannot find the Ruby script filename passed to `gitlab-rails runner`
 you may get a syntax error, not an error that the file couldn't be accessed.
 
 A common reason for this is that the script has been put in the root account's home directory.

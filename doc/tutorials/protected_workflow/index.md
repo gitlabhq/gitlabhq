@@ -6,7 +6,11 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 <!-- vale gitlab.FutureTense = NO -->
 
-# Tutorial: Build a protected workflow for your project **(FREE ALL)**
+# Tutorial: Build a protected workflow for your project
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When your team starts a new project, they need a workflow that balances efficiency
 with appropriate reviews. In GitLab, you can create user groups, combine those

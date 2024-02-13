@@ -21,7 +21,7 @@ If you are already tracking events in Snowplow, you can also start collecting me
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 
 1. The `label`, `property` and `value` attributes are not used within Internal Events and are always empty.
-1. The `category` is automatically set to `InternalEventTracking`
+1. The `category` is automatically set to the location where the event happened. For Frontend events it is the page name and for Backend events it is a class name. If the page name or class name is not used, the default value of `"InternalEventTracking"` will be used.
 
 Make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
 
@@ -73,8 +73,10 @@ import { InternalEvents } from '~/tracking';
 mixins: [InternalEvents.mixin()]
 ...
 ...
-this.trackEvent('action')
+this.trackEvent('action', 'category')
 ```
+
+If you are currently passing `category` and need to keep it, it can be passed as the second argument in the `trackEvent` method, as illustrated in the previous example. Nonetheless, it is strongly advised against using the `category` parameter for new events. This is because, by default, the category field is populated with information about where the event was triggered.
 
 You can use [this MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123901/diffs) as an example. It migrates the `devops_adoption_app` component to use Internal Events Tracking.
 
@@ -150,6 +152,10 @@ To start using Internal Events Tracking, follow these steps:
     ```
 
 1. Update your test to use the `internal event tracking` shared example.
+
+1. Remove the event's name from [hll_redis_legacy_events](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_legacy_events.yml)
+
+1. Add the event to [hll_redis_key_overrides](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml) file. The format used in this file is: `project_created-user: 'project_created'`, where `project_created` is the event's name and `user` is the unique value that has been specified in the metric definition files.
 
 ### Frontend
 

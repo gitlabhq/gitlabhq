@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Import your project from GitHub to GitLab **(FREE ALL)**
+# Import your project from GitHub to GitLab
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
@@ -16,10 +20,9 @@ migrate or import any types of groups or organizations from GitHub to GitLab.
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`.
 
-If you are importing from GitHub Enterprise to GitLab.com, use the
-[GitLab Import API](../../../api/import.md#import-repository-from-github) GitHub endpoint instead. The API allows you to
-provide a different domain to import the project from. Using the UI, the GitHub importer always imports from the
-`github.com` domain.
+Using the GitLab UI, the GitHub importer always imports from the
+`github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
+[GitLab Import API](#use-the-rest-api) GitHub endpoint.
 
 When importing projects:
 
@@ -37,7 +40,7 @@ For an overview of the import process, see [How to migrate from GitHub to GitLab
 
 ## Prerequisites
 
-> Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+> - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
 To import projects from GitHub:
 
@@ -55,24 +58,8 @@ To import projects from GitHub:
   matching email addresses are required.
 - GitHub accounts must have a GitHub public-facing email address so that all comments and contributions can be properly mapped to
   the same user in GitLab. GitHub Enterprise does not require this field to be populated so you might have to add it on existing accounts.
-
-### Importing from GitHub Enterprise to self-managed GitLab
-
-If you are importing from GitHub Enterprise to a self-managed GitLab instance:
-
-- You must first enable the [GitHub integration](../../../integration/github.md).
-- GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
-- For GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
+- For self-managed GitLab 15.10 and earlier, you must add `github.com` and `api.github.com` entries in the
   [allowlist for local requests](../../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
-
-### Importing from GitHub.com to self-managed GitLab
-
-If you are importing from GitHub.com to a self-managed GitLab instance:
-
-- You don't need to enable the [GitHub integration](../../../integration/github.md).
-- GitHub must be enabled as an import source in the
-  [Admin Area](../../../administration/settings/import_and_export_settings.md#configure-allowed-import-sources).
 
 ### Known issues
 
@@ -94,34 +81,71 @@ If a GitHub user's public email address doesn't match any GitLab user email
 address, the user's activity is associated with the user account that is
 performing the import.
 
-### Use the GitHub integration
+You can import your GitHub repository by either:
+
+- [Using GitHub OAuth](#use-github-oauth)
+- [Using a GitHub Personal Access Token](#use-a-github-personal-access-token)
+- [Using the API](#use-the-rest-api)
+
+### Use GitHub OAuth
+
+If you are importing to GitLab.com or to a self-managed GitLab that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
+
+This method has an advantage over using a [Personal Access Token (PAT)](#use-a-github-personal-access-token) 
+because the backend exchanges the access token with the appropriate permissions.
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
 1. Select **Import project** and then **GitHub**.
-1. Now you can either:
-   - If GitHub OAuth is [configured](../../../integration/github.md) for the instance, select **Authorize with GitHub**.
-   - Use a GitHub personal access token:
-     1. Go to <https://github.com/settings/tokens/new>.
-     1. In the **Note** field, enter a token description.
-     1. Select the `repo` scope.
-     1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
-     1. Select **Generate token**.
-     1. On the GitLab import page, in the **Personal Access Token** field, paste the GitHub personal access token.
-     1. Select **Authenticate**.
-1. Continue on to [selecting which repositories to import](#select-which-repositories-to-import).
+1. Select **Authorize with GitHub**.
+1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
 
-To use a different token to perform an imports after previously performing
+To use a different method to perform an import after previously performing
+these steps, sign out of your GitLab account and sign in again.
+
+### Use a GitHub Personal Access Token
+
+To import your GitHub repository using a GitHub Personal Access Token:
+
+1. Generate a GitHub Personal Access Token:
+    1. Go to <https://github.com/settings/tokens/new>.
+    1. In the **Note** field, enter a token description.
+    1. Select the `repo` scope.
+    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+    1. Select **Generate token**.
+1. On the GitLab left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Import project** and then **GitHub**.
+1. Select **Authorize with GitHub**.
+1. In the **Personal Access Token** field, paste the GitHub Personal Access Token.
+1. Select **Authenticate**.
+1. Proceed to [selecting which repositories to import](#select-which-repositories-to-import).
+
+To use a different token to perform an import after previously performing
 these steps, sign out of your GitLab account and sign in again, or revoke the
 older token in GitHub.
 
 ### Use the REST API
 
-You can also import a repository from GitHub using the
-[GitLab REST API](../../../api/import.md#import-repository-from-github).
+The [GitLab REST API](../../../api/import.md#import-repository-from-github) can be used to import a GitHub repository. It has some advantages over using the GitLab UI:
+
+- Can be used to import GitHub repositories that you do not own if they are public.
+- It can be used to import from a GitHub Enterprise Server that is self-hosted.
+- Can be used to set the `timeout_strategy` option that is not available to the UI.
+
+The REST API is limited to authenticating with GitLab Personal Access Tokens.
+
+To import your GitHub repository using the GitLab REST API:
+
+1. Generate a GitHub Personal Access Token:
+    1. Go to <https://github.com/settings/tokens/new>.
+    1. In the **Note** field, enter a token description.
+    1. Select the `repo` scope.
+    1. Optional. To [import collaborators](#select-additional-items-to-import), select the `read:org` scope.
+    1. Select **Generate token**.
+1. Use the [GitLab REST API](../../../api/import.md#import-repository-from-github) to import your GitHub repository.
 
 ### Filter repositories list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385113) in GitLab 16.0.
 
 After you authorize access to your GitHub repositories, GitLab redirects you to the importer page and
 your GitHub repositories are listed.
@@ -138,6 +162,8 @@ When the **Organization** tab is selected, you can further narrow down your sear
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5.
 > - Importing collaborators as an additional item was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398154) in GitLab 16.0.
+> - Feature flag `github_import_extended_events` was introduced in GitLab 16.8. Disabled by default. This flag improves the performance of imports but removes the **Import issue and pull request events** option.
+> - Feature flag `github_import_extended_events` was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/435089) in GitLab 16.9.
 
 To make imports as fast as possible, the following items aren't imported from GitHub by default:
 
@@ -148,7 +174,7 @@ To make imports as fast as possible, the following items aren't imported from Gi
 
 You can choose to import these items, but this could significantly increase import time. To import these items, select the appropriate fields in the UI:
 
-- **Import issue and pull request events**.
+- **Import issue and pull request events**. If the `github_import_extended_events` feature flag is enabled, this option is unavailable.
 - **Use alternative comments import method**. If importing GitHub projects with more than approximately 30,000 comments across all issues and pull requests, you should enable this method because of a
   [limitation of the GitHub API](#missing-comments).
 - **Import Markdown attachments**.
@@ -184,7 +210,7 @@ Completed imports can be re-imported by selecting **Re-import** and specifying n
 
 ### Check status of imports
 
-> Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
+> - Details of partially completed imports with a list of entities that failed to import [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386748) in GitLab 16.1.
 
 After imports are completed, they can be in one of three states:
 
@@ -194,7 +220,11 @@ After imports are completed, they can be in one of three states:
 
 Expand **Details** to see a list of [repository entities](#imported-data) that failed to import.
 
-## Mirror a repository and share pipeline status **(PREMIUM ALL)**
+## Mirror a repository and share pipeline status
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Depending on your GitLab tier, [repository mirroring](../repository/mirror/index.md) can be set up to keep
 your imported repository in sync with its GitHub copy.
@@ -230,25 +260,20 @@ Increasing the number of Sidekiq workers does *not* reduce the time spent clonin
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 
-You can use a personal access token to make API requests. Additionally, you can
-authorize a GitHub App or OAuth app, which can then make API requests on your
-behalf.
+If you belong to a [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding) you can configure your self-managed GitLab instance to obtain a higher [GitHub API rate limit](https://docs.github.com/en/rest/overview/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
 
-API requests to GitHub are [subject to rate limits](https://docs.github.com/en/rest/overview/rate-limits-for-the-rest-api?apiVersion=2022-11-28#primary-rate-limit-for-authenticated-users).
+GitHub API requests are usually subject to a rate limit of 5,000 requests per hour. Using the steps below, you obtain a higher 15,000 requests per hour rate limit, resulting in a faster overall import time.
 
-For GitHub repositories with tens of thousands of issues, pull requests, and
-comments on those issues and pull requests, a higher rate limit results in a
-faster overall import time because the GitLab importer must pause when a
-GitHub rate limit is reached. To enable a higher rate limit for your
-self-managed or dedicated GitLab instance:
+Prerequisites:
 
-- Ensure that you have access to a
-  [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding/getting-started-with-github-enterprise-cloud)
-- [Create an OAuth app in GitHub](../../../integration/github.md#create-an-oauth-app-in-github).
-- Ensure that the OAuth app is owned by the Enterprise Cloud Organization, not
-  your personal GitHub account.
-- [Configure GitHub OAuth in GitLab](../../../integration/github.md#enable-github-oauth-in-gitlab).
-- Perform the project import using the [GitHub integration](#use-the-github-integration) and select **Authorize with GitHub** to use the OAuth authorization method.
+- You have access to a
+  [GitHub Enterprise Cloud organization](https://docs.github.com/en/enterprise-cloud@latest/get-started/onboarding/getting-started-with-github-enterprise-cloud).
+- GitLab is configured to enable [GitHub OAuth](../../../integration/github.md#enable-github-oauth-in-gitlab).
+
+To enable a higher rate limit:
+
+- [Create an OAuth app in GitHub](../../../integration/github.md#create-an-oauth-app-in-github). Ensure that the OAuth app is owned by the Enterprise Cloud Organization, not your personal GitHub account.
+- Perform the project import using [GitHub OAuth](#use-github-oauth).
 - Optional. By default, sign-in is enabled for all configured OAuth providers.
   If you want to enable GitHub OAuth for imports but you want to
   prevent the ability for users to sign in to your GitLab instance with GitHub,
@@ -306,14 +331,14 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 - GitLab branch protection rules.
 - Project-wide GitLab settings.
 
-| GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
-| :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
-| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
-| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
-| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM ALL)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
-| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                      | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
-| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch) **(PREMIUM ALL)** | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches) **(PREMIUM ALL)**. Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
+| GitHub rule                                                                                         | GitLab rule                                                                                                                                                                                                                                                          | Introduced in |
+|:----------------------------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|
+| **Require conversation resolution before merging** for the project's default branch                 | **All threads must be resolved** [project setting](../merge_requests/index.md#prevent-merge-unless-all-threads-are-resolved)                                                                                                                                         | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
+| **Require a pull request before merging**                                                           | **No one** option in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches)                                                                                                            | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
+| **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences)                                                                                                                                                          | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |
+| **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../protected_branches.md#allow-force-push-on-a-protected-branch)                                                                                                                                               | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) |
+| **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../protected_branches.md#require-code-owner-approval-on-a-protected-branch)                                                                                                                        | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** list of [branch protection settings](../protected_branches.md#add-protection-to-existing-branches). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. | [GitLab 15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/384939) |
 
 Mapping GitHub rule **Require status checks to pass before merging** to
 [external status checks](../merge_requests/status_checks.md) was considered in issue
@@ -323,7 +348,7 @@ manually.
 
 ### Collaborators (members)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10.
 
 These GitHub collaborator roles are mapped to these GitLab [member roles](../../permissions.md#roles):
 
@@ -446,11 +471,6 @@ LoadModule ssl_module lib/httpd/modules/mod_ssl.so
   Header edit* Link "https://GITHUB_ENTERPRISE_HOSTNAME" "https://PROXY_HOSTNAME"
 </VirtualHost>
 ```
-
-## Automate group and project import **(PREMIUM ALL)**
-
-For information on automating user, group, and project import API calls, see
-[Automate group and project import](index.md#automate-group-and-project-import).
 
 ## Troubleshooting
 

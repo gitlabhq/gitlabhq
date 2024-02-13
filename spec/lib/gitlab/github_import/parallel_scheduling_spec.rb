@@ -266,7 +266,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     end
   end
 
-  describe '#parallel_import', :clean_gitlab_redis_cache do
+  describe '#parallel_import', :clean_gitlab_redis_shared_state do
     let(:importer) { importer_class.new(project, client) }
     let(:repr_class) { double(:representation) }
     let(:worker_class) { double(:worker) }
@@ -275,7 +275,6 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     let(:batch_delay) { 1.minute }
 
     before do
-      allow(Gitlab::Redis::SharedState).to receive(:with).and_return('OK')
       allow(importer).to receive(:representation_class).and_return(repr_class)
       allow(importer).to receive(:sidekiq_worker_class).and_return(worker_class)
       allow(repr_class).to receive(:from_api_response).with(object, {})
@@ -480,7 +479,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     end
   end
 
-  describe '#already_imported?', :clean_gitlab_redis_cache do
+  describe '#already_imported?', :clean_gitlab_redis_shared_state do
     let(:importer) { importer_class.new(project, client) }
 
     it 'returns false when an object has not yet been imported' do
@@ -510,7 +509,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     end
   end
 
-  describe '#mark_as_imported', :clean_gitlab_redis_cache do
+  describe '#mark_as_imported', :clean_gitlab_redis_shared_state do
     it 'marks an object as already imported' do
       object = double(:object, id: 10)
       importer = importer_class.new(project, client)

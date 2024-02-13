@@ -8,7 +8,7 @@ module Mutations
 
         include FindsProject
 
-        authorize :admin_build
+        authorize :manage_trigger
 
         argument :project_path, GraphQL::Types::ID,
           required: true,
@@ -25,7 +25,10 @@ module Mutations
         def resolve(project_path:, description:)
           project = authorized_find!(project_path)
 
-          trigger = project.triggers.create(owner: current_user, description: description)
+          response = ::Ci::PipelineTriggers::CreateService.new(project: project, user: current_user,
+            description: description).execute
+
+          trigger = response.payload[:trigger]
 
           {
             pipeline_trigger: trigger,

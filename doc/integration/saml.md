@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# SAML SSO for self-managed GitLab instances **(FREE SELF)**
+# SAML SSO for self-managed GitLab instances
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes how to set up instance-wide SAML single sign on (SSO) for
 self-managed GitLab instances.
@@ -393,7 +397,7 @@ Your IdP may need additional configuration. For more information, see
 
 ### Configure GitLab to use multiple SAML IdPs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
 
 You can configure GitLab to use multiple SAML IdPs if:
 
@@ -719,7 +723,7 @@ your provider's support.
 
 ### Configure assertions
 
-> Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
+> - Microsoft Azure/Entra ID attribute support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420766) in GitLab 16.7.
 
 NOTE:
 The attributes are case-sensitive.
@@ -759,10 +763,10 @@ Support for these groups depends on:
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|
-| [Required](#required-groups) | **(FREE SELF)**    | Yes                                  |
-| [External](#external-groups) | **(FREE SELF)**    | No                                   |
-| [Admin](#administrator-groups)       | **(FREE SELF)**    | Yes                                  |
-| [Auditor](#auditor-groups)   | **(PREMIUM SELF)** | Yes                                  |
+| [Required](#required-groups) | Free, Premium, Ultimate | Yes                                  |
+| [External](#external-groups) | Free, Premium, Ultimate | No                                   |
+| [Admin](#administrator-groups) | Free, Premium, Ultimate | Yes                                  |
+| [Auditor](#auditor-groups)   | Premium, Ultimate | Yes                                  |
 
 Prerequisites:
 
@@ -1250,7 +1254,11 @@ Example configuration:
 
 ::EndTabs
 
-### Auditor groups **(PREMIUM SELF)**
+### Auditor groups
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > Introduced in GitLab 11.4.
 
@@ -1981,7 +1989,11 @@ NOTE:
 To bypass the auto sign-in setting, append `?auto_sign_in=false` in the sign in
 URL, for example: `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
-### Map SAML response attribute names **(FREE SELF)**
+### Map SAML response attribute names
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
@@ -2986,7 +2998,11 @@ For more information, see [Configure SAML support in GitLab](#configure-saml-sup
 A user can manually link their SAML identity to an existing GitLab account. For more information,
 see [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 
-## Configure group SAML SSO on a self-managed instance **(PREMIUM SELF)**
+## Configure group SAML SSO on a self-managed instance
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
 self-managed instance.

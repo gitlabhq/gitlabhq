@@ -1,0 +1,8 @@
+---
+name: preload_ci_bridge_downstream_pipelines
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142199
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17473
+milestone: '16.9'
+group: 'group::pipeline execution'
+type: gitlab_com_derisk
+default_enabled: false

@@ -82,16 +82,9 @@ module API
         token = PersonalAccessToken.find_by_id(params[:id])
 
         if Ability.allowed?(current_user, :manage_user_personal_access_token, token&.user)
-          response = ::PersonalAccessTokens::RotateService.new(current_user, token).execute(declared_params)
+          new_token = rotate_token(token, declared_params)
 
-          if response.success?
-            status :ok
-
-            new_token = response.payload[:personal_access_token]
-            present new_token, with: Entities::PersonalAccessTokenWithToken
-          else
-            bad_request!(response.message)
-          end
+          present new_token, with: Entities::PersonalAccessTokenWithToken
         else
           # Only admins should be informed if the token doesn't exist
           current_user.can_admin_all_resources? ? not_found! : unauthorized!

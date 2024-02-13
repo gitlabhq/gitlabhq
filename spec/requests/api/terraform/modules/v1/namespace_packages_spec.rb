@@ -76,14 +76,19 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token'
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/download' do
-    context 'with empty registry' do
-      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/module-2/system/download") }
-      let(:headers) { {} }
+    let_it_be(:package_name) { package.name }
+    let_it_be(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package_name}/download") }
 
-      subject(:get_download) { get(url, headers: headers) }
+    subject(:get_download) { get(url, headers: headers) }
+
+    context 'with empty registry' do
+      let(:package_name) { 'non-existent-package' }
+      let(:headers) { {} }
 
       it 'returns not found when there is no module' do
         get_download
@@ -93,10 +98,7 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
     end
 
     context 'with valid namespace' do
-      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}/download") }
       let(:headers) { {} }
-
-      subject { get(url, headers: headers) }
 
       before_all do
         create(:terraform_module_package, project: project, name: package.name, version: '1.0.1')
@@ -149,14 +151,19 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token', :found
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system' do
-    context 'with empty registry' do
-      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/non-existent/system") }
-      let(:headers) { { 'Authorization' => "Bearer #{tokens[:personal_access_token]}" } }
+    let_it_be(:package_name) { package.name }
+    let_it_be(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package_name}") }
 
-      subject(:get_module) { get(url, headers: headers) }
+    subject(:get_module) { get(url, headers: headers) }
+
+    context 'with empty registry' do
+      let(:package_name) { 'non-existent-package' }
+      let(:headers) { { 'Authorization' => "Bearer #{tokens[:personal_access_token]}" } }
 
       it 'returns not found when there is no module' do
         get_module
@@ -166,10 +173,6 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
     end
 
     context 'with valid namespace' do
-      let(:url) { api("/packages/terraform/modules/v1/#{group.path}/#{package.name}") }
-
-      subject { get(url, headers: headers) }
-
       where(:visibility, :user_role, :member, :token_type, :shared_examples_name, :expected_status) do
         :public  | :developer  | true  | :personal_access_token | 'returns terraform module version'         | :success
         :public  | :guest      | true  | :personal_access_token | 'returns terraform module version'         | :success
@@ -217,6 +220,8 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token'
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version' do
@@ -286,6 +291,8 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token'
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/download' do
@@ -342,6 +349,8 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         it_behaves_like params[:shared_examples_name], params[:user_role], params[:expected_status], params[:member]
       end
     end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token'
   end
 
   describe 'GET /api/v4/packages/terraform/modules/v1/:module_namespace/:module_name/:module_system/:module_version/file' do
@@ -444,6 +453,10 @@ RSpec.describe API::Terraform::Modules::V1::NamespacePackages, feature_category:
         expect(response.body).not_to eq(package_file_pending_destruction.file.file.read)
         expect(response.body).to eq(package_file.file.file.read)
       end
+    end
+
+    it_behaves_like 'accessing a public/internal project with another project\'s job token', :success do
+      let(:token) { tokens[:job_token] }
     end
   end
 end

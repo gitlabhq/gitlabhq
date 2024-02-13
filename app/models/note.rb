@@ -935,7 +935,7 @@ class Note < ApplicationRecord
   end
 
   def noteable_can_have_confidential_note?
-    for_issue?
+    for_issuable?
   end
 
   def set_internal_flag

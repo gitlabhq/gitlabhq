@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
 import eventHub from '~/boards/eventhub';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -47,21 +46,5 @@ describe('ConfigToggle', () => {
     expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
       label: 'edit_board',
     });
-  });
-
-  it.each`
-    boardHasScope
-    ${true}
-    ${false}
-  `('renders dot highlight and tooltip depending on boardHasScope prop', ({ boardHasScope }) => {
-    wrapper = createComponent({}, { boardHasScope });
-
-    expect(findButton().classes('dot-highlight')).toBe(boardHasScope);
-
-    if (boardHasScope) {
-      expect(findButton().attributes('title')).toBe(__("This board's scope is reduced"));
-    } else {
-      expect(findButton().attributes('title')).toBe('');
-    }
   });
 });

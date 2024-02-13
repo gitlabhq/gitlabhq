@@ -13,8 +13,8 @@ import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_i
 import WorkItemLinkChildContents from '~/work_items/components/shared/work_item_link_child_contents.vue';
 import {
   WIDGET_TYPE_HIERARCHY,
-  TASK_TYPE_NAME,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WORK_ITEM_TYPE_VALUE_TASK,
 } from '~/work_items/constants';
 
 import {
@@ -31,6 +31,7 @@ jest.mock('~/alert');
 describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
+  const workItemFullPath = 'test-project-path';
   let getWorkItemTreeQueryHandler;
   let mutationChangeParentHandler;
 
@@ -47,7 +48,7 @@ describe('WorkItemLinkChild', () => {
     canUpdate = true,
     issuableGid = WORK_ITEM_ID,
     childItem = workItemTask,
-    workItemType = TASK_TYPE_NAME,
+    workItemType = WORK_ITEM_TYPE_VALUE_TASK,
     apolloProvider = null,
   } = {}) => {
     getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
@@ -67,6 +68,7 @@ describe('WorkItemLinkChild', () => {
         issuableGid,
         childItem,
         workItemType,
+        workItemFullPath,
       },
       mocks: {
         $toast,
@@ -90,8 +92,8 @@ describe('WorkItemLinkChild', () => {
       expect(findWorkItemLinkChildContents().props()).toEqual({
         childItem: workItemObjectiveWithChild,
         canUpdate: true,
-        showTaskIcon: false,
         showLabels: true,
+        workItemFullPath,
       });
     });
   });

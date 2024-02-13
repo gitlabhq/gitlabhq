@@ -4,7 +4,11 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rich text editor **(FREE ALL)**
+# Rich text editor
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5643) for [wikis](project/wiki/index.md#rich-text-editor) in GitLab 14.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371931) for editing issue descriptions in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `content_editor_on_issues`. Disabled by default.
@@ -12,8 +16,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407507) for epics in GitLab 16.1 with the same flag.
 > - Feature flag `content_editor_on_issues` enabled by default in GitLab 16.2.
 > - Feature flag `content_editor_on_issues` removed in GitLab 16.5.
-
-![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
 
 Rich text editor is available in:
 
@@ -48,6 +50,8 @@ If you want to enter Markdown source in the text box, return to using the plain 
 
 To switch to the plain text editor: In a text box, in the lower-left corner, select
 **Switch to plain text editing**.
+
+![Rich text editor in GitLab](img/rich_text_editor_01_v16_2.png)
 
 ## Compatibility with GitLab Flavored Markdown
 

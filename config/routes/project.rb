@@ -334,7 +334,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :search
           end
 
-          resources :deployments, only: [:index] do
+          resources :deployments, only: [:index, :show] do
             member do
               get :metrics
               get :additional_metrics
@@ -408,7 +408,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         # its preferable to keep it below all other project routes
         draw :repository
         draw :wiki
-        draw :gcp
 
         namespace :import do
           resource :jira, only: [:show], controller: :jira

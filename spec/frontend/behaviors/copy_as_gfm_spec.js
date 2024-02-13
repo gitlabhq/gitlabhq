@@ -1,6 +1,8 @@
 import waitForPromises from 'helpers/wait_for_promises';
 import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 
+jest.mock('~/emoji');
+
 describe('CopyAsGFM', () => {
   describe('CopyAsGFM.pasteGFM', () => {
     let target;
@@ -116,7 +118,7 @@ describe('CopyAsGFM', () => {
         window.getSelection = jest.fn(() => selection);
         await simulateCopy();
 
-        const expectedGFM = '1. List Item1\n1. List Item2';
+        const expectedGFM = '1. List Item1\n2. List Item2';
 
         expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
       });

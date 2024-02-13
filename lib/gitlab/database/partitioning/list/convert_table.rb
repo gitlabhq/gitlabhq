@@ -32,6 +32,14 @@ module Gitlab
           end
 
           def revert_preparation_for_partitioning
+            unless partitioning_constraint.present?
+              return Gitlab::AppLogger.warn <<~MSG
+                The partitioning constraint does not exist for: table: `#{table_name}`,
+                partitioning_column: #{partitioning_column}, parent_table_name: #{parent_table_name},
+                initial_partitioning_value: #{zero_partition_value}
+              MSG
+            end
+
             migration_context.remove_check_constraint(table_name, partitioning_constraint.name)
           end
 
@@ -54,13 +62,14 @@ module Gitlab
             # Attaching foreign keys handles cases where one or more foreign keys already exists, so it doesn't
             # need a check similar to the rest of this method
             attach_foreign_keys_to_parent
+            analyze_parent_table
           end
 
           def revert_partitioning
             migration_context.with_lock_retries(raise_on_exhaustion: true) do
               migration_context.execute(<<~SQL)
-              ALTER TABLE #{connection.quote_table_name(parent_table_name)}
-              DETACH PARTITION #{connection.quote_table_name(table_name)};
+                ALTER TABLE #{connection.quote_table_name(parent_table_name)}
+                DETACH PARTITION #{connection.quote_table_name(table_name)};
               SQL
 
               alter_sequences_sql = alter_sequence_statements(old_table: parent_table_name, new_table: table_name)
@@ -112,11 +121,11 @@ module Gitlab
             violation_messages = violating_constraints.map { |c| "#{c.name} on (#{c.column_names.join(', ')})" }
 
             raise UnableToPartition, <<~MSG
-            Constraints on #{table_name} are incompatible with partitioning on #{partitioning_column}
+              Constraints on #{table_name} are incompatible with partitioning on #{partitioning_column}
 
-            All primary key and unique constraints must include the partitioning column.
-            Violations:
-            #{violation_messages.join("\n")}
+              All primary key and unique constraints must include the partitioning column.
+              Violations:
+              #{violation_messages.join("\n")}
             MSG
           end
 
@@ -138,8 +147,8 @@ module Gitlab
             return if partitioning_constraint&.constraint_valid?
 
             raise UnableToPartition, <<~MSG
-            Table #{table_name} is not ready for partitioning.
-            Before partitioning, a check constraint must enforce that (#{partitioning_column} IN (#{zero_partition_value.join(',')}))
+              Table #{table_name} is not ready for partitioning.
+              Before partitioning, a check constraint must enforce that (#{partitioning_column} IN (#{zero_partition_value.join(',')}))
             MSG
           end
 
@@ -162,14 +171,14 @@ module Gitlab
             return if partitioning_constraint.present?
 
             raise UnableToPartition, <<~MSG
-            Error adding partitioning constraint `#{PARTITIONING_CONSTRAINT_NAME}` for `#{table_name}`
+              Error adding partitioning constraint `#{PARTITIONING_CONSTRAINT_NAME}` for `#{table_name}`
             MSG
           end
 
           def validate_partitioning_constraint_synchronously
             if partitioning_constraint.constraint_valid?
               return Gitlab::AppLogger.info <<~MSG
-              Nothing to do, the partitioning constraint exists and is valid for `#{table_name}`
+                Nothing to do, the partitioning constraint exists and is valid for `#{table_name}`
               MSG
             end
 
@@ -178,20 +187,20 @@ module Gitlab
             return if partitioning_constraint.constraint_valid?
 
             raise UnableToPartition, <<~MSG
-            Error validating partitioning constraint `#{partitioning_constraint.name}` for `#{table_name}`
+              Error validating partitioning constraint `#{partitioning_constraint.name}` for `#{table_name}`
             MSG
           end
 
           def create_parent_table
             migration_context.execute(<<~SQL)
-            CREATE TABLE IF NOT EXISTS #{quote_table_name(parent_table_name)} (
-                LIKE #{quote_table_name(table_name)} INCLUDING ALL
-            ) PARTITION BY LIST(#{quote_column_name(partitioning_column)})
+              CREATE TABLE IF NOT EXISTS #{quote_table_name(parent_table_name)} (
+                  LIKE #{quote_table_name(table_name)} INCLUDING ALL
+              ) PARTITION BY LIST(#{quote_column_name(partitioning_column)})
             SQL
           end
 
           def attach_foreign_keys_to_parent
-            migration_context.foreign_keys(table_name).each do |fk|
+            Gitlab::Database::PostgresForeignKey.by_constrained_table_name(table_name).not_inherited.each do |fk|
               # At this point no other connection knows about the parent table.
               # Thus the only contended lock in the following transaction is on fk.to_table.
               # So a deadlock is impossible.
@@ -200,14 +209,30 @@ module Gitlab
 
               # If we're rerunning this migration after a failure to acquire a lock, the foreign key might already exist
               # Don't try to recreate it in that case
-              if migration_context.foreign_keys(parent_table_name)
-                                  .any? { |p_fk| p_fk.options[:name] == fk.options[:name] }
-                next
-              end
+              next if Gitlab::Database::PostgresForeignKey
+                  .by_constrained_table_name(parent_table_name)
+                  .not_inherited
+                  .any? { |p_fk| p_fk.name == fk.name }
 
-              migration_context.with_lock_retries(raise_on_exhaustion: true) do
-                migration_context.add_foreign_key(parent_table_name, fk.to_table, **fk.options)
-              end
+              migration_context.add_concurrent_foreign_key(
+                parent_table_name,
+                fk.referenced_table_name,
+                name: fk.name,
+                column: fk.constrained_columns,
+                target_column: fk.referenced_columns,
+                on_delete: fk.on_delete_action == "no_action" ? nil : fk.on_delete_action.to_sym,
+                on_update: fk.on_update_action == "no_action" ? nil : fk.on_update_action.to_sym,
+                validate: true,
+                allow_partitioned: true
+              )
+            end
+          end
+
+          def analyze_parent_table
+            migration_context.disable_statement_timeout do
+              migration_context.execute(<<~SQL)
+                ANALYZE VERBOSE #{quote_table_name(parent_table_name)}
+              SQL
             end
           end
 
@@ -233,7 +258,7 @@ module Gitlab
               end
 
               statement_parts << <<~SQL.chomp
-              ALTER SEQUENCE #{quote_table_name(seq_name)} OWNED BY #{quote_table_name(new_table)}.#{quote_column_name(column_name)}
+                ALTER SEQUENCE #{quote_table_name(seq_name)} OWNED BY #{quote_table_name(new_table)}.#{quote_column_name(column_name)}
               SQL
 
               statement_parts.join(SQL_STATEMENT_SEPARATOR)
@@ -242,24 +267,24 @@ module Gitlab
 
           def remove_constraint_statement
             <<~SQL
-            ALTER TABLE #{quote_table_name(parent_table_name)}
-            DROP CONSTRAINT #{quote_table_name(partitioning_constraint.name)}
+              ALTER TABLE #{quote_table_name(parent_table_name)}
+              DROP CONSTRAINT #{quote_table_name(partitioning_constraint.name)}
             SQL
           end
 
           # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/373887
           def sequences_owned_by(table_name)
             sequence_data = connection.exec_query(<<~SQL, nil, [table_name])
-            SELECT seq_pg_class.relname AS seq_name,
-                   dep_pg_class.relname AS table_name,
-                   pg_attribute.attname AS col_name
-            FROM pg_class seq_pg_class
-                 INNER JOIN pg_depend ON seq_pg_class.oid = pg_depend.objid
-                 INNER JOIN pg_class dep_pg_class ON pg_depend.refobjid = dep_pg_class.oid
-                 INNER JOIN pg_attribute ON dep_pg_class.oid = pg_attribute.attrelid
-                                         AND pg_depend.refobjsubid = pg_attribute.attnum
-            WHERE seq_pg_class.relkind = 'S'
-              AND dep_pg_class.relname = $1
+              SELECT seq_pg_class.relname AS seq_name,
+                     dep_pg_class.relname AS table_name,
+                     pg_attribute.attname AS col_name
+              FROM pg_class seq_pg_class
+                   INNER JOIN pg_depend ON seq_pg_class.oid = pg_depend.objid
+                   INNER JOIN pg_class dep_pg_class ON pg_depend.refobjid = dep_pg_class.oid
+                   INNER JOIN pg_attribute ON dep_pg_class.oid = pg_attribute.attrelid
+                                           AND pg_depend.refobjsubid = pg_attribute.attnum
+              WHERE seq_pg_class.relkind = 'S'
+                AND dep_pg_class.relname = $1
             SQL
 
             sequence_data.map do |seq_info|
@@ -270,7 +295,7 @@ module Gitlab
 
           def table_owner(table_name)
             connection.select_value(<<~SQL, nil, [table_name])
-            SELECT tableowner FROM pg_tables WHERE tablename = $1
+              SELECT tableowner FROM pg_tables WHERE tablename = $1
             SQL
           end
 
@@ -281,7 +306,7 @@ module Gitlab
 
           def set_current_user_owns_table_statement(table_name)
             <<~SQL.chomp
-            ALTER TABLE #{connection.quote_table_name(table_name)} OWNER TO CURRENT_USER
+              ALTER TABLE #{connection.quote_table_name(table_name)} OWNER TO CURRENT_USER
             SQL
           end
 

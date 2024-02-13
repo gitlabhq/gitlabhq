@@ -55,23 +55,6 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, feature_category: 
         described_class.new.perform(project.id)
       end
 
-      context 'when increase_jira_import_issues_timeout feature flag is disabled' do
-        before do
-          stub_feature_flags(increase_jira_import_issues_timeout: false)
-        end
-
-        it 'does not provide a custom client to IssuesImporter' do
-          issue_importer = instance_double(Gitlab::JiraImport::IssuesImporter)
-          expect(Gitlab::JiraImport::IssuesImporter).to receive(:new).with(
-            instance_of(Project),
-            nil
-          ).and_return(issue_importer)
-          allow(issue_importer).to receive(:execute).and_return(job_waiter)
-
-          described_class.new.perform(project.id)
-        end
-      end
-
       context 'when start_at is nil' do
         it_behaves_like 'advance to next stage', :attachments
       end

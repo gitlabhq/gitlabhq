@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom password length limits **(FREE SELF)**
+# Custom password length limits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 By default, GitLab supports passwords with the following lengths:
 
@@ -17,7 +21,7 @@ during new user sign-ups and when an existing user performs a password reset.
 
 ## Modify minimum password length
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20661) in GitLab 12.6
 
 The user password length is set to a minimum of 8 characters by default.
 

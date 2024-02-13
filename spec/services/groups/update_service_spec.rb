@@ -150,29 +150,29 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
     context 'crm_enabled param' do
       context 'when no existing crm_settings' do
-        it 'when param not present, leave crm disabled' do
+        it 'when param not present, leave crm enabled' do
           params = {}
-
-          described_class.new(public_group, user, params).execute
-          updated_group = public_group.reload
-
-          expect(updated_group.crm_enabled?).to be_falsey
-        end
-
-        it 'when param set true, enables crm' do
-          params = { crm_enabled: true }
 
           described_class.new(public_group, user, params).execute
           updated_group = public_group.reload
 
           expect(updated_group.crm_enabled?).to be_truthy
         end
+
+        it 'when param set false, disables crm' do
+          params = { crm_enabled: false }
+
+          described_class.new(public_group, user, params).execute
+          updated_group = public_group.reload
+
+          expect(updated_group.crm_enabled?).to be_falsy
+        end
       end
 
       context 'with existing crm_settings' do
         it 'when param set true, enables crm' do
           params = { crm_enabled: true }
-          create(:crm_settings, group: public_group)
+          create(:crm_settings, group: public_group, enabled: false)
 
           described_class.new(public_group, user, params).execute
 
@@ -192,7 +192,7 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
 
         it 'when param not present, crm remains disabled' do
           params = {}
-          create(:crm_settings, group: public_group)
+          create(:crm_settings, group: public_group, enabled: false)
 
           described_class.new(public_group, user, params).execute
 
@@ -384,7 +384,41 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
 
     it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
       expect { service.execute }.not_to change { internal_group.emails_disabled }
+    end
+  end
+
+  context 'when updating #math_rendering_limits_enabled' do
+    let(:service) { described_class.new(internal_group, user, math_rendering_limits_enabled: false) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.math_rendering_limits_enabled }.to(false)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.math_rendering_limits_enabled }
+    end
+  end
+
+  context 'when updating #lock_math_rendering_limits_enabled' do
+    let(:service) { described_class.new(internal_group, user, lock_math_rendering_limits_enabled: true) }
+
+    it 'updates attribute' do
+      internal_group.add_member(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.lock_math_rendering_limits_enabled? }.to(true)
+    end
+
+    it 'does not update when not group owner' do
+      internal_group.add_member(user, Gitlab::Access::MAINTAINER)
+
+      expect { service.execute }.not_to change { internal_group.lock_math_rendering_limits_enabled? }
     end
   end
 
@@ -457,6 +491,8 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
       context 'when enabling the setting' do
         it 'creates the initial Namespaces::Descendants record' do
           expect { result }.to change { public_group.reload.namespace_descendants.present? }.from(false).to(true)
+
+          expect(public_group.namespace_descendants.outdated_at).to be_present
         end
       end
 

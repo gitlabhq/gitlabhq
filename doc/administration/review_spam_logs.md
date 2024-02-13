@@ -4,7 +4,11 @@ group: Anti-Abuse
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review spam logs **(FREE SELF)**
+# Review spam logs
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 GitLab tracks user activity and flags certain behavior for potential spam.
 
@@ -12,7 +16,7 @@ In the Admin Area, a GitLab administrator can view and resolve spam logs.
 
 ## Manage spam logs
 
-> **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
+> - **Trust user** [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131812) in GitLab 16.5.
 
 View and resolve spam logs to moderate user activity in your instance.
 

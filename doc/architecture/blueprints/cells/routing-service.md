@@ -2,6 +2,7 @@
 stage: core platform
 group: Tenant Scale
 description: 'Cells: Routing Service'
+status: accepted
 ---
 
 # Cells: Routing Service
@@ -28,6 +29,8 @@ For example:
     The choice is dependent on the best performing language, and the expected way and place of deployment of the routing layer.
     If it is required to make the service multi-cloud it might be required to deploy it to the CDN provider.
     Then the service needs to be written using a technology compatible with the CDN provider.
+
+    [ADR 001](decisions/001_routing_technology.md)
 
 1. **Cell discovery.**
 
@@ -398,7 +401,7 @@ For the above example:
 {
     "metadata": {
         "rule_id": "c9scvaiwj51a75kzoh917uwtnw8z4ebl",
-        "headers": { 
+        "headers": {
             "all_request_headers": "value"
         },
         "method": "GET",
@@ -763,15 +766,11 @@ sequenceDiagram
   due to low cardinality of sharding key. The sharding key would effectively be mapped
   into resource (organization, group, or project), and there's a finite amount of those.
 
-## Technology
-
-TBD
-
 ## Alternatives
 
 ### Buffering requests
 
-The [Stateless Router using Requests Buffering](proposal-stateless-router-with-buffering-requests.md)
+The [Stateless Router using Requests Buffering](rejected/proposal-stateless-router-with-buffering-requests.md)
 describes an approach where Cell answers with `X-Gitlab-Cell-Redirect` to redirect request to another Cell:
 
 - This is based on a need to buffer the whole request (headers + body) which is very memory intensive.
@@ -780,7 +779,7 @@ describes an approach where Cell answers with `X-Gitlab-Cell-Redirect` to redire
 
 ### Learn request
 
-The [Stateless Router using Routes Learning](proposal-stateless-router-with-routes-learning.md)
+The [Stateless Router using Routes Learning](rejected/proposal-stateless-router-with-routes-learning.md)
 describes an approach similar to the one in this document. Except the route rules and classification
 is done in a single go in a form of pre-flight check `/api/v4/internal/cells/learn`:
 

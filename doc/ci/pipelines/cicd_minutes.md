@@ -5,7 +5,11 @@ description: Calculations, quotas, purchase information.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Compute quota **(PREMIUM ALL)**
+# Compute quota
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" or "compute minutes" in GitLab 16.1.
 
@@ -13,7 +17,7 @@ NOTE:
 The term `CI/CD minutes` is being renamed to `compute minutes`. During this transition, you might see references in the UI and documentation to `CI/CD minutes`, `CI minutes`, `pipeline minutes`, `CI pipeline minutes`, `pipeline minutes quota`, `compute credits`, `compute units`, and `compute minutes`. For more information, see [epic 2150](https://gitlab.com/groups/gitlab-com/-/epics/2150).
 
 Administrators can limit the amount of time that projects can use to run jobs on
-[shared runners](../runners/runners_scope.md#shared-runners) each month. This limit
+[instance runners](../runners/runners_scope.md#instance-runners) each month. This limit
 is tracked with a compute quota.
 
 By default, one minute of execution time by a single job uses
@@ -47,7 +51,7 @@ The triggered downstream pipeline consumes compute minutes the same as other pip
 
 ## Set the compute quota for all namespaces
 
-> [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
+> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 By default, GitLab instances do not have a compute quota.
 The default value for the quota is `0`, which is unlimited.
@@ -69,7 +73,7 @@ If a quota is already defined for a specific namespace, this value does not chan
 
 ## Set the compute quota for a specific namespace
 
-> [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
+> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 You can override the global value and set a compute quota
 for a specific namespace.
@@ -102,7 +106,7 @@ Prerequisites:
 
 ### View Usage Quota Reports for a group
 
-> Displaying shared runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
+> - Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
 
 Prerequisites:
 
@@ -115,13 +119,13 @@ To view compute usage for your group:
 1. Select **Settings > Usage Quotas**.
 1. Select the **Pipelines** tab.
 
-The projects list shows projects with compute usage or shared runners usage
+The projects list shows projects with compute usage or instance runners usage
 in the current month only. The list includes all projects in the namespace and its
 subgroups, sorted in descending order of compute usage.
 
 ### View Usage Quota reports for a personal namespace
 
-> Displaying shared runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
+> - Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
 
 Prerequisites:
 
@@ -134,10 +138,14 @@ You can view the compute usage for a personal namespace:
 1. On the left sidebar, select **Usage Quotas**.
 
 The projects list shows [personal projects](../../user/project/working_with_projects.md#view-personal-projects)
-with compute usage or shared runners usage in the current month only. The list
+with compute usage or instance runners usage in the current month only. The list
 is sorted in descending order of compute usage.
 
-## Purchase additional compute minutes **(FREE SAAS)**
+## Purchase additional compute minutes
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 If you're using GitLab SaaS, you can purchase additional packs of compute minutes.
 These additional compute minutes:
@@ -160,7 +168,11 @@ Additional compute minutes bought on a trial subscription are available after th
 You can find pricing for additional compute minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
-### Purchase compute minutes for a group **(FREE SAAS)**
+### Purchase compute minutes for a group
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 Prerequisites:
 
@@ -179,7 +191,11 @@ so be sure to select the correct group.
 After your payment is processed, the additional compute minutes are added to your group
 namespace.
 
-### Purchase compute minutes for a personal namespace **(FREE SAAS)**
+### Purchase compute minutes for a personal namespace
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 Prerequisites:
 
@@ -205,7 +221,7 @@ GitLab uses this formula to calculate the compute usage of a job:
 Job duration * Cost factor
 ```
 
-- **Job duration**: The time, in seconds, that a job took to run on a shared runner,
+- **Job duration**: The time, in seconds, that a job took to run on a instance runner,
   not including time spent in the `created` or `pending` statuses.
 - [**Cost factor**](#cost-factor): A number based on project visibility.
 
@@ -225,7 +241,7 @@ can be higher than the end-to-end duration of a pipeline.
 
 ### Cost factor
 
-The cost factors for jobs running on shared runners on GitLab.com are:
+The cost factors for jobs running on instance runners on GitLab.com are:
 
 - `1` for internal, public, and private projects.
 - Exceptions for public projects:
@@ -241,8 +257,8 @@ The cost factors on self-managed instances are:
 
 #### Cost factor for community contributions to GitLab projects
 
-Community contributors can use up to 300,000 minutes on shared runners when contributing to open source projects
-maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://about.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on shared runners
+Community contributors can use up to 300,000 minutes on instance runners when contributing to open source projects
+maintained by GitLab. The maximum of 300,000 minutes would only be possible if contributing exclusively to projects [part of the GitLab product](https://handbook.gitlab.com/handbook/engineering/metrics/#projects-that-are-part-of-the-product). The total number of minutes available on instance runners
 is reduced by the compute minutes used by pipelines from other projects.
 The 300,000 minutes applies to all SaaS tiers, and the cost factor calculation is:
 
@@ -281,7 +297,7 @@ GitLab SaaS runners have different cost factors, depending on the runner type (L
 ### Monthly reset of compute usage
 
 On the first day of each calendar month, the accumulated compute usage is reset to `0`
-for all namespaces that use shared runners. This means your full quota is available, and
+for all namespaces that use instance runners. This means your full quota is available, and
 calculations start again from `0`.
 
 For example, if you have a monthly quota of `10,000` compute minutes:
@@ -311,7 +327,7 @@ Additional compute minutes are a one-time purchase and do not renew or refresh e
 When the compute quota is used for the current month, GitLab stops
 processing new jobs.
 
-- Any non-running job that should be picked by shared runners is automatically dropped.
+- Any non-running job that should be picked by instance runners is automatically dropped.
 - Any job being retried is automatically dropped.
 - Any running job can be dropped at any point if the overall namespace usage goes over-quota
   by a grace period.
@@ -333,7 +349,7 @@ On GitLab SaaS an in-app banner is displayed and an email notification sent to t
 In some cases, the quota limit is replaced by one of the following labels:
 
 - **Unlimited**: For namespaces with unlimited compute quota.
-- **Not supported**: For namespaces where active shared runners are not enabled.
+- **Not supported**: For namespaces where active instance runners are not enabled.
 
 ## Reduce compute quota usage
 
@@ -357,7 +373,11 @@ consumption for contributor fork projects, enabling more contributions.
 
 See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
-## Reset compute usage **(PREMIUM SELF)**
+## Reset compute usage
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 An administrator can reset the compute usage for a namespace for the current month.
 

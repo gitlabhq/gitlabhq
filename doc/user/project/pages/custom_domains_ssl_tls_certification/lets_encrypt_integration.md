@@ -5,9 +5,13 @@ group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Pages Let's Encrypt certificates **(FREE ALL)**
+# GitLab Pages Let's Encrypt certificates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28996) in GitLab 12.1.
 
 The GitLab Pages integration with Let's Encrypt (LE) allows you
 to use LE certificates for your Pages website with custom domains
@@ -18,7 +22,9 @@ GitLab does it for you, out-of-the-box.
 open source Certificate Authority.
 
 WARNING:
-This feature covers only certificates for **custom domains**, not the wildcard certificate required to run [Pages daemon](../../../../administration/pages/index.md) **(FREE SELF)**. Wildcard certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
+This feature covers only certificates for **custom domains**, not the wildcard certificate required to run
+[Pages daemon](../../../../administration/pages/index.md) (Self-managed, Free, Premium, and Ultimate only). Wildcard
+certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/3342).
 
 ## Prerequisites
 
@@ -64,7 +70,7 @@ associated Pages domain. GitLab also renews it automatically.
 
 ### Error "Something went wrong while obtaining the Let's Encrypt certificate"
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30146) in GitLab 13.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30146) in GitLab 13.0.
 
 If you get an error **Something went wrong while obtaining the Let's Encrypt certificate**, first, make sure that your pages site is set to "Everyone" in your project's **Settings > General > Visibility**. This allows the Let's Encrypt Servers reach your pages site. Once this is confirmed, you can try obtaining the certificate again by following these steps:
 

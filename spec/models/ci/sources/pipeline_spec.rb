@@ -44,12 +44,12 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
     let(:source_pipeline) { create(:ci_sources_pipeline, pipeline: new_pipeline) }
 
     before do
-      stub_current_partition_id
+      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
     end
 
     it 'assigns partition_id and source_partition_id from pipeline and source_job', :aggregate_failures do
-      expect(source_pipeline.partition_id).to eq(ci_testing_partition_id)
-      expect(source_pipeline.source_partition_id).to eq(ci_testing_partition_id)
+      expect(source_pipeline.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(source_pipeline.source_partition_id).to eq(ci_testing_partition_id_for_check_constraints)
     end
   end
 end

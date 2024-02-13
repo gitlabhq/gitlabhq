@@ -4,7 +4,11 @@ group: Pipeline Security
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Project CI/CD job token scope API **(FREE ALL)**
+# Project CI/CD job token scope API
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md)
 
@@ -14,7 +18,7 @@ The authenticated user must have at least the Maintainer role for the project.
 
 ## Get a project's CI/CD job token access settings
 
-Fetch the [CI/CD job token access settings](../ci/jobs/ci_job_token.md#configure-cicd-job-token-access) (job token scope) of a project.
+Fetch the [CI/CD job token access settings](../ci/jobs/ci_job_token.md#control-job-token-access-to-your-project) (job token scope) of a project.
 
 ```plaintext
 GET /projects/:id/job_token_scope
@@ -50,9 +54,9 @@ Example response:
 
 ## Patch a project's CI/CD job token access settings
 
-> **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
-Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#disable-the-job-token-scope-allowlist) (job token scope) of a project.
+Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) (job token scope) of a project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
@@ -79,7 +83,7 @@ curl --request PATCH \
 
 ## Get a project's CI/CD job token inbound allowlist
 
-Fetch the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) (job token scope) of a project.
+Fetch the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) (job token scope) of a project.
 
 ```plaintext
 GET /projects/:id/job_token_scope/allowlist
@@ -146,7 +150,7 @@ Example response:
 
 ## Add a project to a CI/CD job token inbound allowlist
 
-Add a project to the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
+Add a project to the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) of a project.
 
 ```plaintext
 POST /projects/:id/job_token_scope/allowlist
@@ -187,7 +191,7 @@ Example response:
 
 ## Remove a project from a CI/CD job token inbound allowlist
 
-Remove a project from the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#allow-access-to-your-project-with-a-job-token) of a project.
+Remove a project from the [CI/CD job token inbound allowlist](../ci/jobs/ci_job_token.md#add-a-project-to-the-job-token-allowlist) of a project.
 
 ```plaintext
 DELETE /projects/:id/job_token_scope/allowlist/:target_project_id

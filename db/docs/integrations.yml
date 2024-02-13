@@ -13,6 +13,7 @@ classes:
 - Integrations::BaseSlackNotification
 - Integrations::BaseSlashCommands
 - Integrations::BaseThirdPartyWiki
+- Integrations::BeyondIdentity
 - Integrations::Bugzilla
 - Integrations::Buildkite
 - Integrations::Campfire
@@ -26,8 +27,10 @@ classes:
 - Integrations::EmailsOnPush
 - Integrations::Ewm
 - Integrations::ExternalWiki
+- Integrations::GitGuardian
 - Integrations::Github
 - Integrations::GitlabSlackApplication
+- Integrations::GoogleCloudPlatform::ArtifactRegistry
 - Integrations::GooglePlay
 - Integrations::HangoutsChat
 - Integrations::Harbor

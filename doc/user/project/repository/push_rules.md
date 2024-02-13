@@ -4,9 +4,13 @@ group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Push rules **(PREMIUM ALL)**
+# Push rules
 
-> Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Maximum regular expression length for push rules [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/411901) from 255 to 511 characters in GitLab 16.3.
 
 Push rules are [pre-receive Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) you
 can enable in a user-friendly interface. Push rules give you more control over what
@@ -98,7 +102,7 @@ Use these rules for your commit messages.
 
 ## Reject commits that aren't DCO certified
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
 
 Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
 certify the contributor wrote, or has the right to submit, the code contributed in that commit.
@@ -149,14 +153,14 @@ Use these rules to prevent unintended consequences.
 Use these rules to validate files contained in the commit.
 
 - **Prevent pushing secret files**: Files must not contain [secrets](#prevent-pushing-secrets-to-the-repository).
-- **Prohibited file names**: Files that do not exist in the repository
-  must not match the regular expression. To allow all file names, leave empty. See [common examples](#prohibit-files-by-name).
+- **Prohibited filenames**: Files that do not exist in the repository
+  must not match the regular expression. To allow all filenames, leave empty. See [common examples](#prohibit-files-by-name).
 - **Maximum file size**: Added or updated files must not exceed this
   file size (in MB). To allow files of any size, set to `0`. Files tracked by Git LFS are exempted.
 
 ### Prevent pushing secrets to the repository
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 Never commit secrets, such as credential files and SSH private keys, to a version control
 system. In GitLab, you can use a predefined list of files to block those files from a
@@ -231,14 +235,14 @@ Files blocked by this rule are listed below. For a complete list of criteria, re
 
 ### Prohibit files by name
 
-> Moved to GitLab Premium in 13.9.
+> - Moved to GitLab Premium in 13.9.
 
 In Git, filenames include both the file's name, and all directories preceding the name.
 When you `git push`, each filename in the push is compared to the regular expression
-in **Prohibited file names**.
+in **Prohibited filenames**.
 
-The regular expression in your **Prohibited file names** push rule can contain multiple,
-independent matches to exclude. You can match file names broadly to any location in
+The regular expression in your **Prohibited filenames** push rule can contain multiple,
+independent matches to exclude. You can match filenames broadly to any location in
 your repository, or restrict only in certain locations. Filename matches can also
 be partial, and exclude file types by extension.
 
@@ -297,7 +301,7 @@ In GitLab 13.10, if a project has the **Reject unsigned commits** push rule, the
 create commits through the GitLab Web IDE.
 
 To allow committing through the Web IDE on a project with this push rule, a GitLab administrator
-must disable the feature flag `reject_unsigned_commits_by_gitlab`. [with a flag](../../../administration/feature_flags.md)
+must disable the feature flag `reject_unsigned_commits_by_gitlab` [with a flag](../../../administration/feature_flags.md).
 
 ```ruby
 Feature.disable(:reject_unsigned_commits_by_gitlab)

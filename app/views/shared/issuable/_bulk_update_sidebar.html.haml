@@ -9,7 +9,7 @@
         .filter-item.inline.update-issues-btn.float-left
           = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { type: 'submit', disabled: true, class: 'js-update-selected-issues' }) do
             = _('Update all')
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-bulk-update-menu-hide float-right' }) do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-bulk-update-menu-hide gl-float-right' }) do
           = _('Cancel')
       - if params[:state] != 'merged'
         .block

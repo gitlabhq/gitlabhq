@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce package registry storage **(FREE ALL)**
+# Reduce package registry storage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Without cleanup, package registries become large over time. When a large number of packages and
 their assets are added:
@@ -56,7 +60,7 @@ The package assets are permanently deleted.
 
 ## Cleanup policy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346153) in GitLab 15.2.
 
 Depending on the number of packages to remove, the process of manually deleting the packages can take a long time to finish.
 A cleanup policy defines a set of rules that, applied to a project, defines which package assets you can automatically delete.

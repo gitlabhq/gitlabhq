@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# How to set up Consul **(PREMIUM SELF)**
+# How to set up Consul
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 A Consul cluster consists of both
 [server and client agents](https://developer.hashicorp.com/consul/docs/agent).

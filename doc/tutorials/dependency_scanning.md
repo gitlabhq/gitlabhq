@@ -4,7 +4,11 @@ group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up dependency scanning **(ULTIMATE SAAS)**
+# Tutorial: Set up dependency scanning
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 Dependency Scanning can automatically find security vulnerabilities in your software dependencies
 while you're developing and testing your applications. For example, dependency scanning lets you
@@ -25,8 +29,8 @@ To set up dependency scanning:
 
 ## Before you begin
 
-Make sure you have GitPod enabled. GitPod is an on-demand cloud development
-environment. For details, see [GitPod](../integration/gitpod.md). Alternatively you can use your
+Make sure you have Gitpod enabled. Gitpod is an on-demand cloud development
+environment. For details, see [Gitpod](../integration/gitpod.md). Alternatively you can use your
 own development setup. In this case you need to have Yarn and Node.js installed.
 
 ## Create example application files
@@ -139,8 +143,8 @@ need to upgrade the `fastify` package.
 To fix the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Edit > GitPod** and open
-   GitPod in a new tab.
+1. In the upper right, select **Edit > Gitpod** and open
+   Gitpod in a new tab.
 1. If you are prompted to, select **Continue with GitLab**, then select **Authorize**.
 1. On the **New Workspace** page, select **Continue**.
 1. In the **Terminal** pane, enter the following command to create a new branch.
@@ -185,7 +189,7 @@ vulnerabilities in a merge request, add a dependency known to have vulnerabiliti
 
 To add a new vulnerability:
 
-1. Switch to the GitPod tab. If it's timed out, select **Open Workspace**.
+1. Switch to the Gitpod tab. If it's timed out, select **Open Workspace**.
 1. In the **Terminal** pane run the following command to update the local `main` branch:
 
    ```plaintext

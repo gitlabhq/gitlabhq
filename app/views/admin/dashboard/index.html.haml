@@ -8,6 +8,10 @@
 = render_if_exists 'shared/qrtly_reconciliation_alert'
 = render 'admin/dashboard/security_newsletter_callout'
 
+- if show_transition_to_jihu_callout?
+  .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,
+    user_preferred_language: current_user.preferred_language} }
+
 - if @notices
   - @notices.each do |notice|
     .js-vue-alert{ 'v-cloak': true, data: { variant: notice[:type],
@@ -22,29 +26,29 @@
 .admin-dashboard.gl-mt-3
   .h3.gl-mb-5.gl-mt-0= _('Instance overview')
   .row
-    - component_params = { body_options: { class: 'gl-display-flex gl-justify-content-space-between gl-align-items-center gl-p-6' },
-                           footer_options: { class: 'gl-bg-transparent'} }
+    - component_params = { body_options: { class: 'gl-display-flex gl-justify-content-space-between gl-align-items-flex-start' } }
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do
-          %span
-            .d-flex.align-items-center
-              = sprite_icon('project', size: 16, css_class: 'gl-text-gray-700')
-              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Project)
-            .gl-mt-3.text-uppercase= s_('AdminArea|Projects')
+          %div
+            .gl-text-gray-700
+              = sprite_icon('project', size: 16)
+              = s_('AdminArea|Projects')
+            %h3.gl-heading-2{ class: 'gl-mb-0!' }= approximate_count_with_delimiters(@counts, Project)
           = render Pajamas::ButtonComponent.new(href: new_project_path) do
             = s_('AdminArea|New project')
         - c.with_footer do
-          .d-flex.align-items-center
+          .gl-display-flex.gl-align-items-center
             = link_to(s_('AdminArea|View latest projects'), admin_projects_path(sort: 'created_desc'))
-            = sprite_icon('chevron-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do
-          %span
-            .d-flex.align-items-center
-              = sprite_icon('users', size: 16, css_class: 'gl-text-gray-700')
-              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, User)
+          %div
+            .gl-text-gray-700
+              = sprite_icon('users', size: 16)
+              = s_('AdminArea|Users')
+            .gl-display-flex.gl-align-items-center
+              %h3.gl-heading-2{ class: 'gl-mb-0!' }= approximate_count_with_delimiters(@counts, User)
               %span.gl-outline-0.gl-ml-3{ tabindex: "0", data: { container: "body",
                 toggle: "popover",
                 placement: "top",
@@ -53,36 +57,34 @@
                 content: s_("AdminArea|All users created in the instance, including users who are not %{billable_users_link_start}billable users%{billable_users_link_end}.").html_safe % { billable_users_link_start: billable_users_link_start, billable_users_link_end: '</a>'.html_safe },
               } }
                 = sprite_icon('question-o', size: 16, css_class: 'gl-text-blue-600')
-            .gl-mt-3.text-uppercase
-              = s_('AdminArea|Users')
-              = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "text-capitalize gl-ml-2")
           = render Pajamas::ButtonComponent.new(href: new_admin_user_path) do
             = s_('AdminArea|New user')
         - c.with_footer do
-          .d-flex.align-items-center
+          .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-2
             = link_to(s_('AdminArea|View latest users'), admin_users_path({ sort: 'created_desc' }))
-            = sprite_icon('chevron-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
+            %span.gl-text-secondary= "/"
+            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-weight-normal gl-text-capitalize")
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do
-          %span
-            .d-flex.align-items-center
-              = sprite_icon('group', size: 16, css_class: 'gl-text-gray-700')
-              %h3.gl-m-0.gl-ml-3= approximate_count_with_delimiters(@counts, Group)
-            .gl-mt-3.text-uppercase= s_('AdminArea|Groups')
+          %div
+            .gl-text-gray-700
+              = sprite_icon('group', size: 16)
+              = s_('AdminArea|Groups')
+            .gl-display-flex.gl-align-items-center
+              %h3.gl-heading-2{ class: 'gl-mb-0!' }= approximate_count_with_delimiters(@counts, Group)
           = render Pajamas::ButtonComponent.new(href: new_admin_group_path) do
             = s_('AdminArea|New group')
         - c.with_footer do
-          .d-flex.align-items-center
+          .gl-display-flex.gl-align-items-center
             = link_to(s_('AdminArea|View latest groups'), admin_groups_path(sort: 'created_desc'))
-            = sprite_icon('chevron-right', size: 12, css_class: 'gl-text-gray-700 gl-ml-2')
   .row
     .col-md-4.gl-mb-6
       #js-admin-statistics-container
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
         - c.with_body do
-          %h4= s_('AdminArea|Features')
+          %h4.gl-heading-4= s_('AdminArea|Features')
           = feature_entry(_('Sign up'),
             href: general_admin_application_settings_path(anchor: 'js-signup-settings'),
             enabled: allow_signup?)
@@ -115,38 +117,38 @@
             enabled: Gitlab.config.pages.enabled,
             doc_href: help_instance_configuration_url)
 
-          = feature_entry(_('Shared Runners'),
+          = feature_entry(_('Instance Runners'),
             href: admin_runners_path,
             enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
         - c.with_body do
-          %h4
+          %h4.gl-heading-4
             = s_('AdminArea|Components')
             - if show_version_check?
-              .float-right
+              .gl-float-right
                 .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
                 = link_to(sprite_icon('question-o'), "https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md", class: 'gl-ml-2', target: '_blank', rel: 'noopener noreferrer')
           %p
             = link_to _('GitLab'), general_admin_application_settings_path
-            %span.float-right
+            %span.gl-float-right
               = link_to_version
           %p
             = _('GitLab Shell')
-            %span.float-right
+            %span.gl-float-right
               = Gitlab::Shell.version
           %p
             = _('GitLab Workhorse')
-            %span.float-right
+            %span.gl-float-right
               = gitlab_workhorse_version
           %p
             = _('GitLab API')
-            %span.float-right
+            %span.gl-float-right
               = API::API::version
           - if Gitlab.config.pages.enabled
             %p
               = _('GitLab Pages')
-              %span.float-right
+              %span.gl-float-right
                 = Gitlab::Pages::VERSION
           - if Gitlab::Kas.enabled?
             %p
@@ -158,20 +160,20 @@
 
           %p
             = _('Ruby')
-            %span.float-right
+            %span.gl-float-right
               #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
           %p
             = _('Rails')
-            %span.float-right
+            %span.gl-float-right
               #{Rails::VERSION::STRING}
           - database_versions.each do |database_name, database|
             %p
               #{database[:adapter_name]} (#{database_name})
-              %span.float-right
+              %span.gl-float-right
                 = database[:version]
           %p
             = _('Redis')
-            %span.float-right
+            %span.gl-float-right
               = @redis_versions&.join(", ")
           %p
             = link_to _("Gitaly Servers"), admin_gitaly_servers_path
@@ -179,7 +181,7 @@
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
         - c.with_body do
-          %h4= s_('AdminArea|Latest projects')
+          %h4.gl-heading-4= s_('AdminArea|Latest projects')
           - @projects.each do |project|
             .gl-display-flex.gl-py-3
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
@@ -189,7 +191,7 @@
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
         - c.with_body do
-          %h4= s_('AdminArea|Latest users')
+          %h4.gl-heading-4= s_('AdminArea|Latest users')
           - @users.each do |user|
             .gl-display-flex.gl-py-3
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis
@@ -200,7 +202,7 @@
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new do |c|
         - c.with_body do
-          %h4= s_('AdminArea|Latest groups')
+          %h4.gl-heading-4= s_('AdminArea|Latest groups')
           - @groups.each do |group|
             .gl-display-flex.gl-py-3
               .gl-mr-auto.gl-overflow-hidden.gl-text-overflow-ellipsis

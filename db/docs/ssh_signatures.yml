@@ -4,9 +4,16 @@ classes:
 - CommitSignatures::SshSignature
 feature_categories:
 - source_code_management
-description: >
-  The verification status for commits which are signed by SSH keys. The actual signature
-  is part of the commit body and is stored in Gitaly.
+description: The verification status for commits which are signed by SSH keys. The
+  actual signature is part of the commit body and is stored in Gitaly.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87962
 milestone: '15.1'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

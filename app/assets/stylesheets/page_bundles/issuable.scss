@@ -98,10 +98,10 @@
 
 .merge-request-notification-toggle {
   .gl-toggle {
-    @include gl-ml-auto;
+    margin-left: auto;
   }
 
   .gl-toggle-label {
-    @include gl-font-weight-normal;
+    font-weight: $gl-font-weight-normal;
   }
 }

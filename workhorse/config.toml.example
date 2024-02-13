@@ -24,6 +24,9 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   '''
   google_json_key_location = "PATH TO JSON KEY FILE"
 
+[metadata]
+  zip_reader_limit_bytes = 104857600
+
 [image_resizer]
   max_scaler_procs = 4 # Recommendation: CPUs / 2
   max_filesize = 250000

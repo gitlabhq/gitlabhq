@@ -181,6 +181,21 @@ In table form:
 
 The same applies to `cableBackend` and `cableSocket`.
 
+## Metadata options
+
+Include the following options in the `[metadata]` section:
+
+| Setting                  | Type  | Default value     | Description                                                                                                                                      |
+| ------------------------ | ----- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `zip_reader_limit_bytes` | bytes | 104857600 (100 MB) | The optional number of bytes to limit the zip reader to. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439016) in GitLab 16.9. |
+
+For example:
+
+```toml
+[metadata]
+zip_reader_limit_bytes = 209715200 # 200 MB
+```
+
 ## Error tracking
 
 GitLab-Workhorse supports remote error tracking with [Sentry](https://sentry.io).

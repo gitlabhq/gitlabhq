@@ -232,7 +232,13 @@ module Gitlab
           url = Gitlab::CurrentSettings.current_application_settings.error_tracking_api_url ||
             'http://localhost:8080'
 
-          Gitlab::UrlBlocker.validate!(url, schemes: %w[http https], allow_localhost: true)
+          Gitlab::HTTP_V2::UrlBlocker.validate!(
+            url,
+            schemes: %w[http https],
+            allow_localhost: true,
+            deny_all_requests_except_allowed: Gitlab::CurrentSettings.deny_all_requests_except_allowed?,
+            outbound_local_requests_allowlist: Gitlab::CurrentSettings.outbound_local_requests_whitelist # rubocop:disable Naming/InclusiveLanguage -- existing setting
+          )
 
           URI(url)
         end

@@ -125,7 +125,7 @@ You can observe the behavior of this queue using Gitaly logs and Prometheus. For
 
 ## Adaptive concurrency limiting
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10734) in GitLab 16.6.
 
 Gitaly supports two concurrency limits:
 

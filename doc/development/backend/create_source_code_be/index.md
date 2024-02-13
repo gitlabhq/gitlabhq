@@ -7,16 +7,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 # Source Code Management
 
 The Source Code Management team is responsible for all backend aspects of the product categories
-that fall under the [Source Code group](https://about.gitlab.com/handbook/product/categories/#source-code-group)
-of the [Create stage](https://about.gitlab.com/handbook/product/categories/#create-stage)
-of the [DevOps lifecycle](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+that fall under the [Source Code group](https://handbook.gitlab.com/handbook/product/categories/#source-code-group)
+of the [Create stage](https://handbook.gitlab.com/handbook/product/categories/#create-stage)
+of the [DevOps lifecycle](https://handbook.gitlab.com/handbook/product/categories/#devops-stages).
 
 The Source Code Management team interfaces with the Gitaly and Code Review teams and works across three codebases: Workhorse, GitLab Shell and GitLab Rails.
 
 ## Source Code Features Reference
 
 Features owned by the Source Code Management group are listed on the
-[Features by Group Page](https://about.gitlab.com/handbook/product/categories/features/#createsource-code-group).
+[Features by Group Page](https://handbook.gitlab.com/handbook/product/categories/features/#create-source-code-group).
 
 ### Code Owners
 

@@ -121,7 +121,7 @@ module Feature
     #    in production environment, but raise exception in development or tests.
     # 2. The `default_enabled_if_undefined:` is tech debt related to Gitaly flags
     #    and should not be used outside of Gitaly's `lib/feature/gitaly.rb`
-    def enabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
+    def enabled?(key, thing = nil, type: nil, default_enabled_if_undefined: nil)
       thing = sanitized_thing(thing)
 
       check_feature_flags_definition!(key, thing, type)
@@ -138,7 +138,7 @@ module Feature
       feature_value
     end
 
-    def disabled?(key, thing = nil, type: :development, default_enabled_if_undefined: nil)
+    def disabled?(key, thing = nil, type: nil, default_enabled_if_undefined: nil)
       thing = sanitized_thing(thing)
 
       # we need to make different method calls to make it easy to mock / define expectations in test mode

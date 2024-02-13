@@ -70,8 +70,7 @@ of possible security breaches in our code:
 - SQL injections
 
 Remember to run
-[SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md)
-**(ULTIMATE ALL)** on your project (or at least the
+[SAST](../../user/application_security/sast/index.md) and [Dependency Scanning](../../user/application_security/dependency_scanning/index.md) on your project (or at least the
 [`gosec` analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)),
 and to follow our [Security requirements](../code_review.md#security).
 
@@ -81,7 +80,7 @@ Web servers can take advantages of middlewares like [Secure](https://github.com/
 
 Many of our projects are too small to have full-time maintainers. That's why we
 have a shared pool of Go reviewers at GitLab. To find a reviewer, use the
-["Go" section](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_go)
+["Go" section](https://handbook.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_go)
 of the "GitLab" project on the Engineering Projects
 page in the handbook.
 
@@ -355,7 +354,7 @@ and [`gitaly`](https://gitlab.com/gitlab-org/gitaly). LabKit exports three relat
 - [`gitlab.com/gitlab-org/labkit/correlation`](https://gitlab.com/gitlab-org/labkit/tree/master/correlation):
   for propagating and extracting correlation ids between services.
 - [`gitlab.com/gitlab-org/labkit/tracing`](https://gitlab.com/gitlab-org/labkit/tree/master/tracing):
-  for instrumenting Go libraries for distributed tracing.  
+  for instrumenting Go libraries for distributed tracing.
 - [`gitlab.com/gitlab-org/labkit/log`](https://gitlab.com/gitlab-org/labkit/tree/master/log):
   for structured logging using Logrus.
 

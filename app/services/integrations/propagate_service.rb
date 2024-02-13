@@ -8,7 +8,7 @@ module Integrations
       @integration = integration
     end
 
-    def propagate
+    def execute
       if integration.instance_level?
         update_inherited_integrations
         create_integration_for_groups_without_integration
@@ -18,10 +18,6 @@ module Integrations
         create_integration_for_groups_without_integration_belonging_to_group
         create_integration_for_projects_without_integration_belonging_to_group
       end
-    end
-
-    def self.propagate(integration)
-      new(integration).propagate
     end
 
     private

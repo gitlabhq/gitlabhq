@@ -61,7 +61,8 @@ module Groups
         params[:namespace_descendants_attributes] = {
           traversal_ids: group.traversal_ids,
           all_project_ids: [],
-          self_and_descendant_group_ids: []
+          self_and_descendant_group_ids: [],
+          outdated_at: Time.current
         }
       else
         return unless group.namespace_descendants
@@ -139,6 +140,11 @@ module Groups
       unless can?(current_user, :update_default_branch_protection, group)
         params.delete(:default_branch_protection)
         params.delete(:default_branch_protection_defaults)
+      end
+
+      unless can?(current_user, :admin_namespace, group)
+        params.delete(:math_rendering_limits_enabled)
+        params.delete(:lock_math_rendering_limits_enabled)
       end
     end
 

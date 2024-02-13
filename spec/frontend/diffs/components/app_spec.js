@@ -8,6 +8,7 @@ import Vuex from 'vuex';
 import getMRCodequalityAndSecurityReports from '~/diffs/components/graphql/get_mr_codequality_and_security_reports.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import { TEST_HOST } from 'spec/test_constants';
 
 import App from '~/diffs/components/app.vue';
@@ -22,6 +23,7 @@ import CollapsedFilesWarning from '~/diffs/components/collapsed_files_warning.vu
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 import eventHub from '~/diffs/event_hub';
+import notesEventHub from '~/notes/event_hub';
 import { EVT_DISCUSSIONS_ASSIGNED } from '~/diffs/constants';
 
 import axios from '~/lib/utils/axios_utils';
@@ -46,8 +48,6 @@ const ENDPOINT_METADATA_URL = `${TEST_HOST}/diff/endpointMetadata`;
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
-
-Vue.config.ignoredElements = ['copy-code'];
 
 function getCollapsedFilesWarning(wrapper) {
   return wrapper.findComponent(CollapsedFilesWarning);
@@ -197,10 +197,6 @@ describe('diffs/components/app', () => {
   describe('codequality diff', () => {
     it('does not fetch code quality data on FOSS', () => {
       createComponent();
-      jest.spyOn(wrapper.vm, 'fetchCodequality');
-      wrapper.vm.fetchData(false);
-
-      expect(wrapper.vm.fetchCodequality).not.toHaveBeenCalled();
       expect(codeQualityAndSastQueryHandlerSuccess).not.toHaveBeenCalled();
     });
   });
@@ -892,6 +888,40 @@ describe('diffs/components/app', () => {
 
     it('shows a spinner during loading', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+    });
+  });
+
+  describe('draft comments', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
+    });
+
+    describe('when adding a new comment to an existing review', () => {
+      it('sends the correct tracking event', () => {
+        createComponent({ shouldShow: true });
+        notesEventHub.$emit('noteFormAddToReview', { name: 'noteFormAddToReview' });
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'merge_request_click_add_to_review_on_changes_tab',
+          expect.any(Object),
+        );
+      });
+    });
+
+    describe('when adding a comment to a new review', () => {
+      it('sends the correct tracking event', () => {
+        createComponent({ shouldShow: true });
+        notesEventHub.$emit('noteFormStartReview', { name: 'noteFormStartReview' });
+
+        expect(trackingSpy).toHaveBeenCalledWith(
+          undefined,
+          'merge_request_click_start_review_on_changes_tab',
+          expect.any(Object),
+        );
+      });
     });
   });
 });

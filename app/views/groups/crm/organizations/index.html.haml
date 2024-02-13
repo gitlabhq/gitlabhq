@@ -1,8 +1,17 @@
 - breadcrumb_title _('Customer relations organizations')
 - page_title _('Customer relations organizations')
 - @content_wrapper_class = "gl-relative"
+- add_page_specific_style 'page_bundles/paginated_table'
 
 = content_for :after_content do
   #js-crm-form-portal
 
-#js-crm-organizations-app{ data: { base_path: group_crm_organizations_path(@group), can_admin_crm_organization: can?(current_user, :admin_crm_organization, @group).to_s, group_full_path: @group.full_path, group_id: @group.id, group_issues_path: issues_group_path(@group), text_query: params[:search] } }
+#js-crm-organizations-app{ data: {
+  base_path: group_crm_organizations_path(@group),
+  can_admin_crm_organization: can?(current_user, :admin_crm_organization, @group).to_s,
+  can_read_crm_contact: can?(current_user, :read_crm_contact, @group).to_s,
+  group_contacts_path: group_crm_contacts_path(@group),
+  group_full_path: @group.full_path,
+  group_id: @group.id,
+  group_issues_path: issues_group_path(@group),
+  text_query: params[:search] } }

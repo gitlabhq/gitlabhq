@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Diffs::OverflowWarningComponent, type: :component do
+RSpec.describe Diffs::OverflowWarningComponent, type: :component, feature_category: :source_code_management do
   include RepoHelpers
 
   subject(:component) do
@@ -26,7 +26,11 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
   let(:expected_button_classes) do
-    "btn gl-alert-action btn-default gl-button btn-default-secondary"
+    "gl-button btn btn-md btn-default"
+  end
+
+  def parse_link(html)
+    Nokogiri::HTML5.fragment(html).at_css("a")
   end
 
   describe "rendered component" do
@@ -42,25 +46,21 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
       it { is_expected.to include(component.message) }
 
       it "links to the diff" do
-        expect(component.diff_link).to eq(
-          ActionController::Base.helpers.link_to(
-            _("Plain diff"),
-            project_commit_path(project, commit, format: :diff),
-            class: expected_button_classes
-          )
-        )
+        link = parse_link(component.diff_link)
+
+        expect(link.text.strip).to eq(_("Plain diff"))
+        expect(link["href"]).to eq(project_commit_path(project, commit, format: :diff))
+        expect(link["class"]).to include(expected_button_classes)
 
         is_expected.to include(component.diff_link)
       end
 
       it "links to the patch" do
-        expect(component.patch_link).to eq(
-          ActionController::Base.helpers.link_to(
-            _("Email patch"),
-            project_commit_path(project, commit, format: :patch),
-            class: expected_button_classes
-          )
-        )
+        link = parse_link(component.patch_link)
+
+        expect(link.text.strip).to eq(_("Email patch"))
+        expect(link["href"]).to eq(project_commit_path(project, commit, format: :patch))
+        expect(link["class"]).to include(expected_button_classes)
 
         is_expected.to include(component.patch_link)
       end
@@ -76,25 +76,21 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
       it { is_expected.to include(component.message) }
 
       it "links to the diff" do
-        expect(component.diff_link).to eq(
-          ActionController::Base.helpers.link_to(
-            _("Plain diff"),
-            merge_request_path(merge_request, format: :diff),
-            class: expected_button_classes
-          )
-        )
+        link = parse_link(component.diff_link)
+
+        expect(link.text.strip).to eq(_("Plain diff"))
+        expect(link["href"]).to eq(merge_request_path(merge_request, format: :diff))
+        expect(link["class"]).to include(expected_button_classes)
 
         is_expected.to include(component.diff_link)
       end
 
       it "links to the patch" do
-        expect(component.patch_link).to eq(
-          ActionController::Base.helpers.link_to(
-            _("Email patch"),
-            merge_request_path(merge_request, format: :patch),
-            class: expected_button_classes
-          )
-        )
+        link = parse_link(component.patch_link)
+
+        expect(link.text.strip).to eq(_("Email patch"))
+        expect(link["href"]).to eq(merge_request_path(merge_request, format: :patch))
+        expect(link["class"]).to include(expected_button_classes)
 
         is_expected.to include(component.patch_link)
       end
@@ -128,8 +124,8 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
     subject { component.diff_link }
 
     before do
-      allow(component).to receive(:link_to).and_return("foo")
       render_inline component
+      allow(component).to receive(:link_button_to).and_return("foo")
     end
 
     it "is a string when on a commit page" do
@@ -157,8 +153,8 @@ RSpec.describe Diffs::OverflowWarningComponent, type: :component do
     subject { component.patch_link }
 
     before do
-      allow(component).to receive(:link_to).and_return("foo")
       render_inline component
+      allow(component).to receive(:link_button_to).and_return("foo")
     end
 
     it "is a string when on a commit page" do

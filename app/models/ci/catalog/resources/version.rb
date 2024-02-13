@@ -23,12 +23,12 @@ module Ci
 
         scope :order_by_created_at_asc, -> { reorder(created_at: :asc) }
         scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
-        # After we denormalize the `released_at` column, we won't need to use `joins(:release)` and keyset_order_*
-        scope :order_by_released_at_asc, -> { joins(:release).keyset_order_by_released_at_asc }
-        scope :order_by_released_at_desc, -> { joins(:release).keyset_order_by_released_at_desc }
+        scope :order_by_released_at_asc, -> { reorder(released_at: :asc) }
+        scope :order_by_released_at_desc, -> { reorder(released_at: :desc) }
 
-        delegate :sha, :released_at, :author_id, to: :release
+        delegate :sha, :author_id, to: :release
 
+        before_create :sync_with_release
         after_destroy :update_catalog_resource
         after_save :update_catalog_resource
 
@@ -51,57 +51,14 @@ module Ci
             catalog_resources_table = Ci::Catalog::Resource.arel_table
             catalog_resources_id_list = catalog_resources.map { |resource| "(#{resource.id})" }.join(',')
 
-            # We need to use an alias for the `releases` table here so that it does not
-            # conflict with `joins(:release)` in the `order_by_released_at_*` scope.
             join_query = Ci::Catalog::Resources::Version
               .where(catalog_resources_table[:id].eq(arel_table[:catalog_resource_id]))
-              .joins("INNER JOIN releases AS rel ON rel.id = #{table_name}.release_id")
-              .order(Arel.sql('rel.released_at DESC'))
+              .order_by_released_at_desc
               .limit(1)
 
             Ci::Catalog::Resources::Version
               .from("(VALUES #{catalog_resources_id_list}) #{catalog_resources_table.name} (id)")
               .joins("INNER JOIN LATERAL (#{join_query.to_sql}) #{table_name} ON TRUE")
-          end
-
-          def keyset_order_by_released_at_asc
-            keyset_order = Gitlab::Pagination::Keyset::Order.build([
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: :released_at,
-                column_expression: Release.arel_table[:released_at],
-                order_expression: Release.arel_table[:released_at].asc,
-                nullable: :not_nullable,
-                distinct: false
-              ),
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: :id,
-                order_expression: Release.arel_table[:id].asc,
-                nullable: :not_nullable,
-                distinct: true
-              )
-            ])
-
-            reorder(keyset_order)
-          end
-
-          def keyset_order_by_released_at_desc
-            keyset_order = Gitlab::Pagination::Keyset::Order.build([
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: :released_at,
-                column_expression: Release.arel_table[:released_at],
-                order_expression: Release.arel_table[:released_at].desc,
-                nullable: :not_nullable,
-                distinct: false
-              ),
-              Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                attribute_name: :id,
-                order_expression: Release.arel_table[:id].desc,
-                nullable: :not_nullable,
-                distinct: true
-              )
-            ])
-
-            reorder(keyset_order)
           end
 
           def order_by(order)
@@ -131,7 +88,18 @@ module Ci
           project.repository.tree(sha).readme
         end
 
+        def sync_with_release!
+          sync_with_release
+          save!
+        end
+
         private
+
+        # This column is denormalized from `releases`. It is first synced when a new version
+        # is created. Any updates to the column are synced via Release model callback.
+        def sync_with_release
+          self.released_at = release.released_at
+        end
 
         def update_catalog_resource
           catalog_resource.update_latest_released_at!

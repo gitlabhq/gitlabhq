@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Enterprise users **(PREMIUM SAAS)**
+# Enterprise users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
 
 Enterprise users have user accounts that are administered by an organization that
 has [verified their email domain](../project/pages/custom_domains_ssl_tls_certification/index.md) and purchased a [GitLab subscription](../../subscriptions/index.md).
@@ -14,7 +18,7 @@ next to their names on the [Members list](../group/index.md#filter-and-sort-memb
 
 ## Automatic claims of enterprise users
 
-A user is automatically claimed as an enterprise user of a group when **all** of the following conditions are met:
+A user is automatically claimed as an enterprise user of a group when **both** of the following conditions are met:
 
 1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
 1. The user account meets at least **one** of the following conditions:
@@ -176,7 +180,7 @@ These enterprise user-specific actions are in addition to the standard
 
 ### Disable two-factor authentication
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
 
 Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
 
@@ -191,7 +195,7 @@ To disable 2FA:
 
 A SAML identity administrator can configure the SAML response to set:
 
-- Whether enterprise users can create groups.
+- Whether enterprise users can create new top-level groups.
 - The maximum number of personal projects enterprise users can create.
 
 For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/index.md#configure-enterprise-user-settings-from-saml-response).
@@ -200,17 +204,22 @@ For more information, see how to [configure enterprise user settings from the SA
 
 A top-level group Owner can [set up verified domains to bypass confirmation emails](../group/saml_sso/index.md#bypass-user-email-confirmation-with-verified-domains).
 
-### Get users' email addresses through the API
+### Get users' email addresses
 
-A top-level group Owner can use the [group and project members API](../../api/members.md) to access
-users' information. For users provisioned by the group with [SCIM](../group/saml_sso/scim_setup.md),
-this information includes users' email addresses.
+A top-level group Owner can use the UI to access enterprise users' email addresses:
 
-[Issue 391453](https://gitlab.com/gitlab-org/gitlab/-/issues/391453) proposes to change the criteria for access to email addresses from provisioned users to enterprise users.
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Manage > Members**.
+1. In the group or project members page, hover over the enterprise user's name to
+   see their email address.
+
+A group Owner can also use the [group and project members API](../../api/members.md)
+to access users' information. For enterprise users of the group, this information
+includes users' email addresses.
 
 ### Remove enterprise management features from an account
 
-Changing an enterprise user's primary email to any email with a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
+Changing an enterprise user's primary email to an email from a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
 
 ## Troubleshooting
 

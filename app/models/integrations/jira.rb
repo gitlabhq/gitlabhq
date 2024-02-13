@@ -243,8 +243,8 @@ module Integrations
         }
       ]
 
-      # Jira issues is currently only configurable on the project level.
-      if project_level?
+      # Currently, Jira issues are only configurable at the project and group levels.
+      unless instance_level?
         sections.push({
           type: SECTION_TYPE_JIRA_ISSUES,
           title: _('Issues'),
@@ -406,6 +406,10 @@ module Integrations
 
     def avatar_url
       ActionController::Base.helpers.image_path('illustrations/third-party-logos/integrations-logos/jira.svg')
+    end
+
+    def testable?
+      group_level? || project_level?
     end
 
     private

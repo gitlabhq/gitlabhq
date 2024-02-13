@@ -172,7 +172,7 @@ To return to the standard development mode:
 
 ### 8. Babel polyfills
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28837) in GitLab 12.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28837) in GitLab 12.8.
 
 GitLab has enabled the Babel `preset-env` option
 [`useBuiltIns: 'usage'`](https://babeljs.io/docs/en/babel-preset-env#usebuiltins-usage).

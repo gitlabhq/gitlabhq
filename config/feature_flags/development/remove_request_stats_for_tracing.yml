@@ -1,8 +1,0 @@
----
-name: remove_request_stats_for_tracing
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133951
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428041
-milestone: '16.5'
-type: development
-group: group::code review
-default_enabled: false

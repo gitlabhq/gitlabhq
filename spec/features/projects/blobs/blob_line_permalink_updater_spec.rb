@@ -55,50 +55,10 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
     end
 
     describe 'Click "Blame" button' do
-      context 'when redirect_with_ref_type is disabled' do
-        before do
-          stub_feature_flags(redirect_with_ref_type: false)
-        end
-
-        it 'works with no initial line number fragment hash' do
-          visit_blob
-
-          expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path))))
-        end
-
-        it 'maintains intitial fragment hash' do
-          fragment = "L3"
-
-          visit_blob(fragment)
-
-          expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: fragment)))
-        end
-
-        it 'changes fragment hash if line number clicked' do
-          visit_blob
-
-          find('#L3').click
-          find("#L5").click
-
-          expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
-        end
-
-        it 'with initial fragment hash, changes fragment hash if line number clicked' do
-          fragment = "L1"
-
-          visit_blob(fragment)
-
-          find('#L3').click
-          find("#L5").click
-
-          expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
-        end
-      end
-
       it 'works with no initial line number fragment hash' do
         visit_blob
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), ref_type: 'heads')))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path))))
       end
 
       it 'maintains intitial fragment hash' do
@@ -106,7 +66,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
 
         visit_blob(fragment)
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), ref_type: 'heads', anchor: fragment)))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: fragment)))
       end
 
       it 'changes fragment hash if line number clicked' do
@@ -115,7 +75,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), ref_type: 'heads', anchor: "L5")))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
       end
 
       it 'with initial fragment hash, changes fragment hash if line number clicked' do
@@ -126,7 +86,7 @@ RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, fe
         find('#L3').click
         find("#L5").click
 
-        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), ref_type: 'heads', anchor: "L5")))
+        expect(find('.js-blob-blame-link')['href']).to eq(get_absolute_url(project_blame_path(project, tree_join('master', path), anchor: "L5")))
       end
     end
   end

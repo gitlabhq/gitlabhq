@@ -128,7 +128,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
                                         "tag was not found",
                                         Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
 
-        expect { client.find_tag('v1.0.0') }.to raise_error(Gitlab::Git::UnknownRef, 'tag does not exist: v1.0.0')
+        expect { client.find_tag('v1.0.0') }.to raise_error(Gitlab::Git::ReferenceNotFoundError,
+                                                            'tag does not exist: v1.0.0')
       end
     end
   end

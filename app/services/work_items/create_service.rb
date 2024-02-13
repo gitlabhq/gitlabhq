@@ -16,8 +16,8 @@ module WorkItems
       @widget_params = widget_params
     end
 
-    def execute
-      result = super
+    def execute(skip_system_notes: false)
+      result = skip_system_notes? ? super(skip_system_notes: true) : super
       return result if result.error?
 
       work_item = result[:issue]
@@ -53,6 +53,21 @@ module WorkItems
       end
     end
 
+    def prepare_create_params(work_item)
+      execute_widgets(
+        work_item: work_item,
+        callback: :prepare_create_params,
+        widget_params: @widget_params,
+        service_params: params
+      )
+
+      super
+    end
+
+    def parent
+      container
+    end
+
     private
 
     override :handle_quick_actions
@@ -70,6 +85,10 @@ module WorkItems
 
     def payload(work_item)
       { work_item: work_item }
+    end
+
+    def skip_system_notes?
+      false
     end
   end
 end

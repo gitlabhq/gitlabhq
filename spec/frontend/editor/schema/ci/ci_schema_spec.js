@@ -42,6 +42,7 @@ import WorkflowAutoCancelOnJobFailureYaml from './yaml_tests/positive_tests/work
 import WorkflowAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/workflow/auto_cancel/on_new_commit.yml';
 import WorkflowRulesAutoCancelOnJobFailureYaml from './yaml_tests/positive_tests/workflow/rules/auto_cancel/on_job_failure.yml';
 import WorkflowRulesAutoCancelOnNewCommitYaml from './yaml_tests/positive_tests/workflow/rules/auto_cancel/on_new_commit.yml';
+import StagesYaml from './yaml_tests/positive_tests/stages.yml';
 
 // YAML NEGATIVE TEST
 import ArtifactsNegativeYaml from './yaml_tests/negative_tests/artifacts.yml';
@@ -72,6 +73,7 @@ import WorkflowAutoCancelOnJobFailureNegativeYaml from './yaml_tests/negative_te
 import WorkflowAutoCancelOnNewCommitNegativeYaml from './yaml_tests/negative_tests/workflow/auto_cancel/on_new_commit.yml';
 import WorkflowRulesAutoCancelOnJobFailureNegativeYaml from './yaml_tests/negative_tests/workflow/rules/auto_cancel/on_job_failure.yml';
 import WorkflowRulesAutoCancelOnNewCommitNegativeYaml from './yaml_tests/negative_tests/workflow/rules/auto_cancel/on_new_commit.yml';
+import StagesNegativeYaml from './yaml_tests/negative_tests/stages.yml';
 
 const ajv = new Ajv({
   strictTypes: false,
@@ -119,6 +121,7 @@ describe('positive tests', () => {
       WorkflowAutoCancelOnNewCommitYaml,
       WorkflowRulesAutoCancelOnJobFailureYaml,
       WorkflowRulesAutoCancelOnNewCommitYaml,
+      StagesYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a
@@ -168,6 +171,7 @@ describe('negative tests', () => {
       WorkflowAutoCancelOnNewCommitNegativeYaml,
       WorkflowRulesAutoCancelOnJobFailureNegativeYaml,
       WorkflowRulesAutoCancelOnNewCommitNegativeYaml,
+      StagesNegativeYaml,
     }),
   )('schema validates %s', (_, input) => {
     // We construct a new "JSON" from each main key that is inside a

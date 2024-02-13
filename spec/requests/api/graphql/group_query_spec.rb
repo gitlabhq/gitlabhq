@@ -217,5 +217,33 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
         expect(graphql_data['group']).to be_nil
       end
     end
+
+    describe 'maxAccessLevel' do
+      let(:current_user) { user1 }
+
+      it 'returns access level of the current user in the group' do
+        private_group.add_owner(user1)
+
+        post_graphql(group_query(private_group), current_user: current_user)
+
+        expect(graphql_data_at(:group, :maxAccessLevel, :integerValue)).to eq(Gitlab::Access::OWNER)
+      end
+
+      shared_examples 'public group in which the user has no membership' do
+        it 'returns no access' do
+          post_graphql(group_query(public_group), current_user: current_user)
+
+          expect(graphql_data_at(:group, :maxAccessLevel, :integerValue)).to eq(Gitlab::Access::NO_ACCESS)
+        end
+      end
+
+      it_behaves_like 'public group in which the user has no membership'
+
+      context 'when the user is not authenticated' do
+        let(:current_user) { nil }
+
+        it_behaves_like 'public group in which the user has no membership'
+      end
+    end
   end
 end

@@ -1,45 +1,41 @@
 <script>
-import { GlLoadingIcon } from '@gitlab/ui';
-import LineHighlighter from '~/blob/line_highlighter';
-import eventHub from '~/notes/event_hub';
-import languageLoader from '~/content_editor/services/highlight_js_language_loader';
-import addBlobLinksTracking from '~/blob/blob_links_tracking';
+import { debounce } from 'lodash';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
-import axios from '~/lib/utils/axios_utils';
-import {
-  EVENT_ACTION,
-  EVENT_LABEL_VIEWER,
-  EVENT_LABEL_FALLBACK,
-  ROUGE_TO_HLJS_LANGUAGE_MAP,
-  LINES_PER_CHUNK,
-  LEGACY_FALLBACKS,
-  CODEOWNERS_FILE_NAME,
-  CODEOWNERS_LANGUAGE,
-  SVELTE_LANGUAGE,
-} from './constants';
-import Chunk from './components/chunk.vue';
-import { registerPlugins } from './plugins/index';
+import addBlobLinksTracking from '~/blob/blob_links_tracking';
+import LineHighlighter from '~/blob/line_highlighter';
+import { EVENT_ACTION, EVENT_LABEL_VIEWER, CODEOWNERS_FILE_NAME } from './constants';
+import Chunk from './components/chunk_new.vue';
+import Blame from './components/blame_info.vue';
+import { calculateBlameOffset, shouldRender, toggleBlameClasses } from './utils';
+import blameDataQuery from './queries/blame_data.query.graphql';
 
-/*
- * This component is optimized to handle source code with many lines of code by splitting source code into chunks of 70 lines of code,
- * we highlight and display the 1st chunk (L1-70) to the user as quickly as possible.
- *
- * The rest of the lines (L71+) is rendered once the browser goes into an idle state (requestIdleCallback).
- * Each chunk is self-contained, this ensures when for example the width of a container on line 1000 changes,
- * it does not trigger a repaint on a parent element that wraps all 1000 lines.
- */
 export default {
   name: 'SourceViewer',
   components: {
-    GlLoadingIcon,
     Chunk,
+    Blame,
     CodeownersValidation: () => import('ee_component/blob/components/codeowners_validation.vue'),
+  },
+  directives: {
+    SafeHtml,
   },
   mixins: [Tracking.mixin()],
   props: {
     blob: {
       type: Object,
       required: true,
+    },
+    chunks: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    showBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     projectPath: {
       type: String,
@@ -52,249 +48,123 @@ export default {
   },
   data() {
     return {
-      languageDefinition: null,
-      content: this.blob.rawTextBlob,
-      hljs: null,
-      firstChunk: null,
-      chunks: {},
-      isLoading: true,
-      lineHighlighter: null,
+      lineHighlighter: new LineHighlighter(),
+      blameData: [],
+      renderedChunks: [],
     };
   },
   computed: {
-    isLfsBlob() {
-      const { storedExternally, externalStorage, simpleViewer } = this.blob;
+    blameInfo() {
+      return this.blameData.reduce((result, blame, index) => {
+        if (shouldRender(this.blameData, index)) {
+          result.push({
+            ...blame,
+            blameOffset: calculateBlameOffset(blame.lineno, index),
+          });
+        }
 
-      return storedExternally && externalStorage === 'lfs' && simpleViewer?.fileType === 'text';
-    },
-    splitContent() {
-      return this.content.split(/\r?\n/);
-    },
-    language() {
-      if (this.blob.name && this.blob.name.endsWith(`.${SVELTE_LANGUAGE}`)) {
-        // override for svelte files until https://github.com/rouge-ruby/rouge/issues/1717 is resolved
-        return SVELTE_LANGUAGE;
-      }
-      if (this.isCodeownersFile) {
-        // override for codeowners files
-        return this.$options.codeownersLanguage;
-      }
-
-      return ROUGE_TO_HLJS_LANGUAGE_MAP[this.blob.language?.toLowerCase()];
-    },
-    lineNumbers() {
-      return this.splitContent.length;
-    },
-    unsupportedLanguage() {
-      const supportedLanguages = Object.keys(languageLoader);
-      const unsupportedLanguage =
-        !supportedLanguages.includes(this.language) &&
-        !supportedLanguages.includes(this.blob.language?.toLowerCase());
-
-      return LEGACY_FALLBACKS.includes(this.language) || unsupportedLanguage;
-    },
-    totalChunks() {
-      return Object.keys(this.chunks).length;
+        return result;
+      }, []);
     },
     isCodeownersFile() {
       return this.blob.name === CODEOWNERS_FILE_NAME;
     },
   },
-  async created() {
-    if (this.isLfsBlob) {
-      await axios
-        .get(this.blob.externalStorageUrl || this.blob.rawPath)
-        .then((result) => {
-          this.content = result.data;
-        })
-        .catch(() => this.$emit('error'));
-    }
-
+  watch: {
+    showBlame: {
+      handler(isVisible) {
+        toggleBlameClasses(this.blameData, isVisible);
+        this.requestBlameInfo(this.renderedChunks[0]);
+      },
+      immediate: true,
+    },
+    blameData: {
+      handler(blameData) {
+        if (!this.showBlame) return;
+        toggleBlameClasses(blameData, true);
+      },
+      immediate: true,
+    },
+  },
+  created() {
+    this.handleAppear = debounce(this.handleChunkAppear, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+    this.track(EVENT_ACTION, { label: EVENT_LABEL_VIEWER, property: this.blob.language });
     addBlobLinksTracking();
-    this.trackEvent(EVENT_LABEL_VIEWER);
-
-    if (this.unsupportedLanguage) {
-      this.handleUnsupportedLanguage();
-      return;
-    }
-
-    this.generateFirstChunk();
-    this.hljs = await this.loadHighlightJS();
-
-    if (this.language) {
-      this.languageDefinition = await this.loadLanguage();
-    }
-
-    // Highlight the first chunk as soon as highlight.js is available
-    this.highlightChunk(null, true);
-
-    window.requestIdleCallback(async () => {
-      // Generate the remaining chunks once the browser idles to ensure the browser resources are spent on the most important things first
-      this.generateRemainingChunks();
-      this.isLoading = false;
-      await this.$nextTick();
-      this.selectLine();
-    });
+  },
+  mounted() {
+    this.selectLine();
   },
   methods: {
-    trackEvent(label) {
-      this.track(EVENT_ACTION, { label, property: this.blob.language });
-    },
-    handleUnsupportedLanguage() {
-      this.trackEvent(EVENT_LABEL_FALLBACK);
-      this.$emit('error');
-    },
-    generateFirstChunk() {
-      const lines = this.splitContent.splice(0, LINES_PER_CHUNK);
-      this.firstChunk = this.createChunk(lines);
-    },
-    generateRemainingChunks() {
-      const result = {};
-      for (let i = 0; i < this.splitContent.length; i += LINES_PER_CHUNK) {
-        const chunkIndex = Math.floor(i / LINES_PER_CHUNK);
-        const lines = this.splitContent.slice(i, i + LINES_PER_CHUNK);
-        result[chunkIndex] = this.createChunk(lines, i + LINES_PER_CHUNK);
-      }
+    async handleChunkAppear(chunkIndex, handleOverlappingChunk = true) {
+      if (!this.renderedChunks.includes(chunkIndex)) {
+        this.renderedChunks.push(chunkIndex);
+        await this.requestBlameInfo(chunkIndex);
 
-      this.chunks = result;
-    },
-    createChunk(lines, startingFrom = 0) {
-      return {
-        content: lines.join('\n'),
-        startingFrom,
-        totalLines: lines.length,
-        language: this.language,
-        isHighlighted: false,
-      };
-    },
-    highlightChunk(index, isFirstChunk) {
-      const chunk = isFirstChunk ? this.firstChunk : this.chunks[index];
-
-      if (chunk.isHighlighted) {
-        return;
-      }
-
-      const { highlightedContent, language } = this.highlight(chunk.content, this.language);
-
-      Object.assign(chunk, { language, content: highlightedContent, isHighlighted: true });
-
-      this.selectLine();
-
-      this.$nextTick(() => eventHub.$emit('showBlobInteractionZones', this.blob.path));
-    },
-    highlight(content, language) {
-      let detectedLanguage = language;
-      let highlightedContent;
-      if (this.hljs) {
-        registerPlugins(this.hljs, this.blob.fileType, this.content);
-        if (!detectedLanguage) {
-          const hljsHighlightAuto = this.hljs.highlightAuto(content);
-          highlightedContent = hljsHighlightAuto.value;
-          detectedLanguage = hljsHighlightAuto.language;
-        } else if (this.languageDefinition) {
-          highlightedContent = this.hljs.highlight(content, { language: this.language }).value;
+        if (chunkIndex > 0 && handleOverlappingChunk) {
+          // request the blame information for overlapping chunk incase it is visible in the DOM
+          this.handleChunkAppear(chunkIndex - 1, false);
         }
       }
-
-      return { highlightedContent, language: detectedLanguage };
     },
-    loadHighlightJS() {
-      // If no language can be mapped to highlight.js we load all common languages else we load only the core (smallest footprint)
-      return !this.language ? import('highlight.js/lib/common') : import('highlight.js/lib/core');
-    },
-    async loadSubLanguages(languageDefinition) {
-      if (!languageDefinition?.contains) return;
+    async requestBlameInfo(chunkIndex) {
+      const chunk = this.chunks[chunkIndex];
+      if (!this.showBlame || !chunk) return;
 
-      // generate list of languages to load
-      const languages = new Set(
-        languageDefinition.contains
-          .filter((component) => Boolean(component.subLanguage))
-          .map((component) => component.subLanguage),
-      );
+      const { data } = await this.$apollo.query({
+        query: blameDataQuery,
+        variables: {
+          ref: this.currentRef,
+          fullPath: this.projectPath,
+          filePath: this.blob.path,
+          fromLine: chunk.startingFrom + 1,
+          toLine: chunk.startingFrom + chunk.totalLines,
+        },
+      });
 
-      if (languageDefinition.subLanguage) {
-        languages.add(languageDefinition.subLanguage);
-      }
-
-      // load all sub-languages at once
-      await Promise.all(
-        [...languages].map(async (subLanguage) => {
-          const subLanguageDefinition = await languageLoader[subLanguage]();
-          this.hljs.registerLanguage(subLanguage, subLanguageDefinition.default);
-        }),
-      );
-    },
-    async loadLanguage() {
-      let languageDefinition;
-
-      try {
-        languageDefinition = await languageLoader[this.language]();
-        this.hljs.registerLanguage(this.language, languageDefinition.default);
-
-        await this.loadSubLanguages(this.hljs.getLanguage(this.language));
-      } catch (message) {
-        this.$emit('error', message);
-      }
-
-      return languageDefinition;
+      const blob = data?.project?.repository?.blobs?.nodes[0];
+      const blameGroups = blob?.blame?.groups;
+      const isDuplicate = this.blameData.includes(blameGroups[0]);
+      if (blameGroups && !isDuplicate) this.blameData.push(...blameGroups);
     },
     async selectLine() {
-      if (!this.lineHighlighter) {
-        this.lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
-      }
       await this.$nextTick();
-      const scrollEnabled = false;
-      this.lineHighlighter.highlightHash(this.$route.hash, scrollEnabled);
+      this.lineHighlighter.highlightHash(this.$route.hash);
     },
   },
   userColorScheme: window.gon.user_color_scheme,
-  currentlySelectedLine: null,
-  codeownersLanguage: CODEOWNERS_LANGUAGE,
 };
 </script>
-<template>
-  <div
-    class="file-content code js-syntax-highlight blob-content gl-display-flex gl-flex-direction-column gl-overflow-auto"
-    :class="$options.userColorScheme"
-    data-type="simple"
-    :data-path="blob.path"
-    data-testid="blob-viewer-file-content"
-  >
-    <codeowners-validation
-      v-if="isCodeownersFile"
-      class="gl-text-black-normal"
-      :current-ref="currentRef"
-      :project-path="projectPath"
-      :file-path="blob.path"
-    />
-    <chunk
-      v-if="firstChunk"
-      :lines="firstChunk.lines"
-      :total-lines="firstChunk.totalLines"
-      :content="firstChunk.content"
-      :starting-from="firstChunk.startingFrom"
-      :is-highlighted="firstChunk.isHighlighted"
-      is-first-chunk
-      :language="firstChunk.language"
-      :blame-path="blob.blamePath"
-    />
 
-    <gl-loading-icon v-if="isLoading" size="sm" class="gl-my-5" />
-    <template v-else>
+<template>
+  <div class="gl-display-flex">
+    <blame v-if="showBlame && blameInfo.length" :blame-info="blameInfo" />
+
+    <div
+      class="file-content code js-syntax-highlight blob-content gl-display-flex gl-flex-direction-column gl-overflow-auto gl-w-full blob-viewer"
+      :class="$options.userColorScheme"
+      data-type="simple"
+      :data-path="blob.path"
+      data-testid="blob-viewer-file-content"
+    >
+      <codeowners-validation
+        v-if="isCodeownersFile"
+        class="gl-text-black-normal"
+        :current-ref="currentRef"
+        :project-path="projectPath"
+        :file-path="blob.path"
+      />
       <chunk
-        v-for="(chunk, key, index) in chunks"
-        :key="key"
-        :lines="chunk.lines"
-        :content="chunk.content"
+        v-for="(chunk, index) in chunks"
+        :key="index"
+        :chunk-index="index"
+        :is-highlighted="Boolean(chunk.isHighlighted)"
+        :raw-content="chunk.rawContent"
+        :highlighted-content="chunk.highlightedContent"
         :total-lines="chunk.totalLines"
         :starting-from="chunk.startingFrom"
-        :is-highlighted="chunk.isHighlighted"
-        :chunk-index="index"
-        :language="chunk.language"
         :blame-path="blob.blamePath"
-        :total-chunks="totalChunks"
-        @appear="highlightChunk"
+        @appear="() => handleAppear(index)"
       />
-    </template>
+    </div>
   </div>
 </template>

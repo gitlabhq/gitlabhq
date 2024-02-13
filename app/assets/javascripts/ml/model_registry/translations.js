@@ -3,7 +3,6 @@ import { __, s__, n__, sprintf } from '~/locale';
 export const MODEL_DETAILS_TAB_LABEL = s__('MlModelRegistry|Details');
 export const MODEL_OTHER_VERSIONS_TAB_LABEL = s__('MlModelRegistry|Versions');
 export const MODEL_CANDIDATES_TAB_LABEL = s__('MlModelRegistry|Version candidates');
-export const LATEST_VERSION_LABEL = s__('MlModelRegistry|Latest version');
 
 export const versionsCountLabel = (versionCount) =>
   n__('MlModelRegistry|%d version', 'MlModelRegistry|%d versions', versionCount);
@@ -44,6 +43,11 @@ export const NAME_LABEL = __('Name');
 
 export const makeLoadVersionsErrorMessage = (message) =>
   sprintf(s__('MlModelRegistry|Failed to load model versions with error: %{message}'), {
+    message,
+  });
+
+export const makeLoadModelErrorMessage = (message) =>
+  sprintf(s__('MlModelRegistry|Failed to load model with error: %{message}'), {
     message,
   });
 

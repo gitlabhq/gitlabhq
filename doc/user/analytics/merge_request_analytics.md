@@ -5,7 +5,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Merge request analytics **(PREMIUM ALL)**
+# Merge request analytics
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229045) in GitLab 13.3.
 > - Moved to GitLab Premium in 13.9.
@@ -66,7 +70,7 @@ the following information about each merge request:
 
 ## View average time between merge request creation and merge
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229389) in GitLab 13.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229389) in GitLab 13.9.
 
 The number in **Mean time to merge** shows the average time between when a merge request is
 created and when it's merged. Closed and not yet merged merge requests are not included.

@@ -77,7 +77,12 @@ export const MR_FILTER_OPTIONS = [
     ],
   },
   {
-    text: __('Comments'),
+    text: __('Comments (from bots)'),
+    value: 'bot_comments',
+    bot: true,
+  },
+  {
+    text: __('Comments (from users)'),
     value: 'comments',
     noteType: ['DiscussionNote', 'DiffNote'],
     individualNote: true,

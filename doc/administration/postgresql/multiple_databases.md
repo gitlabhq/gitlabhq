@@ -5,9 +5,13 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Multiple Databases **(FREE SELF)**
+# Multiple Databases
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6168) in GitLab 15.7.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6168) in GitLab 15.7.
 
 WARNING:
 This feature is not ready for production use
@@ -40,7 +44,7 @@ databases. Some examples:
 
 ## Migrate existing installations using a script
 
-> A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
+> - A script for migrating existing Linux package installations was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368729) in GitLab 16.8.
 
 NOTE:
 If something unexpected happens during the migration, it is safe to start over.

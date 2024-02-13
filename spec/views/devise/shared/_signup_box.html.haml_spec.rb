@@ -8,14 +8,14 @@ RSpec.describe 'devise/shared/_signup_box' do
 
   let(:translation_com) do
     s_("SignUp|By clicking %{button_text} or registering through a third party you "\
-      "accept the GitLab%{link_start} Terms of Use and acknowledge the Privacy Statement "\
-      "and Cookie Policy%{link_end}")
+      "accept the GitLab %{link_start}Terms of Use and acknowledge the Privacy Statement "\
+      "and Cookie Policy%{link_end}.")
   end
 
   let(:translation_non_com) do
     s_("SignUp|By clicking %{button_text} or registering through a third party you "\
-      "accept the%{link_start} Terms of Use and acknowledge the Privacy Statement and "\
-      "Cookie Policy%{link_end}")
+      "accept the %{link_start}Terms of Use and acknowledge the Privacy Statement and "\
+      "Cookie Policy%{link_end}.")
   end
 
   before do
@@ -26,6 +26,7 @@ RSpec.describe 'devise/shared/_signup_box' do
     allow(view).to receive(:terms_path).and_return(terms_path)
     allow(view).to receive(:button_text).and_return(button_text)
     allow(view).to receive(:signup_username_data_attributes).and_return({})
+    allow(view).to receive(:tracking_label).and_return('')
     stub_template 'devise/shared/_error_messages.html.haml' => ''
   end
 

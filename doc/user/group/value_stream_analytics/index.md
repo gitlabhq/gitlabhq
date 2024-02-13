@@ -4,7 +4,11 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Value stream analytics **(FREE ALL)**
+# Value stream analytics
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Value stream analytics measures the time it takes to go from an idea to production.
 
@@ -80,6 +84,7 @@ The following stage events are available:
 - Issue closed
 - Issue created
 - Issue first added to board
+- Issue first added to iteration
 - Issue first assigned
 - Issue first associated with milestone
 - Issue first mentioned
@@ -99,7 +104,11 @@ These events play a key role in the duration calculation, which is calculated by
 
 To learn what start and end events can be paired, see [Validating start and end events](../../../development/value_stream_analytics.md#validating-start-and-end-events).
 
-### How value stream analytics aggregates data **(PREMIUM ALL)**
+### How value stream analytics aggregates data
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335391) in GitLab 14.5.
 > - Filter by stop date toggle [added](https://gitlab.com/gitlab-org/gitlab/-/issues/352428) in GitLab 14.9
@@ -190,6 +199,28 @@ Keep in mind the following observations related to this example:
 - This example illustrates only **one cycle** of the seven stages. The value stream analytics dashboard
   shows the median time for multiple cycles.
 
+#### Cumulative label event duration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. These feature flags are disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. On GitLab.com, this feature is available.
+
+With this feature, value stream analytics measures the duration of repetitive events for label-based stages. You should configure label removal or addition events for both start and end events.
+
+For example, a stage tracks when the `in progress` label is added and removed, with the following times:
+
+- 9:00: label added.
+- 10:00: label removed.
+- 12:00: label added.
+- 14:00 label removed.
+
+With the original calculation method, the duration is five hours (from 9:00 to 14:00).
+With cumulative label event duration calculation enabled, the duration is three hours (9:00 to 10:00 and 12:00 to 14:00).
+
+NOTE:
+When you upgrade your GitLab version and enable the feature flag `enable_vsa_cumulative_label_duration_calculation`, existing label-based value stream analytics stages are automatically reaggregated using the background aggregation process.
+
 ### How value stream analytics identifies the production environment
 
 Value stream analytics identifies [production environments](../../../ci/environments/index.md#deployment-tier-of-environments) by looking for project
@@ -208,9 +239,7 @@ You can change the name of a project environment in your GitLab CI/CD configurat
 > - Horizontal stage path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12196) in 13.0 and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/323982) in 13.12
 > - Predefined date ranges dropdown list [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408656/) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. Disabled by default.
 > - Predefined date ranges dropdown list [enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433149) in GitLab 16.7.
-
-FLAG:
-On self-managed GitLab, by default the predefined date ranges dropdown list feature is available. To hide the feature per user, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `vsa_predefined_date_ranges`. On GitLab.com, this feature is available.
+> - Predefined date ranges dropdown list [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438051) in GitLab 16.9. Feature flag `vsa_predefined_date_ranges` removed.
 
 Prerequisites:
 
@@ -274,7 +303,11 @@ Value stream analytics includes the following lifecycle metrics:
 - **New issues**: Number of new issues created.
 - **Deploys**: Total number of deployments to production.
 
-### DORA metrics **(ULTIMATE ALL)**
+### DORA metrics
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340150) lead time for changes DORA metric in GitLab 14.5.
 > - DORA API-based deployment metrics for value stream analytics for groups were [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/337256) from GitLab Ultimate to GitLab Premium in GitLab 14.3.
@@ -353,7 +386,11 @@ NOTE:
 The date range selector filters items by the event time. The event time is when the
 selected stage finished for the given item.
 
-## View tasks by type **(PREMIUM ALL)**
+## View tasks by type
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The **Tasks by type** chart displays the cumulative number of issues and merge requests per day for your group.
 
@@ -370,11 +407,15 @@ To view tasks by type:
 1. To add or remove labels, select the **Settings** (**{settings}**) dropdown list
    and select or search for a label. By default the top group-level labels (maximum 10) are selected. You can select a maximum of 15 labels.
 
-## Create a value stream **(PREMIUM ALL)**
+## Create a value stream
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 ### Create a value stream with GitLab default stages
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221202) in GitLab 13.3
 
 When you create a value stream, you can use GitLab default stages and hide or re-order them. You can also
 create custom stages in addition to those provided in the default template.
@@ -431,9 +472,13 @@ In the example above, two independent value streams are set up for two teams tha
 
 The first value stream uses standard timestamp-based events for defining the stages. The second value stream uses label events.
 
-## Edit a value stream **(PREMIUM ALL)**
+## Edit a value stream
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267537) in GitLab 13.10.
 
 After you create a value stream, you can customize it to suit your purposes. To edit a value stream:
 
@@ -450,9 +495,13 @@ After you create a value stream, you can customize it to suit your purposes. To 
 1. Optional. To undo any modifications, select **Restore value stream defaults**.
 1. Select **Save Value Stream**.
 
-## Delete a value stream **(PREMIUM ALL)**
+## Delete a value stream
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/221205) in GitLab 13.4.
 
 To delete a custom value stream:
 
@@ -463,7 +512,11 @@ To delete a custom value stream:
 
 ![Delete value stream](img/delete_value_stream_v13_12.png "Deleting a custom value stream")
 
-## View number of days for a cycle to complete **(PREMIUM ALL)**
+## View number of days for a cycle to complete
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Chart median line [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/235455) in GitLab 13.4.
 > - Totals [replaced](https://gitlab.com/gitlab-org/gitlab/-/issues/262070) with averages in GitLab 13.12.

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# File system performance benchmarking **(FREE SELF)**
+# File system performance benchmarking
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 File system performance has a big impact on overall GitLab performance,
 especially for actions that read or write to Git repositories. This information

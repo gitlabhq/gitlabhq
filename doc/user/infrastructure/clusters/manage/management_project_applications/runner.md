@@ -4,9 +4,13 @@ group: Runner
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Install GitLab Runner with a cluster management project **(FREE ALL)**
+# Install GitLab Runner with a cluster management project
 
-> [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/project-templates/cluster-management/-/merge_requests/5) in GitLab 14.0.
 
 Assuming you already have a project created from a
 [management project template](../../../../../user/clusters/management_project_template.md), to install GitLab Runner you should

@@ -265,6 +265,40 @@ module Gitlab
           set_note_author
           # attachment is deprecated and note uploads are handled by Markdown uploader
           @relation_hash['attachment'] = nil
+
+          setup_diff_note
+        end
+
+        def setup_diff_note
+          return unless @relation_hash['type'] == 'DiffNote'
+
+          update_diff_note_position('position')
+          update_diff_note_position('original_position')
+          update_diff_note_position('change_position')
+        end
+
+        def update_diff_note_position(position)
+          return unless @relation_hash[position]
+          return unless @relation_hash.dig(position, 'line_range', 'start_line_code')
+
+          line_range = @relation_hash[position].delete('line_range')
+          start_lines = line_range['start_line_code'].split('_').map(&:to_i)
+          end_lines = line_range['end_line_code'].split('_').map(&:to_i)
+
+          @relation_hash[position]['line_range'] = {
+            'start' => {
+              'line_code' => line_range['start_line_code'],
+              'type' => line_range['start_line_type'],
+              'old_line' => start_lines[1] == 0 ? nil : start_lines[1].to_i,
+              'new_line' => start_lines[2] == 0 ? nil : start_lines[2].to_i
+            },
+            'end' => {
+              'line_code' => line_range['end_line_code'],
+              'type' => line_range['end_line_type'],
+              'old_line' => end_lines[1] == 0 ? nil : end_lines[1].to_i,
+              'new_line' => end_lines[2] == 0 ? nil : end_lines[2].to_i
+            }
+          }
         end
 
         # Sets the author for a note. If the user importing the project

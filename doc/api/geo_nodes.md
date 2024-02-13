@@ -4,7 +4,16 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo Nodes API **(PREMIUM SELF)**
+# Geo Nodes API (deprecated)
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+WARNING:
+The Geo Nodes API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369140) in GitLab 16.0
+and is planned for removal in v5 of the API. Use the [Geo Sites API](geo_sites.md) instead.
+This change is a breaking change.
 
 To interact with Geo node endpoints, you must authenticate yourself as an
 administrator.

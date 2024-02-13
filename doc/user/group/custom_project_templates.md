@@ -4,9 +4,13 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Custom group-level project templates **(PREMIUM ALL)**
+# Custom group-level project templates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/6861) in GitLab 11.6.
 
 When you create a project, you can [choose from a list of templates](../project/index.md).
 These templates, for things like GitLab Pages or Ruby, populate the new project with a copy of the files contained in the
@@ -98,14 +102,10 @@ and tags. For example, if the template contains a protected branch:
 - In the project created from the template, the branch allows _you_ to merge into
   the default branch.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Administrator cannot see custom group-level project templates when creating a project
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+Custom group-level project templates are only available to group members.
+If the administrator account you are using is not a member of a group,
+you can't access the templates. 

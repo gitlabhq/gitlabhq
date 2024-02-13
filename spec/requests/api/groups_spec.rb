@@ -595,6 +595,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['shared_projects']).to be_an Array
         expect(json_response['shared_projects'].length).to eq(1)
         expect(json_response['shared_projects'][0]['id']).to eq(project.id)
+        expect(json_response['math_rendering_limits_enabled']).to eq(group2.math_rendering_limits_enabled?)
       end
 
       it "returns one of user1's groups without projects when with_projects option is set to false", :aggregate_failures do
@@ -916,7 +917,9 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             subgroup_creation_level: "maintainer",
             default_branch_protection: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS,
             prevent_sharing_groups_outside_hierarchy: true,
-            avatar: fixture_file_upload(file_path)
+            avatar: fixture_file_upload(file_path),
+            math_rendering_limits_enabled: false,
+            lock_math_rendering_limits_enabled: true
           }
         )
 
@@ -942,7 +945,8 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response['shared_projects'].length).to eq(0)
         expect(json_response['default_branch_protection']).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
         expect(json_response['avatar_url']).to end_with('dk.png')
-        expect(json_response['prevent_sharing_groups_outside_hierarchy']).to eq(true)
+        expect(json_response['math_rendering_limits_enabled']).to eq(false)
+        expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
       end
 
       it 'removes the group avatar', :aggregate_failures do
@@ -987,6 +991,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
+          end
+        end
+      end
+
+      context 'updating the `enabled_git_access_protocol` attribute' do
+        %w[ssh http all].each do |protocol|
+          context "with #{protocol}" do
+            subject do
+              put api("/groups/#{group1.id}", user1), params: { enabled_git_access_protocol: protocol }
+            end
+
+            it 'updates the attribute', :aggregate_failures do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(json_response['enabled_git_access_protocol']).to eq(protocol)
+            end
           end
         end
       end
@@ -2055,6 +2076,19 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['default_branch_protection']).not_to eq(Gitlab::Access::PROTECTION_NONE)
           end
+        end
+      end
+
+      context 'when creating a group with `enabled_git_access_protocol' do
+        let(:params) { attributes_for_group_api enabled_git_access_protocol: 'all' }
+
+        subject { post api("/groups", user3), params: params }
+
+        it 'creates group with the specified Git access protocol', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['enabled_git_access_protocol']).to eq(nil)
         end
       end
 

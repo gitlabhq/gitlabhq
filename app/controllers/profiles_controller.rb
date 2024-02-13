@@ -9,31 +9,9 @@ class ProfilesController < Profiles::ApplicationController
   before_action only: :update_username do
     check_rate_limit!(:profile_update_username, scope: current_user)
   end
-  skip_before_action :require_email, only: [:show, :update]
 
-  feature_category :user_profile, [:show, :update, :reset_incoming_email_token, :reset_feed_token,
+  feature_category :user_profile, [:reset_incoming_email_token, :reset_feed_token,
                             :reset_static_object_token, :update_username]
-
-  urgency :low, [:show, :update]
-
-  def show
-  end
-
-  def update
-    respond_to do |format|
-      result = Users::UpdateService.new(current_user, user_params.merge(user: @user)).execute(check_password: true)
-
-      if result[:status] == :success
-        message = s_("Profiles|Profile was successfully updated")
-
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
-        format.json { render json: { message: message } }
-      else
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: result[:message] }) }
-        format.json { render json: result }
-      end
-    end
-  end
 
   def reset_incoming_email_token
     Users::UpdateService.new(current_user, user: @user).execute! do |user|
@@ -71,12 +49,12 @@ class ProfilesController < Profiles::ApplicationController
       if result[:status] == :success
         message = s_("Profiles|Username successfully changed")
 
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
+        format.html { redirect_back_or_default(default: user_settings_profile_path, options: { notice: message }) }
         format.json { render json: { message: message }, status: :ok }
       else
         message = s_("Profiles|Username change failed - %{message}") % { message: result[:message] }
 
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: message }) }
+        format.html { redirect_back_or_default(default: user_settings_profile_path, options: { alert: message }) }
         format.json { render json: { message: message }, status: :unprocessable_entity }
       end
     end

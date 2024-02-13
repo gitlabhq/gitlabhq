@@ -29,6 +29,8 @@ module MergeRequests
             target_branch_was_deleted: true
           }
         ).execute(other_merge_request)
+
+        other_merge_request.rebase_async(current_user.id)
       end
     end
   end

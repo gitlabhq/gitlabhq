@@ -16,17 +16,29 @@ module Packages
         @packages = packages
         @dependencies = {}
         @dependency_ids = Hash.new { |h, key| h[key] = {} }
+        @tags = {}
+        @tags_updated_at = {}
+        @versions_hash = {}
+        @latest_version = nil
       end
 
       def execute(only_dist_tags: false)
-        ServiceResponse.success(payload: metadata(only_dist_tags))
+        payload = if Feature.enabled?(:package_registry_npm_fetch_all_tags, Feature.current_request,
+          type: :gitlab_com_derisk)
+                    metadata(only_dist_tags)
+                  else
+                    legacy_metadata(only_dist_tags)
+                  end
+
+        ServiceResponse.success(payload: payload)
       end
 
       private
 
-      attr_reader :name, :packages, :dependencies, :dependency_ids
+      attr_reader :name, :packages, :dependencies, :dependency_ids, :tags, :tags_updated_at, :versions_hash
+      attr_accessor :latest_version
 
-      def metadata(only_dist_tags)
+      def legacy_metadata(only_dist_tags)
         result = { dist_tags: dist_tags }
 
         unless only_dist_tags
@@ -35,6 +47,26 @@ module Packages
         end
 
         result
+      end
+
+      def metadata(only_dist_tags)
+        packages.each_batch do |batch|
+          relation = preload_needed_relations(batch, only_dist_tags)
+
+          relation.each do |package|
+            build_tags(package)
+            store_latest_version(package.version)
+            next if only_dist_tags
+
+            build_versions(package)
+          end
+        end
+
+        {
+          name: only_dist_tags ? nil : name,
+          versions: versions_hash,
+          dist_tags: tags.tap { |t| t['latest'] ||= latest_version }
+        }.compact_blank
       end
 
       def versions
@@ -137,6 +169,40 @@ module Packages
               dependency_ids[dependency_link.package_id] = dependency_link.dependency_ids_by_type
             end
           end
+      end
+
+      def preload_needed_relations(batch, only_dist_tags)
+        relation = batch.preload_tags
+
+        unless only_dist_tags
+          load_dependencies(relation)
+          load_dependency_ids(relation)
+
+          relation = relation.preload_files.preload_npm_metadatum
+        end
+
+        relation
+      end
+
+      def build_tags(package)
+        package.tags.each do |tag|
+          next if tags.key?(tag.name) && tags_updated_at[tag.name] > tag.updated_at
+
+          tags[tag.name] = package.version
+          tags_updated_at[tag.name] = tag.updated_at
+        end
+      end
+
+      def store_latest_version(version)
+        self.latest_version = version if latest_version.blank? || VersionSorter.compare(version, latest_version) == 1
+      end
+
+      def build_versions(package)
+        package_file = package.installable_package_files.last
+
+        return unless package_file
+
+        versions_hash[package.version] = build_package_version(package, package_file)
       end
     end
   end

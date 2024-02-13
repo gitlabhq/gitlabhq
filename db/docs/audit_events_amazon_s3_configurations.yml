@@ -1,10 +1,18 @@
 ---
 table_name: audit_events_amazon_s3_configurations
 classes:
-  - AuditEvents::AmazonS3Configuration
+- AuditEvents::AmazonS3Configuration
 feature_categories:
-  - audit_events
+- audit_events
 description: Stores Amazon S3 configurations associated used for audit event streaming.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/333371
 milestone: '16.4'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  namespace_id: namespaces

@@ -32,7 +32,6 @@ module QA
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
           element 'ldap-tab'
           element 'standard-tab'
-          element 'register-tab'
         end
 
         view 'app/views/devise/shared/_tab_single.html.haml' do
@@ -44,7 +43,6 @@ module QA
           element 'github-login-button'
           element 'oidc-login-button'
           element 'gitlab-oauth-login-button'
-          element 'facebook-login-button'
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -105,6 +103,8 @@ module QA
           end
 
           Page::Main::Menu.perform(&:signed_in?)
+
+          dismiss_duo_chat_popup
         end
 
         # Handle request for password change
@@ -184,11 +184,6 @@ module QA
           click_element 'github-login-button'
         end
 
-        def sign_in_with_facebook
-          set_initial_password_if_present
-          click_element 'facebook-login-button'
-        end
-
         def sign_in_with_saml
           set_initial_password_if_present
           click_element 'saml-login-button'
@@ -250,11 +245,21 @@ module QA
 
           wait_for_gitlab_to_respond
 
+          dismiss_duo_chat_popup
+
           return if skip_page_validation
 
           Page::Main::Menu.validate_elements_present!
 
           validate_canary!
+        end
+
+        def dismiss_duo_chat_popup
+          return unless has_element?('duo-chat-promo-callout-popover')
+
+          within_element('duo-chat-promo-callout-popover') do
+            click_element('close-button')
+          end
         end
 
         def fill_in_credential(user)

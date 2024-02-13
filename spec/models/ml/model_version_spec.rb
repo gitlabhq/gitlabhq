@@ -9,10 +9,10 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
   let_it_be(:model1) { create(:ml_models, project: base_project) }
   let_it_be(:model2) { create(:ml_models, project: base_project) }
 
-  let_it_be(:model_version1) { create(:ml_model_versions, model: model1) }
-  let_it_be(:model_version2) { create(:ml_model_versions, model: model_version1.model) }
-  let_it_be(:model_version3) { create(:ml_model_versions, model: model2) }
-  let_it_be(:model_version4) { create(:ml_model_versions, model: model_version3.model) }
+  let_it_be(:model_version1) { create(:ml_model_versions, model: model1, version: '4.0.0') }
+  let_it_be(:model_version2) { create(:ml_model_versions, model: model_version1.model, version: '6.0.0') }
+  let_it_be(:model_version3) { create(:ml_model_versions, model: model2, version: '5.0.0') }
+  let_it_be(:model_version4) { create(:ml_model_versions, model: model_version3.model, version: '4.0.1') }
 
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
@@ -227,6 +227,67 @@ RSpec.describe Ml::ModelVersion, feature_category: :mlops do
 
     it 'returns only the latest model version per model id' do
       is_expected.to match_array([model_version4, model_version2])
+    end
+  end
+
+  describe '.including_relations' do
+    subject(:scoped) { described_class.including_relations }
+
+    it 'loads latest version', :aggregate_failures do
+      expect(scoped.first.association_cached?(:project)).to be(true)
+      expect(scoped.first.association_cached?(:model)).to be(true)
+    end
+  end
+
+  describe '.by_version' do
+    subject(:filtered) { described_class.by_version('4.0') }
+
+    it 'returns versions with the prefix' do
+      expect(filtered).to contain_exactly(model_version1, model_version4)
+    end
+  end
+
+  describe '.order_by_version' do
+    subject(:ordered) { described_class.order_by_version(order) }
+
+    context 'when order is asc' do
+      let(:order) { 'asc' }
+
+      it { is_expected.to match_array([model_version1, model_version4, model_version3, model_version2]) }
+    end
+
+    context 'when order is desc' do
+      let(:order) { 'desc' }
+
+      it { is_expected.to match_array([model_version2, model_version3, model_version4, model_version1]) }
+    end
+
+    context 'when order is invalid' do
+      let(:order) { 'invalid' }
+
+      it 'throws error' do
+        expect { ordered }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  context 'when parsing semver components' do
+    let(:model_version) { build(:ml_model_versions, model: model1, semver: semver, project: base_project) }
+
+    where(:semver, :valid, :major, :minor, :patch, :prerelease) do
+      '1'             | false | nil | nil | nil | nil
+      '1.2'           | false | nil | nil | nil | nil
+      '1.2.3'         | true  | 1   | 2   | 3   | nil
+      '1.2.3-beta'    | true  | 1   | 2   | 3   | 'beta'
+      '1.2.3.beta'    | false | nil | nil | nil | nil
+    end
+    with_them do
+      it do
+        expect(model_version.semver_major).to be major
+        expect(model_version.semver_minor).to be minor
+        expect(model_version.semver_patch).to be patch
+        expect(model_version.semver_prerelease).to eq prerelease
+      end
     end
   end
 end

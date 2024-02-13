@@ -6,6 +6,7 @@ namespace :user_settings do
     get :applications, to: '/oauth/applications#index'
   end
   resources :active_sessions, only: [:index, :destroy]
+  resource :profile, only: [:show, :update]
   resource :password, only: [:new, :create, :edit, :update] do
     member do
       put :reset
@@ -28,6 +29,10 @@ resource :profile, only: [] do
     end
   end
   member do
+    get :show, to: redirect(path: '-/user_settings/profile')
+    put :update, controller: 'user_settings/profiles'
+    patch :update, controller: 'user_settings/profiles'
+
     get :active_sessions, to: redirect(path: '-/user_settings/active_sessions')
     get :personal_access_tokens, to: redirect(path: '-/user_settings/personal_access_tokens')
   end

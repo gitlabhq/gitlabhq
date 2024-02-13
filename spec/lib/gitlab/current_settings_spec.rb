@@ -88,6 +88,8 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
   end
 
   describe '#current_application_settings', :use_clean_rails_memory_store_caching do
+    let_it_be(:organization_settings) { create(:organization_setting, restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL]) }
+
     it 'allows keys to be called directly' do
       described_class.update!(home_page_url: 'http://mydomain.com', signup_enabled: false)
 
@@ -97,10 +99,58 @@ RSpec.describe Gitlab::CurrentSettings, feature_category: :shared do
       expect(described_class.metrics_sample_interval).to be(15)
     end
 
-    it 'retrieves settings using ApplicationSettingFetcher' do
-      expect(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_call_original
+    context 'when key is in ApplicationSettingFetcher' do
+      it 'retrieves settings using ApplicationSettingFetcher' do
+        expect(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_call_original
 
-      described_class.home_page_url
+        described_class.home_page_url
+      end
+    end
+
+    context 'when key is in OrganizationSetting' do
+      before do
+        allow(Gitlab::ApplicationSettingFetcher).to receive(:current_application_settings).and_return(nil)
+      end
+
+      context 'and the current organization is known' do
+        before do
+          allow(Organizations::OrganizationSetting).to receive(:for_current_organization).and_return(organization_settings)
+        end
+
+        it 'retrieves settings using OrganizationSetting' do
+          expect(described_class.restricted_visibility_levels).to eq(organization_settings.restricted_visibility_levels)
+        end
+      end
+
+      context 'and the current organization is unknown' do
+        before do
+          allow(Organizations::OrganizationSetting).to receive(:for_current_organization).and_return(nil)
+        end
+
+        it 'raises NoMethodError' do
+          expect { described_class.foo }.to raise_error(NoMethodError)
+        end
+      end
+    end
+
+    context 'when key is in both sources' do
+      it 'for test purposes, ensure the values are different' do
+        expect(
+          Gitlab::ApplicationSettingFetcher.current_application_settings.restricted_visibility_levels
+        ).not_to eq(organization_settings.restricted_visibility_levels)
+      end
+
+      it 'prefers ApplicationSettingFetcher' do
+        expect(described_class.restricted_visibility_levels).to eq(
+          Gitlab::ApplicationSettingFetcher.current_application_settings.restricted_visibility_levels
+        )
+      end
+    end
+
+    context 'when key is in neither' do
+      it 'raises NoMethodError' do
+        expect { described_class.foo }.to raise_error(NoMethodError)
+      end
     end
   end
 

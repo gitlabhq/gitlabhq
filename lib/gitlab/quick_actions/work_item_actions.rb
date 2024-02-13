@@ -40,6 +40,20 @@ module Gitlab
           @execution_message[:set_parent] = success_msg[:set_parent]
         end
 
+        desc { _('Remove work item parent') }
+        explanation do
+          format(
+            _("Remove %{parent_ref} as this work item's parent."),
+            parent_ref: work_item_parent.to_reference(quick_action_target)
+          )
+        end
+        types WorkItem
+        condition { work_item_parent.present? && can_admin_link? }
+        command :remove_parent do
+          @updates[:remove_parent] = true
+          @execution_message[:remove_parent] = success_msg[:remove_parent]
+        end
+
         desc { _('Add children to work item') }
         explanation do |child_param|
           format(_("Add %{child_ref} to this work item as child(ren)."), child_ref: child_param)
@@ -126,8 +140,13 @@ module Gitlab
           type: _('Type changed successfully.'),
           promote_to: _("Work item promoted successfully."),
           set_parent: _('Work item parent set successfully'),
+          remove_parent: _('Work item parent removed successfully'),
           add_child: _('Child work item(s) added successfully')
         }
+      end
+
+      def work_item_parent
+        quick_action_target.work_item_parent
       end
 
       def supports_parent?

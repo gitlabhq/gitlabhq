@@ -15,6 +15,7 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
 } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
@@ -85,10 +86,8 @@ export default {
     GlPagination,
     GlSprintf,
     GlAlert,
-    GenerateTestFileDrawer: () =>
-      import('ee_component/ai/components/generate_test_file_drawer.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   alerts: {
     ALERT_OVERFLOW_HIDDEN,
     ALERT_MERGE_CONFLICT,
@@ -159,6 +158,8 @@ export default {
       activeProject: undefined,
       hasScannerError: false,
       pinnedFileStatus: '',
+      codequalityData: {},
+      sastData: {},
     };
   },
   apollo: {
@@ -173,14 +174,10 @@ export default {
           return true;
         }
 
-        return (
-          !this.sastReportsInInlineDiff ||
-          (!this.codequalityReportAvailable && !this.sastReportAvailable)
-        );
+        return !this.codequalityReportAvailable && !this.sastReportAvailable;
       },
       update(data) {
         const { codequalityReportsComparer, sastReport } = data?.project?.mergeRequest || {};
-
         this.activeProject = data?.project?.mergeRequest?.project;
         if (
           (sastReport?.status === FINDINGS_STATUS_PARSED || !this.sastReportAvailable) &&
@@ -197,14 +194,11 @@ export default {
         }
 
         if (codequalityReportsComparer?.report?.newErrors) {
-          this.$store.commit(
-            'diffs/SET_CODEQUALITY_DATA',
-            sortFindingsByFile(codequalityReportsComparer.report.newErrors),
-          );
+          this.codequalityData = sortFindingsByFile(codequalityReportsComparer.report.newErrors);
         }
 
         if (sastReport?.report) {
-          this.$store.commit('diffs/SET_SAST_DATA', sastReport.report);
+          this.sastData = sastReport.report;
         }
       },
       error() {
@@ -240,7 +234,6 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
-      'generateTestFilePath',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -310,9 +303,6 @@ export default {
     resourceId() {
       return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
-    sastReportsInInlineDiff() {
-      return this.glFeatures.sastReportsInInlineDiff;
-    },
   },
   watch: {
     commit(newCommit, oldCommit) {
@@ -350,10 +340,6 @@ export default {
     isLoading: 'adjustView',
   },
   mounted() {
-    if (this.endpointCodequality) {
-      this.setCodequalityEndpoint(this.endpointCodequality);
-    }
-
     if (this.shouldShow) {
       this.fetchData();
     }
@@ -426,14 +412,12 @@ export default {
     ...mapActions(['startTaskList']),
     ...mapActions('diffs', [
       'moveToNeighboringCommit',
-      'setCodequalityEndpoint',
       'fetchDiffFilesMeta',
       'fetchDiffFilesBatch',
       'fetchFileByFile',
       'loadCollapsedDiff',
       'setFileForcedOpen',
       'fetchCoverageFiles',
-      'fetchCodequality',
       'rereadNoteHash',
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
@@ -443,7 +427,6 @@ export default {
       'navigateToDiffFileIndex',
       'setFileByFile',
       'disableVirtualScroller',
-      'setGenerateTestFilePath',
       'fetchPinnedFile',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
@@ -460,6 +443,8 @@ export default {
       notesEventHub.$once('fetchDiffData', this.fetchData);
       notesEventHub.$on('refetchDiffData', this.refetchDiffData);
       notesEventHub.$on('fetchedNotesData', this.rereadNoteHash);
+      notesEventHub.$on('noteFormAddToReview', this.handleReviewTracking);
+      notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
@@ -470,6 +455,8 @@ export default {
       diffsEventHub.$off(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$off('doneLoadingBatches', this.autoScroll);
       diffsEventHub.$off('diffFilesModified', this.setDiscussions);
+      notesEventHub.$off('noteFormStartReview', this.handleReviewTracking);
+      notesEventHub.$off('noteFormAddToReview', this.handleReviewTracking);
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
@@ -578,10 +565,6 @@ export default {
 
       if (this.endpointCoverage) {
         this.fetchCoverageFiles();
-      }
-
-      if (this.endpointCodequality && !this.sastReportsInInlineDiff) {
-        this.fetchCodequality();
       }
 
       if (!this.isNotesFetched) {
@@ -700,6 +683,16 @@ export default {
     reloadPage() {
       window.location.reload();
     },
+    handleReviewTracking(event) {
+      const types = {
+        noteFormStartReview: 'merge_request_click_start_review_on_changes_tab',
+        noteFormAddToReview: 'merge_request_click_add_to_review_on_changes_tab',
+      };
+
+      if (this.shouldShow && types[event.name]) {
+        this.trackEvent(types[event.name]);
+      }
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/reviews/index.md', {
     anchor: 'checkout-merge-requests-locally-through-the-head-ref',
@@ -765,6 +758,8 @@ export default {
                 >
                   <diff-file
                     :file="item"
+                    :codequality-data="codequalityData"
+                    :sast-data="sastData"
                     :reviewed="fileReviews[item.id]"
                     :is-first-file="index === 0"
                     :is-last-file="index === diffFilesLength - 1"
@@ -784,6 +779,8 @@ export default {
                 v-for="(file, index) in diffs"
                 :key="file.new_path"
                 :file="file"
+                :codequality-data="codequalityData"
+                :sast-data="sastData"
                 :reviewed="fileReviews[file.id]"
                 :is-first-file="index === 0"
                 :is-last-file="index === diffFilesLength - 1"
@@ -818,11 +815,5 @@ export default {
         </div>
       </div>
     </div>
-    <generate-test-file-drawer
-      v-if="getNoteableData.id"
-      :resource-id="resourceId"
-      :file-path="generateTestFilePath"
-      @close="() => setGenerateTestFilePath('')"
-    />
   </div>
 </template>

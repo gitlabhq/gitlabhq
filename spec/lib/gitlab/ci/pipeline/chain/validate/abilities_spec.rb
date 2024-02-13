@@ -148,10 +148,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
         context 'when developers are allowed to merge' do
           let!(:protected_branch) do
-            create(:protected_branch,
-                   :developers_can_merge,
-                   project: project,
-                   name: ref)
+            create(:protected_branch, :developers_can_merge, project: project, name: ref)
           end
 
           it { is_expected.to be_truthy }
@@ -175,10 +172,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
         context 'when developers are allowed to create the tag' do
           let!(:protected_tag) do
-            create(:protected_tag,
-                   :developers_can_create,
-                   project: project,
-                   name: ref)
+            create(:protected_tag, :developers_can_create, project: project, name: ref)
           end
 
           it { is_expected.to be_truthy }
@@ -218,10 +212,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_categor
 
         context 'when no one can create the tag' do
           let!(:protected_tag) do
-            create(:protected_tag,
-                   :no_one_can_create,
-                   project: project,
-                   name: ref)
+            create(:protected_tag, :no_one_can_create, project: project, name: ref)
           end
 
           it { is_expected.to be_falsey }

@@ -17,7 +17,13 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     wait_for_requests
 
     # Ensure that undiffable.md is in .gitattributes
+    # this line can be removed once gitaly stops using info/attributes
     project.repository.copy_gitattributes(branch)
+
+    # This line is added to make sure this test works when gitaly stops using
+    # info/attributes. See https://gitlab.com/gitlab-org/gitaly/-/issues/5348 for details.
+    project.repository.raw_repository.write_ref("HEAD", "refs/heads/#{branch}")
+
     visit project_commit_path(project, project.commit(branch))
 
     wait_for_requests

@@ -310,16 +310,16 @@ During backup, you can get the `File name too long` error ([issue #354984](https
 Problem: <class 'OSError: [Errno 36] File name too long:
 ```
 
-This problem stops the backup script from completing. To fix this problem, you must truncate the file names causing the problem. A maximum of 246 characters, including the file extension, is permitted.
+This problem stops the backup script from completing. To fix this problem, you must truncate the filenames causing the problem. A maximum of 246 characters, including the file extension, is permitted.
 
 WARNING:
 The steps in this section can potentially lead to **data loss**. All steps must be followed strictly in the order given.
 Consider opening a [Support Request](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
 
-Truncating file names to resolve the error involves:
+Truncating filenames to resolve the error involves:
 
 - Cleaning up remote uploaded files that aren't tracked in the database.
-- Truncating the file names in the database.
+- Truncating the filenames in the database.
 - Rerunning the backup task.
 
 ### Clean up remote uploaded files
@@ -343,15 +343,15 @@ To fix these files, you must clean up all remote uploaded files that are in the 
    bundle exec rake gitlab:cleanup:remote_upload_files RAILS_ENV=production DRY_RUN=false
    ```
 
-### Truncate the file names referenced by the database
+### Truncate the filenames referenced by the database
 
-You must truncate the files referenced by the database that are causing the problem. The file names referenced by the database are stored:
+You must truncate the files referenced by the database that are causing the problem. The filenames referenced by the database are stored:
 
 - In the `uploads` table.
 - In the references found. Any reference found from other database tables and columns.
 - On the file system.
 
-Truncate the file names in the `uploads` table:
+Truncate the filenames in the `uploads` table:
 
 1. Enter the database console:
 
@@ -379,9 +379,9 @@ Truncate the file names in the `uploads` table:
    sudo -u git -H bundle exec rails dbconsole -e production
    ```
 
-1. Search the `uploads` table for file names longer than 246 characters:
+1. Search the `uploads` table for filenames longer than 246 characters:
 
-   The following query selects the `uploads` records with file names longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
+   The following query selects the `uploads` records with filenames longer than 246 characters in batches of 0 to 10000. This improves the performance on large GitLab instances with tables having thousand of records.
 
       ```sql
       CREATE TEMP TABLE uploads_with_long_filenames AS
@@ -394,9 +394,9 @@ Truncate the file names in the `uploads` table:
       SELECT
          u.id,
          u.path,
-         -- Current file name
+         -- Current filename
          (regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] AS current_filename,
-         -- New file name
+         -- New filename
          CONCAT(
             LEFT(SPLIT_PART((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1], '.', 1), 242),
             COALESCE(SUBSTRING((regexp_match(u.path, '[^\\/:*?"<>|\r\n]+$'))[1] FROM '\.(?:.(?!\.))+$'))
@@ -426,13 +426,13 @@ Truncate the file names in the `uploads` table:
 
       Where:
 
-      - `current_filename`: a file name that is currently more than 246 characters long.
-      - `new_filename`: a file name that has been truncated to 246 characters maximum.
+      - `current_filename`: a filename that is currently more than 246 characters long.
+      - `new_filename`: a filename that has been truncated to 246 characters maximum.
       - `new_path`: new path considering the `new_filename` (truncated).
 
    After you validate the batch results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-1. Rename the files found in the `uploads` table from long file names to new truncated file names. The following query rolls back the update so you can check the results safely in a transaction wrapper:
+1. Rename the files found in the `uploads` table from long filenames to new truncated filenames. The following query rolls back the update so you can check the results safely in a transaction wrapper:
 
    ```sql
    CREATE TEMP TABLE uploads_with_long_filenames AS
@@ -467,7 +467,7 @@ Truncate the file names in the `uploads` table:
 
    After you validate the batch update results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-1. Validate that the new file names from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
+1. Validate that the new filenames from the previous query are the expected ones. If you are sure you want to truncate the records found in the previous step to 246 characters, run the following:
 
    WARNING:
    The following action is **irreversible**.
@@ -499,9 +499,9 @@ Truncate the file names in the `uploads` table:
 
    After you finish the batch update, you must change the batch size (`updatable_uploads.row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 
-Truncate the file names in the references found:
+Truncate the filenames in the references found:
 
-1. Check if those records are referenced somewhere. One way to do this is to dump the database and search for the parent directory name and file name:
+1. Check if those records are referenced somewhere. One way to do this is to dump the database and search for the parent directory name and filename:
 
    1. To dump your database, you can use the following command as an example:
 
@@ -509,15 +509,15 @@ Truncate the file names in the references found:
       pg_dump -h /var/opt/gitlab/postgresql/ -d gitlabhq_production > gitlab-dump.tmp
       ```
 
-   1. Then you can search for the references using the `grep` command. Combining the parent directory and the file name can be a good idea. For example:
+   1. Then you can search for the references using the `grep` command. Combining the parent directory and the filename can be a good idea. For example:
 
       ```shell
       grep public/alongfilenamehere.txt gitlab-dump.tmp
       ```
 
-1. Replace those long file names using the new file names obtained from querying the `uploads` table.
+1. Replace those long filenames using the new filenames obtained from querying the `uploads` table.
 
-Truncate the file names on the file system. You must manually rename the files in your file system to the new file names obtained from querying the `uploads` table.
+Truncate the filenames on the file system. You must manually rename the files in your file system to the new filenames obtained from querying the `uploads` table.
 
 ### Re-run the backup task
 

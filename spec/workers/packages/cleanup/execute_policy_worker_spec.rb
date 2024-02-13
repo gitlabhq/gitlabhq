@@ -39,7 +39,7 @@ RSpec.describe Packages::Cleanup::ExecutePolicyWorker, feature_category: :packag
       let_it_be(:package_file1) { create(:package_file, file_name: 'test1', package: package) }
       let_it_be(:package_file2) { create(:package_file, file_name: 'test1', package: package) }
 
-      include_examples 'an idempotent worker' do
+      it_behaves_like 'an idempotent worker' do
         it 'executes the policy' do
           expect(::Packages::Cleanup::ExecutePolicyService)
             .to receive(:new).with(policy).and_call_original

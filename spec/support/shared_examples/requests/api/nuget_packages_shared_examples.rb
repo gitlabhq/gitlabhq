@@ -761,7 +761,7 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
       end
     end
 
-    context 'with valid target' do
+    shared_examples 'successful response' do
       it 'returns the symbol file' do
         subject
 
@@ -769,6 +769,10 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
         expect(response.media_type).to eq('application/octet-stream')
         expect(response.body).to eq(symbol.file.read)
       end
+    end
+
+    context 'with valid target' do
+      it_behaves_like 'successful response'
     end
 
     context 'when target does not exist' do
@@ -796,6 +800,13 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
 
         it_behaves_like 'returning response status', :bad_request
       end
+    end
+
+    context 'when signature & filename are in uppercase' do
+      let(:filename) { symbol.file.filename.upcase }
+      let(:signature) { symbol.signature.upcase }
+
+      it_behaves_like 'successful response'
     end
   end
 

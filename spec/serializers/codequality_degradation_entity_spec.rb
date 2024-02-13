@@ -8,18 +8,6 @@ RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
   describe '#as_json' do
     subject { entity.as_json }
 
-    context 'when sast_reports_in_inline_diff is disabled' do
-      before do
-        stub_feature_flags(sast_reports_in_inline_diff: false)
-      end
-
-      let(:codequality_degradation) { build(:codequality_degradation_1) }
-
-      it 'does not contain fingerprint' do
-        expect(subject[:fingerprint]).to be_nil
-      end
-    end
-
     context 'when codequality contains an error' do
       context 'when line is included in location' do
         let(:codequality_degradation) { build(:codequality_degradation_2) }
@@ -64,6 +52,17 @@ RSpec.describe CodequalityDegradationEntity, feature_category: :code_quality do
           expect(subject[:line]).to eq(10)
           expect(subject[:web_url]).to eq("http://localhost/root/test-project/-/blob/f572d396fae9206628714fb2ce00f72e94f2258f/file_b.rb#L10")
           expect(subject[:engine_name]).to eq('rubocop')
+        end
+      end
+
+      context 'when severity is a non-codeclimate-standard severity' do
+        # See standard severities: https://docs.codeclimate.com/docs/issues#issue-severity
+        let(:codequality_degradation) { build(:codequality_degradation_3) }
+
+        it 'returns severity as unknown', :aggregate_failures do
+          codequality_degradation[:severity] = 'warning'
+
+          expect(subject[:severity]).to eq('unknown')
         end
       end
     end

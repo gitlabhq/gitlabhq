@@ -439,7 +439,13 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tag(tag)
-    ContainerRegistry::Tag.new(self, tag)
+    if migrated? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+      page = tags_page(name: tag, page_size: 1)
+
+      page[:tags].first
+    else
+      ContainerRegistry::Tag.new(self, tag)
+    end
   end
 
   def manifest
@@ -651,7 +657,7 @@ class ContainerRepository < ApplicationRecord
     return [] unless tags_response_body
 
     tags_response_body.map do |raw_tag|
-      tag = ContainerRegistry::Tag.new(self, raw_tag['name'])
+      tag = ContainerRegistry::Tag.new(self, raw_tag['name'], from_api: true)
       tag.force_created_at_from_iso8601(raw_tag['created_at'])
       tag.updated_at = raw_tag['updated_at']
       tag.total_size = raw_tag['size_bytes']

@@ -4,7 +4,11 @@ group: Acquisition
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Read-only namespaces **(FREE SAAS)**
+# Read-only namespaces
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS
 
 In GitLab SaaS, a top-level namespace is placed in a read-only state when it either:
 

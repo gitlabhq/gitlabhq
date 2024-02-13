@@ -4,9 +4,13 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Rate limits on raw endpoints **(FREE SELF)**
+# Rate limits on raw endpoints
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30635) in GitLab 12.2.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/30635) in GitLab 12.2.
 
 This setting defaults to `300` requests per minute, and allows you to rate limit the requests to raw endpoints:
 

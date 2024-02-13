@@ -4,7 +4,11 @@ group: Authentication
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
 ---
 
-# Group access tokens **(FREE)**
+# Group access tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 With group access tokens, you can use a single token to:
 
@@ -82,7 +86,7 @@ or API. However, administrators can use a workaround:
    # Set the GitLab administration user to use. If user ID 1 is not available or is not an administrator, use 'admin = User.admins.first' instead to select an administrator.
    admin = User.find(1)
 
-   # Set the group group you want to create a token for. For example, group with ID 109.
+   # Set the group you want to create a token for. For example, group with ID 109.
    group = Group.find(109)
 
    # Create the group bot user. For further group access tokens, the username should be `group_{group_id}_bot_{random_string}` and email address `group_{group_id}_bot_{random_string}@noreply.{Gitlab.config.gitlab.host}`.
@@ -115,7 +119,7 @@ or API. However, administrators can use a workaround:
 
 ## Revoke a group access token using the UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214045) in GitLab 14.7.
 
 To revoke a group access token:
 
@@ -148,7 +152,7 @@ The scope determines the actions you can perform when you authenticate with a gr
 | `api`              | Grants complete read and write access to the scoped group and related project API, including the [container registry](../../packages/container_registry/index.md), the [dependency proxy](../../packages/dependency_proxy/index.md), and the [package registry](../../packages/package_registry/index.md). |
 | `read_api`         | Grants read access to the scoped group and related project API, including the [package registry](../../packages/package_registry/index.md).                                                                                                                                                                |
 | `read_registry`    | Grants read access (pull) to the [container registry](../../packages/container_registry/index.md) images if any project within a group is private and authorization is required.                                                                                                                           |
-| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md).                                                                                                                                                                                                        |
+| `write_registry`   | Grants write access (push) to the [container registry](../../packages/container_registry/index.md). You need both read and write access to push images.                                                                                                                                                |
 | `read_repository`  | Grants read access (pull) to all repositories within a group.                                                                                                                                                                                                                                              |
 | `write_repository` | Grants read and write access (pull and push) to all repositories within a group.                                                                                                                                                                                                                           |
 | `create_runner`    | Grants permission to create runners in a group.                                                                                                                                                                                                                                                            |

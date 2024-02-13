@@ -1,12 +1,16 @@
 ---
 stage: Plan
 group: Product Planning
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/engineering/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Objectives and key results (OKR) **(ULTIMATE ALL)**
+# Objectives and key results (OKR)
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
 
 OKRs are an [Experiment](../policy/experiment-beta-support.md#experiment).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
@@ -157,7 +161,7 @@ To add labels to an OKR:
 
 ## Add an objective to a milestone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.7.
 
 You can add an objective to a [milestone](project/milestones/index.md).
 You can see the milestone title when you view an objective.
@@ -192,7 +196,7 @@ To set progress of an objective:
 
 ## Set health status
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381899) in GitLab 15.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381899) in GitLab 15.7.
 
 To better track the risk in meeting your goals, you can assign a [health status](project/issues/managing_issues.md#health-status)
 to each objective and key result.
@@ -227,7 +231,7 @@ Alternatively, use the `/promote_to objective` [quick action](../user/project/qu
 
 ## Copy objective or key result reference
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
 
 To refer to an objective or key result elsewhere in GitLab, you can use its full URL or a short reference, which looks like
 `namespace/project-name#123`, where `namespace` is either a group or a username.
@@ -244,7 +248,7 @@ Read more about objective or key result references in [GitLab-Flavored Markdown]
 
 ## Copy objective or key result email address
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396553) in GitLab 16.1.
 
 You can create a comment in an objective or key result by sending an email.
 Sending an email to this address creates a comment that contains the email body.
@@ -333,7 +337,7 @@ To add an existing key result to an objective:
 
 ### Reorder objective and key result children
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385887) in GitLab 16.0.
 
 Prerequisites:
 
@@ -344,7 +348,7 @@ To reorder them, drag them around.
 
 ### Schedule OKR check-in reminders
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422761) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `okr_checkin_reminders`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422761) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `okr_checkin_reminders`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
@@ -389,7 +393,7 @@ To turn off a check-in reminder, enter:
 
 ## Set an objective as a parent
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11198) in GitLab 16.6.
 
 Prerequisites:
 
@@ -407,7 +411,7 @@ next to **Parent**, select the dropdown list and then select **Unassign**.
 
 ## Confidential OKRs
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8410) in GitLab 15.3.
 
 Confidential OKRs are OKRs visible only to members of a project with
 [sufficient permissions](#who-can-see-confidential-okrs).
@@ -479,9 +483,34 @@ system note in the OKR's comments, for example:
 > - **{eye-slash}** Jo Garcia made the issue confidential 5 minutes ago
 > - **{eye}** Jo Garcia made the issue visible to everyone just now
 
+## Lock discussion
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398649) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+You can prevent public comments in an OKR.
+When you do, only project members can add and edit comments.
+
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+To lock an OKR:
+
+1. In the upper-right corner, select the vertical ellipsis (**{ellipsis_v}**).
+1. Select **Lock discussion**.
+
+A system note is added to the page details.
+
+If an OKR is closed with a locked discussion, then you cannot reopen it until the discussion is unlocked.
+
 ## Two-column layout
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.

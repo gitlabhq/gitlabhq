@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Issue boards **(FREE ALL)**
+# Issue boards
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The issue board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
@@ -253,7 +257,11 @@ Users on GitLab Free can use a single group issue board.
 GitLab issue boards are available on the GitLab Free tier, but some
 advanced functionality is present in [higher tiers only](https://about.gitlab.com/pricing/).
 
-### Configurable issue boards **(PREMIUM ALL)**
+### Configurable issue boards
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Setting current iteration as scope [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/196804) in GitLab 13.8.
 > - Moved to GitLab Premium in 13.9.
@@ -277,9 +285,13 @@ selecting **View scope**.
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of
 the configurable issue board feature.
 
-### Sum of issue weights **(PREMIUM ALL)**
+### Sum of issue weights
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
@@ -287,7 +299,11 @@ especially in combination with [assignee lists](#assignee-lists).
 
 ![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
 
-### Assignee lists **(PREMIUM ALL)**
+### Assignee lists
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 As in a regular list showing all issues with a chosen label, you can add
 an assignee list that shows all issues assigned to a user.
@@ -310,7 +326,11 @@ To remove an assignee list, just as with a label list, select the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists_v14_1.png)
 
-### Milestone lists **(PREMIUM ALL)**
+### Milestone lists
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 You're also able to create lists of a milestone. These are lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board.
@@ -332,7 +352,11 @@ As in other list types, select the trash icon to remove a list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v14_1.png)
 
-### Iteration lists **(PREMIUM ALL)**
+### Iteration lists
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/250479) in GitLab 13.11 [with a flag](../../administration/feature_flags.md) named `iteration_board_lists`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75404) in GitLab 14.6. Feature flag `iteration_board_lists` removed.
@@ -355,7 +379,11 @@ to and from a iteration list to manipulate the iteration of the dragged issues.
 
 ![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
 
-### Group issues in swimlanes **(PREMIUM ALL)**
+### Group issues in swimlanes
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Grouping by epic [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3352) in GitLab 13.6.
 > - Editing issue titles in the issue sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232745) in GitLab 13.8.
@@ -401,12 +429,16 @@ You can also [drag issues](#move-issues-and-lists) to change their position and 
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop.png)
 
-## Work in progress limits **(PREMIUM ALL)**
+## Work in progress limits
 
-> Moved to GitLab Premium in 13.9.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - Moved to GitLab Premium in 13.9.
 
 You can set a work in progress (WIP) limit for each issue list on an issue board. When a limit is
-set, the list's header shows the number of issues in the list and the soft limit of issues.
+set, the list's header shows the number of issues in the list and the soft limit of issues. A line in the list separates items within the limit from those in excess of the limit.
 You cannot set a WIP limit on the default lists (**Open** and **Closed**).
 
 Examples:
@@ -414,7 +446,7 @@ Examples:
 - When you have a list with four issues and a limit of five, the header shows **4/5**.
   If you exceed the limit, the current number of issues is shown in red.
 - You have a list with five issues with a limit of five. When you move another issue to that list,
-  the list's header displays **6/5**, with the six shown in red.
+  the list's header displays **6/5**, with the six shown in red. The work in progress line is shown before the sixth issue.
 
 Prerequisites:
 
@@ -428,9 +460,13 @@ To set a WIP limit for a list, in an issue board:
 1. Enter the maximum number of issues.
 1. Press <kbd>Enter</kbd> to save.
 
-## Blocked issues **(PREMIUM ALL)**
+## Blocked issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10: View blocking issues when hovering over the "blocked" icon.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210452) in GitLab 13.10: View blocking issues when hovering over the "blocked" icon.
 
 If an issue is [blocked by another issue](issues/related_issues.md#blocking-issues), an icon appears next to its title to indicate its blocked
 status.
@@ -454,7 +490,7 @@ When you hover over the blocked icon (**{issue-block}**), a detailed information
 
 ### Edit an issue
 
-> Editing title, iteration, and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1.
+> - Editing title, iteration, and confidentiality [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/248908) in GitLab 14.1.
 
 You can edit an issue without leaving the board view.
 To open the right sidebar, select an issue card (not its title).
@@ -506,8 +542,6 @@ To remove a list from an issue board:
 
 ### Add issues to a list
 
-> The **Add issues** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57329) in GitLab 13.11.
-
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
@@ -523,8 +557,6 @@ For example, to add an issue to a list scoped to the `Doing` label, in a group i
 The issue should now show in the `Doing` list on your issue board.
 
 ### Remove an issue from a list
-
-> The **Remove from board** button was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/229507) in GitLab 13.10.
 
 When an issue should no longer belong to a list, you can remove it.
 
@@ -589,7 +621,7 @@ You can't move the **Open** and **Closed** lists, but you can hide them when edi
 
 #### Move an issue to the start of the list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
 
 You can move issues to the top of the list with a menu shortcut.
 
@@ -602,11 +634,11 @@ Prerequisites:
 To move an issue to the start of the list:
 
 1. In an issue board, hover over the card of the issue you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to start of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to start of list**.
 
 #### Move an issue to the end of the list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367473) in GitLab 15.4.
 
 You can move issues to the bottom of the list with a menu shortcut.
 
@@ -619,7 +651,7 @@ Prerequisites:
 To move an issue to the end of the list:
 
 1. In an issue board, hover over the card of the issue you want to move.
-1. Select the vertical ellipsis (**{ellipsis_v}**), then **Move to end of list**.
+1. Select **Card options** (**{ellipsis_v}**), then **Move to end of list**.
 
 #### Dragging issues between lists
 
@@ -637,7 +669,7 @@ and the target list.
 
 ### Multi-select issue cards
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61955) behind a [feature flag](../feature_flags.md) named `board_multi_select` in GitLab 14.0. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61955) behind a [feature flag](../feature_flags.md) named `board_multi_select` in GitLab 14.0. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, ask an

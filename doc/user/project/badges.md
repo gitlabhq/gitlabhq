@@ -4,7 +4,11 @@ group: Tenant Scale
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Badges **(FREE ALL)**
+# Badges
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
@@ -99,7 +103,7 @@ sets `min_acceptable` to `79` (`min_good` - `1`).
 
 ## Latest release badges
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33368) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33368) in GitLab 14.8.
 
 The latest release badge indicates the latest release tag name for your project.
 If there is no release, it shows `none`.
@@ -221,7 +225,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
 ### Customize badge text
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17555) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17555) in GitLab 13.1.
 
 The text for a badge can be customized to differentiate between multiple coverage jobs that run in the same pipeline.
 Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:

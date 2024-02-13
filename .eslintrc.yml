@@ -230,3 +230,11 @@ overrides:
       - '{,ee/}spec/contracts/consumer/**/*'
     rules:
       '@gitlab/require-i18n-strings': off
+  - files:
+      - 'app/assets/javascripts/projects/settings/branch_rules/queries/branch_rules_details.query.graphql'
+      - 'app/assets/javascripts/projects/settings/repository/branch_rules/graphql/mutations/create_branch_rule.mutation.graphql'
+      - 'app/assets/javascripts/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql'
+      - 'ee/app/assets/javascripts/projects/settings/branch_rules/queries/branch_rules_details.query.graphql'
+      - 'ee/app/assets/javascripts/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql'
+    rules:
+      '@graphql-eslint/require-id-when-available': off

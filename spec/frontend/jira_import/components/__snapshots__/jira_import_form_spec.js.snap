@@ -74,7 +74,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       >
         <div
           aria-label="The GitLab user to which the Jira user Jane Doe will be mapped"
-          class="b-dropdown btn-group dropdown gl-dropdown w-100"
+          class="b-dropdown btn-group dropdown gl-dropdown gl-w-full"
         >
           <button
             aria-expanded="false"
@@ -175,7 +175,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       >
         <div
           aria-label="The GitLab user to which the Jira user Fred Chopin will be mapped"
-          class="b-dropdown btn-group dropdown gl-dropdown w-100"
+          class="b-dropdown btn-group dropdown gl-dropdown gl-w-full"
         >
           <button
             aria-expanded="false"

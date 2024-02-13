@@ -10,7 +10,7 @@ This is a tailored extension of the Best Practices [found in the testing guide](
 
 ## Class and module naming
 
-The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and module autoloading. The default Zeitwerk [inflector](https://github.com/fxn/zeitwerk#zeitwerkinflector) converts snake_cased file names to PascalCased module or class names. It is advised to stick to this pattern to avoid manual maintenance of inflections.
+The QA framework uses [Zeitwerk](https://github.com/fxn/zeitwerk) for class and module autoloading. The default Zeitwerk [inflector](https://github.com/fxn/zeitwerk#zeitwerkinflector) converts snake_cased filenames to PascalCased module or class names. It is advised to stick to this pattern to avoid manual maintenance of inflections.
 
 In case custom inflection logic is needed, custom inflectors are added in the [qa.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/qa/qa.rb) file in the `loader.inflector.inflect` method invocation.
 
@@ -129,7 +129,7 @@ end
 1. Keep descriptions as concise as possible.
     1. Long descriptions or multiple conditionals could be a sign it should be split up (additional `context` blocks).
     1. The [Documentation Style Guide](../../documentation/styleguide/index.md) gives recommendations on how to write concisely and with [active voice](../../documentation/styleguide/index.md#active-voice).
-1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+1. The outermost `Rspec.describe` block should be [the DevOps stage name](https://handbook.gitlab.com/handbook/product/categories/#devops-stages)
 1. Inside the `Rspec.describe` block is a `describe` block with the name of the feature being tested
 1. Optional `context` blocks define what the conditions being tested are
     1. `context` blocks descriptions should begin with `when`, `with`, `without`, `for`, `and`, `on`, `in`, `as`, or `if` to match the [rubocop rule](https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ContextWording)

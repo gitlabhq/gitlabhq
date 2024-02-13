@@ -69,6 +69,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    isDiscussionLocked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isNewDiscussion: {
       type: Boolean,
       required: false,
@@ -278,6 +283,7 @@ export default {
             :work-item-id="workItemId"
             :autofocus="autofocus"
             :comment-button-text="commentButtonText"
+            :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"

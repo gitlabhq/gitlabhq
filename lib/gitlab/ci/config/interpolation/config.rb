@@ -10,9 +10,8 @@ module Gitlab
         class Config
           include Gitlab::Utils::StrongMemoize
           ##
-          # Total number of hash nodes traversed.
-          # For example, loading a YAML below would result in a hash having 12 nodes
-          # instead of 9, because hash values are being counted before we recursively traverse them.
+          # Loading the YAML below would result in a hash having 12 nodes instead of 9,
+          # because hash values are being counted before we recursively traverse them.
           #
           # test:
           #   spec:
@@ -28,10 +27,9 @@ module Gitlab
           # The typical scenario, using just a few interpolations,
           # takes 250ms and consumes around 20 megabytes of memory.
           #
-          # Given the above the 500_000 nodes should be an upper limit, provided that the are additional safeguard
-          # present in other parts of the code
-          # (example: maximum number of interpolation blocks found). Typical size of a
-          # YAML configuration with 500k nodes might be around 10 megabytes, which is an order of magnitude higher than
+          # Given the above, 500_000 nodes should be an upper limit given that there are additional safeguards
+          # present in other parts of the code.  Typical size of a YAML configuration with 500k nodes
+          # might be around 10 megabytes, which is an order of magnitude higher than
           # the 1MB limit for loading YAML on GitLab.com
           #
           MAX_NODES = 500_000

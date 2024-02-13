@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 <!--- start_remove The following content will be removed on remove_date: '2024-05-22' -->
 
-# Slack notifications (deprecated) **(FREE ALL)**
+# Slack notifications (deprecated)
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/372411) in GitLab 15.9
@@ -28,7 +32,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 
 ## Configure GitLab
 
-> [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106760) in GitLab 15.9 to limit Slack channels to 10 per event.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
@@ -83,7 +87,7 @@ The following triggers are available for Slack notifications:
 
 ## Trigger notifications for group mentions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417751) in GitLab 16.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/417751) in GitLab 16.4.
 
 To trigger a [notification event](#triggers-for-slack-notifications) for a group mention, use `@<group_name>` in:
 

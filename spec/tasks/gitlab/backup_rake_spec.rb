@@ -334,19 +334,19 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       db_file_name = File.join(Gitlab.config.backup.path, 'db', 'database.sql.gz')
       db_backup_error = Backup::DatabaseBackupError.new(config, db_file_name)
 
-      where(:backup_class, :rake_task, :error) do
-        Backup::Database | 'gitlab:backup:db:create'        | db_backup_error
-        Backup::Files    | 'gitlab:backup:builds:create'    | file_backup_error
-        Backup::Files    | 'gitlab:backup:uploads:create'   | file_backup_error
-        Backup::Files    | 'gitlab:backup:artifacts:create' | file_backup_error
-        Backup::Files    | 'gitlab:backup:pages:create'     | file_backup_error
-        Backup::Files    | 'gitlab:backup:lfs:create'       | file_backup_error
-        Backup::Files    | 'gitlab:backup:registry:create'  | file_backup_error
+      where(:backup_target_class, :rake_task, :error) do
+        Backup::Targets::Database | 'gitlab:backup:db:create'        | db_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:builds:create'    | file_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:uploads:create'   | file_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:artifacts:create' | file_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:pages:create'     | file_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:lfs:create'       | file_backup_error
+        Backup::Targets::Files    | 'gitlab:backup:registry:create'  | file_backup_error
       end
 
       with_them do
         before do
-          allow_next_instance_of(backup_class) do |instance|
+          allow_next_instance_of(backup_target_class) do |instance|
             allow(instance).to receive(:dump).and_raise(error)
           end
         end
@@ -564,8 +564,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         stub_env('GITLAB_BACKUP_MAX_CONCURRENCY', 5)
         stub_env('GITLAB_BACKUP_MAX_STORAGE_CONCURRENCY', 2)
 
-        expect(::Backup::Repositories).to receive(:new)
-          .with(anything, strategy: anything, storages: [], paths: [], skip_paths: [])
+        expect(::Backup::Targets::Repositories).to receive(:new)
+          .with(anything, strategy: anything, options: anything, storages: [], paths: [], skip_paths: [])
           .and_call_original
         expect(::Backup::GitalyBackup).to receive(:new).with(
           anything,

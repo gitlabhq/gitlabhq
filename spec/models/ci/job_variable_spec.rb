@@ -49,15 +49,15 @@ RSpec.describe Ci::JobVariable, feature_category: :continuous_integration do
       let(:job_variable_2) { build(:ci_job_variable, job: ci_build) }
 
       before do
-        stub_current_partition_id
+        stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
       end
 
       it 'creates job variables successfully', :aggregate_failures do
         described_class.bulk_insert!([job_variable, job_variable_2])
 
         expect(described_class.count).to eq(2)
-        expect(described_class.first.partition_id).to eq(ci_testing_partition_id)
-        expect(described_class.last.partition_id).to eq(ci_testing_partition_id)
+        expect(described_class.first.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+        expect(described_class.last.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
       end
     end
   end

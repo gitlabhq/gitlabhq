@@ -82,7 +82,12 @@ module BulkImports
     end
 
     def finish_export!(export)
-      export.update!(status_event: 'finish', batched: false, error: nil)
+      export.update!(
+        status_event: 'finish',
+        batched: false,
+        error: nil,
+        total_objects_count: export_service.exported_objects_count
+      )
     end
 
     def exported_filepath

@@ -2,12 +2,30 @@
 
 set -e
 
-# host file can't be modified during docker build because it is created on container start
-# this makes for a more portable solution as other alternative is to use `--add-host` option for 'docker run' command
-# We want a non-loopback ip otherwise some services (maybe just workhorse?) bind to localhost and can't be accessed
-# from outside the container
-echo "$(hostname -i) gdk.test" | sudo tee -a /etc/hosts > /dev/null
+unset BUNDLE_PATH
+
+if [[ "${WITH_LOAD_BALANCER}" == "true" ]]; then
+  gdk config set postgresql.replica.enabled true
+  gdk config set postgresql.replica_2.enabled true
+  gdk config set load_balancing.enabled true
+  gdk reconfigure
+fi
 
 gdk start
 
-exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk.log
+# Split logs in to multiple files when running in CI
+if [ -z "$CI" ]; then
+  exec "$@" | tee -a ${HOME}/gitlab-development-kit/gitlab/log/gdk-container.log
+else
+  logs=("gitaly" "gitlab-workhorse" "postgresql" "rails-background-jobs" "redis" "sshd" "vite" "rails-web" "webpack")
+  for log in "${logs[@]}"; do
+    gdk tail $log &>${CI_BUILDS_DIR}/gdk.${log}.log &
+  done
+
+  # TODO: Check if we can reconfigure gitlab to write logs directly to `BUILDS_DIR`
+  for logfile in ${HOME}/gitlab-development-kit/gitlab/log/*.log; do
+    tail -f $logfile &>${CI_BUILDS_DIR}/$(basename $logfile) &
+  done
+
+  exec "$@"
+fi

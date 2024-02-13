@@ -34,7 +34,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       incident_management_timeline_event incident_management_timeline_events
       container_expiration_policy service_desk_enabled service_desk_address
       issue_status_counts terraform_states alert_management_integrations
-      container_repositories container_repositories_count
+      container_repositories container_repositories_count max_access_level
       pipeline_analytics squash_read_only sast_ci_configuration
       cluster_agent cluster_agents agent_configurations ci_access_authorized_agents user_access_authorized_agents
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
@@ -42,7 +42,8 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
       incident_management_timeline_event_tags visible_forks inherited_ci_variables autocomplete_users
       ci_cd_settings detailed_import_status value_streams ml_models
-      allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers
+      allows_multiple_merge_request_assignees allows_multiple_merge_request_reviewers is_forked
+      protectable_branches
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -771,6 +772,57 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
   end
 
+  describe 'is_forked' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:unforked_project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(unforked_project) }
+    let(:project) { nil }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            isForked
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query).as_json }
+
+    subject(:is_forked) { response.dig('data', 'project', 'isForked') }
+
+    context 'when project has a fork network' do
+      context 'when fork is itself' do
+        let(:project) { unforked_project }
+
+        it { is_expected.to be false }
+      end
+
+      context 'when fork is not itself' do
+        let(:project) { forked_project }
+
+        it { is_expected.to be true }
+
+        it 'avoids N+1 queries' do
+          query_count = ActiveRecord::QueryRecorder.new { response }
+
+          expect(query_count).not_to exceed_query_limit(8)
+        end
+      end
+    end
+
+    context 'when project does not have a fork network' do
+      let(:project) { unforked_project }
+
+      before do
+        allow(project).to receive(:fork_network).and_return(nil)
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe 'branch_rules' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project, reload: true) { create(:project, :public) }
@@ -1085,6 +1137,85 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
           'url' => project.safe_import_url,
           'lastError' => 'Some error'
         )
+      end
+    end
+  end
+
+  describe 'protectable_branches' do
+    subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
+
+    let_it_be(:current_user) { create(:user) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            id
+            protectableBranches
+          }
+        }
+      )
+    end
+
+    let(:protectable_branches) do
+      subject.dig('data', 'project', 'protectableBranches')
+    end
+
+    let_it_be(:project) { create(:project, :empty_repo) }
+
+    before_all do
+      project.add_maintainer(current_user)
+    end
+
+    describe 'an empty repository' do
+      before_all do
+        project.repository.branch_names.each do |branch_name|
+          project.repository.delete_branch(branch_name)
+        end
+      end
+
+      it 'returns an empty array' do
+        expect(protectable_branches).to be_empty
+      end
+    end
+
+    describe 'a repository with branches' do
+      let(:branch_names) { %w[master feat/dropdown] }
+
+      before_all do
+        project.add_maintainer(current_user)
+        project.repository.create_file(
+          current_user, 'test.txt', 'content', message: 'init', branch_name: 'master'
+        )
+        project.repository.create_branch('feat/dropdown', 'master')
+      end
+
+      context 'and no protections' do
+        it 'returns all the branch names' do
+          expect(protectable_branches).to match_array(branch_names)
+        end
+      end
+
+      context 'and all branches are protected with specific rules' do
+        before do
+          branch_names.each do |name|
+            create(:protected_branch, project: project, name: name)
+          end
+        end
+
+        it 'returns an empty array' do
+          expect(protectable_branches).to be_empty
+        end
+      end
+
+      context 'and all branches are protected with a wildcard rule' do
+        before do
+          create(:protected_branch, name: '*')
+        end
+
+        it 'returns all the branch names' do
+          expect(protectable_branches).to match_array(branch_names)
+        end
       end
     end
   end

@@ -4,24 +4,36 @@ group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Dynamic Application Security Testing (DAST) **(ULTIMATE ALL)**
+# Dynamic Application Security Testing (DAST)
 
-If you deploy your web application into a new environment, your application may
-become exposed to new types of attacks. For example, misconfigurations of your
-application server or incorrect assumptions about security controls may not be
-visible from the source code.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, Self-managed
 
-Dynamic Application Security Testing (DAST) examines applications for
-vulnerabilities like these in deployed environments.
+WARNING:
+Proxy-based DAST was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab
+16.9 and is planned for removal in 17.0. Use [browser-based DAST](browser_based.md) instead. This
+change is a breaking change.
+
+Dynamic Application Security Testing (DAST) runs automated penetration tests to find vulnerabilities
+in your web applications and APIs as they are running. DAST automates a hacker’s approach and
+simulates real-world attacks for critical threats such as cross-site scripting (XSS), SQL injection
+(SQLi), and cross-site request forgery (CSRF) to uncover vulnerabilities and misconfigurations that
+other security tools cannot detect.
+
+DAST is completely language agnostic and examines your application from the outside in. With a
+running application in a test environment, DAST scans can be automated in a CI/CD pipeline,
+automated on a schedule, or run independently by using on-demand scans. Using DAST during the
+software development life cycle enables teams to uncover vulnerabilities before their applications
+are in production. DAST is a foundational component of software security and should be used in
+tandem with SAST, dependency and license scanning, and secret detection, to provide a comprehensive
+security assessment of your applications.
+
+GitLab’s Browser-based DAST and DAST API are proprietary runtime tools, which provide broad security
+coverage for modern-day web applications and APIs.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Dynamic Application Security Testing (DAST)](https://www.youtube.com/watch?v=nbeDUoLZJTo).
-
-NOTE:
-To learn how four of the top six attacks were application-based and how
-to protect your organization, download our
-["A Seismic Shift in Application Security"](https://about.gitlab.com/resources/whitepaper-seismic-shift-application-security/)
-whitepaper.
 
 ## GitLab DAST
 
@@ -78,7 +90,7 @@ analyzer-specific configuration instructions.
 
 ### View scan results
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/36332) in GitLab 13.1.
 
 Detected vulnerabilities appear in [merge requests](../index.md#merge-request), the [pipeline security tab](../index.md#pipeline-security-tab),
 and the [vulnerability report](../index.md#vulnerability-report).

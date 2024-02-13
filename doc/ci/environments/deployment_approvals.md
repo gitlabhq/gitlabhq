@@ -5,7 +5,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: Require approvals prior to deploying to a Protected Environment
 ---
 
-# Deployment approvals **(PREMIUM ALL)**
+# Deployment approvals
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343864) in GitLab 14.7 with a flag named `deployment_approvals`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/347342) in GitLab 14.8. Feature flag `deployment_approvals` removed.
@@ -41,6 +45,7 @@ To configure deployment approvals for a project:
        - 'echo "Deploying to ${CI_ENVIRONMENT_NAME}"'
      environment:
        name: ${CI_JOB_NAME}
+       action: start
    ```
 
    The job does not need to be manual (`when: manual`).
@@ -93,8 +98,6 @@ curl --header 'Content-Type: application/json' --request POST \
      "https://gitlab.example.com/api/v4/projects/22034114/protected_environments"
 ```
 
-<!--- end_remove -->
-
 ### Migrate to multiple approval rules
 
 You can migrate a protected environment from unified approval rules to multiple
@@ -102,7 +105,7 @@ approval rules. Unified approval rules allow all entities that can deploy to an
 environment to approve deployment jobs. To migrate to multiple approval rules,
 create a new approval rule for each entity allowed to deploy to the environment.
 
-To migrate with the UI:
+To migrate to multiple approval rules:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
@@ -130,6 +133,8 @@ require `Administrator` to approve every deployment job in `Production`.
 
 ![multiple approval rules](img/multiple_approval_rules_v16_0.png)
 
+<!--- end_remove -->
+
 ### Allow self-approval
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381418) in GitLab 15.8.
@@ -148,9 +153,9 @@ To allow self-approval of a deployment job:
 
 ## Approve or reject a deployment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342180/) in GitLab 14.9
 
-Using the GitLab UI or the API, you can:
+In an environment with multiple approval rules, you can:
 
 - Approve a deployment to allow it to proceed.
 - Reject a deployment to prevent it.
@@ -159,11 +164,7 @@ Prerequisites:
 
 - You have permission to deploy to the protected environment.
 
-::Tabs
-
-:::TabTitle With the UI
-
-To approve or reject a deployment with the UI:
+To approve or reject a deployment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
@@ -173,22 +174,7 @@ To approve or reject a deployment with the UI:
 1. Optional. Add a comment which describes your reason for approving or rejecting the deployment.
 1. Select **Approve** or **Reject**.
 
-:::TabTitle With the API
-
-To approve or reject a deployment with the API:
-
-- Pass the required attributes to the deployment endpoint.
-
-For details, see [Approve or reject a blocked deployment](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
-
-For example:
-
-```shell
-curl --data "status=approved&comment=Looks good to me" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/deployments/1/approval"
-```
-
-::EndTabs
+You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
 ### View the approval details of a deployment
 

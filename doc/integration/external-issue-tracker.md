@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# External issue trackers **(FREE ALL)**
+# External issue trackers
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 GitLab has its own [issue tracker](../user/project/issues/index.md),
 but you can also configure an external issue tracker per GitLab project.

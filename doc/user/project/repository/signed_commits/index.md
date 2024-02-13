@@ -4,7 +4,11 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Signed commits **(FREE ALL)**
+# Signed commits
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 When you add a cryptographic signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. If GitLab can verify a commit

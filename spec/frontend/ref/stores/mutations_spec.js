@@ -150,6 +150,7 @@ describe('Ref selector Vuex store mutations', () => {
           {
             name: 'main',
             default: true,
+            protected: true,
           },
           {
             name: 'my-feature-branch',

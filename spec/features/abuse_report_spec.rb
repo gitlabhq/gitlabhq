@@ -12,7 +12,6 @@ RSpec.describe 'Abuse reports', :js, feature_category: :insider_threat do
 
   before do
     sign_in(reporter1)
-    stub_feature_flags(moved_mr_sidebar: false)
   end
 
   describe 'report abuse to administrator' do

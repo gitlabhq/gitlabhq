@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Credentials inventory **(ULTIMATE SELF)**
+# Credentials inventory
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20912) in GitLab 12.6.
 > - [Bot-created access tokens not displayed in personal access token list](https://gitlab.com/gitlab-org/gitlab/-/issues/351759) in GitLab 14.9.
@@ -32,7 +36,7 @@ You can also [revoke](#revoke-a-users-personal-access-token), [delete](#delete-a
 
 ## Revoke a user's personal access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214811) in GitLab 13.4.
 
 You can revoke a user's personal access token.
 
@@ -54,7 +58,7 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 ## Revoke a user's project access token
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/243833) in GitLab 14.8.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Credentials**.
@@ -67,7 +71,7 @@ The project access token is revoked and a background worker is queued to delete 
 
 ## Delete a user's SSH key
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225248) in GitLab 13.5.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Credentials**.

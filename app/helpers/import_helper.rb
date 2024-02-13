@@ -49,14 +49,7 @@ module ImportHelper
   end
 
   def import_github_authorize_message
-    _('To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories.')
-  end
-
-  def import_github_personal_access_token_message
-    link_url = 'https://github.com/settings/tokens'
-    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: link_url }
-
-    ERB::Util.html_escape(_('Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the %{code_open}repo%{code_close} scope, so we can display a list of your public and private repositories which are available to import.')) % { link_start: link_start, link_end: '</a>'.html_safe, code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+    s_('GithubImport|To import GitHub repositories, you must first authorize GitLab to access your GitHub repositories.')
   end
 
   def import_configure_github_admin_message

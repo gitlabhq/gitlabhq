@@ -1,4 +1,4 @@
-# Use this template tp announce a feature deprecation or other
+# Use this template to announce a feature deprecation or other
 # important planned changes at least three releases prior to removal.
 # Breaking changes must happen in a major release.
 #
@@ -27,6 +27,10 @@
   reporter: exampleuser
   stage: stage
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/000000
+  impact:  # Can be one of: [critical, high, medium, low]
+  scope:  # Can be one or a combination of: [instance, group, project]
+  resolution_role:  # Can be one of: [Admin, Owner, Maintainer, Developer]
+  manual_task:  # Can be true or false. Use this to denote whether a resolution action must be performed manually (true), or if it can be automated by using the API or other automation (false).
   body: |  # (required) Don't change this line.
     <!-- START OF BODY COMMENT
 

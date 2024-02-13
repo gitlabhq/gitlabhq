@@ -167,7 +167,7 @@ export default {
         class="item-info-area gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-gap-3 gl-ml-6 ml-xl-0"
       >
         <!-- Meta area: path and attributes -->
-        <!-- If there is no room beside the path, meta attributes are put ABOVE it (flex-wrap-reverse). -->
+        <!-- If there is no room beside the path, meta attributes are put ABOVE it (gl-flex-wrap-reverse). -->
         <!-- See design: https://gitlab-org.gitlab.io/gitlab-design/hosted/pedro/%2383-issue-mr-rows-cards-spec-previews/#artboard16 -->
         <div
           class="item-meta gl-display-flex gl-md-justify-content-space-between gl-gap-3 gl-flex-wrap-reverse"

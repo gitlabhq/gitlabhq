@@ -56,10 +56,11 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     allow_localhost: true,
     allow_local_network: true,
     ascii_only: false,
-    deny_all_requests_except_allowed: Gitlab::UrlBlocker::DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT,
+    deny_all_requests_except_allowed: false,
     enforce_user: false,
     enforce_sanitization: false,
-    dns_rebind_protection: false
+    dns_rebind_protection: false,
+    outbound_local_requests_allowlist: []
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
@@ -83,7 +84,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
 
     value = strip_value!(record, attribute, value)
 
-    Gitlab::UrlBlocker.validate!(value, **blocker_args)
+    Gitlab::HTTP_V2::UrlBlocker.validate!(value, **blocker_args)
   rescue Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError => e
     record.errors.add(attribute, options.fetch(:blocked_message) % { exception_message: e.message })
   end
@@ -108,6 +109,12 @@ class AddressableUrlValidator < ActiveModel::EachValidator
       if self.class.allow_setting_local_requests?
         args[:allow_localhost] = args[:allow_local_network] = true
       end
+
+      if deny_all_requests_except_allowed?
+        args[:deny_all_requests_except_allowed] = true
+      end
+
+      args[:outbound_local_requests_allowlist] = ApplicationSetting.current&.outbound_local_requests_whitelist || [] # rubocop:disable Naming/InclusiveLanguage -- existing setting
     end
   end
 
@@ -119,5 +126,9 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     #
     # See https://gitlab.com/gitlab-org/gitlab/issues/9833
     ApplicationSetting.current&.allow_local_requests_from_web_hooks_and_services?
+  end
+
+  def deny_all_requests_except_allowed?
+    ApplicationSetting.current&.deny_all_requests_except_allowed?
   end
 end

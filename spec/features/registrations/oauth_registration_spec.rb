@@ -76,7 +76,7 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
         it 'redirects to the profile path' do
           register_via(provider, uid, email, additional_info: additional_info)
 
-          expect(page).to have_current_path profile_path
+          expect(page).to have_current_path user_settings_profile_path
           expect(page).to have_content('Please complete your profile with email address')
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
 
         it 'redirects to the group page with all the projects/groups invitations accepted' do
           visit invite_path(group_invite.raw_invite_token, extra_params)
-          click_link_or_button "oauth-login-#{provider}"
+          click_link_or_button Gitlab::Auth::OAuth::Provider.label_for(provider)
 
           expect(page).to have_content('You have been granted Owner access to group Owned.')
           expect(page).to have_current_path(group_path(group), ignore_query: true)

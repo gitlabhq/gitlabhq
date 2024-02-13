@@ -1,5 +1,6 @@
 - max_first_name_length = max_last_name_length = 127
 - form_resource_name = "new_#{resource_name}"
+- button_class = local_assigns[:button_class]
 
 = gitlab_ui_form_for(resource, as: form_resource_name, url: url, html: { class: 'gl-show-field-errors js-arkose-labs-form', aria: { live: 'assertive' }}, data: { testid: 'signup-form' }) do |f|
   .devise-errors
@@ -73,7 +74,9 @@
     - elsif show_recaptcha_sign_up?
       = recaptcha_tags nonce: content_security_policy_nonce
 
-  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true, button_options: { data: { testid: 'new-user-register-button' }}) do
+  = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, block: true,
+    button_options: { class: button_class,
+      data: { testid: 'new-user-register-button', track_action: 'register', track_label: tracking_label }}) do
     = button_text
 
   = render 'devise/shared/terms_of_service_notice', button_text: button_text

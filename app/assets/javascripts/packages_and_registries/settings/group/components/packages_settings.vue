@@ -4,6 +4,7 @@ import {
   GENERIC_PACKAGE_FORMAT,
   MAVEN_PACKAGE_FORMAT,
   NUGET_PACKAGE_FORMAT,
+  TERRAFORM_MODULE_PACKAGE_FORMAT,
   PACKAGE_FORMATS_TABLE_HEADER,
   PACKAGE_SETTINGS_HEADER,
   PACKAGE_SETTINGS_DESCRIPTION,
@@ -102,6 +103,18 @@ export default {
             exception: 'nugetDuplicateExceptionRegex',
           },
           testid: 'nuget-settings',
+        },
+        {
+          id: 'terraform-module-duplicated-settings-regex-input',
+          format: TERRAFORM_MODULE_PACKAGE_FORMAT,
+          duplicatesAllowed: this.packageSettings.terraformModuleDuplicatesAllowed,
+          duplicateExceptionRegex: this.packageSettings.terraformModuleDuplicateExceptionRegex,
+          duplicateExceptionRegexError: this.errors.terraformModuleDuplicateExceptionRegex,
+          modelNames: {
+            allowed: 'terraformModuleDuplicatesAllowed',
+            exception: 'terraformModuleDuplicateExceptionRegex',
+          },
+          testid: 'terraform-module-settings',
         },
       ];
     },

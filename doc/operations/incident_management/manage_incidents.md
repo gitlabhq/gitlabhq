@@ -4,7 +4,11 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Manage incidents **(FREE ALL)**
+# Manage incidents
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 This page collects instructions for all the things you can do with [incidents](incidents.md) or in relation to them.
 
@@ -30,7 +34,7 @@ To create an incident from the incidents list:
 
 ### From the issues list
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230857) in GitLab 13.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230857) in GitLab 13.4.
 
 Prerequisites:
 
@@ -46,7 +50,7 @@ To create an incident from the issues list:
 
 ### From an alert
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
 
 Create an incident issue when viewing an [alert](alerts.md).
 The incident description is populated from the alert.
@@ -68,7 +72,11 @@ When you [close an incident](#close-an-incident) linked to an alert, GitLab
 [changes the alert's status](alerts.md#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
-### Automatically, when an alert is triggered **(ULTIMATE ALL)**
+### Automatically, when an alert is triggered
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 In the project settings, you can turn on [creating an incident automatically](alerts.md#trigger-actions-from-alerts)
 whenever an alert is triggered.
@@ -134,7 +142,7 @@ To assign a user:
 
 ## Change severity
 
-> Editing severity on incident details page was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229402) in GitLab 13.4.
+> - Editing severity on incident details page was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/229402) in GitLab 13.4.
 
 See [incident list](incidents.md#incidents-list) for a full description of the severity levels available.
 
@@ -166,7 +174,11 @@ To change the status of an incident:
 
 **Triggered** is the default status for new incidents.
 
-### As an on-call responder **(PREMIUM ALL)**
+### As an on-call responder
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 On-call responders can respond to [incident pages](paging.md#escalating-an-incident)
 by changing the status.
@@ -181,7 +193,11 @@ In GitLab 15.1 and earlier, changing the status of an [incident created from an 
 also changes the alert status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the alert status is independent and does not change when the incident status changes.
 
-## Change escalation policy **(PREMIUM ALL)**
+## Change escalation policy
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 Prerequisites:
 
@@ -215,7 +231,7 @@ You are then credited with the alert's status change.
 
 ### Automatically close incidents via recovery alerts
 
-> [Introduced for HTTP integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
+> - [Introduced for HTTP integrations](https://gitlab.com/gitlab-org/gitlab/-/issues/13402) in GitLab 13.4.
 
 Turn on closing an incident automatically when GitLab receives a recovery alert
 from a HTTP or Prometheus webhook.

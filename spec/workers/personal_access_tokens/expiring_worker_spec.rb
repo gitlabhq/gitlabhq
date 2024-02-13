@@ -25,15 +25,26 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
       it 'marks the notification as delivered' do
         expect { worker.perform }.to change { expiring_token.reload.expire_notification_delivered }.from(false).to(true)
       end
+
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) { worker.perform }
+
+        user1 = create(:user)
+        create(:personal_access_token, user: user1, expires_at: 5.days.from_now)
+
+        user2 = create(:user)
+        create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
+
+        # Query count increased for the user look up
+        expect { worker.perform }.not_to exceed_all_query_limit(control).with_threshold(4)
+      end
     end
 
     context 'when no tokens need to be notified' do
       let_it_be(:pat) { create(:personal_access_token, expires_at: 5.days.from_now, expire_notification_delivered: true) }
 
-      it "doesn't use notification service to send the email" do
-        expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).not_to receive(:access_token_about_to_expire).with(pat.user, [pat.name])
-        end
+      it "doesn't call notification services" do
+        expect(worker).not_to receive(:notification_service)
 
         worker.perform
       end
@@ -47,9 +58,7 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
       let_it_be(:pat) { create(:personal_access_token, :impersonation, expires_at: 5.days.from_now) }
 
       it "doesn't use notification service to send the email" do
-        expect_next_instance_of(NotificationService) do |notification_service|
-          expect(notification_service).not_to receive(:access_token_about_to_expire).with(pat.user, [pat.name])
-        end
+        expect(worker).not_to receive(:notification_service)
 
         worker.perform
       end

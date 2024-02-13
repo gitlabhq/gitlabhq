@@ -22,8 +22,10 @@ class NotePolicy < BasePolicy
 
   # if noteable is a work item it needs to check the notes widget availability
   condition(:notes_widget_enabled, scope: :subject) do
-    !@subject.noteable.respond_to?(:work_item_type) ||
-      @subject.noteable.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
+    noteable = @subject.noteable
+    next true unless noteable
+
+    !noteable.respond_to?(:has_widget?) || noteable.has_widget?(:notes)
   end
 
   rule { ~notes_widget_enabled }.prevent_all

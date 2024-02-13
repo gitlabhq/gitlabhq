@@ -1,0 +1,18 @@
+---
+description: When the quickaction /convert_to_ticket is executed on an issue
+category: InternalEventTracking
+action: i_quickactions_convert_to_ticket
+identifiers:
+- user
+product_section: seg
+product_stage: service_management
+product_group: respond
+milestone: '16.9'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139553
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

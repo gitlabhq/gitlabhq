@@ -254,6 +254,10 @@ module TodosHelper
     !todo.build_failed? && !todo.unmergeable?
   end
 
+  def todo_groups_requiring_saml_reauth(_todos)
+    []
+  end
+
   private
 
   def todos_design_path(todo, path_options)

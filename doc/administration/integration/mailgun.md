@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Mailgun **(FREE SELF)**
+# Mailgun
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 When you use Mailgun to send emails for your GitLab instance and [Mailgun](https://www.mailgun.com/)
 integration is enabled and configured in GitLab, you can receive their webhook for

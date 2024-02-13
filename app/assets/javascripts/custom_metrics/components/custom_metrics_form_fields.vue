@@ -81,6 +81,7 @@ export default {
       queryValidateInFlight: false,
       ...this.formData,
       group,
+      errorMessage: '',
     };
   },
   computed: {
@@ -107,7 +108,7 @@ export default {
   },
   beforeMount() {
     if (this.metricPersisted) {
-      this.validateQuery();
+      this.validateQuery(this.query);
     }
   },
   methods: {
@@ -129,8 +130,8 @@ export default {
       this.queryValidateInFlight = inFlight;
       this.errorMessage = message;
     },
-    validateQuery() {
-      if (!this.query) {
+    validateQuery(query) {
+      if (!query) {
         this.setFormState(null, false, '');
         return;
       }
@@ -143,7 +144,7 @@ export default {
       // if a single token is used it can cancel existing requests
       // as well.
       cancelTokenSource = axiosCancelToken.source();
-      this.requestValidation(this.query, cancelTokenSource.token)
+      this.requestValidation(query, cancelTokenSource.token)
         .then((res) => {
           const response = res.data;
           const { valid, error } = response.query;
@@ -161,8 +162,8 @@ export default {
           );
         });
     },
-    debouncedValidateQuery: debounce(function checkQuery() {
-      this.validateQuery();
+    debouncedValidateQuery: debounce(function checkQuery(query) {
+      this.validateQuery(query);
     }, 500),
   },
   csrfToken: csrf.token || '',
@@ -213,7 +214,7 @@ export default {
         :placeholder="s__('Metrics|e.g. rate(http_requests_total[5m])')"
         required
         :state="queryIsValid"
-        @input="debouncedValidateQuery"
+        @input="debouncedValidateQuery($event)"
       />
       <span v-if="queryValidateInFlight" class="form-text text-muted">
         <gl-loading-icon size="sm" :inline="true" class="mr-1 align-middle" />

@@ -26,6 +26,11 @@ export default {
       type: Object,
       required: true,
     },
+    span: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     prevBlameLink: {
       type: String,
       required: false,
@@ -42,6 +47,9 @@ export default {
     },
     avatarLinkAltText() {
       return sprintf(__(`%{username}'s avatar`), { username: this.commit.authorName });
+    },
+    truncateAuthorName() {
+      return typeof this.span === 'number' && this.span < 3;
     },
   },
   methods: {
@@ -102,11 +110,16 @@ export default {
             @click="toggleShowDescription"
           />
         </div>
-        <div class="committer gl-flex-basis-full">
+        <div
+          class="committer gl-flex-basis-full"
+          :class="{ 'gl-display-inline-flex': truncateAuthorName }"
+          data-testid="committer"
+        >
           <gl-link
             v-if="commit.author"
             :href="commit.author.webPath"
             class="commit-author-link js-user-link"
+            :class="{ 'gl-display-inline-block gl-text-truncate': truncateAuthorName }"
           >
             {{ commit.author.name }}</gl-link
           >

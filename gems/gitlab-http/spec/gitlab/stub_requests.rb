@@ -23,7 +23,7 @@ module Gitlab
       socket = Socket.sockaddr_in(port, ip_address)
       addr = Addrinfo.new(socket)
 
-      # See Gitlab::UrlBlocker
+      # See Gitlab::HTTP_V2::UrlBlocker
       allow(Addrinfo).to receive(:getaddrinfo)
                           .with(url.hostname, url.port, nil, :STREAM)
                           .and_return([addr])
@@ -35,7 +35,7 @@ module Gitlab
       socket = Socket.sockaddr_in(port, ip_address)
       addr = Addrinfo.new(socket)
 
-      # See Gitlab::UrlBlocker
+      # See Gitlab::HTTP_V2::UrlBlocker
       allow(Addrinfo).to receive(:getaddrinfo).and_call_original
       allow(Addrinfo).to receive(:getaddrinfo)
         .with(url.hostname, anything, nil, :STREAM)

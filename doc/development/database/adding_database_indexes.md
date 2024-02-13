@@ -424,7 +424,9 @@ Use the asynchronous index helpers on your local environment to test changes for
 
 1. Enable the feature flags by running `Feature.enable(:database_async_index_creation)` and `Feature.enable(:database_reindexing)` in the Rails console.
 1. Run `bundle exec rails db:migrate` so that it creates an entry in the `postgres_async_indexes` table.
-1. Run `bundle exec rails gitlab:db:reindex` so that the index is created asynchronously.
+<!-- markdownlint-disable MD044 -->
+1. Run `bundle exec rails gitlab:db:execute_async_index_operations:all` so that the index is created asynchronously on all databases.
+<!-- markdownlint-enable MD044 -->
 1. To verify the index, open the PostgreSQL console using the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md) command `gdk psql` and run the command `\d <index_name>` to check that your newly created index exists.
 
 ## Drop indexes asynchronously

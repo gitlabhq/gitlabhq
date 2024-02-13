@@ -63,7 +63,7 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :groups_an
 
     aggregate_failures do
       expect(page).not_to have_content(user2.name)
-      expect(group.users).not_to include(user2)
+      expect(group).not_to have_user(user2)
     end
   end
 

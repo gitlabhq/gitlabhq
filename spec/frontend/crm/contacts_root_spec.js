@@ -1,69 +1,53 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import VueRouter from 'vue-router';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContactsRoot from '~/crm/contacts/components/contacts_root.vue';
 import getGroupContactsQuery from '~/crm/contacts/components/graphql/get_group_contacts.query.graphql';
 import getGroupContactsCountByStateQuery from '~/crm/contacts/components/graphql/get_group_contacts_count_by_state.graphql';
-import routes from '~/crm/contacts/routes';
 import PaginatedTableWithSearchAndTabs from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
 import { getGroupContactsQueryResponse, getGroupContactsCountQueryResponse } from './mock_data';
 
+Vue.use(VueApollo);
+
 describe('Customer relations contacts root app', () => {
-  Vue.use(VueApollo);
-  Vue.use(VueRouter);
   let wrapper;
   let fakeApollo;
-  let router;
 
+  const findOrganizationsLink = () => wrapper.findByTestId('organizations-link');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findRowByName = (rowName) => wrapper.findAllByRole('row', { name: rowName });
-  const findIssuesLinks = () => wrapper.findAllByTestId('issues-link');
   const findNewContactButton = () => wrapper.findByTestId('new-contact-button');
   const findTable = () => wrapper.findComponent(PaginatedTableWithSearchAndTabs);
   const successQueryHandler = jest.fn().mockResolvedValue(getGroupContactsQueryResponse);
   const successCountQueryHandler = jest.fn().mockResolvedValue(getGroupContactsCountQueryResponse);
 
-  const basePath = '/groups/flightjs/-/crm/contacts';
-
   const mountComponent = ({
     queryHandler = successQueryHandler,
     countQueryHandler = successCountQueryHandler,
     canAdminCrmContact = true,
+    canReadCrmOrganization = true,
     textQuery = null,
   } = {}) => {
     fakeApollo = createMockApollo([
       [getGroupContactsQuery, queryHandler],
       [getGroupContactsCountByStateQuery, countQueryHandler],
     ]);
-    wrapper = mountExtended(ContactsRoot, {
-      router,
+    wrapper = shallowMountExtended(ContactsRoot, {
       provide: {
         groupFullPath: 'flightjs',
         groupId: 26,
         groupIssuesPath: '/issues',
+        groupOrganizationsPath: '/organizations',
         canAdminCrmContact,
+        canReadCrmOrganization,
         textQuery,
       },
       apolloProvider: fakeApollo,
+      stubs: ['router-link', 'router-view'],
     });
   };
-
-  beforeEach(() => {
-    router = new VueRouter({
-      base: basePath,
-      mode: 'history',
-      routes,
-    });
-  });
-
-  afterEach(() => {
-    fakeApollo = null;
-    router = null;
-  });
 
   it('should render table with default props and loading state', () => {
     mountComponent();
@@ -95,6 +79,20 @@ describe('Customer relations contacts root app', () => {
     expect(findLoadingIcon().exists()).toBe(true);
   });
 
+  describe('organizations link', () => {
+    it('renders when canReadCrmOrganization is true', () => {
+      mountComponent();
+
+      expect(findOrganizationsLink().attributes('href')).toBe('/organizations');
+    });
+
+    it('does not render when canReadCrmOrganization is false', () => {
+      mountComponent({ canReadCrmOrganization: false });
+
+      expect(findOrganizationsLink().exists()).toBe(false);
+    });
+  });
+
   describe('new contact button', () => {
     it('should exist when user has permission', () => {
       mountComponent();
@@ -114,19 +112,19 @@ describe('Customer relations contacts root app', () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(true);
     });
 
     it('should be removed on error-alert-dismissed event', async () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue('ERROR') });
       await waitForPromises();
 
-      expect(wrapper.text()).toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(true);
 
       findTable().vm.$emit('error-alert-dismissed');
       await waitForPromises();
 
-      expect(wrapper.text()).not.toContain('Something went wrong. Please try again.');
+      expect(findTable().props('showErrorMsg')).toBe(false);
     });
   });
 
@@ -142,13 +140,9 @@ describe('Customer relations contacts root app', () => {
       mountComponent();
       await waitForPromises();
 
-      expect(findRowByName(/Marty/i)).toHaveLength(1);
-      expect(findRowByName(/George/i)).toHaveLength(1);
-      expect(findRowByName(/jd@gitlab.com/i)).toHaveLength(1);
-
-      const issueLink = findIssuesLinks().at(0);
-      expect(issueLink.exists()).toBe(true);
-      expect(issueLink.attributes('href')).toBe('/issues?crm_contact_id=12');
+      expect(findTable().props('items')).toEqual(
+        getGroupContactsQueryResponse.data.group.contacts.nodes,
+      );
     });
   });
 });

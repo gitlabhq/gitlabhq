@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reference architecture: up to 1,000 users **(FREE SELF)**
+# Reference architecture: up to 1,000 users
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 This page describes the GitLab reference architecture designed for the load of up to 1,000 users
 with notable headroom (non-HA standalone).
@@ -97,7 +101,11 @@ You can also optionally configure GitLab to use an [external PostgreSQL service]
 or an [external object storage service](../object_storage.md) for added
 performance and reliability at an increased complexity cost.
 
-## Configure advanced search **(PREMIUM SELF)**
+## Configure advanced search
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 You can leverage Elasticsearch and [enable advanced search](../../integration/advanced_search/elasticsearch.md)
 for faster, more advanced code search across your entire GitLab instance.

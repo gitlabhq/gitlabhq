@@ -146,5 +146,5 @@ In that case, you can:
 - Check the status of the remote pipeline from the link in the merge request's job output.
   If the pipeline failed or got stuck, GitLab team members can ask for help in the `#docs`
   internal Slack channel. Contributors can ping a
-  [technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#designated-technical-writers)
+  [technical writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-devops-stages-and-groups)
   in the merge request.

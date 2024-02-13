@@ -299,7 +299,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
 #### Notes
 
-- You can find the full image address from a pipeline by [following these instructions](https://about.gitlab.com/handbook/engineering/quality/quality-engineering/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
+- You can find the full image address from a pipeline by [following these instructions](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
 - You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
 - To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
 
@@ -679,7 +679,7 @@ In order to run Product Analytics services, devkit can be used. Instructions to 
 Additionally, the following setup is required on the GDK:
 
 - Ultimate license applied.
-  - [How to request the license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
+  - [How to request the license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses).
   - [How to activate GitLab EE with a license file or key](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 - Product Analytics feature flags enabled. The list of feature flags can be [found here](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/user/product_analytics#enable-product-analytics).
 - Simulate SaaS enabled. Instructions can be [found here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/development/ee_features.md#simulate-a-saas-instance).

@@ -277,12 +277,15 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
 
       def create_todo_for_mentioned_in_design
         issue = create(:issue, project: project_1)
-        create(:todo, :mentioned,
-               user: john_doe,
-               project: project_1,
-               target: create(:design, issue: issue),
-               author: create(:user),
-               note: create(:note, :confidential, project: project_1, note: "I am note, hear me roar"))
+        create(
+          :todo,
+          :mentioned,
+          user: john_doe,
+          project: project_1,
+          target: create(:design, issue: issue),
+          author: create(:user),
+          note: create(:note, :confidential, project: project_1, note: "I am note, hear me roar")
+        )
       end
 
       def api_request

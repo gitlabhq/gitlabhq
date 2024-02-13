@@ -1241,6 +1241,8 @@ module API
         requires :credit_card_holder_name, type: String, desc: 'The credit card holder name'
         requires :credit_card_mask_number, type: String, desc: 'The last 4 digits of credit card number'
         requires :credit_card_type, type: String, desc: 'The credit card network name'
+
+        optional :zuora_payment_method_xid, type: String, desc: 'The Zuora payment method ID'
       end
       put ":user_id/credit_card_validation", urgency: :low, feature_category: :purchase do
         authenticated_as_admin!
@@ -1347,11 +1349,11 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get "activities", feature_category: :user_profile do
-        authenticated_as_admin!
-
         activities = User
           .where(User.arel_table[:last_activity_on].gteq(params[:from]))
           .reorder(last_activity_on: :asc)
+
+        activities = activities.with_public_profile unless current_user.can_read_all_resources?
 
         present paginate(activities), with: Entities::UserActivity
       end

@@ -16,6 +16,8 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
         allow(extractor).to receive(:extract).and_return(extracted_data)
       end
+
+      allow(subject).to receive(:set_source_objects_counter)
     end
 
     context 'when wiki exists' do

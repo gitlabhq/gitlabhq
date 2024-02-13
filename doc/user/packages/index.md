@@ -4,7 +4,11 @@ group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Packages and Registries **(FREE ALL)**
+# Packages and Registries
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 The GitLab [package registry](package_registry/index.md) acts as a private or public registry
 for a variety of common package managers. You can publish and share

@@ -4,7 +4,12 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo in merge requests **(ULTIMATE SAAS EXPERIMENT)**
+# GitLab Duo in merge requests
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
+**Status**: Experiment
 
 AI-assisted features in merge requests are designed to provide contextually relevant information during the lifecycle of a merge request.
 
@@ -12,7 +17,7 @@ Additional information on enabling these features and maturity can be found in o
 
 ## Fill in merge request templates
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -38,7 +43,7 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 
 ## Summarize merge request changes
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -54,7 +59,7 @@ Provide feedback on this experimental feature in [issue 408726](https://gitlab.c
 
 ## Summarize my merge request review
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -75,7 +80,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 ## Generate messages for merge or squash commits
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
 
 This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
@@ -92,29 +97,17 @@ Provide feedback on this experimental feature in [issue 408994](https://gitlab.c
 **Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
 
 - Contents of the file
-- The file name
+- The filename
+
+<!--- start_remove The following content will be removed on remove_date: '2024-04-12' -->
 
 ## Generate suggested tests in merge requests
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10366) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141086) to GitLab Duo Chat in GitLab 16.8.
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature was [moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141086)
+into GitLab Duo Chat in GitLab 16.8. Find more information in
+[Write tests in the IDE](../../gitlab_duo_chat.md#write-tests-in-the-ide).
 
-Use GitLab Duo Test generation in a merge request to see a list of suggested tests for the file you are reviewing. This functionality can help determine if appropriate test coverage has been provided, or if you need more coverage for your project.
-
-View a [click-through demo](https://go.gitlab.com/Xfp0l4).
-
-To generate a test suggestion:
-
-1. In a merge request, select the **Changes** tab.
-1. On the header for the file, in the upper-right corner, select **Options** (**{ellipsis_v}**).
-1. Select **Suggest test cases**.
-
-The test suggestion is generated in a sidebar. You can copy the suggestion to your editor and use it as the start of your tests.
-
-Feedback on this experimental feature can be provided in [issue 408995](https://gitlab.com/gitlab-org/gitlab/-/issues/408995).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Contents of the file
-- The file name
+<!--- end_remove -->

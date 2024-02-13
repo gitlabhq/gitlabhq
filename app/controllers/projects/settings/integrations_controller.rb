@@ -34,18 +34,18 @@ module Projects
         if use_inherited_settings?(attributes)
           integration.inherit_from_id = default_integration.id
 
-          if saved = integration.save(context: :manual_change)
-            BulkUpdateIntegrationService.new(default_integration, [integration]).execute
+          if updated = integration.save(context: :manual_change)
+            ::Integrations::Propagation::BulkUpdateService.new(default_integration, [integration]).execute
           end
         else
           attributes[:inherit_from_id] = nil
           integration.attributes = attributes
-          saved = integration.save(context: :manual_change)
+          updated = integration.save(context: :manual_change)
         end
 
         respond_to do |format|
           format.html do
-            if saved
+            if updated
               redirect_to redirect_path, notice: success_message
             else
               render 'edit'
@@ -53,7 +53,7 @@ module Projects
           end
 
           format.json do
-            status = saved ? :ok : :unprocessable_entity
+            status = updated ? :ok : :unprocessable_entity
 
             render json: serialize_as_json, status: status
           end

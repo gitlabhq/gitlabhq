@@ -62,14 +62,67 @@ such as the value of a setting or the count of rows in a database table.
 For GitLab there is an essential difference in analytics setup between SaaS and self-managed or GitLab Dedicated instances.
 On our SaaS instance both individual events and pre-computed metrics are available for analysis.
 Additionally for SaaS page views are automatically instrumented.
-For self-managed only the metrics instrumenented on the version installed on the instance are available.
+For self-managed only the metrics instrumented on the version installed on the instance are available.
+
+### Events
+
+Events are collected in real-time but processed in an asynchronous manner.
+In general events are available in the data warehouse at the latest 48 hours after being fired but can already be available earlier.
+
+### Metrics
+
+Metrics are being computed and sent once per week for every instance. On GitLab.com this happens on Sunday and newest values become available throughout Monday.
+On self-managed this depends on the particular instance. In general, only the metrics instrumented for the installed GitLab version will be sent.
 
 ## Data discovery
 
-The data visualization tools [Sisense](https://about.gitlab.com/handbook/business-technology/data-team/platform/sisensecdt/) and [Tableau](https://about.gitlab.com/handbook/business-technology/data-team/platform/tableau/),
-which have access to our Data Warehouse, can be used to query the internal analytics data.
+Event and metrics data is ultimately stored in our [Snowflake data warehouse](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowflake/).
+It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#snowflake-analyst) or visualized in our data visualization tool
+[Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
+Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access)).
 
-### Querying metrics
+### Tableau
+
+Tableau is a data visualization platform and allows building dashboards and GUI based discovery of events and metrics.
+This method of discovery is most suited for users who are familiar with business intelligence tooling, basic verifications
+and for creating persisted, shareable dashboards and visualizations.
+Access to Tableau requires an [access request](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access).
+
+#### Checking events
+
+Visit the [Snowplow event exploration dashboard](https://10az.online.tableau.com/#/site/gitlab/views/SnowplowEventExplorationLast30Days/SnowplowEventExplorationLast30D?:iid=1).
+This dashboard shows you event counts as well as the most fired events.
+You can scroll down to the "Structured Events Firing in Production Last 30 Days" chart and filter for your specific event action. The filter only works with exact names.
+
+#### Checking metrics
+
+You can visit the [Metrics exploration dashboard](https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricsExploration).
+On the side there is a filter for metric path which is the `key_path` of your metric and a filter for the installation ID including guidance on how to filter for GitLab.com.
+
+### Snowflake
+
+Snowflake allows direct querying of relevant tables in the warehouse within their UI with the [Snowflake SQL dialect](https://docs.snowflake.com/en/sql-reference-commands).
+This method of discovery is most suited to users who are familiar with SQL and for quick and flexible checks whether data is correctly propagated.
+Access to Snowflake requires an [access request](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access).
+
+#### Querying events
+
+The following example query returns the number of daily event occurrences for the `feature_used` event.
+
+```sql
+SELECT
+  behavior_date,
+  COUNT(*) as event_occurences
+FROM common_mart.mart_behavior_structured_event
+WHERE event_action = 'feature_used'
+AND behavior_date > '2023-08-01' --restricted minimum date for performance
+AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
+GROUP BY 1 ORDER BY 1 desc
+```
+
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+
+#### Querying metrics
 
 The following example query returns all values reported for `count_distinct_user_id_from_feature_used_7d` within the last six months and the according `instance_id`:
 
@@ -83,24 +136,7 @@ WHERE metrics_path = 'counts.users_visiting_dashboard_weekly' --set to metric of
 ORDER BY ping_created_at DESC
 ```
 
-For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
-
-### Querying events
-
-The following example query returns the number of daily event occurences for the `feature_used` event.
-
-```sql
-SELECT
-  behavior_date,
-  COUNT(*) as event_occurences
-FROM common_mart.mart_behavior_structured_event
-WHERE event_action = 'feature_used'
-AND behavior_date > '2023-08-01' --restricted minimum date for performance
-AND app_id='gitlab' -- use gitlab for production events and gitlab-staging for events from staging
-GROUP BY 1 ORDER BY 1 desc
-```
-
-For a list of other event tables refer to the [Data Models Cheat Sheet](https://about.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models-2).
+For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
 
 ## Data flow
 
@@ -131,11 +167,11 @@ flowchart LR;
         end
     end
     snowplow[\Snowplow Pipeline\]
-    snowflake[(Data Warehouse)]
-    vis[Dashboards in Sisense/Tableau]
+    snowflake[(Snowflake Data Warehouse)]
+    vis[Dashboards in Tableau]
 ```
 
 ## Data Privacy
 
 GitLab only receives event counts or similarly aggregated information from self-managed instances. User identifiers for individual events on the SaaS version of GitLab are [pseudonymized](https://metrics.gitlab.com/identifiers).
-An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://about.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
+An exact description on what kind of data is being collected through the Internal Analytics system is given in our [handbook](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).

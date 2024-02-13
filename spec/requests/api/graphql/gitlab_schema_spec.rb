@@ -199,6 +199,7 @@ RSpec.describe 'GitlabSchema configurations', feature_category: :integrations do
           "query_analysis.complexity" => 181,
           "query_analysis.depth" => 13,
           "query_analysis.used_deprecated_fields" => an_instance_of(Array),
+          "query_analysis.used_deprecated_arguments" => an_instance_of(Array),
           "query_analysis.used_fields" => an_instance_of(Array)
         )
       )

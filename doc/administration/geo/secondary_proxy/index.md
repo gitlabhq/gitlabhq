@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo proxying for secondary sites **(PREMIUM SELF)**
+# Geo proxying for secondary sites
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5914) in GitLab 14.4 [with a flag](../../feature_flags.md) named `geo_secondary_proxy`. Disabled by default.
 > - [Enabled by default for unified URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/325732) in GitLab 14.6.
@@ -74,7 +78,7 @@ In Kubernetes, you can [use the same domain under `global.hosts.domain` as for t
 
 ## Geo proxying with Separate URLs
 
-> Geo secondary proxying for separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
+> - Geo secondary proxying for separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
 NOTE:
 The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.

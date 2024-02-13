@@ -4,7 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Slack slash commands **(FREE SELF)**
+# Slack slash commands
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 NOTE:
 This feature is only configurable on self-managed GitLab instances.
@@ -27,7 +31,7 @@ Slack slash commands are scoped to a project. To configure Slack slash commands:
 1. Select **Settings > Integrations**.
 1. Select **Slack slash commands** and leave this browser tab open.
 1. In a new browser tab, sign in to Slack and [add a new slash command](https://my.slack.com/services/new/slash-commands).
-1. Enter a slash command trigger name. You could use the project name.
+1. Enter a trigger name for the slash command. You could use the project name.
 1. Select **Add Slash Command Integration**.
 1. In the Slack browser tab:
    1. Complete the fields with information from the GitLab browser tab.

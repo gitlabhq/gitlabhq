@@ -1,10 +1,7 @@
 import { produce } from 'immer';
-import { WIDGET_TYPE_NOTES } from '~/work_items/constants';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { findHierarchyWidgetChildren } from '~/work_items/utils';
-
-const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
+import { findHierarchyWidgetChildren, isNotesWidget } from '../utils';
+import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
+import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
   draftData?.workspace?.workItems?.nodes[0]?.widgets.find(isNotesWidget);

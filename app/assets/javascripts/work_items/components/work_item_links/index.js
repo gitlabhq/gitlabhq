@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import WorkItemLinks from './work_item_links.vue';
 
@@ -20,6 +21,7 @@ export default function initWorkItemLinks() {
     registerPath,
     signInPath,
     wiReportAbusePath,
+    isGroup,
   } = workItemLinksRoot.dataset;
 
   return new Vue({
@@ -34,6 +36,7 @@ export default function initWorkItemLinks() {
       registerPath,
       signInPath,
       reportAbusePath: wiReportAbusePath,
+      isGroup: parseBoolean(isGroup),
     },
     render: (createElement) =>
       createElement(WorkItemLinks, {

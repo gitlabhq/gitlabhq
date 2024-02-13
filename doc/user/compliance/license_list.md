@@ -6,7 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 <!--- start_remove The following content will be removed on remove_date: '2024-08-15' -->
 
-# License list (deprecated) **(ULTIMATE ALL)**
+# License list (deprecated)
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/436100) in GitLab 16.8

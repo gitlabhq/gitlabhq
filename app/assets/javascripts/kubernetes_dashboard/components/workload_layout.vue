@@ -70,7 +70,7 @@ export default {
   </gl-alert>
   <div v-else>
     <workload-stats :stats="stats" />
-    <workload-table :items="items" :fields="fields" @select-item="onItemSelect" />
+    <workload-table :items="items" :fields="fields" class="gl-mt-8" @select-item="onItemSelect" />
 
     <gl-drawer
       :open="showDetailsDrawer"

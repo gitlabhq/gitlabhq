@@ -8,7 +8,7 @@ import {
   GlDropdownSectionHeader,
   GlDropdownDivider,
 } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
@@ -85,10 +85,13 @@ describe('GlobalSearchSidebarLabelFilter', () => {
 
     wrapper = mountExtended(LabelFilter, {
       store,
+      stubs: {
+        DropdownKeyboardNavigation: true,
+      },
     });
   };
 
-  const findComponentTitle = () => wrapper.findComponentByTestId('label-filter-title');
+  const findComponentTitle = () => wrapper.findByTestId('label-filter-title');
   const findAllSelectedLabelsAbove = () => wrapper.findAllComponents(GlLabel);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findDropdownForm = () => wrapper.findComponent(GlDropdownForm);
@@ -98,7 +101,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
   const findCheckboxFilter = () => wrapper.findAllComponents(LabelDropdownItems);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findNoLabelsFoundMessage = () => wrapper.findComponentByTestId('no-labels-found-message');
+  const findNoLabelsFoundMessage = () => wrapper.findByTestId('no-labels-found-message');
 
   const findLabelPills = () => wrapper.findAllComponentsByTestId('label');
   const findSelectedUappliedLavelPills = () => wrapper.findAllComponentsByTestId('unapplied-label');
@@ -109,7 +112,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
       createComponent();
       store.commit(RECEIVE_AGGREGATIONS_SUCCESS, MOCK_LABEL_AGGREGATIONS.data);
 
-      await Vue.nextTick();
+      await nextTick();
     });
 
     it('renders component title', () => {
@@ -159,7 +162,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
       createComponent();
       store.commit(RECEIVE_AGGREGATIONS_SUCCESS, MOCK_LABEL_AGGREGATIONS.data);
 
-      await Vue.nextTick();
+      await nextTick();
       trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
       findSearchBox().vm.$emit('focusin');
     });

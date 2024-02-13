@@ -4,7 +4,11 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit event streaming GraphQL API **(ULTIMATE ALL)**
+# Audit event streaming GraphQL API
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS, self-managed
 
 > - API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332747) in GitLab 14.5 [with a flag](../feature_flags.md) named `ff_external_audit_events_namespace`. Disabled by default.
 > - API [enabled on GitLab.com and by default on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338939) in GitLab 14.7.
@@ -161,6 +165,14 @@ query {
           }
         }
         eventTypeFilters
+        namespaceFilter {
+          id
+          namespace {
+            id
+            name
+            fullName
+          }
+        }
       }
     }
   }
@@ -278,7 +290,7 @@ The header is deleted if the returned `errors` object is empty.
 
 #### Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
+> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
 
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -333,9 +345,96 @@ Event type filters are removed if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
+#### Namespace filters
+
+> - Namespace filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 16.7.
+
+When you apply a namespace filter to a group, users can filter streamed audit events per destination for a specific subgroup or project of the group. Otherwise, the
+destination receives all audit events.
+
+A streaming destination that has a namespace filter set has a **filtered** (**{filter}**) label.
+
+##### Use the API to add a namespace filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can add a namespace filter by using the `auditEventsStreamingHttpNamespaceFiltersAdd` mutation type for both subgroups and projects.
+
+The namespace filter is added if:
+
+- The API returns an empty `errors` object.
+- The API responds with `200 OK`.
+
+###### Mutation for subgroup
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersAdd {
+  auditEventsStreamingHttpNamespaceFiltersAdd(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+    groupPath: "path/to/subgroup"
+  }) {
+    errors
+    namespaceFilter {
+      id
+      namespace {
+        id
+        name
+        fullName
+      }
+    }
+  }
+}
+```
+
+###### Mutation for project
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersAdd {
+  auditEventsStreamingHttpNamespaceFiltersAdd(input: {
+    destinationId: "gid://gitlab/AuditEvents::ExternalAuditEventDestination/1",
+    projectPath: "path/to/project"
+  }) {
+    errors
+    namespaceFilter {
+      id
+      namespace {
+        id
+        name
+        fullName
+      }
+    }
+  }
+}
+```
+
+##### Use the API to remove a namespace filter
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+You can remove a namespace filter by using the `auditEventsStreamingHttpNamespaceFiltersDelete` mutation type:
+
+```graphql
+mutation auditEventsStreamingHttpNamespaceFiltersDelete {
+  auditEventsStreamingHttpNamespaceFiltersDelete(input: {
+    namespaceFilterId: "gid://gitlab/AuditEvents::Streaming::HTTP::NamespaceFilter/5"
+  }) {
+    errors
+  }
+}
+```
+
+Namespace filter is removed if:
+
+- The returned `errors` object is empty.
+- The API responds with `200 OK`.
+
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409422) in GitLab 16.1.
 
 Manage Google Cloud Logging destinations for top-level groups.
 
@@ -467,7 +566,11 @@ Streaming configuration is deleted if:
 - The returned `errors` object is empty.
 - The API responds with `200 OK`.
 
-## Instance streaming destinations **(ULTIMATE SELF)**
+## Instance streaming destinations
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335175) in GitLab 16.0 [with a flag](../feature_flags.md) named `ff_external_audit_events`. Disabled by default.
 > - [Feature flag `ff_external_audit_events`](https://gitlab.com/gitlab-org/gitlab/-/issues/393772) enabled by default in GitLab 16.2.
@@ -686,7 +789,7 @@ The header is deleted if the returned `errors` object is empty.
 
 #### Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
+> - Event type filters API [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10868) in GitLab 16.2.
 
 When this feature is enabled for an instance, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
@@ -743,7 +846,7 @@ Event type filters are removed if:
 
 ### Google Cloud Logging destinations
 
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11303) in GitLab 16.5.
 
 Manage Google Cloud Logging destinations for an entire instance.
 

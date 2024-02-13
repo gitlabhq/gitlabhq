@@ -1,26 +1,49 @@
 <script>
-import { GlTab, GlTabs, GlBadge, GlLink } from '@gitlab/ui';
+import { GlTab, GlTabs, GlBadge } from '@gitlab/ui';
+import VueRouter from 'vue-router';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
-import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
-import EmptyState from '../components/empty_state.vue';
+import ModelVersionList from '~/ml/model_registry/components/model_version_list.vue';
+import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
+import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import * as i18n from '../translations';
+
+const ROUTE_DETAILS = 'details';
+const ROUTE_VERSIONS = 'versions';
+const ROUTE_CANDIDATES = 'candidates';
+
+const routes = [
+  {
+    path: '/',
+    name: ROUTE_DETAILS,
+    component: ModelDetail,
+  },
+  {
+    path: '/versions',
+    name: ROUTE_VERSIONS,
+    component: ModelVersionList,
+  },
+  {
+    path: '/candidates',
+    name: ROUTE_CANDIDATES,
+    component: CandidateList,
+  },
+  { path: '*', redirect: { name: ROUTE_DETAILS } },
+];
 
 export default {
   name: 'ShowMlModelApp',
   components: {
-    ModelVersionList: () => import('../components/model_version_list.vue'),
-    CandidateList: () => import('../components/candidate_list.vue'),
-    EmptyState,
     TitleArea,
     GlTabs,
     GlTab,
     GlBadge,
     MetadataItem,
-    ModelVersionDetail,
-    GlLink,
   },
+  router: new VueRouter({
+    routes,
+  }),
   props: {
     model: {
       type: Object,
@@ -34,9 +57,22 @@ export default {
     candidateCount() {
       return this.model.candidateCount || 0;
     },
+    tabIndex() {
+      return routes.findIndex(({ name }) => name === this.$route.name);
+    },
+  },
+  methods: {
+    goTo(name) {
+      if (name !== this.$route.name) {
+        this.$router.push({ name });
+      }
+    },
   },
   i18n,
   modelVersionEntity: MODEL_ENTITIES.modelVersion,
+  ROUTE_DETAILS,
+  ROUTE_VERSIONS,
+  ROUTE_CANDIDATES,
 };
 </script>
 
@@ -55,38 +91,25 @@ export default {
       </template>
     </title-area>
 
-    <gl-tabs class="gl-mt-4">
-      <gl-tab :title="$options.i18n.MODEL_DETAILS_TAB_LABEL">
-        <template v-if="model.latestVersion">
-          <h3 class="gl-font-lg">
-            {{ $options.i18n.LATEST_VERSION_LABEL }}:
-
-            <gl-link :href="model.latestVersion.path" data-testid="model-version-link">
-              {{ model.latestVersion.version }}
-            </gl-link>
-          </h3>
-
-          <model-version-detail :model-version="model.latestVersion" />
-        </template>
-
-        <empty-state v-else :entity-type="$options.modelVersionEntity" />
-      </gl-tab>
-      <gl-tab>
+    <gl-tabs class="gl-mt-4" :value="tabIndex">
+      <gl-tab
+        :title="$options.i18n.MODEL_DETAILS_TAB_LABEL"
+        @click="goTo($options.ROUTE_DETAILS)"
+      />
+      <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
         <template #title>
           {{ $options.i18n.MODEL_OTHER_VERSIONS_TAB_LABEL }}
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
         </template>
-
-        <model-version-list :model-id="model.id" />
       </gl-tab>
-      <gl-tab>
+      <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
         <template #title>
           {{ $options.i18n.MODEL_CANDIDATES_TAB_LABEL }}
           <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
         </template>
-
-        <candidate-list :model-id="model.id" />
       </gl-tab>
+
+      <router-view :model-id="model.id" :model="model" />
     </gl-tabs>
   </div>
 </template>

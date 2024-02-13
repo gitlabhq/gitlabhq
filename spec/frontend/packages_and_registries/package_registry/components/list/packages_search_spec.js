@@ -52,11 +52,23 @@ describe('Package Search', () => {
     expect(findPersistedSearch().exists()).toBe(false);
   });
 
-  it('has a LocalStorageSync component', () => {
+  it('has a LocalStorageSync component with project key', () => {
     mountComponent();
 
     expect(findLocalStorageSync().props()).toMatchObject({
       storageKey: 'package_registry_list_sorting',
+      value: {
+        orderBy: LIST_KEY_CREATED_AT,
+        sort: 'desc',
+      },
+    });
+  });
+
+  it('has a LocalStorageSync component with group key', () => {
+    mountComponent(true);
+
+    expect(findLocalStorageSync().props()).toMatchObject({
+      storageKey: 'group_package_registry_list_sorting',
       value: {
         orderBy: LIST_KEY_CREATED_AT,
         sort: 'desc',

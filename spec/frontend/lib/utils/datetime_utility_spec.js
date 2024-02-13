@@ -785,11 +785,16 @@ describe('date addition/subtraction methods', () => {
     );
   });
 
+  // NOTE: 2024-02-29 is a leap day
   describe('nYearsAfter', () => {
     it.each`
       date            | numberOfYears | expected
       ${'2020-07-06'} | ${1}          | ${'2021-07-06'}
       ${'2020-07-06'} | ${15}         | ${'2035-07-06'}
+      ${'2024-03-02'} | ${1}          | ${'2025-03-02'}
+      ${'2024-03-01'} | ${1}          | ${'2025-03-01'}
+      ${'2024-02-29'} | ${1}          | ${'2025-02-28'}
+      ${'2024-02-28'} | ${1}          | ${'2025-02-28'}
     `(
       'returns $expected for "$numberOfYears year(s) after $date"',
       ({ date, numberOfYears, expected }) => {
@@ -805,6 +810,10 @@ describe('date addition/subtraction methods', () => {
       date            | numberOfYears | expected
       ${'2020-07-06'} | ${4}          | ${'2016-07-06'}
       ${'2020-07-06'} | ${1}          | ${'2019-07-06'}
+      ${'2024-03-02'} | ${1}          | ${'2023-03-02'}
+      ${'2024-03-01'} | ${1}          | ${'2023-03-01'}
+      ${'2024-02-29'} | ${1}          | ${'2023-02-28'}
+      ${'2024-02-28'} | ${1}          | ${'2023-02-28'}
     `(
       'returns $expected for "$numberOfYears year(s) before $date"',
       ({ date, numberOfYears, expected }) => {

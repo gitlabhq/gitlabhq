@@ -18,7 +18,7 @@ We [plan to use](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122008) t
 
 ## End-to-end test results tracking
 
-This is described specifically at <https://about.gitlab.com/handbook/engineering/quality/#test-results-tracking>.
+This is described specifically in [Test results tracking](https://handbook.gitlab.com/handbook/engineering/quality/#test-results-tracking/).
 
 For the E2E test suite, we use the following commands from the gem (see the gem's README for details about each command):
 

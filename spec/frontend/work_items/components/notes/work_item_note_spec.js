@@ -478,4 +478,23 @@ describe('Work Item Note', () => {
       expect(groupWorkItemResponseHandler).toHaveBeenCalled();
     });
   });
+
+  describe('when note has no author', () => {
+    beforeEach(() => {
+      createComponent({
+        note: {
+          ...mockWorkItemCommentNote,
+          author: null,
+        },
+      });
+    });
+
+    it('should pass correct author prop to note header', () => {
+      expect(findNoteHeader().props('author')).toEqual({});
+    });
+
+    it('should not allow assigning to comment author', () => {
+      expect(findNoteActions().props('showAssignUnassign')).toBe(false);
+    });
+  });
 });

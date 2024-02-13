@@ -4,7 +4,11 @@ group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Get started with GitLab CI/CD **(FREE ALL)**
+# Get started with GitLab CI/CD
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 CI/CD is a continuous method of software development, where you continuously build,
 test, deploy, and monitor iterative code changes.

@@ -8,7 +8,7 @@ class TriggeredPipelineEntity < Grape::Entity
   expose :id
   expose :user, using: UserEntity
   expose :active?, as: :active
-  expose :coverage
+  expose :coverage, unless: proc { options[:disable_coverage] }
   expose :source
 
   expose :source_job do

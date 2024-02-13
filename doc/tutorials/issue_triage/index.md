@@ -4,7 +4,11 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a single project for issue triage **(FREE ALL)**
+# Tutorial: Set up a single project for issue triage
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -65,9 +69,9 @@ For this tutorial, suppose you've decided on the following:
 
 For inspiration, see how we define these at GitLab:
 
-- [Types and subtypes](https://about.gitlab.com/handbook/engineering/metrics/#work-type-classification)
-- [Priority](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#priority)
-- [Severity](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#severity)
+- [Types and subtypes](https://handbook.gitlab.com/handbook/engineering/metrics/#work-type-classification)
+- [Priority](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#priority)
+- [Severity](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/#severity)
 
 ## Document your criteria
 
@@ -79,7 +83,11 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 <!-- Idea for expanding this tutorial:
      Add steps for [creating a wiki page](../../user/project/wiki/index.md#create-a-new-wiki-page). -->
 
-## Create scoped labels **(PREMIUM ALL)**
+## Create scoped labels
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS, Self-managed
 
 Next, you'll create labels to add to issues to categorize them.
 
@@ -228,5 +236,5 @@ Next, you can:
 
   ![Example triage report heatmap](img/triage_report_v16_3.png)
 
-To learn more about issue triage at GitLab, see [Issue Triage](https://about.gitlab.com/handbook/engineering/quality/issue-triage/)
-and [Triage Operations](https://about.gitlab.com/handbook/engineering/quality/triage-operations/).
+To learn more about issue triage at GitLab, see [Issue Triage](https://handbook.gitlab.com/handbook/engineering/quality/issue-triage/)
+and [Triage Operations](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/triage-operations/).

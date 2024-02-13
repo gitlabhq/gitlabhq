@@ -4,7 +4,11 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Personal access tokens **(FREE ALL)**
+# Personal access tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** SaaS, self-managed
 
 > - Notifications for expiring tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
 > - Token lifetime limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3649) in GitLab 12.6.
@@ -85,6 +89,18 @@ At any time, you can revoke a personal access token.
 1. In the **Active personal access tokens** area, select **Revoke** for the relevant token.
 1. On the confirmation dialog, select **Revoke**.
 
+## Disable personal access tokens
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must be an administrator.
+
+In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
 ## View the last time a token was used
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33162) in GitLab 13.2. Token usage information is updated every 24 hours.
@@ -113,7 +129,7 @@ A personal access token can perform actions based on the assigned scopes.
 
 | Scope              | Access                                                                                                                                                                                                                                                                                                             |
 |--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.                                                                                                                                                           |
+| `api`              | Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry. Also grants complete read/write access to the registry and repository using Git over HTTP.                                                                                                                                                           |
 | `read_user`        | Grants read-only access to the authenticated user's profile through the `/user` API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under [`/users`](../../api/users.md).                                                                            |
 | `read_api`         | Grants read access to the API, including all groups and projects, the container registry, and the package registry. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28944) in GitLab 12.10.)                                                                                                   |
 | `read_repository`  | Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.                                                                                                                                                                                                       |
@@ -175,7 +191,11 @@ Prerequisites:
 
 You can now create personal access tokens for a service account user with no expiry date.
 
-## Create a personal access token programmatically **(FREE SELF)**
+## Create a personal access token programmatically
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can create a predetermined personal access token
 as part of your tests or automation.
@@ -215,7 +235,11 @@ This code can be shortened into a single-line shell command by using the
 sudo gitlab-rails runner "token = User.find_by_username('automation-bot').personal_access_tokens.create(scopes: ['read_user', 'read_repository'], name: 'Automation token', expires_at: 365.days.from_now); token.set_token('token-string-here123'); token.save!"
 ```
 
-## Revoke a personal access token programmatically **(FREE SELF)**
+## Revoke a personal access token programmatically
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 You can programmatically revoke a personal access token
 as part of your tests or automation.
@@ -247,7 +271,11 @@ This code can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
 ```
 
-## Clone repository using personal access token **(FREE SELF)**
+## Clone repository using personal access token
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
 
@@ -272,7 +300,11 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 ## Troubleshooting
 
-### Unrevoke a personal access token **(FREE SELF)**
+### Unrevoke a personal access token
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 

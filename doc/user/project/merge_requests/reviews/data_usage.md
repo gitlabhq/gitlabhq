@@ -4,7 +4,11 @@ group: AI Model Validation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Suggested Reviewers Data Usage **(ULTIMATE SAAS)**
+# Suggested Reviewers Data Usage
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** SaaS
 
 ## How it works
 

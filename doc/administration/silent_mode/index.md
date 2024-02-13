@@ -4,7 +4,11 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Silent Mode **(FREE SELF)**
+# GitLab Silent Mode
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9826) in GitLab 15.11. This feature was an [Experiment](../../policy/experiment-beta-support.md#experiment).
 > - Enabling and disabling Silent Mode through the web UI was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131090) in GitLab 16.4.

@@ -4,7 +4,11 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Troubleshooting Sidekiq **(FREE SELF)**
+# Troubleshooting Sidekiq
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 Sidekiq is the background job processor GitLab uses to asynchronously run
 tasks. When things go wrong it can be difficult to troubleshoot. These
@@ -474,7 +478,7 @@ end
 
 ## Canceling running jobs (destructive)
 
-> Introduced in GitLab 12.3.
+> - Introduced in GitLab 12.3.
 
 This is highly risky operation and use it as last resort.
 Doing that might result in data corruption, as the job

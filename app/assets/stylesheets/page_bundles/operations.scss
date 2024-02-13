@@ -6,7 +6,7 @@
 }
 
 .dashboard-card {
-  @include gl-cursor-grab;
+  cursor: grab;
 
   &-header {
     &-warning {

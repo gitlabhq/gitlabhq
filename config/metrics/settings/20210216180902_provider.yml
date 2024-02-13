@@ -4,7 +4,7 @@ key_path: object_store.lfs.object_store.provider
 description: What Object Storage provider has been configured for LFS
 product_section: enablement
 product_stage: enablement
-product_group: memory
+product_group: application_performance
 value_type: string
 status: active
 time_frame: none

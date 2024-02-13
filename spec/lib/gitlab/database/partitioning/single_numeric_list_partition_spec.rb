@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Partitioning::SingleNumericListPartition do
+RSpec.describe Gitlab::Database::Partitioning::SingleNumericListPartition, feature_category: :database do
   describe '.from_sql' do
     subject(:parsed_partition) { described_class.from_sql(table, partition_name, definition) }
 

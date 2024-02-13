@@ -22,7 +22,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Use the following guidelines when you develop a feature that is only applicable for SaaS (for example, a CustomersDot integration).
 
-In general, features should be provided for [both SaaS and self-managed deployments](https://about.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
+In general, features should be provided for [both SaaS and self-managed deployments](https://handbook.gitlab.com/handbook/product/product-principles/#parity-between-saas-and-self-managed-deployments).
 However, there are cases when a feature should only be available on SaaS and this guide will help show how that is
 accomplished.
 
@@ -61,7 +61,30 @@ Each SaaS feature is defined in a separate YAML file consisting of a number of f
 | `name`              | yes      | Name of the SaaS feature.                                                                                    |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the SaaS feature.                                               |
 | `milestone`         | no       | Milestone in which the SaaS feature was created.                                                             |
-| `group`             | no       | The [group](https://about.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+| `group`             | no       | The [group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) that owns the feature flag. |
+
+#### Create a new SaaS feature file definition
+
+The GitLab codebase provides [`bin/saas-feature.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/bin/saas-feature.rb),
+a dedicated tool to create new SaaS feature definitions.
+The tool asks various questions about the new SaaS feature, then creates
+a YAML definition in `ee/config/saas_features`.
+
+Only SaaS features that have a YAML definition file can be used when running the development or testing environments.
+
+```shell
+❯ bin/saas-feature my_saas_feature
+You picked the group 'group::acquisition'
+
+>> URL of the MR introducing the SaaS feature (enter to skip and let Danger provide a suggestion directly in the MR):
+?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+create ee/config/saas_features/my_saas_feature.yml
+---
+name: my_saas_feature
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
+milestone: '16.8'
+group: group::acquisition
+```
 
 ### Opting out of a SaaS-only feature on another SaaS instance (JiHu)
 
@@ -273,7 +296,7 @@ FOSS context as well.
 
 To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
-See the [As-if-FOSS jobs](pipelines/index.md#as-if-foss-jobs) pipelines documentation for more information.
+See the [As-if-FOSS jobs and cross project downstream pipeline](pipelines/index.md#as-if-foss-jobs-and-cross-project-downstream-pipeline) pipelines documentation for more information.
 
 ## Separation of EE code in the backend
 

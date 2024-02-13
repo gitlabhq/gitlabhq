@@ -53,7 +53,7 @@ export default {
           :value="option.value"
           class="mb-3"
         >
-          <div class="d-flex align-items-center">
+          <div class="d-flex gl-align-items-center">
             <gl-icon :size="16" :name="option.icon" />
             <span
               class="font-weight-bold ml-1 js-visibility-option"

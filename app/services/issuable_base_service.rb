@@ -227,6 +227,7 @@ class IssuableBaseService < ::BaseContainerService
   def create(issuable, skip_system_notes: false)
     initialize_callbacks!(issuable)
 
+    prepare_create_params(issuable)
     handle_quick_actions(issuable)
     filter_params(issuable)
 
@@ -289,6 +290,10 @@ class IssuableBaseService < ::BaseContainerService
     # To be overridden by subclasses
   end
 
+  def prepare_create_params(issuable)
+    # To be overridden by subclasses
+  end
+
   def after_update(issuable, old_associations)
     handle_description_updated(issuable)
     handle_label_changes(issuable, old_associations[:labels])
@@ -319,9 +324,7 @@ class IssuableBaseService < ::BaseContainerService
     if issuable.changed? || params.present? || widget_params.present? || @callbacks.present?
       issuable.assign_attributes(allowed_update_params(params))
 
-      if issuable.description_changed?
-        issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
-      end
+      assign_last_edited(issuable)
 
       before_update(issuable)
 
@@ -506,6 +509,12 @@ class IssuableBaseService < ::BaseContainerService
       params[:assignee_ids] = assignee_ids
       issuable.touch
     end
+  end
+
+  def assign_last_edited(issuable)
+    return unless issuable.description_changed?
+
+    issuable.assign_attributes(last_edited_at: Time.current, last_edited_by: current_user)
   end
 
   # Arrays of ids are used, but we should really use sets of ids, so

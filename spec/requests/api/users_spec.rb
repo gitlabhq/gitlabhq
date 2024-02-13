@@ -2023,6 +2023,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     let(:expiration_month) { 1 }
     let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
     let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
+    let(:zuora_payment_method_xid) { 'abc123' }
 
     let(:path) { "/user/#{user.id}/credit_card_validation" }
     let(:params) do
@@ -2032,7 +2033,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         credit_card_expiration_month: expiration_month,
         credit_card_holder_name: holder_name,
         credit_card_type: network,
-        credit_card_mask_number: last_digits
+        credit_card_mask_number: last_digits,
+        zuora_payment_method_xid: zuora_payment_method_xid
       }
     end
 
@@ -2066,7 +2068,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           network_hash: sha256(network.downcase),
           holder_name_hash: sha256(holder_name.downcase),
           last_digits_hash: sha256(last_digits),
-          expiration_date_hash: sha256(expiration_date.to_s)
+          expiration_date_hash: sha256(expiration_date.to_s),
+          zuora_payment_method_xid: zuora_payment_method_xid
         )
       end
 
@@ -2792,8 +2795,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
       perform_enqueued_jobs { delete api(path, admin, admin_mode: true) }
 
       expect(response).to have_gitlab_http_status(:no_content)
-      expect(Users::GhostUserMigration.where(user: user,
-                                             initiator_user: admin)).to be_exists
+      expect(Users::GhostUserMigration.where(user: user, initiator_user: admin)).to be_exists
     end
 
     context "sole owner of a group" do
@@ -2863,9 +2865,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
         expect(response).to have_gitlab_http_status(:no_content)
         expect(issue.reload).to be_persisted
-        expect(Users::GhostUserMigration.where(user: user,
-                                               initiator_user: admin,
-                                               hard_delete: false)).to be_exists
+        expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: false)).to be_exists
       end
     end
 
@@ -2874,9 +2874,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
         perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin, admin_mode: true) }
 
         expect(response).to have_gitlab_http_status(:no_content)
-        expect(Users::GhostUserMigration.where(user: user,
-                                               initiator_user: admin,
-                                               hard_delete: true)).to be_exists
+        expect(Users::GhostUserMigration.where(user: user, initiator_user: admin, hard_delete: true)).to be_exists
       end
     end
   end
@@ -4384,21 +4382,20 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
   context "user activities", :clean_gitlab_redis_shared_state do
     let_it_be(:old_active_user) { create(:user, last_activity_on: Time.utc(2000, 1, 1)) }
     let_it_be(:newly_active_user) { create(:user, last_activity_on: 2.days.ago.midday) }
+    let_it_be(:newly_active_private_user) { create(:user, last_activity_on: 1.day.ago.midday, private_profile: true) }
     let(:path) { '/user/activities' }
 
-    it_behaves_like 'GET request permissions for admin mode'
+    context 'for an anonymous user' do
+      it 'returns 401' do
+        get api(path)
 
-    context 'last activity as normal user' do
-      it 'has no permission' do
-        get api(path, user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:unauthorized)
       end
     end
 
-    context 'as admin' do
+    context 'as a logged in user' do
       it 'returns the activities from the last 6 months' do
-        get api(path, admin, admin_mode: true)
+        get api(path, user)
 
         expect(response).to include_pagination_headers
         expect(json_response.size).to eq(1)
@@ -4412,7 +4409,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
 
       context 'passing a :from parameter' do
         it 'returns the activities from the given date' do
-          get api("#{path}?from=2000-1-1", admin, admin_mode: true)
+          get api("#{path}?from=2000-1-1", user)
 
           expect(response).to include_pagination_headers
           expect(json_response.size).to eq(2)
@@ -4423,6 +4420,22 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
           expect(activity['last_activity_on']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
           expect(activity['last_activity_at']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
         end
+      end
+
+      it 'does not include users with private profiles' do
+        get api(path, user)
+
+        expect(json_response.map { |user| user['username'] })
+          .not_to include(newly_active_private_user.username)
+      end
+    end
+
+    context 'as admin' do
+      it 'includes users with private profiles' do
+        get api(path, admin, admin_mode: true)
+
+        expect(json_response.map { |user| user['username'] })
+          .to include(newly_active_private_user.username)
       end
     end
   end

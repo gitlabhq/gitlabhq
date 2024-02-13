@@ -35,14 +35,23 @@ module Secpick
       "#{@options[:version]}-#{STABLE_SUFFIX}-ee"
     end
 
-    def git_commands
+    def git_pick_commands
       [
         fetch_stable_branch,
         create_backport_branch,
-        cherry_pick_commit,
+        cherry_pick_commit
+      ]
+    end
+
+    def git_push_commands
+      [
         push_to_remote,
         checkout_original_branch
       ]
+    end
+
+    def git_commands
+      git_pick_commands + git_push_commands
     end
 
     def gitlab_params
@@ -72,7 +81,36 @@ module Secpick
         puts "\nMerge request params:".blue
         pp gitlab_params
       else
-        cmd = git_commands.join(' && ')
+        cmd = git_pick_commands.join(' && ')
+        stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
+
+        puts stdout.read&.green
+        puts stderr.read&.red
+
+        unless wait_thr.value.success?
+          puts <<~MSG
+            It looks like cherry pick failed!
+            Open a new terminal and fix the conflicts.
+            Once fixed run `git cherry-pick --continue`
+
+            After you are done, return here and continue. (Press n to cancel)
+
+            Ready to continue? (Y/n)
+          MSG
+
+          unless ['', 'Y', 'y'].include?(gets.chomp)
+            puts "\nRemaining git commands:".blue
+            puts 'git cherry-pick --continue'
+            puts git_push_commands.join("\n")
+            exit 1
+          end
+        end
+
+        stdin.close
+        stdout.close
+        stderr.close
+
+        cmd = git_push_commands.join(' && ')
         stdin, stdout, stderr, wait_thr = Open3.popen3(cmd)
 
         puts stdout.read&.green

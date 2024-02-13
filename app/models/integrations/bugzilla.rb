@@ -3,6 +3,7 @@
 module Integrations
   class Bugzilla < BaseIssueTracker
     include Integrations::HasIssueTrackerFields
+    include HasAvatar
 
     validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 

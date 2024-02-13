@@ -6,11 +6,13 @@ module Gitlab
     InvalidPropertyError = Class.new(StandardError)
     InvalidPropertyTypeError = Class.new(StandardError)
 
+    SNOWPLOW_EMITTER_BUFFER_SIZE = 100
+
     class << self
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
 
-      def track_event(event_name, send_snowplow_event: true, **kwargs)
+      def track_event(event_name, category: nil, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
 
         validate_property!(kwargs, :user, User)
@@ -22,8 +24,8 @@ module Gitlab
 
         increase_total_counter(event_name)
         increase_weekly_total_counter(event_name)
-        update_unique_counter(event_name, kwargs)
-        trigger_snowplow_event(event_name, kwargs) if send_snowplow_event
+        update_unique_counters(event_name, kwargs)
+        trigger_snowplow_event(event_name, category, kwargs) if send_snowplow_event
 
         if Feature.enabled?(:internal_events_for_product_analytics)
           send_application_instrumentation_event(event_name, kwargs)
@@ -59,24 +61,40 @@ module Gitlab
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
-      def update_unique_counter(event_name, kwargs)
-        unique_property = EventDefinitions.unique_property(event_name)
-        return unless unique_property
+      def update_unique_counters(event_name, kwargs)
+        unique_properties = EventDefinitions.unique_properties(event_name)
+        return if unique_properties.empty?
 
-        unique_method = :id
-
-        unless kwargs.has_key?(unique_property)
-          message = "#{event_name} should be triggered with a named parameter '#{unique_property}'."
-          Gitlab::AppJsonLogger.warn(message: message)
-          return
+        if Feature.disabled?(:redis_hll_property_name_tracking, type: :wip)
+          unique_properties = handle_legacy_property_names(unique_properties, event_name)
         end
 
-        unique_value = kwargs[unique_property].public_send(unique_method) # rubocop:disable GitlabSecurity/PublicSend
+        unique_properties.each do |property_name|
+          unless kwargs[property_name]
+            message = "#{event_name} should be triggered with a named parameter '#{property_name}'."
+            Gitlab::AppJsonLogger.warn(message: message)
+            next
+          end
 
-        UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value)
+          unique_value = kwargs[property_name].id
+
+          UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value, property_name: property_name)
+        end
       end
 
-      def trigger_snowplow_event(event_name, kwargs)
+      def handle_legacy_property_names(unique_properties, event_name)
+        # make sure we're not incrementing the user_id counter with project_id value
+        return [:user] if event_name.to_s == 'user_visited_dashboard'
+
+        return unique_properties if unique_properties.length == 1
+
+        # in case a new event got defined with multiple unique_properties, raise an error
+        raise Gitlab::InternalEvents::EventDefinitions::InvalidMetricConfiguration,
+          "The same event cannot have several unique properties defined. " \
+          "Event: #{event_name}, unique values: #{unique_properties}"
+      end
+
+      def trigger_snowplow_event(event_name, category, kwargs)
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
@@ -93,11 +111,11 @@ module Gitlab
           event: event_name
         ).to_context
 
-        track_struct_event(event_name, contexts: [standard_context, service_ping_context])
+        track_struct_event(event_name, category, contexts: [standard_context, service_ping_context])
       end
 
-      def track_struct_event(event_name, contexts:)
-        category = 'InternalEventTracking'
+      def track_struct_event(event_name, category, contexts:)
+        category ||= 'InternalEventTracking'
         tracker = Gitlab::Tracking.tracker
         tracker.event(category, event_name, context: contexts)
       rescue StandardError => error
@@ -120,7 +138,7 @@ module Gitlab
 
         return unless app_id.present? && host.present?
 
-        GitlabSDK::Client.new(app_id: app_id, host: host)
+        GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: SNOWPLOW_EMITTER_BUFFER_SIZE)
       end
       strong_memoize_attr :gitlab_sdk_client
     end

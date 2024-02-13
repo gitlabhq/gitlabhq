@@ -4,7 +4,11 @@ group: Database
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Configure GitLab using an external PostgreSQL service **(FREE SELF)**
+# Configure GitLab using an external PostgreSQL service
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed
 
 If you're hosting GitLab on a cloud provider, you can optionally use a
 managed service for PostgreSQL. For example, AWS offers a managed Relational

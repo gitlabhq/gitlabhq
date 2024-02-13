@@ -4,8 +4,8 @@ module QA
   module Page
     module Admin
       class NewSession < Page::Base
-        view 'app/views/admin/sessions/_new_base.html.haml' do
-          element 'enter-admin-mode-button'
+        view 'app/views/devise/sessions/_new_base.html.haml' do
+          element 'sign-in-button'
           element 'password-field'
         end
 
@@ -14,7 +14,7 @@ module QA
         end
 
         def click_enter_admin_mode
-          click_element 'enter-admin-mode-button'
+          click_element 'sign-in-button'
         end
       end
     end

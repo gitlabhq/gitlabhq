@@ -2,7 +2,7 @@
 
 RSpec.shared_context 'changes access checks context' do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be_with_reload(:project) { create(:project, :repository) }
 
   let(:user_access) { Gitlab::UserAccess.new(user, container: project) }
   let(:protocol) { 'ssh' }

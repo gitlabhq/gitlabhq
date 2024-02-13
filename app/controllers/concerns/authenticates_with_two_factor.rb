@@ -16,8 +16,7 @@ module AuthenticatesWithTwoFactor
   #
   # Returns nil
   def prompt_for_two_factor(user)
-    # Set @user for Devise views
-    @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables -- Set @user for Devise views
 
     return handle_locked_user(user) unless user.can?(:log_in)
 

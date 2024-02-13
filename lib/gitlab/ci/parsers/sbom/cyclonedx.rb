@@ -58,15 +58,7 @@ module Gitlab
 
           def parse_components
             data['components']&.each_with_index do |component_data, index|
-              properties = component_data['properties']
-              component = ::Gitlab::Ci::Reports::Sbom::Component.new(
-                type: component_data['type'],
-                name: component_data['name'],
-                purl: component_data['purl'],
-                version: component_data['version']
-              )
-
-              component.properties = CyclonedxProperties.parse_trivy_source(properties) if properties
+              component = Component.new(component_data).parse
               report.add_component(component) if component.ingestible?
             rescue ::Sbom::PackageUrl::InvalidPackageUrl
               report.add_error("/components/#{index}/purl is invalid")

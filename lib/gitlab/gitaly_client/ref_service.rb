@@ -115,7 +115,7 @@ module Gitlab
 
         case detailed_error.try(:error)
         when :tag_not_found
-          raise Gitlab::Git::UnknownRef, "tag does not exist: #{tag_name}"
+          raise Gitlab::Git::ReferenceNotFoundError, "tag does not exist: #{tag_name}"
         else
           # When this is not a know structured error we simply re-raise the exception.
           raise e

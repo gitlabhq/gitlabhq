@@ -4,7 +4,11 @@ group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Email from GitLab **(PREMIUM SELF)**
+# Email from GitLab
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 
 Administrators can email all users, or users of a chosen group or project.
 Users receive the email at their primary email address.
