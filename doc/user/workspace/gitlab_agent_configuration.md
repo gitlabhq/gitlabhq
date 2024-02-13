@@ -60,7 +60,6 @@ running workspaces to remove those workspaces from the Kubernetes cluster.
 ### `dns_zone`
 
 Use this setting to define the DNS zone of the URL where workspaces are available.
-When you set `dns_zone`, you can no longer update the setting.
 
 **Example configuration:**
 

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { usageQuotasTabsMetadata } from 'ee_else_ce/usage_quotas/constants';
 import UsageQuotasApp from './components/usage_quotas_app.vue';
 
 export default () => {
@@ -15,6 +16,7 @@ export default () => {
     name: 'UsageQuotasView',
     provide: {
       namespaceName,
+      tabs: usageQuotasTabsMetadata,
     },
     render(createElement) {
       return createElement(UsageQuotasApp);

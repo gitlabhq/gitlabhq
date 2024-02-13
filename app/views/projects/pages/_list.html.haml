@@ -29,19 +29,28 @@
                 = link_button_to s_('GitLabPages|Edit'), project_pages_domain_path(@project, domain), class: 'btn-grouped', variant: :confirm, category: :secondary, size: :small
                 = link_button_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger'}, "aria-label": s_("GitLabPages|Remove domain"), method: :delete, class: 'btn-grouped', variant: :danger, size: :small
             - if domain.needs_verification?
-              %li.list-group-item.bs-callout-warning
+              %li.list-group-item.gl-p-0
                 - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
                 - details_link_end = '</a>'.html_safe
-                = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
-                    link_start: details_link_start,
-                    link_end: details_link_end }
+                = render Pajamas::AlertComponent.new(dismissible: false,
+                  variant: :warning,
+                  show_icon: false) do |c|
+                  - c.with_body do
+                    = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
+                      link_start: details_link_start,
+                      link_end: details_link_end }
+
             - if domain.show_auto_ssl_failed_warning?
-              %li.list-group-item.bs-callout-warning
+              %li.list-group-item.gl-p-0
                 - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
                 - details_link_end = '</a>'.html_safe
-                = s_("GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}.").html_safe % { domain: domain.domain,
-                    link_start: details_link_start,
-                    link_end: details_link_end }
+                = render Pajamas::AlertComponent.new(dismissible: false,
+                  variant: :warning,
+                  show_icon: false) do |c|
+                  - c.with_body do
+                    = s_("GitLabPages|Something went wrong while obtaining the Let's Encrypt certificate for %{domain}. To retry visit your %{link_start}domain details%{link_end}.").html_safe % { domain: domain.domain,
+                        link_start: details_link_start,
+                        link_end: details_link_end }
       - else
         .gl-text-center
           = s_("You currently have no custom domains.")

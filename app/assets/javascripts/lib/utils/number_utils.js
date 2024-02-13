@@ -130,9 +130,9 @@ export function numberToMetricPrefix(number, digits = 1) {
     return number.toString();
   }
   if (number < THOUSAND ** 2) {
-    return `${(number / THOUSAND).toFixed(digits)}k`;
+    return `${Number((number / THOUSAND).toFixed(digits))}k`;
   }
-  return `${(number / THOUSAND ** 2).toFixed(digits)}m`;
+  return `${Number((number / THOUSAND ** 2).toFixed(digits))}m`;
 }
 /**
  * A simple method that returns the value of a + b

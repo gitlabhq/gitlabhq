@@ -33,9 +33,5 @@
     top: calc(var(--read-more-height, #{$fallback}) - #{$scrim} - #{$height});
     height: $scrim;
     background: linear-gradient(180deg, transparent, $white);
-
-    .gl-dark & {
-      background: linear-gradient(180deg, transparent, $black);
-    }
   }
 }

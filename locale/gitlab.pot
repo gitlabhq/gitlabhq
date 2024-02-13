@@ -34937,6 +34937,9 @@ msgstr ""
 msgid "PackageRegistry|App name: %{name}"
 msgstr ""
 
+msgid "PackageRegistry|Are you sure you want to delete the package protection rule?"
+msgstr ""
+
 msgid "PackageRegistry|Author email: %{authorEmail}"
 msgstr ""
 
@@ -35218,6 +35221,12 @@ msgstr[1] ""
 msgid "PackageRegistry|Package name pattern"
 msgstr ""
 
+msgid "PackageRegistry|Package protection rule deleted."
+msgstr ""
+
+msgid "PackageRegistry|Package protection rules"
+msgstr ""
+
 msgid "PackageRegistry|Package type"
 msgstr ""
 
@@ -35243,9 +35252,6 @@ msgid "PackageRegistry|Pip Command"
 msgstr ""
 
 msgid "PackageRegistry|Project-level"
-msgstr ""
-
-msgid "PackageRegistry|Protected packages"
 msgstr ""
 
 msgid "PackageRegistry|Publish packages if their name or version matches this regex."
@@ -35381,6 +35387,9 @@ msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
 msgid "PackageRegistry|Unable to load package"
+msgstr ""
+
+msgid "PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages."
 msgstr ""
 
 msgid "PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package."
@@ -53439,6 +53448,9 @@ msgid "UsageQuota|Something went wrong while fetching pipeline statistics"
 msgstr ""
 
 msgid "UsageQuota|Something went wrong while fetching project storage statistics"
+msgstr ""
+
+msgid "UsageQuota|Something went wrong while loading Usage Quotas Tabs."
 msgstr ""
 
 msgid "UsageQuota|Storage"

@@ -1,16 +1,21 @@
-import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getBinding } from 'helpers/vue_mock_directive';
 import PackagesProtectionRules from '~/packages_and_registries/settings/project/components/packages_protection_rules.vue';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
-
-import { packagesProtectionRuleQueryPayload, packagesProtectionRulesData } from '../mock_data';
+import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
+import {
+  packagesProtectionRuleQueryPayload,
+  packagesProtectionRulesData,
+  deletePackagesProtectionRuleMutationPayload,
+} from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -21,17 +26,30 @@ describe('Packages protection rules project settings', () => {
   const defaultProvidedValues = {
     projectPath: 'path',
   };
+
+  const $toast = { show: jest.fn() };
+
   const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
   const findTable = () => extendedWrapper(wrapper.findByRole('table', /protected packages/i));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
   const findTableRow = (i) => extendedWrapper(findTableBody().findAllByRole('row').at(i));
+  const findTableRowButtonDelete = (i) => findTableRow(i).findByRole('button', { name: /delete/i });
   const findTableLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findProtectionRuleForm = () => wrapper.findComponent(PackagesProtectionRuleForm);
   const findAddProtectionRuleButton = () =>
     wrapper.findByRole('button', { name: /add package protection rule/i });
+  const findAlert = () => wrapper.findByRole('alert');
+  const findModal = () => wrapper.findComponent(GlModal);
 
   const mountComponent = (mountFn = shallowMount, provide = defaultProvidedValues, config) => {
     wrapper = mountFn(PackagesProtectionRules, {
+      stubs: {
+        SettingsBlock,
+        GlModal: true,
+      },
+      mocks: {
+        $toast,
+      },
       provide,
       ...config,
     });
@@ -40,14 +58,24 @@ describe('Packages protection rules project settings', () => {
   const createComponent = ({
     mountFn = shallowMount,
     provide = defaultProvidedValues,
-    resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload()),
+    packagesProtectionRuleQueryResolver = jest
+      .fn()
+      .mockResolvedValue(packagesProtectionRuleQueryPayload()),
+    deletePackagesProtectionRuleMutationResolver = jest
+      .fn()
+      .mockResolvedValue(deletePackagesProtectionRuleMutationPayload()),
+    config = {},
   } = {}) => {
-    const requestHandlers = [[packagesProtectionRuleQuery, resolver]];
+    const requestHandlers = [
+      [packagesProtectionRuleQuery, packagesProtectionRuleQueryResolver],
+      [deletePackagesProtectionRuleMutation, deletePackagesProtectionRuleMutationResolver],
+    ];
 
     fakeApollo = createMockApollo(requestHandlers);
 
     mountComponent(mountFn, provide, {
       apolloProvider: fakeApollo,
+      ...config,
     });
   };
 
@@ -92,10 +120,12 @@ describe('Packages protection rules project settings', () => {
     });
 
     it('calls graphql api query', () => {
-      const resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
-      createComponent({ resolver });
+      const packagesProtectionRuleQueryResolver = jest
+        .fn()
+        .mockResolvedValue(packagesProtectionRuleQueryPayload());
+      createComponent({ packagesProtectionRuleQueryResolver });
 
-      expect(resolver).toHaveBeenCalledWith(
+      expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledWith(
         expect.objectContaining({ projectPath: defaultProvidedValues.projectPath }),
       );
     });
@@ -118,10 +148,12 @@ describe('Packages protection rules project settings', () => {
       });
 
       it('calls initial graphql api query with pagination information', () => {
-        const resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
-        createComponent({ resolver });
+        const packagesProtectionRuleQueryResolver = jest
+          .fn()
+          .mockResolvedValue(packagesProtectionRuleQueryPayload());
+        createComponent({ packagesProtectionRuleQueryResolver });
 
-        expect(resolver).toHaveBeenCalledWith(
+        expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledWith(
           expect.objectContaining({
             projectPath: defaultProvidedValues.projectPath,
             first: 10,
@@ -130,7 +162,7 @@ describe('Packages protection rules project settings', () => {
       });
 
       describe('when button "Previous" is clicked', () => {
-        const resolver = jest
+        const packagesProtectionRuleQueryResolver = jest
           .fn()
           .mockResolvedValueOnce(
             packagesProtectionRuleQueryPayload({
@@ -149,7 +181,7 @@ describe('Packages protection rules project settings', () => {
           extendedWrapper(findPagination()).findByRole('button', { name: 'Previous' });
 
         beforeEach(async () => {
-          createComponent({ mountFn: mountExtended, resolver });
+          createComponent({ mountFn: mountExtended, packagesProtectionRuleQueryResolver });
 
           await waitForPromises();
 
@@ -157,8 +189,8 @@ describe('Packages protection rules project settings', () => {
         });
 
         it('sends a second graphql api query with new pagination params', () => {
-          expect(resolver).toHaveBeenCalledTimes(2);
-          expect(resolver).toHaveBeenLastCalledWith(
+          expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect(packagesProtectionRuleQueryResolver).toHaveBeenLastCalledWith(
             expect.objectContaining({
               before: '10',
               last: 10,
@@ -169,7 +201,7 @@ describe('Packages protection rules project settings', () => {
       });
 
       describe('when button "Next" is clicked', () => {
-        const resolver = jest
+        const packagesProtectionRuleQueryResolver = jest
           .fn()
           .mockResolvedValueOnce(packagesProtectionRuleQueryPayload())
           .mockResolvedValueOnce(
@@ -188,7 +220,7 @@ describe('Packages protection rules project settings', () => {
           extendedWrapper(findPagination()).findByRole('button', { name: 'Next' });
 
         beforeEach(async () => {
-          createComponent({ mountFn: mountExtended, resolver });
+          createComponent({ mountFn: mountExtended, packagesProtectionRuleQueryResolver });
 
           await waitForPromises();
 
@@ -196,8 +228,8 @@ describe('Packages protection rules project settings', () => {
         });
 
         it('sends a second graphql api query with new pagination params', () => {
-          expect(resolver).toHaveBeenCalledTimes(2);
-          expect(resolver).toHaveBeenLastCalledWith(
+          expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+          expect(packagesProtectionRuleQueryResolver).toHaveBeenLastCalledWith(
             expect.objectContaining({
               after: '10',
               first: 10,
@@ -205,6 +237,164 @@ describe('Packages protection rules project settings', () => {
             }),
           );
         });
+      });
+    });
+
+    describe('table rows', () => {
+      describe('button "Delete"', () => {
+        it('exists in table', async () => {
+          createComponent({ mountFn: mountExtended });
+
+          await waitForPromises();
+
+          expect(findTableRowButtonDelete(0).exists()).toBe(true);
+        });
+
+        describe('when button is clicked', () => {
+          it('binds confirmation modal', async () => {
+            createComponent({ mountFn: mountExtended });
+
+            await waitForPromises();
+
+            const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
+
+            expect(findModal().props('modal-id')).toBe(modalId);
+            expect(findModal().props('title')).toBe(
+              'Are you sure you want to delete the package protection rule?',
+            );
+            expect(findModal().text()).toBe(
+              'Users with at least the Developer role for this project will be able to publish, edit, and delete packages.',
+            );
+          });
+        });
+      });
+    });
+  });
+
+  describe('modal "confirmation"', () => {
+    const createComponentAndClickButtonDeleteInTableRow = async ({
+      tableRowIndex = 0,
+      deletePackagesProtectionRuleMutationResolver = jest
+        .fn()
+        .mockResolvedValue(deletePackagesProtectionRuleMutationPayload()),
+    } = {}) => {
+      createComponent({
+        mountFn: mountExtended,
+        deletePackagesProtectionRuleMutationResolver,
+      });
+
+      await waitForPromises();
+
+      findTableRowButtonDelete(tableRowIndex).trigger('click');
+    };
+
+    describe('when modal button "primary" clicked', () => {
+      const clickOnModalPrimaryBtn = () => findModal().vm.$emit('primary');
+
+      it('disables the button when graphql mutation is executed', async () => {
+        await createComponentAndClickButtonDeleteInTableRow();
+
+        await clickOnModalPrimaryBtn();
+
+        expect(findTableRowButtonDelete(0).props().disabled).toBe(true);
+
+        expect(findTableRowButtonDelete(1).props().disabled).toBe(false);
+      });
+
+      it('sends graphql mutation', async () => {
+        const deletePackagesProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(deletePackagesProtectionRuleMutationPayload());
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deletePackagesProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        expect(deletePackagesProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
+        expect(deletePackagesProtectionRuleMutationResolver).toHaveBeenCalledWith({
+          input: { id: packagesProtectionRulesData[0].id },
+        });
+      });
+
+      it('handles erroneous graphql mutation', async () => {
+        const alertErrorMessage = 'Client error message';
+        const deletePackagesProtectionRuleMutationResolver = jest
+          .fn()
+          .mockRejectedValue(new Error(alertErrorMessage));
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deletePackagesProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(alertErrorMessage);
+      });
+
+      it('handles graphql mutation with error response', async () => {
+        const alertErrorMessage = 'Server error message';
+        const deletePackagesProtectionRuleMutationResolver = jest.fn().mockResolvedValue({
+          data: {
+            deletePackagesProtectionRule: {
+              packageProtectionRule: null,
+              errors: [alertErrorMessage],
+            },
+          },
+        });
+
+        await createComponentAndClickButtonDeleteInTableRow({
+          deletePackagesProtectionRuleMutationResolver,
+        });
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(findAlert().isVisible()).toBe(true);
+        expect(findAlert().text()).toBe(alertErrorMessage);
+      });
+
+      it('refetches package protection rules after successful graphql mutation', async () => {
+        const deletePackagesProtectionRuleMutationResolver = jest
+          .fn()
+          .mockResolvedValue(deletePackagesProtectionRuleMutationPayload());
+
+        const packagesProtectionRuleQueryResolver = jest
+          .fn()
+          .mockResolvedValue(packagesProtectionRuleQueryPayload());
+
+        createComponent({
+          mountFn: mountExtended,
+          packagesProtectionRuleQueryResolver,
+          deletePackagesProtectionRuleMutationResolver,
+        });
+
+        await waitForPromises();
+
+        expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
+
+        await findTableRowButtonDelete(0).trigger('click');
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
+      });
+
+      it('shows a toast with success message', async () => {
+        await createComponentAndClickButtonDeleteInTableRow();
+
+        await clickOnModalPrimaryBtn();
+
+        await waitForPromises();
+
+        expect($toast.show).toHaveBeenCalledWith('Package protection rule deleted.');
       });
     });
   });
@@ -247,12 +437,14 @@ describe('Packages protection rules project settings', () => {
   });
 
   describe('form "add protection rule"', () => {
-    let resolver;
+    let packagesProtectionRuleQueryResolver;
 
     beforeEach(async () => {
-      resolver = jest.fn().mockResolvedValue(packagesProtectionRuleQueryPayload());
+      packagesProtectionRuleQueryResolver = jest
+        .fn()
+        .mockResolvedValue(packagesProtectionRuleQueryPayload());
 
-      createComponent({ resolver, mountFn: mountExtended });
+      createComponent({ packagesProtectionRuleQueryResolver, mountFn: mountExtended });
 
       await waitForPromises();
 
@@ -262,7 +454,7 @@ describe('Packages protection rules project settings', () => {
     it('handles event "submit"', async () => {
       await findProtectionRuleForm().vm.$emit('submit');
 
-      expect(resolver).toHaveBeenCalledTimes(2);
+      expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(2);
 
       expect(findProtectionRuleForm().exists()).toBe(false);
       expect(findAddProtectionRuleButton().attributes('disabled')).not.toBeDefined();
@@ -271,10 +463,37 @@ describe('Packages protection rules project settings', () => {
     it('handles event "cancel"', async () => {
       await findProtectionRuleForm().vm.$emit('cancel');
 
-      expect(resolver).toHaveBeenCalledTimes(1);
+      expect(packagesProtectionRuleQueryResolver).toHaveBeenCalledTimes(1);
 
       expect(findProtectionRuleForm().exists()).toBe(false);
       expect(findAddProtectionRuleButton().attributes()).not.toHaveProperty('disabled');
+    });
+  });
+
+  describe('alert "errorMessage"', () => {
+    const findAlertButtonDismiss = () => wrapper.findByRole('button', { name: /dismiss/i });
+
+    it('renders alert and dismisses it correctly', async () => {
+      const alertErrorMessage = 'Error message';
+      createComponent({
+        mountFn: mountExtended,
+        config: {
+          data() {
+            return {
+              alertErrorMessage,
+            };
+          },
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findAlert().isVisible()).toBe(true);
+      expect(findAlert().text()).toBe(alertErrorMessage);
+
+      await findAlertButtonDismiss().trigger('click');
+
+      expect(findAlert().exists()).toBe(false);
     });
   });
 });

@@ -138,3 +138,15 @@ export const createPackagesProtectionRuleMutationInput = {
 export const createPackagesProtectionRuleMutationPayloadErrors = [
   'Package name pattern has already been taken',
 ];
+
+export const deletePackagesProtectionRuleMutationPayload = ({
+  packageProtectionRule = { ...packagesProtectionRulesData[0] },
+  errors = [],
+} = {}) => ({
+  data: {
+    deletePackagesProtectionRule: {
+      packageProtectionRule,
+      errors,
+    },
+  },
+});

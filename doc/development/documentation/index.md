@@ -10,46 +10,18 @@ The GitLab documentation is the single source of truth (SSOT)
 for information about how to configure, use, and troubleshoot GitLab.
 Everyone is welcome to contribute to the GitLab documentation.
 
-## Work without an issue
+## Update the documentation
 
-You don't need an issue to update the documentation.
+Prerequisites:
 
-On <https://docs.gitlab.com>, at the bottom of any page,
-you can select **View page source** or **Edit in Web IDE** and [get started with a merge request](#open-your-merge-request).
+- If you're not a GitLab team member, you must update the GitLab documentation from a fork. You can:
+  - [Request access to the GitLab community fork](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access).
+  - Create your own fork. Go to the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) and in the upper-right corner, select **Fork**.
 
-You can alternately:
+To update the documentation:
 
-- Choose a page [in the `/doc` directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
-  and edit it from there.
-- Try installing and running the [Vale linting tool](testing.md#vale)
-  and fixing the resulting issues.
-
-When you're developing code, the workflow for updating docs is slightly different.
-For details, see the [merge request workflow](../contributing/merge_request_workflow.md).
-
-## Search available issues
-
-If you're looking for an open issue, you can
-[review the list of documentation issues curated specifically for new contributors](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=documentation&label_name%5B%5D=docs-only&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=20).
-
-When you find an issue you'd like to work on:
-
-- If the issue is already assigned to someone, pick a different one.
-- If the issue is unassigned, add a comment and ask to work on the issue. For a Hackathon, use `@docs-hackathon`. Otherwise, use `@gl-docsteam`. For example:
-
-  ```plaintext
-  @docs-hackathon I would like to work on this issue
-  ```
-
-- Do not ask for more than three issues at a time.
-
-## Open your merge request
-
-When you are ready to update the documentation:
-
-1. Go to the [GitLab repository](https://gitlab.com/gitlab-org/gitlab).
-1. In the upper-right corner, select **Fork**. Forking makes a copy of the repository on GitLab.com.
-1. In your fork, find the documentation page in the `\doc` directory.
+1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab) or your own fork.
+1. Find the documentation page in the `\doc` directory.
 1. If you know Git, make your changes and open a merge request.
    If not, follow these steps:
    1. In the upper right, select **Edit > Edit single file**.
@@ -64,6 +36,29 @@ When you are ready to update the documentation:
    1. Select **Compare branches and continue**. A new merge request opens.
    1. Select the **Documentation** template. In the description, write a brief summary of the changes and link to the related issue, if there is one.
    1. Select **Create merge request**.
+
+Alternatively, if you don't want to search through the `/doc` directory, on <https://docs.gitlab.com>, at the bottom of any page, select **View page source** or **Edit in Web IDE**.
+You are prompted to create a fork or switch to your fork before you can make changes.
+
+When you're developing code, the workflow for updating docs is slightly different.
+For details, see the [merge request workflow](../contributing/merge_request_workflow.md).
+
+## What to work on
+
+You don't need an issue to update the documentation, but if you're looking for open issues to work on,
+[review the list of documentation issues curated specifically for new contributors](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=documentation&label_name%5B%5D=docs-only&label_name%5B%5D=Seeking%20community%20contributions&first_page_size=20).
+
+When you find an issue you'd like to work on:
+
+- If the issue is already assigned to someone, pick a different one.
+- If the issue is unassigned, add a comment and ask to work on the issue. For a Hackathon, use `@docs-hackathon`. Otherwise, use `@gl-docsteam`. For example:
+
+  ```plaintext
+  @docs-hackathon I would like to work on this issue
+  ```
+
+You can try installing and running the [Vale linting tool](testing.md#vale)
+and fixing the resulting issues.
 
 ## Ask for help
 

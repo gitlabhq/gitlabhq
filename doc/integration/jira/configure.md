@@ -10,7 +10,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** SaaS, self-managed
 
-The Jira issue integration connects one or more GitLab projects to a Jira instance. You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud). The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
+The Jira issue integration connects one or more GitLab projects to a Jira instance.
+You can host the Jira instance yourself or in [Jira Cloud](https://www.atlassian.com/migration/assess/why-cloud).
+The supported Jira versions are `6.x`, `7.x`, `8.x`, and `9.x`.
 
 ## Configure the integration
 
@@ -22,8 +24,8 @@ Prerequisites:
 - **For Jira Cloud**:
   - You must have a [Jira Cloud API token](#create-a-jira-cloud-api-token) and the email address you used to create the token.
   - If you've enabled
-  [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
-  [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
+    [IP allowlists](https://support.atlassian.com/security-and-access-policies/docs/specify-ip-addresses-for-product-access/), add the
+    [GitLab.com IP range](../../user/gitlab_com/index.md#ip-range) to the allowlist to [view Jira issues](#view-jira-issues) in GitLab.
 - **For Jira Data Center or Jira Server**, you must have one of the following:
   - [Jira username and password](jira_server_configuration.md).
   - Jira personal access token (GitLab 16.0 and later).
@@ -49,11 +51,11 @@ To configure your project settings in GitLab:
    - **Authentication method**:
      - **Basic**:
        - **Email or username**:
-          - For Jira Cloud, enter an email.
-          - For Jira Data Center or Jira Server, enter a username.
+         - For Jira Cloud, enter an email.
+         - For Jira Data Center or Jira Server, enter a username.
        - **API token or password**:
-          - For Jira Cloud, enter an API token.
-          - For Jira Data Center or Jira Server, enter a password.
+         - For Jira Cloud, enter an API token.
+         - For Jira Data Center or Jira Server, enter a password.
      - **Jira personal access token** (only available for Jira Data Center and Jira Server):
        Enter a personal access token.
 1. Provide trigger settings:
@@ -76,7 +78,7 @@ To configure your project settings in GitLab:
    can view all issues from the Jira project you've specified.
 
    - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability),
-   select the **Enable Jira issue creation from vulnerabilities** checkbox.
+     select the **Enable Jira issue creation from vulnerabilities** checkbox.
 
    NOTE:
    You can enable this setting at the project and group levels only.
@@ -152,8 +154,7 @@ Prerequisites:
   **Enable Jira issues** and **Enable Jira issue creation from vulnerabilities** checkboxes are selected.
 - You must have a Jira user account with permission to create issues in the target project.
 
-You can create a Jira issue to track any action taken to resolve or mitigate a vulnerability.
-
+You can create a Jira issue from GitLab to track any action taken to resolve or mitigate a vulnerability.
 To create a Jira issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -161,7 +162,7 @@ To create a Jira issue for a vulnerability:
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
 
-A Jira issue is created in the project with information from the vulnerability report.
+The issue is created in the target Jira project with information from the vulnerability report.
 
 To create a GitLab issue, see [Create a GitLab issue for a vulnerability](../../user/application_security/vulnerabilities/index.md#create-a-gitlab-issue-for-a-vulnerability).
 
@@ -181,7 +182,7 @@ To create a Jira Cloud API token:
 
 To copy the API token, select **Copy**.
 
-## Migrate from Jira Server to Jira Cloud in GitLab
+## Migrate from Jira Server to Jira Cloud
 
 To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integration:
 
@@ -195,4 +196,5 @@ To migrate from Jira Server to Jira Cloud in GitLab and maintain your Jira integ
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 
-To update existing Jira issue references in GitLab to use the new Jira site URL, you must [invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).
+To update existing Jira issue references in GitLab to use the new Jira site URL, you must
+[invalidate the Markdown cache](../../administration/invalidate_markdown_cache.md#invalidate-the-cache).

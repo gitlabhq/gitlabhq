@@ -182,6 +182,16 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         expect(page).not_to have_content('Force HTTPS (requires valid certificates)')
       end
     end
+
+    context 'when project uses subdomain namespace' do
+      let_it_be_with_reload(:project) { create(:project, namespace: create(:namespace, path: 'subdomain.namespace')) }
+
+      it 'shows warning message' do
+        visit project_pages_path(project)
+
+        expect(page).to have_content("you cannot use HTTPS with subdomains")
+      end
+    end
   end
 
   describe 'Remove page' do
@@ -200,6 +210,16 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         expect(page).to have_content('Pages were scheduled for removal')
         expect(project.reload.pages_deployed?).to be_falsey
       end
+    end
+  end
+
+  context 'when pages are disabled for project' do
+    let_it_be_with_reload(:project) { create(:project, :pages_disabled) }
+
+    it 'renders warning message' do
+      visit project_pages_path(project)
+
+      expect(page).to have_content('GitLab Pages are disabled for this project')
     end
   end
 end

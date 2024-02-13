@@ -1,7 +1,17 @@
 <script>
-import { GlButton, GlCard, GlTable, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlCard,
+  GlTable,
+  GlLoadingIcon,
+  GlKeysetPagination,
+  GlModal,
+  GlModalDirective,
+} from '@gitlab/ui';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
+import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import { s__, __ } from '~/locale';
@@ -19,17 +29,28 @@ export default {
     SettingsBlock,
     GlButton,
     GlCard,
+    GlAlert,
     GlTable,
     GlLoadingIcon,
     PackagesProtectionRuleForm,
     GlKeysetPagination,
+    GlModal,
+  },
+  directives: {
+    GlModal: GlModalDirective,
   },
   inject: ['projectPath'],
   i18n: {
-    settingBlockTitle: s__('PackageRegistry|Protected packages'),
+    settingBlockTitle: s__('PackageRegistry|Package protection rules'),
     settingBlockDescription: s__(
       'PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package.',
     ),
+    protectionRuleDeletionConfirmModal: {
+      title: s__('PackageRegistry|Are you sure you want to delete the package protection rule?'),
+      description: s__(
+        'PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages.',
+      ),
+    },
   },
   data() {
     return {
@@ -38,12 +59,18 @@ export default {
       protectionRuleFormVisibility: false,
       packageProtectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       packageProtectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
+      deleteInProgress: false,
+      deleteItem: null,
+      alertErrorMessage: '',
+      protectionRuleDeletionInProgress: false,
+      protectionRuleDeletionItem: null,
     };
   },
   computed: {
     tableItems() {
       return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
         return {
+          id: packagesProtectionRule.id,
           col_1_package_name_pattern: packagesProtectionRule.packageNamePattern,
           col_2_package_type: getPackageTypeLabel(packagesProtectionRule.packageType),
           col_3_push_protected_up_to_access_level:
@@ -64,6 +91,19 @@ export default {
     },
     isAddProtectionRuleButtonDisabled() {
       return this.protectionRuleFormVisibility;
+    },
+    modalActionPrimary() {
+      return {
+        text: __('Delete'),
+        attributes: {
+          variant: 'danger',
+        },
+      };
+    },
+    modalActionCancel() {
+      return {
+        text: __('Cancel'),
+      };
     },
   },
   apollo: {
@@ -106,7 +146,44 @@ export default {
         last: PAGINATION_DEFAULT_PER_PAGE,
       };
     },
+    isButtonDisabled(item) {
+      return this.protectionRuleDeletionItem === item && this.protectionRuleDeletionInProgress;
+    },
+    showProtectionRuleDeletionConfirmModal(protectionRule) {
+      this.protectionRuleDeletionItem = protectionRule;
+    },
+    deleteProtectionRule(protectionRule) {
+      this.clearAlertMessage();
+
+      this.protectionRuleDeletionInProgress = true;
+
+      return this.$apollo
+        .mutate({
+          mutation: deletePackagesProtectionRuleMutation,
+          variables: { input: { id: protectionRule.id } },
+        })
+        .then(({ data }) => {
+          const [errorMessage] = data?.deletePackagesProtectionRule?.errors ?? [];
+          if (errorMessage) {
+            this.alertErrorMessage = errorMessage;
+            return;
+          }
+          this.refetchProtectionRules();
+          this.$toast.show(s__('PackageRegistry|Package protection rule deleted.'));
+        })
+        .catch((e) => {
+          this.alertErrorMessage = e.message;
+        })
+        .finally(() => {
+          this.protectionRuleDeletionItem = null;
+          this.protectionRuleDeletionInProgress = false;
+        });
+    },
+    clearAlertMessage() {
+      this.alertErrorMessage = '';
+    },
   },
+  table: {},
   fields: [
     {
       key: 'col_1_package_name_pattern',
@@ -117,7 +194,14 @@ export default {
       key: 'col_3_push_protected_up_to_access_level',
       label: s__('PackageRegistry|Push protected up to access level'),
     },
+    {
+      key: 'col_4_actions',
+      label: '',
+      thClass: 'gl-display-none',
+      tdClass: 'gl-w-15p',
+    },
   ],
+  modal: { id: 'delete-package-protection-rule-confirmation-modal' },
 };
 </script>
 
@@ -157,17 +241,37 @@ export default {
             @submit="refetchProtectionRules"
           />
 
+          <gl-alert
+            v-if="alertErrorMessage"
+            class="gl-mb-5"
+            variant="danger"
+            @dismiss="clearAlertMessage"
+          >
+            {{ alertErrorMessage }}
+          </gl-alert>
+
           <gl-table
             :items="tableItems"
             :fields="$options.fields"
             show-empty
             stacked="md"
-            class="gl-mb-5!"
             :aria-label="$options.i18n.settingBlockTitle"
             :busy="isLoadingPackageProtectionRules"
           >
             <template #table-busy>
               <gl-loading-icon size="sm" class="gl-my-5" />
+            </template>
+
+            <template #cell(col_4_actions)="{ item }">
+              <gl-button
+                v-gl-modal="$options.modal.id"
+                category="secondary"
+                variant="danger"
+                size="small"
+                :disabled="isButtonDisabled(item)"
+                @click="showProtectionRuleDeletionConfirmModal(item)"
+                >{{ __('Delete') }}</gl-button
+              >
             </template>
           </gl-table>
 
@@ -182,6 +286,17 @@ export default {
           </div>
         </template>
       </gl-card>
+
+      <gl-modal
+        :modal-id="$options.modal.id"
+        size="sm"
+        :title="$options.i18n.protectionRuleDeletionConfirmModal.title"
+        :action-primary="modalActionPrimary"
+        :action-cancel="modalActionCancel"
+        @primary="deleteProtectionRule(protectionRuleDeletionItem)"
+      >
+        <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.description }}</p>
+      </gl-modal>
     </template>
   </settings-block>
 </template>
