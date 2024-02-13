@@ -200,8 +200,6 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can enable the [feature flag](../../administration/feature_flags.md) named `support_sha256_repositories`.
-On GitLab.com, this feature is not available because it's an [Experiment](../../policy/experiment-beta-support.md#experiment).
-If you would like access on GitLab.com, please fill out this [form](https://forms.gle/pUUPB8GBgaPCvdNc6).
 
 You can select SHA-256 hashing for a project only when you create the project.
 

@@ -52,7 +52,7 @@ coverage in the tool's output:
 <!-- vale gitlab.Spelling = NO -->
 
 - Simplecov (Ruby). Example: `/\(\d+.\d+\%\) covered/`.
-- pytest-cov (Python). Example: `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
+- pytest-cov (Python). Example: `/TOTAL.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
 - Scoverage (Scala). Example: `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/`.
 - `pest --coverage --colors=never` (PHP). Example: `/^\s*Cov:\s*\d+\.\d+?%$/`.
 - `phpunit --coverage-text --colors=never` (PHP). Example: `/^\s*Lines:\s*\d+.\d+\%/`.

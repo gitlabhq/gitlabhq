@@ -77,7 +77,7 @@ module QA
           end
         end
 
-        it 'publishes a nuget package and installs', testcase: params[:testcase] do
+        it 'publishes a nuget package and installs', :blocking, testcase: params[:testcase] do
           Flow::Login.sign_in
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do

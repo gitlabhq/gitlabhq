@@ -5,7 +5,7 @@
   needs: []
 
 .qa-preflight-job:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-${BUNDLER_VERSION}-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}
   extends:
     - .preflight-job-base
     - .qa-cache

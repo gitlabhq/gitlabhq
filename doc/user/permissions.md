@@ -265,7 +265,7 @@ The following table lists project permissions available for each role:
 | Run [interactive web terminals](../ci/interactive_web_terminal/index.md)                                                       |            |       |          | ✓         | ✓          | ✓     |       |
 | Add project runners to project                                                                                                 |            |       |          |           | ✓          | ✓     |       |
 | Clear runner caches manually                                                                                                   |            |       |          |           | ✓          | ✓     |       |
-| Enable shared runners in project                                                                                               |            |       |          |           | ✓          | ✓     |       |
+| Enable instance runners in project                                                                                               |            |       |          |           | ✓          | ✓     |       |
 | Manage CI/CD settings                                                                                                          |            |       |          |           | ✓          | ✓     |       |
 | Manage job triggers                                                                                                            |            |       |          |           | ✓          | ✓     |       |
 | Manage project-level CI/CD variables                                                                                           |            |       |          |           | ✓          | ✓     |       |

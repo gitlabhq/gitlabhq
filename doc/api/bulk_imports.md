@@ -33,7 +33,7 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/ind
 Use this endpoint to start a new group or project migration. Specify:
 
 - `entities[group_entity]` to migrate a group.
-- `entities[project_entity]` to migrate a project (Beta).
+- `entities[project_entity]` to migrate a project. (**Status:** Beta)
 
 ```plaintext
 POST /bulk_imports

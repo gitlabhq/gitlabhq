@@ -37,7 +37,7 @@ see [epic 9265](https://gitlab.com/groups/gitlab-org/-/epics/9265).
 
 To view the organizations you have access to:
 
-- On the left sidebar, select **Organizations** (**{organization}**).
+- On the left sidebar, select **Organizations**.
 
 ## Create an organization
 
@@ -50,7 +50,7 @@ To view the organizations you have access to:
 
 ## Edit an organization's name
 
-1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to edit.
+1. On the left sidebar, select **Organizations** and find the organization you want to edit.
 1. Select **Settings > General**.
 1. In the **Organization name** text box, edit the name.
 1. In the **Organization description** text box, edit the description. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
@@ -61,7 +61,7 @@ To view the organizations you have access to:
 
 ## Change an organization's URL
 
-1. On the left sidebar, select **Organizations** (**{organization}**) and find organization whose URL you want to change.
+1. On the left sidebar, select **Organizations** and find the organization whose URL you want to change.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
 1. In the **Organization URL** text box, edit the URL.
@@ -69,7 +69,7 @@ To view the organizations you have access to:
 
 ## Manage groups and projects
 
-1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to manage.
+1. On the left sidebar, select **Organizations** and find the organization you want to manage.
 1. Select **Manage > Groups and projects**.
 1. Optional. Filter the results:
    - To search for specific groups or projects, in the search box enter your search term.
@@ -78,7 +78,7 @@ To view the organizations you have access to:
 
 ## Manage users
 
-1. On the left sidebar, select **Organizations** (**{organization}**) and find the organization you want to manage.
+1. On the left sidebar, select **Organizations** and find the organization you want to manage.
 1. Select **Manage > Users**.
 
 ## Supported Markdown for Organization description

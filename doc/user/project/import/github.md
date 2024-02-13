@@ -22,7 +22,7 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 
 Using the GitLab UI, the GitHub importer always imports from the
 `github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
-[GitLab Import API](#use-the-rest-api) GitHub endpoint.
+[GitLab Import API](#use-the-api) GitHub endpoint.
 
 When importing projects:
 
@@ -85,13 +85,15 @@ You can import your GitHub repository by either:
 
 - [Using GitHub OAuth](#use-github-oauth)
 - [Using a GitHub Personal Access Token](#use-a-github-personal-access-token)
-- [Using the API](#use-the-rest-api)
+- [Using the API](#use-the-api)
+
+If importing from `github.com` you can use any method to import. Self-hosted GitHub Enterprise Server customers must use the API.
 
 ### Use GitHub OAuth
 
 If you are importing to GitLab.com or to a self-managed GitLab that has GitHub OAuth [configured](../../../integration/github.md), you can use GitHub OAuth to import your repository.
 
-This method has an advantage over using a [Personal Access Token (PAT)](#use-a-github-personal-access-token) 
+This method has an advantage over using a [Personal Access Token (PAT)](#use-a-github-personal-access-token)
 because the backend exchanges the access token with the appropriate permissions.
 
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
@@ -123,7 +125,7 @@ To use a different token to perform an import after previously performing
 these steps, sign out of your GitLab account and sign in again, or revoke the
 older token in GitHub.
 
-### Use the REST API
+### Use the API
 
 The [GitLab REST API](../../../api/import.md#import-repository-from-github) can be used to import a GitHub repository. It has some advantages over using the GitLab UI:
 

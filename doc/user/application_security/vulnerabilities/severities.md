@@ -62,6 +62,38 @@ To provide consistent vulnerability severity level values, the GitLab vulnerabil
 convert from the above values to a standardized GitLab vulnerability severity level, as outlined in
 the following tables:
 
+## Container Scanning
+
+| GitLab analyzer                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
+|------------------------------------------------------------------------|--------------------------|----------------------------|--------------------------------------------------------------|
+| [`container-scanning`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
+
+When available, the vendor severity level takes precedence and is used by the analyzer. If that is not available then it falls back on the CVSS v3.1 rating. If that is also not available, then the CVSS v2.0 rating is used instead. Details on this implementation are available on the issue for [trivy](https://github.com/aquasecurity/trivy/issues/310).
+
+## DAST
+
+| GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
+|------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
+| [`Browser-based DAST`](../dast/browser/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW`, `INFO` |
+
+## DAST API
+
+| GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
+|------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
+| [`DAST API`](../dast_api/index.md)         | **{check-circle}** Yes       | String | `HIGH`, `MEDIUM`, `LOW` |
+
+## Dependency Scanning
+
+| GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
+|------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
+| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | **{check-circle}** Yes       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating <sup>1</sup> | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
+
+The CVSS v3.1 rating is used to calculate the severity level. If it's not available, the CVSS v2.0 rating is used instead.
+
+## Fuzz Testing
+
+All fuzz testing results are reported as Unknown. They should be reviewed and triaged manually to find exploitable faults to prioritize for fixing.
+
 ## SAST
 
 |  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
@@ -78,23 +110,3 @@ the following tables:
 | [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Critical` |
 | [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
 | [`kics`](https://gitlab.com/gitlab-org/security-products/analyzers/kics)                                 | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` (gets mapped to `info` in [analyzer version 3.7.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/kics/-/releases/v3.7.0)) |
-
-## Dependency Scanning
-
-| GitLab analyzer                                                                          | Outputs severity levels?     | Native severity level type | Native severity level example       |
-|------------------------------------------------------------------------------------------|------------------------------|----------------------------|-------------------------------------|
-| [`gemnasium`](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium)         | **{check-circle}** Yes       | CVSS v2.0 Rating and CVSS v3.1 Qualitative Severity Rating <sup>1</sup> | `(AV:N/AC:L/Au:S/C:P/I:P/A:N)`, `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H` |
-
-The CVSS v3.1 rating is used to calculate the severity level. If it's not available, the CVSS v2.0 rating is used instead.
-
-## Container Scanning
-
-| GitLab analyzer                                                        | Outputs severity levels? | Native severity level type | Native severity level example                                |
-|------------------------------------------------------------------------|--------------------------|----------------------------|--------------------------------------------------------------|
-| [`container-scanning`](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning)| **{check-circle}** Yes | String | `Unknown`, `Low`, `Medium`, `High`, `Critical` |
-
-When available, the vendor severity level takes precedence and is used by the analyzer. If that is not available then it falls back on the CVSS v3.1 rating. If that is also not available, then the CVSS v2.0 rating is used instead. Details on this implementation are available on the respective issues for [trivy](https://github.com/aquasecurity/trivy/issues/310) and [grype](https://github.com/anchore/grype/issues/287).
-
-## Fuzz Testing
-
-All fuzz testing results are reported as Unknown. They should be reviewed and triaged manually to find exploitable faults to prioritize for fixing.

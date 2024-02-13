@@ -8,12 +8,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## API Fuzzing job times out after N hours
 
-The top two reasons for the API Fuzzing job timing out are slow operations (> 1 second) and using a single-CPU runner for API Fuzzing (GitLab shared runners are single-CPU). Before you can diagnose the problem further, the job must complete so the output can be analyzed. We recommend to start with a multi-CPU runner first, then exclude portions of your API operations until the job completes and the output can be further reviewed.
+For larger repositories, the API Fuzzing job could time out on the [small SaaS runner on Linux](../../../ci/runners/saas/linux_saas_runner.md#machine-types-available-for-linux-x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 
 - [Performance tuning and testing speed](performance.md)
-- [Using a multi-CPU Runner](performance.md#using-a-multi-cpu-runner)
+- [Using a larger Runner](performance.md#using-a-larger-runner)
 - [Excluding operations by path](configuration/customizing_analyzer_settings.md#exclude-paths)
 - [Excluding slow operations](performance.md#excluding-slow-operations)
 

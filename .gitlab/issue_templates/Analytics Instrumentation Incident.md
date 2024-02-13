@@ -9,7 +9,7 @@ https://www.learning-styles-online.com/style/visual-spatial/
 ## Problem
 <!-- High level overview of the Incident -->
 
-##  Detection
+## Detection
 
 <!-- How did we learn of the problem? System Error? User? -->
 

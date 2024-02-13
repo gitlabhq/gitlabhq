@@ -55,7 +55,7 @@ Meanwhile:
   - [Use a custom template for Service Desk tickets](configure.md#use-a-custom-template-for-service-desk-tickets)
   - [Support Bot user](configure.md#support-bot-user)
   - [Reopen issues when an external participant comments](configure.md#reopen-issues-when-an-external-participant-comments)
-  - [Custom email address (Beta)](configure.md#custom-email-address)
+  - [Custom email address](configure.md#custom-email-address)
   - [Use an additional Service Desk alias email](configure.md#use-an-additional-service-desk-alias-email)
   - [Configure email ingestion in multi-node environments](configure.md#configure-email-ingestion-in-multi-node-environments)
 - [Use Service Desk](using_service_desk.md#use-service-desk)

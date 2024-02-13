@@ -123,7 +123,10 @@ To enable GitLab Pages for GitLab Dedicated, submit a [support request](https://
 
 #### GitLab Runners
 
-##### Hosted by GitLab (Beta)
+##### Hosted by GitLab
+
+DETAILS:
+**Status:** Beta
 
 On 2024-01-31, GitLab released Hosted runners in closed [Beta](../../policy/experiment-beta-support.md#beta).
 

@@ -484,7 +484,7 @@
 
 .use-buildx:
   extends: .use-docker-in-docker
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim:docker-${DOCKER_VERSION}
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-slim:docker-${DOCKER_VERSION}
   variables:
     QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
   before_script:
