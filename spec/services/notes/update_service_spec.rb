@@ -90,7 +90,7 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
                                                                            .and_call_original
         expect do
           update_note(note: 'new text')
-        end.to change { counter.unique_events(event_names: event, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now) }.by(1)
+        end.to change { counter.unique_events(event_names: event, property_name: :user, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now) }.by(1)
       end
     end
 

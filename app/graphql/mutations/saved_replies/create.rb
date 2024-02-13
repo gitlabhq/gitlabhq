@@ -16,7 +16,7 @@ module Mutations
                description: copy_field_description(Types::SavedReplyType, :content)
 
       def resolve(name:, content:)
-        result = ::Users::SavedReplies::CreateService.new(current_user: current_user, name: name, content: content).execute
+        result = ::SavedReplies::CreateService.new(object: current_user, name: name, content: content).execute
         present_result(result)
       end
     end

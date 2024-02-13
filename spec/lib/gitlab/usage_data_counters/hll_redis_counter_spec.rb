@@ -427,29 +427,26 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           end
 
           context "with a property_name for a legacy event" do
-            it "tracks the events using a Redis key with the property_name" do
-              expected_key = "{hll_counters}_g_analytics_productivity-project-2020-22"
-              expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-              described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
+            it "raises an error with an instructive message" do
+              expect do
+                described_class.unique_events(event_names: 'g_analytics_productivity', property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
+              end.to raise_error(described_class::UnfinishedEventMigrationError, /migration\.html/)
             end
           end
 
           context "with no property_name for a overridden event" do
-            it "tracks the events using a Redis key with no property_name" do
-              expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-22"
-              expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-              described_class.unique_events(event_names: [event_overridden_for_user], start_date: 7.days.ago, end_date: Date.current)
+            it "raises an error with an instructive message" do
+              expect do
+                described_class.unique_events(event_names: [event_overridden_for_user], start_date: 7.days.ago, end_date: Date.current)
+              end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
             end
           end
 
           context "with no property_name for a new event" do
-            it "tracks the events using a Redis key with no property_name" do
-              expected_key = "{hll_counters}_#{no_slot}-2020-22"
-              expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-              described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)
+            it "raises an error with an instructive message" do
+              expect do
+                described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)
+              end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
             end
           end
         end
@@ -471,11 +468,10 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
             described_class.unique_events(event_names: [no_slot], property_name: 'project', start_date: 7.days.ago, end_date: Date.current)
           end
 
-          it "uses old Redis key for new events when no property name sent" do
-            expected_key = "{hll_counters}_#{no_slot}-2020-22"
-            expect(Gitlab::Redis::HLL).to receive(:count).with(keys: [expected_key])
-
-            described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)
+          it "raises an error with an instructive message" do
+            expect do
+              described_class.unique_events(event_names: [no_slot], start_date: 7.days.ago, end_date: Date.current)
+            end.to raise_error(described_class::UnknownLegacyEventError, /hll_redis_legacy_events.yml/)
           end
         end
       end

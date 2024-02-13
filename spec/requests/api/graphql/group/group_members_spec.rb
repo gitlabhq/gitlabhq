@@ -85,9 +85,10 @@ RSpec.describe 'getting group members information', feature_category: :groups_an
       it 'returns an error' do
         fetch_members_notification_email
 
-        expect(graphql_errors.first)
-          .to include('path' => ['group', 'groupMembers', 'edges', 0, 'node', 'notificationEmail'],
-                      'message' => a_string_including("you don't have permission to perform this action"))
+        expect(graphql_errors.first).to include(
+          'path' => ['group', 'groupMembers', 'edges', 0, 'node', 'notificationEmail'],
+          'message' => a_string_including("you don't have permission to perform this action")
+        )
       end
     end
   end
@@ -187,9 +188,10 @@ RSpec.describe 'getting group members information', feature_category: :groups_an
     it 'returns an error for an invalid member relation' do
       fetch_members(group: child_group, args: { relations: [:OBLIQUE] })
 
-      expect(graphql_errors.first)
-        .to include('path' => %w[query group groupMembers relations],
-                    'message' => a_string_including('invalid value ([OBLIQUE])'))
+      expect(graphql_errors.first).to include(
+        'path' => %w[query group groupMembers relations],
+        'message' => a_string_including('invalid value ([OBLIQUE])')
+      )
     end
   end
 

@@ -152,12 +152,19 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
     let(:first_n) { var('Int') }
 
     let(:query) do
-      with_signature([first_n], wrap_fields(query_graphql_path(
-                                              [
-                                                [:project, { full_path: project.full_path }],
-                                                [:pipeline, { iid: pipeline.iid.to_s }],
-                                                [:stages,   { first: first_n }]
-                                              ], stage_fields)))
+      with_signature(
+        [first_n],
+        wrap_fields(
+          query_graphql_path(
+            [
+              [:project, { full_path: project.full_path }],
+              [:pipeline, { iid: pipeline.iid.to_s }],
+              [:stages,   { first: first_n }]
+            ],
+            stage_fields
+          )
+        )
+      )
     end
 
     let(:stage_fields) do

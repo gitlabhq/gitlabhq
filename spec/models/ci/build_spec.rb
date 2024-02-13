@@ -102,18 +102,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
         build.save!
       end
-
-      context 'with FF track_ci_build_created_internal_event disabled' do
-        before do
-          stub_feature_flags(track_ci_build_created_internal_event: false)
-        end
-
-        it 'does not track creation event' do
-          expect(Gitlab::InternalEvents).not_to receive(:track_event)
-
-          create(:ci_build)
-        end
-      end
     end
   end
 

@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Git::DiffTree, feature_category: :source_code_management 
       let(:commit) { repository.commit('1a0b36b3cdad1d2ee32457c102a8c0b7056fa863') }
 
       it 'returns the expected diff tree object' do
-        expect(diff_tree.left_tree_id).to eq(Gitlab::Git::EMPTY_TREE_ID)
+        expect(diff_tree.left_tree_id).to eq(Gitlab::Git::SHA1_EMPTY_TREE_ID)
         expect(diff_tree.right_tree_id).to eq(commit.tree_id)
       end
     end

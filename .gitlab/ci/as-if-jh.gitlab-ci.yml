@@ -77,7 +77,8 @@ sync-as-if-jh-branch:
       - DEFAULT_CI_IMAGE
       - REGISTRY_HOST
       - REGISTRY_GROUP
-      - DEBIAN_VERSION
+      - BUILD_OS
+      - OS_VERSION
       - RUBY_VERSION
       - GO_VERSION
       - RUST_VERSION

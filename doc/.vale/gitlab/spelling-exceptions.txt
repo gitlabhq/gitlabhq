@@ -426,6 +426,7 @@ Gzip
 Hackathon
 Haml
 HAProxy
+HAR
 hardcode
 hardcoded
 hardcodes

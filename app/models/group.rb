@@ -896,6 +896,10 @@ class Group < Namespace
     ::Feature.enabled?(:usage_quotas_for_all_editions, self) && root?
   end
 
+  def supports_saved_replies?
+    false
+  end
+
   # Check for enabled features, similar to `Project#feature_available?`
   # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
   override :feature_available?

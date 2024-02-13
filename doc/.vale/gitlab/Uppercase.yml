@@ -104,6 +104,7 @@ exceptions:
   - GPU
   - GUI
   - HAML
+  - HAR
   - HDD
   - HEAD
   - HIPAA

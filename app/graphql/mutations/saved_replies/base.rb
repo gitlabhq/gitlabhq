@@ -10,7 +10,7 @@ module Mutations
       private
 
       def present_result(result)
-        if result.success?
+        if result[:status] == :success
           {
             saved_reply: result[:saved_reply],
             errors: []
@@ -18,7 +18,7 @@ module Mutations
         else
           {
             saved_reply: nil,
-            errors: result.message
+            errors: result[:message]
           }
         end
       end

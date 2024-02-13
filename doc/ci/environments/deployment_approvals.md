@@ -176,6 +176,8 @@ To approve or reject a deployment:
 
 You can also [use the API](../../api/deployments.md#approve-or-reject-a-blocked-deployment).
 
+The corresponding deployment job does not run automatically after a deployment is approved.
+
 ### View the approval details of a deployment
 
 Prerequisites:

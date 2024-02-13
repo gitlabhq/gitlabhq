@@ -29,6 +29,9 @@ module Pajamas
       @variant = filter_attribute(variant.to_sym, Pajamas::BadgeComponent::VARIANT_OPTIONS, default: :muted)
     end
 
+    renders_one :title
+    renders_one :stat_value
+
     private
 
     delegate :sprite_icon, to: :helpers

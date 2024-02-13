@@ -45,7 +45,7 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
 
       it_behaves_like 'Jira import does not start'
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
     end
 
     context 'with user without permissions' do
@@ -58,7 +58,7 @@ RSpec.describe 'Starting a Jira Import', feature_category: :importers do
 
       it_behaves_like 'Jira import does not start'
       it_behaves_like 'a mutation that returns top-level errors',
-                      errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
     end
   end
 

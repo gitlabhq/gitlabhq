@@ -29,8 +29,14 @@ RSpec.describe 'Query.ciVariables', feature_category: :secrets_management do
     let_it_be(:user) { create(:admin) }
 
     it "returns the instance's CI variables" do
-      variable = create(:ci_instance_variable, key: 'TEST_VAR', value: 'test',
-                                               masked: false, protected: true, raw: true)
+      variable = create(
+        :ci_instance_variable,
+        key: 'TEST_VAR',
+        value: 'test',
+        masked: false,
+        protected: true,
+        raw: true
+      )
 
       post_graphql(query, current_user: user)
 

@@ -2316,6 +2316,10 @@ class User < MainClusterwide::ApplicationRecord
     custom_attributes.by_key(UserCustomAttribute::DELETED_OWN_ACCOUNT_AT).exists?
   end
 
+  def supports_saved_replies?
+    true
+  end
+
   protected
 
   # override, from Devise::Validatable

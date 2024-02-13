@@ -77,7 +77,15 @@ module Gitlab
         @authentication_provider = @context[:authentication_provider]
 
         # Temporary log line until we close https://gitlab.com/gitlab-org/gitlab/-/issues/439942
-        if !@stream_only && ["email_created"].exclude?(@name)
+        ignored_event_types = %w[email_created repository_download_operation member_created protected_branch_created
+          protected_branch_removed authenticated_with_group_saml project_created deploy_key_added user_access_locked
+          user_access_unlocked update_approval_rules approval_rule_created approval_rule_deleted omniauth_login_failed
+          login_failed_with_standard_authentication destroy_pipeline ci_variable_updated project_name_updated
+          project_path_updated project_deletion_marked ci_variable_created member_created personal_access_token_created
+          ci_variable_deleted release_created group_created member_destroyed deploy_token_created user_created
+          project_feature_builds_access_level_updated protected_branch_updated member_destroyed policy_project_updated]
+
+        if !@stream_only && ignored_event_types.exclude?(@name)
           Gitlab::AppLogger.info(message: "Event type and scope", event_type: @name, scope: @scope.class.name)
         end
 

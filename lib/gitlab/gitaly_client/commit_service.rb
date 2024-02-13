@@ -49,31 +49,8 @@ module Gitlab
       end
 
       def diff(from, to, options = {})
-        from_id = case from
-                  when NilClass
-                    Gitlab::Git::EMPTY_TREE_ID
-                  else
-                    if from.respond_to?(:oid)
-                      # This is meant to match a Rugged::Commit. This should be impossible in
-                      # the future.
-                      from.oid
-                    else
-                      from
-                    end
-                  end
-
-        to_id = case to
-                when NilClass
-                  Gitlab::Git::EMPTY_TREE_ID
-                else
-                  if to.respond_to?(:oid)
-                    # This is meant to match a Rugged::Commit. This should be impossible in
-                    # the future.
-                    to.oid
-                  else
-                    to
-                  end
-                end
+        from_id = from || Gitlab::Git::SHA1_EMPTY_TREE_ID
+        to_id = to || Gitlab::Git::SHA1_EMPTY_TREE_ID
 
         request_params = diff_between_commits_request_params(from_id, to_id, options)
 
@@ -633,7 +610,7 @@ module Gitlab
       end
 
       def diff_from_parent_request_params(commit, options = {})
-        parent_id = commit.parent_ids.first || Gitlab::Git::EMPTY_TREE_ID
+        parent_id = commit.parent_ids.first || Gitlab::Git::SHA1_EMPTY_TREE_ID
 
         diff_between_commits_request_params(parent_id, commit.id, options)
       end

@@ -17,7 +17,7 @@ module Gitlab
 
         parent_tree_id =
           if commit.parent_ids.blank?
-            Gitlab::Git::EMPTY_TREE_ID
+            Gitlab::Git::SHA1_EMPTY_TREE_ID
           else
             parent_id = commit.parent_ids.first
             commit.repository.commit(parent_id).tree_id

@@ -56,8 +56,7 @@ module Gitlab
         # start_date  - The start date of the time range.
         # end_date  - The end date of the time range.
         def unique_events(event_names:, start_date:, end_date:, property_name: nil)
-          # :skip_file_list_validation can be removed when we add property_name passing to RedisHLLMetric
-          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date, skip_file_list_validation: true)
+          count_unique_events(event_names: event_names, property_name: property_name, start_date: start_date, end_date: end_date)
         end
 
         def known_event?(event_name)

@@ -904,6 +904,58 @@ for both `gitlab_main` and `gitlab_ci` tables, then no tables will be locked.
 
 To undo the operation, run the opposite Rake task: `gitlab:db:unlock_writes`.
 
+### Monitoring
+
+The status of the table locks is checked using the
+[`Database::MonitorLockedTablesWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/database/monitor_locked_tables_worker.rb).
+It will lock tables if needed.
+
+The result of this script is available in [Kibana](https://log.gprd.gitlab.net/app/r/s/4qrz2).
+If the counts are not 0, there are some tables that should have been locked but are not.
+The fields `json.extra.database_monitor_locked_tables_worker.results.ci.tables_need_locks` and
+`json.extra.database_monitor_locked_tables_worker.results.main.tables_need_locks` should contain
+a list of tables that have the wrong state.
+
+The logging is monitored using a [Elasticsearch Watcher](https://log.gprd.gitlab.net/app/management/insightsAndAlerting/watcher/watches).
+The watcher is called `table_locks_needed` and the source code is in the
+[GitLab Runbook repository](https://gitlab.com/gitlab-com/runbooks/-/tree/master/elastic/managed-objects/log_gprd/watches).
+The alerts are sent to [#g_tenant-scale](https://gitlab.enterprise.slack.com/archives/C01TQ838Y3T) Slack channel.
+
+### Automation
+
+There are two processes that automatically lock tables:
+
+- Database migrations. See [`Gitlab::Database::MigrationHelpers::AutomaticLockWritesOnTables`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migration_helpers/automatic_lock_writes_on_tables.rb)
+- The `Database::MonitorLockedTablesWorker` locks tables if needed.
+  This can be disabled by the `lock_tables_in_monitoring` feature flag.
+
+### Manually lock tables
+
+If you need to manually lock a table, use a database migration.
+Create a regular migration and add the code for locking the table.
+For example, set a write lock on `shards` table in CI database:
+
+```ruby
+class EnableWriteLocksOnShards < Gitlab::Database::Migration[2.2]
+  def up
+    # On main database, the migration should be skipped
+    # We can't use restrict_gitlab_migration in DDL migrations
+    return if Gitlab::Database.db_config_name(connection) != 'ci'
+
+    Gitlab::Database::LockWritesManager.new(
+      table_name: 'shards',
+      connection: connection,
+      database_name: :ci,
+      with_retries: false
+    ).lock_writes
+  end
+
+  def down
+    # no-op
+  end
+end
+```
+
 ## Truncating tables
 
 When the databases `main` and `ci` are fully split, we can free up disk

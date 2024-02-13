@@ -43,6 +43,9 @@ import approvalsQuery from 'ee_else_ce/vue_merge_request_widget/components/appro
 import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/components/approvals/queries/approvals.subscription.graphql';
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
+import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import ExtensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
+
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData, { mockDeployment, mockMergePipeline, mockPostMergeDeployments } from './mock_data';
 import {
@@ -75,7 +78,6 @@ describe('MrWidgetOptions', () => {
   let queryResponse;
   let wrapper;
   let mock;
-  let stateSubscription;
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
 
@@ -83,6 +85,9 @@ describe('MrWidgetOptions', () => {
     updatedMrData = {},
     options = {},
     data = {},
+    stateSubscriptionHandler = jest
+      .fn()
+      .mockResolvedValue({ data: { mergeRequestMergeStatusUpdated: {} } }),
     mountFn = shallowMountExtended,
   } = {}) => {
     gl.mrWidgetData = { ...mockData, ...updatedMrData };
@@ -103,7 +108,6 @@ describe('MrWidgetOptions', () => {
       },
     };
     stateQueryHandler = jest.fn().mockResolvedValue(queryResponse);
-    stateSubscription = createMockApolloSubscription();
 
     const queryHandlers = [
       [approvalsQuery, jest.fn().mockResolvedValue(approvedByCurrentUser)],
@@ -119,13 +123,11 @@ describe('MrWidgetOptions', () => {
         conflictsStateQuery,
         jest.fn().mockResolvedValue({ data: { project: { mergeRequest: {} } } }),
       ],
-      ...(options.apolloMock || []),
     ];
     const subscriptionHandlers = [
       [approvedBySubscription, () => mockedApprovalsSubscription],
-      [getStateSubscription, () => stateSubscription],
+      [getStateSubscription, stateSubscriptionHandler],
       [readyToMergeSubscription, () => createMockApolloSubscription()],
-      ...(options.apolloSubscriptions || []),
     ];
     const apolloProvider = createMockApollo(queryHandlers);
 
@@ -170,9 +172,6 @@ describe('MrWidgetOptions', () => {
   });
 
   afterEach(() => {
-    mock.restore();
-    // eslint-disable-next-line @gitlab/vtu-no-explicit-wrapper-destroy
-    wrapper.destroy();
     gl.mrWidgetData = {};
   });
 
@@ -358,6 +357,7 @@ describe('MrWidgetOptions', () => {
               mr: {
                 setData: mockSetData,
                 setGraphqlData: jest.fn(),
+                setGraphqlSubscriptionData: jest.fn(),
               },
             },
           });
@@ -421,30 +421,27 @@ describe('MrWidgetOptions', () => {
       });
 
       describe('bindEventHubListeners', () => {
-        const mockSetData = jest.fn();
+        let mockSetData;
+
         beforeEach(async () => {
-          await createComponent({
-            data: {
-              mr: {
-                setData: mockSetData,
-                setGraphqlData: jest.fn(),
-              },
-            },
-          });
+          mockSetData = jest.spyOn(MRWidgetStore.prototype, 'setData');
+          await createComponent();
         });
 
         it('refetches when "MRWidgetUpdateRequested" event is emitted', async () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
           eventHub.$emit('MRWidgetUpdateRequested', () => {});
           await waitForPromises();
-          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
+          // apollo query resolves twice with notifyOnNetworkStatusChange enabled, so 3 calls in total
+          expect(stateQueryHandler).toHaveBeenCalledTimes(3);
         });
 
         it('refetches when "MRWidgetRebaseSuccess" event is emitted', async () => {
           expect(stateQueryHandler).toHaveBeenCalledTimes(1);
           eventHub.$emit('MRWidgetRebaseSuccess', () => {});
           await waitForPromises();
-          expect(stateQueryHandler).toHaveBeenCalledTimes(2);
+          // apollo query resolves twice with notifyOnNetworkStatusChange enabled, so 3 calls in total
+          expect(stateQueryHandler).toHaveBeenCalledTimes(3);
         });
 
         it('should bind to SetBranchRemoveFlag', () => {
@@ -459,10 +456,10 @@ describe('MrWidgetOptions', () => {
 
         it('should bind to FailedToMerge', async () => {
           expect(findAlertMessage().exists()).toBe(false);
-          expect(findPipelineContainer().props('mr')).toMatchObject({
-            mergeError: undefined,
-            state: 'merged',
-          });
+          const props = findPipelineContainer().props('mr');
+          expect(props.state).toBe('merged');
+          // Due to Vue 2 and 3 differences in handling props we must check for both undefined and null
+          expect(props.mergeError == null).toBe(true);
           const mergeError = 'Something bad happened!';
           await eventHub.$emit('FailedToMerge', mergeError);
 
@@ -567,6 +564,7 @@ describe('MrWidgetOptions', () => {
               mr: {
                 setData: mockSetData,
                 setGraphqlData: mockSetGraphqlData,
+                setGraphqlSubscriptionData: jest.fn(),
               },
               service: {
                 checkStatus: mockCheckStatus,
@@ -748,7 +746,7 @@ describe('MrWidgetOptions', () => {
           .exists(),
       ).toBe(false);
 
-      await nextTick();
+      await waitForPromises();
 
       const collapsedSection = wrapper.find('[data-testid="widget-extension-collapsed-section"]');
       expect(collapsedSection.exists()).toBe(true);
@@ -952,11 +950,14 @@ describe('MrWidgetOptions', () => {
         extension = workingExtension();
       });
 
-      it('reports events without a CE suffix', () => {
+      it('reports events without a CE suffix', async () => {
         extension.name = `${extension.name}CE`;
 
         registerExtension(extension);
-        createComponent({ mountFn: mountExtended });
+        await createComponent({
+          mountFn: mountExtended,
+          options: { stubs: { ExtensionsContainer } },
+        });
 
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
           'i_code_review_merge_request_widget_test_extension_view',
@@ -966,11 +967,14 @@ describe('MrWidgetOptions', () => {
         );
       });
 
-      it('reports events without a EE suffix', () => {
+      it('reports events without a EE suffix', async () => {
         extension.name = `${extension.name}EE`;
 
         registerExtension(extension);
-        createComponent({ mountFn: mountExtended });
+        await createComponent({
+          mountFn: mountExtended,
+          options: { stubs: { ExtensionsContainer } },
+        });
 
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
           'i_code_review_merge_request_widget_test_extension_view',
@@ -980,11 +984,14 @@ describe('MrWidgetOptions', () => {
         );
       });
 
-      it('leaves non-CE & non-EE all caps suffixes intact', () => {
+      it('leaves non-CE & non-EE all caps suffixes intact', async () => {
         extension.name = `${extension.name}HI`;
 
         registerExtension(extension);
-        createComponent({ mountFn: mountExtended });
+        await createComponent({
+          mountFn: mountExtended,
+          options: { stubs: { ExtensionsContainer } },
+        });
 
         expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
           'i_code_review_merge_request_widget_test_extension_view',
@@ -994,11 +1001,14 @@ describe('MrWidgetOptions', () => {
         );
       });
 
-      it("doesn't remove CE or EE from the middle of a widget name", () => {
+      it("doesn't remove CE or EE from the middle of a widget name", async () => {
         extension.name = 'TestCEExtensionEETest';
 
         registerExtension(extension);
-        createComponent({ mountFn: mountExtended });
+        await createComponent({
+          mountFn: mountExtended,
+          options: { stubs: { ExtensionsContainer } },
+        });
 
         expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
           'i_code_review_merge_request_widget_test_c_e_extension_e_e_test_view',
@@ -1006,9 +1016,12 @@ describe('MrWidgetOptions', () => {
       });
     });
 
-    it('triggers view events when mounted', () => {
+    it('triggers view events when mounted', async () => {
       registerExtension(workingExtension());
-      createComponent({ mountFn: mountExtended });
+      await createComponent({
+        mountFn: mountExtended,
+        options: { stubs: { ExtensionsContainer } },
+      });
 
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
       expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
@@ -1050,9 +1063,13 @@ describe('MrWidgetOptions', () => {
       });
     });
 
-    it('triggers the "full report clicked" events when the appropriate button is clicked', () => {
+    it('triggers the "full report clicked" events when the appropriate button is clicked', async () => {
       registerExtension(fullReportExtension);
-      createComponent({ mountFn: mountExtended });
+
+      await createComponent({
+        mountFn: mountExtended,
+        options: { stubs: { ExtensionsContainer } },
+      });
 
       api.trackRedisHllUserEvent.mockClear();
       api.trackRedisCounterEvent.mockClear();
@@ -1135,10 +1152,13 @@ describe('MrWidgetOptions', () => {
       });
 
       it('removes the Preparing widget when the MR indicates it has been prepared', async () => {
+        const stateSubscription = createMockApolloSubscription();
+
         await createComponent({
           updatedMrData: { state: 'opened', detailedMergeStatus: 'PREPARING' },
           options: {},
           data: {},
+          stateSubscriptionHandler: () => stateSubscription,
         });
 
         expect(wrapper.html()).toContain('mr-widget-preparing-stub');

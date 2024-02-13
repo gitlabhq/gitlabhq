@@ -121,16 +121,17 @@ You should see a `GET` request to `https://gitlab.com/-/jira_connect/installatio
 This request should return a `200 OK`, but it might return a `422 Unprocessable Entity` if there was a problem.
 You can check the response body for the error.
 
-If you cannot resolve the problem and you are a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance. Provide
-GitLab Support with:
+If you cannot resolve the issue and you're a GitLab customer, contact [GitLab Support](https://about.gitlab.com/support/) for assistance.
+Provide GitLab Support with:
 
-1. Your GitLab self-managed instance URL.
-1. Your GitLab.com username.
-1. If possible, the `X-Request-Id` response header for the failed `GET` request to `https://gitlab.com/-/jira_connect/installations`.
-1. Optional. [A HAR file that captured the problem](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting) that you have
-   processed with the [harcleaner](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) utility.
+- Your self-managed instance URL.
+- Your GitLab.com username.
+- Optional. The `X-Request-Id` response header for the failed `GET`
+  request to `https://gitlab.com/-/jira_connect/installations`.
+- Optional. [A HAR file](https://support.zendesk.com/hc/en-us/articles/4408828867098-Generating-a-HAR-file-for-troubleshooting)
+  you've processed with [`harcleaner`](https://gitlab.com/gitlab-com/support/toolbox/harcleaner) that captures the issue.
 
-The GitLab Support team can then look up why this is failing in the GitLab.com server logs.
+GitLab Support can then investigate the issue in the GitLab.com server logs.
 
 #### GitLab Support
 

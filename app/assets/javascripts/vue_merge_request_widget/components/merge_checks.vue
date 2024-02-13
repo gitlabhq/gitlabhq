@@ -162,7 +162,7 @@ export default {
           <rect x="32" y="2" width="302" height="20" rx="4" />
         </gl-skeleton-loader>
       </template>
-      <template v-else>
+      <template v-if="!isLoading" #default>
         <bold-text :message="summaryText" />
       </template>
     </state-container>

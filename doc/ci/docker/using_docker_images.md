@@ -69,6 +69,13 @@ to use local images.
 For more information about images and Docker Hub, see
 the [Docker overview](https://docs.docker.com/get-started/overview/).
 
+## Image requirements
+
+Any image used to run a CI/CD job must have the following applications installed:
+
+- `sh` or `bash`
+- `grep`
+
 ## Define `image` in the `.gitlab-ci.yml` file
 
 You can define an image that's used for all jobs, and a list of

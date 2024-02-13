@@ -44541,9 +44541,6 @@ msgstr ""
 msgid "SecurityOrchestration|Clear all"
 msgstr ""
 
-msgid "SecurityOrchestration|Compliance Framework ID(s) can only be set for group policies"
-msgstr ""
-
 msgid "SecurityOrchestration|Compliance framework has no projects"
 msgstr ""
 
@@ -57242,6 +57239,9 @@ msgid "You have insufficient permissions to create a Todo for this alert"
 msgstr ""
 
 msgid "You have insufficient permissions to create a branch target"
+msgstr ""
+
+msgid "You have insufficient permissions to create a saved reply"
 msgstr ""
 
 msgid "You have insufficient permissions to create an HTTP integration for this project"

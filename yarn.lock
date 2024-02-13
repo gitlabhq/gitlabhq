@@ -1321,16 +1321,18 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.83.0.tgz#5d6799e5fe3fb564b7e4190d90876469bd1608ba"
   integrity sha512-881f6OsxREgBXYn9fkg+XGweBFbrGdrssrIzFIZFSG95GF/K+HILw1mXZ9nq7C5Xb5JDWPKJGYnKuHw5vvWm5Q==
 
-"@gitlab/ui@^74.3.0":
-  version "74.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-74.3.0.tgz#f5a7ee3f31fd8cd221ccf56b82f65e390ef8f142"
-  integrity sha512-q5twfOd8nrD0bGK+UiUnJ3c2yIJlYG+qdl3/HKoMBcqXu0IJA4XcvM9Fp1gUYdZ23ritSbFwPVjPGoryeGjjbw==
+"@gitlab/ui@^74.4.0":
+  version "74.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-74.4.0.tgz#c5ec6d96e25e4a230eb42decb8da6592998cfc5b"
+  integrity sha512-5v67k2joXVbe9DsTCSrgn9foC8yEQPi8I26ldPJUtznqwsUxV1K+swSFwfHJ0iaNP0iEyFc6sDlYXNNL7EDknw==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     bootstrap-vue "2.23.1"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
+    marked "^12.0.0"
+    marked-bidi "^1.0.8"
     portal-vue "^2.1.6"
     vue-runtime-helpers "^1.1.2"
 
@@ -4634,10 +4636,10 @@ core-js-pure@^3.30.2:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.35.0.tgz#4660033304a050215ae82e476bd2513a419fbb34"
   integrity sha512-f+eRYmkou59uh7BPcyJ8MC76DiGhspj1KMxVIcF24tzP8NA9HVa1uC7BTW2tgx7E1QVCzDzsgp7kArrzhlz8Ew==
 
-core-js@^3.29.1, core-js@^3.35.0, core-js@^3.6.5:
-  version "3.35.0"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.0.tgz#58e651688484f83c34196ca13f099574ee53d6b4"
-  integrity sha512-ntakECeqg81KqMueeGJ79Q5ZgQNR+6eaE8sxGCx62zMbAIj65q+uYvatToew3m6eAGdU4gNZwpZ34NMe4GYswg==
+core-js@^3.29.1, core-js@^3.35.1, core-js@^3.6.5:
+  version "3.35.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.35.1.tgz#9c28f8b7ccee482796f8590cc8d15739eaaf980c"
+  integrity sha512-IgdsbxNyMskrTFxa9lWHyMwAJU5gXOPP+1yO+K59d50VLVAIDAbs7gIv705KzALModfK3ZrSZTPNpC0PQgIZuw==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -9212,10 +9214,15 @@ markdownlint@~0.29.0:
     markdown-it "13.0.1"
     markdownlint-micromark "0.1.5"
 
-marked-bidi@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/marked-bidi/-/marked-bidi-1.0.3.tgz#7e637e0e04f7f297939af6b6472c27ac94266947"
-  integrity sha512-nmphpzT5K1jcSZxb7/hhzSfLCpXHdsdrtM/580o3xgtR4YdOEUr/usYcoR8UsV9gcgxL8LDCfYiDy//isSaILA==
+marked-bidi@^1.0.3, marked-bidi@^1.0.8:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/marked-bidi/-/marked-bidi-1.0.9.tgz#16ca7d87f9acc87f8ce1ec34b34c1c20e825720b"
+  integrity sha512-nVFPysVKno/KBRF2vPurez/nmN3sdhB+Sm0qBxJgqPkk0ltYUs96SNswE4YcGUcCq8Smk0mHmURM/y15zKt7eA==
+
+marked@^12.0.0:
+  version "12.0.0"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-12.0.0.tgz#051ea8c8c7f65148a63003df1499515a2c6de716"
+  integrity sha512-Vkwtq9rLqXryZnWaQc86+FHLC6tr/fycMfYAhiOIXkrNmeGAyhSxjqu0Rs1i0bBqw5u0S7+lV9fdH2ZSVaoa0w==
 
 marked@^4.0.18:
   version "4.0.18"

@@ -317,7 +317,7 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
 
   describe '#update_refs' do
     let(:old_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
-    let(:new_sha) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:new_sha) { Gitlab::Git::SHA1_EMPTY_TREE_ID }
     let(:reference) { 'refs/does/not/exist' }
     let(:expected_param) do
       Gitaly::UpdateReferencesRequest::Update.new(

@@ -338,16 +338,19 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for project runner' do
     let_it_be_with_refind(:project_runner) do
-      create(:ci_runner, :project,
-             description: 'Runner 3',
-             contacted_at: 1.day.ago,
-             active: false,
-             locked: false,
-             version: 'adfe157',
-             revision: 'b',
-             ip_address: '10.10.10.10',
-             access_level: 1,
-             run_untagged: true)
+      create(
+        :ci_runner,
+        :project,
+        description: 'Runner 3',
+        contacted_at: 1.day.ago,
+        active: false,
+        locked: false,
+        version: 'adfe157',
+        revision: 'b',
+        ip_address: '10.10.10.10',
+        access_level: 1,
+        run_untagged: true
+      )
     end
 
     describe 'locked' do
@@ -696,8 +699,12 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
   describe 'for runner with status' do
     let_it_be(:stale_runner) do
-      create(:ci_runner, description: 'Stale runner 1',
-             created_at: (3.months + 1.second).ago, contacted_at: (3.months + 1.second).ago)
+      create(
+        :ci_runner,
+        description: 'Stale runner 1',
+        created_at: (3.months + 1.second).ago,
+        contacted_at: (3.months + 1.second).ago
+      )
     end
 
     let_it_be(:never_contacted_instance_runner) do
@@ -895,9 +902,15 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     let(:runner) do
-      create(:ci_runner, :group,
-             groups: [group], creator: creator, created_at: created_at,
-             registration_type: registration_type, token: "#{token_prefix}abc123")
+      create(
+        :ci_runner,
+        :group,
+        groups: [group],
+        creator: creator,
+        created_at: created_at,
+        registration_type: registration_type,
+        token: "#{token_prefix}abc123"
+      )
     end
 
     before_all do
@@ -1085,8 +1098,14 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     let(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
     let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
     let_it_be(:pipeline1) do
-      create(:ci_pipeline, project: project1, source: :merge_request_event, merge_request: merge_request1, ref: 'main',
-             target_sha: 'xxx')
+      create(
+        :ci_pipeline,
+        project: project1,
+        source: :merge_request_event,
+        merge_request: merge_request1,
+        ref: 'main',
+        target_sha: 'xxx'
+      )
     end
 
     let(:query) do
@@ -1139,8 +1158,14 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
 
           # Add a new build to project_runner2
           project_runner2.runner_projects << build(:ci_runner_project, runner: project_runner2, project: project3)
-          pipeline2 = create(:ci_pipeline, project: project3, source: :merge_request_event, merge_request: merge_request2,
-                                           ref: 'main', target_sha: 'xxx')
+          pipeline2 = create(
+            :ci_pipeline,
+            project: project3,
+            source: :merge_request_event,
+            merge_request: merge_request2,
+            ref: 'main',
+            target_sha: 'xxx'
+          )
           build2 = create(:ci_build, :success, name: 'Build Two', runner: project_runner2, pipeline: pipeline2)
 
           expect { post_graphql(query, **args2) }.not_to exceed_all_query_limit(control)

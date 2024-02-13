@@ -13,7 +13,7 @@ module Mutations
 
       def resolve(id:)
         saved_reply = authorized_find!(id: id)
-        result = ::Users::SavedReplies::DestroyService.new(saved_reply: saved_reply).execute
+        result = ::SavedReplies::DestroyService.new(saved_reply: saved_reply).execute
         present_result(result)
       end
     end

@@ -27,6 +27,46 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
     expect { described_class.new(time_frame: '28d') }.to raise_error(ArgumentError)
   end
 
+  context "with events attribute defined" do
+    let(:expected_value) { 2 }
+    let(:flag_enabled) { true }
+
+    before do
+      stub_feature_flags(redis_hll_property_name_tracking: flag_enabled)
+
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 1.week.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 2, time: 2.weeks.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 1, time: 2.weeks.ago, property_name: 'user')
+      Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 3, time: 2.weeks.ago, property_name: 'project')
+    end
+
+    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['g_project_management_issue_iteration_changed'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+
+    context "with feature flag disabled" do
+      let(:expected_value) { 3 }
+      let(:flag_enabled) { false }
+
+      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['g_project_management_issue_iteration_changed'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+    end
+
+    context "with events having different `unique` values" do
+      let(:expected_value) { 3 }
+      let(:flag_enabled) { false }
+      let(:events) do
+        [
+          { name: 'g_project_management_issue_iteration_changed', unique: 'user.id' },
+          { name: 'g_project_management_issue_label_changed', unique: 'project.id' }
+        ]
+      end
+
+      it 'raises an exception' do
+        expect do
+          described_class.new(time_frame: '28d', options: { events: %w[g_project_management_issue_iteration_changed g_project_management_issue_label_changed] }, events: events).value
+        end.to raise_error(Gitlab::Usage::MetricDefinition::InvalidError)
+      end
+    end
+  end
+
   describe 'children classes' do
     let(:options) { { events: ['i_quickactions_approve'] } }
 

@@ -159,7 +159,7 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
   end
 
   describe '#with_ref' do
-    let(:ref) { Gitlab::Git::EMPTY_TREE_ID }
+    let(:ref) { Gitlab::Git::SHA1_EMPTY_TREE_ID }
 
     subject { builder.with_ref(ref) }
 

@@ -20,7 +20,7 @@ RSpec.describe Gitlab::Checks::PushFileCountCheck, feature_category: :source_cod
     end
 
     context 'initial creation' do
-      let(:oldrev) { Gitlab::Git::EMPTY_TREE_ID }
+      let(:oldrev) { Gitlab::Git::SHA1_EMPTY_TREE_ID }
       let(:newrev) { TestEnv::BRANCH_SHA["snippet/single-file"] }
       let(:ref) { "refs/heads/snippet/single-file" }
 

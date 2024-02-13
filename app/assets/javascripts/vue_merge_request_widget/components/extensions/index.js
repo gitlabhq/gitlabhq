@@ -5,9 +5,15 @@ import ExtensionBase from './base.vue';
 // Holds all the currently registered extensions
 export const registeredExtensions = Vue.observable({ extensions: [] });
 
+const createCustomOptionsWithFallback = (extension) => (options) => {
+  return options.reduce((acc, option) => {
+    acc[option] = extension[option] ?? ExtensionBase[option];
+    return acc;
+  }, {});
+};
+
 export const registerExtension = (extension) => {
-  // Pushes into the extenions array a dynamically created Vue component
-  // that gets exteneded from `base.vue`
+  const customOptions = createCustomOptionsWithFallback(extension);
   registeredExtensions.extensions.push(
     markRaw({
       extends: ExtensionBase,
@@ -18,12 +24,16 @@ export const registerExtension = (extension) => {
           required: true,
         },
       },
-      telemetry: extension.telemetry,
-      i18n: extension.i18n,
-      expandEvent: extension.expandEvent,
-      enablePolling: extension.enablePolling,
-      enableExpandedPolling: extension.enableExpandedPolling,
-      modalComponent: extension.modalComponent,
+      // Vue 3 doesn't copy custom component options with Vue.extend
+      // We have to explicitly fallback to the base component if an option is missing
+      ...customOptions([
+        'telemetry',
+        'i18n',
+        'expandEvent',
+        'enablePolling',
+        'enableExpandedPolling',
+        'modalComponent',
+      ]),
       computed: {
         ...extension.props.reduce(
           (acc, propKey) => ({
