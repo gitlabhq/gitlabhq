@@ -35,16 +35,10 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347740'
       ) do
         # Create branch
-        Resource::Repository::Branch.fabricate_via_api! do |branch|
-          branch.name = created_branch
-          branch.project = project
-        end
+        create(:branch, name: created_branch, project: project)
 
         # Retrieve branch
-        delete_branch = Resource::Repository::Branch.fabricate_via_api! do |branch|
-          branch.name = deleted_branch
-          branch.project = project
-        end
+        delete_branch = build(:branch, name: deleted_branch, project: project).reload!
 
         # Delete branch
         delete_branch.remove_via_api!

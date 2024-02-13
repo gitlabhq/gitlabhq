@@ -16,5 +16,28 @@ module QA
         hard_delete_on_api_removal { true }
       end
     end
+
+    # https://docs.gitlab.com/ee/api/members.html
+    factory :project_member, class: 'QA::Resource::ProjectMember' do
+      trait :guest do
+        access_level { 10 }
+      end
+
+      trait :reporter do
+        access_level { 20 }
+      end
+
+      trait :developer do
+        access_level { 30 }
+      end
+
+      trait :maintainer do
+        access_level { 40 }
+      end
+
+      trait :owner do
+        access_level { 50 }
+      end
+    end
   end
 end

@@ -152,3 +152,25 @@
     margin-right: auto;
   }
 }
+
+/*
+ * The below style will be moved to @gitlab/ui by
+ * https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2497
+ */
+.gl-bg-purple-500 {
+  background-color: $purple-500;
+}
+
+.gl-border-purple-500 {
+  border-color: $purple-500;
+}
+
+.gl-border-purple-500\! {
+  border-color: $purple-500 !important;
+}
+
+.gl-text-purple-500 {
+  color: $purple-500;
+}
+
+/* End gitlab-ui#2497 */

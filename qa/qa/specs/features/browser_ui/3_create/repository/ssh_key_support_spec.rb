@@ -19,9 +19,7 @@ module QA
       end
 
       it 'can delete an ssh key', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347820' do
-        key = Resource::SSHKey.fabricate_via_api! do |resource|
-          resource.title = key_title
-        end
+        key = create(:ssh_key, title: key_title)
 
         Page::Main::Menu.perform(&:click_edit_profile_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)

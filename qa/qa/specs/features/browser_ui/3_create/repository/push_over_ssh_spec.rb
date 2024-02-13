@@ -6,16 +6,10 @@ module QA
       # Note: If you run these tests against GDK make sure you've enabled sshd
       # See: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md
 
-      let(:project) do
-        Resource::Project.fabricate! do |project|
-          project.name = 'ssh-tests'
-        end
-      end
+      let(:project) { create(:project, name: 'ssh-tests') }
 
       before(:context) do
-        @key = Resource::SSHKey.fabricate_via_api! do |resource|
-          resource.title = "key for ssh tests #{Time.now.to_f}"
-        end
+        @key = create(:ssh_key, title: "key for ssh tests #{Time.now.to_f}")
       end
 
       after(:context) do

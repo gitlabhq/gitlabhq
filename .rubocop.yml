@@ -198,6 +198,7 @@ Naming/FileName:
     - 'qa/bin/*'
     - 'qa/spec/**/*'
     - 'qa/qa/factories/**/*'
+    - 'qa/qa/ee/factories/**/*'
     - 'qa/qa/specs/**/*'
     - 'qa/tasks/**/*.rake'
     - '**/*.ru'

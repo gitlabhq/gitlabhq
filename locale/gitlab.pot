@@ -7804,28 +7804,40 @@ msgstr ""
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr ""
 
-msgid "BillingPlans|10,000 compute minutes per month"
+msgid "BillingPlans|10,000 CI/CD minutes per month"
 msgstr ""
 
 msgid "BillingPlans|10000 compute minutes"
 msgstr ""
 
+msgid "BillingPlans|100GB transfer per month"
+msgstr ""
+
 msgid "BillingPlans|10GB transfer per month"
+msgstr ""
+
+msgid "BillingPlans|250GB storage"
+msgstr ""
+
+msgid "BillingPlans|400 CI/CD minutes per month"
 msgstr ""
 
 msgid "BillingPlans|400 compute minutes"
 msgstr ""
 
-msgid "BillingPlans|400 compute minutes per month"
+msgid "BillingPlans|5 users per top-level group"
 msgstr ""
 
-msgid "BillingPlans|5 users per namespace"
-msgstr ""
-
-msgid "BillingPlans|50,000 compute minutes per month"
+msgid "BillingPlans|50,000 CI/CD minutes per month"
 msgstr ""
 
 msgid "BillingPlans|50000 compute minutes"
+msgstr ""
+
+msgid "BillingPlans|500GB transfer per month"
+msgstr ""
+
+msgid "BillingPlans|50GB storage"
 msgstr ""
 
 msgid "BillingPlans|5GB storage"
@@ -7840,9 +7852,6 @@ msgstr ""
 msgid "BillingPlans|Advanced application security"
 msgstr ""
 
-msgid "BillingPlans|All plans have unlimited (private) repositories."
-msgstr ""
-
 msgid "BillingPlans|All stages of the DevOps lifecycle"
 msgstr ""
 
@@ -7850,12 +7859,6 @@ msgid "BillingPlans|All the benefits of Free +"
 msgstr ""
 
 msgid "BillingPlans|All the benefits of Premium +"
-msgstr ""
-
-msgid "BillingPlans|All the features from Free"
-msgstr ""
-
-msgid "BillingPlans|All the features from Premium"
 msgstr ""
 
 msgid "BillingPlans|Billed annually at %{price_per_year} USD"
@@ -7867,13 +7870,10 @@ msgstr ""
 msgid "BillingPlans|Bring your own production environment"
 msgstr ""
 
-msgid "BillingPlans|Check out all groups"
+msgid "BillingPlans|Code Ownership and Protected Branches"
 msgstr ""
 
 msgid "BillingPlans|Company wide portfolio management"
-msgstr ""
-
-msgid "BillingPlans|Compliance"
 msgstr ""
 
 msgid "BillingPlans|Compliance automation"
@@ -7882,28 +7882,49 @@ msgstr ""
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
+msgid "BillingPlans|Container Scanning"
+msgstr ""
+
 msgid "BillingPlans|Cross-team project management"
+msgstr ""
+
+msgid "BillingPlans|Custom Roles"
+msgstr ""
+
+msgid "BillingPlans|Dependency Scanning"
+msgstr ""
+
+msgid "BillingPlans|Dynamic Application Security Testing"
 msgstr ""
 
 msgid "BillingPlans|End of availability for the Bronze Plan"
 msgstr ""
 
-msgid "BillingPlans|Enhance team productivity and collaboration"
+msgid "BillingPlans|Enterprise Agile Planning"
 msgstr ""
 
-msgid "BillingPlans|Enterprise agile planning"
+msgid "BillingPlans|Enterprise User and Incident Management"
+msgstr ""
+
+msgid "BillingPlans|Everything from Free, plus:"
+msgstr ""
+
+msgid "BillingPlans|Everything from Premium, plus:"
 msgstr ""
 
 msgid "BillingPlans|Executive level insights"
 msgstr ""
 
-msgid "BillingPlans|Faster code reviews"
+msgid "BillingPlans|For enterprises looking to deliver software faster"
+msgstr ""
+
+msgid "BillingPlans|For scaling organizations and multi-team usage"
 msgstr ""
 
 msgid "BillingPlans|Free"
 msgstr ""
 
-msgid "BillingPlans|Free forever features for individual users"
+msgid "BillingPlans|Free forever features:"
 msgstr ""
 
 msgid "BillingPlans|Free guest users"
@@ -7912,13 +7933,13 @@ msgstr ""
 msgid "BillingPlans|Free upgrade!"
 msgstr ""
 
+msgid "BillingPlans|Have a question? We're here to help."
+msgstr ""
+
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
 msgstr ""
 
 msgid "BillingPlans|Includes"
-msgstr ""
-
-msgid "BillingPlans|Includes free static websites"
 msgstr ""
 
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Ultimate."
@@ -7930,10 +7951,13 @@ msgstr ""
 msgid "BillingPlans|Looking to purchase or manage a subscription for your group? Navigate to your %{groups_link} and go to %{strong_open}Settings &gt; Billing.%{strong_close}"
 msgstr ""
 
-msgid "BillingPlans|Loved and trusted by our customers"
+msgid "BillingPlans|Manage plan"
 msgstr ""
 
-msgid "BillingPlans|Manage plan"
+msgid "BillingPlans|Merge Request Approval Rules"
+msgstr ""
+
+msgid "BillingPlans|Multi-Level Epics"
 msgstr ""
 
 msgid "BillingPlans|Multi-region support"
@@ -7942,16 +7966,16 @@ msgstr ""
 msgid "BillingPlans|Multiple approval rules"
 msgstr ""
 
-msgid "BillingPlans|Not the group you're looking for? %{all_groups_link}."
+msgid "BillingPlans|No credit card required"
 msgstr ""
 
-msgid "BillingPlans|Open Source - MIT License"
+msgid "BillingPlans|Not the group you're looking for? %{all_groups_link}"
 msgstr ""
 
-msgid "BillingPlans|Organization wide security, compliance and planning"
+msgid "BillingPlans|Per user/month"
 msgstr ""
 
-msgid "BillingPlans|Portfolio management"
+msgid "BillingPlans|Portfolio Management"
 msgstr ""
 
 msgid "BillingPlans|Premium"
@@ -7963,25 +7987,16 @@ msgstr ""
 msgid "BillingPlans|Priority support"
 msgstr ""
 
-msgid "BillingPlans|Ready to explore the value of the paid features today? Start a trial, no credit card required."
+msgid "BillingPlans|Ready to explore the value of paid features today?"
 msgstr ""
 
 msgid "BillingPlans|Recommended"
 msgstr ""
 
-msgid "BillingPlans|Release controls"
-msgstr ""
-
-msgid "BillingPlans|Security risk mitigation"
+msgid "BillingPlans|Security Dashboards"
 msgstr ""
 
 msgid "BillingPlans|See all %{plan_name} features"
-msgstr ""
-
-msgid "BillingPlans|Self-managed reliability"
-msgstr ""
-
-msgid "BillingPlans|Spans the DevOps lifecycle"
 msgstr ""
 
 msgid "BillingPlans|Start a free Duo Pro trial"
@@ -7990,13 +8005,22 @@ msgstr ""
 msgid "BillingPlans|Start a free Ultimate trial"
 msgstr ""
 
-msgid "BillingPlans|Still have questions?"
+msgid "BillingPlans|Start a free Ultimate trial. No credit card required."
+msgstr ""
+
+msgid "BillingPlans|Static Application Security Testing"
+msgstr ""
+
+msgid "BillingPlans|Suggested Reviewers"
 msgstr ""
 
 msgid "BillingPlans|Support"
 msgstr ""
 
-msgid "BillingPlans|Talk to an expert today."
+msgid "BillingPlans|Switch to a different group."
+msgstr ""
+
+msgid "BillingPlans|Talk to an expert"
 msgstr ""
 
 msgid "BillingPlans|Then %{move_link_start}move any projects%{move_link_end} you wish to use with your subscription to that group."
@@ -8006,6 +8030,9 @@ msgid "BillingPlans|This group uses the plan associated with its parent group."
 msgstr ""
 
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr ""
+
+msgid "BillingPlans|Trusted by"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
@@ -8020,22 +8047,25 @@ msgstr ""
 msgid "BillingPlans|Upgrade to Ultimate"
 msgstr ""
 
-msgid "BillingPlans|Value stream management"
+msgid "BillingPlans|Use GitLab for personal projects"
 msgstr ""
 
-msgid "BillingPlans|We're here to help."
+msgid "BillingPlans|Value Stream Management"
+msgstr ""
+
+msgid "BillingPlans|Vulnerability Management"
 msgstr ""
 
 msgid "BillingPlans|While GitLab is ending availability of the Bronze plan, you can still renew your Bronze subscription one additional time before %{eoa_bronze_plan_end_date}. We are also offering a limited time free upgrade to our Premium Plan (up to 25 users)! Learn more about the changes and offers in our %{announcement_link}."
 msgstr ""
 
+msgid "BillingPlans|You can retain access to the %{plan} features by upgrading below."
+msgstr ""
+
 msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_link_start}create one%{create_group_link_end} and %{move_link_start}move your projects to it%{move_link_end}."
 msgstr ""
 
-msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}. You can retain access to the %{plan} features by upgrading below."
-msgstr ""
-
-msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. You can restore access to the features at any time by upgrading below."
+msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}."
 msgstr ""
 
 msgid "BillingPlans|Your current plan"
@@ -8057,9 +8087,6 @@ msgid "BillingPlans|monthly"
 msgstr ""
 
 msgid "BillingPlans|per user"
-msgstr ""
-
-msgid "BillingPlans|per user/month"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
@@ -12228,6 +12255,9 @@ msgstr ""
 msgid "CodeownersValidation|Zero owners"
 msgstr ""
 
+msgid "Cohorts|Active users"
+msgstr ""
+
 msgid "Cohorts|Inactive users"
 msgstr ""
 
@@ -12241,9 +12271,6 @@ msgid "Cohorts|Registration month"
 msgstr ""
 
 msgid "Cohorts|Returning users"
-msgstr ""
-
-msgid "Cohorts|User cohorts are shown for the last %{months_included} months. Only users with activity are counted in the 'New users' column; inactive users are counted separately."
 msgstr ""
 
 msgid "Collapse"

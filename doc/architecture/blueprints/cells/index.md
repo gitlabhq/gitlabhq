@@ -305,6 +305,7 @@ The Cells architecture has long lasting implications to data processing, locatio
 This section links all different technical proposals that are being evaluated.
 
 - [Routing Service](routing-service.md)
+- [Feature Flags](feature_flags.md)
 
 ## Impacted features
 
@@ -357,7 +358,7 @@ But all of them still operate under the existing GitLab SaaS domain name `gitlab
 Also, Cells still share some common data, like `users`, and routing information of Groups and Projects.
 For example, no two users can have the same username even if they belong to different Organizations that exist on different Cells.
 
-With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned via dedicated server resources for each customer, while Cells use shared resources.
+With the aforementioned differences, [GitLab Dedicated](https://about.gitlab.com/dedicated/) is still offered at higher costs due to the fact that it's provisioned with dedicated server resources for each customer, while Cells use shared resources.
 This makes GitLab Dedicated more suited for bigger customers, and GitLab Cells more suitable for small to mid-size companies that are starting on GitLab.com.
 
 On the other hand, GitLab Dedicated is meant to provide a completely isolated GitLab instance for any Organization.

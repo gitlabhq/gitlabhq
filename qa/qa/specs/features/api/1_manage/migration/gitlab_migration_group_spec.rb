@@ -51,12 +51,7 @@ module QA
         before do
           source_milestone
 
-          Resource::GroupBadge.fabricate_via_api! do |badge|
-            badge.api_client = source_admin_api_client
-            badge.group = source_group
-            badge.link_url = "http://example.com/badge"
-            badge.image_url = "http://shields.io/badge"
-          end
+          create(:group_badge, api_client: source_admin_api_client, group: source_group)
 
           imported_group # trigger import
         end

@@ -8,19 +8,8 @@ module QA
       let(:commit_message) { 'Changes to snippets' }
       let(:added_content) { 'updated ' }
       let(:branch_name) { snippet.project.default_branch }
-
-      let(:snippet) do
-        Resource::ProjectSnippet.fabricate! do |snippet|
-          snippet.file_name = new_file
-        end
-      end
-
-      let(:ssh_key) do
-        Resource::SSHKey.fabricate_via_api! do |resource|
-          resource.title = "my key title #{Time.now.to_f}"
-        end
-      end
-
+      let(:snippet) { create(:project_snippet, file_name: new_file) }
+      let(:ssh_key) { create(:ssh_key, title: "my key title #{Time.now.to_f}") }
       let(:repository_uri_http) do
         snippet.visit!
         Page::Dashboard::Snippet::Show.perform(&:get_repository_uri_http)

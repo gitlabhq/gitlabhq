@@ -52,12 +52,9 @@ module QA
         Runtime::API::Client.new(
           user: user,
           is_new_session: false,
-          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
-            pat.user = user
-            # importing very large project can take multiple days
-            # token must not expire while we still poll for import result
-            pat.expires_at = (Time.now.to_date + 6)
-          end.token
+          # importing very large project can take multiple days
+          # token must not expire while we still poll for import result
+          personal_access_token: create(:personal_access_token, user: user, expires_at: (Time.now.to_date + 6)).token
         )
       end
 

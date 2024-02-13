@@ -1,9 +1,0 @@
----
-name: stop_precalling_binary_for_blobs
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/424140
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142418
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17440
-milestone: '16.9'
-group: group::code review
-type: gitlab_com_derisk
-default_enabled: false

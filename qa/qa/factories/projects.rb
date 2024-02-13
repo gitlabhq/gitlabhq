@@ -16,5 +16,7 @@ module QA
         auto_devops_enabled { true }
       end
     end
+
+    factory :fork, class: 'QA::Resource::Fork'
   end
 end
