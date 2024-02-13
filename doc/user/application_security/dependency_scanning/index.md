@@ -729,7 +729,7 @@ To enable dependency scanning:
 
    ```yaml
    include:
-     - template: Security/Dependency-Scanning.gitlab-ci.yml
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -790,7 +790,7 @@ the `gemnasium` analyzer:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   variables:
@@ -801,7 +801,7 @@ To override the `dependencies: []` attribute, add an override job as above, targ
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 gemnasium-dependency_scanning:
   dependencies: ["build"]
@@ -1014,7 +1014,7 @@ stages:
   - merge-cyclonedx-sboms
 
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
@@ -1108,7 +1108,7 @@ value of `GEMNASIUM_DB_REMOTE_URL` to the location of your offline Git copy of t
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"

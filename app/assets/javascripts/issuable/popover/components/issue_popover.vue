@@ -64,7 +64,7 @@ export default {
   apollo: {
     issue: {
       query,
-      update: (data) => data.project.issue,
+      update: (data) => data.project?.issue || {},
       variables() {
         const { namespacePath, iid } = this;
 

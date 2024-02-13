@@ -50,7 +50,7 @@ scanned for vulnerabilities.
    - test
 
    include:
-   - template: Security/Dependency-Scanning.gitlab-ci.yml
+   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
    # override the dependency scanning job
    gemnasium-dependency_scanning:

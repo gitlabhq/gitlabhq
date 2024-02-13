@@ -185,7 +185,7 @@ of `registry.gitlab.com/security-products/semgrep`:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: my-docker-registry/gitlab-images
@@ -203,7 +203,7 @@ Example:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_DISABLED: "true"
@@ -221,7 +221,7 @@ For example, to disable the `spotbugs` analyzer:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_EXCLUDED_ANALYZERS: "spotbugs"

@@ -262,7 +262,7 @@ To use [SAST](../../../user/application_security/sast/index.md) with ECS, add th
 
 ```yaml
 include:
-   - template: Security/SAST.gitlab-ci.yml
+   - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 For more details and configuration options, see the [SAST documentation](../../../user/application_security/sast/index.md#configuration).

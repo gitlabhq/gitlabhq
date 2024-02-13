@@ -17,7 +17,27 @@ You can create a compliance framework that is a label to identify that your proj
 requirements or needs additional oversight. The label can optionally enforce
 [compliance pipeline configuration](compliance_pipelines.md) to the projects on which it is applied.
 
-Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks:
+Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks.
+
+## Create, edit, or delete a compliance framework
+
+### From compliance frameworks report
+
+You can create, edit, or delete a compliance framework from a compliance framework report. For more information, see:
+
+- [Create a new compliance framework](../../user/compliance/compliance_center/index.md#create-a-new-compliance-framework-1).
+- [Edit a compliance framework](../../user/compliance/compliance_center/index.md#edit-a-compliance-framework-1).
+- [Delete a compliance framework](../../user/compliance/compliance_center/index.md#delete-a-compliance-framework-1).
+
+### From compliance projects report
+
+You can create, edit, or delete a compliance framework from a compliance projects report. For more information, see:
+
+- [Create a new compliance framework](../../user/compliance/compliance_center/index.md#create-a-new-compliance-framework).
+- [Edit a compliance framework](../../user/compliance/compliance_center/index.md#edit-a-compliance-framework).
+- [Delete a compliance framework](../../user/compliance/compliance_center/index.md#delete-a-compliance-framework).
+
+### From group settings
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
@@ -150,7 +170,7 @@ mutation {
 }
 ```
 
-## Remove a compliance framework to a project
+## Remove a compliance framework from a project
 
 Prerequisites:
 

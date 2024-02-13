@@ -1,18 +1,16 @@
-import { GlEmptyState } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import EmptyState from '~/environments/environment_details/empty_state.vue';
-import {
-  translations,
-  environmentsHelpPagePath,
-  codeBlockPlaceholders,
-} from '~/environments/environment_details/constants';
+import { environmentsHelpPagePath } from '~/environments/environment_details/constants';
 
 describe('~/environments/environment_details/empty_state.vue', () => {
   let wrapper;
 
   const createWrapper = () => {
-    return mountExtended(EmptyState);
+    return shallowMount(EmptyState, { stubs: { GlEmptyState, GlSprintf } });
   };
+
+  const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   describe('when Empty State is rendered for environment details page', () => {
     beforeEach(() => {
@@ -20,20 +18,18 @@ describe('~/environments/environment_details/empty_state.vue', () => {
     });
 
     it('should render the proper title', () => {
-      expect(wrapper.text()).toContain(translations.emptyStateTitle);
+      expect(findGlEmptyState().props('title')).toBe('No deployment history');
+    });
+
+    it('should render the proper description', () => {
+      expect(wrapper.text()).toContain(
+        'Add an environment:name to your CI/CD jobs to register a deployment action. Learn more about environments.',
+      );
     });
 
     it('should render GlEmptyState component with correct props', () => {
-      const glEmptyStateComponent = wrapper.findComponent(GlEmptyState);
-      expect(glEmptyStateComponent.props().primaryButtonText).toBe(
-        translations.emptyStatePrimaryButton,
-      );
-      expect(glEmptyStateComponent.props().primaryButtonLink).toBe(environmentsHelpPagePath);
-    });
-
-    it('should render formatted description', () => {
-      expect(wrapper.text()).not.toContain(codeBlockPlaceholders.code[0]);
-      expect(wrapper.text()).not.toContain(codeBlockPlaceholders.code[1]);
+      expect(findGlEmptyState().props().primaryButtonText).toBe('Read more');
+      expect(findGlEmptyState().props().primaryButtonLink).toBe(environmentsHelpPagePath);
     });
   });
 });

@@ -17,6 +17,7 @@ To run a DAST scan:
 
 > - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
 > - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
+> - This template was updated to DAST_VERSION: 4 in GitLab 16.0.
 
 To add DAST scanning to your application, use the DAST job defined
 in the GitLab DAST CI/CD template file. Updates to the template are provided with GitLab

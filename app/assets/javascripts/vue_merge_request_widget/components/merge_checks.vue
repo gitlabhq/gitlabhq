@@ -100,7 +100,7 @@ export default {
       );
     },
     checks() {
-      return this.state.mergeabilityChecks || [];
+      return this.state?.mergeabilityChecks || [];
     },
     sortedChecks() {
       const order = ['FAILED', 'SUCCESS'];

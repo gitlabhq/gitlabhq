@@ -626,7 +626,7 @@ for example to add SAST scanning to your pipeline, add the following to your `.g
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 You can customize the behavior of security scanners by using CI/CD variables, for example

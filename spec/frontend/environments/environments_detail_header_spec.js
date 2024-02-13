@@ -189,6 +189,7 @@ describe('Environments detail header component', () => {
     });
 
     it('displays the edit button with correct path', () => {
+      expect(findEditButton().text()).toBe('Edit environment');
       expect(findEditButton().attributes('href')).toBe(updatePath);
     });
 

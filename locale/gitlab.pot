@@ -17367,10 +17367,10 @@ msgid_plural "Deployments|%{deployments} environments impacted."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Deployments|Define environments in the deploy stage(s) in %{code_open}.gitlab-ci.yml%{code_close} to track deployments here."
+msgid "Deployments|Add an %{codeStart}environment:name%{codeEnd} to your CI/CD jobs to register a deployment action. %{linkStart}Learn more about environments.%{linkEnd}"
 msgstr ""
 
-msgid "Deployments|You don't have any deployments right now."
+msgid "Deployments|No deployment history"
 msgstr ""
 
 msgid "Deployment|Branch"
@@ -19372,6 +19372,12 @@ msgid "Environments|Deployment"
 msgstr ""
 
 msgid "Environments|Deployment %{status}"
+msgstr ""
+
+msgid "Environments|Deployment history"
+msgstr ""
+
+msgid "Environments|Edit environment"
 msgstr ""
 
 msgid "Environments|Edit your search and try again"

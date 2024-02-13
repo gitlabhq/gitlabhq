@@ -212,7 +212,7 @@ variables:
   SAST_IMAGE_SUFFIX: '-fips'
 
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 A FIPS-compliant image is only available for the Semgrep-based analyzer.
@@ -385,7 +385,7 @@ inclusion and specify any additional keys under it. For example, this enables `F
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 spotbugs-sast:
   variables:
@@ -415,7 +415,7 @@ This example uses a specific minor version of the `semgrep` analyzer and a speci
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 semgrep-sast:
   variables:
@@ -469,7 +469,7 @@ Kubesec analyzer. In `.gitlab-ci.yml`, define:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
@@ -511,7 +511,7 @@ stages:
   - test
 
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 build:
   image: maven:3.6-jdk-8-slim
@@ -554,7 +554,7 @@ configuration, so the last mention of the variable takes precedence.
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SEARCH_MAX_DEPTH: 10
@@ -674,7 +674,7 @@ To enable experimental features, add the following to your `.gitlab-ci.yml` file
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SAST_EXPERIMENTAL_FEATURES: "true"
@@ -758,7 +758,7 @@ Add the following configuration to your `.gitlab-ci.yml` file. You must replace
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
   SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"

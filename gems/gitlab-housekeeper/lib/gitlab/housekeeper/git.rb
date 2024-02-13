@@ -54,6 +54,7 @@ module Gitlab
       def branch_name(identifiers)
         # Hyphen-case each identifier then join together with hyphens.
         branch_name = identifiers
+          .map { |i| i.gsub(/[^\w]+/, '-') }
           .map { |i| i.gsub(/[[:upper:]]/) { |w| "-#{w.downcase}" } }
           .join('-')
           .delete_prefix("-")

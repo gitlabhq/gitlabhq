@@ -39,7 +39,7 @@ file can generate the `poetry.lock` file as follows.
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 stages:
   - test

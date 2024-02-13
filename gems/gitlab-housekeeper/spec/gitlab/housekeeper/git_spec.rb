@@ -9,7 +9,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
   let(:logger) { instance_double(Logger, info: nil) }
   let(:git) { described_class.new(logger: logger) }
   let(:repository_path) { Pathname(Dir.mktmpdir) }
-  let(:test_branch_name) { 'gitlab-housekeeper--test-branch' }
+  let(:test_branch_name) { 'gitlab-housekeeper--some-class--test--branch_123' }
   let(:file_in_master) { 'file_in_master.txt' }
   let(:file_in_another_branch) { 'file_in_another_branch.txt' }
 
@@ -57,7 +57,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
       split over multiple lines!
       COMMIT
 
-      change.identifiers = %w[GitlabHousekeeper TestBranch]
+      change.identifiers = %w[GitlabHousekeeper::SomeClass Test/Branch_123]
 
       Dir.mkdir('files')
       File.write(test_file1, "Content in file 1!")

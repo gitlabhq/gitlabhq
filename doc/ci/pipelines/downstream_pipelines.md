@@ -172,7 +172,7 @@ microservice_a:
   trigger:
     include:
       - local: path/to/microservice_a.yml
-      - template: Security/SAST.gitlab-ci.yml
+      - template: Jobs/SAST.gitlab-ci.yml
       - project: 'my-group/my-pipeline-library'
         ref: 'main'
         file: '/path/to/child-pipeline.yml'

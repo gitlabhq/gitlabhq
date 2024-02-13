@@ -381,7 +381,7 @@ To export a report of compliance frameworks on projects in a group:
 
 A report is compiled and delivered to your email inbox as an attachment.
 
-#### Filter the compliance projects report
+### Filter the compliance projects report
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387911) in GitLab 15.11.
 
@@ -397,6 +397,49 @@ To filter the list of compliance frameworks:
 1. Select **Search**.
 
 Repeat this process to filter by multiple attributes.
+
+### Create a new compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To create a new compliance framework from the compliance projects report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Projects** tab.
+1. Select the **+ Add framework**.
+1. Select the **Create a new framework**.
+1. Select the **Add framework** to create compliance framework.
+
+### Edit a compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To edit a compliance framework from the compliance projects report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Projects** tab.
+1. Hover over framework and select **Edit the framework**.
+1. Select the **Save changes** to edit compliance framework.
+
+### Delete a compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To delete a compliance framework from the compliance projects report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Projects** tab.
+1. Hover over framework and select **Edit the framework**.
+1. Select the **Delete framework** to delete compliance framework.
 
 ## Compliance frameworks report
 
@@ -421,8 +464,50 @@ Prerequisites:
 
 - You must be an administrator or have the Owner role for the group.
 
-To view the compliance projects report:
+To view the compliance frameworks report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
 1. On the page, select the **Frameworks** tab.
+
+### Create a new compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To create a new compliance framework from the compliance frameworks report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Select the **New framework**.
+1. Select the **Add framework** to create compliance framework.
+
+### Edit a compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To edit a compliance framework from the compliance frameworks report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Hover over framework and select **Edit the framework**.
+1. Select the **Save changes** to edit compliance framework.
+
+### Delete a compliance framework
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To delete a compliance framework from the compliance frameworks report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Compliance center**.
+1. On the page, select the **Frameworks** tab.
+1. Hover over framework and select **Edit the framework**.
+1. Select the **Delete framework** to delete compliance framework.

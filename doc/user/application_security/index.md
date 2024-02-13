@@ -153,10 +153,10 @@ Detection, add:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/License-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 To enable Dynamic Application Security Testing (DAST) scanning, add the following to your
@@ -382,10 +382,10 @@ For example, the following attempts to use a `unit-tests` stage:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/License-Scanning.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/License-Scanning.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 
 stages:
   - unit-tests
@@ -412,10 +412,10 @@ To fix this issue, you can either:
 
   ```yaml
   include:
-    - template: Security/Dependency-Scanning.gitlab-ci.yml
-    - template: Security/License-Scanning.gitlab-ci.yml
-    - template: Security/SAST.gitlab-ci.yml
-    - template: Security/Secret-Detection.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+    - template: Jobs/License-Scanning.gitlab-ci.yml
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   stages:
     - test
@@ -431,10 +431,10 @@ To fix this issue, you can either:
 
   ```yaml
   include:
-    - template: Security/Dependency-Scanning.gitlab-ci.yml
-    - template: Security/License-Scanning.gitlab-ci.yml
-    - template: Security/SAST.gitlab-ci.yml
-    - template: Security/Secret-Detection.gitlab-ci.yml
+    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+    - template: Jobs/License-Scanning.gitlab-ci.yml
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   stages:
     - unit-tests

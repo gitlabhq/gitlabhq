@@ -53,7 +53,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
       end
 
       it 'does not show deployments' do
-        expect(page).to have_content('You don\'t have any deployments right now.')
+        expect(page).to have_content('No deployment history')
       end
     end
 
