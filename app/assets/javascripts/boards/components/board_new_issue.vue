@@ -3,8 +3,6 @@ import { s__ } from '~/locale';
 import { getMilestone, formatIssueInput, getBoardQuery } from 'ee_else_ce/boards/boards_util';
 import BoardNewIssueMixin from 'ee_else_ce/boards/mixins/board_new_issue';
 
-import { toggleFormEventPrefix } from '../constants';
-import eventHub from '../eventhub';
 import { setError } from '../graphql/cache_updates';
 
 import BoardNewItem from './board_new_item.vue';
@@ -64,9 +62,6 @@ export default {
     },
   },
   computed: {
-    formEventPrefix() {
-      return toggleFormEventPrefix.issue;
-    },
     disableSubmit() {
       return this.isGroupBoard ? !this.selectedProject.name : false;
     },
@@ -107,7 +102,7 @@ export default {
       this.$emit('addNewIssue', input);
     },
     cancel() {
-      eventHub.$emit(`${this.formEventPrefix}${this.list.id}`);
+      this.$emit('toggleNewForm');
     },
   },
 };
@@ -116,7 +111,6 @@ export default {
 <template>
   <board-new-item
     :list="list"
-    :form-event-prefix="formEventPrefix"
     :submit-button-title="__('Create issue')"
     :disable-submit="disableSubmit"
     @form-submit="submit"

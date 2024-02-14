@@ -88,6 +88,20 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '.default?' do
+    context 'when organization is default' do
+      it 'returns true' do
+        expect(described_class.default?(default_organization.id)).to eq(true)
+      end
+    end
+
+    context 'when organization is not default' do
+      it 'returns false' do
+        expect(described_class.default?(organization.id)).to eq(false)
+      end
+    end
+  end
+
   describe '#id' do
     context 'when organization is default' do
       it 'has id 1' do

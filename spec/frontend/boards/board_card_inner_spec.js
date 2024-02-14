@@ -10,7 +10,6 @@ import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/i
 import BoardCardInner from '~/boards/components/board_card_inner.vue';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
-import eventHub from '~/boards/eventhub';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace } from './mock_data';
@@ -436,9 +435,8 @@ describe('Board card component', () => {
         expect(updateHistory).toHaveBeenCalledTimes(1);
       });
 
-      it('emits updateTokens event', () => {
-        expect(eventHub.$emit).toHaveBeenCalledTimes(1);
-        expect(eventHub.$emit).toHaveBeenCalledWith('updateTokens');
+      it('emits setFilters event', () => {
+        expect(wrapper.emitted('setFilters').length).toBe(1);
       });
     });
 
@@ -452,8 +450,8 @@ describe('Board card component', () => {
         expect(updateHistory).not.toHaveBeenCalled();
       });
 
-      it('does not emit updateTokens event', () => {
-        expect(eventHub.$emit).not.toHaveBeenCalled();
+      it('does not emit setFilters event', () => {
+        expect(wrapper.emitted('setFilters')).toBeUndefined();
       });
     });
   });

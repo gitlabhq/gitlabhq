@@ -2,8 +2,6 @@
 
 module Groups
   class CreateService < Groups::BaseService
-    include Organization::CurrentOrganization
-
     def initialize(user, params = {})
       @current_user = user
       @params = params.dup
@@ -17,7 +15,7 @@ module Groups
 
       @group = Group.new(params.except(*::NamespaceSetting.allowed_namespace_settings_params))
 
-      set_organization unless @params[:organization_id]
+      set_organization
 
       @group.build_namespace_settings
       handle_namespace_settings
@@ -136,7 +134,11 @@ module Groups
       # 2. We shouldn't need to check if this is allowed if the user didn't try to set it themselves. i.e.
       #    provided in the params
       return true if params[:organization_id].blank?
-      return true if @group.organization.blank?
+      # There is a chance the organization is still blank(if not default organization), but that is the only case
+      # where we should allow this to not actually be a record in the database.
+      # Otherwise it isn't valid to set this to a non-existent record id and we'll check that in the lines after
+      # this code.
+      return true if @group.organization.blank? && Organizations::Organization.default?(params[:organization_id])
 
       can_create_group_in_organization? && matches_parent_organization?
     end
@@ -164,10 +166,16 @@ module Groups
     end
 
     def set_organization
-      if @group.parent_id
+      if params[:organization_id]
+        nil # nothing to do, already assigned from params
+      elsif @group.parent_id
         @group.organization = @group.parent.organization
-      elsif current_organization
-        @group.organization = current_organization
+      # Rely on middleware setting of the organization,
+      # but since we are guarding with feature flag, we need to check it first
+      # Consider replacing elsif with else in cleanup of current_organization_middleware feature flag in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/441121
+      elsif Current.organization
+        @group.organization = Current.organization
       end
     end
   end

@@ -5,15 +5,23 @@
 
 default:
   # Full project: https://gitlab.com/pages/harp
-  image: node:4.2.2
+  image: node:16
+
+cache:
+  paths:
+    - node_modules
+
+test:
+  script:
+    - npm install -g harp less
+    - harp source public
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "merge_request_event"'
 
 pages:
-  cache:
-    paths:
-      - node_modules
   script:
-    - npm install -g harp
-    - harp compile ./ public
+    - npm install -g harp less
+    - harp source public
   artifacts:
     paths:
       - public

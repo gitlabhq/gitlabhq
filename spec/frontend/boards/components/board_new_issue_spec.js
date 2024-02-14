@@ -5,7 +5,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import BoardNewIssue from '~/boards/components/board_new_issue.vue';
 import BoardNewItem from '~/boards/components/board_new_item.vue';
 import ProjectSelect from '~/boards/components/project_select.vue';
-import eventHub from '~/boards/eventhub';
 import groupBoardQuery from '~/boards/graphql/group_board.query.graphql';
 import projectBoardQuery from '~/boards/graphql/project_board.query.graphql';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
@@ -96,18 +95,16 @@ describe('Issue boards new issue form', () => {
     expect(boardNewItem.exists()).toBe(true);
     expect(boardNewItem.props()).toEqual({
       list: mockList,
-      formEventPrefix: 'toggle-issue-form-',
       submitButtonTitle: 'Create issue',
       disableSubmit: false,
     });
   });
 
-  it('emits event `toggle-issue-form` with current list Id suffix on eventHub when `board-new-item` emits form-cancel event', async () => {
-    jest.spyOn(eventHub, '$emit').mockImplementation();
+  it('emits event `toggleNewForm` when `board-new-item` emits form-cancel event', async () => {
     findBoardNewItem().vm.$emit('form-cancel');
 
     await nextTick();
-    expect(eventHub.$emit).toHaveBeenCalledWith(`toggle-issue-form-${mockList.id}`);
+    expect(wrapper.emitted('toggleNewForm')).toHaveLength(1);
   });
 
   describe('when in group issue board', () => {

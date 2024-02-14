@@ -343,11 +343,13 @@ Prerequisites:
 - To enable the pipeline execution policy action feature, a Group owner or administrator must enable
   the experimental feature:
 
-  1. On the left sidebar, select **Search or go to** and find your project or group.
+  1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Permissions and group features**.
   1. Select the **Run customized CI YAML as security policy actions** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 The pipeline execution policy action introduces a new scan action type into
 scan execution policies for creating and enforcing custom CI in your target
@@ -422,6 +424,8 @@ Prerequisites:
   1. Expand **Permissions and group features**.
   1. Select the **Security Policy Scopes** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
+
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
 
 Security policy enforcement depends first on establishing a link between the group, subgroup, or
 project on which you want to enforce policies, and the security policy project that contains the

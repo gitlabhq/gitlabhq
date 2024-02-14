@@ -151,7 +151,7 @@ module Ci
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :full_path, to: :project, prefix: true
-    delegate :name, :auto_cancel_on_job_failure, to: :pipeline_metadata, allow_nil: true
+    delegate :name, to: :pipeline_metadata, allow_nil: true
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
@@ -1391,6 +1391,10 @@ module Ci
       return unless merge_request?
 
       merge_request.merge_request_diff_for(merge_request_diff_sha)
+    end
+
+    def auto_cancel_on_job_failure
+      pipeline_metadata&.auto_cancel_on_job_failure || 'none'
     end
 
     def auto_cancel_on_new_commit

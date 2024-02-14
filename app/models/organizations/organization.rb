@@ -39,12 +39,16 @@ module Organizations
       find_by(id: DEFAULT_ORGANIZATION_ID)
     end
 
+    def self.default?(id)
+      id == DEFAULT_ORGANIZATION_ID
+    end
+
     def organization_detail
       super.presence || build_organization_detail
     end
 
     def default?
-      id == DEFAULT_ORGANIZATION_ID
+      self.class.default?(id)
     end
 
     def to_param

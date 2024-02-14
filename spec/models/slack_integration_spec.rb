@@ -117,6 +117,18 @@ RSpec.describe SlackIntegration, feature_category: :integrations do
     end
   end
 
+  it 'toggles the integration to active when created' do
+    integration = create(:gitlab_slack_application_integration, active: false, slack_integration: nil)
+
+    expect { create(:slack_integration, integration: integration) }.to change { integration.reload.active }.to(true)
+  end
+
+  it 'toggles the integration to inactive when destroyed' do
+    integration = create(:gitlab_slack_application_integration)
+
+    expect { integration.slack_integration.destroy! }.to change { integration.reload.active }.to(false)
+  end
+
   describe 'Scopes' do
     let_it_be(:slack_integration) { create(:slack_integration) }
     let_it_be(:legacy_slack_integration) { create(:slack_integration, :legacy) }

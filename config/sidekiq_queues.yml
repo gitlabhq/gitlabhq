@@ -179,6 +179,8 @@
   - 1
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
+- - ci_user_cancel_pipeline
+  - 1
 - - click_house_audit_event_partition_sync
   - 1
 - - click_house_ci_finished_builds_sync

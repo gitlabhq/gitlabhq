@@ -1,31 +1,32 @@
 - page_title s_('AdminArea|Instance OAuth applications')
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper.gl-flex-direction-column
-      %h3.gl-new-card-title
-        =  s_('AdminArea|Instance OAuth applications')
-        .gl-new-card-count
-          = sprite_icon('applications', css_class: 'gl-mr-2')
-          = @applications.size
-      %p.gl-new-card-description
-        - docs_link_path = help_page_path('integration/oauth_provider')
-        - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
-        = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+- if @applications.empty?
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-admin-apps-md.svg',
+    title: s_('AdminArea|No applications found'),
+    primary_button_text: _('Add new application'),
+    primary_button_link: new_admin_application_path) do |c|
 
-    .gl-new-card-actions
-      = render Pajamas::ButtonComponent.new(size: :small, href: new_admin_application_path, button_options: { data: { testid: 'new-application-button' } }) do
-        = _('Add new application')
-  - c.with_body do
-    - if @applications.empty?
-      %section.empty-state.gl-my-5.gl-text-center.gl-display-flex.gl-flex-direction-column
-        .svg-content.svg-150
-          = image_tag 'illustrations/empty-state/empty-admin-apps-md.svg', class: 'gl-max-w-full'
+    - c.with_description do
+      = s_('AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above.')
 
-        .gl-max-w-full.gl-m-auto
-          %h1.h4.gl-font-size-h-display= s_('AdminArea|No applications found')
-          %p.gl-text-secondary.gl-mt-3= s_('AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above.')
-    - else
+- else
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper.gl-flex-direction-column
+        %h3.gl-new-card-title
+          =  s_('AdminArea|Instance OAuth applications')
+          .gl-new-card-count
+            = sprite_icon('applications', css_class: 'gl-mr-2')
+            = @applications.size
+        %p.gl-new-card-description
+          - docs_link_path = help_page_path('integration/oauth_provider')
+          - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
+          = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+
+      .gl-new-card-actions
+        = render Pajamas::ButtonComponent.new(size: :small, href: new_admin_application_path, button_options: { data: { testid: 'new-application-button' } }) do
+          = _('Add new application')
+    - c.with_body do
       .table-holder
         %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
           %thead

@@ -35,6 +35,20 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
         expect(page).to have_current_path(group_path(group), ignore_query: true)
         expect(page).to have_selector '.visibility-icon [data-testid="earth-icon"]'
       end
+
+      context 'with current organization setting in middleware' do
+        it 'sets the organization to the default organization' do
+          default_organization = create(:organization, :default)
+
+          fill_in 'Group name', with: 'test-group'
+          click_button 'Create group'
+
+          group = Group.find_by(name: 'test-group')
+
+          expect(group.organization).to eq(default_organization)
+          expect(page).to have_current_path(group_path(group), ignore_query: true)
+        end
+      end
     end
 
     describe 'with expected fields' do

@@ -5794,4 +5794,36 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
   end
+
+  describe '#auto_cancel_on_job_failure' do
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+
+    subject(:auto_cancel_on_job_failure) { pipeline.auto_cancel_on_job_failure }
+
+    context 'when pipeline_metadata is not present' do
+      it { is_expected.to eq('none') }
+    end
+
+    context 'when pipeline_metadata is present' do
+      before_all do
+        create(:ci_pipeline_metadata, project: pipeline.project, pipeline: pipeline)
+      end
+
+      context 'when auto_cancel_on_job_failure is nil' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_job_failure = nil
+        end
+
+        it { is_expected.to eq('none') }
+      end
+
+      context 'when auto_cancel_on_job_failure is a valid value' do
+        before do
+          pipeline.pipeline_metadata.auto_cancel_on_job_failure = 'all'
+        end
+
+        it { is_expected.to eq('all') }
+      end
+    end
+  end
 end

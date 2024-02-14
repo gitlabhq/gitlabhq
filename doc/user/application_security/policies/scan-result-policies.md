@@ -382,6 +382,8 @@ Prerequisites:
   1. Select the **Security Policy Scopes** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
 
+     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
+
 Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
 

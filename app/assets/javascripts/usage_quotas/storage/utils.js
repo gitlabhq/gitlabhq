@@ -1,5 +1,7 @@
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
+import { storageTypeHelpPaths } from './constants';
 
 /**
  * Populates an array of storage types with usage value and other details
@@ -79,5 +81,33 @@ export const parseGetStorageResults = (data) => {
     totalUsage,
     rootStorageStatistics,
     limit: storageSizeLimit,
+  };
+};
+
+export const parseProvideData = (el) => {
+  if (!el) {
+    return {};
+  }
+
+  const { namespaceId, namespacePath, userNamespace, defaultPerPage } = el.dataset;
+
+  return {
+    namespaceId,
+    namespacePath,
+    userNamespace: parseBoolean(userNamespace),
+    defaultPerPage: Number(defaultPerPage),
+    helpLinks: storageTypeHelpPaths,
+    // only used in EE
+    purchaseStorageUrl: '',
+    buyAddonTargetAttr: '',
+    namespacePlanName: '',
+    isInNamespaceLimitsPreEnforcement: false,
+    perProjectStorageLimit: false,
+    namespaceStorageLimit: false,
+    totalRepositorySizeExcess: false,
+    isUsingProjectEnforcementWithLimits: false,
+    isUsingProjectEnforcementWithNoLimits: false,
+    isUsingNamespaceEnforcement: false,
+    customSortKey: null,
   };
 };

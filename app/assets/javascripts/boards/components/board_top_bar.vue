@@ -45,6 +45,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    filters: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -104,11 +108,13 @@ export default {
           v-if="isIssueBoard"
           :board="board"
           :is-swimlanes-on="isSwimlanesOn"
+          :filters="filters"
           @setFilters="$emit('setFilters', $event)"
         />
         <epic-board-filtered-search
           v-else
           :board="board"
+          :filters="filters"
           @setFilters="$emit('setFilters', $event)"
         />
       </div>

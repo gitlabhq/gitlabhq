@@ -214,6 +214,7 @@ export default {
         :data-draggable-item-type="$options.draggableItemTypes.list"
         :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"
+        @setFilters="$emit('setFilters', $event)"
       />
 
       <transition name="slide" @after-enter="afterFormEnters">
@@ -238,6 +239,7 @@ export default {
       :highlighted-lists="highlightedLists"
       @setActiveList="$emit('setActiveList', $event)"
       @move-list="updateListPosition"
+      @setFilters="$emit('setFilters', $event)"
     >
       <board-add-new-column
         v-if="addColumnFormVisible"

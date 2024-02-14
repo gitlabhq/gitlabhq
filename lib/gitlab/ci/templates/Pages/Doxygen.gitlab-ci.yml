@@ -7,9 +7,20 @@ default:
   # Full project: https://gitlab.com/pages/doxygen
   image: alpine
 
+before_script:
+  - apk update
+  - apk add doxygen
+## Uncomment the following line if you use graphviz dot graphs
+#  - apk add ttf-freefont graphviz
+
+test:
+  script:
+    - doxygen doxygen/Doxyfile
+  rules:
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+
 pages:
   script:
-    - apk update && apk add doxygen
     - doxygen doxygen/Doxyfile
     - mv doxygen/documentation/html/ public/
   environment: production

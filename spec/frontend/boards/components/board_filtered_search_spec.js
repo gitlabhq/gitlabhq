@@ -65,6 +65,7 @@ describe('BoardFilteredSearch', () => {
       propsData: {
         ...props,
         tokens,
+        filters: {},
       },
     });
   };

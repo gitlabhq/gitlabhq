@@ -16,10 +16,6 @@ export default {
       type: Object,
       required: true,
     },
-    formEventPrefix: {
-      type: String,
-      required: true,
-    },
     disableSubmit: {
       type: Boolean,
       required: false,

@@ -43,10 +43,6 @@ class SlackIntegration < ApplicationRecord
 
   after_commit :update_active_status_of_integration, on: [:create, :destroy]
 
-  def update_active_status_of_integration
-    integration.update_active_status
-  end
-
   def feature_available?(feature_name)
     case feature_name
     when :commands
@@ -80,6 +76,10 @@ class SlackIntegration < ApplicationRecord
   end
 
   private
+
+  def update_active_status_of_integration
+    integration.update(active: persisted?)
+  end
 
   def scoped_to?(*names)
     return false if names.empty?

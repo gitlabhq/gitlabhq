@@ -2865,6 +2865,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_user_cancel_pipeline
+  :worker_name: Ci::UserCancelPipelineWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: click_house_audit_event_partition_sync
   :worker_name: ClickHouse::AuditEventPartitionSyncWorker
   :feature_category: :compliance_management

@@ -57,36 +57,26 @@ RSpec.describe Organizations::OrganizationSetting, type: :model, feature_categor
   end
 
   describe '.for_current_organization' do
-    let(:dummy_class) { Class.new { extend Organization::CurrentOrganization } }
-
     subject(:settings) { described_class.for_current_organization }
 
     context 'when there is no current organization' do
       it { is_expected.to be_nil }
     end
 
-    context 'when there is a current organization' do
-      before do
-        dummy_class.current_organization = organization
-      end
+    context 'when there is a current organization', :with_current_organization do
+      context 'when current organization has settings' do
+        let_it_be(:organization_setting) { create(:organization_setting, organization: current_organization) }
 
-      after do
-        dummy_class.current_organization = nil
-      end
-
-      it 'returns current organization' do
-        expect(settings).to eq(organization_setting)
+        it 'returns current organization' do
+          expect(settings).to eq(organization_setting)
+        end
       end
 
       context 'when current organization does not have settings' do
-        before do
-          allow(organization).to receive(:settings).and_return(nil)
-        end
-
         it 'returns new settings record' do
           new_settings = settings
 
-          expect(new_settings.organization).to eq(organization)
+          expect(new_settings.organization).to eq(current_organization)
           expect(new_settings.new_record?).to eq(true)
         end
       end
