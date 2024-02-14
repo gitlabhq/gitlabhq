@@ -101,6 +101,8 @@ module Users
         Rails.root.join('lib', 'assets', 'images', 'bot_avatars', image).open
       end
 
+      # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
+      # :before_all scope to keep the specs DRY.
       def unique_internal(scope, username, email_pattern, &block)
         scope.first || create_unique_internal(scope, username, email_pattern, &block)
       end

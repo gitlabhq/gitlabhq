@@ -10,20 +10,12 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** SaaS, self-managed
 
-> Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
-
-NOTE:
-[In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train**
-and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**.
-**Remove from merge train** became **Cancel auto-merge**.
-
-Use merge trains to queue merge requests and verify their changes work together before
-they are merged to the target branch.
+> - [In GitLab 16.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/359057), the **Start merge train** and **Start merge train when pipeline succeeds** buttons became **Set to auto-merge**. **Remove from merge train** became **Cancel auto-merge**.
+> - Support for [fast-forward](../../user/project/merge_requests/methods/index.md#fast-forward-merge) and [semi-linear](../../user/project/merge_requests/methods/index.md#merge-commit-with-semi-linear-history) merge methods [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/282442) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `fast_forward_merge_trains_support`. Enabled by default.
 
 In projects with frequent merges to the default branch, changes in different merge requests
-might conflict with each other. [Merged results pipelines](merged_results_pipelines.md)
-ensure the changes work with the content in the default branch, but not content
-that others are merging at the same time.
+might conflict with each other. Use merge trains to put merge requests in a queue.
+Each merge request is compared to the other, earlier merge requests, to ensure they all work together.
 
 For more information about:
 

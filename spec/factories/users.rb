@@ -52,7 +52,9 @@ FactoryBot.define do
     end
 
     trait :locked do
-      after(:build) { |user, _| user.lock_access! }
+      after(:build) do |user, _|
+        Gitlab::ExclusiveLease.skipping_transaction_check { user.lock_access! }
+      end
     end
 
     trait :disallowed_password do

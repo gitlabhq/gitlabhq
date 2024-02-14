@@ -41,8 +41,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::PauseControl::Strategies::ClickHouseMi
       include ExclusiveLeaseHelpers
 
       around do |example|
-        ClickHouse::MigrationSupport::ExclusiveLock.execute_migration do
-          example.run
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          ClickHouse::MigrationSupport::ExclusiveLock.execute_migration do
+            example.run
+          end
         end
       end
 

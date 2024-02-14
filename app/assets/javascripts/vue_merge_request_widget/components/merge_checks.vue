@@ -171,11 +171,12 @@ export default {
       class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-relative gl-bg-gray-10"
       data-testid="merge-checks-full"
     >
-      <div class="gl-px-5">
+      <div>
         <component
           :is="checkComponent(check)"
           v-for="(check, index) in sortedChecks"
           :key="index"
+          class="gl-pl-9"
           :class="{
             'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== sortedChecks.length - 1,
           }"

@@ -108,7 +108,9 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
 
       pipeline.update_duration
 
-      ::Ci::ProcessPipelineService.new(pipeline).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        ::Ci::ProcessPipelineService.new(pipeline).execute
+      end
     end
 
     ::Gitlab::Seeders::Ci::DailyBuildGroupReportResult.new(@project).seed if @project.last_pipeline
@@ -242,7 +244,9 @@ class Gitlab::Seeder::Pipelines # rubocop:disable Style/ClassAndModuleChildren
   def setup_build_log(build)
     return unless %w[running success failed].include?(build.status)
 
-    build.trace.set(FFaker::Lorem.paragraphs(6).join("\n\n"))
+    Gitlab::ExclusiveLease.skipping_transaction_check do
+      build.trace.set(FFaker::Lorem.paragraphs(6).join("\n\n"))
+    end
   end
 
   def generic_commit_status_create!(pipeline, stage, opts = {})

@@ -556,3 +556,23 @@ module RedisCommands
 end
 
 Redis::Client.prepend(RedisCommands::Instrumentation)
+
+module UsersInternalAllowExclusiveLease
+  extend ActiveSupport::Concern
+
+  class_methods do
+    def unique_internal(scope, username, email_pattern, &block)
+      # this lets skip transaction checks when Users::Internal bots are created in
+      # let_it_be blocks during test set-up.
+      #
+      # Users::Internal bot creation within examples are still checked since the RSPec.current_scope is :example
+      if ::RSpec.respond_to?(:current_scope) && ::RSpec.current_scope == :before_all
+        Gitlab::ExclusiveLease.skipping_transaction_check { super }
+      else
+        super
+      end
+    end
+  end
+end
+
+Users::Internal.prepend(UsersInternalAllowExclusiveLease)

@@ -147,7 +147,7 @@ To view a list of dashboards (both built-in and custom) for a group:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
+On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`.
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 

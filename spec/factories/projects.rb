@@ -113,7 +113,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_owner(project.first_owner)
+        Gitlab::ExclusiveLease.skipping_transaction_check { project.add_owner(project.first_owner) }
       end
 
       if project.group

@@ -39,7 +39,9 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
           project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
-          @restored_project_json = project_tree_restorer.restore
+          @restored_project_json = Gitlab::ExclusiveLease.skipping_transaction_check do
+            project_tree_restorer.restore
+          end
         end
       end
 

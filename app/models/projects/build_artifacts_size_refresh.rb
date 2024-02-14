@@ -106,7 +106,11 @@ module Projects
     end
 
     def reset_project_statistics!
-      project.statistics.initiate_refresh!(COUNTER_ATTRIBUTE_NAME)
+      # This method is called in the `before_transition` block which is in a transaction.
+      # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441524
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        project.statistics.initiate_refresh!(COUNTER_ATTRIBUTE_NAME)
+      end
     end
 
     def next_batch(limit:)

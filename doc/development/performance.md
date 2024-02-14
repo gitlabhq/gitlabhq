@@ -956,3 +956,19 @@ Assuming you are working with ActiveRecord models, you might also find these lin
 ### Examples
 
 You may find some useful examples in [this snippet](https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946).
+
+## ExclusiveLease
+
+`Gitlab::ExclusiveLease` is a Redis-based locking mechanism that lets developers achieve mutual exclusion across distributed servers. There are several wrappers available for developers to make use of:
+
+1. The `Gitlab::ExclusiveLeaseHelpers` module provides a helper method to block the process or thread until the lease can be expired.
+1. The `ExclusiveLease::Guard` module helps get an exclusive lease for a running block of code.
+
+You should not use `ExclusiveLease` in a database transaction because any slow Redis I/O could increase idle transaction duration. The `.try_obtain` method checks if the lease attempt is within any database transactions, and tracks an exception in Sentry and the `log/exceptions_json.log`.
+
+In a test or development environment, any lease attempts in database transactions will raise a `Gitlab::ExclusiveLease::LeaseWithinTransactionError` unless performed within a `Gitlab::ExclusiveLease.skipping_transaction_check` block. You should only use the skip functionality in specs where possible, and placed as close to the lease as possible for ease of understanding. To keep the specs DRY, there are two parts of the codebase where the transaction check skips are re-used:
+
+1. `Users::Internal` is patched to skip transaction checks for bot creation in `let_it_be`.
+1. `FactoryBot` factory for `:deploy_key` skips transaction during the `DeployKey` model creation.
+
+Any use of `Gitlab::ExclusiveLease.skipping_transaction_check` in non-spec or non-fixture files should include links to an infradev issue for plans to remove it.

@@ -12,7 +12,11 @@ module StubbedMember
     private
 
     def refresh_member_authorized_projects
-      AuthorizedProjectsWorker.new.perform(user_id)
+      # In stubbed_member the original methods stubbed would call .perform_async
+      # so the affected workers would not be in a transaction in a non-test environment.
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        AuthorizedProjectsWorker.new.perform(user_id)
+      end
     end
   end
 
@@ -20,7 +24,11 @@ module StubbedMember
     private
 
     def execute_project_authorizations_refresh
-      AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.new.perform(project.id, user.id)
+      # In stubbed_member the original methods stubbed would call .perform_async
+      # so the affected workers would not be in a transaction in a non-test environment.
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        AuthorizedProjectUpdate::ProjectRecalculatePerUserWorker.new.perform(project.id, user.id)
+      end
     end
   end
 end

@@ -21,10 +21,17 @@ module Gitlab
 
         @client.sadd?(GitlabPerformanceBarStatsWorker::STATS_KEY, request_id)
 
-        return unless uuid = Gitlab::ExclusiveLease.new(
-          GitlabPerformanceBarStatsWorker::LEASE_KEY,
-          timeout: GitlabPerformanceBarStatsWorker::LEASE_TIMEOUT
-        ).try_obtain
+        # We skip transaction check as the transaction check fails the system spec for
+        # spec/features/user_can_display_performance_bar_spec.rb.
+        # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441535
+        uuid = Gitlab::ExclusiveLease.skipping_transaction_check do
+          Gitlab::ExclusiveLease.new(
+            GitlabPerformanceBarStatsWorker::LEASE_KEY,
+            timeout: GitlabPerformanceBarStatsWorker::LEASE_TIMEOUT
+          ).try_obtain
+        end
+
+        return unless uuid
 
         # stats key should be periodically processed and deleted by
         # GitlabPerformanceBarStatsWorker but if it doesn't happen for

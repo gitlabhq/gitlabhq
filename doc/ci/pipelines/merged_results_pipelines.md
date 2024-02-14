@@ -13,7 +13,8 @@ DETAILS:
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/351192) from `pipelines for merged results` to `merged results pipelines` in GitLab 14.8.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
 
-A *merged results pipeline* is a type of [merge request pipeline](merge_request_pipelines.md). It is a pipeline that runs against the results of the source and target branches merged together.
+A merged results pipeline runs on the result of the source and target branches merged together.
+It is a type of [merge request pipeline](merge_request_pipelines.md).
 
 GitLab creates an internal commit with the merged results, so the pipeline can run
 against it. This commit does not exist in either branch,
@@ -26,7 +27,7 @@ Any time you want to be sure the merged results are accurate, you should re-run 
 
 Merged results pipelines can't run when the target branch has changes that conflict with the changes in the source branch.
 In these cases, the pipeline runs as a [merge request pipeline](merge_request_pipelines.md)
-and [is labeled as `merge request`](merge_request_pipelines.md#types-of-merge-request-pipelines).
+and is labeled as `merge request`.
 
 ## Prerequisites
 

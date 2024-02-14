@@ -148,7 +148,12 @@ module Gitlab
           next if flush_amount == 0
 
           counter_record.transaction do
-            counter_record.update_counters_with_lease({ attribute => flush_amount })
+            # Exclusive lease is obtained within `counter_record.transaction` which could lead to idle transactions
+            # if exclusive lease Redis I/O is slow. We skip the transaction check for now.
+            # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441530
+            Gitlab::ExclusiveLease.skipping_transaction_check do
+              counter_record.update_counters_with_lease({ attribute => flush_amount })
+            end
             remove_flushed_key
           end
 

@@ -175,7 +175,7 @@ For help with a specific area, see:
 - [Jobs](jobs/index.md#troubleshooting).
 - [Job control](jobs/job_control.md).
 - [Job artifacts](jobs/job_artifacts_troubleshooting.md).
-- [Merge request pipelines](pipelines/merge_request_pipelines.md#troubleshooting),
+- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
   [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
   and [Merge trains](pipelines/merge_trains.md#troubleshooting).
 - [Pipeline editor](pipeline_editor/index.md#troubleshooting).

@@ -231,14 +231,16 @@ FactoryBot.define do
       end
 
       after(:create) do |build, evaluator|
-        build.trace.set("Coverage #{evaluator.trace_coverage}%")
+        Gitlab::ExclusiveLease.skipping_transaction_check do
+          build.trace.set("Coverage #{evaluator.trace_coverage}%")
+        end
         build.trace.archive! if build.complete?
       end
     end
 
     trait :trace_live do
       after(:create) do |build, evaluator|
-        build.trace.set('BUILD TRACE')
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set('BUILD TRACE') }
       end
     end
 
@@ -260,7 +262,7 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_duplicate_sections')))
 
-        build.trace.set(trace)
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
       end
     end
 
@@ -270,7 +272,7 @@ FactoryBot.define do
           File.expand_path(
             Rails.root.join('spec/fixtures/trace/trace_with_sections')))
 
-        build.trace.set(trace)
+        Gitlab::ExclusiveLease.skipping_transaction_check { build.trace.set(trace) }
       end
     end
 

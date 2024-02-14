@@ -184,19 +184,21 @@ class Gitlab::Seeder::Projects
 
     project = nil
 
-    Sidekiq::Worker.skipping_transaction_check do
-      project = ::Projects::CreateService.new(User.first, params).execute
+    Gitlab::ExclusiveLease.skipping_transaction_check do
+      Sidekiq::Worker.skipping_transaction_check do
+        project = ::Projects::CreateService.new(User.first, params).execute
 
-      # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
-      # hook won't run until after the fixture is loaded. That is too late
-      # since the Sidekiq::Testing block has already exited. Force clearing
-      # the `after_commit` queue to ensure the job is run now.
-      project.send(:_run_after_commit_queue)
-      project.import_state.send(:_run_after_commit_queue)
+        # Seed-Fu runs this entire fixture in a transaction, so the `after_commit`
+        # hook won't run until after the fixture is loaded. That is too late
+        # since the Sidekiq::Testing block has already exited. Force clearing
+        # the `after_commit` queue to ensure the job is run now.
+        project.send(:_run_after_commit_queue)
+        project.import_state.send(:_run_after_commit_queue)
 
-      # Expire repository cache after import to ensure
-      # valid_repo? call below returns a correct answer
-      project.repository.expire_all_method_caches
+        # Expire repository cache after import to ensure
+        # valid_repo? call below returns a correct answer
+        project.repository.expire_all_method_caches
+      end
     end
 
     if project.valid? && project.valid_repo?

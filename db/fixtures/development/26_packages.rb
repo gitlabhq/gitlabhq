@@ -21,7 +21,9 @@ class Gitlab::Seeder::Packages
           .gsub('1.0.1', version))
         .with_indifferent_access
 
-      ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+      Gitlab::ExclusiveLease.skipping_transaction_check do
+        ::Packages::Npm::CreatePackageService.new(project, project.creator, params).execute
+      end
 
       print '.'
     end
