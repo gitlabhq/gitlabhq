@@ -144,10 +144,12 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     patterns_lists = config.filter_map do |name, patterns|
       next unless name.start_with?('.')
       next unless name.end_with?('patterns')
-      # Ignore EE-only patterns list when in FOSS context
-      next if foss_context && patterns.all? { |pattern| pattern =~ %r|{?ee/| }
 
-      PatternsList.new(name, patterns)
+      # Ignore EE-only patterns list when in FOSS context
+      relevant_patterns = foss_context ? patterns.reject { |pattern| pattern =~ %r|^{?ee/| } : patterns
+      next if relevant_patterns.empty?
+
+      PatternsList.new(name, relevant_patterns)
     end
 
     # One loop to gather a { pattern => files } hash

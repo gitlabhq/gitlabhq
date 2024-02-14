@@ -23,6 +23,19 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION assign_p_ci_job_artifacts_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('ci_job_artifacts_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_p_ci_pipeline_variables_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -14526,15 +14539,6 @@ CREATE TABLE p_ci_job_artifacts (
 )
 PARTITION BY LIST (partition_id);
 
-CREATE SEQUENCE ci_job_artifacts_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE ci_job_artifacts_id_seq OWNED BY p_ci_job_artifacts.id;
-
 CREATE TABLE ci_job_artifacts (
     project_id integer NOT NULL,
     file_type integer NOT NULL,
@@ -14547,7 +14551,7 @@ CREATE TABLE ci_job_artifacts (
     file_sha256 bytea,
     file_format smallint,
     file_location smallint,
-    id bigint DEFAULT nextval('ci_job_artifacts_id_seq'::regclass) NOT NULL,
+    id bigint NOT NULL,
     job_id bigint NOT NULL,
     locked smallint DEFAULT 2,
     partition_id bigint NOT NULL,
@@ -14556,6 +14560,15 @@ CREATE TABLE ci_job_artifacts (
     CONSTRAINT check_27f0f6dbab CHECK ((file_store IS NOT NULL)),
     CONSTRAINT check_9f04410cf4 CHECK ((char_length(file_final_path) <= 1024))
 );
+
+CREATE SEQUENCE ci_job_artifacts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ci_job_artifacts_id_seq OWNED BY p_ci_job_artifacts.id;
 
 CREATE TABLE ci_job_token_group_scope_links (
     id bigint NOT NULL,
@@ -19181,6 +19194,7 @@ CREATE TABLE member_roles (
     manage_group_access_tokens boolean DEFAULT false NOT NULL,
     remove_project boolean DEFAULT false NOT NULL,
     admin_terraform_state boolean DEFAULT false NOT NULL,
+    admin_cicd_variables boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
@@ -27746,8 +27760,6 @@ ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT next
 ALTER TABLE ONLY p_ci_builds_metadata ALTER COLUMN id SET DEFAULT nextval('ci_builds_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY p_ci_job_annotations ALTER COLUMN id SET DEFAULT nextval('p_ci_job_annotations_id_seq'::regclass);
-
-ALTER TABLE ONLY p_ci_job_artifacts ALTER COLUMN id SET DEFAULT nextval('ci_job_artifacts_id_seq'::regclass);
 
 ALTER TABLE ONLY packages_build_infos ALTER COLUMN id SET DEFAULT nextval('packages_build_infos_id_seq'::regclass);
 
@@ -38376,6 +38388,8 @@ ALTER INDEX p_ci_job_artifacts_expire_at_job_id_idx1 ATTACH PARTITION tmp_index_
 ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique_ci_builds_token_encrypted_and_partition_id;
 
 CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
+
+CREATE TRIGGER assign_p_ci_job_artifacts_id_trigger BEFORE INSERT ON p_ci_job_artifacts FOR EACH ROW EXECUTE FUNCTION assign_p_ci_job_artifacts_id_value();
 
 CREATE TRIGGER assign_p_ci_pipeline_variables_id_trigger BEFORE INSERT ON p_ci_pipeline_variables FOR EACH ROW EXECUTE FUNCTION assign_p_ci_pipeline_variables_id_value();
 

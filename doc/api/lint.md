@@ -61,9 +61,10 @@ Example responses:
 ## Validate a project's CI configuration
 
 > - `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
+> - `sha` and `ref` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098) to `content_ref` and `dry_run_ref` in GitLab 16.10.
 
-Checks if a project’s `.gitlab-ci.yml` configuration in a given ref (the
-`sha` parameter, by default `HEAD` of the project’s default branch) is valid.
+Checks if a project's `.gitlab-ci.yml` configuration in a given ref (the
+`content_ref` parameter, by default `HEAD` of the project's default branch) is valid.
 This endpoint uses all namespace specific data available, including variables
 and local includes.
 
@@ -73,10 +74,12 @@ GET /projects/:id/ci/lint
 
 | Attribute      | Type    | Required | Description |
 |----------------|---------|----------|-------------|
+| `content_ref`  | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
+| `dry_run_ref`  | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
 | `dry_run`      | boolean | No       | Run pipeline creation simulation, or only do static check. |
 | `include_jobs` | boolean | No       | If the list of jobs that would exist in a static check or pipeline simulation should be included in the response. Default: `false`. |
-| `ref`          | string  | No       | When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. |
-| `sha`          | string  | No       | The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. |
+| `ref`          | string  | No       | (Deprecated) When `dry_run` is `true`, sets the branch or tag context to use to validate the CI/CD YAML configuration. Defaults to the project's default branch when not set. Use `dry_run_ref` instead. |
+| `sha`          | string  | No       | (Deprecated) The CI/CD configuration content is taken from this commit SHA, branch or tag. Defaults to the SHA of the head of the project's default branch when not set. Use `content_ref` instead. |
 
 Example request:
 

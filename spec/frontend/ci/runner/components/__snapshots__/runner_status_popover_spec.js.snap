@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`RunnerStatusPopover renders complete text 1`] = `"Never contacted: Runner has never contacted GitLab (when you register a runner, use gitlab-runner run to bring it online) Online: Runner has contacted GitLab within the last 2 hours Offline: Runner has not contacted GitLab in more than 2 hours Stale: Runner has not contacted GitLab in more than 3 months"`;

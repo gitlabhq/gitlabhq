@@ -39,40 +39,19 @@ export const I18N_STATUS_STALE = s__('Runners|Stale');
 export const I18N_JOB_STATUS_RUNNING = s__('Runners|Running');
 export const I18N_JOB_STATUS_IDLE = s__('Runners|Idle');
 
-// Status help popover
-export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
-
-export const I18N_STATUS_POPOVER_NEVER_CONTACTED = s__('Runners|Never contacted:');
-export const I18N_STATUS_POPOVER_NEVER_CONTACTED_DESCRIPTION = s__(
-  'Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)',
-);
-export const I18N_STATUS_POPOVER_ONLINE = s__('Runners|Online:');
-export const I18N_STATUS_POPOVER_ONLINE_DESCRIPTION = s__(
-  'Runners|Runner has contacted GitLab within the last %{elapsedTime}',
-);
-export const I18N_STATUS_POPOVER_OFFLINE = s__('Runners|Offline:');
-export const I18N_STATUS_POPOVER_OFFLINE_DESCRIPTION = s__(
-  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
-);
-export const I18N_STATUS_POPOVER_STALE = s__('Runners|Stale:');
-export const I18N_STATUS_POPOVER_STALE_DESCRIPTION = s__(
-  'Runners|Runner has not contacted GitLab in more than %{elapsedTime}',
-);
-
 // Status tooltips
-export const I18N_ONLINE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is online; last contact was %{timeAgo}',
-);
+export const I18N_ONLINE_TOOLTIP = s__('Runners|Last contact was %{timeAgo}');
 export const I18N_NEVER_CONTACTED_TOOLTIP = s__('Runners|Runner has never contacted this instance');
-export const I18N_OFFLINE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is offline; last contact was %{timeAgo}',
+export const I18N_NEVER_CONTACTED_STALE_TOOLTIP = s__(
+  'Runners|Runner is older than %{elapsedTime} and has never contacted GitLab',
 );
-export const I18N_STALE_TIMEAGO_TOOLTIP = s__(
-  'Runners|Runner is stale; last contact was %{timeAgo}',
+export const I18N_DISCONNECTED_TOOLTIP = s__(
+  "Runners|Runner hasn't contacted GitLab in more than %{elapsedTime} and last contact was %{timeAgo}",
 );
-export const I18N_STALE_NEVER_CONTACTED_TOOLTIP = s__(
-  'Runners|Runner is stale; it has never contacted this instance',
-);
+
+// Default online/stale status timeouts, actual values
+export const ONLINE_CONTACT_TIMEOUT_SECS = 2 * 60 * 60; // 2 hours
+export const STALE_TIMEOUT_SECS = 7889238; // Ruby's `3.months`
 
 // Registration dropdown
 export const I18N_REGISTER_INSTANCE_TYPE = s__('Runners|Register an instance runner');

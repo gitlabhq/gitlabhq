@@ -42,8 +42,8 @@ RSpec.describe 'Users > User browses projects on user page', :js, feature_catego
   end
 
   it 'paginates projects', :js do
-    project = create(:project, namespace: user.namespace, updated_at: 2.minutes.since)
-    project2 = create(:project, namespace: user.namespace, updated_at: 1.minute.since)
+    project = create(:project, namespace: user.namespace, last_activity_at: 2.minutes.since)
+    project2 = create(:project, namespace: user.namespace, last_activity_at: 1.minute.since)
     allow(Project).to receive(:default_per_page).and_return(1)
 
     sign_in(user)

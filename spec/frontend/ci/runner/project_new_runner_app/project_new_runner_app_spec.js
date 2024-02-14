@@ -44,7 +44,7 @@ describe('ProjectRunnerRunnerApp', () => {
   const findRunnerCloudExecutionEnvironment = () =>
     wrapper.findComponent(RunnerCloudExecutionEnvironment);
 
-  const createComponent = (gcpRunner = false) => {
+  const createComponent = (googleCloudRunnerProvisioning = false) => {
     wrapper = shallowMountExtended(ProjectRunnerRunnerApp, {
       propsData: {
         projectId: mockProjectId,
@@ -55,7 +55,7 @@ describe('ProjectRunnerRunnerApp', () => {
       },
       provide: {
         glFeatures: {
-          gcpRunner,
+          googleCloudRunnerProvisioning,
         },
       },
     });

@@ -41,7 +41,7 @@ describe('GroupRunnerRunnerApp', () => {
   const findRunnerCreateForm = () => wrapper.findComponent(RunnerCreateForm);
   const findRunnerCloudForm = () => wrapper.findComponent(RunnerCloudConnectionForm);
 
-  const createComponent = (gcpRunner = false) => {
+  const createComponent = (googleCloudRunnerProvisioning = false) => {
     wrapper = shallowMountExtended(GroupRunnerRunnerApp, {
       propsData: {
         groupId: mockGroupId,
@@ -51,7 +51,7 @@ describe('GroupRunnerRunnerApp', () => {
       },
       provide: {
         glFeatures: {
-          gcpRunner,
+          googleCloudRunnerProvisioning,
         },
       },
     });

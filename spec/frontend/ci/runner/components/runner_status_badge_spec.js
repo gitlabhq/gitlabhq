@@ -7,8 +7,6 @@ import {
   I18N_STATUS_NEVER_CONTACTED,
   I18N_STATUS_OFFLINE,
   I18N_STATUS_STALE,
-  I18N_NEVER_CONTACTED_TOOLTIP,
-  I18N_STALE_NEVER_CONTACTED_TOOLTIP,
   STATUS_ONLINE,
   STATUS_OFFLINE,
   STATUS_STALE,
@@ -21,7 +19,7 @@ describe('RunnerTypeBadge', () => {
   const findBadge = () => wrapper.findComponent(GlBadge);
   const getTooltip = () => getBinding(findBadge().element, 'gl-tooltip');
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, ...options } = {}) => {
     wrapper = shallowMount(RunnerStatusBadge, {
       propsData: {
         contactedAt: '2020-12-31T23:59:00Z',
@@ -31,6 +29,7 @@ describe('RunnerTypeBadge', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      ...options,
     });
   };
 
@@ -48,7 +47,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_ONLINE);
     expect(findBadge().props('variant')).toBe('success');
-    expect(getTooltip().value).toBe('Runner is online; last contact was 1 minute ago');
+    expect(getTooltip().value).toBe('Last contact was 1 minute ago');
   });
 
   it('renders never contacted state', () => {
@@ -61,7 +60,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_NEVER_CONTACTED);
     expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toBe(I18N_NEVER_CONTACTED_TOOLTIP);
+    expect(getTooltip().value).toBe('Runner has never contacted this instance');
   });
 
   it('renders offline state', () => {
@@ -74,7 +73,9 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_OFFLINE);
     expect(findBadge().props('variant')).toBe('muted');
-    expect(getTooltip().value).toBe('Runner is offline; last contact was 1 day ago');
+    expect(getTooltip().value).toBe(
+      "Runner hasn't contacted GitLab in more than 2 hours and last contact was 1 day ago",
+    );
   });
 
   it('renders stale state', () => {
@@ -87,7 +88,9 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
-    expect(getTooltip().value).toBe('Runner is stale; last contact was 1 year ago');
+    expect(getTooltip().value).toBe(
+      "Runner hasn't contacted GitLab in more than 3 months and last contact was 1 year ago",
+    );
   });
 
   it('renders stale state with no contact time', () => {
@@ -100,7 +103,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
-    expect(getTooltip().value).toBe(I18N_STALE_NEVER_CONTACTED_TOOLTIP);
+    expect(getTooltip().value).toBe('Runner is older than 3 months and has never contacted GitLab');
   });
 
   describe('does not fail when data is missing', () => {
@@ -113,7 +116,7 @@ describe('RunnerTypeBadge', () => {
       });
 
       expect(wrapper.text()).toBe(I18N_STATUS_ONLINE);
-      expect(getTooltip().value).toBe('Runner is online; last contact was never');
+      expect(getTooltip().value).toBe('Last contact was never');
     });
 
     it('status is missing', () => {
@@ -124,6 +127,36 @@ describe('RunnerTypeBadge', () => {
       });
 
       expect(wrapper.text()).toBe('');
+    });
+  });
+
+  describe('default timeout values are overridden', () => {
+    it('shows a different offline timeout', () => {
+      createComponent({
+        props: {
+          contactedAt: '2020-12-31T00:00:00Z',
+          status: STATUS_OFFLINE,
+        },
+        provide: {
+          onlineContactTimeoutSecs: 60,
+        },
+      });
+
+      expect(getTooltip().value).toContain('1 minute');
+    });
+
+    it('shows a different stale timeout', () => {
+      createComponent({
+        props: {
+          contactedAt: '2020-01-01T00:00:00Z',
+          status: STATUS_STALE,
+        },
+        provide: {
+          staleTimeoutSecs: 20 * 60,
+        },
+      });
+
+      expect(getTooltip().value).toContain('20 minutes');
     });
   });
 });

@@ -26062,7 +26062,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.runnerCloudProvisioningOptions`
 
-Options for runner cloud provisioning by a specified cloud provider. Returns `null` if `:gcp_runner` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Options for runner cloud provisioning by a specified cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 NOTE:
 **Introduced** in 16.9.
@@ -31518,6 +31518,7 @@ Member role permission.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="memberrolepermissionadmin_cicd_variables"></a>`ADMIN_CICD_VARIABLES` | Allows to admin CI/CD variables. |
 | <a id="memberrolepermissionadmin_group_member"></a>`ADMIN_GROUP_MEMBER` | Allows admin of group members. |
 | <a id="memberrolepermissionadmin_merge_request"></a>`ADMIN_MERGE_REQUEST` | Allows approval of merge requests. |
 | <a id="memberrolepermissionadmin_terraform_state"></a>`ADMIN_TERRAFORM_STATE` | Allows to admin terraform state. |

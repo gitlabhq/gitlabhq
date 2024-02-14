@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe API::Lint, feature_category: :pipeline_composition do
   describe 'GET /projects/:id/ci/lint' do
-    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { sha: sha, dry_run: dry_run, include_jobs: include_jobs } }
+    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { content_ref: content_ref, dry_run: dry_run, include_jobs: include_jobs } }
 
     let(:project) { create(:project, :repository) }
-    let(:sha) { nil }
+    let(:content_ref) { nil }
     let(:dry_run) { nil }
     let(:include_jobs) { nil }
 
@@ -323,6 +323,8 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             branch_name: 'master'
           )
 
+          project.repository.create_branch('invalid-content', 'master')
+
           project.repository.update_file(
             project.creator,
             '.gitlab-ci.yml',
@@ -330,11 +332,13 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             message: 'Automatically edited .gitlab-ci.yml again',
             branch_name: 'master'
           )
+
+          project.repository.create_branch('valid-content', 'master')
         end
 
         context 'when latest .gitlab-ci.yml is valid' do
-          # check with explicit sha
-          let(:sha) { project.repository.commit.sha }
+          # check with explicit content_ref
+          let(:content_ref) { project.repository.commit.sha }
 
           it 'passes validation' do
             ci_lint
@@ -349,7 +353,7 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
         end
 
         context 'when previous .gitlab-ci.yml is invalid' do
-          let(:sha) { project.repository.commit.parent.sha }
+          let(:content_ref) { project.repository.commit.parent.sha }
 
           it 'fails validation' do
             ci_lint
@@ -359,12 +363,12 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
             expect(json_response['merged_yaml']).to eq(first_edit)
             expect(json_response['valid']).to eq(false)
             expect(json_response['warnings']).to eq([])
-            expect(json_response['errors']).to eq(["jobs config should contain at least one visible job"])
+            expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
           end
         end
 
         context 'when first .gitlab-ci.yml is valid' do
-          let(:sha) { project.repository.commit.parent.parent.sha }
+          let(:content_ref) { project.repository.commit.parent.parent.sha }
 
           it 'passes validation' do
             ci_lint
@@ -378,13 +382,80 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
           end
         end
 
-        context 'when sha is not found' do
-          let(:sha) { "unknown" }
+        context 'when content_ref is not found' do
+          let(:content_ref) { 'unknown' }
 
           it 'returns 404 response' do
             ci_lint
 
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when sha (deprecated) is used with valid configuration' do
+          let(:sha) { project.repository.commit.sha }
+
+          it 'passes validation' do
+            get api("/projects/#{project.id}/ci/lint", api_user), params: { sha: sha, dry_run: dry_run, include_jobs: include_jobs }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(second_edit)
+            expect(json_response['valid']).to eq(true)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq([])
+          end
+        end
+
+        context 'when sha (deprecated) and content_ref are used at the same time' do
+          let(:sha) { project.repository.commit.sha }
+
+          it 'returns bad request' do
+            get api("/projects/#{project.id}/ci/lint", api_user), params: { sha: sha, content_ref: sha }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('sha, content_ref are mutually exclusive')
+          end
+        end
+
+        context 'when ref (deprecated) and dry_run_ref are used at the same time' do
+          let(:sha) { project.repository.commit.sha }
+
+          it 'returns bad request' do
+            get api("/projects/#{project.id}/ci/lint", api_user), params: { ref: sha, dry_run_ref: sha }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['error']).to eq('ref, dry_run_ref are mutually exclusive')
+          end
+        end
+
+        context 'when content_ref is a valid ref name with invalid config' do
+          let(:content_ref) { 'invalid-content' }
+
+          it 'fails validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(first_edit)
+            expect(json_response['valid']).to eq(false)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq(["jobs config should contain at least one visible job"])
+          end
+        end
+
+        context 'when content_ref is a valid ref name with valid config' do
+          let(:content_ref) { 'valid-content' }
+
+          it 'passes validation' do
+            ci_lint
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_an Hash
+            expect(json_response['merged_yaml']).to eq(second_edit)
+            expect(json_response['valid']).to eq(true)
+            expect(json_response['warnings']).to eq([])
+            expect(json_response['errors']).to eq([])
           end
         end
       end

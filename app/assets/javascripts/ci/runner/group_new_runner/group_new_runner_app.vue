@@ -44,21 +44,21 @@ export default {
     };
   },
   computed: {
-    gcpEnabled() {
-      return this.glFeatures.gcpRunner;
+    googleCloudProvisioningEnabled() {
+      return this.glFeatures.googleCloudRunnerProvisioning;
     },
     showCloudForm() {
       return (
         this.platform === GOOGLE_CLOUD_PLATFORM &&
         this.googleCloudStage === GOOGLE_CLOUD_SETUP_START &&
-        this.gcpEnabled
+        this.googleCloudProvisioningEnabled
       );
     },
     showCloudFormEnd() {
       return (
         this.platform === GOOGLE_CLOUD_PLATFORM &&
         this.googleCloudStage === GOOGLE_CLOUD_SETUP_END &&
-        this.gcpEnabled
+        this.googleCloudProvisioningEnabled
       );
     },
   },

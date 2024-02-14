@@ -705,7 +705,7 @@ GEM
       fog-core (= 2.1.0)
       fog-json (~> 1.2.0)
       mime-types
-    gitlab-glfm-markdown (0.0.12)
+    gitlab-glfm-markdown (0.0.13)
       rb_sys (~> 0.9.86)
     gitlab-labkit (0.35.1)
       actionpack (>= 5.0.0, < 8.0.0)
@@ -1921,7 +1921,7 @@ DEPENDENCIES
   gitlab-dangerfiles (~> 4.6.0)
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 1.8.0)
-  gitlab-glfm-markdown (~> 0.0.12)
+  gitlab-glfm-markdown (~> 0.0.13)
   gitlab-housekeeper!
   gitlab-http!
   gitlab-labkit (~> 0.35.1)

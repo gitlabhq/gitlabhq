@@ -61,7 +61,7 @@ If the issue persists, verify that your self-managed GitLab instance can connect
 To test connectivity, run the following command:
 
 ```shell
-# A `404` status code is expected because you're not passing a token
+# A `404 Not Found` is expected because you're not passing a token
 curl --head "https://connect-install-keys.atlassian.com"
 ```
 
@@ -77,7 +77,7 @@ To resolve this issue on your self-managed GitLab instance:
   - GitLab.com (if you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app)).
   - Jira Cloud (if you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)).
 - Ensure the token request sent to the `/-/jira_connect/events/installed` endpoint when you install the app is accessible from Jira.
-  The following `curl` command must return a `401` status code:
+  The following command should return a `401 Unauthorized`:
 
   ```shell
   curl --include --request POST "https://gitlab.example.com/-/jira_connect/events/installed"
@@ -194,8 +194,8 @@ Each `GET` request to the Jira Connect Proxy URL `https://gitlab.com/-/jira_conn
 
 For the first log:
 
-- `json.status` is `422`.
-- `json.params.value` should match the GitLab self-managed URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
+- `json.status` is `422 Unprocessable Entity`.
+- `json.params.value` should match the self-managed GitLab URL `[[FILTERED], {"instance_url"=>"https://gitlab.example.com"}]`.
 
 For the second log, you might have one of the following scenarios:
 
@@ -203,8 +203,8 @@ For the second log, you might have one of the following scenarios:
   - `json.message`, `json.jira_status_code`, and `json.jira_body` are present.
   - `json.message` is `Proxy lifecycle event received error response` or similar.
   - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
-  - If `json.jira_status_code` is `401` and `json.jira_body` is empty, [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to
-  `https://gitlab.com`.
+  - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is empty,
+    [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
 - Scenario 2:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.

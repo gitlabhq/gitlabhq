@@ -42,8 +42,8 @@ export default {
     };
   },
   computed: {
-    gcpEnabled() {
-      return this.glFeatures.gcpRunner && !this.admin;
+    googleCloudProvisioningEnabled() {
+      return this.glFeatures.googleCloudRunnerProvisioning && !this.admin;
     },
   },
   watch: {
@@ -86,7 +86,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="gcpEnabled" class="gl-mt-3 gl-mb-6">
+    <div v-if="googleCloudProvisioningEnabled" class="gl-mt-3 gl-mb-6">
       <label>{{ s__('Runners|Cloud') }}</label>
 
       <div class="gl-display-flex gl-flex-wrap gl-gap-3">

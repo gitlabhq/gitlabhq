@@ -42,8 +42,8 @@ Because any given GitLab upgrade might involve data disk updates or database sch
 1. Log in to the AWS Web Console, so that selecting the links in the following step take you directly to the AMI list.
 1. Pick the edition you want:
 
-   - [GitLab Enterprise Edition](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;ownerAlias=782774275127;search=GitLab%20EE;sort=desc:name): If you want to unlock the enterprise features, a license is needed.
-   - [GitLab Community Edition](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;ownerAlias=782774275127;search=GitLab%20CE;sort=desc:name): The open source version of GitLab.
+   - [GitLab Enterprise Edition](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;owner=782774275127;search=GitLab%20EE;sort=desc:name): If you want to unlock the enterprise features, a license is needed.
+   - [GitLab Community Edition](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;owner=782774275127;search=GitLab%20CE;sort=desc:name): The open source version of GitLab.
    - [GitLab Premium or Ultimate Marketplace (pre-licensed)](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;source=Marketplace;search=GitLab%20EE;sort=desc:name): 5 user license built into per-minute billing.
 
 1. AMI IDs are unique per region. After you've loaded any of these editions, in the upper-right corner, select the desired target region of the console to see the appropriate AMIs.

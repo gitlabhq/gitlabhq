@@ -126,5 +126,5 @@ Failed to link group. Please try again.
 
 A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
 
-To resolve this issue, ensure the Jira user that installs and configures the app meets certain
-[requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
+To resolve this issue, ensure you meet certain
+[Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).

@@ -46,7 +46,6 @@ AWS Services that are supported directly by a CodeStar Connection in an AWS acco
 - **Amazon CodeWhisperer Customization Capability** ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) [can connect to a GitLab repository](https://aws.amazon.com/blogs/aws/new-customization-capability-in-amazon-codewhisperer-generates-even-better-suggestions-preview/). `[AWS Built]`
 - **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 - **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
-- **AWS Glue Notebook Jobs** directly inherit CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
 
@@ -77,6 +76,7 @@ Documentation and References:
 
 - **Amazon SageMaker Notebooks** [allow Git repositories to be specified by the Git clone URL](https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-resource.html) and configuration of a secret - so GitLab is configurable. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Configuration]`
 - **AWS Amplify** - [uses a Git integration mechanism designed by the AWS Amplify team](https://docs.aws.amazon.com/amplify/latest/userguide/getting-started.html). `[AWS Built]`
+- **AWS Glue Notebook Jobs** support for GitLab respository URL with Personal Access Token (PAT) authentication at the "job" level. ([10/03/2022](https://aws.amazon.com/about-aws/whats-new/2022/10/aws-glue-git-integration/)) [AWS Docs for GitLab Configuration](https://docs.aws.amazon.com/glue/latest/dg/edit-job-add-source-control-integration.html) `[AWS Built]`
 
 #### Other SCM Integration Options
 

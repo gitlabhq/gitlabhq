@@ -12,7 +12,7 @@ import RunnerBulkDelete from '~/ci/runner/components/runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from '~/ci/runner/components/runner_bulk_delete_checkbox.vue';
 
 import { I18N_PROJECT_TYPE, I18N_STATUS_NEVER_CONTACTED } from '~/ci/runner/constants';
-import { allRunnersData, onlineContactTimeoutSecs, staleTimeoutSecs } from '../mock_data';
+import { allRunnersData } from '../mock_data';
 
 const mockRunners = allRunnersData.data.runners.nodes;
 
@@ -41,8 +41,6 @@ describe('RunnerList', () => {
       },
       provide: {
         localMutations,
-        onlineContactTimeoutSecs,
-        staleTimeoutSecs,
       },
       ...options,
     });
@@ -62,7 +60,6 @@ describe('RunnerList', () => {
 
     const headerLabels = findHeaders().wrappers.map((w) => w.text());
 
-    expect(findHeaders().at(0).findComponent(HelpPopover).exists()).toBe(true);
     expect(findHeaders().at(2).findComponent(HelpPopover).exists()).toBe(true);
 
     expect(headerLabels).toEqual([

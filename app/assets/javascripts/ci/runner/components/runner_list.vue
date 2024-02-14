@@ -8,7 +8,6 @@ import { tableField } from '../utils';
 import RunnerBulkDelete from './runner_bulk_delete.vue';
 import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
-import RunnerStatusPopover from './runner_status_popover.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
 import RunnerOwnerCell from './cells/runner_owner_cell.vue';
 
@@ -27,7 +26,6 @@ export default {
     HelpPopover,
     RunnerBulkDelete,
     RunnerBulkDeleteCheckbox,
-    RunnerStatusPopover,
     RunnerSummaryCell,
     RunnerStatusCell,
     RunnerOwnerCell,
@@ -143,7 +141,6 @@ export default {
 
       <template #head(status)="{ label }">
         {{ label }}
-        <runner-status-popover />
       </template>
 
       <template #cell(status)="{ item }">

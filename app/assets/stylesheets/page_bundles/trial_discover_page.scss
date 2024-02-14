@@ -1,0 +1,16 @@
+@import 'mixins_and_variables_and_functions';
+
+.trial-discover-page-card {
+  @include media-breakpoint-down(md) {
+    .description-text {
+      height: 6em;
+    }
+  }
+}
+
+.trial-discover-page-card.gl-flex-basis-third,
+.trial-discover-page-card.gl-flex-basis-half {
+  @include media-breakpoint-down(md) {
+    flex-basis: 100%;
+  }
+}

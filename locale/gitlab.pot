@@ -42651,6 +42651,9 @@ msgstr ""
 msgid "Runners|Last contact"
 msgstr ""
 
+msgid "Runners|Last contact was %{timeAgo}"
+msgstr ""
+
 msgid "Runners|Last contact: %{timeAgo}"
 msgstr ""
 
@@ -42700,9 +42703,6 @@ msgid "Runners|Name"
 msgstr ""
 
 msgid "Runners|Never contacted"
-msgstr ""
-
-msgid "Runners|Never contacted:"
 msgstr ""
 
 msgid "Runners|Never expires"
@@ -42759,13 +42759,7 @@ msgstr ""
 msgid "Runners|Offline"
 msgstr ""
 
-msgid "Runners|Offline:"
-msgstr ""
-
 msgid "Runners|Online"
-msgstr ""
-
-msgid "Runners|Online:"
 msgstr ""
 
 msgid "Runners|Only administrators can view this."
@@ -42901,16 +42895,10 @@ msgstr ""
 msgid "Runners|Runner description"
 msgstr ""
 
-msgid "Runners|Runner has contacted GitLab within the last %{elapsedTime}"
-msgstr ""
-
-msgid "Runners|Runner has never contacted GitLab (when you register a runner, use %{codeStart}gitlab-runner run%{codeEnd} to bring it online)"
-msgstr ""
-
 msgid "Runners|Runner has never contacted this instance"
 msgstr ""
 
-msgid "Runners|Runner has not contacted GitLab in more than %{elapsedTime}"
+msgid "Runners|Runner hasn't contacted GitLab in more than %{elapsedTime} and last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects."
@@ -42919,13 +42907,10 @@ msgstr ""
 msgid "Runners|Runner is offline; last contact was %{runner_contact} ago"
 msgstr ""
 
-msgid "Runners|Runner is offline; last contact was %{timeAgo}"
+msgid "Runners|Runner is older than %{elapsedTime} and has never contacted GitLab"
 msgstr ""
 
 msgid "Runners|Runner is online; last contact was %{runner_contact} ago"
-msgstr ""
-
-msgid "Runners|Runner is online; last contact was %{timeAgo}"
 msgstr ""
 
 msgid "Runners|Runner is stale; it has never contacted this instance"
@@ -42934,16 +42919,10 @@ msgstr ""
 msgid "Runners|Runner is stale; last contact was %{runner_contact} ago"
 msgstr ""
 
-msgid "Runners|Runner is stale; last contact was %{timeAgo}"
-msgstr ""
-
 msgid "Runners|Runner performance insights"
 msgstr ""
 
 msgid "Runners|Runner registration"
-msgstr ""
-
-msgid "Runners|Runner statuses"
 msgstr ""
 
 msgid "Runners|Runner unassigned from project."
@@ -43022,9 +43001,6 @@ msgid "Runners|Specific geographical location where you can run your resources."
 msgstr ""
 
 msgid "Runners|Stale"
-msgstr ""
-
-msgid "Runners|Stale:"
 msgstr ""
 
 msgid "Runners|Status"
@@ -52431,13 +52407,112 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "TrialDiscoverPage|A single application eliminates complex integrations, data checkpoints, and toolchain maintenance, resulting in greater productivity and lower cost."
+msgstr ""
+
+msgid "TrialDiscoverPage|Access advanced features"
+msgstr ""
+
 msgid "TrialDiscoverPage|Access advanced features, build more efficiently, strengthen security and compliance."
+msgstr ""
+
+msgid "TrialDiscoverPage|Break down silos to coordinate seamlessly across development, operations, and security with a consistent experience across the development lifecycle."
+msgstr ""
+
+msgid "TrialDiscoverPage|Burn down charts"
+msgstr ""
+
+msgid "TrialDiscoverPage|Calculate seats"
+msgstr ""
+
+msgid "TrialDiscoverPage|Code owners"
+msgstr ""
+
+msgid "TrialDiscoverPage|Code review analytics"
+msgstr ""
+
+msgid "TrialDiscoverPage|Collaborate on high-level ideas that share a common theme. Use epics to group issues that cross milestones and projects."
+msgstr ""
+
+msgid "TrialDiscoverPage|Collaboration made easy"
+msgstr ""
+
+msgid "TrialDiscoverPage|Compare all plans"
+msgstr ""
+
+msgid "TrialDiscoverPage|Create a more advanced workflow for issues, merge requests, and epics by using scoped, mutually exclusive labels."
+msgstr ""
+
+msgid "TrialDiscoverPage|Dependency scanning"
 msgstr ""
 
 msgid "TrialDiscoverPage|Discover"
 msgstr ""
 
 msgid "TrialDiscoverPage|Discover Premium & Ultimate"
+msgstr ""
+
+msgid "TrialDiscoverPage|Documentation"
+msgstr ""
+
+msgid "TrialDiscoverPage|Dynamic application security testing (DAST)"
+msgstr ""
+
+msgid "TrialDiscoverPage|Epics"
+msgstr ""
+
+msgid "TrialDiscoverPage|Find and fix bottlenecks in your code review process by understanding how long open merge requests have been in review."
+msgstr ""
+
+msgid "TrialDiscoverPage|Free guest users"
+msgstr ""
+
+msgid "TrialDiscoverPage|GitLab is infrastructure agnostic. GitLab supports GCP, AWS, OpenShift, VMware, on-premises, bare metal, and more."
+msgstr ""
+
+msgid "TrialDiscoverPage|Keep your application secure by checking your deployed environments for vulnerabilities."
+msgstr ""
+
+msgid "TrialDiscoverPage|Keep your application secure by checking your libraries for vulnerabilities."
+msgstr ""
+
+msgid "TrialDiscoverPage|Let users view what GitLab has to offer without using a subscription seat."
+msgstr ""
+
+msgid "TrialDiscoverPage|Lower cost of development"
+msgstr ""
+
+msgid "TrialDiscoverPage|Maintain high quality code by requiring approval from specific users on your merge requests."
+msgstr ""
+
+msgid "TrialDiscoverPage|Merge request approval rule"
+msgstr ""
+
+msgid "TrialDiscoverPage|Premium"
+msgstr ""
+
+msgid "TrialDiscoverPage|Roadmaps"
+msgstr ""
+
+msgid "TrialDiscoverPage|Scoped Labels"
+msgstr ""
+
+msgid "TrialDiscoverPage|Speed. Efficiency. Trust."
+msgstr ""
+
+msgid "TrialDiscoverPage|Target the right approvers for your merge request by assigning owners to specific files."
+msgstr ""
+
+msgid "TrialDiscoverPage|Track your development progress by viewing issues in a burndown chart."
+msgstr ""
+
+msgid "TrialDiscoverPage|Ultimate"
+msgstr ""
+
+msgid "TrialDiscoverPage|Visualize your epics and milestones in a timeline."
+msgstr ""
+
+msgid "TrialDiscoverPage|Your software, deployed your way"
 msgstr ""
 
 msgid "TrialRegistration|Start GitLab Ultimate free trial"

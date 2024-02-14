@@ -33,7 +33,7 @@ Group approval rules apply to all protected branches of projects belonging to th
 
 ### Create group-level approval rules
 
-Users with at least the Maintainer role can create group level approval rules using the following endpoint:
+Group admins can create group level approval rules using the following endpoint:
 
 ```plaintext
 POST /groups/:id/approval_rules

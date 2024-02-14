@@ -10,9 +10,6 @@ module Ci
     include FileStoreMounter
     include Lockable
     include Presentable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     FILE_SIZE_LIMIT = 10.megabytes.freeze
     EXPIRATION_DATE = 1.week.freeze

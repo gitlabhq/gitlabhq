@@ -25,7 +25,7 @@ describe('RunnerPlatformsRadioGroup', () => {
   const createComponent = ({
     props = {},
     mountFn = shallowMountExtended,
-    gcpRunner = false,
+    googleCloudRunnerProvisioning = false,
     ...options
   } = {}) => {
     wrapper = mountFn(RunnerPlatformsRadioGroup, {
@@ -35,7 +35,7 @@ describe('RunnerPlatformsRadioGroup', () => {
       },
       provide: {
         glFeatures: {
-          gcpRunner,
+          googleCloudRunnerProvisioning,
         },
       },
       ...options,
@@ -96,9 +96,13 @@ describe('RunnerPlatformsRadioGroup', () => {
     });
   });
 
-  describe('with gcpRunner flag enabled', () => {
+  describe('with googleCloudRunnerProvisioning flag enabled', () => {
     it('contains expected options with images', () => {
-      createComponent({ props: {}, mountFn: shallowMountExtended, gcpRunner: true });
+      createComponent({
+        props: {},
+        mountFn: shallowMountExtended,
+        googleCloudRunnerProvisioning: true,
+      });
 
       const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
 
@@ -113,7 +117,11 @@ describe('RunnerPlatformsRadioGroup', () => {
     });
 
     it('does not contain cloud option when admin prop is passed', () => {
-      createComponent({ props: { admin: true }, mountFn: shallowMountExtended, gcpRunner: true });
+      createComponent({
+        props: { admin: true },
+        mountFn: shallowMountExtended,
+        googleCloudRunnerProvisioning: true,
+      });
 
       const labels = findFormRadios().map((w) => [w.text(), w.props('image')]);
 

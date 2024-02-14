@@ -58,8 +58,6 @@ import {
   runnersCountData,
   runnerJobCountData,
   allRunnersDataPaginated,
-  onlineContactTimeoutSecs,
-  staleTimeoutSecs,
   mockRegistrationToken,
   newRunnerPath,
   emptyPageInfo,
@@ -123,8 +121,6 @@ describe('AdminRunnersApp', () => {
       },
       provide: {
         localMutations,
-        onlineContactTimeoutSecs,
-        staleTimeoutSecs,
         ...provide,
       },
       mocks: {
