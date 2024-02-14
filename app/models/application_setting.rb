@@ -597,11 +597,13 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :terminal_max_session_time,
-      :users_get_by_id_limit
+      :users_get_by_id_limit,
+      :downstream_pipeline_trigger_limit_per_project_user_sha
   end
 
   jsonb_accessor :rate_limits,
-    members_delete_limit: [:integer, { default: 60 }]
+    members_delete_limit: [:integer, { default: 60 }],
+    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }]
 
   validates :rate_limits, json_schema: { filename: "application_setting_rate_limits" }
 

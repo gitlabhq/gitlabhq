@@ -578,4 +578,20 @@ describe('Getters Notes Store', () => {
       },
     );
   });
+
+  describe('allDiscussionsExpanded', () => {
+    it('returns true when every discussion is expanded', () => {
+      state = {
+        discussions: [{ expanded: true }, { expanded: true }],
+      };
+      expect(getters.allDiscussionsExpanded(state)).toBe(true);
+    });
+
+    it('returns false when at least one discussion is collapsed', () => {
+      state = {
+        discussions: [{ expanded: true }, { expanded: false }],
+      };
+      expect(getters.allDiscussionsExpanded(state)).toBe(false);
+    });
+  });
 });

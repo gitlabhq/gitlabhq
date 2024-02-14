@@ -21,3 +21,11 @@ export async function fetchMrMetadata({ state, commit }) {
     }
   }
 }
+
+export const toggleAllVisibleDiscussions = ({ getters, dispatch }) => {
+  if (getters.isDiffsPage) {
+    dispatch('diffs/toggleAllDiffDiscussions');
+  } else {
+    dispatch('toggleAllDiscussions');
+  }
+};

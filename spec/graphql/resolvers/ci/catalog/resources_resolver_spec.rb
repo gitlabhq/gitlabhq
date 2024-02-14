@@ -85,17 +85,6 @@ RSpec.describe Resolvers::Ci::Catalog::ResourcesResolver, feature_category: :pip
           end
         end
 
-        context 'and the ci_guard_for_catalog_resource_scope FF is disabled' do
-          before do
-            stub_feature_flags(ci_guard_for_catalog_resource_scope: false)
-          end
-
-          it 'returns all the catalog resources' do
-            expect(result.items.count).to be(3)
-            expect(result.items.pluck(:name)).to contain_exactly('public', 'internal', 'z private test')
-          end
-        end
-
         context 'when the scope is invalid' do
           let(:scope) { 'INVALID' }
 

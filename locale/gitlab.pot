@@ -3584,6 +3584,9 @@ msgstr ""
 msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
 msgstr ""
 
+msgid "AdminSettings|Maximum downstream pipelines triggered in a project per user"
+msgstr ""
+
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
 msgstr ""
 
@@ -3741,6 +3744,9 @@ msgid "AdminSettings|The host of your data collector instance."
 msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
+msgstr ""
+
+msgid "AdminSettings|The maximum number of downstream pipelines triggered in a project per user."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
@@ -4289,10 +4295,10 @@ msgstr ""
 msgid "Admin|Deploy Keys"
 msgstr ""
 
-msgid "Admin|Duo Pro"
+msgid "Admin|Geo"
 msgstr ""
 
-msgid "Admin|Geo"
+msgid "Admin|GitLab Duo Pro"
 msgstr ""
 
 msgid "Admin|Kubernetes"
@@ -8096,13 +8102,13 @@ msgstr ""
 msgid "Billing|An error occurred while loading billable members list."
 msgstr ""
 
-msgid "Billing|An error occurred while loading details for the Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgid "Billing|An error occurred while loading details for the GitLab Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|An error occurred while loading pending members list"
 msgstr ""
 
-msgid "Billing|An error occurred while loading users of the Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
+msgid "Billing|An error occurred while loading users of the GitLab Duo Pro add-on. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "Billing|An error occurred while removing a billable member."
@@ -8120,10 +8126,10 @@ msgstr ""
 msgid "Billing|Enter at least three characters to search."
 msgstr ""
 
-msgid "Billing|Error assigning Duo Pro add-on"
+msgid "Billing|Error assigning GitLab Duo Pro add-on"
 msgstr ""
 
-msgid "Billing|Error un-assigning Duo Pro add-on"
+msgid "Billing|Error un-assigning GitLab Duo Pro add-on"
 msgstr ""
 
 msgid "Billing|Explore paid plans"
@@ -8185,7 +8191,7 @@ msgstr ""
 msgid "Billing|You can upgrade to a paid tier to get access to more features."
 msgstr ""
 
-msgid "Billing|You have assigned all available Duo Pro add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
+msgid "Billing|You have assigned all available GitLab Duo Pro add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
 msgstr ""
 
 msgid "Billing|Your group recently changed to use the Free plan. %{over_limit_message} You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
@@ -12106,7 +12112,7 @@ msgstr ""
 msgid "CodeSuggestions|%{link_start}What are code suggestions?%{link_end}"
 msgstr ""
 
-msgid "CodeSuggestions|A user can be assigned a Duo Pro seat only once each billable month."
+msgid "CodeSuggestions|A user can be assigned a GitLab Duo Pro seat only once each billable month."
 msgstr ""
 
 msgid "CodeSuggestions|Boost productivity by using %{linkStart}Code Suggestions%{linkEnd} to write and understand code. Starting in February 2024, Code Suggestions will be part of %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd}, available to Premium and Ultimate users for purchase now."
@@ -12115,28 +12121,28 @@ msgstr ""
 msgid "CodeSuggestions|Code Suggestions"
 msgstr ""
 
-msgid "CodeSuggestions|Duo Pro"
+msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo Pro%{linkEnd} offers features that use generative AI to suggest code."
 msgstr ""
 
-msgid "CodeSuggestions|Duo Pro add-on"
+msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
-msgid "CodeSuggestions|Duo Pro add-on status"
+msgid "CodeSuggestions|GitLab Duo Pro add-on"
 msgstr ""
 
-msgid "CodeSuggestions|Duo Pro seats used"
+msgid "CodeSuggestions|GitLab Duo Pro add-on status"
 msgstr ""
 
-msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}Duo Pro%{linkEnd} offers features that use generative AI to suggest code."
+msgid "CodeSuggestions|GitLab Duo Pro seats used"
 msgstr ""
 
-msgid "CodeSuggestions|Introducing Duo Pro"
+msgid "CodeSuggestions|Introducing GitLab Duo Pro"
 msgstr ""
 
 msgid "CodeSuggestions|Introducing the GitLab Duo Pro add-on"
 msgstr ""
 
-msgid "CodeSuggestions|Manage seat assignments for Duo Pro across your instance."
+msgid "CodeSuggestions|Manage seat assignments for GitLab Duo Pro across your instance."
 msgstr ""
 
 msgid "CodeSuggestions|Projects in this group can use Code Suggestions"
@@ -12208,9 +12214,6 @@ msgid "Collapse"
 msgstr ""
 
 msgid "Collapse AI-generated summary"
-msgstr ""
-
-msgid "Collapse all threads"
 msgstr ""
 
 msgid "Collapse eligible approvers"
@@ -20308,9 +20311,6 @@ msgstr ""
 msgid "Expand all files"
 msgstr ""
 
-msgid "Expand all threads"
-msgstr ""
-
 msgid "Expand eligible approvers"
 msgstr ""
 
@@ -24599,6 +24599,9 @@ msgid "Hide"
 msgstr ""
 
 msgid "Hide Live Preview"
+msgstr ""
+
+msgid "Hide all comments"
 msgstr ""
 
 msgid "Hide archived projects"
@@ -33496,6 +33499,12 @@ msgstr ""
 msgid "Notify|Remote mirror"
 msgstr ""
 
+msgid "Notify|Review changes"
+msgstr ""
+
+msgid "Notify|Review requested"
+msgstr ""
+
 msgid "Notify|SMTP host issue:"
 msgstr ""
 
@@ -33587,6 +33596,9 @@ msgid "Notify|You have been mentioned in merge request %{mr_link}"
 msgstr ""
 
 msgid "Notify|You have been unsubscribed from receiving GitLab administrator notifications."
+msgstr ""
+
+msgid "Notify|You were added as a reviewer on %{long_mr} by %{name}."
 msgstr ""
 
 msgid "Notify|Your CSV import for project %{project_link} has been completed."
@@ -46546,6 +46558,9 @@ msgstr ""
 msgid "Show all breadcrumbs"
 msgstr ""
 
+msgid "Show all comments"
+msgstr ""
+
 msgid "Show all epics"
 msgstr ""
 
@@ -53336,9 +53351,6 @@ msgstr ""
 msgid "UsageQuota|Dependency proxy"
 msgstr ""
 
-msgid "UsageQuota|Duo Pro"
-msgstr ""
-
 msgid "UsageQuota|Filter charts by year"
 msgstr ""
 
@@ -53346,6 +53358,9 @@ msgid "UsageQuota|Filter projects data by month"
 msgstr ""
 
 msgid "UsageQuota|Git repository."
+msgstr ""
+
+msgid "UsageQuota|GitLab Duo Pro"
 msgstr ""
 
 msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images."

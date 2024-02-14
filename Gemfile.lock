@@ -969,7 +969,7 @@ GEM
       opentracing (~> 0.3)
       thrift
     jaro_winkler (1.5.4)
-    jira-ruby (2.1.4)
+    jira-ruby (2.3.0)
       activesupport
       atlassian-jwt
       multipart-post
@@ -1986,7 +1986,7 @@ DEPENDENCIES
   ipaddr (~> 1.2.5)
   ipaddress (~> 0.8.3)
   ipynbdiff!
-  jira-ruby (~> 2.1.4)
+  jira-ruby (~> 2.3.0)
   js_regex (~> 3.8)
   json (~> 2.6.3)
   json_schemer (~> 0.2.18)

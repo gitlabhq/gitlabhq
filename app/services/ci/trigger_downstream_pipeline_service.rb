@@ -3,10 +3,6 @@
 module Ci
   # Enqueues the downstream pipeline worker.
   class TriggerDownstreamPipelineService
-    # This is a temporary constant. It may be converted into an application setting
-    # in the future. See https://gitlab.com/gitlab-org/gitlab/-/issues/425941.
-    DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA = 200
-
     def initialize(bridge)
       @bridge = bridge
       @current_user = bridge.user

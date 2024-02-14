@@ -74,23 +74,9 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
       let(:params) { { scope: :namespaces } }
 
-      context 'when the `ci_guard_query_for_catalog_resource_scope` ff is enabled' do
-        it "returns the catalog resources belonging to the user's authorized namespaces" do
-          is_expected.to contain_exactly(public_resource_a, public_resource_b, internal_resource,
-            private_namespace_resource)
-        end
-      end
-
-      context 'when the `ci_guard_query_for_catalog_resource_scope` ff is disabled' do
-        before do
-          stub_feature_flags(ci_guard_for_catalog_resource_scope: false)
-        end
-
-        it 'returns all resources visible to the current user' do
-          is_expected.to contain_exactly(
-            public_resource_a, public_resource_b, private_namespace_resource,
-            internal_resource)
-        end
+      it "returns the catalog resources belonging to the user's authorized namespaces" do
+        is_expected.to contain_exactly(public_resource_a, public_resource_b, internal_resource,
+          private_namespace_resource)
       end
     end
 

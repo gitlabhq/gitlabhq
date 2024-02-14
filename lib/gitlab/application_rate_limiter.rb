@@ -67,7 +67,7 @@ module Gitlab
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
           },
           downstream_pipeline_trigger: {
-            threshold: -> { ::Ci::TriggerDownstreamPipelineService::DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA }, interval: 1.minute
+            threshold: -> { application_settings.downstream_pipeline_trigger_limit_per_project_user_sha }, interval: 1.minute
           }
         }.freeze
       end

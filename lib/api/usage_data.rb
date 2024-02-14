@@ -10,7 +10,6 @@ module API
 
     namespace 'usage_data' do
       before do
-        not_found! unless Feature.enabled?(:usage_data_api, type: :ops)
         forbidden!('Invalid CSRF token is provided') unless verified_request?
       end
 

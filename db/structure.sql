@@ -36549,6 +36549,8 @@ CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations ON audit
 
 CREATE UNIQUE INDEX unique_instance_google_cloud_logging_configurations_name ON audit_events_instance_google_cloud_logging_configurations USING btree (name);
 
+CREATE UNIQUE INDEX unique_member_approvals_on_pending_status ON member_approvals USING btree (member_id, member_namespace_id, new_access_level) WHERE (status = 0);
+
 CREATE UNIQUE INDEX unique_merge_request_diff_llm_summaries_on_mr_diff_id ON merge_request_diff_llm_summaries USING btree (merge_request_diff_id);
 
 CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_request_metrics USING btree (merge_request_id);

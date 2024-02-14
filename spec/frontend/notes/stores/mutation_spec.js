@@ -940,4 +940,16 @@ describe('Notes Store mutations', () => {
       expect(state.doneFetchingBatchDiscussions).toEqual(true);
     });
   });
+
+  describe('SET_EXPAND_ALL_DISCUSSIONS', () => {
+    it('should set expanded for every discussion', () => {
+      const state = {
+        discussions: [{ expanded: false }, { expanded: false }],
+      };
+
+      mutations.SET_EXPAND_ALL_DISCUSSIONS(state, true);
+
+      expect(state.discussions).toStrictEqual([{ expanded: true }, { expanded: true }]);
+    });
+  });
 });

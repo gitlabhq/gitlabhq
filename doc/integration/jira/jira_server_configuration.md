@@ -21,18 +21,17 @@ To create Jira credentials, here's what we're going to do:
 
 Prerequisites:
 
-- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
+- You must have at least the `Jira Administrators` [global permission](https://confluence.atlassian.com/adminjiraserver/managing-global-permissions-938847142.html).
 
 ## Create a Jira user
 
 To create a Jira user:
 
-1. Sign in to your Jira instance as an administrator.
 1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **User management**.
 1. [Create a new user account](https://confluence.atlassian.com/adminjiraserver/create-edit-or-remove-a-user-938847025.html#Create,edit,orremoveauser-CreateusersmanuallyinJira) with write access to your Jira projects.
 
    Alternatively, you can use an existing user account, provided the user belongs to a Jira group that has been granted
-   the **Administer Projects** [permission scheme](#create-a-permission-scheme-for-the-group).
+   the `Administer Projects` [permission scheme](#create-a-permission-scheme-for-the-group).
 
    - In **Email address**, enter a valid email address.
    - In **Username**, enter `gitlab`.
@@ -45,7 +44,6 @@ Now that you've created a user named `gitlab`, it's time to create a group for t
 
 To create a Jira group for the user:
 
-1. Sign in to your Jira instance as an administrator.
 1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **User management**.
 1. On the left sidebar, select **Groups**.
 1. In the **Add group** section, enter a name for the group (for example,
@@ -65,7 +63,6 @@ it's time to create a permission scheme for the group.
 
 To create a permission scheme for the group:
 
-1. Sign in to your Jira instance as an administrator.
 1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **Issues**.
 1. On the left sidebar, select **Permission schemes**.
 1. Select **Add permission scheme**.

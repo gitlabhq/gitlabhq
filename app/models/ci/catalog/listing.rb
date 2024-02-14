@@ -48,7 +48,7 @@ module Ci
       end
 
       def by_scope(relation, scope)
-        if scope == :namespaces && Feature.enabled?(:ci_guard_for_catalog_resource_scope, current_user)
+        if scope == :namespaces
           relation.visible_to_user(current_user)
         else
           relation.public_or_visible_to_user(current_user)

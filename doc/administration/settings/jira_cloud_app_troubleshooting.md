@@ -101,8 +101,8 @@ Depending on how you installed the app, you might want to check the following:
   1. Select all checkboxes, then select **Next**.
   1. Enter your **GitLab instance URL**, then select **Save**.
 
-  If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer
-  and provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
+  If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
+  Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
 
   ```ruby
   # Check if GitLab.com can connect to the self-managed instance

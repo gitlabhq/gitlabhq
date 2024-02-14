@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Purchase
+group: Provision
 description: Seat assignment, GitLab Duo Pro add-on
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -21,11 +21,9 @@ add-ons can be assigned to billable users only.
 Prerequisites:
 
 - You must purchase the GitLab Duo Pro add-on from the [GitLab Sales Team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+- For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available for GitLab 16.8 and later only.
 
 After you purchase GitLab Duo Pro, you can assign seats to billable users to grant access to the add-on.
-
-NOTE:
-For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available for GitLab 16.8 and later only.
 
 ### For GitLab.com
 

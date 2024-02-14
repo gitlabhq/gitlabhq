@@ -76,13 +76,16 @@ GitLab uses these IDs to look up users.
 If the identity provider does not know the current values for these fields,
 that provider may create duplicate users, or fail to complete expected actions.
 
-To change the identifier values to match:
+To change the identifier values to match, you can do one of the following:
 
-1. Have users unlink and relink themselves, based on the
+- Have users unlink and relink themselves, based on the
   [SAML authentication failed: User has already been taken](troubleshooting.md#message-saml-authentication-failed-user-has-already-been-taken)
   section.
-1. Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
-1. Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
+- Unlink all users simultaneously by removing all users from the SCIM app while provisioning is turned on.
+
+  WARNING:
+  This resets all users' roles in the top level group and subgroups to the [configured default membership role](index.md#configure-gitlab).
+- Use the [SAML API](../../../api/saml.md) or [SCIM API](../../../api/scim.md) to manually correct the `extern_uid` stored for users to match the SAML
   `NameId` or SCIM `externalId`.
 
 You must not:

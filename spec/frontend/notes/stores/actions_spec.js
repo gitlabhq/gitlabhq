@@ -1449,4 +1449,16 @@ describe('Actions Notes Store', () => {
       );
     });
   });
+
+  describe('toggleAllDiscussions', () => {
+    it('commits SET_EXPAND_ALL_DISCUSSIONS', () => {
+      return testAction(
+        actions.toggleAllDiscussions,
+        undefined,
+        { allDiscussionsExpanded: false },
+        [{ type: mutationTypes.SET_EXPAND_ALL_DISCUSSIONS, payload: true }],
+        [],
+      );
+    });
+  });
 });

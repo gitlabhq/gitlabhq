@@ -213,7 +213,6 @@ export default {
   },
   methods: {
     ...mapActions('diffs', [
-      'toggleFileDiscussions',
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
       'setCurrentFileHash',

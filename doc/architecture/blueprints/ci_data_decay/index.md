@@ -240,3 +240,6 @@ In progress.
 - 2022-06-31: [Pipeline partitioning design](pipeline_partitioning.md) document [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87683) merged.
 - 2022-09-01: Engineering effort started to implement partitioning.
 - 2022-11-01: The fastest growing CI table partitioned: `ci_builds_metadata`.
+- 2023-06-30: The second largest table partitioned: `ci_builds`.
+- 2023-12-12: `ci_builds` and `ci_builds_metadata` growth is stopped by writing data to new partitions.
+- 2024-02-05: `ci_pipeline_variables` is partitioned.

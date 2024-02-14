@@ -623,7 +623,7 @@
   - "vendor/assets/javascripts/**/*"
 
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
-  - "{,ee/,jh/}config/feature_flags/{development,ops}/*.yml"
+  - "{,ee/,jh/}config/feature_flags/**/*.yml"
 
 .glfm-patterns: &glfm-patterns
   - ".gitlab/ci/rules.gitlab-ci.yml"
@@ -659,17 +659,6 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-jh
-      when: never
-
-.as-if-jh-default-exclusion-rules:
-  rules:
-    - if: '$ADD_JH_FILES_TOKEN == null'
-      when: never
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
       when: never
 
 .rails:rules:run-search-tests:
@@ -3179,10 +3168,8 @@
 ##################
 .as-if-jh:rules:prepare-as-if-jh:
   rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
 
 # This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
@@ -3204,8 +3191,6 @@
 # dependencies changes.
 .as-if-jh:rules:sync-as-if-jh:
   rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns
       # Ideally, we should be able to do this:
@@ -3216,11 +3201,9 @@
 # Because the jobs using this need jobs using the preparation rules
 .as-if-jh:rules:start-as-if-jh:
   rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".as-if-jh-default-exclusion-rules", rules]
     - <<: *if-merge-request-labels-as-if-jh
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
-    - <<: *if-dot-com-gitlab-org-merge-request
+    - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
 

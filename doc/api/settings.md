@@ -281,7 +281,8 @@ Example response:
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
   "security_txt_content": null,
-  "bulk_import_concurrent_pipeline_batch_limit": 25
+  "bulk_import_concurrent_pipeline_batch_limit": 25,
+  "downstream_pipeline_trigger_limit_per_project_user_sha": 0
 }
 ```
 
@@ -390,6 +391,7 @@ listed in the descriptions of the relevant settings.
 | `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires:** `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_denylist`                        | array of strings | no                                   | Users with email addresses that match these domains **cannot** sign up. Wildcards allowed. Use separate lines for multiple entries. For example: `domain.com`, `*.domain.com`. |
 | `domain_allowlist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
+| `downstream_pipeline_trigger_limit_per_project_user_sha` | integer | no                            | Rate limit creation of downstream pipelines. Default: `0`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10 with a [flag](../administration/feature_flags.md) named `ci_rate_limit_downstream_pipelines`. Disabled by default. |
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ecdsa_sk_key_restriction`               | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA_SK key. Default is `0` (no restriction). `-1` disables ECDSA_SK keys. |

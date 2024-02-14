@@ -280,7 +280,8 @@ module ApplicationSettingImplementation
         security_txt_content: nil,
         allow_project_creation_for_guest_and_below: true,
         enable_member_promotion_management: false,
-        security_approval_policies_limit: 5
+        security_approval_policies_limit: 5,
+        downstream_pipeline_trigger_limit_per_project_user_sha: 0
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

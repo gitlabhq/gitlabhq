@@ -95,6 +95,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['max_login_attempts']).to be_nil
       expect(json_response['failed_login_attempts_unlock_period_in_minutes']).to be_nil
       expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to eq(25)
+      expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to eq(0)
     end
   end
 
@@ -216,7 +217,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             gitlab_shell_operation_limit: 500,
             namespace_aggregation_schedule_lease_duration_in_seconds: 400,
             max_import_remote_file_size: 2,
-            security_txt_content: nil
+            security_txt_content: nil,
+            downstream_pipeline_trigger_limit_per_project_user_sha: 300
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -302,6 +304,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['bulk_import_max_download_file_size']).to be(1)
         expect(json_response['security_txt_content']).to be(nil)
         expect(json_response['bulk_import_concurrent_pipeline_batch_limit']).to be(2)
+        expect(json_response['downstream_pipeline_trigger_limit_per_project_user_sha']).to be(300)
       end
     end
 
@@ -1019,6 +1022,40 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['ci_max_includes'])
+          .to include(a_string_matching('is not a number'))
+      end
+    end
+
+    context 'with downstream_pipeline_trigger_limit_per_project_user_sha' do
+      it 'updates the settings' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: 200
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'downstream_pipeline_trigger_limit_per_project_user_sha' => 200
+        )
+      end
+
+      it 'allows a zero value' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: 0
+        }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          'downstream_pipeline_trigger_limit_per_project_user_sha' => 0
+        )
+      end
+
+      it 'does not allow a nil value' do
+        put api("/application/settings", admin), params: {
+          downstream_pipeline_trigger_limit_per_project_user_sha: nil
+        }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['message']['downstream_pipeline_trigger_limit_per_project_user_sha'])
           .to include(a_string_matching('is not a number'))
       end
     end

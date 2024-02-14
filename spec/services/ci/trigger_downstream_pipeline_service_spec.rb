@@ -50,7 +50,7 @@ RSpec.describe Ci::TriggerDownstreamPipelineService, feature_category: :continuo
 
       context 'when the limit is exceeded' do
         before do
-          stub_const("#{described_class.name}::DOWNSTREAM_PIPELINE_TRIGGER_LIMIT_PER_PROJECT_USER_SHA", 1)
+          stub_application_setting(downstream_pipeline_trigger_limit_per_project_user_sha: 1)
         end
 
         it 'drops the bridge and does not schedule the downstream pipeline worker', :aggregate_failures do

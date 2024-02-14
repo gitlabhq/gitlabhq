@@ -300,7 +300,7 @@ gem 'redis-actionpack', '~> 5.4.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'discordrb-webhooks', '~> 3.4', require: false, feature_category: :integrations
 
 # Jira integration
-gem 'jira-ruby', '~> 2.1.4', feature_category: :integrations
+gem 'jira-ruby', '~> 2.3.0', feature_category: :integrations
 gem 'atlassian-jwt', '~> 0.2.0', feature_category: :integrations
 
 # Slack integration

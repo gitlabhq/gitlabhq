@@ -82,8 +82,9 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const setExpandDiscussions = ({ commit }, { discussionIds, expanded }) => {
-  commit(types.SET_EXPAND_DISCUSSIONS, { discussionIds, expanded });
+export const toggleAllDiscussions = ({ commit, getters }) => {
+  const expanded = getters.allDiscussionsExpanded;
+  commit(types.SET_EXPAND_ALL_DISCUSSIONS, !expanded);
 };
 
 export const fetchDiscussions = (

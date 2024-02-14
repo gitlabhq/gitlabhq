@@ -1059,62 +1059,6 @@ describe('DiffsStoreActions', () => {
     });
   });
 
-  describe('toggleFileDiscussions', () => {
-    it('should dispatch collapseDiscussion when all discussions are expanded', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => true),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'collapseDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when all discussions are collapsed', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => true),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-
-    it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
-      const getters = {
-        getDiffFileDiscussions: jest.fn(() => [{ expanded: false, id: 1 }]),
-        diffHasAllExpandedDiscussions: jest.fn(() => false),
-        diffHasAllCollapsedDiscussions: jest.fn(() => false),
-      };
-
-      const dispatch = jest.fn();
-
-      diffActions.toggleFileDiscussions({ getters, dispatch });
-
-      expect(dispatch).toHaveBeenCalledWith(
-        'expandDiscussion',
-        { discussionId: 1 },
-        { root: true },
-      );
-    });
-  });
-
   describe('scrollToLineIfNeededInline', () => {
     const lineMock = {
       line_code: 'ABC_123',

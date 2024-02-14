@@ -380,3 +380,7 @@ export const getFetchDiscussionsConfig = (state, getters) => {
   }
   return defaultConfig;
 };
+
+export const allDiscussionsExpanded = (state) => {
+  return state.discussions.every((discussion) => discussion.expanded);
+};

@@ -462,9 +462,10 @@ lib/gitlab/checks/**
 # Begin rake-managed-docs-block
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
+/doc/administration/audit_event_reports.md @eread
+/doc/administration/audit_event_schema.md @eread
 /doc/administration/audit_event_streaming/ @eread
-/doc/administration/audit_events.md @eread
-/doc/administration/audit_reports.md @eread
+/doc/administration/audit_event_types.md @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
 /doc/administration/backup_restore/ @axil
@@ -562,6 +563,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/project_integration_management.md @eread @ashrafkhamis
 /doc/administration/settings/push_event_activities_limit.md @msedlakjakubowski
 /doc/administration/settings/rate_limit_on_issues_creation.md @msedlakjakubowski
+/doc/administration/settings/rate_limit_on_members_api.md @lciutacu
 /doc/administration/settings/rate_limit_on_notes_creation.md @msedlakjakubowski
 /doc/administration/settings/rate_limit_on_pipelines_creation.md @marcel.amirault @lyspin
 /doc/administration/settings/rate_limit_on_projects_api.md @lciutacu
@@ -814,6 +816,7 @@ lib/gitlab/checks/**
 /doc/integration/akismet.md @phillipwells
 /doc/integration/arkose.md @phillipwells
 /doc/integration/datadog.md @eread @ashrafkhamis
+/doc/integration/diffblue_cover.md @marcel.amirault @lyspin
 /doc/integration/external-issue-tracker.md @eread @ashrafkhamis
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
@@ -872,6 +875,7 @@ lib/gitlab/checks/**
 /doc/user/compliance/compliance_center/ @eread
 /doc/user/compliance/index.md @eread
 /doc/user/custom_roles.md @jglassman1
+/doc/user/custom_roles/ @jglassman1
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
@@ -885,7 +889,6 @@ lib/gitlab/checks/**
 /doc/user/group/epics/ @msedlakjakubowski
 /doc/user/group/import/ @eread @ashrafkhamis
 /doc/user/group/index.md @lciutacu
-/doc/user/group/insights/ @lciutacu
 /doc/user/group/issues_analytics/ @lciutacu
 /doc/user/group/iterations/ @msedlakjakubowski
 /doc/user/group/manage.md @lciutacu
@@ -935,6 +938,8 @@ lib/gitlab/checks/**
 /doc/user/project/index.md @lciutacu
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @eread @ashrafkhamis
+/doc/user/project/integrations/beyond_identity.md @msedlakjakubowski
+/doc/user/project/integrations/git_guardian.md @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @eread @ashrafkhamis
 /doc/user/project/members/ @lciutacu
 /doc/user/project/merge_requests/ @aqualls
@@ -945,6 +950,8 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/reviews/data_usage.md @sselhorn
 /doc/user/project/merge_requests/squash_and_merge.md @msedlakjakubowski
 /doc/user/project/merge_requests/status_checks.md @eread
+/doc/user/project/ml/experiment_tracking/ @sselhorn
+/doc/user/project/ml/model_registry/ @sselhorn
 /doc/user/project/organize_work_with_projects.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
@@ -958,6 +965,7 @@ lib/gitlab/checks/**
 /doc/user/project/settings/migrate_projects.md @lciutacu
 /doc/user/project/settings/project_access_tokens.md @jglassman1
 /doc/user/project/settings/project_features_permissions.md @lciutacu
+/doc/user/project/troubleshooting.md @lciutacu
 /doc/user/project/use_project_as_go_package.md @lciutacu
 /doc/user/project/web_ide/ @ashrafkhamis
 /doc/user/project/working_with_projects.md @lciutacu

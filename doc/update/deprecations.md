@@ -1509,6 +1509,24 @@ This change is a breaking change. You should [create a runner in the UI](../ci/r
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Removal of tags from small SaaS runners on Linux
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/30829).
+</div>
+
+Due to historical reasons, small Linux SaaS Runners had a lot of tags attached because they were used as labels. We want to streamline the tag to just use `saas-linux-small-amd64` and be consistent across all SaaS runners.
+
+We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
+
+For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/2023/08/15/removing-tags-from-small-saas-runner-on-linux/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Rename the 'require_password_to_approve' field
 
 <div class="deprecation-notes">
@@ -1844,6 +1862,25 @@ rules are removed, GitLab will automatically migrate your settings.
 
 In GitLab 15.11, UI support for unified approval rules was removed.
 You can still access unified approval rules with the API.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Upgrading the operating system version of GitLab SaaS runners on Linux
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/ci-cd/shared-runners/infrastructure/-/issues/60).
+</div>
+
+GitLab is upgrading the container-optimized operating system (COS) of the ephemeral VMs used to execute jobs for SaaS runners on Linux.
+That COS upgrade includes a Docker Engine upgrade from Version 19.03.15 to Version 23.0.5, which introduces a known compatibility issue.
+
+Docker-in-Docker prior to version 20.10 or Kaniko images older than v1.9.0, will be unable to detect the container runtime and fail.
+
+For more information, see [Upgrading the operating system version of our SaaS runners on Linux](https://about.gitlab.com/blog/2023/10/04/updating-the-os-version-of-saas-runners-on-linux/).
 
 </div>
 

@@ -1,4 +1,4 @@
 = render_if_exists 'notify/address_new_reviewer_with_diff_summary'
 
 %p
-  = change_reviewer_notification_text(@merge_request.reviewers, @previous_reviewers, :strong)
+  = change_reviewer_notification_text(@merge_request.reviewers, @previous_reviewers)

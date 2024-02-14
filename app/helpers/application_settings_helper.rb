@@ -514,7 +514,8 @@ module ApplicationSettingsHelper
       :ci_max_total_yaml_size_bytes,
       :project_jobs_api_rate_limit,
       :security_txt_content,
-      :allow_project_creation_for_guest_and_below
+      :allow_project_creation_for_guest_and_below,
+      :downstream_pipeline_trigger_limit_per_project_user_sha
     ].tap do |settings|
       next if Gitlab.com?
 

@@ -466,7 +466,7 @@ export default {
         :href="author.path"
         :data-user-id="author.id"
         :data-username="author.username"
-        class="js-user-link"
+        class="js-user-link gl-relative"
       >
         <gl-avatar
           :src="author.avatar_url"

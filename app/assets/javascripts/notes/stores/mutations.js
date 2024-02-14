@@ -233,6 +233,12 @@ export default {
     }
   },
 
+  [types.SET_EXPAND_ALL_DISCUSSIONS](state, expanded) {
+    state.discussions.forEach((discussion) => {
+      Object.assign(discussion, { expanded });
+    });
+  },
+
   [types.SET_RESOLVING_DISCUSSION](state, isResolving) {
     state.isResolvingDiscussion = isResolving;
   },

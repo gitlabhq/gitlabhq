@@ -29,6 +29,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.bulk_import_concurrent_pipeline_batch_limit).to eq(25) }
     it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
     it { expect(setting.members_delete_limit).to eq(60) }
+    it { expect(setting.downstream_pipeline_trigger_limit_per_project_user_sha).to eq(0) }
   end
 
   describe 'validations' do
@@ -244,6 +245,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           sidekiq_job_limiter_limit_bytes
           terminal_max_session_time
           users_get_by_id_limit
+          downstream_pipeline_trigger_limit_per_project_user_sha
         ]
       end
 

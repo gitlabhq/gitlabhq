@@ -67,7 +67,6 @@ describe('DiffFileHeader component', () => {
           diffHasDiscussions: () => diffHasDiscussionsResultMock,
         },
         actions: {
-          toggleFileDiscussions: jest.fn(),
           toggleFileDiscussionWrappers: jest.fn(),
           toggleFullDiff: jest.fn(),
           setCurrentFileHash: jest.fn(),

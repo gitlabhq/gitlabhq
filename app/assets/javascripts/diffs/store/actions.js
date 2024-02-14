@@ -586,29 +586,10 @@ export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {
 
 /**
  * Toggles the file discussions after user clicked on the toggle discussions button.
- *
- * Gets the discussions for the provided diff.
- *
- * If all discussions are expanded, it will collapse all of them
- * If all discussions are collapsed, it will expand all of them
- * If some discussions are open and others closed, it will expand the closed ones.
- *
- * @param {Object} diff
+ * @param {Object} discussion
  */
-export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
-  const discussions = getters.getDiffFileDiscussions(diff);
-  const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
-  const shouldExpandAll = getters.diffHasAllCollapsedDiscussions(diff);
-
-  discussions.forEach((discussion) => {
-    const data = { discussionId: discussion.id };
-
-    if (shouldCloseAll) {
-      dispatch('collapseDiscussion', data, { root: true });
-    } else if (shouldExpandAll || (!shouldCloseAll && !shouldExpandAll && !discussion.expanded)) {
-      dispatch('expandDiscussion', data, { root: true });
-    }
-  });
+export const toggleFileDiscussion = ({ commit }, discussion) => {
+  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, discussion);
 };
 
 export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
@@ -1115,4 +1096,8 @@ export const unpinFile = ({ getters, commit }) => {
   newUrl.searchParams.delete('pin');
   newUrl.hash = '';
   window.history.replaceState(null, undefined, newUrl);
+};
+
+export const toggleAllDiffDiscussions = ({ commit, getters }) => {
+  commit(types.SET_EXPAND_ALL_DIFF_DISCUSSIONS, !getters.allDiffDiscussionsExpanded);
 };

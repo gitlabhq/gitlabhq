@@ -51,6 +51,11 @@
         .form-text.text-muted
           = s_('AdminSettings|The maximum number of included files per pipeline.')
       .form-group
+        = f.label :downstream_pipeline_trigger_limit_per_project_user_sha, s_('AdminSettings|Maximum downstream pipelines triggered in a project per user'), class: 'label-bold'
+        = f.number_field :downstream_pipeline_trigger_limit_per_project_user_sha, min: 0, class: 'form-control gl-form-input'
+        .form-text.text-muted
+          = s_('AdminSettings|The maximum number of downstream pipelines triggered in a project per user.')
+      .form-group
         = f.label :ci_config_path, _('Default CI/CD configuration file'), class: 'label-bold'
         = f.text_field :default_ci_config_path, class: 'form-control gl-form-input', placeholder: '.gitlab-ci.yml'
         %p.form-text.text-muted

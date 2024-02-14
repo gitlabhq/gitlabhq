@@ -264,7 +264,20 @@ include:
   - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'
     rules:
       - <<: *if-not-security-canonical-sync
-  - local: .gitlab/ci/gitlab-com/*.gitlab-ci.yml
+  - local: .gitlab/ci/includes/gitlab-com/*.gitlab-ci.yml
     rules:
       - if: '$CI_SERVER_HOST == "gitlab.com"'
       - if: '$CI_SERVER_HOST == "jihulab.com"'
+  - local: .gitlab/ci/includes/as-if-jh.gitlab-ci.yml
+    rules:
+      # Only run as-if-jh triggerred pipelines for gitlab.com/gitlab-org/gitlab MRs that don't target stable branches
+      # and that don't have the quarantine or pipeline:expedite labels.
+      - if: '$CI_PROJECT_URL != "https://gitlab.com/gitlab-org/gitlab"'
+        when: never
+      - if: '$CI_MERGE_REQUEST_ID == null'
+        when: never
+      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
+        when: never
+      - if: '$CI_MERGE_REQUEST_LABELS =~ /quarantine/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
+        when: never
+      - when: always

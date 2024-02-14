@@ -48,8 +48,8 @@ DETAILS:
 
 Prerequisites:
 
-- You must have [site administrator](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Make-someone-a-site-admin) access to the Jira instance.
 - Your network must allow inbound and outbound connections between GitLab and Jira.
+- You must meet certain [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 To install the GitLab for Jira Cloud app:
 
@@ -75,16 +75,16 @@ DETAILS:
 Prerequisites:
 
 - You must have at least the Maintainer role for the GitLab group.
-- The Jira user that installs and configures the GitLab for Jira Cloud app must meet certain [requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
+- You must meet certain [Jira user requirements](../../administration/settings/jira_cloud_app.md#jira-user-requirements).
 
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
 To configure the GitLab for Jira Cloud app:
 
 1. In Jira, on the top bar, select **Apps > Manage your apps**.
-1. Expand **GitLab for Jira**.
+1. Expand **GitLab for Jira (GitLab.com)**.
 1. Select **Get started**.
-1. Optional. Select **Change GitLab version** to set the GitLab instance to use with Jira.
-1. Select **Sign into GitLab**.
+1. Optional. To set the GitLab instance to use with Jira, select **Change GitLab version**.
+1. Select **Sign in to GitLab**.
 1. For a list of groups you can link to, select **Link groups**.
 1. To link to a group, select **Link**.
 
