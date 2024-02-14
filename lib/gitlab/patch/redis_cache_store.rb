@@ -20,7 +20,7 @@ module Gitlab
         delete_count = 0
         redis.with do |conn|
           entries.each_slice(pipeline_batch_size) do |subset|
-            delete_count += Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |pipeline|
+            delete_count += conn.pipelined do |pipeline|
               subset.each { |entry| pipeline.del(entry) }
             end.sum
           end
@@ -58,7 +58,7 @@ module Gitlab
 
       def pipeline_mget(conn, keys)
         keys.each_slice(pipeline_batch_size).flat_map do |subset|
-          Gitlab::Redis::CrossSlot::Pipeline.new(conn).pipelined do |p|
+          conn.pipelined do |p|
             subset.each { |key| p.get(key) }
           end
         end

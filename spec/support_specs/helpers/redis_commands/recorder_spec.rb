@@ -13,7 +13,7 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
       it 'records Redis commands' do
         recorder = described_class.new { cache.read('key1') }
 
-        expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
+        expect(recorder.log).to include(['get', 'cache:gitlab:key1'])
       end
     end
 
@@ -35,10 +35,10 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.delete('key1')
       end
 
-      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything, anything, anything])
-      expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
-      expect(recorder.log).to include([:get, 'cache:gitlab:key2'])
-      expect(recorder.log).to include([:del, 'cache:gitlab:key1'])
+      expect(recorder.log).to include(['set', 'cache:gitlab:key1', anything, anything, anything])
+      expect(recorder.log).to include(['get', 'cache:gitlab:key1'])
+      expect(recorder.log).to include(['get', 'cache:gitlab:key2'])
+      expect(recorder.log).to include(['del', 'cache:gitlab:key1'])
     end
 
     it 'does not record commands before the call' do
@@ -48,8 +48,8 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.read('key1')
       end
 
-      expect(recorder.log).not_to include([:set, anything, anything])
-      expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
+      expect(recorder.log).not_to include(['set', anything, anything])
+      expect(recorder.log).to include(['get', 'cache:gitlab:key1'])
     end
 
     it 'refreshes recording after reinitialization' do
@@ -68,15 +68,15 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.read('key4')
       end
 
-      expect(recorder1.log).to include([:get, 'cache:gitlab:key2'])
-      expect(recorder1.log).not_to include([:get, 'cache:gitlab:key1'])
-      expect(recorder1.log).not_to include([:get, 'cache:gitlab:key3'])
-      expect(recorder1.log).not_to include([:get, 'cache:gitlab:key4'])
+      expect(recorder1.log).to include(['get', 'cache:gitlab:key2'])
+      expect(recorder1.log).not_to include(['get', 'cache:gitlab:key1'])
+      expect(recorder1.log).not_to include(['get', 'cache:gitlab:key3'])
+      expect(recorder1.log).not_to include(['get', 'cache:gitlab:key4'])
 
-      expect(recorder2.log).to include([:get, 'cache:gitlab:key4'])
-      expect(recorder2.log).not_to include([:get, 'cache:gitlab:key1'])
-      expect(recorder2.log).not_to include([:get, 'cache:gitlab:key2'])
-      expect(recorder2.log).not_to include([:get, 'cache:gitlab:key3'])
+      expect(recorder2.log).to include(['get', 'cache:gitlab:key4'])
+      expect(recorder2.log).not_to include(['get', 'cache:gitlab:key1'])
+      expect(recorder2.log).not_to include(['get', 'cache:gitlab:key2'])
+      expect(recorder2.log).not_to include(['get', 'cache:gitlab:key3'])
     end
   end
 
@@ -91,10 +91,10 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.delete('key2')
       end
 
-      expect(recorder.log).to include([:set, 'cache:gitlab:key1', anything, anything, anything])
-      expect(recorder.log).to include([:get, 'cache:gitlab:key1'])
-      expect(recorder.log).not_to include([:get, 'cache:gitlab:key2'])
-      expect(recorder.log).not_to include([:del, 'cache:gitlab:key2'])
+      expect(recorder.log).to include(['set', 'cache:gitlab:key1', anything, anything, anything])
+      expect(recorder.log).to include(['get', 'cache:gitlab:key1'])
+      expect(recorder.log).not_to include(['get', 'cache:gitlab:key2'])
+      expect(recorder.log).not_to include(['del', 'cache:gitlab:key2'])
     end
   end
 
@@ -107,7 +107,7 @@ RSpec.describe RedisCommands::Recorder, :use_clean_rails_redis_caching do
         cache.delete('key2')
       end
 
-      expect(recorder.by_command(:del)).to match_array([[:del, 'cache:gitlab:key2']])
+      expect(recorder.by_command('del')).to match_array([['del', 'cache:gitlab:key2']])
     end
   end
 

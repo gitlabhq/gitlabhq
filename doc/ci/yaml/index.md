@@ -2568,8 +2568,10 @@ The name of the Docker image that the job runs in. Similar to [`image`](#image) 
 **Example of `image:name`**:
 
 ```yaml
-image:
-  name: "registry.example.com/my/image:latest"
+test-job:
+  image:
+    name: "registry.example.com/my/image:latest"
+  script: echo "Hello world"
 ```
 
 **Related topics**:
@@ -2594,9 +2596,11 @@ where each shell token is a separate string in the array.
 **Example of `image:entrypoint`**:
 
 ```yaml
-image:
-  name: super/sql:experimental
-  entrypoint: [""]
+test-job:
+  image:
+    name: super/sql:experimental
+    entrypoint: [""]
+  script: echo "Hello world"
 ```
 
 **Related topics**:

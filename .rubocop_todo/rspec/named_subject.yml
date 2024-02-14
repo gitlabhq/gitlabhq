@@ -2331,7 +2331,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/rack_attack_spec.rb'
     - 'spec/lib/gitlab/reactive_cache_set_cache_spec.rb'
     - 'spec/lib/gitlab/redis/boolean_spec.rb'
-    - 'spec/lib/gitlab/redis/cross_slot_spec.rb'
     - 'spec/lib/gitlab/redis/db_load_balancing_spec.rb'
     - 'spec/lib/gitlab/redis/multi_store_spec.rb'
     - 'spec/lib/gitlab/redis/queues_spec.rb'

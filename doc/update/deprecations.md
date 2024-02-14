@@ -844,6 +844,22 @@ The parameters, `sign_in_text` and `help_text`, are deprecated in the [Settings 
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Deprecating Windows Server 2019 in favor of 2022
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438554).
+</div>
+
+We have recently announced the release of Windows Server 2022 for our SaaS runners on Windows (Beta). With it, we are deprecating Windows 2019 in GitLab 17.0.
+
+For more information about how to migrate to using Windows 2022, see [Windows 2022 support for GitLab SaaS runners now available](https://about.gitlab.com/blog/2024/01/22/windows-2022-support-for-gitlab-saas-runners/).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### DingTalk OmniAuth provider
 
 <div class="deprecation-notes">

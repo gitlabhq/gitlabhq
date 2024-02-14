@@ -1,0 +1,8 @@
+# redis://[:password@]host[:port][/db-number][?option=value]
+# more details: http://www.iana.org/assignments/uri-schemes/prov/redis
+development:
+  url: redis://:mynewpassword@development-host:6379/99
+test:
+  url: redis://:mynewpassword@test-host:6379/99
+production:
+  url: redis://:mynewpassword@production-host:6379/99

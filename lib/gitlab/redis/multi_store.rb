@@ -432,16 +432,6 @@ module Gitlab
 
       # rubocop:disable GitlabSecurity/PublicSend
       def send_command(redis_instance, command_name, *args, **kwargs, &block)
-        # Run wrapped pipeline for each instance individually so that the fan-out is distinct.
-        # If both primary and secondary are Redis Clusters, the slot-node distribution could
-        # be different.
-        #
-        # We ignore args and kwargs since `pipelined` does not accept arguments
-        # See https://github.com/redis/redis-rb/blob/v4.8.0/lib/redis.rb#L164
-        if command_name.to_s == 'pipelined' && redis_instance._client.instance_of?(::Redis::Cluster)
-          return Gitlab::Redis::CrossSlot::Pipeline.new(redis_instance).pipelined(&block)
-        end
-
         if block
           # Make sure that block is wrapped and executed only on the redis instance that is executing the block
           redis_instance.send(command_name, *args, **kwargs) do |*params|
@@ -462,7 +452,7 @@ module Gitlab
       end
 
       def redis_store?(pool)
-        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) }
+        pool.with { |c| c.instance_of?(Gitlab::Redis::MultiStore) || c.is_a?(::Redis) || c.is_a?(::Redis::Cluster) }
       end
 
       def validate_stores!

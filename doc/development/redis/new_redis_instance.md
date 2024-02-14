@@ -147,8 +147,8 @@ module Gitlab
         # Don't use multistore if redis.foo configuration is not provided
         return super if config_fallback?
 
-        primary_store = ::Redis.new(params)
-        secondary_store = ::Redis.new(config_fallback.params)
+        primary_store = init_redis(params)
+        secondary_store = init_redis(config_fallback.params)
 
         MultiStore.new(primary_store, secondary_store, store_name)
       end

@@ -33,7 +33,7 @@ RSpec.describe Gitlab::DiscussionsDiff::HighlightCache, :clean_gitlab_redis_cach
 
       mapping.each do |key, value|
         full_key = described_class.cache_key_for(key)
-        found_key = Gitlab::Redis::Cache.with { |r| r.get(full_key) }
+        found_key = Gitlab::Redis::Cache.with { |r| r.get(full_key).force_encoding("UTF-8") }
 
         expect(described_class.gzip_decompress(found_key)).to eq(value.to_json)
       end

@@ -109,7 +109,8 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
       end
 
       it 'tracks total Redis counters' do
-        expect(Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric).to receive(:redis_key).twice # total and 7d
+        expect(Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric).to receive(:redis_key)
+          .twice.and_call_original # total and 7d
 
         get :index
       end

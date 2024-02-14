@@ -1,4 +1,4 @@
-ARG GDK_SHA=5dd3fde91e00da3e35c8358fd66e4cba8b97d46d
+ARG GDK_SHA=fb96a94cf54d4b0c5db2a3bdf905874dbbc1cf67
 
 FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:${GDK_SHA} as base
 

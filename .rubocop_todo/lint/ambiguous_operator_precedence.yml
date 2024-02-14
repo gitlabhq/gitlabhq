@@ -102,7 +102,6 @@ Lint/AmbiguousOperatorPrecedence:
     - 'spec/lib/gitlab/database/batch_count_spec.rb'
     - 'spec/lib/gitlab/database/consistency_checker_spec.rb'
     - 'spec/lib/gitlab/graphql/tracers/metrics_tracer_spec.rb'
-    - 'spec/lib/gitlab/instrumentation/redis_interceptor_spec.rb'
     - 'spec/lib/gitlab/issues/rebalancing/state_spec.rb'
     - 'spec/lib/gitlab/kroki_spec.rb'
     - 'spec/lib/gitlab/memory/instrumentation_spec.rb'

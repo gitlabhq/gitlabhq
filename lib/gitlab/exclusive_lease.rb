@@ -62,6 +62,7 @@ module Gitlab
 
     def self.cancel(key, uuid)
       return unless key.present?
+      return unless uuid.present?
 
       Gitlab::Redis::SharedState.with do |redis|
         redis.eval(LUA_CANCEL_SCRIPT, keys: [ensure_prefixed_key(key)], argv: [uuid])
@@ -142,7 +143,7 @@ module Gitlab
     # false if the lease is taken by a different UUID or inexistent.
     def renew
       Gitlab::Redis::SharedState.with do |redis|
-        result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout])
+        result = redis.eval(LUA_RENEW_SCRIPT, keys: [@redis_shared_state_key], argv: [@uuid, @timeout.to_i])
         result == @uuid
       end
     end
