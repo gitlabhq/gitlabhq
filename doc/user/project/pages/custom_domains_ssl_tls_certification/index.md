@@ -135,12 +135,11 @@ They require:
 - A DNS `ALIAS`/`CNAME` record for the subdomain.
 - A DNS `TXT` record for each.
 
-| From                                              | DNS Record | To                     |
-| ------------------------------------------------- | ---------- | ---------------------- |
-| `example.com`                                     | `A`        | `35.185.44.232`        |
+| From                                              | DNS Record | To |
+|---------------------------------------------------|------------|----|
+| `example.com`                                     | `A`        | `35.185.44.232` |
 | `_gitlab-pages-verification-code.example.com`     | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
-|---------------------------------------------------+------------+------------------------|
-| `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io`  |
+| `www.example.com`                                 | `CNAME`    | `namespace.gitlab.io` |
 | `_gitlab-pages-verification-code.www.example.com` | `TXT`      | `gitlab-pages-verification-code=00112233445566778899aabbccddeeff` |
 
 If you're using Cloudflare, check

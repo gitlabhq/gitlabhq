@@ -750,12 +750,6 @@ msgstr ""
 msgid "%{fork_icon} %{source_project_path}:%{source_branch}"
 msgstr ""
 
-msgid "%{gitlab_experience_text}. Don't worry, this information isn't shared outside of your self-managed GitLab instance."
-msgstr ""
-
-msgid "%{gitlab_experience_text}. We won't share this information with anyone."
-msgstr ""
-
 msgid "%{global_id} is not a valid ID for %{expected_types}."
 msgstr ""
 
@@ -31694,9 +31688,6 @@ msgstr ""
 msgid "Modal updated"
 msgstr ""
 
-msgid "ModalButton|Add projects"
-msgstr ""
-
 msgid "Modal|Close"
 msgstr ""
 
@@ -51790,7 +51781,7 @@ msgstr ""
 msgid "To pass variables to the triggered pipeline, add %{code_start}variables[VARIABLE]=VALUE%{code_end} to the API request."
 msgstr ""
 
-msgid "To personalize your GitLab experience, we'd like to know a bit more about you"
+msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private."

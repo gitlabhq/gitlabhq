@@ -2996,6 +2996,8 @@ Adds a push rule to a specified project.
 POST /projects/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                       | Type              | Required | Description |
 |---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
@@ -3012,6 +3014,8 @@ POST /projects/:id/push_rule
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits`       | boolean           | No       | Reject commit when it's not signed through GPG. |
 
+<!-- markdownlint-enable MD056 -->
+
 ### Edit project push rule
 
 Edits a push rule for a specified project.
@@ -3019,6 +3023,8 @@ Edits a push rule for a specified project.
 ```plaintext
 PUT /projects/:id/push_rule
 ```
+
+<!-- markdownlint-disable MD056 -->
 
 | Attribute                       | Type              | Required | Description |
 |---------------------------------|-------------------|----------|-------------|
@@ -3035,6 +3041,8 @@ PUT /projects/:id/push_rule
 | `member_check`                  | boolean           | No       | Restrict commits by author (email) to existing GitLab users. |
 | `prevent_secrets`               | boolean           | No       | GitLab rejects any files that are likely to contain secrets. |
 | `reject_unsigned_commits`       | boolean           | No       | Reject commits when they are not GPG signed. |
+
+<!-- markdownlint-enable MD056 -->
 
 ### Delete project push rule
 

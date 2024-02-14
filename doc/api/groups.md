@@ -2040,6 +2040,8 @@ Only available to group owners and administrators.
 POST /groups/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
@@ -2055,6 +2057,8 @@ POST /groups/:id/push_rule
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
 | `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+
+<!-- markdownlint-enable MD056 -->
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"
@@ -2089,6 +2093,8 @@ Only available to group owners and administrators.
 PUT /groups/:id/push_rule
 ```
 
+<!-- markdownlint-disable MD056 -->
+
 | Attribute                                     | Type           | Required | Description |
 | --------------------------------------------- | -------------- | -------- | ----------- |
 | `id`                                          | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
@@ -2104,6 +2110,8 @@ PUT /groups/:id/push_rule
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
 | `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
 | `reject_unsigned_commits`                     | boolean        | no       | Only commits signed through GPG are allowed |
+
+<!-- markdownlint-enable MD056 -->
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/19/push_rule"

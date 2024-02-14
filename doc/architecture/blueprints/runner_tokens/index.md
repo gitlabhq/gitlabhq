@@ -365,6 +365,8 @@ scope.
 
 ### Stage 3 - Database changes
 
+<!-- markdownlint-disable MD056 -->
+
 | Component        | Milestone | Changes |
 |------------------|----------:|---------|
 | GitLab Rails app | `%15.8` | Create database migration to add columns to `ci_runners` table. |
@@ -377,13 +379,15 @@ scope.
 | GitLab Rails app | `%15.9` | Implement the `create_runner_machine` [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Create `ci_runner_machines` record in `POST /runners/verify` request if the runner token is prefixed with `glrt-`. |
 | GitLab Rails app | `%15.9` | Use runner token + `system_id` JSON parameters in `POST /jobs/request` request in the [heartbeat request](https://gitlab.com/gitlab-org/gitlab/blob/c73c96a8ffd515295842d72a3635a8ae873d688c/lib/api/ci/helpers/runner.rb#L14-20) to update the `ci_runner_machines` cache/table. |
-| GitLab Rails app | `%15.9` | Implement the `create_runner_workflow_for_admin`  [feature flag](../../../administration/feature_flags.md). |
+| GitLab Rails app | `%15.9` | Implement the `create_runner_workflow_for_admin` [feature flag](../../../administration/feature_flags.md). |
 | GitLab Rails app | `%15.9` | Implement `create_{instance|group|project}_runner` permissions. |
 | GitLab Rails app | `%15.9` | Rename `ci_runner_machines.machine_xid` column to `system_xid` to be consistent with `system_id` passed in APIs. |
 | GitLab Rails app | `%15.10` | Remove the ignore rule for `ci_runner_machines.machine_xid` column. |
 | GitLab Rails app | `%15.10` | Replace `ci_builds_metadata.runner_machine_id` with a new join table. |
 | GitLab Rails app | `%15.11` | Drop `ci_builds_metadata.runner_machine_id` column. |
 | GitLab Rails app | `%16.0` | Remove the ignore rule for `ci_builds_metadata.runner_machine_id` column. |
+
+<!-- markdownlint-enable MD056 -->
 
 ### Stage 4 - Create runners from the UI
 
@@ -401,7 +405,7 @@ scope.
 | GitLab Rails app | `%15.11` | Implement UI to create new instance runner. |
 | GitLab Rails app | `%15.11` | Update service and mutation to accept groups and projects. |
 | GitLab Rails app | `%15.11` | Implement UI to create new group/project runners. |
-| GitLab Rails app | `%15.11` | Add runner_machine field to CiJob GraphQL type. |
+| GitLab Rails app | `%15.11` | Add `runner_machine` field to CiJob GraphQL type. |
 | GitLab Rails app | `%15.11` | UI changes to runner details view (listing of platform, architecture, IP address, etc.) (?) |
 | GitLab Rails app | `%15.11` | Adapt `POST /api/v4/runners` REST endpoint to accept a request from an authorized user with a scope instead of a registration token. |
 | GitLab Runner    | `%15.11` | Handle `glrt-` runner tokens in `unregister` command. |
@@ -409,6 +413,8 @@ scope.
 | GitLab Rails app | `%15.11` | Move from 'runner machine' terminology to 'runner manager'. |
 
 ### Stage 5 - Optional disabling of registration token
+
+<!-- markdownlint-disable MD056 -->
 
 | Component        | Milestone | Changes                                                                                                                                                                                                                                                                                                                            |
 |------------------|----------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -418,14 +424,16 @@ scope.
 | GitLab Rails app |           | Add UI to allow disabling use of registration tokens in top-level group settings.                                                                                                                                                                                                                                                               |
 | GitLab Rails app |           | Hide legacy UI showing registration with a registration token, if it disabled on in top-level group settings or by admins.                                                                                                                                                                                                         |
 
+<!-- markdownlint-enable MD056 -->
+
 ### Stage 6 - Enforcement
 
-| Component        | Milestone | Changes                                                                                                                                                                  |
-|------------------|----------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitLab Rails app |   `%17.0` | Disable registration tokens for all groups by running database migration (only on GitLab.com)                                                                            |                                                                                                   |
-| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level by running database migration (except GitLab.com)                                                                      |                                                                                                   |
-| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level for GitLab.com                                                                                                         |                                                                                                   |
-| GitLab Rails app |   `%16.3` | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope.                                                                                  |
+| Component        | Milestone | Changes |
+|------------------|----------:|---------|
+| GitLab Rails app |   `%17.0` | Disable registration tokens for all groups by running database migration (only on GitLab.com) |
+| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level by running database migration (except GitLab.com) |
+| GitLab Rails app |   `%17.0` | Disable registration tokens on the instance level for GitLab.com |
+| GitLab Rails app |   `%16.3` | Implement new `:create_runner` PPGAT scope so that we don't require a full `api` scope. |
 | GitLab Rails app |           | Document gotchas when [automatically rotating runner tokens](../../../ci/runners/configure_runners.md#automatically-rotate-runner-authentication-tokens) with multiple machines. |
 
 ### Stage 7 - Removals
@@ -452,7 +460,7 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
+| Role                         | Who |
 |------------------------------|--------------------------------------------------|
 | Authors                      | Kamil Trzciński, Tomasz Maczukin, Pedro Pombeiro |
 | Architecture Evolution Coach | Kamil Trzciński                                  |

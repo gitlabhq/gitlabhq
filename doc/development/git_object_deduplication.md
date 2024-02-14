@@ -96,9 +96,6 @@ are as follows:
 - a `PoolRepository` has exactly one "source `Project`"
   (`pool.source_project`)
 
-> TODO Fix invalid SQL data for pools created prior to GitLab 11.11
-> <https://gitlab.com/gitlab-org/gitaly/-/issues/1653>.
-
 ### Assumptions
 
 - All repositories in a pool must use [hashed storage](../administration/repository_storage_paths.md).
@@ -138,9 +135,6 @@ are as follows:
   Suppose B is a fork of A, and A does not belong to an object pool.
   Now C gets created as a fork of B. C is not part of a pool
   repository.
-
-> TODO should forks of forks be deduplicated?
-> <https://gitlab.com/gitlab-org/gitaly/-/issues/1532>
 
 ### Consequences
 
@@ -195,7 +189,3 @@ then creates the pool repository in Gitaly. This leads to an
 "eventually consistent" situation because as each pool participant gets
 synchronized, Geo eventually triggers garbage collection in Gitaly on
 the secondary, at which stage Git objects are deduplicated.
-
-> TODO How do we handle the edge case where at the time the Geo
-> secondary tries to create the pool repository, the source project does
-> not exist? <https://gitlab.com/gitlab-org/gitaly/-/issues/1533>

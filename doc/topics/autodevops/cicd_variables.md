@@ -13,12 +13,14 @@ Helm chart, or scale your application.
 
 Use these variables to customize and deploy your build.
 
-| **CI/CD variable**                      | **Description**                    |
-|-----------------------------------------|------------------------------------|
+<!-- markdownlint-disable MD056 -->
+
+| **CI/CD variable**                      | **Description** |
+|-----------------------------------------|-----------------|
 | `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
 | `AUTO_BUILD_IMAGE_VERSION`              | Customize the image version used for the `build` job. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/releases). |
-| `AUTO_DEPLOY_IMAGE_VERSION`            | Customize the image version used for Kubernetes deployment jobs. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
+| `AUTO_DEPLOY_IMAGE_VERSION`             | Customize the image version used for Kubernetes deployment jobs. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
 | `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | Set to `false` to use Herokuish instead of Cloud Native Buildpacks with Auto Build. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
 | `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
@@ -32,9 +34,9 @@ Use these variables to customize and deploy your build.
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | Used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASS_CREDENTIALS` | From GitLab 14.2, set to a non-empty value to enable forwarding of the Helm repository credentials to the chart server when the chart artifacts are on a different host than repository. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_INSECURE` | Set to a non-empty value to add a `--insecure-skip-tls-verify` argument to the Helm commands. By default, Helm uses TLS verification. |
-| `AUTO_DEVOPS_CHART_CUSTOM_ONLY` | Set to a non-empty value to use only a custom chart. By default, the latest chart is downloaded from GitLab. |
-| `AUTO_DEVOPS_CHART_VERSION` | Set the version of the deployment chart. Defaults to the latest available version. |
-| `AUTO_DEVOPS_COMMON_NAME` | From GitLab 15.5, set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
+| `AUTO_DEVOPS_CHART_CUSTOM_ONLY`         | Set to a non-empty value to use only a custom chart. By default, the latest chart is downloaded from GitLab. |
+| `AUTO_DEVOPS_CHART_VERSION`             | Set the version of the deployment chart. Defaults to the latest available version. |
+| `AUTO_DEVOPS_COMMON_NAME`               | From GitLab 15.5, set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
 | `AUTO_DEVOPS_DEPLOY_DEBUG`              | From GitLab 13.1, if this variable is present, Helm outputs debug logs. |
 | `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` | From [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) v1.0.0, if this variable is present, a new major version of chart is forcibly deployed. For more information, see [Ignore warnings and continue deploying](upgrading_auto_deploy_dependencies.md#ignore-warnings-and-continue-deploying). |
 | `BUILDPACK_URL`                         | A full Buildpack URL. [Must point to a URL supported by Pack or Herokuish](customize.md#custom-buildpacks). |
@@ -61,6 +63,8 @@ Use these variables to customize and deploy your build.
 | `ROLLOUT_STATUS_DISABLED`               | Used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
 | `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
 | `TRACE`                                 | Set to any value to make Helm commands produce verbose output. You can use this setting to help diagnose Auto DevOps deployment problems. |
+
+<!-- markdownlint-enable MD056 -->
 
 ## Database variables
 

@@ -14,8 +14,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-w-full gl-display-flex gl-p-4">
-    <gl-loading-icon size="md" class="gl-pr-4" inline />
+  <div class="gl-w-full gl-display-flex gl-align-items-center gl-px-5 gl-py-4">
+    <gl-loading-icon size="sm" class="gl-pr-3" />
     <div class="gl-display-flex gl-align-items-center">
       {{ $options.i18n.preparing }}
     </div>

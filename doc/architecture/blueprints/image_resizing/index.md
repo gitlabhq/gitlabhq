@@ -63,13 +63,13 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |    Craig Gomes          |
-| Architecture Evolution Coach |    Kamil Trzciński      |
-| Engineering Leader           |    Tim Zallmann         |
-| Domain Expert                |    Matthias Kaeppler    |
-| Domain Expert                |    Aleksei Lipniagov    |
+| Role                         | Who |
+|------------------------------|-----|
+| Author                       | Craig Gomes |
+| Architecture Evolution Coach | Kamil Trzciński |
+| Engineering Leader           | Tim Zallmann |
+| Domain Expert                | Matthias Kaeppler |
+| Domain Expert                | Aleksei Lipniagov |
 
 <!-- vale gitlab.Spelling = YES -->
 
@@ -77,10 +77,10 @@ DRIs:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      |    Josh Lambert        |
-| Leadership                   |    Craig Gomes         |
-| Engineering                  |    Matthias Kaeppler   |
+| Role        | Who |
+|-------------|-----|
+| Product     | Josh Lambert |
+| Leadership  | Craig Gomes |
+| Engineering | Matthias Kaeppler |
 
 <!-- vale gitlab.Spelling = YES -->

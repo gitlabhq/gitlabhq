@@ -760,27 +760,27 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                           | Who
-|--------------------------------|-------------------------|
-| Author                         | Fabio Pitino            |
-| Engineering Leaders            | Cheryl Li, Mark Nuzzo   |
-| Product Manager                | Dov Hershkovitch        |
+| Role                           | Who |
+|--------------------------------|-----|
+| Author                         | Fabio Pitino |
+| Engineering Leaders            | Cheryl Li, Mark Nuzzo |
+| Product Manager                | Dov Hershkovitch |
 | Architecture Evolution Coaches | Kamil Trzciński, Grzegorz Bizon |
 
 DRIs:
 
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Mark Nuzzo             |
-| Product                      | Dov Hershkovitch       |
-| Engineering                  | Fabio Pitino           |
-| UX                           | Sunjung Park           |
+| Role        | Who |
+|-------------|-----|
+| Leadership  | Mark Nuzzo |
+| Product     | Dov Hershkovitch |
+| Engineering | Fabio Pitino |
+| UX          | Sunjung Park |
 
 Domain experts:
 
-| Area                         | Who
-|------------------------------|------------------------|
-| Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Laura Montemayor       |
+| Area                        | Who |
+|-----------------------------|-----|
+| Verify / Pipeline authoring | Avielle Wolfe |
+| Verify / Pipeline authoring | Laura Montemayor |
 
 <!-- vale gitlab.Spelling = YES -->

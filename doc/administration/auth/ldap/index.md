@@ -281,25 +281,29 @@ After configuring LDAP, to test the configuration, use the
 
 The following basic settings are available:
 
-| Setting            | Required    | Type | Description |
-|--------------------|-------------|------|-------------|
-| `label`            | **{check-circle}** Yes | String | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
-| `host`             | **{check-circle}** Yes | String | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. Example: `'ldap.mydomain.com'` |
-| `port`             | **{check-circle}** Yes | Integer | The port to connect with on your LDAP server. Ignored when `hosts` is defined. Example: `389` or `636` (for SSL) |
-| `uid`              | **{check-circle}** Yes | String | The LDAP attribute that maps to the username that users use to sign in. Should be the attribute, not the value that maps to the `uid`. Does not affect the GitLab username (see [attributes section](#attribute-configuration-settings)). Example: `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
-| `base` | **{check-circle}** Yes | String | Base where we can search for users. Example: `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
-| `encryption`       | **{check-circle}** Yes | String | Encryption method (the `method` key is deprecated in favor of `encryption`). It can have one of three values: `'start_tls'`, `'simple_tls'`, or `'plain'`. `simple_tls` corresponds to 'Simple TLS' in the LDAP library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS. If you specify `simple_tls`, usually it's on port 636, while `start_tls` (StartTLS) would be on port 389. `plain` also operates on port 389. |
-| `hosts` | **{dotted-circle}** No | Array of strings and integers | An array of host and port pairs to open connections. Each configured server should have an identical data set. This is not meant to configure multiple distinct LDAP servers, but to configure failover. Hosts are tried in the order they are configured. Example: `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
-| `bind_dn`          | **{dotted-circle}** No | String | The full DN of the user you bind with. Example: `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
-| `password`         | **{dotted-circle}** No | String | The password of the bind user. |
-| `verify_certificates` | **{dotted-circle}** No | Boolean | Defaults to `true`. Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to `false`, no validation of the LDAP server's SSL certificate is performed. |
-| `timeout`          | **{dotted-circle}** No | Integer | Defaults to `10`. Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. |
-| `active_directory` | **{dotted-circle}** No | Boolean | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. |
-| `allow_username_or_email_login` | **{dotted-circle}** No | Boolean | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. |
-| `block_auto_created_users` | **{dotted-circle}** No | Boolean | Defaults to `false`. To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator . |
-| `user_filter`      | **{dotted-circle}** No | String | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
-| `lowercase_usernames` | **{dotted-circle}** No | Boolean | If enabled, GitLab converts the name to lower case. |
-| `retry_empty_result_with_codes` | **{dotted-circle}** No | Array | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
+<!-- markdownlint-disable MD056 -->
+
+| Setting                         | Required               | Type                          | Description |
+|---------------------------------|------------------------|-------------------------------|-------------|
+| `label`                         | **{check-circle}** Yes | String                        | A human-friendly name for your LDAP server. It is displayed on your sign-in page. Example: `'Paris'` or `'Acme, Ltd.'` |
+| `host`                          | **{check-circle}** Yes | String                        | IP address or domain name of your LDAP server. Ignored when `hosts` is defined. Example: `'ldap.mydomain.com'` |
+| `port`                          | **{check-circle}** Yes | Integer                       | The port to connect with on your LDAP server. Ignored when `hosts` is defined. Example: `389` or `636` (for SSL) |
+| `uid`                           | **{check-circle}** Yes | String                        | The LDAP attribute that maps to the username that users use to sign in. Should be the attribute, not the value that maps to the `uid`. Does not affect the GitLab username (see [attributes section](#attribute-configuration-settings)). Example: `'sAMAccountName'` or `'uid'` or `'userPrincipalName'` |
+| `base`                          | **{check-circle}** Yes | String                        | Base where we can search for users. Example: `'ou=people,dc=gitlab,dc=example'` or `'DC=mydomain,DC=com'` |
+| `encryption`                    | **{check-circle}** Yes | String                        | Encryption method (the `method` key is deprecated in favor of `encryption`). It can have one of three values: `'start_tls'`, `'simple_tls'`, or `'plain'`. `simple_tls` corresponds to 'Simple TLS' in the LDAP library. `start_tls` corresponds to StartTLS, not to be confused with regular TLS. If you specify `simple_tls`, usually it's on port 636, while `start_tls` (StartTLS) would be on port 389. `plain` also operates on port 389. |
+| `hosts`                         | **{dotted-circle}** No | Array of strings and integers | An array of host and port pairs to open connections. Each configured server should have an identical data set. This is not meant to configure multiple distinct LDAP servers, but to configure failover. Hosts are tried in the order they are configured. Example: `[['ldap1.mydomain.com', 636], ['ldap2.mydomain.com', 636]]` |
+| `bind_dn`                       | **{dotted-circle}** No | String                        | The full DN of the user you bind with. Example: `'america\momo'` or `'CN=Gitlab,OU=Users,DC=domain,DC=com'` |
+| `password`                      | **{dotted-circle}** No | String                        | The password of the bind user. |
+| `verify_certificates`           | **{dotted-circle}** No | Boolean                       | Defaults to `true`. Enables SSL certificate verification if encryption method is `start_tls` or `simple_tls`. If set to `false`, no validation of the LDAP server's SSL certificate is performed. |
+| `timeout`                       | **{dotted-circle}** No | Integer                       | Defaults to `10`. Set a timeout, in seconds, for LDAP queries. This helps avoid blocking a request if the LDAP server becomes unresponsive. A value of `0` means there is no timeout. |
+| `active_directory`              | **{dotted-circle}** No | Boolean                       | This setting specifies if LDAP server is Active Directory LDAP server. For non-AD servers it skips the AD specific queries. If your LDAP server is not AD, set this to false. |
+| `allow_username_or_email_login` | **{dotted-circle}** No | Boolean                       | Defaults to `false`. If enabled, GitLab ignores everything after the first `@` in the LDAP username submitted by the user on sign-in. If you are using `uid: 'userPrincipalName'` on ActiveDirectory you must disable this setting, because the userPrincipalName contains an `@`. |
+| `block_auto_created_users`      | **{dotted-circle}** No | Boolean                       | Defaults to `false`. To maintain tight control over the number of billable users on your GitLab installation, enable this setting to keep new users blocked until they have been cleared by an administrator . |
+| `user_filter`                   | **{dotted-circle}** No | String                        | Filter LDAP users. Follows the format of [RFC 4515](https://www.rfc-editor.org/rfc/rfc4515.html). GitLab does not support `omniauth-ldap`'s custom filter syntax. Examples of the `user_filter` field syntax:<br/><br/>- `'(employeeType=developer)'`<br/>- `'(&(objectclass=user)(|(samaccountname=momo)(samaccountname=toto)))'` |
+| `lowercase_usernames`           | **{dotted-circle}** No | Boolean                       | If enabled, GitLab converts the name to lower case. |
+| `retry_empty_result_with_codes` | **{dotted-circle}** No | Array                         | An array of LDAP query response code that attempt to retry the operation if the result/content is empty. For Google Secure LDAP, set this value to `[80]`. |
+
+<!-- markdownlint-enable MD056 -->
 
 ### SSL configuration settings
 

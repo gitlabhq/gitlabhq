@@ -1,0 +1,32 @@
+<!-- Use this template for documentation updates in the /doc/solutions directory. -->
+
+## What does this MR do?
+
+<!-- Briefly describe what this MR is about. -->
+
+## Related issues
+
+<!-- Link related issues below. -->
+
+## Review
+
+- [ ] Assign yourself as the **Assignee** of this MR.
+- [ ] I have read the [Solutions Docs Contributors Guide in the GitLab Handbook](https://handbook.gitlab.com/handbook/customer-success/solutions-architects/sa-documentation/).
+- [ ] Assign another SA as the **Reviewer**.
+- [ ] Assign the latest release for the **Milestone**. If you're not sure, [view the list of releases](https://about.gitlab.com/releases/).
+- [ ] Mention the reviewer in a comment, so they're aware that the MR is ready.
+
+## Merging
+
+- [ ] Obtain approval from a member of the Solutions Documentation Approvers Group (CODEOWNERS for the Solutions directory)
+
+When a code owner approves, they can merge.
+
+## Troubleshooting
+
+The pipeline will test for style and link issues. If you have issues you're unable to resolve,
+view the documentation [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/)
+or ask for assistance in the #docs Slack channel.
+
+/label ~documentation ~Solutions ~"type::maintenance" ~"maintenance::refactor" 
+/assign me

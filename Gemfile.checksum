@@ -525,7 +525,7 @@
 {"name":"redcarpet","version":"3.6.0","platform":"ruby","checksum":"8ad1889c0355ff4c47174af14edd06d62f45a326da1da6e8a121d59bdcd2e9e9"},
 {"name":"redis","version":"4.8.0","platform":"ruby","checksum":"2000cf5014669c9dc821704b6d322a35a9a33852a95208911d9175d63b448a44"},
 {"name":"redis-actionpack","version":"5.4.0","platform":"ruby","checksum":"f10cf649ab05914716d63334d7f709221ecc883b87cf348f90ecfe0c35ea3540"},
-{"name":"redis-client","version":"0.19.0","platform":"ruby","checksum":"6ed9af23ff5aa87cf4d59439db77082b4cae5a0abbdd114ec5420bd63456324d"},
+{"name":"redis-client","version":"0.20.0","platform":"ruby","checksum":"239ac38fe4f0b62c8d2d8641989319b736b7dd40eebec868fd874a14686bdc8c"},
 {"name":"redis-namespace","version":"1.10.0","platform":"ruby","checksum":"2c1c6ea7c6c5e343e75b9bee3aa4c265e364a5b9966507397467af2bb3758d94"},
 {"name":"redis-rack","version":"3.0.0","platform":"ruby","checksum":"abb50b82ae10ad4d11ca2e4901bfc2b98256cdafbbd95f80c86fc9e001478380"},
 {"name":"redis-store","version":"1.10.0","platform":"ruby","checksum":"f258894f9f7e82834308a3d86242294f0cff2c9db9ae66e5cb4c553a5ec8b09e"},
