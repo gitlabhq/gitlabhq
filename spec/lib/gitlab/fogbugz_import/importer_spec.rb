@@ -10,29 +10,20 @@ RSpec.describe Gitlab::FogbugzImport::Importer do
   let(:token) { 'token' }
   let(:credentials) { { 'fb_session' => { 'uri' => base_url, 'token' => token } } }
 
-  let(:closed_bug) do
+  let(:bug_fopen) { 'false' }
+  let(:bug_events) { [] }
+  let(:bug) do
     {
-      fOpen: 'false',
-      sTitle: 'Closed bug',
+      fOpen: bug_fopen,
+      sTitle: 'Bug title',
       sLatestTextSummary: "",
       dtOpened: Time.now.to_s,
       dtLastUpdated: Time.now.to_s,
-      events: { event: [] }
+      events: { event: bug_events }
     }.with_indifferent_access
   end
 
-  let(:opened_bug) do
-    {
-      fOpen: 'true',
-      sTitle: 'Opened bug',
-      sLatestTextSummary: "",
-      dtOpened: Time.now.to_s,
-      dtLastUpdated: Time.now.to_s,
-      events: { event: [] }
-    }.with_indifferent_access
-  end
-
-  let(:fogbugz_bugs) { [opened_bug, closed_bug] }
+  let(:fogbugz_bugs) { [bug] }
 
   subject(:importer) { described_class.new(project) }
 
@@ -44,24 +35,56 @@ RSpec.describe Gitlab::FogbugzImport::Importer do
     stub_fogbugz('search', cases: { case: fogbugz_bugs, count: fogbugz_bugs.size })
   end
 
-  it 'imports bugs' do
-    expect { subject.execute }.to change { Issue.count }.by(2)
-  end
+  it 'imports the bug', :aggregate_failures do
+    expect { subject.execute }.to change { Issue.count }.by(1)
 
-  it 'imports opened bugs' do
-    subject.execute
-
-    issue = Issue.where(project_id: project.id).find_by_title(opened_bug[:sTitle])
-
-    expect(issue.state_id).to eq(Issue.available_states[:opened])
-  end
-
-  it 'imports closed bugs' do
-    subject.execute
-
-    issue = Issue.where(project_id: project.id).find_by_title(closed_bug[:sTitle])
+    issue = Issue.where(project_id: project.id).find_by_title(bug[:sTitle])
 
     expect(issue.state_id).to eq(Issue.available_states[:closed])
+  end
+
+  context 'when importing an opened bug' do
+    let(:bug_fopen) { 'true' }
+
+    it 'imports the bug' do
+      expect { subject.execute }.to change { Issue.count }.by(1)
+
+      issue = Issue.where(project_id: project.id).find_by_title(bug[:sTitle])
+
+      expect(issue.state_id).to eq(Issue.available_states[:opened])
+    end
+  end
+
+  context 'when importing multiple bugs' do
+    let(:fogbugz_bugs) { [bug, bug] }
+
+    it 'imports the bugs' do
+      expect { subject.execute }.to change { Issue.count }.by(2)
+    end
+  end
+
+  context 'when imported bug contains events' do
+    let(:event_time) { Time.now.to_s }
+    let(:bug_events) do
+      [
+        { sVerb: 'Opened', s: 'First event', dt: event_time },
+        { sVerb: 'Assigned', s: 'Second event', dt: event_time }
+      ]
+    end
+
+    let(:expected_note_timestamp) { DateTime.parse(event_time) }
+
+    it 'imports the correct event', :aggregate_failures do
+      expect { subject.execute }.to change { Note.count }.by(1)
+
+      note = Note.where(project_id: project.id).last
+
+      expect(note).to have_attributes(
+        note: "*By  on #{expected_note_timestamp} (imported from FogBugz)*\n\n---\n\n#{bug_events[1][:s]}",
+        created_at: expected_note_timestamp,
+        updated_at: expected_note_timestamp
+      )
+    end
   end
 
   context 'verify url' do

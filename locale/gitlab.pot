@@ -5542,13 +5542,10 @@ msgstr ""
 msgid "Analytics|Continue editing"
 msgstr ""
 
-msgid "Analytics|Count of page views grouped weekly"
-msgstr ""
-
 msgid "Analytics|Create dashboard %{dashboardSlug}"
 msgstr ""
 
-msgid "Analytics|Create with GitLab Duo"
+msgid "Analytics|Create with GitLab Duo (optional)"
 msgstr ""
 
 msgid "Analytics|Create your dashboard"
@@ -5629,13 +5626,19 @@ msgstr ""
 msgid "Analytics|Event Props"
 msgstr ""
 
+msgid "Analytics|Example: Number of users over time, grouped weekly"
+msgstr ""
+
 msgid "Analytics|Exclude anonymous users"
 msgstr ""
 
 msgid "Analytics|Failed to fetch data"
 msgstr ""
 
-msgid "Analytics|Generate visualization"
+msgid "Analytics|Generate with Duo"
+msgstr ""
+
+msgid "Analytics|GitLab Duo may be used to help generate your visualization. You can prompt Duo with your desired data, as well as any dimensions or additional groupings of that data. You may also edit the result as needed."
 msgstr ""
 
 msgid "Analytics|Host"

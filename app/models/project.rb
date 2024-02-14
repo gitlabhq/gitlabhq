@@ -1962,11 +1962,8 @@ class Project < ApplicationRecord
     (project_repository || build_project_repository).tap do |proj_repo|
       attributes = { shard_name: repository_storage, disk_path: disk_path }
 
-      if Feature.enabled?(:store_object_format, namespace, type: :gitlab_com_derisk)
-        object_format = repository.object_format
-
-        attributes[:object_format] = object_format if object_format.present?
-      end
+      object_format = repository.object_format
+      attributes[:object_format] = object_format if object_format.present?
 
       proj_repo.update!(**attributes)
     end

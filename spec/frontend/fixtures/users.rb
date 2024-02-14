@@ -56,9 +56,8 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
     context 'for user achievements' do
       let_it_be(:group) { create(:group, :public) }
       let_it_be(:private_group) { create(:group, :private) }
-      let_it_be(:achievement1) { create(:achievement, namespace: group, name: 'Multiple') }
-      let_it_be(:achievement2) { create(:achievement, namespace: group) }
-      let_it_be(:achievement3) { create(:achievement, namespace: group) }
+      let_it_be(:multiple_achievement) { create(:achievement, namespace: group, name: 'Multiple') }
+      let_it_be(:achievements) { create_list(:achievement, 6, namespace: group) }
       let_it_be(:achievement_from_private_group) { create(:achievement, namespace: private_group) }
       let_it_be(:achievement_with_avatar_and_description) do
         create(:achievement,
@@ -89,7 +88,7 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
       end
 
       it "graphql/get_user_achievements_without_avatar_or_description_response.json" do
-        create(:user_achievement, user: user, achievement: achievement1)
+        create(:user_achievement, user: user, achievement: multiple_achievement)
 
         post_graphql(query, current_user: user, variables: { id: user.to_global_id })
 
@@ -105,10 +104,11 @@ RSpec.describe 'Users (JavaScript fixtures)', feature_category: :user_profile do
       end
 
       it "graphql/get_user_achievements_long_response.json" do
-        [achievement1, achievement2, achievement3, achievement_with_avatar_and_description].each do |achievement|
+        [
+          multiple_achievement, multiple_achievement, achievement_with_avatar_and_description, *achievements
+        ].each do |achievement|
           create(:user_achievement, user: user, achievement: achievement)
         end
-        create(:user_achievement, user: user, achievement: achievement1)
 
         post_graphql(query, current_user: user, variables: { id: user.to_global_id })
 

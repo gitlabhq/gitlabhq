@@ -10,6 +10,7 @@ export const usageQuotasViewProvideData = {
 export const storageTabMetadata = {
   title: __('Storage'),
   component: NamespaceStorageApp,
+  shouldRender: () => document.querySelector(STORAGE_TAB_METADATA_EL_SELECTOR),
 };
 
 export const usageQuotasTabsMetadata = [storageTabMetadata];

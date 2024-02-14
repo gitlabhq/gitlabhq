@@ -253,4 +253,32 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       expect(organization.web_url).to eq(web_url)
     end
   end
+
+  describe '.search' do
+    using RSpec::Parameterized::TableSyntax
+
+    subject { described_class.search(query) }
+
+    context 'when searching by name' do
+      where(:query, :expected_organizations) do
+        'Organization' | [ref(:organization)]
+        'default'      | [ref(:default_organization)]
+      end
+
+      with_them do
+        it { is_expected.to contain_exactly(*expected_organizations) }
+      end
+    end
+
+    context 'when searching by path' do
+      where(:query, :expected_organizations) do
+        'organization' | [ref(:organization)]
+        'default'      | [ref(:default_organization)]
+      end
+
+      with_them do
+        it { is_expected.to contain_exactly(*expected_organizations) }
+      end
+    end
+  end
 end

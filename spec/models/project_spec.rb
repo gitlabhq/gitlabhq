@@ -3130,22 +3130,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
               object_format: 'sha256'
             )
           end
-
-          context 'when feature flag "store_object_format" is disabled' do
-            before do
-              stub_feature_flags(store_object_format: false)
-            end
-
-            it 'tracks a SHA1 object format' do
-              project.track_project_repository
-
-              expect(project.project_repository).to have_attributes(
-                disk_path: project.disk_path,
-                shard_name: project.repository_storage,
-                object_format: 'sha1'
-              )
-            end
-          end
         end
       end
 

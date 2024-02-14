@@ -8,7 +8,9 @@ import getUserAchievementsPrivateGroupResponse from 'test_fixtures/graphql/get_u
 import getUserAchievementsNoAvatarResponse from 'test_fixtures/graphql/get_user_achievements_without_avatar_or_description_response.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import UserAchievements from '~/profile/components/user_achievements.vue';
+import UserAchievements, {
+  MAX_VISIBLE_ACHIEVEMENTS,
+} from '~/profile/components/user_achievements.vue';
 import getUserAchievements from '~/profile/components//graphql/get_user_achievements.query.graphql';
 import { getTimeago, timeagoLanguageCode } from '~/lib/utils/datetime_utility';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -56,12 +58,15 @@ describe('UserAchievements', () => {
     expect(wrapper.findAllByTestId('user-achievement').length).toBe(0);
   });
 
-  it('only renders 3 achievements when more are present', async () => {
+  it(`only renders ${MAX_VISIBLE_ACHIEVEMENTS} achievements when more are present`, async () => {
     createComponent({ queryHandler: jest.fn().mockResolvedValue(getUserAchievementsLongResponse) });
 
     await waitForPromises();
 
-    expect(wrapper.findAllByTestId('user-achievement').length).toBe(3);
+    expect(getUserAchievementsLongResponse.data.user.userAchievements.nodes.length).toBeGreaterThan(
+      MAX_VISIBLE_ACHIEVEMENTS,
+    );
+    expect(wrapper.findAllByTestId('user-achievement').length).toBe(MAX_VISIBLE_ACHIEVEMENTS);
   });
 
   it('renders count for achievements awarded more than once', async () => {

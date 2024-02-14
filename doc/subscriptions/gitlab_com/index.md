@@ -119,8 +119,10 @@ To view your subscription information and a summary of seat counts:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
 
-The usage statistics are updated once per day, which may cause
-a difference between the information in the **Usage Quotas** page and the **Billing page**.
+- The usage statistics are updated once per day, which may cause a difference between the information 
+  in the **Usage Quotas** page and the **Billing page**.
+- The **Last login** field is updated when a user signs in after they have signed out. If there is an active session 
+  when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
 
 ### Search seat usage
 

@@ -72,15 +72,15 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
     });
 
     it.each([
-      ['success', 'success', CLUSTER_STATUS_HEALTHY_TEXT],
-      ['error', 'danger', CLUSTER_STATUS_UNHEALTHY_TEXT],
+      ['success', 'success', 'status-success', CLUSTER_STATUS_HEALTHY_TEXT],
+      ['error', 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
     ])(
-      'when clusterHealthStatus is %s shows health badge with variant %s and text %s',
-      (status, variant, text) => {
+      'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
+      (status, variant, icon, text) => {
         createWrapper({ clusterHealthStatus: status });
 
         expect(findLoadingIcon().exists()).toBe(false);
-        expect(findHealthBadge().props('variant')).toBe(variant);
+        expect(findHealthBadge().props()).toMatchObject({ variant, icon });
         expect(findHealthBadge().text()).toBe(text);
       },
     );

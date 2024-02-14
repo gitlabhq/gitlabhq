@@ -259,7 +259,7 @@ module QA
           end
 
           def wait_until_code_suggestions_enabled
-            wait_until(max_duration: 30, skip_finished_loading_check_on_refresh: true,
+            wait_until(reload: false, max_duration: 30, skip_finished_loading_check_on_refresh: true,
               message: 'Wait for Code Suggestions extension to be enabled') do
               raise code_suggestions_error if has_code_suggestions_error?
 
@@ -270,7 +270,7 @@ module QA
           def wait_for_code_suggestion
             within_vscode_editor do
               within_file_editor do
-                wait_until(max_duration: 30, message: 'Waiting for Code Suggestion to start loading') do
+                wait_until(reload: false, max_duration: 30, message: 'Waiting for Code Suggestion to start loading') do
                   has_code_suggestions_status?('loading')
                 end
 

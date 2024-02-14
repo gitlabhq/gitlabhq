@@ -181,8 +181,12 @@ export default {
     <div :class="$options.badgeContainerClasses">
       <span class="gl-mr-3">{{ $options.i18n.healthLabel }}</span>
       <gl-loading-icon v-if="!clusterHealthStatus" size="sm" inline />
-      <gl-badge v-else-if="healthBadge" :variant="healthBadge.variant" data-testid="health-badge">
-        {{ healthBadge.text }}
+      <gl-badge
+        v-else-if="healthBadge"
+        :icon="healthBadge.icon"
+        :variant="healthBadge.variant"
+        data-testid="health-badge"
+        >{{ healthBadge.text }}
       </gl-badge>
     </div>
 

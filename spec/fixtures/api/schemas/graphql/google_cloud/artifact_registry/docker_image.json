@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "required": [
+    "name",
+    "uri",
+    "tags",
+    "imageSizeBytes",
+    "uploadTime",
+    "mediaType",
+    "buildTime",
+    "updateTime",
+    "projectId",
+    "location",
+    "repository",
+    "image",
+    "digest",
+    "artifactRegistryImageUrl"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "uri": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "imageSizeBytes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "uploadTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mediaType": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "buildTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "updateTime": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "projectId": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "repository": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "digest": {
+      "type": "string"
+    },
+    "artifactRegistryUrl": {
+      "type": "string"
+    }
+  }
+}

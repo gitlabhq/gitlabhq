@@ -782,6 +782,19 @@ describe('buildClient', () => {
       expect(result).toEqual(data.results);
     });
 
+    it('passes the abort controller to axios', async () => {
+      axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });
+
+      const abortController = new AbortController();
+      await client.fetchMetric('name', 'type', { abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(metricsSearchUrl, {
+        withCredentials: true,
+        params: new URLSearchParams({ mname: 'name', mtype: 'type' }),
+        signal: abortController.signal,
+      });
+    });
+
     describe('query filter params', () => {
       beforeEach(() => {
         axiosMock.onGet(metricsSearchUrl).reply(200, { results: [] });

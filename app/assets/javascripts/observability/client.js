@@ -410,6 +410,7 @@ async function fetchMetric(searchUrl, name, type, options = {}) {
 
     const { data } = await axios.get(searchUrl, {
       params,
+      signal: options.abortController?.signal,
       withCredentials: true,
     });
 

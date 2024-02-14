@@ -163,22 +163,24 @@ export default {
       :work-item-iid="workItem.iid"
       @error="$emit('error', $event)"
     />
-    <template v-if="workItemDueDate">
-      <work-item-due-date-with-edit
+    <template v-if="workItemWeight">
+      <work-item-weight
         v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
         :can-update="canUpdate"
-        :due-date="workItemDueDate.dueDate"
-        :start-date="workItemDueDate.startDate"
+        :weight="workItemWeight.weight"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
-        :work-item="workItem"
         @error="$emit('error', $event)"
       />
-      <work-item-due-date-inline
+      <work-item-weight-inline
         v-else
+        class="gl-mb-5"
         :can-update="canUpdate"
-        :due-date="workItemDueDate.dueDate"
-        :start-date="workItemDueDate.startDate"
+        :weight="workItemWeight.weight"
         :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
       />
@@ -205,37 +207,6 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <template v-if="workItemWeight">
-      <work-item-weight
-        v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
-        :can-update="canUpdate"
-        :weight="workItemWeight.weight"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-      <work-item-weight-inline
-        v-else
-        class="gl-mb-5"
-        :can-update="canUpdate"
-        :weight="workItemWeight.weight"
-        :work-item-id="workItem.id"
-        :work-item-iid="workItem.iid"
-        :work-item-type="workItemType"
-        @error="$emit('error', $event)"
-      />
-    </template>
-    <work-item-progress
-      v-if="workItemProgress"
-      class="gl-mb-5"
-      :can-update="canUpdate"
-      :progress="workItemProgress.progress"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
     <template v-if="workItemIteration">
       <work-item-iteration
         v-if="glFeatures.workItemsMvc2"
@@ -260,6 +231,35 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <template v-if="workItemDueDate">
+      <work-item-due-date-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-type="workItemType"
+        :work-item="workItem"
+        @error="$emit('error', $event)"
+      />
+      <work-item-due-date-inline
+        v-else
+        :can-update="canUpdate"
+        :due-date="workItemDueDate.dueDate"
+        :start-date="workItemDueDate.startDate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
+    <work-item-progress
+      v-if="workItemProgress"
+      class="gl-mb-5"
+      :can-update="canUpdate"
+      :progress="workItemProgress.progress"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      @error="$emit('error', $event)"
+    />
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         v-if="glFeatures.workItemsMvc2"
@@ -285,7 +285,7 @@ export default {
     <template v-if="showWorkItemParent">
       <work-item-parent
         v-if="glFeatures.workItemsMvc2"
-        class="gl-mb-5"
+        class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
@@ -311,7 +311,7 @@ export default {
     />
     <participants
       v-if="workItemParticipants && glFeatures.workItemsMvc"
-      class="gl-mb-5"
+      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :number-of-less-participants="10"
       :participants="workItemParticipants.participants.nodes"
     />

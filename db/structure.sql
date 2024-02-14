@@ -25904,6 +25904,10 @@ CREATE UNIQUE INDEX index_organization_users_on_organization_id_and_user_id ON o
 
 CREATE INDEX index_organization_users_on_user_id ON organization_users USING btree (user_id);
 
+CREATE INDEX index_organizations_on_name_trigram ON organizations USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_organizations_on_path_trigram ON organizations USING gin (path gin_trgm_ops);
+
 CREATE UNIQUE INDEX index_organizations_on_unique_name_per_group ON customer_relations_organizations USING btree (group_id, lower(name), id);
 
 CREATE INDEX index_p_catalog_resource_sync_events_on_id_where_pending ON ONLY p_catalog_resource_sync_events USING btree (id) WHERE (status = 1);
