@@ -1518,7 +1518,7 @@ Input type: `ApproveDeploymentInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationapprovedeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationapprovedeploymentdeploymentapproval"></a>`deploymentApproval` | [`DeploymentApproval!`](#deploymentapproval) | DeploymentApproval after mutation. |
+| <a id="mutationapprovedeploymentdeploymentapproval"></a>`deploymentApproval` | [`DeploymentApproval`](#deploymentapproval) | DeploymentApproval after mutation. |
 | <a id="mutationapprovedeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.artifactDestroy`

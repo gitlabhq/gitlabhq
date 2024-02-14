@@ -16,13 +16,7 @@ def load_cron_jobs!
 end
 
 # Custom Queues configuration
-#
-# We omit :command_builder since Sidekiq::RedisConnection performs a deep clone using
-# Marshal.load(Marshal.dump(options.slice(*keys))) on the Redis config and Gitlab::Redis::CommandBuilder
-# can't be referred to.
-#
-# We do not need the custom command builder since Sidekiq will handle the typing of Redis arguments.
-queues_config_hash = Gitlab::Redis::Queues.params.except(:command_builder)
+queues_config_hash = Gitlab::Redis::Queues.redis_client_params
 
 enable_json_logs = Gitlab.config.sidekiq.log_format != 'text'
 

@@ -21,6 +21,12 @@ end
 # :nocov:
 # rubocop:enable Gitlab/NoCodeCoverageComment
 
+Redis::Client.prepend(Gitlab::Instrumentation::RedisInterceptor)
+Redis::Cluster::NodeLoader.prepend(Gitlab::Patch::NodeLoader)
+Redis::Cluster::SlotLoader.prepend(Gitlab::Patch::SlotLoader)
+Redis::Cluster::CommandLoader.prepend(Gitlab::Patch::CommandLoader)
+Redis::Cluster.prepend(Gitlab::Patch::RedisCluster)
+
 # this only instruments `RedisClient` used in `Sidekiq.redis`
 RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
 RedisClient.prepend(Gitlab::Patch::RedisClient)

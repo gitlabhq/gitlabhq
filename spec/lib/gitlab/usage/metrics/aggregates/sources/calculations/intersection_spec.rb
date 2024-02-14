@@ -6,10 +6,11 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::Calculations::Inters
   let_it_be(:recorded_at) { Time.current.to_i }
   let_it_be(:start_date) { 4.weeks.ago.to_date }
   let_it_be(:end_date) { Date.current }
+  let_it_be(:property_name) { 'property1' }
 
   shared_examples 'aggregated_metrics_data with source' do
     context 'with AND operator' do
-      let(:params) { { start_date: start_date, end_date: end_date, recorded_at: recorded_at } }
+      let(:params) { { start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name } }
 
       context 'with even number of metrics' do
         it 'calculates intersection correctly', :aggregate_failures do
@@ -22,7 +23,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::Calculations::Inters
           expect(source).to receive(:calculate_metrics_union).with(params.merge(metric_names: %w[event3 event5])).and_return(8)
           # Exclusion inclusion principle formula to calculate intersection of 2 sets
           # |A & B| = (|A| + |B|) - |A + B| => (4 + 6) - 8 => 2
-          expect(source.calculate_metrics_intersections(metric_names: %w[event3 event5], start_date: start_date, end_date: end_date, recorded_at: recorded_at)).to eq(2)
+          expect(source.calculate_metrics_intersections(metric_names: %w[event3 event5], start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)).to eq(2)
         end
       end
 
@@ -47,7 +48,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::Calculations::Inters
           # Exclusion inclusion principle formula to calculate intersection of 3 sets
           # |A & B & C| = (|A & B| + |A & C| + |B & C|) - (|A| + |B| + |C|)  + |A + B + C|
           # (1 + 1 + 1) - (2 + 3 + 5) + 8 => 1
-          expect(source.calculate_metrics_intersections(metric_names: %w[event1 event2 event3], start_date: start_date, end_date: end_date, recorded_at: recorded_at)).to eq(1)
+          expect(source.calculate_metrics_intersections(metric_names: %w[event1 event2 event3], start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)).to eq(1)
         end
       end
     end
@@ -63,7 +64,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::Calculations::Inters
     it 'caches intermediate operations', :aggregate_failures do
       events = %w[event1 event2 event3 event5]
 
-      params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at }
+      params = { start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name }
 
       events.each do |event|
         expect(source).to receive(:calculate_metrics_union)
@@ -81,7 +82,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::Calculations::Inters
         end
       end
 
-      expect(source.calculate_metrics_intersections(metric_names: events, start_date: start_date, end_date: end_date, recorded_at: recorded_at)).to eq(0)
+      expect(source.calculate_metrics_intersections(metric_names: events, start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)).to eq(0)
     end
 
     it_behaves_like 'aggregated_metrics_data with source'

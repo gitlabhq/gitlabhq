@@ -84,7 +84,7 @@ class ActiveSession
       )
 
       Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-        redis.pipelined do |pipeline|
+        Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
           pipeline.setex(
             key_name(user.id, session_private_id),
             expiry,

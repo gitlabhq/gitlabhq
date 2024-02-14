@@ -7,9 +7,9 @@ RSpec.describe Gitlab::Usage::TimeSeriesStorable, feature_category: :service_pin
     Class.new do
       include Gitlab::Usage::TimeSeriesStorable
 
-      def redis_key(event, date, skip_file_list_validation)
+      def redis_key(event, date, used_in_aggregate_metric)
         key = apply_time_aggregation(event, date)
-        "#{key}:#{skip_file_list_validation}"
+        "#{key}:#{used_in_aggregate_metric}"
       end
     end
   end
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Usage::TimeSeriesStorable, feature_category: :service_pin
 
   describe '#keys_for_aggregation' do
     let(:result) { counter_instance.keys_for_aggregation(**params) }
-    let(:params) { { events: events, start_date: start_date, end_date: end_date, skip_file_list_validation: true } }
+    let(:params) { { events: events, start_date: start_date, end_date: end_date, used_in_aggregate_metric: true } }
     let(:events) { %w[event1 event2] }
     let(:start_date) { Date.new(2023, 4, 1) }
     let(:end_date) { Date.new(2023, 4, 15) }

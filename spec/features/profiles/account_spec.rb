@@ -128,7 +128,7 @@ def update_username(new_username)
 
   fill_in 'username-change-input', with: new_username
 
-  page.find('[data-testid="username-change-confirmation-modal"]').click
+  find_by_testid('username-change-confirmation-modal').click
 
   page.within('.modal') do
     find('.js-modal-action-primary').click

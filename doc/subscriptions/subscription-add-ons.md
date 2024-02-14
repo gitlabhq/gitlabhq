@@ -50,3 +50,9 @@ Prerequisites:
      synchronize subscription (**{retry}**).
 <!-- vale gitlab.Substitutions = YES -->
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
+
+### Assign seats in bulk
+
+To assign seats in bulk, you can use [this GraphQL API endpoint](../api/graphql/reference/index.md#mutationuseraddonassignmentcreate).
+
+This endpoint works for both self-managed and SaaS.

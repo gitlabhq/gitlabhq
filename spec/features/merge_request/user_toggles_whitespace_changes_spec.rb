@@ -21,13 +21,13 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_c
 
   describe 'clicking "Hide whitespace changes" button' do
     it 'toggles the "Hide whitespace changes" button', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333793' do
-      find('[data-testid="show-whitespace"]').click
+      find_by_testid('show-whitespace').click
 
       visit diffs_project_merge_request_path(project, merge_request)
 
       find('.js-show-diff-settings').click
 
-      expect(find('[data-testid="show-whitespace"]')).not_to be_checked
+      expect(find_by_testid('show-whitespace')).not_to be_checked
     end
   end
 end

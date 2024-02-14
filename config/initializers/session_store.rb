@@ -29,12 +29,12 @@ cookie_key = if Rails.env.development?
                "_gitlab_session"
              end
 
-::Redis::Store::Factory.prepend(Gitlab::Patch::RedisStoreFactory)
+store = Gitlab::Redis::Sessions.store(namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE)
 
 Rails.application.configure do
   config.session_store(
     :redis_store, # Using the cookie_store would enable session replay attacks.
-    redis_server: Gitlab::Redis::Sessions.params.merge(namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE),
+    redis_store: store,
     key: cookie_key,
     secure: Gitlab.config.gitlab.https,
     httponly: true,

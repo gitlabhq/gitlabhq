@@ -20,7 +20,7 @@
   &:has(.read-more-content--has-scrim:not(.is-expanded)) {
     position: relative;
     max-height: var(--read-more-height, #{$fallback - $height});
-    overflow: hidden;
+    overflow: clip;
   }
 
   // only appears when size is > $height.

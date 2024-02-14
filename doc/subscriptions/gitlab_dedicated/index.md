@@ -71,6 +71,7 @@ GitLab Dedicated offers the following [compliance certifications](https://about.
 - ISO/IEC 27001:2013
 - ISO/IEC 27017:2015
 - ISO/IEC 27018:2019
+- TISAX Assessment Level 3
 
 #### Isolation
 
@@ -197,6 +198,7 @@ The following is a list of AWS regions verified for use in GitLab Dedicated. Reg
 
 - Asia Pacific (Singapore)
 - Asia Pacific (Sydney)
+- Asia Pacific (Tokyo)
 - Europe (Frankfurt)
 - Europe (Ireland)
 - Europe (London)

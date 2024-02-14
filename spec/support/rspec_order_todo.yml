@@ -6292,6 +6292,7 @@
 - './spec/lib/gitlab/instrumentation/rate_limiting_gates_spec.rb'
 - './spec/lib/gitlab/instrumentation/redis_base_spec.rb'
 - './spec/lib/gitlab/instrumentation/redis_cluster_validator_spec.rb'
+- './spec/lib/gitlab/instrumentation/redis_interceptor_spec.rb'
 - './spec/lib/gitlab/instrumentation/redis_spec.rb'
 - './spec/lib/gitlab/internal_post_receive/response_spec.rb'
 - './spec/lib/gitlab/issuable/clone/attributes_rewriter_spec.rb'

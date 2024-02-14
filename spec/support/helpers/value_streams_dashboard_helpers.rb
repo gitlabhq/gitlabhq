@@ -5,9 +5,9 @@ module ValueStreamsDashboardHelpers
     visit group_analytics_dashboards_path(group)
   end
 
-  def visit_group_value_streams_dashboard(group)
+  def visit_group_value_streams_dashboard(group, vsd_title = 'Value Streams Dashboard')
     visit group_analytics_dashboards_path(group)
-    click_link "Value Streams Dashboard"
+    click_link(vsd_title)
 
     wait_for_requests
   end
@@ -34,5 +34,9 @@ module ValueStreamsDashboardHelpers
 
   def dashboard_by_gitlab_testid
     "[data-testid='dashboard-by-gitlab']"
+  end
+
+  def dashboard_list_item_testid
+    "[data-testid='dashboard-list-item']"
   end
 end

@@ -57,7 +57,10 @@
                     ]
                   },
                   "attribute": {
-                    "type": "string"
+                    "enum": [
+                      "user_id",
+                      "project_id"
+                    ]
                   }
                 },
                 "required": [

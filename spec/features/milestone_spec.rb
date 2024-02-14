@@ -25,7 +25,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       click_button 'Create milestone'
 
-      expect(find('[data-testid="no-issues-alert"]')).to have_content('Assign some issues to this milestone.')
+      expect(find_by_testid('no-issues-alert')).to have_content('Assign some issues to this milestone.')
       expect(page).to have_content('Nov 16, 2016–Dec 16, 2016')
     end
 
@@ -43,7 +43,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
       create(:issue, title: "Bugfix1", project: project, milestone: milestone, state: "closed")
       visit project_milestone_path(project, milestone)
 
-      expect(find('[data-testid="all-issues-closed-alert"]')).to have_content('All issues for this milestone are closed. You may close this milestone now.')
+      expect(find_by_testid('all-issues-closed-alert')).to have_content('All issues for this milestone are closed. You may close this milestone now.')
     end
   end
 
@@ -82,7 +82,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       wait_for_requests
 
-      page.within('[data-testid="noTrackingPane"]') do
+      within_testid('noTrackingPane') do
         expect(page).to have_content 'No estimate or time spent'
       end
     end
@@ -100,7 +100,7 @@ RSpec.describe 'Milestone', feature_category: :team_planning do
 
       wait_for_requests
 
-      page.within('[data-testid="spentOnlyPane"]') do
+      within_testid('spentOnlyPane') do
         expect(page).to have_content 'Spent: 3h'
       end
     end

@@ -19,10 +19,6 @@ RSpec.shared_examples Gitlab::BitbucketServerImport::ObjectImporter do
     let(:project_id) { project_id }
     let(:waiter_key) { 'key' }
 
-    before do
-      allow(Gitlab::JobWaiter).to receive(:notify).with(waiter_key, anything, ttl: Gitlab::Import::JOB_WAITER_TTL)
-    end
-
     shared_examples 'notifies the waiter' do
       specify do
         allow_next(worker.importer_class).to receive(:execute)

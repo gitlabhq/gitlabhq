@@ -23,9 +23,9 @@ RSpec.describe Gitlab::ExternalAuthorization::Cache, :clean_gitlab_redis_cache d
   describe '#load' do
     it 'reads stored info from redis' do
       freeze_time do
-        set_in_redis(:access, false.to_s)
+        set_in_redis(:access, false)
         set_in_redis(:reason, 'Access denied for now')
-        set_in_redis(:refreshed_at, Time.now.to_s)
+        set_in_redis(:refreshed_at, Time.now)
 
         access, reason, refreshed_at = cache.load
 

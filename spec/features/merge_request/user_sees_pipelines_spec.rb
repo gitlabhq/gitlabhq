@@ -48,7 +48,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
           wait_for_requests
 
-          page.within(find('[data-testid="pipeline-table-row"]', match: :first)) do
+          within_testid('pipeline-table-row', match: :first) do
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Passed')
             expect(page).to have_content(pipeline.id)
             expect(page).to have_css('[data-testid="pipeline-mini-graph"]')
@@ -69,7 +69,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
             wait_for_requests
 
-            expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run pipeline')
+            expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
           end
         end
 
@@ -85,7 +85,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
             wait_for_requests
 
-            expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run pipeline')
+            expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
           end
         end
       end
@@ -107,7 +107,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
           end
 
           expect(page).to have_content('There are currently no pipelines.')
-          expect(page.find('[data-testid="run_pipeline_button"]')).to have_text('Run pipeline')
+          expect(find_by_testid('run_pipeline_button')).to have_text('Run pipeline')
         end
       end
     end
@@ -213,7 +213,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
 
           page.within(first('[data-testid="pipeline-table-row"]')) do
             page.within('.pipeline-tags') do
-              expect(page.find('[data-testid="pipeline-url-link"]')[:href]).to include(expected_project.full_path)
+              expect(find_by_testid('pipeline-url-link')[:href]).to include(expected_project.full_path)
               expect(page).to have_content('merge request')
             end
             page.within('.pipeline-triggerer') do

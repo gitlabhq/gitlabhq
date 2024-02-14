@@ -8,9 +8,9 @@ RSpec.describe Gitlab::Redis::Sessions do
   describe '#store' do
     subject(:store) { described_class.store(namespace: described_class::SESSION_NAMESPACE) }
 
-    # Check that Gitlab::Redis::Sessions is configured as RedisStore or ClusterStore
+    # Check that Gitlab::Redis::Sessions is configured as RedisStore.
     it 'instantiates an instance of Redis::Store' do
-      expect([::Redis::Store, ::Gitlab::Redis::ClusterStore].include?(store.class)).to eq(true)
+      expect(store).to be_instance_of(::Redis::Store)
     end
   end
 end

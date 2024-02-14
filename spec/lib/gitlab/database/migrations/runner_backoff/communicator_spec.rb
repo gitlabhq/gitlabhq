@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::Migrations::RunnerBackoff::Communicator, :clean
 
     it 'reads from Redis' do
       recorder = RedisCommands::Recorder.new { subject }
-      expect(recorder.log).to include(['exists', 'gitlab:exclusive_lease:gitlab/database/migration/runner/backoff'])
+      expect(recorder.log).to include([:exists, 'gitlab:exclusive_lease:gitlab/database/migration/runner/backoff'])
     end
 
     context 'with runner_migrations_backoff disabled' do

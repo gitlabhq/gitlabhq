@@ -16,8 +16,8 @@ RSpec.describe 'Profile > Comment templates > User creates comment template', :j
 
   it 'shows the user a list of their saved replies' do
     click_button 'Add new'
-    find('[data-testid="comment-template-name-input"]').set('test')
-    find('[data-testid="comment-template-content-input"]').set('Test content')
+    find_by_testid('comment-template-name-input').set('test')
+    find_by_testid('comment-template-content-input').set('Test content')
 
     click_button 'Save'
 

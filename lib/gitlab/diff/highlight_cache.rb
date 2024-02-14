@@ -197,9 +197,7 @@ module Gitlab
         record_hit_ratio(results)
 
         results.map! do |result|
-          unless result.nil?
-            Gitlab::Json.parse(gzip_decompress(result.force_encoding(Encoding::UTF_8)), symbolize_names: true)
-          end
+          Gitlab::Json.parse(gzip_decompress(result), symbolize_names: true) unless result.nil?
         end
 
         file_paths.zip(results).to_h

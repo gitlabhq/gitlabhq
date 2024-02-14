@@ -8,15 +8,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
-**Status:** Beta
+**Offering:** Self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `git_guardian_integration`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435706) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `git_guardian_integration`. Enabled by default. Disabled on GitLab.com.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `git_guardian_integration`.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `git_guardian_integration`.
 On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+
+WARNING:
+Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -24,8 +25,6 @@ It scans Git repositories, alerts on policy violations, and helps organizations
 fix security issues before hackers can exploit them.
 
 You can configure GitLab to reject commits based on GitGuardian policies.
-
-This feature is in [Beta](../../../policy/experiment-beta-support.md#beta)  and subject to change without notice.
 
 To set up the GitGuardian integration:
 

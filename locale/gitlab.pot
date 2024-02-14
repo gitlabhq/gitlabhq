@@ -17307,6 +17307,12 @@ msgstr ""
 msgid "Deployments|No deployment history"
 msgstr ""
 
+msgid "Deployment|Add approval comment"
+msgstr ""
+
+msgid "Deployment|Approve deployment"
+msgstr ""
+
 msgid "Deployment|Branch"
 msgstr ""
 
@@ -17358,13 +17364,24 @@ msgstr ""
 msgid "Deployment|Open URL"
 msgstr ""
 
+msgid "Deployment|Reject"
+msgstr ""
+
 msgid "Deployment|Related Tags"
 msgstr ""
+
+msgid "Deployment|Requires %d approval"
+msgid_plural "Deployment|Requires %d approvals"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Deployment|Running"
 msgstr ""
 
 msgid "Deployment|Skipped"
+msgstr ""
+
+msgid "Deployment|Something went wrong approving or rejecting the deployment. Please try again later."
 msgstr ""
 
 msgid "Deployment|Started %{timeago} by %{username}"
@@ -35926,9 +35943,6 @@ msgstr ""
 msgid "Pipeline triggers"
 msgstr ""
 
-msgid "Pipeline: %{status}"
-msgstr ""
-
 msgid "PipelineCharts|An error has occurred when retrieving the analytics data"
 msgstr ""
 
@@ -42340,6 +42354,9 @@ msgstr ""
 msgid "Runners|A periodic background task deletes runners that haven't contacted GitLab in more than %{elapsedTime}. Only runners registered in this group are deleted. Runners in subgroups and projects are not. %{linkStart}Can I view how many runners were deleted?%{linkEnd}"
 msgstr ""
 
+msgid "Runners|A runner configuration is where you configure runners based on your requirements. Each runner in this table represents a %{linkStart}single runner entry%{linkEnd} in the %{codeStart}config.toml%{codeEnd}. Multiple runners can be linked to the same configuration. When there are multiple runners in a configuration, the one that contacted GitLab most recently displays here."
+msgstr ""
+
 msgid "Runners|Active"
 msgstr ""
 
@@ -42887,6 +42904,9 @@ msgid "Runners|Runner authentication token expiration"
 msgstr ""
 
 msgid "Runners|Runner authentication tokens will expire based on a set interval. They will automatically rotate once expired."
+msgstr ""
+
+msgid "Runners|Runner configuration"
 msgstr ""
 
 msgid "Runners|Runner created."

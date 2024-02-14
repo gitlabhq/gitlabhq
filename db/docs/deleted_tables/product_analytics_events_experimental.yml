@@ -1,0 +1,11 @@
+---
+table_name: product_analytics_events_experimental
+classes: []
+feature_categories:
+  - product_analytics_data_management
+description: Table for original PoC for product analytics
+introduced_by_url:
+milestone: '16.10'
+gitlab_schema: gitlab_main
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144626
+removed_in_milestone: '16.10'

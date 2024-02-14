@@ -13,6 +13,8 @@ export default {
     GlSprintf,
     DeploymentHeader,
     DeploymentAside,
+    DeploymentApprovals: () =>
+      import('ee_component/deployments/components/deployment_approvals.vue'),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName'],
   apollo: {
@@ -50,6 +52,9 @@ export default {
     hasError() {
       return Boolean(this.errorMessage);
     },
+    hasApprovalSummary() {
+      return Boolean(this.deployment.approvalSummary);
+    },
   },
   i18n: {
     header: s__('Deployment|Deployment #%{iid}'),
@@ -74,6 +79,12 @@ export default {
           :deployment="deployment"
           :environment="environment"
           :loading="$apollo.queries.deployment.loading"
+        />
+        <deployment-approvals
+          v-if="hasApprovalSummary"
+          :approval-summary="deployment.approvalSummary"
+          :deployment="deployment"
+          class="gl-mt-8 gl-w-90p"
         />
       </div>
       <deployment-aside

@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'renders usage overview metrics' do
+RSpec.shared_examples 'renders usage overview metrics' do |default_dashboard = true|
   let(:usage_overview) { find_by_testid('panel-usage-overview') }
 
   it 'renders the metrics panel' do
     expect(usage_overview).to be_visible
-    expect(usage_overview).to have_content format(_("Usage overview for %{name} group"), name: group.name)
+
+    if default_dashboard
+      expect(usage_overview).to have_content format(_("Usage overview for %{name} group"), name: group.name)
+    end
   end
 
   it 'renders each of the available metrics' do
@@ -14,7 +17,6 @@ RSpec.shared_examples 'renders usage overview metrics' do
     within usage_overview do
       metric_titles = all('[data-testid="title-text"]').collect(&:text)
 
-      expect(metric_titles.length).to eq usage_metrics.length
       expect(metric_titles).to match_array usage_metrics
     end
   end
@@ -99,15 +101,12 @@ RSpec.shared_examples 'does not render contributor count' do
 end
 
 RSpec.shared_examples 'has value streams dashboard link' do
-  let(:dashboard_list_item_testid) { "[data-testid='dashboard-list-item']" }
-
   it 'renders the value streams dashboard link' do
     dashboard_items = page.all(dashboard_list_item_testid)
 
+    first_dashboard = dashboard_items[0]
+
     expect(dashboard_items.length).to eq(1)
-
-    first_dashboard = page.all(dashboard_list_item_testid).first
-
     expect(first_dashboard).to have_content _('Value Streams Dashboard')
     expect(first_dashboard).to have_selector dashboard_by_gitlab_testid
   end

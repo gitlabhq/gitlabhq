@@ -30,7 +30,7 @@ RSpec.describe RedisMigrationWorker, :clean_gitlab_redis_shared_state, feature_c
         end
 
         def redis
-          ::Gitlab::Redis::Cache.redis
+          ::Redis.new(::Gitlab::Redis::Cache.params)
         end
       end
     end

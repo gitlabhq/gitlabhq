@@ -7,9 +7,14 @@ module Gitlab
         module Sources
           class RedisHll
             extend Calculations::Intersection
-            def self.calculate_metrics_union(metric_names:, start_date:, end_date:, recorded_at: nil)
-              union = Gitlab::UsageDataCounters::HLLRedisCounter
-                .calculate_events_union(event_names: metric_names, start_date: start_date, end_date: end_date)
+
+            def self.calculate_metrics_union(metric_names:, start_date:, end_date:, property_name:, recorded_at: nil)
+              union = Gitlab::UsageDataCounters::HLLRedisCounter.calculate_events_union(
+                event_names: metric_names,
+                property_name: property_name,
+                start_date: start_date,
+                end_date: end_date
+              )
 
               return union if union >= 0
 

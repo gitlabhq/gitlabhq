@@ -17,7 +17,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       visit oauth_application_path(application)
 
       expect(page).to have_content("Application: #{application.name}")
-      expect(find('[data-testid="breadcrumb-current-link"]')).to have_link(application.name)
+      expect(find_by_testid('breadcrumb-current-link')).to have_link(application.name)
     end
 
     it 'deletes an application' do

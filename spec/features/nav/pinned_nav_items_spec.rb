@@ -35,7 +35,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
 
     it 'adds sensible defaults' do
-      within '[data-testid="pinned-nav-items"]' do
+      within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Issues'
       end
     end
@@ -53,7 +53,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
         add_pin('Members')
       end
 
-      within '[data-testid="pinned-nav-items"]' do
+      within_testid 'pinned-nav-items' do
         expect(page).to have_link 'Issues'
         expect(page).to have_link 'Activity'
         expect(page).to have_link 'Members'
@@ -95,7 +95,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       it 'can be unpinned from within the pinned section' do
-        within '[data-testid="pinned-nav-items"]' do
+        within_testid 'pinned-nav-items' do
           remove_pin('Terraform states')
           expect(page).not_to have_content 'Terraform states'
         end
@@ -108,13 +108,13 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
           remove_pin('Terraform modules')
         end
 
-        within '[data-testid="pinned-nav-items"]' do
+        within_testid 'pinned-nav-items' do
           expect(page).not_to have_content 'Terraform modules'
         end
       end
 
       it 'can be reordered' do
-        within '[data-testid="pinned-nav-items"]' do
+        within_testid 'pinned-nav-items' do
           pinned_items = page.find_all('a').map(&:text)
           item2 = page.find('a', text: 'Terraform states')
           item3 = page.find('a', text: 'Terraform modules')
@@ -146,7 +146,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
       end
 
       visit project_path(project_without_repo)
-      within '[data-testid="pinned-nav-items"]' do
+      within_testid 'pinned-nav-items' do
         activity_item = page.find('a', text: 'Activity')
         members_item = page.find('a', text: 'Members')
         drag_item(members_item, to: activity_item)
@@ -156,7 +156,7 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     end
 
     it 'keeps pins of non-available features' do
-      within '[data-testid="pinned-nav-items"]' do
+      within_testid 'pinned-nav-items' do
         pinned_items = page.find_all('a')
           .map(&:text)
           .map { |text| text.split("\n").first } # to drop the counter badge text from "Issues\n0"
@@ -173,13 +173,13 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
 
     context 'when a pinned item is clicked in the Pinned section' do
       before do
-        within '[data-testid="pinned-nav-items"]' do
+        within_testid 'pinned-nav-items' do
           click_on 'Issues'
         end
       end
 
       it 'shows the Pinned section as expanded' do
-        within '[data-testid="pinned-nav-items"]' do
+        within_testid 'pinned-nav-items' do
           expect(page).to have_link 'Issues'
         end
       end
@@ -218,31 +218,37 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
   private
 
   def add_pin(nav_item_title)
-    nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    nav_item = find_by_testid('nav-item', text: nav_item_title)
     scroll_to(nav_item)
     nav_item.hover
-    pin_button = nav_item.find("[data-testid=\"nav-item-pin\"]")
-    pin_button.click
-    wait_for_requests
+    within(nav_item) do
+      pin_button = find_by_testid('nav-item-pin')
+      pin_button.click
+      wait_for_requests
+    end
   end
 
   def remove_pin(nav_item_title)
-    nav_item = find("[data-testid=\"nav-item\"]", text: nav_item_title)
+    nav_item = find_by_testid('nav-item', text: nav_item_title)
     scroll_to(nav_item)
     nav_item.hover
-    unpin_button = nav_item.find("[data-testid=\"nav-item-unpin\"]")
-    unpin_button.click
-    wait_for_requests
+    within(nav_item) do
+      unpin_button = find_by_testid('nav-item-unpin')
+      unpin_button.click
+      wait_for_requests
+    end
   end
 
   def drag_item(item, to:)
     item.hover
-    drag_handle = item.find('[data-testid="grip-icon"]')
+    within(item) do
+      drag_handle = find_by_testid('grip-icon')
 
-    # Reduce delay to make it less likely for draggables to
-    # change position during drag operation, which reduces
-    # flakiness.
-    drag_handle.drag_to(to, delay: 0.01)
-    wait_for_requests
+      # Reduce delay to make it less likely for draggables to
+      # change position during drag operation, which reduces
+      # flakiness.
+      drag_handle.drag_to(to, delay: 0.01)
+      wait_for_requests
+    end
   end
 end

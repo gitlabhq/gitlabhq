@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
   let_it_be(:end_date) { Date.current }
   let_it_be(:recorded_at) { Time.current }
   let_it_be(:time_period) { { created_at: (start_date..end_date) } }
+  let_it_be(:property_name) { 'property1' }
 
   let(:metric_1) { 'metric_1' }
   let(:metric_2) { 'metric_2' }
@@ -35,7 +36,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
 
     describe '.calculate_events_union' do
       subject(:calculate_metrics_union) do
-        described_class.calculate_metrics_union(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at)
+        described_class.calculate_metrics_union(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)
       end
 
       it 'returns the number of unique events in the union of all metrics' do
@@ -61,7 +62,7 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
 
     describe '.calculate_metrics_intersections' do
       subject(:calculate_metrics_intersections) do
-        described_class.calculate_metrics_intersections(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at)
+        described_class.calculate_metrics_intersections(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)
       end
 
       it 'returns the number of common events in the intersection of all metrics' do

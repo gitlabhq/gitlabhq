@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { mount } from '@vue/test-utils';
-import { GlAlert } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import { GlAlert, GlSprintf } from '@gitlab/ui';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
@@ -36,12 +36,15 @@ describe('~/deployments/components/show_deployment.vue', () => {
       [deploymentQuery, deploymentQueryResponse],
       [environmentQuery, environmentQueryResponse],
     ]);
-    wrapper = mount(ShowDeployment, {
+    wrapper = shallowMount(ShowDeployment, {
       apolloProvider: mockApollo,
       provide: {
         projectPath: PROJECT_PATH,
         environmentName: ENVIRONMENT_NAME,
         deploymentIid: DEPLOYMENT_IID,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
     return waitForPromises();

@@ -1,5 +1,7 @@
 <!-- Use this template for documentation updates in the /doc/solutions directory. -->
 
+This MR Template ensures that Solutions Docs published here: https://docs.gitlab.com/ee/solutions/, follow the optimized review and approval workflow for that area rather than the normal tech writing workflow by applying appropriate labels and reviewers.
+
 ## What does this MR do?
 
 <!-- Briefly describe what this MR is about. -->
@@ -10,11 +12,10 @@
 
 ## Review
 
+- [ ] I have read the [Solutions Docs Contributors Guide in the GitLab Handbook](https://handbook.gitlab.com/handbook/customer-success/solutions-architects/sa-documentation/) and believe that this contribution complies with the scope and requirements outlined there.
 - [ ] Assign yourself as the **Assignee** of this MR.
-- [ ] I have read the [Solutions Docs Contributors Guide in the GitLab Handbook](https://handbook.gitlab.com/handbook/customer-success/solutions-architects/sa-documentation/).
-- [ ] Assign another SA as the **Reviewer**.
 - [ ] Assign the latest release for the **Milestone**. If you're not sure, [view the list of releases](https://about.gitlab.com/releases/).
-- [ ] Mention the reviewer in a comment, so they're aware that the MR is ready.
+- [ ] Mention the reviewers in a comment, so they're aware that the MR is ready.
 
 ## Merging
 
@@ -30,3 +31,4 @@ or ask for assistance in the #docs Slack channel.
 
 /label ~documentation ~Solutions ~"type::maintenance" ~"maintenance::refactor" 
 /assign me
+/request_review @DarwinJS @jmoverley

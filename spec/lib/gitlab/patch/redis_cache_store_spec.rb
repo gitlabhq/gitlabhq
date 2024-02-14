@@ -13,8 +13,6 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
     cache.write('{user1}:x', 1)
     cache.write('{user1}:y', 2)
     cache.write('{user1}:z', 3)
-
-    cache.instance_variable_set(:@pipeline_batch_size, nil)
   end
 
   describe '#read_multi_mget' do
@@ -36,7 +34,7 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
       end
 
       context 'when reading large amount of keys' do
-        let(:input_size) { 2100 }
+        let(:input_size) { 2000 }
         let(:chunk_size) { 1000 }
 
         shared_examples 'read large amount of keys' do
@@ -47,11 +45,10 @@ RSpec.describe Gitlab::Patch::RedisCacheStore, :use_clean_rails_redis_caching, f
                 ::Gitlab::Redis::ClusterUtil.cluster?(redis.default_store)
 
               if normal_cluster || multistore_cluster
-                times = (input_size.to_f / chunk_size).ceil
-                expect(redis).to receive(:pipelined).exactly(times).times.and_call_original
-
-                expect_next_instances_of(::Redis::PipelinedConnection, times) do |p|
-                  expect(p).to receive(:get).at_most(chunk_size).times
+                expect_next_instances_of(Gitlab::Redis::CrossSlot::Pipeline, 2) do |pipeline|
+                  obj = instance_double(::Redis)
+                  expect(pipeline).to receive(:pipelined).and_yield(obj)
+                  expect(obj).to receive(:get).exactly(chunk_size).times
                 end
               else
                 expect(redis).to receive(:mget).and_call_original
