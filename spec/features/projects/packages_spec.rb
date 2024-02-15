@@ -49,8 +49,8 @@ RSpec.describe 'Packages', feature_category: :package_registry do
         let_it_be(:package) { create(:package, project: project) }
 
         it 'allows you to delete a package' do
-          find('[data-testid="delete-dropdown"]').click
-          find('[data-testid="action-delete"]').click
+          find_by_testid('delete-dropdown').click
+          find_by_testid('action-delete').click
           click_button('Permanently delete')
 
           expect(page).to have_content 'Package deleted successfully'

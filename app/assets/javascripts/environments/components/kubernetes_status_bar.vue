@@ -2,6 +2,8 @@
 import { GlLoadingIcon, GlBadge, GlPopover, GlSprintf, GlLink } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import {
+  CLUSTER_HEALTH_SUCCESS,
+  CLUSTER_HEALTH_ERROR,
   HEALTH_BADGES,
   SYNC_STATUS_BADGES,
   STATUS_TRUE,
@@ -28,7 +30,7 @@ export default {
       type: String,
       default: '',
       validator(val) {
-        return ['error', 'success', ''].includes(val);
+        return [CLUSTER_HEALTH_ERROR, CLUSTER_HEALTH_SUCCESS, ''].includes(val);
       },
     },
     configuration: {

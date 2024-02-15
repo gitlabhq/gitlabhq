@@ -19364,6 +19364,9 @@ msgstr ""
 msgid "Environments|Kubernetes namespace (optional)"
 msgstr ""
 
+msgid "Environments|Kubernetes overview"
+msgstr ""
+
 msgid "Environments|Kustomizations"
 msgstr ""
 
@@ -19499,10 +19502,16 @@ msgstr ""
 msgid "Environment|Forbidden to access the cluster agent from this environment."
 msgstr ""
 
+msgid "Environment|Get started"
+msgstr ""
+
 msgid "Environment|Healthy"
 msgstr ""
 
 msgid "Environment|Kubernetes overview"
+msgstr ""
+
+msgid "Environment|No Kubernetes clusters configured"
 msgstr ""
 
 msgid "Environment|Pods"
@@ -19524,6 +19533,9 @@ msgid "Environment|Stalled"
 msgstr ""
 
 msgid "Environment|Sync status"
+msgstr ""
+
+msgid "Environment|There are no Kubernetes cluster connections configured for this environment. Connect a cluster to add the status of your workloads, resources, and the Flux reconciliation state to the dashboard. %{linkStart}Learn more about Kubernetes integration.%{linkEnd}"
 msgstr ""
 
 msgid "Environment|There was an error connecting to the cluster agent."

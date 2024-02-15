@@ -9,7 +9,7 @@ status: accepted
 
 This document describes design goals and architecture of Routing Service
 used by Cells. To better understand where the Routing Service fits
-into architecture take a look at [Deployment Architecture](deployment-architecture.md).
+into architecture take a look at [Infrastructure Architecture](infrastructure/index.md#architecture).
 
 ## Goals
 

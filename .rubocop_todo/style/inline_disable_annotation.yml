@@ -2833,7 +2833,6 @@ Style/InlineDisableAnnotation:
     - 'spec/lib/banzai/filter/image_link_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'
     - 'spec/lib/container_registry/gitlab_api_client_spec.rb'
-    - 'spec/lib/generators/batched_background_migration/batched_background_migration_generator_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/base_spec.rb'
     - 'spec/lib/gitlab/audit/target_spec.rb'
     - 'spec/lib/gitlab/audit/type/definition_spec.rb'

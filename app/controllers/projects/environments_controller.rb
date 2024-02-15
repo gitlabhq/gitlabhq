@@ -10,7 +10,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:index] do
+  before_action only: [:index, :show] do
     push_frontend_feature_flag(:k8s_watch_api, project)
   end
 
@@ -26,7 +26,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action :set_kas_cookie, only: [:index, :folder, :edit, :new], if: -> { current_user && request.format.html? }
+  before_action :set_kas_cookie, only: [:index, :folder, :edit, :new, :show], if: -> { current_user && request.format.html? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,

@@ -14,6 +14,8 @@ module Ci
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
+    ROUTING_FEATURE_FLAG = :ci_partitioning_use_ci_job_artifacts_routing_table
+
     self.primary_key = :id
     self.sequence_name = :ci_job_artifacts_id_seq
 
@@ -157,7 +159,10 @@ module Ci
     validate :validate_file_format!, unless: :trace?, on: :create
 
     update_project_statistics project_statistics_name: :build_artifacts_size
-    partitionable scope: :job
+    partitionable scope: :job, through: {
+      table: :p_ci_job_artifacts,
+      flag: ROUTING_FEATURE_FLAG
+    }
 
     scope :not_expired, -> { where('expire_at IS NULL OR expire_at > ?', Time.current) }
     scope :for_sha, ->(sha, project_id) { joins(job: :pipeline).where(ci_pipelines: { sha: sha, project_id: project_id }) }

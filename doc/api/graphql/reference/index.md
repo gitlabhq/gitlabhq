@@ -16443,50 +16443,6 @@ Machine type used for runner cloud provisioning.
 | <a id="cirunnercloudprovisioningmachinetypename"></a>`name` | [`String`](#string) | Name of the machine type. |
 | <a id="cirunnercloudprovisioningmachinetypezone"></a>`zone` | [`String`](#string) | Zone of the machine type. |
 
-### `CiRunnerCloudProvisioningOptions`
-
-Options for runner cloud provisioning.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningoptionsregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
-
-#### Fields with arguments
-
-##### `CiRunnerCloudProvisioningOptions.machineTypes`
-
-Machine types available for provisioning a runner.
-
-Returns [`CiRunnerCloudProvisioningMachineTypeConnection`](#cirunnercloudprovisioningmachinetypeconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningoptionsmachinetypeszone"></a>`zone` | [`String!`](#string) | Zone for which to retrieve machine types. |
-
-##### `CiRunnerCloudProvisioningOptions.zones`
-
-Zones available for provisioning a runner.
-
-Returns [`CiRunnerCloudProvisioningZoneConnection`](#cirunnercloudprovisioningzoneconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-###### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="cirunnercloudprovisioningoptionszonesregion"></a>`region` | [`String`](#string) | Region for which to retrieve zones. Returns all zones if not specified. |
-
 ### `CiRunnerCloudProvisioningRegion`
 
 Region used for runner cloud provisioning.
@@ -16508,6 +16464,50 @@ Zone used for runner cloud provisioning.
 | ---- | ---- | ----------- |
 | <a id="cirunnercloudprovisioningzonedescription"></a>`description` | [`String`](#string) | Description of the zone. |
 | <a id="cirunnercloudprovisioningzonename"></a>`name` | [`String`](#string) | Name of the zone. |
+
+### `CiRunnerGoogleCloudProvisioningOptions`
+
+Options for runner Google Cloud provisioning.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnergooglecloudprovisioningoptionsregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `CiRunnerGoogleCloudProvisioningOptions.machineTypes`
+
+Machine types available for provisioning a runner.
+
+Returns [`CiRunnerCloudProvisioningMachineTypeConnection`](#cirunnercloudprovisioningmachinetypeconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnergooglecloudprovisioningoptionsmachinetypeszone"></a>`zone` | [`String!`](#string) | Zone to retrieve machine types for. |
+
+##### `CiRunnerGoogleCloudProvisioningOptions.zones`
+
+Zones available for provisioning a runner.
+
+Returns [`CiRunnerCloudProvisioningZoneConnection`](#cirunnercloudprovisioningzoneconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnergooglecloudprovisioningoptionszonesregion"></a>`region` | [`String`](#string) | Region to retrieve zones for. Returns all zones if not specified. |
 
 ### `CiRunnerManager`
 
@@ -26273,7 +26273,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.runnerCloudProvisioningOptions`
 
-Options for runner cloud provisioning by a specified cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Options for provisioning the runner on Google Cloud. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 NOTE:
 **Introduced** in 16.9.
@@ -26285,6 +26285,7 @@ Returns [`CiRunnerCloudProvisioningOptions`](#cirunnercloudprovisioningoptions).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectrunnercloudprovisioningoptionscloudprojectid"></a>`cloudProjectId` | [`String!`](#string) | Identifier of the cloud project. |
 | <a id="projectrunnercloudprovisioningoptionsprovider"></a>`provider` | [`CiRunnerCloudProvider!`](#cirunnercloudprovider) | Identifier of the cloud provider. |
 
 ##### `Project.runners`
@@ -34013,6 +34014,14 @@ See the [GraphQL documentation](https://graphql.org/learn/) for more information
 abstract types.
 
 ### Unions
+
+#### `CiRunnerCloudProvisioningOptions`
+
+Options for runner cloud provisioning.
+
+One of:
+
+- [`CiRunnerGoogleCloudProvisioningOptions`](#cirunnergooglecloudprovisioningoptions)
 
 #### `DependencyLinkMetadata`
 

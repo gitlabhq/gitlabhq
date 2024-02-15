@@ -35,10 +35,6 @@ ci_group_variables:
   - table: namespaces
     column: group_id
     on_delete: async_delete
-ci_job_artifacts:
-  - table: projects
-    column: project_id
-    on_delete: async_delete
 ci_job_token_group_scope_links:
   - table: users
     column: added_by_id
@@ -291,6 +287,10 @@ p_ci_builds:
     column: runner_id
     on_delete: async_nullify
 p_ci_builds_metadata:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+p_ci_job_artifacts:
   - table: projects
     column: project_id
     on_delete: async_delete

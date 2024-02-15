@@ -32,10 +32,6 @@ For more information about Cells, see also:
 
 See [Goals, Glossary and Requirements](goals.md).
 
-## Deployment Architecture
-
-See [Deployment Architecture](deployment-architecture.md).
-
 ## Work streams
 
 We can't ship the entire Cells architecture in one go - it is too large.
@@ -192,9 +188,9 @@ flowchart TD
 
 See [Cells: Routing Service](routing-service.md).
 
-### 4. Cell deployment
+### 4. Infrastructure
 
-See [Cell: Application deployment](application-deployment.md).
+See [Cell: Infrastructure](infrastructure/index.md).
 
 ### 5. Migration
 
@@ -222,7 +218,7 @@ We are following the [Support for Experiment, Beta, and Generally Available feat
 
 Expectations:
 
-- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [Cell deployment](#4-cell-deployment) tooling.
+- We can deploy a Cell on staging or another testing environment by using a separate domain (for example `cell2.staging.gitlab.com`) using [infrastucture](#4-infrastructure) tooling.
 - User can create Organization, Group and Project, and run some of the [workflows](#2-workflows).
 - It is not expected to be able to run a router to serve all requests under a single domain.
 - We expect data loss of data stored on additional Cells.

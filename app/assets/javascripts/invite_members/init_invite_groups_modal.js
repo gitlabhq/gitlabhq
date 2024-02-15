@@ -30,6 +30,7 @@ export default function initInviteGroupsModal() {
     el,
     provide: {
       freeUsersLimit: parseInt(el.dataset.freeUsersLimit, 10),
+      overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
     },
     render: (createElement) =>
       createElement(InviteGroupsModal, {

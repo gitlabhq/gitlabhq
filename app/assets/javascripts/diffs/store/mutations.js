@@ -210,6 +210,8 @@ export default {
 
     if (diffLines.length && positionType !== FILE_DIFF_POSITION_TYPE) {
       const line = diffLines.find(isTargetLine);
+      // skip if none of the discussion positions matched a diff position
+      if (!line) return;
       const discussions = addDiscussion(line.discussions || []);
       Object.assign(line, {
         discussions,

@@ -280,6 +280,24 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
         let(:request_params) { environment_params }
         let(:target_id) { 'users_visiting_environments_pages' }
       end
+
+      it 'sets the kas cookie if the request format is html' do
+        allow(::Gitlab::Kas::UserAccess).to receive(:enabled?).and_return(true)
+        get :show, params: environment_params
+
+        expect(
+          request.env['action_dispatch.cookies'][Gitlab::Kas::COOKIE_KEY]
+        ).to be_present
+      end
+
+      it 'does not set the kas_cookie if the request format is not html' do
+        allow(::Gitlab::Kas::UserAccess).to receive(:enabled?).and_return(true)
+        get :show, params: environment_params(format: :json)
+
+        expect(
+          request.env['action_dispatch.cookies'][Gitlab::Kas::COOKIE_KEY]
+        ).to be_nil
+      end
     end
 
     context 'with invalid id' do

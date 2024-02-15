@@ -536,7 +536,7 @@ We would have to ensure that the JWT token signed by GitLab is in a form that ca
    The Primary Cell in fact serves as a cluster-wide service. Depending on our intent it could be named the following:
 
    - Primary Cell: To clearly state that the Primary Cell has a special purpose today, but we rename it later.
-   - Cluster-wide Data Provider: This is the current name used in the [Deployment Architecture](../deployment-architecture.md).
+   - Cluster-wide Data Provider
    - Global Service: Alternative name to Cluster-wide Data Provider, indicating that the Primary Cell would implement a Global Service today.
 
 1. How are secrets are generated?

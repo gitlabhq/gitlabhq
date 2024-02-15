@@ -50,6 +50,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
     context 'without deployments' do
       before do
         visit_environment(environment)
+        click_link s_('Environments|Deployment history')
       end
 
       it 'does not show deployments' do
@@ -60,6 +61,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
     context 'with deployments' do
       before do
         visit_environment(environment)
+        click_link s_('Environments|Deployment history')
       end
 
       context 'when there is no related deployable' do
@@ -124,6 +126,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
         before do
           visit_environment(environment)
+          click_link s_('Environments|Deployment history')
         end
 
         # This ordering is unexpected and to be fixed.
@@ -155,6 +158,7 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
         before do
           visit_environment(environment)
+          click_link s_('Environments|Deployment history')
         end
 
         it 'shows deployment information and buttons', :js do

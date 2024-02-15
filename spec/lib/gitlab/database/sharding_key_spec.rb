@@ -50,7 +50,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
       'zoekt_indices.namespace_id',
       'zoekt_repositories.project_identifier',
-      'ci_namespace_monthly_usages.namespace_id' # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_namespace_monthly_usages.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/321400
+      'ci_job_artifacts.project_id'
     ]
   end
 

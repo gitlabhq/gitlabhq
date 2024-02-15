@@ -208,6 +208,7 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
       subject { described_class.new(pipeline.project, pipeline.user).unlock_job_artifacts_query(pipeline_ids) }
 
       let(:builds_table) { Ci::Build.quoted_table_name }
+      let(:job_artifacts_table) { Ci::JobArtifact.quoted_table_name }
 
       context 'when given a single pipeline ID' do
         let(:pipeline_ids) { [older_pipeline.id] }
@@ -215,11 +216,11 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         it 'produces the expected SQL string' do
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
-                "ci_job_artifacts"
+                #{job_artifacts_table}
             SET
                 "locked" = 0
             WHERE
-                "ci_job_artifacts"."job_id" IN
+                #{job_artifacts_table}."job_id" IN
                     (SELECT
                         #{builds_table}."id"
                     FROM
@@ -228,7 +229,7 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
                         #{builds_table}."type" = 'Ci::Build'
                         AND #{builds_table}."commit_id" = #{older_pipeline.id})
             RETURNING
-                ("ci_job_artifacts"."id")
+                (#{job_artifacts_table}."id")
           SQL
         end
       end
@@ -239,11 +240,11 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
         it 'produces the expected SQL string' do
           expect(subject.squish).to eq <<~SQL.squish
             UPDATE
-                "ci_job_artifacts"
+                #{job_artifacts_table}
             SET
                 "locked" = 0
             WHERE
-                "ci_job_artifacts"."job_id" IN
+                #{job_artifacts_table}."job_id" IN
                     (SELECT
                         #{builds_table}."id"
                     FROM
@@ -252,7 +253,7 @@ RSpec.describe Ci::UnlockArtifactsService, feature_category: :continuous_integra
                         #{builds_table}."type" = 'Ci::Build'
                         AND #{builds_table}."commit_id" IN (#{pipeline_ids.join(', ')}))
             RETURNING
-                ("ci_job_artifacts"."id")
+                (#{job_artifacts_table}."id")
           SQL
         end
       end

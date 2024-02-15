@@ -94,13 +94,16 @@ export const SERVICES_LIMIT_PER_PAGE = 10;
 export const CLUSTER_STATUS_HEALTHY_TEXT = s__('Environment|Healthy');
 export const CLUSTER_STATUS_UNHEALTHY_TEXT = s__('Environment|Unhealthy');
 
+export const CLUSTER_HEALTH_SUCCESS = 'success';
+export const CLUSTER_HEALTH_ERROR = 'error';
+
 export const HEALTH_BADGES = {
-  success: {
+  [CLUSTER_HEALTH_SUCCESS]: {
     variant: 'success',
     text: CLUSTER_STATUS_HEALTHY_TEXT,
     icon: 'status-success',
   },
-  error: {
+  [CLUSTER_HEALTH_ERROR]: {
     variant: 'danger',
     text: CLUSTER_STATUS_UNHEALTHY_TEXT,
     icon: 'status-alert',

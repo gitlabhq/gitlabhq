@@ -25,6 +25,7 @@ export default (function initInviteMembersModal() {
         name: 'InviteMembersModalRoot',
         provide: {
           name: el.dataset.name,
+          overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
         },
         render: (createElement) =>
           createElement(InviteMembersModal, {

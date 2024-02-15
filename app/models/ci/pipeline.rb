@@ -769,7 +769,7 @@ module Ci
       ::Gitlab::SafeRequestStore.fetch("pipeline:#{self.id}:latest_report_artifacts") do
         ::Ci::JobArtifact.where(
           id: job_artifacts.all_reports
-            .select('max(ci_job_artifacts.id) as id')
+            .select("max(#{Ci::JobArtifact.quoted_table_name}.id) as id")
             .group(:file_type)
         )
           .preload(:job)

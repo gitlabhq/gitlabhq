@@ -46,7 +46,7 @@ export default {
         ><template #agentId>{{ agentId }}</template></gl-sprintf
       >
     </gl-link>
-    <span class="gl-mr-3" data-testid="agent-status">
+    <span data-testid="agent-status">
       <gl-icon
         :name="$options.AGENT_STATUSES[agentStatus].icon"
         :class="$options.AGENT_STATUSES[agentStatus].class"
@@ -55,7 +55,6 @@ export default {
     </span>
 
     <span data-testid="agent-last-used-date">
-      <gl-icon name="calendar" />
       <time-ago-tooltip v-if="agentLastContact" :time="agentLastContact" />
       <span v-else>{{ $options.i18n.neverConnectedText }}</span>
     </span>

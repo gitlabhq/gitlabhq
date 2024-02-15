@@ -4,6 +4,8 @@ import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
 import {
+  CLUSTER_HEALTH_SUCCESS,
+  CLUSTER_HEALTH_ERROR,
   CLUSTER_STATUS_HEALTHY_TEXT,
   CLUSTER_STATUS_UNHEALTHY_TEXT,
   SYNC_STATUS_BADGES,
@@ -72,8 +74,8 @@ describe('~/environments/components/kubernetes_status_bar.vue', () => {
     });
 
     it.each([
-      ['success', 'success', 'status-success', CLUSTER_STATUS_HEALTHY_TEXT],
-      ['error', 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
+      [CLUSTER_HEALTH_SUCCESS, 'success', 'status-success', CLUSTER_STATUS_HEALTHY_TEXT],
+      [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
     ])(
       'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
       (status, variant, icon, text) => {

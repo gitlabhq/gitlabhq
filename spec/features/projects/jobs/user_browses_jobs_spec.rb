@@ -26,16 +26,18 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
       end
 
       it 'shows a tab for All jobs and count' do
-        expect(page.find('[data-testid="jobs-all-tab"]').text).to include('All')
-        expect(page.find('[data-testid="jobs-all-tab"] .badge').text).to include('0')
+        expect(find_by_testid('jobs-all-tab').text).to include('All')
+        within_testid('jobs-all-tab') do
+          expect(page.find('.badge').text).to include('0')
+        end
       end
 
       it 'shows a tab for Finished jobs and count' do
-        expect(page.find('[data-testid="jobs-finished-tab"]').text).to include('Finished')
+        expect(find_by_testid('jobs-finished-tab').text).to include('Finished')
       end
 
       it 'updates the content when tab is clicked' do
-        page.find('[data-testid="jobs-finished-tab"]').click
+        find_by_testid('jobs-finished-tab').click
         wait_for_requests
 
         expect(page).to have_content('No jobs to show')
@@ -68,7 +70,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'cancels a job successfully' do
-          page.find('[data-testid="cancel-button"]').click
+          find_by_testid('cancel-button').click
 
           wait_for_requests
 
@@ -89,7 +91,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'retries a job successfully' do
-          page.find('[data-testid="retry"]').click
+          find_by_testid('retry').click
 
           wait_for_requests
 
@@ -111,7 +113,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'shows the coverage' do
-          page.within('[data-testid="job-coverage"]') do
+          within_testid('job-coverage') do
             expect(page).to have_content('99.9%')
           end
         end
@@ -125,7 +127,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'plays a job successfully' do
-          page.find('[data-testid="play-scheduled"]').click
+          find_by_testid('play-scheduled').click
 
           page.within '#play-job-modal' do
             page.find_button('OK').click
@@ -137,7 +139,7 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'unschedules a job successfully' do
-          page.find('[data-testid="unschedule"]').click
+          find_by_testid('unschedule').click
 
           wait_for_requests
 
@@ -191,19 +193,19 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         it 'contains a link to the pipeline' do
-          expect(page.find('[data-testid="pipeline-id"]')).to have_content "##{pipeline.id}"
+          expect(find_by_testid('pipeline-id')).to have_content "##{pipeline.id}"
         end
 
         it 'contains a link to the job sha' do
-          expect(page.find('[data-testid="job-sha"]')).to have_content job.sha[0..7].to_s
+          expect(find_by_testid('job-sha')).to have_content job.sha[0..7].to_s
         end
 
         it 'contains a link to the job id' do
-          expect(page.find('[data-testid="job-id-link"]')).to have_content job.id.to_s
+          expect(find_by_testid('job-id-link')).to have_content job.id.to_s
         end
 
         it 'contains a link to the job ref' do
-          expect(page.find('[data-testid="job-ref"]')).to have_content job.ref.to_s
+          expect(find_by_testid('job-ref')).to have_content job.ref.to_s
         end
       end
     end
