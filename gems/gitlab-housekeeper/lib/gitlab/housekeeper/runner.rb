@@ -2,6 +2,7 @@
 
 require 'active_support/core_ext/string'
 require 'gitlab/housekeeper/keep'
+require 'gitlab/housekeeper/keeps/rubocop_fixer'
 require 'gitlab/housekeeper/gitlab_client'
 require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'

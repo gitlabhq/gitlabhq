@@ -43,7 +43,6 @@ Each of the GitLab application security tools is relevant to specific stages of 
   - Secret Detection
   - IaC Scanning
   - Dependency Scanning
-  - License Scanning
   - Coverage-guided Fuzz Testing
 - Build
   - Container Scanning
@@ -148,13 +147,12 @@ All customization of GitLab security scanning tools should be tested in a merge 
 merging these changes to the default branch. Failure to do so can give unexpected results,
 including a large number of false positives.
 
-To enable Static Application Security Testing, Dependency Scanning, License Scanning, and Secret
+To enable Static Application Security Testing, Dependency Scanning, and Secret
 Detection, add:
 
 ```yaml
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
@@ -383,7 +381,6 @@ For example, the following attempts to use a `unit-tests` stage:
 ```yaml
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-  - template: Jobs/License-Scanning.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
 
@@ -413,7 +410,6 @@ To fix this issue, you can either:
   ```yaml
   include:
     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-    - template: Jobs/License-Scanning.gitlab-ci.yml
     - template: Jobs/SAST.gitlab-ci.yml
     - template: Jobs/Secret-Detection.gitlab-ci.yml
 
@@ -432,7 +428,6 @@ To fix this issue, you can either:
   ```yaml
   include:
     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-    - template: Jobs/License-Scanning.gitlab-ci.yml
     - template: Jobs/SAST.gitlab-ci.yml
     - template: Jobs/Secret-Detection.gitlab-ci.yml
 
@@ -440,9 +435,6 @@ To fix this issue, you can either:
     - unit-tests
 
   dependency_scanning:
-    stage: unit-tests
-
-  license_scanning:
     stage: unit-tests
 
   sast:
@@ -550,7 +542,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   are recommended when:
 
   - Scan execution enforcement is required for any scanner that uses a GitLab template, such as SAST IaC, DAST, Dependency Scanning,
-    License Compliance, API Fuzzing, or Coverage-guided Fuzzing.
+    API Fuzzing, or Coverage-guided Fuzzing.
   - Scan execution enforcement is required for scanners external to GitLab.
   - Scan execution enforcement is required for custom jobs other than security scans.
 

@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import initClustersDeprecationAlert from '~/projects/clusters_deprecation_alert';
@@ -10,6 +11,7 @@ import initReadMore from '~/read_more';
 import initForksButton from '~/forks/init_forks_button';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
 import InitMoreActionsDropdown from '~/groups_projects/init_more_actions_dropdown';
+import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 
 // Project show page loads different overview content based on user preferences
 if (document.getElementById('js-tree-list')) {
@@ -63,3 +65,26 @@ if (document.querySelector('.js-autodevops-banner')) {
 initForksButton();
 InitMoreActionsDropdown();
 leaveByUrl('project');
+
+const initCodeDropdown = () => {
+  const codeDropdownEl = document.querySelector('#js-project-show-empty-page #js-code-dropdown');
+
+  if (!codeDropdownEl) return false;
+
+  const { sshUrl, httpUrl, kerberosUrl } = codeDropdownEl.dataset;
+
+  return new Vue({
+    el: codeDropdownEl,
+    render(createElement) {
+      return createElement(CodeDropdown, {
+        props: {
+          sshUrl,
+          httpUrl,
+          kerberosUrl,
+        },
+      });
+    },
+  });
+};
+
+initCodeDropdown();

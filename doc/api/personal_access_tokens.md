@@ -216,7 +216,7 @@ Rotate a personal access token. Revokes the previous token and creates a new tok
 You can either:
 
 - Use the personal access token ID.
-- Pass the personal access token to the API in a request header.
+- In GitLab 16.10 and later, pass the personal access token to the API in a request header.
 
 ### Use a personal access token ID
 
@@ -267,6 +267,8 @@ Example response:
 - `404: Not Found` if the user is an administrator but the token with the specified ID does not exist.
 
 ### Use a request header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426779) in GitLab 16.10
 
 Requires:
 

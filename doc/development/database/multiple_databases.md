@@ -83,7 +83,12 @@ will also be used in the future to provide a uniform way to migrate data
 between Cells.
 
 The actual name of the foreign key can be anything but it must reference a row
-in `projects` or `groups`. The following are examples of valid sharding keys:
+in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable. 
+
+Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
+the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
+
+The following are examples of valid sharding keys:
 
 - The table entries belong to a project only:
 

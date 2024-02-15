@@ -11000,9 +11000,6 @@ msgstr ""
 msgid "Clone this issue"
 msgstr ""
 
-msgid "Clone with %{http_label}"
-msgstr ""
-
 msgid "Clone with %{protocol}"
 msgstr ""
 

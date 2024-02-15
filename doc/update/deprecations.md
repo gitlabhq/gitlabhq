@@ -315,7 +315,7 @@ The audit event type `repository_download_operation` is currently saved to the d
 public projects, this audit event is not the most useful for auditing purposes because it can be triggered by non-authenticated users.
 
 From GitLab 17.0, the `repository_download_operation` audit event type will only be triggered for private or internal projects. We will add a new audit event type
-called `public_repository_download_operation` for public project downloads. This new audit even type will be streaming only.
+called `public_repository_download_operation` for public project downloads. This new audit event type will be streaming only.
 
 </div>
 
