@@ -8,14 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
-
-NOTE:
-Starting in February 2024, Code Suggestions will be part of
-[GitLab Duo Pro](https://about.gitlab.com/gitlab-duo/),
-available to Premium and Ultimate users for purchase now.
 
 Repository X-Ray enhances [GitLab Duo Code Suggestions](index.md) by providing additional context to improve the accuracy and relevance of code recommendations.
 

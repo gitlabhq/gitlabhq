@@ -58,3 +58,11 @@ To assign seats in bulk, you can use [this GraphQL API endpoint](../api/graphql/
 This endpoint works for both self-managed and SaaS.
 
 Administrators of self-managed instances can also assign users by using a [Rake task](../raketasks/user_management.md#bulk-assign-users-to-gitlab-duo-pro).
+
+#### Configure network and proxy settings
+
+For self-managed instances, you must also ensure that your firewalls and HTTP proxy servers
+allow outbound connections to `cloud.gitlab.com`.
+
+To use an HTTP proxy, ensure that both `gitLab _workhorse` and `gitLab_rails` set the necessary
+[web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).

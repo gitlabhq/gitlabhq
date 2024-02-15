@@ -4,7 +4,7 @@ key_path: usage_activity_by_stage_monthly.package.projects_with_packages
 description: The total number of projects in a given month with at least one package
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: 28d

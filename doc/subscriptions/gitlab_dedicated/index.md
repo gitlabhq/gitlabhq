@@ -107,20 +107,22 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 You can use GitLab Pages on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
 
-GitLab Pages are public by default. You can limit access to your Pages site by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+You can control access to your Pages website with [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
+
+In addition, you can limit access to your Pages website by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
 
 The following GitLab Pages features are not available:
 
-- Access control
 - Custom domains
 - PrivateLink access
+- Change of authentication scope
 
 In addition, GitLab Pages:
 
 - Only works in the primary site if [Geo](../../administration/geo/index.md) is enabled.
 - Is not included as part of instance migrations to GitLab Dedicated.
 
-To enable GitLab Pages for GitLab Dedicated, submit a [support request](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). The feature is then enabled in the next scheduled maintenance window.
+GitLab Pages for GitLab Dedicated is enabled by default for all customers.
 
 #### GitLab Runners
 

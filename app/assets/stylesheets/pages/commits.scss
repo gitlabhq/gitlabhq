@@ -77,16 +77,6 @@
   }
 }
 
-.commits-row {
-  + .commits-row {
-    border-top: 1px solid $gray-50;
-  }
-
-  + .commits-empty {
-    display: none;
-  }
-}
-
 .text-expander {
   display: inline-flex;
   background: $white;
@@ -311,26 +301,5 @@
     height: 32px;
     border-radius: 50%;
     vertical-align: middle;
-  }
-}
-
-.add-review-item {
-  .gl-tab-nav-item {
-    height: 100%;
-  }
-}
-
-.add-review-item-modal {
-  .modal-content {
-    position: absolute;
-    top: 5%;
-  }
-
-  .title-hint-text {
-    color: $gl-text-color-secondary;
-  }
-
-  .gl-filtered-search-suggestion-list.dropdown-menu {
-    width: $gl-max-dropdown-max-height;
   }
 }

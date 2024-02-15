@@ -3,7 +3,7 @@ key_path: counts.package_events_i_package_pull_symbol_package_by_deploy_token
 description: A count of symbol packages that have been pulled with a deploy token from the package registry
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 milestone: "14.1"

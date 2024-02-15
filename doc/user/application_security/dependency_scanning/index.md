@@ -295,6 +295,14 @@ The following languages and dependency managers are supported:
       </ul>
     </p>
   </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
+    <p>
+      <ul>
+        <li>Support for Python 3.9 was deprecated in GitLab 16.9 and will be removed in GitLab 17.0</li>
+      </ul>
+    </p>
+  </li>
 </ol>
 <!-- markdownlint-enable MD044 -->
 

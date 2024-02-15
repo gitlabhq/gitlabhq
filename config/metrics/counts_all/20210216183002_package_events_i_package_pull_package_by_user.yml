@@ -5,7 +5,7 @@ description: A count of packages that have been downloaded from the package regi
   by a user
 product_section: ops
 product_stage: package
-product_group: package
+product_group: package_registry
 value_type: number
 status: active
 time_frame: all

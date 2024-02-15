@@ -106,6 +106,12 @@ dependencies, but the user interface shows only one of the shortest paths.
 NOTE:
 The dependency path is only displayed for dependencies that have vulnerabilities.
 
+WARNING:
+The dependency path based on the `dependency_files` property from the Dependency Scanning report was
+[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/396376) in GitLab
+16.9 and is planned for removal in 17.0.
+This will be replaced with data from the [CycloneDX report](https://gitlab.com/gitlab-org/gitlab/-/issues/441118).
+
 ![Dependency path](img/yarn_dependency_path_v13_6.png)
 
 Dependency paths are supported for the following package managers:

@@ -24736,6 +24736,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="pipelinesecurityreportfindingsreporttype"></a>`reportType` | [`[String!]`](#string) | Filter vulnerability findings by report type. |
 | <a id="pipelinesecurityreportfindingsscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerability findings by Scanner.externalId. |
 | <a id="pipelinesecurityreportfindingsseverity"></a>`severity` | [`[String!]`](#string) | Filter vulnerability findings by severity. |
+| <a id="pipelinesecurityreportfindingssort"></a>`sort` | [`PipelineSecurityReportFindingSort`](#pipelinesecurityreportfindingsort) | List vulnerability findings by sort order. |
 | <a id="pipelinesecurityreportfindingsstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerability findings by state. |
 
 ##### `Pipeline.sha`
@@ -32255,6 +32256,15 @@ Event type of the pipeline associated with a merge request.
 | <a id="pipelinescopeenumpending"></a>`PENDING` | Pipeline has not started running yet. |
 | <a id="pipelinescopeenumrunning"></a>`RUNNING` | Pipeline is running. |
 | <a id="pipelinescopeenumtags"></a>`TAGS` | Tags. |
+
+### `PipelineSecurityReportFindingSort`
+
+Pipeline security report finding sort values.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelinesecurityreportfindingsortseverity_asc"></a>`SEVERITY_ASC` | Severity in ascending order. |
+| <a id="pipelinesecurityreportfindingsortseverity_desc"></a>`SEVERITY_DESC` | Severity in descending order. |
 
 ### `PipelineStatusEnum`
 
