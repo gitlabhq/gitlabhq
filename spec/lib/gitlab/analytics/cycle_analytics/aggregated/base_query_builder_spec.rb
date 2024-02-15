@@ -17,50 +17,54 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder d
   let_it_be(:issue_outside_project) { create(:issue) }
 
   let_it_be(:stage) do
-    create(:cycle_analytics_stage,
-           project: project,
-           start_event_identifier: :issue_created,
-           end_event_identifier: :issue_deployed_to_production
-          )
+    create(
+      :cycle_analytics_stage,
+      project: project,
+      start_event_identifier: :issue_created,
+      end_event_identifier: :issue_deployed_to_production
+    )
   end
 
   let_it_be(:stage_event_1) do
-    create(:cycle_analytics_issue_stage_event,
-           stage_event_hash_id: stage.stage_event_hash_id,
-           group_id: group.id,
-           project_id: project.id,
-           issue_id: issue_1.id,
-           author_id: project.creator.id,
-           milestone_id: nil,
-           state_id: issue_1.state_id,
-           end_event_timestamp: 8.months.ago
-          )
+    create(
+      :cycle_analytics_issue_stage_event,
+      stage_event_hash_id: stage.stage_event_hash_id,
+      group_id: group.id,
+      project_id: project.id,
+      issue_id: issue_1.id,
+      author_id: project.creator.id,
+      milestone_id: nil,
+      state_id: issue_1.state_id,
+      end_event_timestamp: 8.months.ago
+    )
   end
 
   let_it_be(:stage_event_2) do
-    create(:cycle_analytics_issue_stage_event,
-           stage_event_hash_id: stage.stage_event_hash_id,
-           group_id: group.id,
-           project_id: project.id,
-           issue_id: issue_2.id,
-           author_id: nil,
-           milestone_id: milestone.id,
-           state_id: issue_2.state_id
-          )
+    create(
+      :cycle_analytics_issue_stage_event,
+      stage_event_hash_id: stage.stage_event_hash_id,
+      group_id: group.id,
+      project_id: project.id,
+      issue_id: issue_2.id,
+      author_id: nil,
+      milestone_id: milestone.id,
+      state_id: issue_2.state_id
+    )
   end
 
   let_it_be(:stage_event_3) do
-    create(:cycle_analytics_issue_stage_event,
-           stage_event_hash_id: stage.stage_event_hash_id,
-           group_id: group.id,
-           project_id: project.id,
-           issue_id: issue_3.id,
-           author_id: nil,
-           milestone_id: milestone.id,
-           state_id: issue_3.state_id,
-           start_event_timestamp: 8.months.ago,
-           end_event_timestamp: nil
-          )
+    create(
+      :cycle_analytics_issue_stage_event,
+      stage_event_hash_id: stage.stage_event_hash_id,
+      group_id: group.id,
+      project_id: project.id,
+      issue_id: issue_3.id,
+      author_id: nil,
+      milestone_id: milestone.id,
+      state_id: issue_3.state_id,
+      start_event_timestamp: 8.months.ago,
+      end_event_timestamp: nil
+    )
   end
 
   let(:params) do

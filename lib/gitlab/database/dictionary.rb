@@ -25,6 +25,10 @@ module Gitlab
         @dictionary_entries.select { |entry| entry.schema?(schema_name) }
       end
 
+      def find_all_having_desired_sharding_key_migration_job
+        @dictionary_entries.select { |entry| entry.desired_sharding_key_migration_job_name.present? }
+      end
+
       def self.entries(scope = '')
         @entries ||= {}
         @entries[scope] ||= new(
@@ -100,6 +104,10 @@ module Gitlab
 
         def allow_cross_to_schemas(type)
           data["allow_cross_#{type}"].to_a.map(&:to_sym)
+        end
+
+        def desired_sharding_key_migration_job_name
+          data['desired_sharding_key_migration_job_name']
         end
 
         def schema?(schema_name)

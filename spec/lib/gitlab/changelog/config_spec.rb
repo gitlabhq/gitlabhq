@@ -126,11 +126,14 @@ RSpec.describe Gitlab::Changelog::Config do
       let(:user_fork) { fork_project(project, contributor, repository: true) }
 
       before do
-        create(:merge_request, :merged,
-               author: contributor,
-               target_project: project,
-               source_project: user_fork,
-               target_branch: project.default_branch.to_s)
+        create(
+          :merge_request,
+          :merged,
+          author: contributor,
+          target_project: project,
+          source_project: user_fork,
+          target_branch: project.default_branch.to_s
+        )
       end
 
       it { expect(described_class.new(project).contributor?(contributor)).to eq(true) }

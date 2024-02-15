@@ -634,22 +634,6 @@ Users are advised to use [License scanning of CycloneDX files](https://docs.gitl
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Deprecate Maven versions below 3.8.8
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438772).
-</div>
-
-GitLab 17.0 drops Dependency Scanning support for Maven versions below 3.8.8.
-
-Users are advised to upgrade to 3.8.8 or greater.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
 ### Deprecate Python 3.9 in Dependency Scanning and License Scanning
 
 <div class="deprecation-notes">
@@ -1304,6 +1288,22 @@ the GraphQL API is deprecated in GitLab 15.8 and will be removed in GitLab 17.0.
 
 In GitLab 17.0 and later, you must have the Owner role for a group to change the **Packages and registries**
 settings for the group using either the GitLab UI or GraphQL API.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
+### Maven versions below 3.8.8 support in Dependency Scanning and License Scanning
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/438772).
+</div>
+
+GitLab 17.0 drops Dependency Scanning and License Scanning support for Maven versions below 3.8.8.
+
+Users are advised to upgrade to 3.8.8 or greater.
 
 </div>
 

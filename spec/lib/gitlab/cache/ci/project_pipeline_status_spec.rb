@@ -43,15 +43,13 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
 
   describe '.update_for_pipeline' do
     it 'refreshes the cache if nescessary' do
-      pipeline = build_stubbed(:ci_pipeline,
-                               sha: '123456', status: 'success', ref: 'master')
+      pipeline = build_stubbed(:ci_pipeline, sha: '123456', status: 'success', ref: 'master')
       fake_status = double
       expect(described_class).to receive(:new)
-                                   .with(pipeline.project,
-                                        pipeline_info: {
-                                          sha: '123456', status: 'success', ref: 'master'
-                                        })
-                                   .and_return(fake_status)
+        .with(pipeline.project,
+          pipeline_info: { sha: '123456', status: 'success', ref: 'master' }
+        )
+        .and_return(fake_status)
 
       expect(fake_status).to receive(:store_in_cache_if_needed)
 
@@ -225,14 +223,10 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
     it "deletes the cache if the repository doesn't have a head commit" do
       empty_project = create(:project)
       Gitlab::Redis::Cache.with do |redis|
-        redis.mapped_hmset(cache_key,
-                           { sha: 'sha', status: 'pending', ref: 'master' })
+        redis.mapped_hmset(cache_key, { sha: 'sha', status: 'pending', ref: 'master' })
       end
 
-      other_status = described_class.new(empty_project,
-                                         pipeline_info: {
-                                           sha: "123456", status: "failed"
-                                         })
+      other_status = described_class.new(empty_project, pipeline_info: { sha: "123456", status: "failed" })
 
       other_status.store_in_cache_if_needed
       sha, status, ref = Gitlab::Redis::Cache.with { |redis| redis.hmget("projects/#{empty_project.id}/pipeline_status", :sha, :status, :ref) }
@@ -250,8 +244,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
 
     before do
       Gitlab::Redis::Cache.with do |redis|
-        redis.mapped_hmset(cache_key,
-                           { sha: sha, status: status, ref: ref })
+        redis.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
       end
     end
 
@@ -277,8 +270,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
       context 'when status is empty string' do
         before do
           Gitlab::Redis::Cache.with do |redis|
-            redis.mapped_hmset(cache_key,
-                               { sha: sha, status: '', ref: ref })
+            redis.mapped_hmset(cache_key, { sha: sha, status: '', ref: ref })
           end
         end
 

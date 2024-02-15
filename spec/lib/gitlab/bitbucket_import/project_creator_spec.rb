@@ -6,15 +6,17 @@ RSpec.describe Gitlab::BitbucketImport::ProjectCreator do
   let(:user) { create(:user) }
 
   let(:repo) do
-    double(name: 'Vim',
-           slug: 'vim',
-           description: 'Test repo',
-           is_private: true,
-           owner: "asd",
-           full_name: 'Vim repo',
-           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-           clone_url: 'http://bitbucket.org/asd/vim.git',
-           has_wiki?: false)
+    double(
+      name: 'Vim',
+      slug: 'vim',
+      description: 'Test repo',
+      is_private: true,
+      owner: "asd",
+      full_name: 'Vim repo',
+      visibility_level: Gitlab::VisibilityLevel::PRIVATE,
+      clone_url: 'http://bitbucket.org/asd/vim.git',
+      has_wiki?: false
+    )
   end
 
   let(:namespace) { create(:group) }

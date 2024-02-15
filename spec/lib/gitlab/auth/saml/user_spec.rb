@@ -200,11 +200,13 @@ RSpec.describe Gitlab::Auth::Saml::User do
               let(:uid_types) { %w[uid dn email] }
 
               before do
-                create(:omniauth_user,
-                       email: 'john@mail.com',
-                       extern_uid: dn,
-                       provider: 'ldapmain',
-                       username: 'john')
+                create(
+                  :omniauth_user,
+                  email: 'john@mail.com',
+                  extern_uid: dn,
+                  provider: 'ldapmain',
+                  username: 'john'
+                )
               end
 
               shared_examples 'find LDAP person' do |uid_type, uid|

@@ -6,12 +6,14 @@ RSpec.describe Gitlab::Analytics::DateFiller do
   let(:formatter) { Gitlab::Analytics::DateFiller::DEFAULT_DATE_FORMATTER }
 
   subject(:filler_result) do
-    described_class.new(data,
-                        from: from,
-                        to: to,
-                        period: period,
-                        default_value: default_value,
-                        date_formatter: formatter).fill.to_a
+    described_class.new(
+      data,
+      from: from,
+      to: to,
+      period: period,
+      default_value: default_value,
+      date_formatter: formatter
+    ).fill.to_a
   end
 
   context 'when unknown period is given' do

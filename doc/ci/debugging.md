@@ -98,6 +98,19 @@ between the two.
 The [common `if` clauses for `rules`](jobs/job_control.md#common-if-clauses-for-rules)
 can be very helpful for examples of how to write rules that behave the way you expect.
 
+### Unexpected behavior when `.gitlab-ci.yml` file contains a byte order mark (BOM)
+
+A [UTF-8 Byte-Order Mark (BOM)](https://en.wikipedia.org/wiki/Byte_order_mark) in
+the `.gitlab-ci.yml` file or other included configuration files can lead to incorrect
+pipeline behavior. The byte order mark affects parsing of the file, causing some configuration
+to be ignored - jobs might be missing, and variables could have the wrong values.
+Some text editors could insert a BOM character if configured to do so.
+
+If your pipeline has confusing behavior, you can check for the presence of BOM characters
+with a tool capable of displaying them. The pipeline editor cannot display the characters,
+so you must use an external tool. See [issue 35402](https://gitlab.com/gitlab-org/gitlab/-/issues/354026)
+for more details.
+
 ### A job with the `changes` keyword runs unexpectedly
 
 A common reason a job is added to a pipeline unexpectedly is because the `changes`
