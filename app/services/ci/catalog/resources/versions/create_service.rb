@@ -35,7 +35,8 @@ module Ci
             @version = Ci::Catalog::Resources::Version.new(
               release: release,
               catalog_resource: project.catalog_resource,
-              project: project
+              project: project,
+              version: release.tag
             )
           end
 

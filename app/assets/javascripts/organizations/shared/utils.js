@@ -2,6 +2,16 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ACTION_EDIT, ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from './constants';
 
+const availableProjectActions = (userPermissions) => {
+  const baseActions = [ACTION_EDIT];
+
+  if (userPermissions.removeProject) {
+    return [...baseActions, ACTION_DELETE];
+  }
+
+  return baseActions;
+};
+
 export const formatProjects = (projects) =>
   projects.map(
     ({
@@ -11,6 +21,7 @@ export const formatProjects = (projects) =>
       issuesAccessLevel,
       forkingAccessLevel,
       webUrl,
+      userPermissions,
       ...project
     }) => ({
       ...project,
@@ -22,7 +33,10 @@ export const formatProjects = (projects) =>
       webUrl,
       isForked: false,
       editPath: `${webUrl}/edit`,
-      availableActions: [ACTION_EDIT, ACTION_DELETE],
+      availableActions: availableProjectActions(userPermissions),
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     }),
   );
 

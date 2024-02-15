@@ -180,7 +180,9 @@ module API
           optional :maximum_timeout, type: Integer,
                                      desc: 'Maximum timeout that limits the amount of time (in seconds) ' \
                                            'that runners can run jobs'
-          at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
+          optional :maintenance_note, type: String,
+                                      desc: %q(Free-form maintenance notes for the runner (1024 characters))
+          at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout, :maintenance_note
           mutually_exclusive :active, :paused
         end
         put ':id' do

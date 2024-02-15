@@ -2,7 +2,9 @@
 import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
+import { deleteProject } from '~/rest_api';
 import { createAlert } from '~/alert';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
@@ -13,6 +15,9 @@ export default {
   i18n: {
     errorMessage: s__(
       'Organization|An error occurred loading the projects. Please refresh the page to try again.',
+    ),
+    deleteErrorMessage: s__(
+      'Organization|An error occurred deleting the project. Please refresh the page to try again.',
     ),
     emptyState: {
       title: s__("Organization|You don't have any projects yet."),
@@ -163,6 +168,20 @@ export default {
         startCursor,
       });
     },
+    setProjectIsDeleting(project, val) {
+      this.$set(project.actionLoadingStates, ACTION_DELETE, val);
+    },
+    async deleteProject(data) {
+      try {
+        this.setProjectIsDeleting(data, true);
+        await deleteProject(data.id);
+      } catch (error) {
+        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
+      } finally {
+        this.setProjectIsDeleting(data, false);
+        this.$apollo.queries.projects.refetch();
+      }
+    },
   },
 };
 </script>
@@ -170,7 +189,12 @@ export default {
 <template>
   <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="md" />
   <div v-else-if="nodes.length">
-    <projects-list :projects="nodes" show-project-icon :list-item-class="listItemClass" />
+    <projects-list
+      :projects="nodes"
+      show-project-icon
+      :list-item-class="listItemClass"
+      @delete="deleteProject"
+    />
     <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
       <gl-keyset-pagination
         v-bind="pageInfo"

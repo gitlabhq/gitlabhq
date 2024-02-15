@@ -56,7 +56,7 @@ RSpec.describe Releases::CreateService, feature_category: :continuous_integratio
     end
 
     context 'when project is a catalog resource' do
-      let(:project) { create(:project, :catalog_resource_with_components, create_tag: 'final') }
+      let_it_be(:project) { create(:project, :catalog_resource_with_components, create_tag: '6.0.0') }
       let!(:ci_catalog_resource) { create(:ci_catalog_resource, project: project) }
       let(:ref) { 'master' }
 

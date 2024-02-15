@@ -198,6 +198,9 @@ export default {
     hasActionDelete() {
       return this.project.availableActions?.includes(ACTION_DELETE);
     },
+    isActionDeleteLoading() {
+      return this.project.actionLoadingStates[ACTION_DELETE];
+    },
   },
   methods: {
     topicPath(topic) {
@@ -390,6 +393,7 @@ export default {
       v-model="isDeleteModalVisible"
       :confirm-phrase="project.name"
       :is-fork="project.isForked"
+      :confirm-loading="isActionDeleteLoading"
       :merge-requests-count="openMergeRequestsCount"
       :issues-count="openIssuesCount"
       :forks-count="forksCount"

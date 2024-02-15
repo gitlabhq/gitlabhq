@@ -39,11 +39,11 @@ RSpec.describe Ci::Catalog::Resources::VersionsFinder, feature_category: :pipeli
     end
 
     context 'with name parameter' do
-      let(:name) { 'v1.0' }
+      let(:name) { '1.0.0' }
 
       it 'returns the version that matches the name' do
         expect(execute.count).to eq(1)
-        expect(execute.first.name).to eq('v1.0')
+        expect(execute.first.name).to eq('1.0.0')
       end
 
       context 'when no version matches the name' do

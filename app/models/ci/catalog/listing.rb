@@ -21,8 +21,9 @@ module Ci
         when 'latest_released_at_desc' then relation.order_by_latest_released_at_desc
         when 'latest_released_at_asc' then relation.order_by_latest_released_at_asc
         when 'created_at_asc' then relation.order_by_created_at_asc
+        when 'created_at_desc' then relation.order_by_created_at_desc
         else
-          relation.order_by_created_at_desc
+          relation.order_by_star_count(:desc)
         end
       end
 

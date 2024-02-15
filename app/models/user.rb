@@ -168,6 +168,8 @@ class User < MainClusterwide::ApplicationRecord
 
   has_many :emails
   has_many :personal_access_tokens, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :expiring_soon_and_unnotified_personal_access_tokens, -> { expiring_and_not_notified_without_impersonation }, class_name: 'PersonalAccessToken'
+
   has_many :identities, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
   has_many :webauthn_registrations
   has_many :chat_names, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -615,6 +617,12 @@ class User < MainClusterwide::ApplicationRecord
         .where('keys.user_id = users.id')
         .expiring_soon_and_not_notified)
   end
+
+  scope :with_personal_access_tokens_expiring_soon_and_ids, ->(ids) do
+    where(id: ids)
+    .includes(:expiring_soon_and_unnotified_personal_access_tokens)
+  end
+
   scope :order_recent_sign_in, -> { reorder(arel_table[:current_sign_in_at].desc.nulls_last) }
   scope :order_oldest_sign_in, -> { reorder(arel_table[:current_sign_in_at].asc.nulls_last) }
   scope :order_recent_last_activity, -> { reorder(arel_table[:last_activity_on].desc.nulls_last, arel_table[:id].asc) }

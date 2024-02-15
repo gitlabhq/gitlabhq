@@ -10,6 +10,7 @@ module Ci
     class Resource < ::ApplicationRecord
       include PgFullTextSearchable
       include Gitlab::VisibilityLevel
+      include Sortable
 
       self.table_name = 'catalog_resources'
 
@@ -35,6 +36,15 @@ module Ci
       scope :order_by_name_asc, -> { reorder(arel_table[:name].asc.nulls_last) }
       scope :order_by_latest_released_at_desc, -> { reorder(arel_table[:latest_released_at].desc.nulls_last) }
       scope :order_by_latest_released_at_asc, -> { reorder(arel_table[:latest_released_at].asc.nulls_last) }
+      scope :order_by_star_count, ->(direction) do
+        build_keyset_order_on_joined_column(
+          scope: joins(:project),
+          attribute_name: 'project_star_count',
+          column: Project.arel_table[:star_count],
+          direction: direction,
+          nullable: :nulls_last
+        )
+      end
 
       delegate :avatar_path, :star_count, :full_path, to: :project
 

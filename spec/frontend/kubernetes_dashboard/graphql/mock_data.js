@@ -1,5 +1,5 @@
 const runningPod = {
-  status: { phase: 'Running' },
+  status: { phase: 'Running', ready: true, restartCount: 4 },
   metadata: {
     name: 'pod-1',
     namespace: 'default',
@@ -7,6 +7,7 @@ const runningPod = {
     labels: { key: 'value' },
     annotations: { annotation: 'text', another: 'text' },
   },
+  spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
 };
 const pendingPod = {
   status: { phase: 'Pending' },
@@ -14,9 +15,10 @@ const pendingPod = {
     name: 'pod-2',
     namespace: 'new-namespace',
     creationTimestamp: '2023-11-21T11:50:59Z',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
   },
+  spec: {},
 };
 const succeededPod = {
   status: { phase: 'Succeeded' },
@@ -27,6 +29,7 @@ const succeededPod = {
     labels: {},
     annotations: {},
   },
+  spec: {},
 };
 const failedPod = {
   status: { phase: 'Failed' },
@@ -37,6 +40,7 @@ const failedPod = {
     labels: {},
     annotations: {},
   },
+  spec: {},
 };
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
@@ -69,24 +73,29 @@ export const mockPodsTableItems = [
     labels: { key: 'value' },
     annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
+    fullStatus: { phase: 'Running', ready: true, restartCount: 4 },
   },
   {
     name: 'pod-1',
     namespace: 'default',
     status: 'Running',
     age: '114d',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: {},
+    fullStatus: { phase: 'Running', ready: true, restartCount: 4 },
   },
   {
     name: 'pod-2',
     namespace: 'new-namespace',
     status: 'Pending',
     age: '1d',
-    labels: {},
-    annotations: {},
+    labels: { key: 'value' },
+    annotations: { annotation: 'text', another: 'text' },
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-3',
@@ -96,6 +105,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-4',
@@ -105,6 +115,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
   {
     name: 'pod-4',
@@ -114,6 +125,7 @@ export const mockPodsTableItems = [
     labels: {},
     annotations: {},
     kind: 'Pod',
+    spec: {},
   },
 ];
 

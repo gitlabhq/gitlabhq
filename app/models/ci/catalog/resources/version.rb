@@ -7,6 +7,10 @@ module Ci
       # Only versions which contain valid CI components are included in this table.
       class Version < ::ApplicationRecord
         include BulkInsertableAssociations
+        include SemanticVersionable
+
+        semver_method :version
+        validate_semver
 
         self.table_name = 'catalog_resource_versions'
 
@@ -33,8 +37,6 @@ module Ci
         after_save :update_catalog_resource
 
         class << self
-          # In the future, we should support semantic versioning.
-          # See https://gitlab.com/gitlab-org/gitlab/-/issues/427286
           def latest
             order_by_released_at_desc.first
           end

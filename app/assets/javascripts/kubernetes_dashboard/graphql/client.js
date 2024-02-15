@@ -29,6 +29,7 @@ export const apolloProvider = () => {
     query: k8sPodsQuery,
     data: {
       metadata,
+      spec: {},
       status: {
         phase: null,
       },

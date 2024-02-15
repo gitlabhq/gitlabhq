@@ -19,7 +19,7 @@ RSpec.shared_examples 'pipeline schedules checking variables permission' do
       expect(result.status).to eq(:success)
       expect(result.payload).to have_attributes(
         description: 'desc',
-        ref: 'patch-x',
+        ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}patch-x",
         active: false,
         cron: '*/1 * * * *',
         cron_timezone: 'UTC'

@@ -30,7 +30,7 @@ use, and troubleshooting. The documentation evolves continuously. It is updated 
 new products and features, and with improvements for clarity, accuracy, and completeness.
 
 This policy prevents information silos, making it easier to find information
-about GitLab products. It also informs decisions about the kinds of content 
+about GitLab products. It also informs decisions about the kinds of content
 included in the documentation.
 
 ## Topic types

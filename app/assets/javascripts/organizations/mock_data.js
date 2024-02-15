@@ -63,6 +63,9 @@ export const organizationProjects = [
     forkingAccessLevel: {
       stringValue: 'ENABLED',
     },
+    userPermissions: {
+      removeProject: true,
+    },
   },
   {
     id: 'gid://gitlab/Project/7',
@@ -85,6 +88,9 @@ export const organizationProjects = [
     },
     forkingAccessLevel: {
       stringValue: 'ENABLED',
+    },
+    userPermissions: {
+      removeProject: true,
     },
   },
   {
@@ -109,6 +115,9 @@ export const organizationProjects = [
     forkingAccessLevel: {
       stringValue: 'ENABLED',
     },
+    userPermissions: {
+      removeProject: true,
+    },
   },
   {
     id: 'gid://gitlab/Project/5',
@@ -132,6 +141,9 @@ export const organizationProjects = [
     forkingAccessLevel: {
       stringValue: 'ENABLED',
     },
+    userPermissions: {
+      removeProject: true,
+    },
   },
   {
     id: 'gid://gitlab/Project/1',
@@ -154,6 +166,9 @@ export const organizationProjects = [
     },
     forkingAccessLevel: {
       stringValue: 'ENABLED',
+    },
+    userPermissions: {
+      removeProject: false,
     },
   },
 ];

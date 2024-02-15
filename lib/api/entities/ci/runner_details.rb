@@ -11,6 +11,7 @@ module API
         expose :access_level
         expose :version, :revision, :platform, :architecture
         expose :contacted_at
+        expose :maintenance_note
 
         # rubocop: disable CodeReuse/ActiveRecord
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|

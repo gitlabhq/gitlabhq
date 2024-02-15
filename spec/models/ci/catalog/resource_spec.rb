@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   let_it_be(:current_user) { create(:user) }
 
-  let_it_be(:project_a) { create(:project, name: 'A') }
-  let_it_be(:project_b) { create(:project, name: 'B') }
-  let_it_be(:project_c) { create(:project, name: 'C', description: 'B') }
+  let_it_be(:project_a) { create(:project, name: 'A', star_count: 20) }
+  let_it_be(:project_b) { create(:project, name: 'B', star_count: 10) }
+  let_it_be(:project_c) { create(:project, name: 'C', description: 'B', star_count: 30) }
 
   let_it_be_with_reload(:resource_a) do
     create(:ci_catalog_resource, project: project_a, latest_released_at: '2023-02-01T00:00:00Z')
@@ -117,6 +117,22 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '.order_by_latest_released_at_asc' do
     it 'returns catalog resources sorted by latest_released_at ascending with nulls last' do
       ordered_resources = described_class.order_by_latest_released_at_asc
+
+      expect(ordered_resources).to eq([resource_b, resource_a, resource_c])
+    end
+  end
+
+  describe 'order_by_star_count_desc' do
+    it 'returns catalog resources sorted by project star count in descending order' do
+      ordered_resources = described_class.order_by_star_count(:desc)
+
+      expect(ordered_resources).to eq([resource_c, resource_a, resource_b])
+    end
+  end
+
+  describe 'order_by_star_count_asc' do
+    it 'returns catalog resources sorted by project star count in ascending order' do
+      ordered_resources = described_class.order_by_star_count(:asc)
 
       expect(ordered_resources).to eq([resource_b, resource_a, resource_c])
     end

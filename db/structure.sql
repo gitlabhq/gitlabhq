@@ -5516,7 +5516,12 @@ CREATE TABLE catalog_resource_versions (
     catalog_resource_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    released_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL
+    released_at timestamp with time zone DEFAULT '1970-01-01 00:00:00+00'::timestamp with time zone NOT NULL,
+    semver_major integer,
+    semver_minor integer,
+    semver_patch integer,
+    semver_prerelease text,
+    CONSTRAINT check_701bdce47b CHECK ((char_length(semver_prerelease) <= 255))
 );
 
 CREATE SEQUENCE catalog_resource_versions_id_seq

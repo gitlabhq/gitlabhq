@@ -77,7 +77,6 @@ Style/FormatString:
     - 'app/models/diff_note.rb'
     - 'app/models/diff_viewer/base.rb'
     - 'app/models/integrations/asana.rb'
-    - 'app/models/integrations/bugzilla.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
     - 'app/models/integrations/confluence.rb'
     - 'app/models/integrations/custom_issue_tracker.rb'

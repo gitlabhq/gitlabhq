@@ -21,11 +21,11 @@ RSpec.describe Resolvers::Ci::Catalog::Resources::VersionsResolver, feature_cate
       end
 
       context 'when name argument is provided' do
-        let(:name) { 'v1.0' }
+        let(:name) { '1.0.0' }
 
         it 'returns the version that matches the name' do
           expect(result.items.size).to eq(1)
-          expect(result.items.first.name).to eq('v1.0')
+          expect(result.items.first.name).to eq('1.0.0')
         end
 
         context 'when no version matches the name' do

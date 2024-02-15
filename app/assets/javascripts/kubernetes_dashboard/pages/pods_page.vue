@@ -35,6 +35,8 @@ export default {
               labels: pod.metadata?.labels,
               annotations: pod.metadata?.annotations,
               kind: s__('KubernetesDashboard|Pod'),
+              spec: pod.spec,
+              fullStatus: pod.status,
             };
           }) || []
         );

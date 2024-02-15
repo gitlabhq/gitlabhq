@@ -28566,6 +28566,9 @@ msgstr ""
 msgid "KubernetesDashboard|Services"
 msgstr ""
 
+msgid "KubernetesDashboard|Spec"
+msgstr ""
+
 msgid "KubernetesDashboard|StatefulSet"
 msgstr ""
 
@@ -33798,10 +33801,16 @@ msgstr ""
 msgid "ObservabilityMetrics|Search metrics starting with..."
 msgstr ""
 
+msgid "ObservabilityMetrics|Select attributes"
+msgstr ""
+
 msgid "ObservabilityMetrics|Type"
 msgstr ""
 
 msgid "ObservabilityMetrics|Value"
+msgstr ""
+
+msgid "ObservabilityMetrics|all"
 msgstr ""
 
 msgid "ObservabilityMetrics|is like"
@@ -34517,6 +34526,9 @@ msgid "Organization|An error occurred changing your organization URL. Please try
 msgstr ""
 
 msgid "Organization|An error occurred creating an organization. Please try again."
+msgstr ""
+
+msgid "Organization|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
@@ -49630,6 +49642,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "The API key used by GitLab for accessing the Spam Check service endpoint."
+msgstr ""
+
+msgid "The Bugzilla logo is a trademark of the Mozilla Foundation in the U.S. and other countries."
 msgstr ""
 
 msgid "The CSV export will be created in the background. Once finished, it will be sent to %{email} in an attachment."

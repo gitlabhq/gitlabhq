@@ -366,6 +366,7 @@ describe('ProjectsListItem', () => {
           project: {
             ...project,
             availableActions: [ACTION_EDIT, ACTION_DELETE],
+            actionLoadingStates: { [ACTION_DELETE]: false },
             isForked: true,
             editPath,
           },
@@ -400,6 +401,7 @@ describe('ProjectsListItem', () => {
           issuesCount: '0',
           forksCount: '0',
           starsCount: '0',
+          confirmLoading: false,
         });
       });
 

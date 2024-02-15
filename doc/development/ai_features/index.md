@@ -112,9 +112,14 @@ Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
 
 ### Embeddings database
 
-Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings). The sections
-below explain how to populate embeddings in the DB or extract embeddings to be
-used in specs.
+Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings).
+
+Embeddings for GitLab documentation are updated based on the latest changes
+Monday through Friday at 05:00 UTC when the
+[embeddings cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/6742f6bd3970c56a9d5bcd31e3d3dff180c97088/config/initializers/1_settings.rb#L817) runs.
+
+The sections below explain how to populate embeddings in the DB or extract
+embeddings to be used in specs.
 
 #### Set up
 
@@ -216,7 +221,7 @@ Therefore, a different setup is required from the [SaaS-only AI features](#test-
        - To test Self Managed instances, follow [Cloud Activation steps](../../administration/license.md#activate-gitlab-ee) using the cloud activation code you received earlier.
        - To test SaaS, follow [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features) with your license file.
    1. Export these environment variables in the same terminal session with `gdk start`:
-      - Note that you can also configure your terminal always export the environment variables (e.g. adding the exports to `~/.bash_profile` or `~/.zshrc`). 
+      - Note that you can also configure your terminal always export the environment variables (e.g. adding the exports to `~/.bash_profile` or `~/.zshrc`).
 
       ```shell
       export AI_GATEWAY_URL=http://0.0.0.0:5052 # URL to the local AI Gateway instance

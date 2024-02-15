@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Search::Navigation, feature_category: :global_search do
-  let(:user) { instance_double(User) }
+  let_it_be(:user) { create(:user) }
+
   let(:project_double) { instance_double(Project) }
+  let(:group_double) { instance_double(Group) }
+  let(:group) { nil }
   let(:options) { {} }
-  let(:search_navigation) { described_class.new(user: user, project: project, options: options) }
+  let(:search_navigation) { described_class.new(user: user, project: project, group: group, options: options) }
 
   describe '#tab_enabled_for_project?' do
     let(:project) { project_double }
@@ -72,22 +75,19 @@ RSpec.describe Search::Navigation, feature_category: :global_search do
     end
 
     context 'for code tab' do
-      where(:feature_flag_enabled, :show_elasticsearch_tabs, :project, :tab_enabled, :condition) do
-        false | false | nil | false | false
-        true | true | nil | true | true
-        true | false | nil | false | false
-        false | true | nil | false | false
-        false | false | ref(:project_double) | true | true
-        true | false | ref(:project_double) | false | false
+      where(:project, :group, :tab_enabled_for_project, :condition) do
+        nil | nil | false | false
+        nil | ref(:group_double) | false | false
+        ref(:project_double) | nil | true  | true
+        ref(:project_double) | nil | false | false
       end
 
       with_them do
-        let(:options) { { show_elasticsearch_tabs: show_elasticsearch_tabs } }
+        let(:options) { {} }
 
         it 'data item condition is set correctly' do
-          allow(search_navigation).to receive(:feature_flag_tab_enabled?)
-            .with(:global_search_code_tab).and_return(feature_flag_enabled)
-          allow(search_navigation).to receive(:tab_enabled_for_project?).with(:blobs).and_return(tab_enabled)
+          allow(search_navigation).to receive(:tab_enabled_for_project?)
+            .with(:blobs).and_return(tab_enabled_for_project)
 
           expect(tabs[:blobs][:condition]).to eq(condition)
         end

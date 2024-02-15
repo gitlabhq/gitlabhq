@@ -6,12 +6,21 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
   let_it_be(:user) { create(:user) }
   let_it_be(:namespace) { create(:group) }
   let_it_be(:public_namespace_project) do
-    create(:project, :public, namespace: namespace, name: 'A public namespace project')
+    create(:project, :public, namespace: namespace, name: 'A public namespace project', star_count: 10)
   end
 
-  let_it_be(:public_project) { create(:project, :public, name: 'B public test project') }
-  let_it_be(:namespace_project_a) { create(:project, namespace: namespace, name: 'Test namespace project') }
-  let_it_be(:namespace_project_b) { create(:project, namespace: namespace, name: 'X namespace Project') }
+  let_it_be(:public_project) do
+    create(:project, :public, name: 'B public test project', star_count: 20)
+  end
+
+  let_it_be(:namespace_project_a) do
+    create(:project, namespace: namespace, name: 'Test namespace project', star_count: 30)
+  end
+
+  let_it_be(:namespace_project_b) do
+    create(:project, namespace: namespace, name: 'X namespace Project', star_count: 40)
+  end
+
   let_it_be(:project_noaccess) { create(:project, namespace: namespace, name: 'Project with no access') }
   let_it_be(:internal_project) { create(:project, :internal, name: 'Internal project') }
 
@@ -92,6 +101,14 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
         public_resource_b.update!(created_at: yesterday, latest_released_at: today)
         private_namespace_resource.update!(created_at: tomorrow, latest_released_at: tomorrow)
         internal_resource.update!(created_at: tomorrow + 1)
+      end
+
+      context 'when there is no sort parameter' do
+        let_it_be(:sort) { nil }
+
+        it 'contains catalog resource sorted by star_count descending' do
+          is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
+        end
       end
 
       context 'when the sort is created_at ascending' do

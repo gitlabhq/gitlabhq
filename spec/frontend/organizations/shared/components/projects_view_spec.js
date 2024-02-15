@@ -6,7 +6,9 @@ import NewProjectButton from '~/organizations/shared/components/new_project_butt
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import { formatProjects } from '~/organizations/shared/utils';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
+import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { createAlert } from '~/alert';
+import { deleteProject } from '~/api/projects_api';
 import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -19,6 +21,7 @@ import {
 } from '~/organizations/mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/api/projects_api');
 
 Vue.use(VueApollo);
 
@@ -298,6 +301,82 @@ describe('ProjectsView', () => {
         message: ProjectsView.i18n.errorMessage,
         error,
         captureError: true,
+      });
+    });
+  });
+
+  describe('Deleting project', () => {
+    const MOCK_PROJECT = formatProjects(nodes)[0];
+
+    describe('when API call is successful', () => {
+      beforeEach(async () => {
+        deleteProject.mockResolvedValueOnce(Promise.resolve());
+
+        createComponent();
+        jest.spyOn(wrapper.vm.$apollo.queries.projects, 'refetch');
+
+        await waitForPromises();
+      });
+
+      it('calls deleteProject and properly sets project.isDeleting to true before the promise resolves', () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+
+        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
+        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(true);
+      });
+
+      it('does not call createAlert', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+        await waitForPromises();
+
+        expect(createAlert).not.toHaveBeenCalled();
+      });
+
+      it('calls refetch and properly sets project.isDeleting to false when the promise resolves', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+        await waitForPromises();
+
+        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(false);
+        expect(wrapper.vm.$apollo.queries.projects.refetch).toHaveBeenCalled();
+      });
+    });
+
+    describe('when API call is not successful', () => {
+      const error = new Error();
+
+      beforeEach(async () => {
+        deleteProject.mockRejectedValue(error);
+
+        createComponent();
+        jest.spyOn(wrapper.vm.$apollo.queries.projects, 'refetch');
+
+        await waitForPromises();
+      });
+
+      it('calls deleteProject and properly sets project.isDeleting to true before the promise resolves', () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+
+        expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
+        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(true);
+      });
+
+      it('does call createAlert', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred deleting the project. Please refresh the page to try again.',
+          error,
+          captureError: true,
+        });
+      });
+
+      it('calls refetch and properly sets project.isDeleting to false when the promise resolves', async () => {
+        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
+        await waitForPromises();
+
+        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(false);
+        expect(wrapper.vm.$apollo.queries.projects.refetch).toHaveBeenCalled();
       });
     });
   });

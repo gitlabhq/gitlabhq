@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: :pipeline_composition do
+  using RSpec::Parameterized::TableSyntax
+
   include_context 'when there are catalog resources with versions'
 
   it { is_expected.to belong_to(:release) }
@@ -17,6 +19,27 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     it { is_expected.to validate_presence_of(:release) }
     it { is_expected.to validate_presence_of(:catalog_resource) }
     it { is_expected.to validate_presence_of(:project) }
+
+    describe 'semver validation' do
+      where(:version, :valid, :semver_major, :semver_minor, :semver_patch, :semver_prerelease) do
+        '1'             | false | nil | nil | nil | nil
+        '1.2'           | false | nil | nil | nil | nil
+        '1.2.3'         | true  | 1   | 2   | 3   | nil
+        '1.2.3-beta'    | true  | 1   | 2   | 3   | 'beta'
+        '1.2.3.beta'    | false | nil | nil | nil | nil
+      end
+
+      with_them do
+        let(:catalog_version) { build(:ci_catalog_resource_version, version: version) }
+
+        it do
+          expect(catalog_version.semver_major).to be semver_major
+          expect(catalog_version.semver_minor).to be semver_minor
+          expect(catalog_version.semver_patch).to be semver_patch
+          expect(catalog_version.semver_prerelease).to eq semver_prerelease
+        end
+      end
+    end
   end
 
   describe '.for_catalog resources' do
@@ -29,10 +52,10 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
   describe '.by_name' do
     it 'returns the version that matches the name' do
-      versions = described_class.by_name('v1.0')
+      versions = described_class.by_name('1.0.0')
 
       expect(versions.count).to eq(1)
-      expect(versions.first.name).to eq('v1.0')
+      expect(versions.first.name).to eq('1.0.0')
     end
 
     context 'when no version matches the name' do
@@ -144,8 +167,8 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
 
   describe '#readme' do
     it 'returns the correct readme for the version' do
-      expect(v1_0.readme.data).to include('Readme v1.0')
-      expect(v1_1.readme.data).to include('Readme v1.1')
+      expect(v1_0.readme.data).to include('Readme 1.0.0')
+      expect(v1_1.readme.data).to include('Readme 1.1.0')
     end
   end
 

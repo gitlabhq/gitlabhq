@@ -4452,7 +4452,6 @@ RSpec/FeatureCategory:
     - 'spec/models/integrations/base_issue_tracker_spec.rb'
     - 'spec/models/integrations/base_slack_notification_spec.rb'
     - 'spec/models/integrations/base_third_party_wiki_spec.rb'
-    - 'spec/models/integrations/bugzilla_spec.rb'
     - 'spec/models/integrations/buildkite_spec.rb'
     - 'spec/models/integrations/chat_message/alert_message_spec.rb'
     - 'spec/models/integrations/chat_message/base_message_spec.rb'

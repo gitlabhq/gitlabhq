@@ -576,7 +576,7 @@ To create a rule to allow Gitaly binary execution:
    ```
 
 1. Restart the service:
-   
+
    ```shell
    systemctl restart fapolicyd
    ```

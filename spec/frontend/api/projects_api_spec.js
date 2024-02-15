@@ -81,6 +81,22 @@ describe('~/api/projects_api.js', () => {
     });
   });
 
+  describe('deleteProject', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'delete');
+    });
+
+    it('deletes to the correct URL', () => {
+      const expectedUrl = `/api/v7/projects/${projectId}`;
+
+      mock.onDelete(expectedUrl).replyOnce(HTTP_STATUS_OK);
+
+      return projectsApi.deleteProject(projectId).then(() => {
+        expect(axios.delete).toHaveBeenCalledWith(expectedUrl);
+      });
+    });
+  });
+
   describe('importProjectMembers', () => {
     beforeEach(() => {
       jest.spyOn(axios, 'post');

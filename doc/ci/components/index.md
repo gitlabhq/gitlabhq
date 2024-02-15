@@ -260,7 +260,7 @@ To publish a new version of the component to the catalog:
    running the release job.
 
 After the release job completes successfully, the release is created and the new version
-is published to the CI/CD catalog.
+is published to the CI/CD catalog. Tags must use semantic versioning, for example `1.0.0`.
 
 ### Unpublish a component project
 

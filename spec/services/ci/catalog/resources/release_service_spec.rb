@@ -8,7 +8,7 @@ RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeli
       it 'validates the catalog resource and creates a version' do
         project = create(:project, :catalog_resource_with_components)
         catalog_resource = create(:ci_catalog_resource, project: project)
-        release = create(:release, project: project, sha: project.repository.root_ref_sha)
+        release = create(:release, project: project, sha: project.repository.root_ref_sha, tag: '1.0.0')
 
         response = described_class.new(release).execute
 

@@ -7,7 +7,7 @@ import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
 
-const defaultItem = mockPodsTableItems[0];
+const defaultItem = mockPodsTableItems[2];
 
 const createWrapper = (item = defaultItem) => {
   wrapper = shallowMount(WorkloadDetails, {
@@ -24,30 +24,51 @@ const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 const findBadge = (at) => findAllBadges().at(at);
 
 describe('Workload details component', () => {
-  beforeEach(() => {
-    createWrapper();
+  describe('when minimal fields are provided', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+
+    it.each`
+      label            | data                                 | collapsible | index
+      ${'Name'}        | ${defaultItem.name}                  | ${false}    | ${0}
+      ${'Kind'}        | ${defaultItem.kind}                  | ${false}    | ${1}
+      ${'Labels'}      | ${'key=value'}                       | ${false}    | ${2}
+      ${'Status'}      | ${defaultItem.status}                | ${false}    | ${3}
+      ${'Annotations'} | ${'annotation: text\nanother: text'} | ${true}     | ${4}
+    `('renders a list item for $label', ({ label, data, collapsible, index }) => {
+      expect(findWorkloadDetailsItem(index).props('label')).toBe(label);
+      expect(findWorkloadDetailsItem(index).text()).toMatchInterpolatedText(data);
+      expect(findWorkloadDetailsItem(index).props('collapsible')).toBe(collapsible);
+    });
+
+    it('renders a badge for each of the labels', () => {
+      const label = 'key=value';
+      expect(findAllBadges()).toHaveLength(2);
+      expect(findBadge(0).text()).toBe(label);
+    });
+
+    it('renders a badge for the status value', () => {
+      const { status } = defaultItem;
+      expect(findBadge(1).text()).toBe(status);
+      expect(findBadge(1).props('variant')).toBe(WORKLOAD_STATUS_BADGE_VARIANTS[status]);
+    });
   });
 
-  it.each`
-    label            | data                                | index
-    ${'Name'}        | ${defaultItem.name}                 | ${0}
-    ${'Kind'}        | ${defaultItem.kind}                 | ${1}
-    ${'Labels'}      | ${'key=value'}                      | ${2}
-    ${'Status'}      | ${defaultItem.status}               | ${3}
-    ${'Annotations'} | ${'annotation: text another: text'} | ${4}
-  `('renders a list item for each not empty value', ({ label, data, index }) => {
-    expect(findWorkloadDetailsItem(index).props('label')).toBe(label);
-    expect(findWorkloadDetailsItem(index).text()).toMatchInterpolatedText(data);
-  });
+  describe('when additional fields are provided', () => {
+    beforeEach(() => {
+      createWrapper(mockPodsTableItems[0]);
+    });
 
-  it('renders a badge for each of the labels', () => {
-    const label = 'key=value';
-    expect(findBadge(0).text()).toBe(label);
-  });
-
-  it('renders a badge for the status value', () => {
-    const { status } = defaultItem;
-    expect(findBadge(1).text()).toBe(status);
-    expect(findBadge(1).props('variant')).toBe(WORKLOAD_STATUS_BADGE_VARIANTS[status]);
+    it.each`
+      label            | yaml                                                         | index
+      ${'Status'}      | ${'phase: Running\nready: true\nrestartCount: 4'}            | ${3}
+      ${'Annotations'} | ${'annotation: text\nanother: text'}                         | ${4}
+      ${'Spec'}        | ${'restartPolicy: Never\nterminationGracePeriodSeconds: 30'} | ${5}
+    `('renders a collapsible list item for $label with the yaml code', ({ label, yaml, index }) => {
+      expect(findWorkloadDetailsItem(index).props('label')).toBe(label);
+      expect(findWorkloadDetailsItem(index).text()).toBe(yaml);
+      expect(findWorkloadDetailsItem(index).props('collapsible')).toBe(true);
+    });
   });
 });

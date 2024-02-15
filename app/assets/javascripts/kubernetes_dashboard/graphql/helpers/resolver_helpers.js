@@ -20,9 +20,9 @@ export const mapWorkloadItem = (item) => {
       annotations: item.metadata?.annotations || {},
       labels: item.metadata?.labels || {},
     };
-    return { status: item.status, metadata };
+    return { status: item.status, spec: item.spec, metadata };
   }
-  return { status: item.status };
+  return { status: item.status, spec: item.spec };
 };
 
 export const mapSetItem = (item) => {

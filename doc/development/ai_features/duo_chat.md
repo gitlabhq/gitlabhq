@@ -85,15 +85,34 @@ gdk start
 tail -f log/llm.log
 ```
 
-## Testing GitLab Duo Chat against real LLMs locally
+## Testing GitLab Duo Chat
 
-Because success of answers to user questions in GitLab Duo Chat heavily depends
+Because the success of answers to user questions in GitLab Duo Chat heavily depends
 on toolchain and prompts of each tool, it's common that even a minor change in a
 prompt or a tool impacts processing of some questions.
 
 To make sure that a change in the toolchain doesn't break existing
 functionality, you can use the following RSpec tests to validate answers to some
 predefined questions when using real LLMs:
+
+1. `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`
+   This test validates that the zero-shot agent is selecting the correct tools
+   for a set of Chat questions. It checks on the tool selection but does not
+   evaluate the quality of the Chat response.
+1. `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`
+   This test evaluates the quality of a Chat response by passing the question
+   asked along with the Chat-provided answer and context to at least two other
+   LLMs for evaluation. This evaluation is limited to questions about issues and
+   epics only. Learn more about the [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+
+If you are working on any changes to the GitLab Duo Chat logic, be sure to run
+the [GitLab Duo Chat CI jobs](#testing-with-ci) the merge request that contains
+your changes. Some of the CI jobs must be [manually triggered](../../ci/jobs/job_control.md#run-a-manual-job).
+
+## Testing locally
+
+To run the QA Evaluation test locally, the following environment variables
+must be exported:
 
 ```ruby
 export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
@@ -104,21 +123,22 @@ export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::
 REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
-When you need to update the test questions that require documentation embeddings,
-make sure a new fixture is generated and committed together with the change.
+When you update the test questions that require documentation embeddings,
+make sure you [generate a new fixture](index.md#use-embeddings-in-specs) and
+commit it together with the change.
 
-## Running the rspecs tagged with `real_ai_request`
+## Testing with CI
 
-The following CI jobs for GitLab project run the rspecs tagged with `real_ai_request`:
+The following CI jobs for GitLab project run the tests tagged with `real_ai_request`:
 
 - `rspec-ee unit gitlab-duo-chat-zeroshot`:
    the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
-   The job is optionally triggered and allowed to fail.
+   The job must be manually triggered and is allowed to fail.
 
 - `rspec-ee unit gitlab-duo-chat-qa`:
    The job runs the QA evaluation tests in
    `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-   The job is optionally triggered and allowed to fail.
+   The job must be manually triggered and is allowed to fail.
    Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
 
 - `rspec-ee unit gitlab-duo-chat-qa-fast`:
@@ -179,25 +199,30 @@ See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used 
 
 1. For each question, RSpec will regex-match for `CORRECT` or `INCORRECT`.
 
-#### Collection and tracking of QA evaluations via CI/CD automation
+#### Collection and tracking of QA evaluation with CI/CD automation
 
-The `gitlab` project's CI configurations have been setup to
-run the RSpec,
-collect the evaluation response as artifacts
-and execute [a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
+The `gitlab` project's CI configurations have been setup to run the RSpec,
+collect the evaluation response as artifacts and execute
+[a reporter script](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/duo_chat/reporter.rb)
 that automates collection and tracking of evaluations.
 
 When `rspec-ee unit gitlab-duo-chat-qa` job runs in a pipeline for a merge request,
 the reporter script uses the evaluations saved as CI artifacts
 to generate a Markdown report and posts it as a note in the merge request.
 
-When `rspec-ee unit gitlab-duo-chat-qa` is run in a pipeline for a commit on `master` branch,
-the reporter script instead
-posts the generated report as an issue,
-saves the evaluations artfacts as a snippet,
-and updates the tracking issue in
-[`gitlab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
-in the project [`gitlab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
+To keep track of and compare QA test results over time, you must manually
+run the `rspec-ee unit gitlab-duo-chat-qa` on the `master` the branch:
+
+1. Visit the [new pipeline page](https://gitlab.com/gitlab-org/gitlab/-/pipelines/new).
+1. Select "Run pipeline" to run a pipeline against the `master` branch
+1. When the pipeline first starts, the `rspec-ee unit gitlab-duo-chat-qa` job under the
+   "Test" stage will not be available. Wait a few minutes for other CI jobs to
+   run and then manually kick off this job by selecting the "Play" icon.
+
+When the test runs on `master`, the reporter script posts the generated report as an issue,
+saves the evaluations artfacts as a snippet, and updates the tracking issue in
+[`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
+in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](<https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation>).
 
 ## GraphQL Subscription
 

@@ -36,7 +36,8 @@ RSpec.describe PersonalAccessTokens::ExpiringWorker, type: :worker, feature_cate
         create(:personal_access_token, user: user2, expires_at: 5.days.from_now)
 
         # Query count increased for the user look up
-        expect { worker.perform }.not_to exceed_all_query_limit(control).with_threshold(4)
+        # there are still 2 N+1 queries one for token name look up and another for token update.
+        expect { worker.perform }.not_to exceed_all_query_limit(control).with_threshold(2)
       end
     end
 

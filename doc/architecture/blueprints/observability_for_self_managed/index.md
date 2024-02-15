@@ -78,7 +78,7 @@ could also deploy regional GOB instances, or even customer-specific GOB instance
 arises, and route requests to the desired GOB instance.
 
 Blue arrows highlight the request path from both GitLab SaaS and GitLab self-managed instances
-to GOB. All requests pass through the [Cloud Connector Gateway](../cloud_connector/index.md) 
+to GOB. All requests pass through the [Cloud Connector Gateway](../cloud_connector/index.md)
 public service and on to the private GOB service. GitLab SaaS cells will all have access to the public Cloud Connector Gateway.
 
 The [Cloud Connector Gateway will be a single entry point Load balancer](../cloud_connector/decisions/001_lb_entry_point.md).
@@ -215,7 +215,7 @@ sequenceDiagram
 It is critically important to keep the body of any observability requests from burdening Rails/Puma. All preAuthHandlers in Workhorse will ensure the body is not forwarded
 to Rails and will only be forwarded to GOB when auth is successful.
 
-If we consider the daily data transmitted and stored concerning our observability of GitLab.com, and we extrapolate that across our self-managed customers who might have equally demanding needs, we can get an idea of how much data will pass through Workhorse and Cloud Connector. GitLab.com produces 150M+ metrics series, sampled every 30-60 seconds, and 18-22 TB of logs per day. 
+If we consider the daily data transmitted and stored concerning our observability of GitLab.com, and we extrapolate that across our self-managed customers who might have equally demanding needs, we can get an idea of how much data will pass through Workhorse and Cloud Connector. GitLab.com produces 150M+ metrics series, sampled every 30-60 seconds, and 18-22 TB of logs per day.
 
 We could assume that any Ultimate tier root-level namespace on GitLab.com or any Ultimate tier self-managed instance could send a similar magnitude of data through `cloud.GitLab.com`.
 
@@ -314,7 +314,7 @@ Eventually, this quota management will be mapped to the GitLab Organization cons
 
 To ensure rate limiting and quota management in the GOB service is enforced correctly, GOB will use the IJWT token to extract relevant information
 about the customer license. Metadata headers will also be sent as part of the request leg from Workhorse to GOB that provides any additional
-information required by GOB to fulfill requests and enforce quotas and limits. 
+information required by GOB to fulfill requests and enforce quotas and limits.
 
 ## APIs
 

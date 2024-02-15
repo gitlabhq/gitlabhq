@@ -12,7 +12,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
   ignore_column :web_ide_clientside_preview_enabled, remove_with: '15.11', remove_after: '2023-04-22'
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
-  ignore_columns %i[encrypted_ai_access_token encrypted_ai_access_token_iv], remove_with: '16.10', remove_after: '2024-03-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
 

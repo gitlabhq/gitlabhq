@@ -31,6 +31,9 @@ query getOrganizationProjects(
         forkingAccessLevel {
           stringValue
         }
+        userPermissions {
+          removeProject
+        }
       }
       pageInfo {
         ...PageInfo

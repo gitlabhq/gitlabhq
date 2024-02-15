@@ -30,4 +30,11 @@ RSpec.describe Integrations::Bugzilla, feature_category: :integrations do
       it { is_expected.not_to validate_presence_of(:new_issue_url) }
     end
   end
+
+  describe '.attribution_notice' do
+    it do
+      expect(described_class.attribution_notice)
+      .to eq('The Bugzilla logo is a trademark of the Mozilla Foundation in the U.S. and other countries.')
+    end
+  end
 end

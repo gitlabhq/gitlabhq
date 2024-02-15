@@ -4,7 +4,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { organizationProjects, organizationGroups } from '~/organizations/mock_data';
 
 describe('formatProjects', () => {
-  it('correctly formats the projects', () => {
+  it('correctly formats the projects with delete permissions', () => {
     const [firstMockProject] = organizationProjects;
     const formattedProjects = formatProjects(organizationProjects);
     const [firstFormattedProject] = formattedProjects;
@@ -16,7 +16,31 @@ describe('formatProjects', () => {
       issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
       forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
       availableActions: [ACTION_EDIT, ACTION_DELETE],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
     });
+
+    expect(formattedProjects.length).toBe(organizationProjects.length);
+  });
+
+  it('correctly formats the projects without delete permissions', () => {
+    const nonDeletableProject = organizationProjects[organizationProjects.length - 1];
+    const formattedProjects = formatProjects(organizationProjects);
+    const nonDeletableFormattedProject = formattedProjects[formattedProjects.length - 1];
+
+    expect(nonDeletableFormattedProject).toMatchObject({
+      id: getIdFromGraphQLId(nonDeletableProject.id),
+      name: nonDeletableProject.nameWithNamespace,
+      mergeRequestsAccessLevel: nonDeletableProject.mergeRequestsAccessLevel.stringValue,
+      issuesAccessLevel: nonDeletableProject.issuesAccessLevel.stringValue,
+      forkingAccessLevel: nonDeletableProject.forkingAccessLevel.stringValue,
+      availableActions: [ACTION_EDIT],
+      actionLoadingStates: {
+        [ACTION_DELETE]: false,
+      },
+    });
+
     expect(formattedProjects.length).toBe(organizationProjects.length);
   });
 });

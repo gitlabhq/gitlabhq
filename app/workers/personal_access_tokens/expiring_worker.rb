@@ -18,21 +18,18 @@ module PersonalAccessTokens
     BATCH_SIZE = 100
 
     def perform(*args)
-      limit_date = PersonalAccessToken::DAYS_TO_EXPIRE.days.from_now.to_date
-
       # rubocop: disable CodeReuse/ActiveRecord -- We need to specify batch size to avoid timing out of worker
       loop do
-        tokens = PersonalAccessToken.without_impersonation.expiring_and_not_notified(limit_date)
+        tokens = PersonalAccessToken.expiring_and_not_notified_without_impersonation
           .select(:user_id).limit(BATCH_SIZE).to_a
 
         break if tokens.empty?
 
-        users = User.where(id: tokens.pluck(:user_id).uniq)
+        users = User.with_personal_access_tokens_expiring_soon_and_ids(tokens.pluck(:user_id).uniq)
 
         users.each do |user|
           with_context(user: user) do
-            expiring_user_tokens = user.personal_access_tokens
-            .without_impersonation.expiring_and_not_notified(limit_date)
+            expiring_user_tokens = user.expiring_soon_and_unnotified_personal_access_tokens
 
             next if expiring_user_tokens.empty?
 

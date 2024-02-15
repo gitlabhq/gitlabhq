@@ -106,9 +106,7 @@ module Search
     end
 
     def show_code_search_tab?
-      return true if tab_enabled_for_project?(:blobs)
-
-      project.nil? && show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)
+      tab_enabled_for_project?(:blobs)
     end
 
     def show_wiki_search_tab?

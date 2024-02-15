@@ -249,6 +249,7 @@ Example response:
     "is_shared": false,
     "runner_type": "project_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
+    "maintenance_note": null,
     "name": null,
     "online": true,
     "status": "online",
@@ -281,17 +282,18 @@ Update details of a runner.
 PUT /runners/:id
 ```
 
-| Attribute         | Type    | Required | Description                                                                                     |
-|-------------------|---------|----------|-------------------------------------------------------------------------------------------------|
-| `id`              | integer | yes      | The ID of a runner                                                                              |
-| `description`     | string  | no       | The description of the runner                                                                   |
-| `active`          | boolean | no       | Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs |
-| `paused`          | boolean | no       | Specifies if the runner should ignore new jobs                                             |
-| `tag_list`        | array   | no       | The list of tags for the runner                                                                 |
-| `run_untagged`    | boolean | no       | Specifies if the runner can execute untagged jobs                                          |
-| `locked`          | boolean | no       | Specifies if the runner is locked                                                          |
-| `access_level`    | string  | no       | The access level of the runner; `not_protected` or `ref_protected`                              |
-| `maximum_timeout` | integer | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs           |
+| Attribute          | Type    | Required | Description                                                                                     |
+|--------------------|---------|----------|-------------------------------------------------------------------------------------------------|
+| `id`               | integer | yes      | The ID of a runner                                                                              |
+| `description`      | string  | no       | The description of the runner                                                                   |
+| `active`           | boolean | no       | Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs |
+| `paused`           | boolean | no       | Specifies if the runner should ignore new jobs                                             |
+| `tag_list`         | array   | no       | The list of tags for the runner                                                                 |
+| `run_untagged`     | boolean | no       | Specifies if the runner can execute untagged jobs                                          |
+| `locked`           | boolean | no       | Specifies if the runner is locked                                                          |
+| `access_level`     | string  | no       | The access level of the runner; `not_protected` or `ref_protected`                              |
+| `maximum_timeout`  | integer | no       | Maximum timeout that limits the amount of time (in seconds) that runners can run jobs           |
+| `maintenance_note` | string  | no       | Free-form maintenance notes for the runner (1024 characters)                                    |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" \
@@ -318,6 +320,7 @@ Example response:
     "is_shared": false,
     "runner_type": "group_type",
     "contacted_at": "2016-01-25T16:39:48.066Z",
+    "maintenance_note": null,
     "name": null,
     "online": true,
     "status": "online",

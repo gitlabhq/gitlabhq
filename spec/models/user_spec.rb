@@ -162,6 +162,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
     it { is_expected.to have_many(:expired_today_and_unnotified_keys) }
+    it { is_expected.to have_many(:expiring_soon_and_unnotified_personal_access_tokens) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
@@ -1410,6 +1411,24 @@ RSpec.describe User, feature_category: :user_profile do
         it 'returns users whose keys will expire soon' do
           expect(described_class.with_ssh_key_expiring_soon).to contain_exactly(user2)
         end
+      end
+    end
+
+    describe '.with_personal_access_tokens_expiring_soon_and_ids' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user) }
+      let_it_be(:pat1) { create(:personal_access_token, user: user1, expires_at: 2.days.from_now) }
+      let_it_be(:pat2) { create(:personal_access_token, user: user2, expires_at: 7.days.from_now) }
+      let_it_be(:ids) { [user1.id] }
+
+      subject(:users) { described_class.with_personal_access_tokens_expiring_soon_and_ids(ids) }
+
+      it 'filters users only by id' do
+        expect(users).to contain_exactly(user1)
+      end
+
+      it 'includes expiring personal access tokens' do
+        expect(users.first.expiring_soon_and_unnotified_personal_access_tokens).to be_loaded
       end
     end
 
