@@ -208,6 +208,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
         calendar_path: '#',
         can_bulk_update: 'true',
+        can_create_issue: 'true',
         can_edit: 'true',
         can_import_issues: 'true',
         email: current_user&.notification_email_or_default,

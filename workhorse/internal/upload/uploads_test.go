@@ -333,6 +333,30 @@ func TestInvalidFileNames(t *testing.T) {
 	}
 }
 
+func TestIncompleteMultipartData(t *testing.T) {
+	testhelper.ConfigureSecret()
+
+	buffer := &bytes.Buffer{}
+
+	writer := multipart.NewWriter(buffer)
+	file, err := writer.CreateFormFile("file", "somefile.txt")
+	require.NoError(t, err)
+	fmt.Fprint(file, "test")
+	writer.Close()
+
+	// Truncate the buffer to simulate an incomplete multipart request
+	truncatedBuffer := buffer.Bytes()[:buffer.Len()-1]
+	customReader := bytes.NewReader(truncatedBuffer)
+
+	httpRequest, err := http.NewRequest("POST", "/example", customReader)
+	require.NoError(t, err)
+	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
+
+	response := httptest.NewRecorder()
+	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &SavedFileTracker{Request: httpRequest})
+	require.Equal(t, 400, response.Code)
+}
+
 func TestBadMultipartHeader(t *testing.T) {
 	httpRequest, err := http.NewRequest("POST", "/example", bytes.NewReader(nil))
 	require.NoError(t, err)

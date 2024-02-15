@@ -342,7 +342,7 @@ requires a different format. You can use any format except `Transient`.
 
 #### Change user **NameID**
 
-Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities .
+Group owners can use the [SAML API](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity) to change their group members' **NameID** and update their SAML identities.
 
 If [SCIM](scim_setup.md) is configured, group owners can update the SCIM identities using the [SCIM API](../../../api/scim.md#update-extern_uid-field-for-a-scim-identity).
 

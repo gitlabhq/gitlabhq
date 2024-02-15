@@ -39,6 +39,8 @@ module Gitlab
                 next
               end
 
+              change.keep_class ||= keep_class
+
               branch_name = git.commit_in_branch(change)
               add_standard_change_data(change)
 

@@ -113,6 +113,10 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
         ).and_return({ 'web_url' => 'https://example.com' })
 
       described_class.new(max_mrs: 2, keeps: [fake_keep]).run
+
+      # It sets the keep_class for the change
+      expect(change1.keep_class).to eq(fake_keep)
+      expect(change2.keep_class).to eq(fake_keep)
     end
 
     context 'when given filter_identifiers' do

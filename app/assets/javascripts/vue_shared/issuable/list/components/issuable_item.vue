@@ -373,6 +373,7 @@ export default {
           </gl-badge>
           <slot v-else name="status"></slot>
         </li>
+        <slot name="pipeline-status"></slot>
         <li v-if="assignees.length">
           <issuable-assignees
             :assignees="assignees"

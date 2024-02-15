@@ -163,6 +163,7 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
+    'canCreateIssue',
     'canReadCrmContact',
     'canReadCrmOrganization',
     'exportCsvPath',
@@ -330,7 +331,7 @@ export default {
       return this.isProject && this.isSignedIn;
     },
     showIssuableByEmail() {
-      return this.initialEmail && this.isSignedIn;
+      return this.initialEmail && this.canCreateIssue;
     },
     showNewIssueDropdown() {
       return !this.isProject && this.hasAnyProjects;

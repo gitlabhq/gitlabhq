@@ -183,6 +183,7 @@ module IssuesHelper
   def project_issues_list_data(project, current_user)
     common_issues_list_data(project, current_user).merge(
       can_bulk_update: can?(current_user, :admin_issue, project).to_s,
+      can_create_issue: can?(current_user, :create_issue, project).to_s,
       can_edit: can?(current_user, :admin_project, project).to_s,
       can_import_issues: can?(current_user, :import_issues, @project).to_s,
       can_read_crm_contact: can?(current_user, :read_crm_contact, project.group).to_s,

@@ -191,6 +191,7 @@
   - "{,ee/,jh/}{bin,config}/**/*.rb"
 
 .ci-templates-patterns: &ci-templates-patterns
+  - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
 
 .ci-qa-patterns: &ci-qa-patterns

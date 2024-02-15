@@ -200,6 +200,20 @@ audit-event-types-verify:
   script:
     - bundle exec rake gitlab:audit_event_types:check_docs
 
+templates-shellcheck:
+  extends:
+    - .ci-templates:rules:shellcheck
+    - .default-before_script
+    - .default-retry
+    - .ruby-cache
+    - .use-pg15
+  stage: lint
+  needs:
+    - setup-test-env
+  script:
+    - apt update && apt install -y shellcheck=0.9.0-1
+    - bundle exec scripts/lint_templates_bash.rb
+
 ping-appsec-for-sast-findings:
   stage: lint
   image: alpine:latest
