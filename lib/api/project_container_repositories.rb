@@ -9,6 +9,7 @@ module API
 
     REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       tag_name: API::NO_SLASH_URL_PART_REGEX)
+    DEFAULT_PAGE_COUNT = 20
 
     before { authorize_read_container_images! }
 
@@ -72,7 +73,8 @@ module API
         success Entities::ContainerRegistry::Tag
         failure [
           { code: 401, message: 'Unauthorized' },
-          { code: 404, message: 'Not Found' }
+          { code: 404, message: 'Not Found' },
+          { code: 405, message: 'Method Not Allowed' }
         ]
         is_array true
         tags %w[container_registry]
@@ -81,13 +83,29 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         use :pagination
       end
+
       get ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_read_container_image!
 
-        tags = Kaminari.paginate_array(repository.tags)
-        track_package_event('list_tags', :container, project: user_project, namespace: user_project.namespace)
+        paginated_tags =
+          if params[:pagination] == 'keyset'
+            not_allowed! unless repository.migrated? &&
+              Feature.enabled?(:use_registry_api_to_list_tags, repository.project, type: :gitlab_com_derisk)
 
-        present paginate(tags), with: Entities::ContainerRegistry::Tag
+            per_page_param = params[:per_page] || DEFAULT_PAGE_COUNT
+            sort_param = params[:sort] == 'desc' ? '-name' : 'name'
+
+            response = repository.tags_page(page_size: per_page_param, sort: sort_param, last: params[:last])
+            add_next_link_if_next_page_exists(response)
+
+            response[:tags]
+          else
+            tags = Kaminari.paginate_array(repository.tags)
+            paginate(tags)
+          end
+
+        track_package_event('list_tags', :container, project: user_project, namespace: user_project.namespace)
+        present paginated_tags, with: Entities::ContainerRegistry::Tag
       end
 
       desc 'Delete repository tags (in bulk)' do
@@ -200,6 +218,22 @@ module API
           .new("container_repository:cleanup_tags:#{repository.id}",
                timeout: 1.hour)
           .try_obtain
+      end
+
+      def add_next_link_if_next_page_exists(response)
+        next_link_uri = response.dig(:pagination, :next, :uri)
+        return unless next_link_uri.present?
+
+        parsed_params = Rack::Utils.parse_query(next_link_uri.query)
+        next_params = {
+          per_page: parsed_params['n'],
+          last: parsed_params['last'],
+          sort: parsed_params['sort'] == '-name' ? 'desc' : 'asc'
+        }.compact
+
+        Gitlab::Pagination::Keyset::HeaderBuilder
+        .new(self)
+        .add_next_page_header(next_params)
       end
 
       def repository

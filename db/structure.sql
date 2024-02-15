@@ -15262,7 +15262,8 @@ CREATE TABLE scan_result_policy_violations (
     merge_request_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    violation_data jsonb
 );
 
 CREATE SEQUENCE scan_result_policy_violations_id_seq

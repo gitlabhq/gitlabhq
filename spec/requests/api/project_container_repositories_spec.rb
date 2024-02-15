@@ -141,6 +141,22 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags' do
     let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags" }
 
+    shared_examples 'returning values correctly' do
+      it 'returns a list of tags' do
+        subject
+
+        expect(json_response.length).to eq(2)
+        expect(json_response.map { |repository| repository['name'] }).to eq %w[latest rootA]
+      end
+
+      it 'returns a matching schema' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('registry/tags')
+      end
+    end
+
     ['using API user', 'using job token'].each do |context|
       context context do
         include_context context
@@ -157,19 +173,133 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
           end
 
           it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
+          it_behaves_like 'returning values correctly'
 
-          it 'returns a list of tags' do
-            subject
+          context 'when pagination is set to keyset' do
+            let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset" }
 
-            expect(json_response.length).to eq(2)
-            expect(json_response.map { |repository| repository['name'] }).to eq %w[latest rootA]
-          end
+            context 'when repository is migrated', :saas do
+              let_it_be(:tags_response) do
+                [
+                  {
+                    name: 'latest',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9',
+                    size_bytes: 2319870,
+                    created_at: 1.minute.ago
+                  },
+                  {
+                    name: 'rootA',
+                    digest: 'sha256:4c8e63ca4cb663ce6c688cb06f1',
+                    config_digest: 'sha256:d7a513a663c1a6dcdba9',
+                    size_bytes: 2319871,
+                    created_at: 2.minutes.ago
+                  }
+                ]
+              end
 
-          it 'returns a matching schema' do
-            subject
+              let(:pagination) do
+                {
+                  previous: { uri: URI('/test?before=prev-cursor') },
+                  next: { uri: URI('/test?n=10&sort=-name&last=last-item') }
+                }
+              end
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to match_response_schema('registry/tags')
+              let(:response_body) do
+                {
+                  pagination: pagination,
+                  response_body: ::Gitlab::Json.parse(tags_response.to_json)
+                }
+              end
+
+              before do
+                allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+
+                allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                  allow(client).to receive(:tags).and_return(response_body)
+                end
+              end
+
+              using RSpec::Parameterized::TableSyntax
+              where(:parameter, :per_page, :sort, :last_param) do
+                "per_page=5" | 5  | 'name' | nil
+                "last=abc"   | 20 | 'name' | 'abc'
+                "sort=asc"   | 20 | 'name' | nil
+                "sort=desc"  | 20 | '-name' | nil
+                "sort=desc&last=a&per_page=10" | 10 | '-name' | 'a'
+              end
+
+              with_them do
+                let(:url) { "/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags?pagination=keyset&#{parameter}" }
+
+                it "passes the parameters correctly to the Container Registry API" do
+                  expect_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
+                    expect(client).to receive(:tags).with(
+                      root_repository.path,
+                      page_size: per_page,
+                      sort: sort,
+                      last: last_param,
+                      name: nil,
+                      before: nil,
+                      referrers: nil
+                    )
+                  end
+
+                  subject
+                end
+              end
+
+              context 'when the Gitlab API returns a tag' do
+                it_behaves_like 'returning values correctly'
+                it_behaves_like 'a package tracking event', described_class.name, 'list_tags'
+
+                it 'returns the correct link to the next page' do
+                  subject
+
+                  expect(response.header['Link']).to include('pagination=keyset')
+                  expect(response.header['Link']).to include('per_page=10')
+                  expect(response.header['Link']).to include('sort=desc')
+                  expect(response.header['Link']).to include('last=last-item')
+                end
+
+                context 'when there is no pagination link returned' do
+                  let(:pagination) { {} }
+
+                  it 'does not return a Link to the next page' do
+                    subject
+
+                    expect(response.header).not_to include('Link')
+                  end
+                end
+              end
+
+              context 'when the Gitlab API does not return a tag' do
+                let(:tags_response) { [] }
+
+                it 'returns an empty array' do
+                  subject
+                  expect(json_response).to be_empty
+                end
+              end
+            end
+
+            context 'when the repository is not migrated' do
+              it 'returns method not allowed' do
+                subject
+                expect(response).to have_gitlab_http_status(:method_not_allowed)
+              end
+            end
+
+            context 'when the feature use_registry_api_to_list_tags is disabled' do
+              before do
+                stub_feature_flags(use_registry_api_to_list_tags: false)
+              end
+
+              it 'returns method not allowed' do
+                subject
+                expect(response).to have_gitlab_http_status(:method_not_allowed)
+              end
+            end
           end
         end
       end

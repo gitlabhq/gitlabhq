@@ -3,7 +3,7 @@ key_path: counts.instances_apple_app_store_active
 description: Count of instances with active integrations for Apple App Store
 product_section: dev
 product_stage: manage
-product_group: integrations
+product_group: import_and_integrate
 value_type: number
 status: active
 milestone: "15.8"

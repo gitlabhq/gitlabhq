@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Scan result policy violation data",
+  "type": "object",
+  "properties": {
+    "context": {
+      "type": "object"
+    },
+    "violations": {
+      "type": "object"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "error"
+        ]
+      }
+    }
+  }
+}

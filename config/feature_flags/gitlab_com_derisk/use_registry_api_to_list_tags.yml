@@ -1,0 +1,9 @@
+---
+name: use_registry_api_to_list_tags
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432470
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143730
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17527
+milestone: '16.10'
+group: group::container registry
+type: gitlab_com_derisk
+default_enabled: false
