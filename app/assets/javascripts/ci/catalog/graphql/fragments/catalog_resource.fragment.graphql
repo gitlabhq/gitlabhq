@@ -15,7 +15,7 @@ fragment CatalogResourceFields on CiCatalogResource {
     }
     name
     path
-    releasedAt
+    createdAt
     author {
       id
       name

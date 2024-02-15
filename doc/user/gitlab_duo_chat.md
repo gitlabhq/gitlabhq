@@ -182,7 +182,7 @@ Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 Prerequisites:
 
 - You are using GitLab version 16.8 or later.
-- The Ultimate license is activated in your GitLab instance by using [cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- The Premium or Ultimate license is activated in your GitLab instance by using [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 - All of the users in your instance have the latest version of their IDE extension.
 - You are an administrator.
 
@@ -199,8 +199,8 @@ To enable GitLab Duo Chat for your self-managed GitLab instance:
 
 You must [manually synchronize your subscription](../subscriptions/self_managed/index.md#manually-synchronize-your-subscription-details) if either:
 
-- You have just purchased a subscription for the Ultimate tier and have upgraded to GitLab 16.8.
-- You already have a subscription for the Ultimate tier and have upgraded to GitLab 16.8.
+- You have just purchased a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
+- You already have a subscription for the Premium or Ultimate tier and have upgraded to GitLab 16.8.
 
 Without the manual synchronization, it might take up to 24 hours to activate GitLab Duo Chat on your instance.
 
@@ -225,7 +225,7 @@ To delete all previous conversations:
 ## Use GitLab Duo Chat in the Web IDE
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Status:** Experiment
 
 > - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment)
@@ -253,7 +253,7 @@ GitLab Duo Chat is not available in the Web IDE on self-managed.
 ## Use GitLab Duo Chat in VS Code
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Premium, Ultimate
 **Status:** Experiment
 
 > - Introduced in GitLab 16.6 as an [Experiment](../policy/experiment-beta-support.md#experiment).

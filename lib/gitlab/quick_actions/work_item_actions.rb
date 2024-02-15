@@ -65,6 +65,18 @@ module Gitlab
           @updates[:add_child] = extract_work_items(child_param)
           @execution_message[:add_child] = success_msg[:add_child]
         end
+
+        desc { _('Remove child from work item') }
+        explanation do |child_param|
+          format(_("Remove the child %{child_ref} from this work item."), child_ref: child_param)
+        end
+        types WorkItem
+        params 'Child #iid, reference or URL'
+        condition { has_children? && can_admin_link? }
+        command :remove_child do |child_param|
+          @updates[:remove_child] = extract_work_items(child_param).first
+          @execution_message[:remove_child] = success_msg[:remove_child]
+        end
       end
 
       private
@@ -141,7 +153,8 @@ module Gitlab
           promote_to: _("Work item promoted successfully."),
           set_parent: _('Work item parent set successfully'),
           remove_parent: _('Work item parent removed successfully'),
-          add_child: _('Child work item(s) added successfully')
+          add_child: _('Child work item(s) added successfully'),
+          remove_child: _('Child work item removed successfully')
         }
       end
 
@@ -155,6 +168,10 @@ module Gitlab
 
       def supports_children?
         ::WorkItems::HierarchyRestriction.find_by_parent_type_id(quick_action_target.work_item_type_id).present?
+      end
+
+      def has_children?
+        supports_children? && quick_action_target.work_item_children.present?
       end
 
       def can_admin_link?

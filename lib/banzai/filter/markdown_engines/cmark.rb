@@ -2,17 +2,17 @@
 
 # `CommonMark` markdown engine for GitLab's Banzai markdown filter.
 # This module is used in Banzai::Filter::MarkdownFilter.
-# Used gem is `commonmarker` which is a ruby wrapper for libcmark (CommonMark parser)
+# Used gem is `commonmarker` which is a ruby wrapper for cmark-gfm (CommonMark parser)
 # including GitHub's GFM extensions.
 # We now utilize the renderer built in `C`, rather than the ruby based renderer.
 # Homepage: https://github.com/gjtorikian/commonmarker
 #
-# Although this engine (ruby version) is currently not actively used, let's keep it here
+# Although this engine is currently not actively used, let's keep it here
 # for performance testing and as a backup.
 module Banzai
   module Filter
     module MarkdownEngines
-      class CommonMark < Base
+      class Cmark < Base
         EXTENSIONS = [
           :autolink,      # provides support for automatically converting URLs to anchor tags.
           :strikethrough, # provides support for strikethroughs.
@@ -48,4 +48,4 @@ module Banzai
   end
 end
 
-Banzai::Filter::MarkdownEngines::CommonMark.prepend_mod
+Banzai::Filter::MarkdownEngines::Cmark.prepend_mod

@@ -25,6 +25,7 @@ import {
   emptyPipelineSchedulesResponse,
   mockPipelineSchedulesResponseWithPagination,
   mockPipelineSchedulesResponsePlanLimitReached,
+  noPlanLimitResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -44,6 +45,7 @@ describe('Pipeline schedules app', () => {
   const planLimitReachedHandler = jest
     .fn()
     .mockResolvedValue(mockPipelineSchedulesResponsePlanLimitReached);
+  const noPlanLimitHandler = jest.fn().mockResolvedValue(noPlanLimitResponse);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
@@ -460,6 +462,19 @@ describe('Pipeline schedules app', () => {
     it('shows disabled new schedule button with alert', () => {
       expect(findNewButton().props('disabled')).toBe(true);
       expect(findPlanLimitReachedAlert().exists()).toBe(true);
+    });
+  });
+
+  describe('no plan limit', () => {
+    beforeEach(async () => {
+      createComponent([[getPipelineSchedulesQuery, noPlanLimitHandler]]);
+
+      await waitForPromises();
+    });
+
+    it('shows disabled new schedule button', () => {
+      expect(findNewButton().props('disabled')).toBe(true);
+      expect(findPlanLimitReachedAlert().exists()).toBe(false);
     });
   });
 });

@@ -266,6 +266,14 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
       end
     end
 
+    context 'with interruptible' do
+      context 'with matching rule' do
+        let(:rule_list) { [{ if: '$VAR == null', interruptible: true }] }
+
+        it { is_expected.to eq(described_class::Result.new(when: 'on_success', interruptible: true)) }
+      end
+    end
+
     context 'with a regexp variable matching rule' do
       let(:rule_list) { [{ if: '"abcde" =~ $pattern' }] }
 
@@ -286,6 +294,7 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
     let(:allow_failure) { nil }
     let(:variables) { nil }
     let(:needs) { nil }
+    let(:interruptible) { nil }
 
     subject(:result) do
       Gitlab::Ci::Build::Rules::Result.new(
@@ -293,7 +302,8 @@ RSpec.describe Gitlab::Ci::Build::Rules, feature_category: :pipeline_composition
         start_in: start_in,
         allow_failure: allow_failure,
         variables: variables,
-        needs: needs)
+        needs: needs,
+        interruptible: interruptible)
     end
 
     describe '#build_attributes' do

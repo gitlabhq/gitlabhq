@@ -186,6 +186,9 @@ export default {
     hasReachedPlanLimit() {
       return this.schedules?.count >= this.schedules?.planLimit;
     },
+    hasPlanLimit() {
+      return this.schedules?.planLimit;
+    },
   },
   watch: {
     // this watcher ensures that the count on the all tab
@@ -336,7 +339,7 @@ export default {
     </gl-alert>
 
     <gl-alert
-      v-if="hasReachedPlanLimit"
+      v-if="hasReachedPlanLimit && hasPlanLimit"
       class="gl-my-3"
       variant="warning"
       :dismissible="false"

@@ -143,19 +143,6 @@ module Gitlab
       }x
     end
 
-    MARKDOWN_CODE_BLOCK_REGEX = %r{
-      (?<code>
-        # Code blocks:
-        # ```
-        # Anything, including `>>>` blocks which are ignored by this filter
-        # ```
-
-        ^```
-        .+?
-        \n```\ *$
-      )
-    }mx
-
     # Code blocks:
     # ```
     # Anything, including `>>>` blocks which are ignored by this filter
@@ -166,19 +153,6 @@ module Gitlab
         '(?:\n|.)*?' \
         '\n```\ *$' \
       ')'
-
-    MARKDOWN_HTML_BLOCK_REGEX = %r{
-      (?<html>
-        # HTML block:
-        # <tag>
-        # Anything, including `>>>` blocks which are ignored by this filter
-        # </tag>
-
-        ^<[^>]+?>\ *\n
-        .+?
-        \n<\/[^>]+?>\ *$
-      )
-    }mx
 
     # HTML block:
     # <tag>
@@ -204,14 +178,6 @@ module Gitlab
         '(?:\n|.)*?' \
         '\n.*?-->\ *$' \
       ')'
-
-    def markdown_code_or_html_blocks
-      @markdown_code_or_html_blocks ||= %r{
-          #{MARKDOWN_CODE_BLOCK_REGEX}
-        |
-          #{MARKDOWN_HTML_BLOCK_REGEX}
-      }mx
-    end
 
     def markdown_code_or_html_blocks_untrusted
       @markdown_code_or_html_blocks_untrusted ||=

@@ -8,12 +8,12 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
 
   describe 'markdown engine from context' do
     it 'finds the correct engine' do
-      expect(described_class.new('foo', { markdown_engine: :common_mark }).render_engine)
-        .to eq Banzai::Filter::MarkdownEngines::CommonMark
+      expect(described_class.new('foo', { markdown_engine: :cmark }).render_engine)
+        .to eq Banzai::Filter::MarkdownEngines::Cmark
     end
 
-    it 'defaults to the RUST_ENGINE' do
-      default_engine = Banzai::Filter::MarkdownFilter::RUST_ENGINE.to_s.classify
+    it 'defaults to the GLFM_ENGINE' do
+      default_engine = Banzai::Filter::MarkdownFilter::GLFM_ENGINE.to_s.classify
       engine = "Banzai::Filter::MarkdownEngines::#{default_engine}".constantize
 
       expect(described_class.new('foo', {}).render_engine).to eq engine
@@ -95,5 +95,64 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
       expect(result).to include('<td>foot <sup')
       expect(result).to include('<section class="footnotes" data-footnotes>')
     end
+  end
+
+  describe 'multiline blockquotes' do
+    it 'works and has correct data-sourcepos references' do
+      text = <<~MD
+        - item one
+
+          >>>
+          Paragraph 1
+          >>>
+        - item two
+      MD
+
+      expected = <<~EXPECTED
+        <ul data-sourcepos="1:1-6:10">
+        <li data-sourcepos="1:1-5:5">
+        <p data-sourcepos="1:3-1:10">item one</p>
+        <blockquote data-sourcepos="3:3-5:5">
+        <p data-sourcepos="4:3-4:13">Paragraph 1</p>
+        </blockquote>
+        </li>
+        <li data-sourcepos="6:1-6:10">
+        <p data-sourcepos="6:3-6:10">item two</p>
+        </li>
+        </ul>
+      EXPECTED
+
+      result = filter(text, no_sourcepos: false)
+
+      expect(result).to eq(expected.strip)
+    end
+  end
+
+  it 'properly handles mixture with HTML comments and raw markdown' do
+    text = <<~MD
+      <!-- html comment -->
+
+      >>>
+      something
+      >>>
+
+      <h1>
+      test
+      </h1>
+    MD
+
+    expected = <<~EXPECTED
+    <!-- html comment -->
+    <blockquote data-sourcepos="3:1-5:3">
+    <p data-sourcepos="4:1-4:9">something</p>
+    </blockquote>
+    <h1>
+    test
+    </h1>
+    EXPECTED
+
+    result = filter(text, no_sourcepos: false)
+
+    expect(result).to eq(expected.strip)
   end
 end

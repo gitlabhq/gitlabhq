@@ -1,10 +1,45 @@
 # frozen_string_literal: true
 
+# NOTE: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles multiline block quotes.
+# The Ruby parser is now only for benchmarking purposes.
 module Banzai
   module Filter
     class BlockquoteFenceFilter < TimeoutTextPipelineFilter
+      MARKDOWN_CODE_BLOCK_REGEX = %r{
+        (?<code>
+          # Code blocks:
+          # ```
+          # Anything, including `>>>` blocks which are ignored by this filter
+          # ```
+
+          ^```
+          .+?
+          \n```\ *$
+        )
+      }mx
+
+      MARKDOWN_HTML_BLOCK_REGEX = %r{
+        (?<html>
+          # HTML block:
+          # <tag>
+          # Anything, including `>>>` blocks which are ignored by this filter
+          # </tag>
+
+          ^<[^>]+?>\ *\n
+          .+?
+          \n</[^>]+?>\ *$
+        )
+      }mx
+
+      MARKDOWN_CODE_OR_HTML_BLOCKS = %r{
+          #{MARKDOWN_CODE_BLOCK_REGEX}
+        |
+          #{MARKDOWN_HTML_BLOCK_REGEX}
+      }mx
+
       REGEX = %r{
-          #{::Gitlab::Regex.markdown_code_or_html_blocks}
+          #{MARKDOWN_CODE_OR_HTML_BLOCKS}
         |
           (?=(?<=^\n|\A)\ *>>>\ *\n.*\n\ *>>>\ *(?=\n$|\z))(?:
             # Blockquote:
@@ -36,10 +71,11 @@ module Banzai
 
       def initialize(text, context = nil, result = nil)
         super text, context, result
-        @text = @text.delete("\r")
       end
 
       def call_with_timeout
+        return @text if MarkdownFilter.glfm_markdown?(context)
+
         @text.gsub(REGEX) do
           if $~[:blockquote]
             # keep the same number of source lines/positions by replacing the

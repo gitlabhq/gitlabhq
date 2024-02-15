@@ -7,7 +7,8 @@ module Gitlab
         include ::Gitlab::Utils::StrongMemoize
 
         Result = Struct.new(
-          :when, :start_in, :allow_failure, :variables, :needs, :errors, :auto_cancel, keyword_init: true
+          :when, :start_in, :allow_failure, :variables, :needs, :errors, :auto_cancel, :interruptible,
+          keyword_init: true
         ) do
           def build_attributes
             needs_job = needs&.dig(:job)
@@ -16,7 +17,8 @@ module Gitlab
               options: { start_in: start_in }.compact,
               allow_failure: allow_failure,
               scheduling_type: (:dag if needs_job.present?),
-              needs_attributes: needs_job
+              needs_attributes: needs_job,
+              interruptible: interruptible
             }.compact
           end
 
@@ -40,7 +42,8 @@ module Gitlab
               allow_failure: matched_rule.attributes[:allow_failure],
               variables: matched_rule.attributes[:variables],
               needs: matched_rule.attributes[:needs],
-              auto_cancel: matched_rule.attributes[:auto_cancel]
+              auto_cancel: matched_rule.attributes[:auto_cancel],
+              interruptible: matched_rule.attributes[:interruptible]
             )
           else
             Result.new(when: 'never')

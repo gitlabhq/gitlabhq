@@ -936,6 +936,9 @@
               },
               "needs": {
                 "$ref": "#/definitions/rulesNeeds"
+              },
+              "interruptible": {
+                "$ref": "#/definitions/interruptible"
               }
             }
           },

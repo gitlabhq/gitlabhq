@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
   let(:metadata) do
     {
       allowed_when: %w[on_success on_failure always never manual delayed],
-      allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel]
+      allowed_keys: %i[if changes exists when start_in allow_failure variables needs auto_cancel interruptible]
     }
   end
 
@@ -38,8 +38,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
       it { is_expected.to be_valid }
     end
 
+    context 'with an interruptible: value but no clauses' do
+      let(:config) { { interruptible: true } }
+
+      it { is_expected.to be_valid }
+    end
+
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true } }
 
       it { is_expected.to be_valid }
 
@@ -51,6 +57,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
 
       describe '#allow_failure' do
         subject { entry.allow_failure }
+
+        it { is_expected.to eq(true) }
+      end
+
+      describe '#interruptible' do
+        subject { entry.interruptible }
 
         it { is_expected.to eq(true) }
       end
@@ -386,16 +398,45 @@ RSpec.describe Gitlab::Ci::Config::Entry::Rules::Rule, feature_category: :pipeli
         end
       end
     end
+
+    context 'interruptible: validation' do
+      context 'with a boolean value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: false }
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a null value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: nil }
+        end
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a string value' do
+        let(:config) do
+          { if: '$THIS == "that"', interruptible: 'string' }
+        end
+
+        it 'returns an error' do
+          is_expected.not_to be_valid
+          expect(subject.errors).to include(/rule interruptible should be a boolean value/)
+        end
+      end
+    end
   end
 
   describe '#value' do
     subject { entry.value }
 
     context 'when specifying an if: clause' do
-      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true } }
+      let(:config) { { if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true } }
 
       it 'stores the expression as "if"' do
-        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual', allow_failure: true)
+        expect(subject).to eq(if: '$THIS || $THAT', when: 'manual', allow_failure: true, interruptible: true)
       end
     end
 

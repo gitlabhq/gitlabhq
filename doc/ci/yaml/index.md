@@ -4263,6 +4263,35 @@ job:
     - echo "Run another script if $IS_A_FEATURE exists"
 ```
 
+#### `rules:interruptible`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/194023) in GitLab 16.10.
+
+Use `interruptible` in rules to update a job's [`interruptible`](#interruptible) value for specific conditions.
+
+**Keyword type**: Job-specific. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- `true` or `false`.
+
+**Example of `rules:interruptible`**:
+
+```yaml
+job:
+  script: echo "Hello, Rules!"
+  interruptible: true
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      interruptible: false  # Override interruptible defined at the job level.
+    - when: on_success
+```
+
+**Additional details**:
+
+- The rule-level `rules:interruptible` overrides the job-level [`interruptible`](#interruptible),
+  and only applies when the specific rule triggers the job.
+
 ### `script`
 
 Use `script` to specify commands for the runner to execute.

@@ -45,7 +45,7 @@ export default {
     lastReleaseText() {
       if (this.hasVersion) {
         return sprintf(this.$options.i18n.lastRelease, {
-          date: this.releasedAt,
+          date: this.createdAt,
         });
       }
 
@@ -57,8 +57,8 @@ export default {
     openMergeRequestText() {
       return n__('%d merge request', '%d merge requests', this.openMergeRequestsCount);
     },
-    releasedAt() {
-      return this.hasVersion && formatDate(this.latestVersion.releasedAt, 'yyyy-mm-dd');
+    createdAt() {
+      return this.hasVersion && formatDate(this.latestVersion.createdAt, 'yyyy-mm-dd');
     },
     projectInfoItems() {
       return [

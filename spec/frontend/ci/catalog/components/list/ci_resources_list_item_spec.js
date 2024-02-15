@@ -34,7 +34,7 @@ describe('CiResourcesListItem', () => {
   };
   const release = {
     author: { name: 'author', webUrl: '/user/1' },
-    releasedAt: Date.now(),
+    createdAt: Date.now(),
     name: '1.0.0',
   };
   const defaultProps = {

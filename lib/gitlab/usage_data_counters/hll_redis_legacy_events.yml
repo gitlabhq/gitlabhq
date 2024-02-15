@@ -283,6 +283,7 @@
 - i_quickactions_remove_estimate
 - i_quickactions_remove_iteration
 - i_quickactions_remove_milestone
+- i_quickactions_remove_child
 - i_quickactions_remove_parent
 - i_quickactions_remove_parent_epic
 - i_quickactions_remove_time_spent

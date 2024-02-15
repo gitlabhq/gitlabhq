@@ -123,6 +123,30 @@ export const emptyPipelineSchedulesResponse = {
   },
 };
 
+export const noPlanLimitResponse = {
+  data: {
+    currentUser: mockGetPipelineSchedulesGraphQLResponse.data.currentUser,
+    project: {
+      id: mockGetPipelineSchedulesGraphQLResponse.data.project.id,
+      projectPlanLimits: {
+        ciPipelineSchedules: null,
+        __typename: 'ProjectPlanLimits',
+      },
+      pipelineSchedules: {
+        count: 3,
+        nodes: mockGetPipelineSchedulesGraphQLResponse.data.project.pipelineSchedules.nodes,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'eyJpZCI6IjQ0In0',
+          endCursor: 'eyJpZCI6IjI4In0',
+          __typename: 'PageInfo',
+        },
+      },
+    },
+  },
+};
+
 export const deleteMutationResponse = {
   data: {
     pipelineScheduleDelete: {

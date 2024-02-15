@@ -52,13 +52,13 @@ export default {
       return getIdFromGraphQLId(this.resource.id);
     },
     formattedDate() {
-      return formatDate(this.latestVersion?.releasedAt);
+      return formatDate(this.latestVersion?.createdAt);
     },
     hasComponents() {
       return Boolean(this.componentNames);
     },
     hasReleasedVersion() {
-      return Boolean(this.latestVersion?.releasedAt);
+      return Boolean(this.latestVersion?.createdAt);
     },
     latestVersion() {
       return this.resource?.latestVersion || {};
@@ -66,8 +66,8 @@ export default {
     name() {
       return this.latestVersion?.name || this.$options.i18n.unreleased;
     },
-    releasedAt() {
-      return getTimeago().format(this.latestVersion?.releasedAt);
+    createdAt() {
+      return getTimeago().format(this.latestVersion?.createdAt);
     },
     resourceId() {
       return cleanLeadingSeparator(this.resource.webPath);
@@ -158,7 +158,7 @@ export default {
             <gl-sprintf :message="$options.i18n.releasedMessage">
               <template #timeAgo>
                 <span v-gl-tooltip.top :title="formattedDate">
-                  {{ releasedAt }}
+                  {{ createdAt }}
                 </span>
               </template>
               <template #author>

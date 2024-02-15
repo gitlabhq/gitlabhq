@@ -3531,6 +3531,59 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it_behaves_like 'command is not available'
       end
     end
+
+    describe '/remove child command' do
+      let_it_be(:child) { create(:work_item, :objective, project: project) }
+      let_it_be(:work_item) { create(:work_item, :objective, project: project) }
+      let_it_be(:child_ref) { child.to_reference(project) }
+
+      let(:command) { "/remove_child #{child_ref}" }
+
+      shared_examples 'command is available' do
+        before do
+          create(:parent_link, work_item_parent: work_item, work_item: child)
+        end
+
+        it 'explanation contains correct message' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations)
+            .to contain_exactly("Remove the child #{child_ref} from this work item.")
+        end
+
+        it 'contains command' do
+          expect(service.available_commands(work_item)).to include(a_hash_including(name: :remove_child))
+        end
+      end
+
+      shared_examples 'command is not available' do
+        it 'explanation is empty' do
+          _, explanations = service.explain(command, work_item)
+
+          expect(explanations).to eq([])
+        end
+
+        it 'does not contain command' do
+          expect(service.available_commands(work_item)).not_to include(a_hash_including(name: :remove_child))
+        end
+      end
+
+      context 'when user can admin link' do
+        it_behaves_like 'command is available'
+      end
+
+      context 'when user cannot admin link' do
+        subject(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'command is not available'
+      end
+
+      context 'when work item does not support children' do
+        let_it_be(:work_item) { create(:work_item, :key_result, project: project) }
+
+        it_behaves_like 'command is not available'
+      end
+    end
   end
 
   describe '#available_commands' do

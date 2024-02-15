@@ -17,3 +17,10 @@ wrong path declaration:
 rules-if-empty:
   rules:
     - if:
+
+# invalid rules:interruptible
+rules:interruptible as integer:
+  script: exit 0
+  rules:
+    - if: $TEST
+      interruptible: 1
