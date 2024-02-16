@@ -36,8 +36,7 @@ merge request again.
 ## Rebase a merge request from the Rails console
 
 DETAILS:
-**tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Tier:** Free, Premium, Ultimate
 
 In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
 users with access to the [Rails console](../../../administration/operations/rails_console.md)

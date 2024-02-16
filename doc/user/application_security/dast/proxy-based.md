@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.9 and will be removed in 17.0. Use [browser-based DAST](browser_based.md) instead. This change is a breaking change.

@@ -148,6 +148,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       # Ignore EE-only patterns list when in FOSS context
       relevant_patterns = foss_context ? patterns.reject { |pattern| pattern =~ %r|^{?ee/| } : patterns
       next if relevant_patterns.empty?
+      next if foss_context && name == '.custom-roles-patterns'
 
       PatternsList.new(name, relevant_patterns)
     end

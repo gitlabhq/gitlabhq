@@ -864,8 +864,9 @@ See also:
 
 ## GitLab SaaS
 
-Use **GitLab SaaS** to refer to the product offering.
-It does not refer to the GitLab instance, which is [GitLab.com](#gitlabcom).
+**GitLab SaaS** refers to both [GitLab.com](#gitlabcom) (multi-tenant SaaS) as well as [GitLab Dedicated](#gitlab-dedicated) (single-tenant SaaS).
+
+Try to avoid **GitLab SaaS** and instead, refer to the [specific offering](#offerings) instead.
 
 ## GitLab self-managed
 
@@ -873,7 +874,7 @@ Use **GitLab self-managed** to refer to the product offering. It refers to a Git
 
 ## GitLab.com
 
-Use **GitLab.com** to refer to the URL. GitLab.com is the instance that's managed by GitLab.
+Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the instance that's managed by GitLab.
 
 ## guide
 
@@ -1287,7 +1288,7 @@ Instead of:
 
 The current product offerings are:
 
-- [GitLab SaaS](#gitlab-saas)
+- [GitLab.com](#gitlabcom)
 - [GitLab self-managed](#gitlab-self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 

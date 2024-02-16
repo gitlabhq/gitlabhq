@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 GitLab SAST uses a set of [analyzers](analyzers.md) to scan code for potential vulnerabilities.
 Each analyzer processes the code then uses rules to find possible weaknesses in source code.

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that a user can, such

@@ -656,6 +656,11 @@
   - "lib/gitlab/audit/type/definition.rb"
   - "ee/lib/ee/gitlab/audit/type/definition.rb"
 
+.custom-roles-patterns: &custom-roles-patterns
+  - "ee/config/custom_abilities/*.yml"
+  - "doc/user/custom_roles/abilities.md"
+  - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
+
 ##################
 # Conditions set #
 ##################
@@ -1196,6 +1201,16 @@
       when: never
     - <<: *if-default-refs
       changes: *audit-events-patterns
+
+############################
+# Custom roles rules  #
+############################
+.custom-roles:rules:custom-roles-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *custom-roles-patterns
 
 ##################
 # Frontend rules #

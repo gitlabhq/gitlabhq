@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/321258) in GitLab 14.4. Feature flag `security_orchestration_policies_configuration` removed.
 

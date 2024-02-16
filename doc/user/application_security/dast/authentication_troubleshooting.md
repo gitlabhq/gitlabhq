@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 The [logs](#read-the-logs) provide insight into what DAST is doing and expecting during the authentication process. For more detailed
 information, configure the [authentication report](#configure-the-authentication-report).

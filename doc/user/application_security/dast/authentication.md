@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 WARNING:
 **DO NOT** use credentials that are valid for production systems, production servers, or any that

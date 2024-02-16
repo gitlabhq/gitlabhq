@@ -103,7 +103,7 @@ Evidence collection snapshots are visible on the Releases page, along with the t
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/32773) in GitLab 13.2.
 

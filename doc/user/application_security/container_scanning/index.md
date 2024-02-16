@@ -454,7 +454,7 @@ The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variab
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 To allowlist specific vulnerabilities, follow these steps:
 
@@ -804,7 +804,7 @@ After a vulnerability is found, you can [address it](../vulnerabilities/index.md
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 Some vulnerabilities can be fixed by applying the solution that GitLab
 automatically generates.

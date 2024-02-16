@@ -331,7 +331,7 @@ To enable full history Secret Detection, set the variable `SECRET_DETECTION_HIST
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211387) in GitLab 13.5.
 > - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/339614) support for passthrough chains.

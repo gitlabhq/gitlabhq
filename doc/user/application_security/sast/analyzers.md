@@ -80,7 +80,7 @@ content directly. Instead, it enhances the results with additional properties, i
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 ## Transition to Semgrep-based scanning
 

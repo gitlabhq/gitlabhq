@@ -34,8 +34,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 Apply the following feature flags to any AI feature work:
 
-- A general flag (`ai_duo_chat_switch`) that applies to all GitLab Duo Chat features.
-- A general flag (`ai_global_switch`) that applies to all other AI features.
+- A general flag (`ai_duo_chat_switch`) that applies to all GitLab Duo Chat features. It's enabled by default.
+- A general flag (`ai_global_switch`) that applies to all other AI features. It's enabled by default.
 - A flag specific to that feature. The feature flag name [must be different](../feature_flags/index.md#feature-flags-for-licensed-features) than the licensed feature name.
 
 See the [feature flag tracker epic](https://gitlab.com/groups/gitlab-org/-/epics/10524) for the list of all feature flags and how to use them.
@@ -55,33 +55,51 @@ See [below](#test-ai-features-with-ai-gateway-locally)
 
 ## Test SaaS-only AI features locally
 
-**One-line setup**
+**Automated setup**
+
+Replace`<test-group-name>` with the group name you want to enable GitLab Duo features.
+If the group doesn't exist, it creates a new one.
+You might need to re-run the script multiple times,
+it will print useful error messages with links to the docs on how to resolve the error.
 
 ```shell
-# Replace the <test-group-name> by the group name you want to enable GitLab Duo features. If the group doesn't exist, it creates a new one.
-RAILS_ENV=development bundle exec rake gitlab:duo:setup['<test-group-name>']
+GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
 ```
 
 **Manual way**
 
-1. Enable the required general feature flags:
-
-   ```ruby
-   Feature.enable(:ai_duo_chat_switch, type: :ops)
-   Feature.enable(:ai_global_switch, type: :ops)
-   ```
-
-1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance and you applied this license.
-1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance) and ensure the group you want to test has an Ultimate license
-1. Enable `Experiment & Beta features`
+1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses) for your local instance and you applied Ultimate license.
+   1. To verify that the license is applied go to **Admin Area** > **Subscription** and check the subscription plan.
+1. Allow use of EE features for your instance.
+   1. Go to **Admin Area** > **Settings** > **General** -> **Account and limit**
+   1. Enable **Allow use of licensed EE features**
+1. Simulate the GDK to [simulate SaaS](../ee_features.md#simulate-a-saas-instance).
+1. Ensure the group you want to test has an Ultimate license.
+   1. Go to **Admin Area** > **Overview** > **Groups**
+   1. Select **Edit** for your chosen group.
+   1. Go to **Permissions and group features**
+   1. Choose *Ultimate* from the **Plan** list.
+1. Enable `Experiment & Beta features` for your group.
    1. Go to the group with the Ultimate license
    1. **Group Settings** > **General** -> **Permissions and group features**
    1. Enable **Experiment & Beta features**
 1. Enable the specific feature flag for the feature you want to test
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework
+1. Setup [AI Gateway](#test-ai-features-with-ai-gateway-locally)
+
+### Temporary workaround to avoid AI Gateway setup
+
+NOTE:
+You need to setup AI Gateway since GitLab 16.8.
+It's a recommended way to test AI features. Sending requests directly to LLMs could lead to unnoticed bugs.
+Use this workaround with caution.
+
+To setup direct requests to LLMs you have to:
+
+1. Disable a feature flag `gitlab_duo_chat_requests_to_ai_gateway`.
 1. Set the required access token. To receive an access token:
    1. For Vertex, follow the [instructions below](#configure-gcp-vertex-access).
-   1. For Anthropic, create an access request
+   1. For Anthropic, create [an access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new).
 
 ### Configure GCP Vertex access
 

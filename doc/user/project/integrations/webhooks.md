@@ -338,7 +338,7 @@ You can [review recently triggered webhook payloads](#troubleshooting) in GitLab
 ## Configure webhooks to support mutual TLS
 
 DETAILS:
-**Offering:** self-managed
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27450) in GitLab 16.9.
 

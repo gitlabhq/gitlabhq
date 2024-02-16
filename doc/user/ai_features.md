@@ -50,6 +50,9 @@ Some features are still in development. View details about [support for each sta
   - View [how to enable this setting](group/manage.md#enable-experiment-and-beta-features).
 - [Code Suggestions](project/repository/code_suggestions/index.md) is enabled when you purchase the
   GitLab Duo Pro add-on and assign seats to users.
+- [Chat](gitlab_duo_chat.md)
+  - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-users).
+  - View [how to enable for SaaS](gitlab_duo_chat.md#for-saas-users).
 
 ## Experimental AI features and how to use them
 

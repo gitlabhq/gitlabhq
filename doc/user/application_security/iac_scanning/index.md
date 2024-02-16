@@ -86,7 +86,7 @@ Supported configuration formats:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > Support for overriding rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) in GitLab 14.8.
 

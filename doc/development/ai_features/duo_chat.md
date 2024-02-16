@@ -8,13 +8,11 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ## Set up GitLab Duo Chat
 
-NOTE:
-Use [this snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/2554994) for help automating the following section.
+There is a difference in the setup for Saas and self-managed instances.
+We recommend to start with a process described for SaaS-only AI features.
 
-1. [Enable Anthropic API features](index.md#configure-anthropic-access).
-1. [Ensure the embedding database is configured](index.md#embeddings-database).
-1. Ensure that your current branch is up-to-date with `master`.
-1. Enable the feature in Rails console: `Feature.enable(:tanuki_bot_breadcrumbs_entry_point)`
+1. [Setup SaaS-only AI features](index.md#test-saas-only-ai-features-locally).
+1. [Setup self-managed AI features](index.md#test-ai-features-with-ai-gateway-locally).
 
 ## Working with GitLab Duo Chat
 

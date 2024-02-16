@@ -1074,7 +1074,7 @@ This file is located at:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-Managed, SaaS
+**Offering:** Saas, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.9.
 

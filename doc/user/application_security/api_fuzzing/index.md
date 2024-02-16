@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 Web API fuzzing performs fuzz testing of API operation parameters. Fuzz testing sets operation
 parameters to unexpected values in an effort to cause unexpected behavior and errors in the API

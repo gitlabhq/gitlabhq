@@ -76,7 +76,7 @@ You can configure the following security controls:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 You can configure the following security controls:
 

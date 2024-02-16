@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 <!-- vale gitlab.FutureTense = NO -->
 

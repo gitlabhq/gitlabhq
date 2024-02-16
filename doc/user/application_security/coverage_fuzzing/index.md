@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 Coverage-guided fuzz testing sends random inputs to an instrumented version of your application in
 an effort to cause unexpected behavior. Such behavior indicates a bug that you should address.

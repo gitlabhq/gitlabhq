@@ -134,7 +134,7 @@ the repository. For details on the Solution format, see the Microsoft reference 
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - Introduced for Ruby in GitLab 14.2.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378622) for Go in GitLab 15.8.
@@ -153,7 +153,7 @@ False positive detection is available in a subset of the [supported languages](#
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
 
@@ -269,7 +269,7 @@ The [SAST report file](#output) is processed by GitLab and the details are shown
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 SAST results display in the merge request widget area if a report from the target
 branch is available for comparison. The merge request widget displays SAST results and resolutions that
@@ -281,7 +281,7 @@ were introduced by the changes made in the merge request.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10959) in GitLab 16.6 with a [flag](../../../administration/feature_flags.md) named `sast_reports_in_inline_diff`. Disabled by default.
 > - Enabled by default in GitLab 16.8.
@@ -341,7 +341,7 @@ The method you can use depends on your GitLab license tier.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410013) individual SAST analyzers configuration options from the UI in GitLab 16.2.
 

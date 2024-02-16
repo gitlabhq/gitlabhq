@@ -99,7 +99,7 @@ Custom project templates are available at:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13756) in GitLab 12.10
 

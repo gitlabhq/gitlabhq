@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Adopting GitLab application security](https://www.youtube.com/watch?v=5QlxkiKR04k).
