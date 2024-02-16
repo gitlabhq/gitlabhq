@@ -308,8 +308,10 @@ RSpec.describe 'Environment', feature_category: :environment_management do
 
       remove_branch_with_hooks(project, user, 'feature') do
         page.within('.js-branch-feature') do
-          find('[data-testid="branch-more-actions"] .gl-new-dropdown-toggle').click
-          find('[data-testid="delete-branch-button"]').click
+          within_testid('branch-more-actions') do
+            find('.gl-new-dropdown-toggle').click
+          end
+          find_by_testid('delete-branch-button').click
         end
       end
 

@@ -18,8 +18,8 @@ RSpec.describe 'Profile > Comment templates > User updated comment template', :j
   it 'shows the user a list of their comment template' do
     click_button 'Comment template actions'
 
-    find('[data-testid="comment-template-edit-btn"]').click
-    find('[data-testid="comment-template-name-input"]').set('test')
+    find_by_testid('comment-template-edit-btn').click
+    find_by_testid('comment-template-name-input').set('test')
 
     click_button 'Save'
 

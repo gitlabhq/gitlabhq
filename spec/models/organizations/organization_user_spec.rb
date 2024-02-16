@@ -34,12 +34,27 @@ RSpec.describe Organizations::OrganizationUser, type: :model, feature_category: 
     end
   end
 
-  describe '.owners' do
-    it 'returns the owners of the organization' do
-      organization_user = create(:organization_user, :owner)
-      create(:organization_user)
+  describe 'scopes' do
+    describe '.owners' do
+      it 'returns the owners of the organization' do
+        organization_user = create(:organization_user, :owner)
+        create(:organization_user)
 
-      expect(described_class.owners).to match([organization_user])
+        expect(described_class.owners).to match([organization_user])
+      end
+    end
+
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:organization_users) { create_pair(:organization_user, organization: organization) }
+
+      before do
+        create(:organization_user)
+      end
+
+      subject { described_class.in_organization(organization) }
+
+      it { is_expected.to match_array(organization_users) }
     end
   end
 

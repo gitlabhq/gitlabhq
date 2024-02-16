@@ -113,7 +113,7 @@ RSpec.describe "Compare", :js, feature_category: :groups_and_projects do
 
         click_button('Compare')
 
-        page.within('[data-testid="too-many-changes-alert"]') do
+        within_testid('too-many-changes-alert') do
           expect(page).to have_text("Some changes are not shown. For a faster browsing experience, only 3 of 3+ files are shown. Download one of the files below to see all changes.")
         end
       end

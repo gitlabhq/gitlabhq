@@ -1280,6 +1280,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '.in_organization' do
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:groups) { create_pair(:group, organization: organization) }
+
+      before do
+        create(:group)
+      end
+
+      subject { described_class.in_organization(organization) }
+
+      it { is_expected.to match_array(groups) }
+    end
   end
 
   describe '#to_reference' do

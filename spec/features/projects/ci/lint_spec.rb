@@ -25,7 +25,7 @@ RSpec.describe 'CI Lint', :js, feature_category: :pipeline_composition do
     shared_examples 'validates the YAML' do
       before do
         click_on 'Validate'
-        scroll_to(page.find('[data-testid="ci-lint-status"]'))
+        scroll_to(find_by_testid('ci-lint-status'))
       end
 
       context 'YAML is correct' do

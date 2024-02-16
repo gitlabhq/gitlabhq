@@ -257,6 +257,7 @@ class Group < Namespace
 
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
+  scope :in_organization, -> (organization) { where(organization: organization) }
 
   class << self
     def sort_by_attribute(method)

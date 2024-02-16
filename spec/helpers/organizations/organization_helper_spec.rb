@@ -19,6 +19,14 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
   let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
 
+  let(:stubbed_results) do
+    {
+      'groups' => 10,
+      'projects' => 50,
+      'users' => 1050
+    }
+  end
+
   before do
     allow(organization).to receive(:to_global_id).and_return(organization_gid)
     allow(helper).to receive(:new_group_path).and_return(new_group_path)
@@ -31,6 +39,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow(helper).to receive(:image_path).with(projects_empty_state_svg_path).and_return(projects_empty_state_svg_path)
     allow(helper).to receive(:preview_markdown_organizations_path).and_return(preview_markdown_organizations_path)
     allow(helper).to receive(:current_user).and_return(user)
+    allow_next_instance_of(Organizations::OrganizationAssociationCounter) do |finder|
+      allow(finder).to receive(:execute).and_return(stubbed_results)
+    end
   end
 
   shared_examples 'includes that the user can create a group' do |method|
@@ -141,11 +152,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
           'projects_empty_state_svg_path' => projects_empty_state_svg_path,
-          'association_counts' => {
-            'groups' => 10,
-            'projects' => 5,
-            'users' => 1050
-          }
+          'association_counts' => stubbed_results
         }
       )
     end

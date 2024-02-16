@@ -29,6 +29,7 @@ export default {
     <organization-avatar :organization="organization" />
     <organization-description :organization="organization" />
     <association-counts
+      v-if="Object.keys(associationCounts).length"
       :association-counts="associationCounts"
       :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"
     />

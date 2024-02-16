@@ -25737,6 +25737,8 @@ CREATE INDEX index_namespaces_on_name_trigram ON namespaces USING gin (name gin_
 
 CREATE INDEX index_namespaces_on_organization_id ON namespaces USING btree (organization_id);
 
+CREATE INDEX index_namespaces_on_organization_id_for_groups ON namespaces USING btree (organization_id) WHERE ((type)::text = 'Group'::text);
+
 CREATE INDEX index_namespaces_on_owner_id ON namespaces USING btree (owner_id);
 
 CREATE UNIQUE INDEX index_namespaces_on_parent_id_and_id ON namespaces USING btree (parent_id, id);

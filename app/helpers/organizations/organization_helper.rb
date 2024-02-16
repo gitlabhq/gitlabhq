@@ -13,13 +13,7 @@ module Organizations
         organization: organization.slice(:id, :name, :description_html)
           .merge({ avatar_url: organization.avatar_url(size: 128) }),
         groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
-        # TODO: Update counts to use real data
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/424531
-        association_counts: {
-          groups: 10,
-          projects: 5,
-          users: 1050
-        }
+        association_counts: association_counts(organization)
       }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end
 
@@ -103,6 +97,10 @@ module Organizations
 
     def has_groups?(organization)
       organization.groups.exists?
+    end
+
+    def association_counts(organization)
+      Organizations::OrganizationAssociationCounter.new(organization: organization, current_user: current_user).execute
     end
   end
 end

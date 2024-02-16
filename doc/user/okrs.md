@@ -18,6 +18,7 @@ For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-or
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project, an administrator can [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
 On GitLab.com, by default this feature is not available, but can be configured by GitLab.com administrators.
+The feature is not ready for production use.
 
 [Objectives and key results](https://en.wikipedia.org/wiki/OKR) (OKRs) are a framework for setting
 and tracking goals that are aligned with your organization's overall strategy and vision.

@@ -21,7 +21,7 @@ module Gitlab
           end
 
           def value
-            @config.flatten(MAX_NESTING_LEVEL)
+            @config.flatten
           end
         end
       end
