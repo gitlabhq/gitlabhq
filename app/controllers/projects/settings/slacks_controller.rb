@@ -5,12 +5,14 @@ module Projects
     class SlacksController < Projects::ApplicationController
       before_action :handle_oauth_error, only: :slack_auth
       before_action :check_oauth_state, only: :slack_auth
+
+      include ::Integrations::SlackControllerSettings
+
       before_action :authorize_admin_project!
+      before_action :integration, only: [:edit, :update]
       before_action :slack_integration, only: [:edit, :update]
 
       layout 'project_settings'
-
-      feature_category :integrations
 
       def slack_auth
         result = Projects::SlackApplicationInstallService.new(project, current_user, params).execute
@@ -18,13 +20,7 @@ module Projects
         flash[:alert] = result[:message] if result[:status] == :error
 
         session[:slack_install_success] = true
-        redirect_to_service_page
-      end
-
-      def destroy
-        slack_integration.destroy
-
-        redirect_to_service_page
+        redirect_to_integration_page
       end
 
       def edit; end
@@ -33,7 +29,7 @@ module Projects
         if slack_integration.update(slack_integration_params)
           flash[:notice] = 'The project alias was updated successfully'
 
-          redirect_to_service_page
+          redirect_to_integration_page
         else
           render :edit
         end
@@ -41,10 +37,13 @@ module Projects
 
       private
 
-      def redirect_to_service_page
+      def integration
+        @integration ||= project.gitlab_slack_application_integration
+      end
+
+      def redirect_to_integration_page
         redirect_to edit_project_settings_integration_path(
-          project,
-          project.gitlab_slack_application_integration || project.build_gitlab_slack_application_integration
+          project, integration || project.build_gitlab_slack_application_integration
         )
       end
 
@@ -58,11 +57,7 @@ module Projects
         return unless params[:error] == 'access_denied'
 
         flash[:alert] = 'Access denied'
-        redirect_to_service_page
-      end
-
-      def slack_integration
-        @slack_integration ||= project.gitlab_slack_application_integration.slack_integration
+        redirect_to_integration_page
       end
 
       def slack_integration_params

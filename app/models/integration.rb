@@ -20,7 +20,8 @@ class Integration < ApplicationRecord
 
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
-    datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki hangouts_chat harbor irker jira
+    datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
+    gitlab_slack_application hangouts_chat harbor irker jira
     mattermost mattermost_slash_commands microsoft_teams packagist pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
@@ -32,7 +33,7 @@ class Integration < ApplicationRecord
 
   # See: https://gitlab.com/gitlab-org/gitlab/-/issues/345677
   PROJECT_SPECIFIC_INTEGRATION_NAMES = %w[
-    apple_app_store gitlab_slack_application google_play jenkins
+    apple_app_store google_play jenkins
   ].freeze
 
   # Fake integrations to help with local development.
@@ -311,18 +312,26 @@ class Integration < ApplicationRecord
   # Returns a list of available integration names.
   # Example: ["asana", ...]
   def self.available_integration_names(
-    include_project_specific: true, include_dev: true, include_instance_specific: true
+    include_project_specific: true, include_dev: true, include_instance_specific: true, include_disabled: false
   )
     names = integration_names
     names += project_specific_integration_names if include_project_specific
     names += dev_integration_names if include_dev
     names += instance_specific_integration_names if include_instance_specific
+    names -= disabled_integration_names unless include_disabled
 
     names.sort_by(&:downcase)
   end
 
   def self.integration_names
-    INTEGRATION_NAMES
+    names = INTEGRATION_NAMES.dup
+
+    unless Feature.enabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+        (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
+      names.delete('gitlab_slack_application')
+    end
+
+    names
   end
 
   def self.instance_specific_integration_names
@@ -337,7 +346,12 @@ class Integration < ApplicationRecord
 
   def self.project_specific_integration_names
     names = PROJECT_SPECIFIC_INTEGRATION_NAMES.dup
-    names.delete('gitlab_slack_application') unless Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?
+
+    if Feature.disabled?(:gitlab_for_slack_app_instance_and_group_level, type: :wip) &&
+        (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
+      names << 'gitlab_slack_application'
+    end
+
     names
   end
 
@@ -348,6 +362,15 @@ class Integration < ApplicationRecord
       integration_name_to_type(_1)
     end
   end
+
+  # Returns a list of disabled integration names.
+  # Example: ["gitlab_slack_application", ...]
+  def self.disabled_integration_names
+    # The GitLab for Slack app integration is only available when enabled through settings.
+    # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
+    Gitlab::CurrentSettings.slack_app_enabled ? ['slack_slash_commands'] : ['gitlab_slack_application']
+  end
+  private_class_method :disabled_integration_names
 
   # Returns the model for the given integration name.
   # Example: :asana => Integrations::Asana
@@ -360,7 +383,7 @@ class Integration < ApplicationRecord
   # Example: "asana" => "Integrations::Asana"
   def self.integration_name_to_type(name)
     name = name.to_s
-    if available_integration_names.exclude?(name)
+    if available_integration_names(include_disabled: true).exclude?(name)
       Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownType.new(name.inspect))
     else
       "Integrations::#{name.camelize}"

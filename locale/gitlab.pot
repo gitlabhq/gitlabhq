@@ -8491,6 +8491,9 @@ msgstr ""
 msgid "Boards|New board"
 msgstr ""
 
+msgid "Boards|No cadence matches current iteration filter"
+msgstr ""
+
 msgid "Boards|Retrieving blocking %{issuableType}s"
 msgstr ""
 
@@ -26652,6 +26655,9 @@ msgid "Invalid input, please avoid emoji"
 msgstr ""
 
 msgid "Invalid login or password"
+msgstr ""
+
+msgid "Invalid name %{input} was given for this default stage, allowed names: %{names}"
 msgstr ""
 
 msgid "Invalid period"
@@ -47018,7 +47024,7 @@ msgstr ""
 msgid "SlackIntegration|- *Slash commands:* Quickly open, access, or close issues from Slack using the `%{slash_command}` command. Streamline your GitLab deployments with ChatOps."
 msgstr ""
 
-msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
+msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
@@ -47069,9 +47075,6 @@ msgstr ""
 msgid "SlackIntegration|Reinstall GitLab for Slack app…"
 msgstr ""
 
-msgid "SlackIntegration|Remove project"
-msgstr ""
-
 msgid "SlackIntegration|Run ChatOps jobs."
 msgstr ""
 
@@ -47093,10 +47096,7 @@ msgstr ""
 msgid "SlackIntegration|Step 2: Configure the app settings"
 msgstr ""
 
-msgid "SlackIntegration|Team name"
-msgstr ""
-
-msgid "SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack."
+msgid "SlackIntegration|This integration allows users to perform common operations on their projects by entering slash commands in Slack."
 msgstr ""
 
 msgid "SlackIntegration|Update to the latest version"
@@ -47124,6 +47124,9 @@ msgid "SlackIntegration|Verification token"
 msgstr ""
 
 msgid "SlackIntegration|When GitLab releases new features for the GitLab for Slack app, you might have to manually update your copy to use the new features."
+msgstr ""
+
+msgid "SlackIntegration|Workspace name"
 msgstr ""
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."

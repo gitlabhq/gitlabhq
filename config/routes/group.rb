@@ -60,6 +60,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
       end
 
+      resource :slack, only: [:destroy] do
+        get :slack_auth
+      end
+
       resources :applications do
         put 'renew', on: :member
       end

@@ -1749,14 +1749,12 @@ class Project < ApplicationRecord
       .sort_by(&:title)
   end
 
+  # Returns a list of integration names that should be disabled at the project-level.
+  # Globally disabled integrations should go in Integration.disabled_integration_names.
   def disabled_integrations
     return [] if Rails.env.development?
 
-    names = %w[zentao]
-
-    # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
-    # The GitLab for Slack app integration is only available when enabled through settings.
-    names << (Gitlab::CurrentSettings.slack_app_enabled ? 'slack_slash_commands' : 'gitlab_slack_application')
+    %w[zentao]
   end
 
   def find_or_initialize_integration(name)

@@ -156,6 +156,10 @@ namespace :admin do
       end
     end
 
+    resource :slack, only: [:destroy] do
+      get :slack_auth
+    end
+
     get :usage_data
     put :reset_registration_token
     put :reset_health_check_token

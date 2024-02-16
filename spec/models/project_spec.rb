@@ -6736,26 +6736,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#disabled_integrations' do
     subject { build(:project).disabled_integrations }
 
-    it { is_expected.to include('gitlab_slack_application') }
-    it { is_expected.not_to include('slack_slash_commands') }
-
-    context 'when slack_app_enabled setting is enabled' do
-      before do
-        stub_application_setting(slack_app_enabled: true)
-      end
-
-      it { is_expected.to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
-
-    context 'when Rails.env.development?' do
-      before do
-        allow(Rails.env).to receive(:development?).and_return(true)
-      end
-
-      it { is_expected.not_to include('slack_slash_commands') }
-      it { is_expected.not_to include('gitlab_slack_application') }
-    end
+    it { is_expected.to include('zentao') }
   end
 
   describe '#find_or_initialize_integration' do

@@ -47,7 +47,6 @@ Style/IfUnlessModifier:
     - 'app/finders/feature_flags_user_lists_finder.rb'
     - 'app/finders/group_projects_finder.rb'
     - 'app/finders/labels_finder.rb'
-    - 'app/finders/members_finder.rb'
     - 'app/finders/notes_finder.rb'
     - 'app/finders/packages/helm/packages_finder.rb'
     - 'app/finders/personal_access_tokens_finder.rb'

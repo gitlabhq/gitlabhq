@@ -36,9 +36,11 @@ module QA
         # migration to the new spinner is complete.
         # https://gitlab.com/groups/gitlab-org/-/epics/956
         # retry_on_exception added here due to `StaleElementReferenceError`. See: https://gitlab.com/gitlab-org/gitlab/-/issues/232485
-        Support::Retrier.retry_on_exception do
-          Capybara.page.has_no_css?('.gl-spinner', wait: wait)
-        end
+
+        Capybara.page.has_no_css?('.gl-spinner', wait: wait)
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError => e
+        QA::Runtime::Logger.error(".gl-spinner reference has become stale: #{e}")
+        true
       end
     end
   end

@@ -957,7 +957,7 @@ so you should only use the variable in GitLab itself.
 
 ## Known issues and workarounds
 
-These are some know issues with CI/CD variables, and where applicable, known workarounds.
+These are some known issues with CI/CD variables, and where applicable, known workarounds.
 
 ### "argument list too long"
 

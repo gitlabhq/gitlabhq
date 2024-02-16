@@ -16930,7 +16930,8 @@ CREATE TABLE vulnerabilities (
     present_on_default_branch boolean DEFAULT true NOT NULL,
     detected_at timestamp with time zone DEFAULT now(),
     finding_id bigint,
-    cvss jsonb DEFAULT '[]'::jsonb
+    cvss jsonb DEFAULT '[]'::jsonb,
+    CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 
 CREATE SEQUENCE vulnerabilities_id_seq

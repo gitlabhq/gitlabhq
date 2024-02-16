@@ -222,15 +222,16 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
   end
 
   describe '#add_to_slack_link' do
-    let(:slack_link) { helper.add_to_slack_link(project, 'A12345') }
+    subject(:slack_link) { helper.add_to_slack_link(project, 'A12345') }
+
     let(:query) { Rack::Utils.parse_query(URI.parse(slack_link).query) }
 
     before do
       allow(helper).to receive(:form_authenticity_token).and_return('a token')
-      allow(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
     end
 
     it 'returns the endpoint URL with all needed params' do
+      expect(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
       expect(slack_link).to start_with(Projects::SlackApplicationInstallService::SLACK_AUTHORIZE_URL)
       expect(slack_link).to include('&state=a+token')
 
@@ -240,6 +241,55 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
         'redirect_uri' => 'http://redirect',
         'state' => 'a token'
       )
+    end
+
+    context 'when passed a group' do
+      subject(:slack_link) { helper.add_to_slack_link(build_stubbed(:group), 'A12345') }
+
+      it 'returns the endpoint URL a redirect-uri for the group' do
+        expect(helper).to receive(:slack_auth_group_settings_slack_url).and_return('http://group-redirect')
+        expect(query).to include('redirect_uri' => 'http://group-redirect')
+      end
+    end
+
+    context 'when passed nil' do
+      subject(:slack_link) { helper.add_to_slack_link(nil, 'A12345') }
+
+      it 'returns the endpoint URL a redirect-uri for the instance' do
+        expect(helper).to receive(:slack_auth_admin_application_settings_slack_url).and_return('http://instance-redirect')
+        expect(query).to include('redirect_uri' => 'http://instance-redirect')
+      end
+    end
+  end
+
+  describe '#slack_integration_destroy_path' do
+    subject(:destroy_path) { helper.slack_integration_destroy_path(parent) }
+
+    context 'when parent is a project' do
+      let(:parent) { project }
+
+      it 'returns the correct path' do
+        expect(helper).to receive(:project_settings_slack_path).and_return('http://project-redirect')
+        expect(destroy_path).to eq('http://project-redirect')
+      end
+    end
+
+    context 'when parent is a group' do
+      let(:parent) { build_stubbed(:group) }
+
+      it 'returns the endpoint URL a redirect-uri for the group' do
+        expect(helper).to receive(:group_settings_slack_path).and_return('http://group-redirect')
+        expect(destroy_path).to eq('http://group-redirect')
+      end
+    end
+
+    context 'when parent is nil' do
+      let(:parent) { nil }
+
+      it 'returns the endpoint URL a redirect-uri for the instance' do
+        expect(helper).to receive(:admin_application_settings_slack_path).and_return('http://instance-redirect')
+        expect(destroy_path).to eq('http://instance-redirect')
+      end
     end
   end
 

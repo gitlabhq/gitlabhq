@@ -4124,7 +4124,6 @@
 - './spec/finders/labels_finder_spec.rb'
 - './spec/finders/lfs_pointers_finder_spec.rb'
 - './spec/finders/license_template_finder_spec.rb'
-- './spec/finders/members_finder_spec.rb'
 - './spec/finders/merge_request/metrics_finder_spec.rb'
 - './spec/finders/merge_requests/by_approvals_finder_spec.rb'
 - './spec/finders/merge_requests_finder_spec.rb'

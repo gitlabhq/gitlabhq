@@ -659,6 +659,12 @@ RSpec.describe Integration, feature_category: :integrations do
         .to raise_exception(described_class::UnknownType, /foo/)
     end
 
+    it 'does not raise an error if the name is a disabled integration' do
+      allow(described_class).to receive(:disabled_integration_names).and_return(['asana'])
+
+      expect { described_class.integration_name_to_type('asana') }.not_to raise_exception
+    end
+
     it 'handles all available_integration_names' do
       types = described_class.available_integration_names.map { described_class.integration_name_to_type(_1) }
 
@@ -1002,10 +1008,11 @@ RSpec.describe Integration, feature_category: :integrations do
     subject { described_class.available_integration_names }
 
     before do
-      allow(described_class).to receive(:integration_names).and_return(%w[foo])
+      allow(described_class).to receive(:integration_names).and_return(%w[foo disabled])
       allow(described_class).to receive(:project_specific_integration_names).and_return(['bar'])
       allow(described_class).to receive(:dev_integration_names).and_return(['baz'])
       allow(described_class).to receive(:instance_specific_integration_names).and_return(['instance-specific'])
+      allow(described_class).to receive(:disabled_integration_names).and_return(['disabled'])
     end
 
     it { is_expected.to include('foo', 'bar', 'baz') }
@@ -1014,28 +1021,34 @@ RSpec.describe Integration, feature_category: :integrations do
       subject { described_class.available_integration_names(include_project_specific: false) }
 
       it { is_expected.to include('foo', 'baz', 'instance-specific') }
-      it { is_expected.not_to include('bar') }
+      it { is_expected.not_to include('bar', 'disabled') }
     end
 
     context 'when `include_dev` is false' do
       subject { described_class.available_integration_names(include_dev: false) }
 
       it { is_expected.to include('foo', 'bar', 'instance-specific') }
-      it { is_expected.not_to include('baz') }
+      it { is_expected.not_to include('baz', 'disabled') }
     end
 
     context 'when `include_instance_specific` is false' do
       subject { described_class.available_integration_names(include_instance_specific: false) }
 
       it { is_expected.to include('foo', 'baz', 'bar') }
-      it { is_expected.not_to include('instance-specific') }
+      it { is_expected.not_to include('instance-specific', 'disabled') }
+    end
+
+    context 'when `include_disabled` is true' do
+      subject { described_class.available_integration_names(include_disabled: true) }
+
+      it { is_expected.to include('disabled') }
     end
   end
 
-  describe '.project_specific_integration_names' do
-    subject { described_class.project_specific_integration_names }
+  describe '.integration_names' do
+    subject { described_class.integration_names }
 
-    it { is_expected.to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES) }
+    it { is_expected.to include(*described_class::INTEGRATION_NAMES) }
     it { is_expected.to include('gitlab_slack_application') }
 
     context 'when Rails.env is not test' do
@@ -1051,7 +1064,55 @@ RSpec.describe Integration, feature_category: :integrations do
         end
 
         it { is_expected.to include('gitlab_slack_application') }
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
+          end
+
+          it { is_expected.not_to include('gitlab_slack_application') }
+        end
       end
+    end
+  end
+
+  describe '.project_specific_integration_names' do
+    subject { described_class.project_specific_integration_names }
+
+    it { is_expected.to include(*described_class::PROJECT_SPECIFIC_INTEGRATION_NAMES) }
+    it { is_expected.not_to include('gitlab_slack_application') }
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
+      end
+
+      it { is_expected.to include('gitlab_slack_application') }
+
+      context 'when Rails.env is not test' do
+        before do
+          allow(Rails.env).to receive(:test?).and_return(false)
+        end
+
+        it { is_expected.not_to include('gitlab_slack_application') }
+
+        context 'when `slack_app_enabled` setting is enabled' do
+          before do
+            stub_application_setting(slack_app_enabled: true)
+          end
+
+          it { is_expected.to include('gitlab_slack_application') }
+        end
+      end
+    end
+
+    context 'when Rails.env is not test and `slack_app_enabled` setting is enabled' do
+      before do
+        allow(Rails.env).to receive(:test?).and_return(false)
+        stub_application_setting(slack_app_enabled: true)
+      end
+
+      it { is_expected.not_to include('gitlab_slack_application') }
     end
   end
 

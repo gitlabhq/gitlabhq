@@ -9,6 +9,7 @@ import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
+import BoardNewIssue from 'ee_else_ce/boards/components/board_new_issue.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
@@ -26,7 +27,6 @@ import {
 } from '../graphql/cache_updates';
 import { shouldCloneCard, moveItemVariables } from '../boards_util';
 import BoardCard from './board_card.vue';
-import BoardNewIssue from './board_new_issue.vue';
 import BoardCutLine from './board_cut_line.vue';
 
 export default {

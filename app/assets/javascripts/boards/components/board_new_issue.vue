@@ -1,7 +1,6 @@
 <script>
 import { s__ } from '~/locale';
 import { getMilestone, formatIssueInput, getBoardQuery } from 'ee_else_ce/boards/boards_util';
-import BoardNewIssueMixin from 'ee_else_ce/boards/mixins/board_new_issue';
 
 import { setError } from '../graphql/cache_updates';
 
@@ -17,7 +16,6 @@ export default {
     BoardNewItem,
     ProjectSelect,
   },
-  mixins: [BoardNewIssueMixin],
   inject: ['boardType', 'groupId', 'fullPath', 'isGroupBoard', 'isEpicBoard'],
   props: {
     list: {

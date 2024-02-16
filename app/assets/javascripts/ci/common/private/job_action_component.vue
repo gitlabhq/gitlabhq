@@ -80,7 +80,9 @@ export default {
      * different apps it avoids repetition & complexity.
      *
      */
-    onClickAction() {
+    onClickAction(e) {
+      e.preventDefault();
+
       if (this.withConfirmationModal) {
         this.$emit('showActionConfirmationModal');
       } else {
