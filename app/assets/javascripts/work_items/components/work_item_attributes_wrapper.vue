@@ -11,6 +11,7 @@ import {
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_START_AND_DUE_DATE,
+  WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
   WORK_ITEM_TYPE_VALUE_KEY_RESULT,
@@ -26,6 +27,7 @@ import WorkItemMilestoneInline from './work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from './work_item_milestone_with_edit.vue';
 import WorkItemParentInline from './work_item_parent_inline.vue';
 import WorkItemParent from './work_item_parent_with_edit.vue';
+import WorkItemTimeTracking from './work_item_time_tracking.vue';
 
 export default {
   components: {
@@ -39,6 +41,7 @@ export default {
     WorkItemDueDateWithEdit,
     WorkItemParent,
     WorkItemParentInline,
+    WorkItemTimeTracking,
     WorkItemWeightInline: () =>
       import('ee_component/work_items/components/work_item_weight_inline.vue'),
     WorkItemWeight: () =>
@@ -115,6 +118,9 @@ export default {
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+    },
+    workItemTimeTracking() {
+      return this.isWidgetPresent(WIDGET_TYPE_TIME_TRACKING);
     },
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
@@ -308,6 +314,12 @@ export default {
       :work-item="workItem"
       :can-update="canUpdate"
       @error="$emit('error', $event)"
+    />
+    <work-item-time-tracking
+      v-if="workItemTimeTracking && glFeatures.workItemsMvc2"
+      class="gl-mb-5"
+      :time-estimate="workItemTimeTracking.timeEstimate"
+      :total-time-spent="workItemTimeTracking.totalTimeSpent"
     />
     <participants
       v-if="workItemParticipants && glFeatures.workItemsMvc"

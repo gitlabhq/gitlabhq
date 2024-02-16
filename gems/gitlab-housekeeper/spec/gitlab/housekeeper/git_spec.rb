@@ -17,6 +17,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
     File.write(file_in_master, 'File already in master!')
 
     ::Gitlab::Housekeeper::Shell.execute('git', 'init')
+    ::Gitlab::Housekeeper::Shell.execute('git', 'config', '--local', 'user.email', 'test@example.com')
     ::Gitlab::Housekeeper::Shell.execute('git', 'checkout', '-b', 'master')
     ::Gitlab::Housekeeper::Shell.execute('git', 'add', file_in_master)
     ::Gitlab::Housekeeper::Shell.execute('git', 'commit', '-m', 'Initial commit!')

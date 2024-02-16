@@ -91,8 +91,10 @@ Depending on how you installed the app, you might want to check the following:
 - If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
   switch between GitLab versions in the GitLab for Jira Cloud app:
 
+<!-- markdownlint-disable MD044 -->
+
   1. In Jira, on the top bar, select **Apps > Manage your apps**.
-  1. Expand **GitLab for Jira (GitLab.com)**.
+  1. Expand **GitLab for Jira (gitlab.com)**.
   1. Select **Get started**.
   1. Select **Change GitLab version**.
   1. Select **GitLab.com (SaaS)**, then select **Save**.
@@ -100,6 +102,8 @@ Depending on how you installed the app, you might want to check the following:
   1. Select **GitLab (self-managed)**, then select **Next**.
   1. Select all checkboxes, then select **Next**.
   1. Enter your **GitLab instance URL**, then select **Save**.
+
+<!-- markdownlint-enable MD044 -->
 
   If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
   Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:

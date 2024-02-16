@@ -66,6 +66,11 @@ Approving a user:
 - Changes the user's state to active.
 - Consumes a subscription [seat](../subscriptions/self_managed/index.md#billable-users).
 
+Rejecting a user:
+
+- Prevents the user from signing in or accessing instance information.
+- Deletes the user.
+
 ## Block and unblock users
 
 GitLab administrators can block and unblock users.

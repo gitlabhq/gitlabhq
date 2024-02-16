@@ -628,6 +628,7 @@ export const workItemResponseFactory = ({
   assigneesWidgetPresent = true,
   datesWidgetPresent = true,
   weightWidgetPresent = true,
+  timeTrackingWidgetPresent = true,
   participantsWidgetPresent = true,
   progressWidgetPresent = true,
   milestoneWidgetPresent = true,
@@ -755,6 +756,14 @@ export const workItemResponseFactory = ({
                   __typename: 'IterationCadence',
                 },
               },
+            }
+          : { type: 'MOCK TYPE' },
+        timeTrackingWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetTimeTracking',
+              type: 'TIME_TRACKING',
+              timeEstimate: '5h',
+              totalTimeSpent: '3h',
             }
           : { type: 'MOCK TYPE' },
         participantsWidgetPresent

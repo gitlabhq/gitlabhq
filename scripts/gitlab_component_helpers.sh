@@ -91,6 +91,12 @@ function select_gitlab_workhorse_essentials() {
   mv ${tmp_path} ${TMP_TEST_FOLDER}
 }
 
+function strip_executable_binaries() {
+  local path="$1"
+
+  find "$path" -executable -type f ! -size 0 -print0 | xargs -0 grep -IL . | xargs strip || true
+}
+
 # Assets functions
 function gitlab_assets_archive_doesnt_exist() {
   archive_doesnt_exist "${GITLAB_ASSETS_PACKAGE_URL}"

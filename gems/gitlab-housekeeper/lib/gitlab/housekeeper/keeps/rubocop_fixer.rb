@@ -70,7 +70,7 @@ module Gitlab
           end
         end
 
-        def remove_first_exclusions(rule, file, remove_count)
+        def remove_first_exclusions(_rule, file, remove_count)
           content = File.read(file)
           skipped = 0
 

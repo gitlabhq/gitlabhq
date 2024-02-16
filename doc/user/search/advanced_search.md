@@ -86,7 +86,7 @@ You can refine user search with [Elasticsearch syntax](#syntax).
 | [<code>helper -extension:yml -extension:js</code>](https://gitlab.com/search?group_id=9970&project_id=278964&repository_ref=&scope=blobs&search=helper+-extension%3Ayml+-extension%3Ajs&snippets=)  | Returns `helper` in all files except files with a `.yml` or `.js` extension.                        |
 | [<code>helper path:lib/git</code>](https://gitlab.com/search?group_id=9970&project_id=278964&scope=blobs&search=helper+path%3Alib%2Fgit)  | Returns `helper` in all files with a `lib/git*` path (for example, `spec/lib/gitlab`).                        |
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-enable MD044 -->
 
 ## Known issues
 

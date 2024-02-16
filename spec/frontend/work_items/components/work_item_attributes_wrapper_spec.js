@@ -9,6 +9,7 @@ import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone
 import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
 import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent_with_edit.vue';
+import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import {
@@ -32,7 +33,8 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
   const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
-  const findWorkItemParticipents = () => wrapper.findComponent(Participants);
+  const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
+  const findWorkItemParticipants = () => wrapper.findComponent(Participants);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
@@ -209,6 +211,19 @@ describe('WorkItemAttributesWrapper component', () => {
     });
   });
 
+  describe('time tracking widget', () => {
+    it.each`
+      description                                               | timeTrackingWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                   | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}                  | ${false}
+    `('$description', ({ timeTrackingWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ timeTrackingWidgetPresent });
+      createComponent({ workItem: response.data.workItem });
+
+      expect(findWorkItemTimeTracking().exists()).toBe(exists);
+    });
+  });
+
   describe('participants widget', () => {
     it.each`
       description                                               | participantsWidgetPresent | exists
@@ -218,7 +233,7 @@ describe('WorkItemAttributesWrapper component', () => {
       const response = workItemResponseFactory({ participantsWidgetPresent });
       createComponent({ workItem: response.data.workItem });
 
-      expect(findWorkItemParticipents().exists()).toBe(exists);
+      expect(findWorkItemParticipants().exists()).toBe(exists);
     });
   });
 });

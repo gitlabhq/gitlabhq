@@ -2,26 +2,10 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
   let(:todo_dir) { Dir.mktmpdir }
-  let(:rule1_file) { Pathname(todo_dir).join('rule1.yml').to_s }
-  let(:rule2_file) { Pathname(todo_dir).join('rule2.yml').to_s }
-  let(:not_autocorrectable_file) { Pathname(todo_dir).join('not_autocorrectable.yml').to_s }
-  let(:todo_dir_pattern) { Pathname(todo_dir).join('**/*.yml').to_s }
-
-  before do
-    dir = Pathname.new(todo_dir)
-    FileUtils.cp('spec/fixtures/rubocop_todo1.yml', rule1_file)
-    FileUtils.cp('spec/fixtures/rubocop_todo2.yml', rule2_file)
-    FileUtils.cp('spec/fixtures/rubocop_todo_not_autocorrectable.yml', not_autocorrectable_file)
-  end
-
-  after do
-    FileUtils.remove_entry(todo_dir)
-  end
-
   let(:rubocop_fixer) { described_class.new(todo_dir_pattern: todo_dir_pattern, limit_fixes: 5) }
-
   let(:rule1_violating_files) do
     [
       'rule1_violation1.rb',
@@ -43,6 +27,22 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
       'rule2_violation7.rb',
       'rule2_violation8.rb'
     ]
+  end
+
+  let(:rule1_file) { Pathname(todo_dir).join('rule1.yml').to_s }
+  let(:rule2_file) { Pathname(todo_dir).join('rule2.yml').to_s }
+  let(:not_autocorrectable_file) { Pathname(todo_dir).join('not_autocorrectable.yml').to_s }
+  let(:todo_dir_pattern) { Pathname(todo_dir).join('**/*.yml').to_s }
+
+  before do
+    Pathname.new(todo_dir)
+    FileUtils.cp('spec/fixtures/rubocop_todo1.yml', rule1_file)
+    FileUtils.cp('spec/fixtures/rubocop_todo2.yml', rule2_file)
+    FileUtils.cp('spec/fixtures/rubocop_todo_not_autocorrectable.yml', not_autocorrectable_file)
+  end
+
+  after do
+    FileUtils.remove_entry(todo_dir)
   end
 
   describe '#each_change' do
@@ -116,3 +116,4 @@ RSpec.describe ::Gitlab::Housekeeper::Keeps::RubocopFixer do
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

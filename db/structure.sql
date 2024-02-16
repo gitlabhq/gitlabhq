@@ -12716,9 +12716,7 @@ CREATE TABLE packages_protection_rules (
     push_protected_up_to_access_level smallint NOT NULL,
     package_type smallint NOT NULL,
     package_name_pattern text NOT NULL,
-    package_name_pattern_ilike_query text,
-    CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255)),
-    CONSTRAINT check_ff47b09794 CHECK ((char_length(package_name_pattern_ilike_query) <= 255))
+    CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))
 );
 
 CREATE SEQUENCE packages_protection_rules_id_seq
@@ -26100,8 +26098,6 @@ CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_acc
 CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);
 
 CREATE INDEX index_pipeline_metadata_on_name_text_pattern_pipeline_id ON ci_pipeline_metadata USING btree (name text_pattern_ops, pipeline_id);
-
-CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, name text_pattern_ops);
 
 CREATE UNIQUE INDEX p_ci_pipeline_variables_pipeline_id_key_partition_id_idx ON ONLY p_ci_pipeline_variables USING btree (pipeline_id, key, partition_id);
 

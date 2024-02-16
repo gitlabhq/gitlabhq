@@ -110,14 +110,13 @@ module Gitlab
         # This means all jobs go to 'default' queue and mailer jobs go to 'mailers' queue.
         # See config/initializers/1_settings.rb and Settings.build_sidekiq_routing_rules.
         #
-        # Now, in case queue_selector is used, we ensure all Sidekiq processes are still processing jobs
-        # from default and mailers queues.
-        # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1491
+        # We can override queue_groups to listen to just the default queues, any more additional queues
+        # incurs CPU overhead in Redis.
         if routing_rules.empty?
-          queue_groups.each do |queues|
-            queues.concat(DEFAULT_QUEUES)
-            queues.uniq!
-          end
+          queue_groups.map! { DEFAULT_QUEUES }
+          # setting min_concurrency equal to max_concurrency so that the concurrency eventually
+          # is set to 20 (default value) instead of based on the number of queues, which is only 2+1 in this case.
+          @min_concurrency = @min_concurrency == 0 ? @max_concurrency : @min_concurrency
         end
 
         if @list_queues

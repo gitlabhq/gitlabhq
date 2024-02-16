@@ -80,13 +80,17 @@ Prerequisites:
 You can sync data from GitLab to Jira by linking the GitLab for Jira Cloud app to one or more GitLab groups.
 To configure the GitLab for Jira Cloud app:
 
+<!-- markdownlint-disable MD044 -->
+
 1. In Jira, on the top bar, select **Apps > Manage your apps**.
-1. Expand **GitLab for Jira (GitLab.com)**.
+1. Expand **GitLab for Jira (gitlab.com)**.
 1. Select **Get started**.
 1. Optional. To set the GitLab instance to use with Jira, select **Change GitLab version**.
 1. Select **Sign in to GitLab**.
 1. For a list of groups you can link to, select **Link groups**.
 1. To link to a group, select **Link**.
+
+<!-- markdownlint-enable MD044 -->
 
 After you link to a GitLab group, data is synced to Jira for all projects in that group.
 The initial data sync happens in batches of 20 projects per minute.

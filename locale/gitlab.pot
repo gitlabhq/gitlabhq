@@ -51483,6 +51483,12 @@ msgstr ""
 msgid "TimeTracking|%{spentStart}Spent: %{spentEnd}"
 msgstr ""
 
+msgid "TimeTracking|%{time} over"
+msgstr ""
+
+msgid "TimeTracking|%{time} remaining"
+msgstr ""
+
 msgid "TimeTracking|An error occurred while removing the timelog."
 msgstr ""
 
@@ -51526,6 +51532,9 @@ msgid "TimeTracking|Spent"
 msgstr ""
 
 msgid "TimeTracking|Time remaining: %{timeRemainingHumanReadable}"
+msgstr ""
+
+msgid "TimeTracking|Use /spend or /estimate to manage time."
 msgstr ""
 
 msgid "Timeago|%s days ago"

@@ -177,3 +177,11 @@ and `compile-production-assets` jobs to:
    This task is responsible for deciding if assets need to be compiled or not.
    It [compares the `HEAD` `SHA256` hexdigest from `$GITLAB_ASSETS_HASH` with the `master` hexdigest from `cached-assets-hash.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/c023191ef412e868ae957f3341208a41ca678403/lib/tasks/gitlab/assets.rake#L86).
 1. If the hashes are the same, we don't compile anything. If they're different, we compile the assets.
+
+## Stripped binaries
+
+By default, `setup-test-env` creates an artifact which contains stripped
+binaries to [save storage and speed-up artifact downloads](https://gitlab.com/gitlab-org/gitlab/-/issues/442029#note_1775193538) of subsequent CI jobs.
+
+To make debugging a crash from stripped binaries easier comment line with
+`strip_executable_binaries` in the `setup-test-job` job and start a new pipeline.

@@ -25,6 +25,7 @@ setup-test-env:
     - section_start "setup-test-env" "Setting up testing environment"; scripts/setup-test-env; section_end "setup-test-env";
     - select_gitlab_workhorse_essentials
     - section_start "gitaly-test-build" "Compiling Gitaly binaries"; scripts/gitaly-test-build; section_end "gitaly-test-build";  # Do not use 'bundle exec' here
+    - strip_executable_binaries "${TMP_TEST_FOLDER}"
   artifacts:
     expire_in: 7d
     paths:

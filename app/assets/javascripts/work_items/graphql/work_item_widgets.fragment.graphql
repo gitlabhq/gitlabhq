@@ -41,6 +41,10 @@ fragment WorkItemWidgets on WorkItemWidget {
     dueDate
     startDate
   }
+  ... on WorkItemWidgetTimeTracking {
+    timeEstimate
+    totalTimeSpent
+  }
   ... on WorkItemWidgetHierarchy {
     hasChildren
     parent {
