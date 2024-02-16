@@ -93,10 +93,11 @@ Even in this exception, rather than removing a field or argument, we must always
 
 Some examples of breaking changes are:
 
-- Removing or renaming fields, arguments, or enum values.
+- Removing or renaming fields, arguments, or enum values. In a JSON response, a field is any JSON key.
 - Removing endpoints.
 - Adding new redirects (not all clients follow redirects).
-- Changing the type of fields in the response (for example, from `String` to `Integer`).
+- Changing the content type of any response.
+- Changing the type of fields in the response. In a JSON response, this would be a change of any `Number`, `String`, `Boolean`, `Array`, or `Object` type to another type.
 - Adding a new **required** argument.
 - Changing authentication, authorization, or other header requirements.
 - Changing [any status code](../api/rest/index.md#status-codes) other than `500`.

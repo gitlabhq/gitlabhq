@@ -807,7 +807,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Merge request summary
 - GitLab Duo Code review summary
 - GitLab Duo Code explanation
-- GitLab Duo Vulnerability summary
+- GitLab Duo Vulnerability explanation
 - GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
 - GitLab Duo Git suggestions
@@ -1992,12 +1992,12 @@ Use sentence case for **Vulnerability resolution**.
 On first mention on a page, use **GitLab Duo Vulnerability resolution**.
 Thereafter, use **Vulnerability resolution** by itself.
 
-## Vulnerability summary
+## Vulnerability explanation
 
-Use sentence case for **Vulnerability summary**.
+Use sentence case for **Vulnerability explanation**.
 
-On first mention on a page, use **GitLab Duo Vulnerability summary**.
-Thereafter, use **Vulnerability summary** by itself.
+On first mention on a page, use **GitLab Duo Vulnerability explanation**.
+Thereafter, use **Vulnerability explanation** by itself.
 
 ## we
 

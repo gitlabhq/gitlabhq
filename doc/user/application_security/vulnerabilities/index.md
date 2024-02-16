@@ -44,9 +44,9 @@ GitLab can help you with a vulnerability by using a large language model to:
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
-### Explain a vulnerability
+### Vulnerability explanation
 
-Explain a vulnerability with GitLab Duo Vulnerability summary. Use the explanation to better
+Explain a vulnerability with GitLab Duo Vulnerability explanation. Use the explanation to better
 understand a vulnerability and its possible mitigation.
 
 Prerequisites:

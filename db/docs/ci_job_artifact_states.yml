@@ -8,3 +8,12 @@ description: Separate table for job artifacts containing Geo verification metada
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75264
 milestone: '14.8'
 gitlab_schema: gitlab_ci
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: job_artifact_id
+        table: ci_job_artifacts
+        sharding_key: project_id
+        belongs_to: job_artifact

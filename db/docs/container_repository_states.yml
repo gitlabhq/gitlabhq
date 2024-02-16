@@ -2,10 +2,24 @@
 table_name: container_repository_states
 description: Checksum states of container repositories for Geo verification
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111077
-milestone: 15.10
+milestone: '15.10'
 classes:
 - Geo::ContainerRepositoryState
 feature_categories:
 - geo_replication
-gitlab_schema: gitlab_main
-
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: container_repository_id
+        table: container_repositories
+        sharding_key: project_id
+        belongs_to: container_repository
