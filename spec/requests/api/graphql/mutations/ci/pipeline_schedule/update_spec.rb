@@ -17,7 +17,6 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
     create(:ci_pipeline_schedule_variable, key: 'bar', value: 'barvalue', pipeline_schedule: pipeline_schedule)
   end
 
-  let(:repository) { project.repository }
   let(:mutation) do
     variables = {
       id: pipeline_schedule.to_global_id.to_s,
@@ -72,10 +71,6 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
             { key: 'AAA', value: "AAA123", variableType: 'ENV_VAR' }
           ]
         }
-      end
-
-      before do
-        repository.add_branch(project.creator, 'patch-x', 'master')
       end
 
       it do
@@ -151,8 +146,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
                 "Cron  is invalid syntax",
                 "Cron timezone  is invalid syntax",
                 "Ref can't be blank",
-                "Description can't be blank",
-                "Ref is ambiguous"
+                "Description can't be blank"
               ]
             )
         end

@@ -6,7 +6,6 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
   let_it_be(:reporter) { create(:user) }
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :public, :repository) }
-  let_it_be_with_reload(:repository) { project.repository }
 
   subject(:service) { described_class.new(project, user, params) }
 
@@ -16,10 +15,6 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
   end
 
   describe "execute" do
-    before_all do
-      repository.add_branch(project.creator, 'patch-x', 'master')
-    end
-
     context 'when user does not have permission' do
       subject(:service) { described_class.new(project, reporter, {}) }
 
@@ -53,7 +48,7 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
 
         expect(result.payload).to have_attributes(
           description: 'desc',
-          ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}patch-x",
+          ref: 'patch-x',
           active: false,
           cron: '*/1 * * * *',
           cron_timezone: 'UTC'

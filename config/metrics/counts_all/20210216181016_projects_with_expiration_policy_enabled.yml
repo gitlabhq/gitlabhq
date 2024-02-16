@@ -4,7 +4,7 @@ key_path: counts.projects_with_expiration_policy_enabled
 description: A count of projects with the cleanup policy for tags turned on
 product_section: ops
 product_stage: package
-product_group: package_registry
+product_group: container_registry
 value_type: number
 status: active
 time_frame: all

@@ -349,7 +349,10 @@ When user submitted data is included in responses to end users, which is just ab
 
 ### Mitigation
 
-In most situations, a two-step solution can be used: input validation and output encoding in the appropriate context.
+In most situations, a two-step solution can be used: input validation and
+output encoding in the appropriate context. You should also invalidate the
+existing Markdown cached HTML to mitigate the effects of already-stored
+vulnerable XSS content. For an example, see ([issue 357930](https://gitlab.com/gitlab-org/gitlab/-/issues/357930)).
 
 #### Input validation
 

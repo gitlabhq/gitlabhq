@@ -56,6 +56,8 @@ namespace :admin do
 
   resources :groups, only: [:index, :new, :create]
 
+  resources :organizations, only: [:index]
+
   scope(
     path: 'groups/*id',
     controller: :groups,

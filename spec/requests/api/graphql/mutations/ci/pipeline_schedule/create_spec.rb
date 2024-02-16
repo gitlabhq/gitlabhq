@@ -45,7 +45,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
       description: 'created_desc',
       cron: '0 1 * * *',
       cronTimezone: 'UTC',
-      ref: 'master',
+      ref: 'patch-x',
       active: true,
       variables: [
         { key: 'AAA', value: "AAA123", variableType: 'ENV_VAR' }
@@ -107,11 +107,7 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
 
           expect(mutation_response['errors'])
             .to match_array(
-              [
-                "Cron  is invalid syntax",
-                "Cron timezone  is invalid syntax",
-                "Ref is ambiguous"
-              ]
+              ["Cron  is invalid syntax", "Cron timezone  is invalid syntax"]
             )
         end
       end

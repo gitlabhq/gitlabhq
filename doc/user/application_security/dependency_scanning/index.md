@@ -145,7 +145,7 @@ The following languages and dependency managers are supported:
       <td>N</td>
     </tr>
     <tr>
-      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">3</a></b></sup></td>
+      <td><a href="https://maven.apache.org/">Maven</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
       <td><code>pom.xml</code></td>
       <td>N</td>
     </tr>
@@ -180,7 +180,7 @@ The following languages and dependency managers are supported:
     </tr>
     <tr>
       <td rowspan="4">Python</td>
-      <td rowspan="4">3.9, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
+      <td rowspan="4">3.9<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-9">9</a></b></sup>, 3.10<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-5">5</a></b></sup></td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
       <td><code>setup.py</code></td>
       <td>N</td>
@@ -290,17 +290,13 @@ The following languages and dependency managers are supported:
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
     <p>
-      <ul>
-        <li>Support for Maven below 3.8.8 was deprecated in GitLab 16.9 and will be removed in GitLab 17.0</li>
-      </ul>
+      Support for Maven below 3.8.8 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/438772">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
     </p>
   </li>
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-9"></a>
     <p>
-      <ul>
-        <li>Support for Python 3.9 was deprecated in GitLab 16.9 and will be removed in GitLab 17.0</li>
-      </ul>
+      Support for Python 3.9 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and will be removed in GitLab 17.0.
     </p>
   </li>
 </ol>

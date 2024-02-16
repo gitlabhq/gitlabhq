@@ -165,6 +165,12 @@ RSpec.describe Admin::GroupsController, "routing" do
   end
 end
 
+RSpec.describe Admin::OrganizationsController, "routing", feature_category: :cell do
+  it "to #index" do
+    expect(get("/admin/organizations")).to route_to('admin/organizations#index')
+  end
+end
+
 RSpec.describe Admin::SessionsController, "routing" do
   it "to #new" do
     expect(get("/admin/session/new")).to route_to('admin/sessions#new')
