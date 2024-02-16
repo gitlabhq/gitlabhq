@@ -23246,10 +23246,19 @@ msgid_plural "GoogleArtifactRegistry|%d more tags"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "GoogleArtifactRegistry|An error occurred while fetching the artifact details."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|An error occurred while fetching the artifacts."
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Built"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Configure in settings"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Copy image URI"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Copy image name"
@@ -23258,13 +23267,31 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Created"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Digest"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Image"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Location"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Media type"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Name"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Open in Google Cloud"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Project"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Project ID"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Repository"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Repository name"
@@ -23274,6 +23301,9 @@ msgid "GoogleArtifactRegistry|Tags"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Updated"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|Virtual size"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
