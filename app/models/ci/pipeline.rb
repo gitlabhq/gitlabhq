@@ -1132,6 +1132,14 @@ module Ci
       end
     end
 
+    def complete_or_manual_and_has_reports?(reports_scope)
+      return complete_and_has_reports?(reports_scope) unless include_manual_to_pipeline_completion_enabled?
+
+      return latest_report_builds(reports_scope).exists? if Feature.enabled?(:mr_show_reports_immediately, project, type: :development)
+
+      complete_or_manual? && has_reports?(reports_scope)
+    end
+
     def has_coverage_reports?
       pipeline_artifacts&.report_exists?(:code_coverage)
     end
@@ -1399,6 +1407,12 @@ module Ci
 
     def auto_cancel_on_new_commit
       pipeline_metadata&.auto_cancel_on_new_commit || 'conservative'
+    end
+
+    def include_manual_to_pipeline_completion_enabled?
+      strong_memoize(:include_manual_to_pipeline_completion_enabled) do
+        ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :gitlab_com_derisk)
+      end
     end
 
     private

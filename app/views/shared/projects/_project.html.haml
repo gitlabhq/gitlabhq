@@ -19,12 +19,11 @@
 %li.project-row
   - if avatar
     .project-cell.gl-w-11
-      .project-avatar-container.gl-mr-5.gl-relative.gl-pb-4
-        = link_to project_path(project), class: dom_class(project) do
-          - if project.creator && use_creator_avatar
-            = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
-          - else
-            = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
+      = link_to project_path(project), class: dom_class(project) do
+        - if project.creator && use_creator_avatar
+          = render Pajamas::AvatarComponent.new(project.creator, size: 48, alt: '')
+        - else
+          = render Pajamas::AvatarComponent.new(project, size: 48, alt: '')
 
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { testid: 'project-content', qa_project_name: project.name } }

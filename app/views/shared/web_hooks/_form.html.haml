@@ -77,6 +77,13 @@
             integration_webhook_event_human_name(:emoji_events),
             help_text: s_('Webhooks|An emoji is awarded or revoked. %{help_link}?').html_safe % { help_link: emoji_help_link }
 
+- if Feature.enabled?(:custom_webhook_template, hook.parent, type: :beta)
+  .form-group
+    = form.label :custom_webhook_template, s_('Webhooks|Custom webhook template (optional)'), class: 'label-bold'
+    = form.text_area :custom_webhook_template, value: hook.custom_webhook_template, class: 'form-control gl-form-input gl-form-input-xl', rows: 8, maxlength: 4096
+    %p.form-text.text-muted
+      = link_to s_('Webhooks|How to create a custom webhook template?'), help_page_path('user/project/integrations/webhooks', anchor: 'custom-webhook-template')
+
 .form-group
   = form.label :enable_ssl_verification, s_('Webhooks|SSL verification'), class: 'label-bold checkbox'
   %ul.list-unstyled

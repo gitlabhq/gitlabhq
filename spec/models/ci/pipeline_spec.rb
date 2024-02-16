@@ -4380,6 +4380,97 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#complete_or_manual_and_has_reports?' do
+    subject(:complete_or_manual_and_has_reports?) do
+      pipeline.complete_or_manual_and_has_reports?(
+        Ci::JobArtifact.of_report_type(:test))
+    end
+
+    context 'when pipeline has builds' do
+      let(:pipeline) { create(:ci_pipeline) }
+
+      before do
+        create(:ci_build, :test_reports, pipeline: pipeline)
+      end
+
+      context 'with mr_show_reports_immediately flag enabled' do
+        before do
+          stub_feature_flags(mr_show_reports_immediately: project)
+        end
+
+        it { expect(subject).to be_truthy }
+      end
+
+      context 'with mr_show_reports_immediately flag disabled' do
+        before do
+          stub_feature_flags(mr_show_reports_immediately: false)
+        end
+
+        it { expect(subject).to be_falsey }
+
+        context 'when pipeline status is running' do
+          let(:pipeline) { create(:ci_pipeline, :running) }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'when pipeline status is success' do
+          let(:pipeline) { create(:ci_pipeline, :success) }
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when pipeline status is manual' do
+          let(:pipeline) { create(:ci_pipeline, :manual) }
+
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when pipeline does not have builds' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline)
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is manual' do
+        let(:pipeline) { create(:ci_pipeline, :manual) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when pipeline has retried build' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline)
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is manual' do
+        let(:pipeline) { create(:ci_pipeline, :manual) }
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
+
   describe '#has_coverage_reports?' do
     subject { pipeline.has_coverage_reports? }
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WebHookService
+  include Gitlab::Utils::StrongMemoize
+
   class InternalErrorResponse
     ERROR_MESSAGE = 'internal error'
 
@@ -32,6 +34,8 @@ class WebHookService
   # The headers are for debugging purpose. They are displayed on the UI only.
   RESPONSE_HEADERS_COUNT_LIMIT = 50
   RESPONSE_HEADERS_SIZE_LIMIT = 1.kilobytes
+
+  CUSTOM_TEMPLATE_INTERPOLATION_REGEX = /{{(.+?)}}/
 
   attr_accessor :hook, :data, :hook_name, :request_options
   attr_reader :uniqueness_token
@@ -87,15 +91,19 @@ class WebHookService
     )
 
     ServiceResponse.success(message: response.body, payload: { http_status: response.code })
-  rescue *Gitlab::HTTP::HTTP_ERRORS,
+  rescue *Gitlab::HTTP::HTTP_ERRORS, JSON::ParserError,
          Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = ::Gitlab::Metrics::System.monotonic_time - start_time
     error_message = e.to_s
 
+    # An exception raised while rendering the custom template prevents us from calling `#request_payload`
+    request_data = e.instance_of?(JSON::ParserError) ? {} : request_payload
+
     log_execution(
       response: InternalErrorResponse.new,
       execution_duration: execution_duration,
-      error_message: error_message
+      error_message: error_message,
+      request_data: request_data
     )
 
     Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
@@ -129,7 +137,7 @@ class WebHookService
 
   def make_request(url, basic_auth = false)
     Gitlab::HTTP.post(url,
-      body: Gitlab::Json::LimitedEncoder.encode(data, limit: REQUEST_BODY_SIZE_LIMIT),
+      body: Gitlab::Json::LimitedEncoder.encode(request_payload, limit: REQUEST_BODY_SIZE_LIMIT),
       headers: build_headers,
       verify: hook.enable_ssl_verification,
       basic_auth: basic_auth,
@@ -145,7 +153,7 @@ class WebHookService
     make_request(post_url, basic_auth)
   end
 
-  def log_execution(response:, execution_duration:, error_message: nil)
+  def log_execution(response:, execution_duration:, error_message: nil, request_data: request_payload)
     category = response_category(response)
     log_data = {
       trigger: hook_name,
@@ -153,7 +161,7 @@ class WebHookService
       interpolated_url: hook.interpolated_url,
       execution_duration: execution_duration,
       request_headers: build_headers,
-      request_data: data,
+      request_data: request_data,
       response_headers: safe_response_headers(response),
       response_body: safe_response_body(response),
       response_status: response.code,
@@ -266,5 +274,28 @@ class WebHookService
 
   def enforce_utf8(str)
     Gitlab::EncodingHelper.encode_utf8(str)
+  end
+
+  def request_payload
+    return data unless hook.custom_webhook_template.present?
+    return data unless Feature.enabled?(:custom_webhook_template, hook.parent, type: :beta)
+
+    start_time = Gitlab::Metrics::System.monotonic_time
+    rendered_template = render_custom_template(hook.custom_webhook_template, data.deep_stringify_keys)
+    duration = Gitlab::Metrics::System.monotonic_time - start_time
+
+    Gitlab::AppLogger.info(
+      message: "Rendered custom webhook template",
+      hook_id: hook.id,
+      duration_s: duration
+    )
+    Gitlab::Json.parse(rendered_template)
+  rescue JSON::ParserError => e
+    raise JSON::ParserError, "Error while parsing rendered custom webhook template: #{e.message}"
+  end
+  strong_memoize_attr :request_payload
+
+  def render_custom_template(template, params)
+    template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) { params.dig(*Regexp.last_match(1).split('.')) }
   end
 end

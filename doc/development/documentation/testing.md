@@ -625,6 +625,34 @@ vale --config .vale.ini --minAlertLevel error doc/**/*.md
 
 Omit the flag to display all alerts, including `suggestion` level alerts.
 
+### Test one rule at a time
+
+To test only a single rule when running Vale from the command line, modify this
+command, replacing `OutdatedVersions` with the name of the rule:
+
+```shell
+vale --no-wrap --filter='.Name=="gitlab.OutdatedVersions"' doc/**/*.md
+```
+
+### Export Vale results to a file
+
+To export all (or filtered) Vale results to a file, modify this command:
+
+```shell
+# Returns results of types suggestion, warning, and error
+find . -name '*.md' | sort | xargs vale --minAlertLevel suggestion --output line > ../../results.txt
+
+# Returns only warnings and errors
+find . -name '*.md' | sort | xargs vale --minAlertLevel warning --output line > ../../results.txt
+
+# Returns only errors
+find . -name '*.md' | sort | xargs vale --minAlertLevel error --output line > ../../results.txt
+```
+
+These results can be used with the
+[`create_issues.js` script](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/create_issues.js)
+to generate [documentation-related issues for Hackathons](https://handbook.gitlab.com/handbook/product/ux/technical-writing/workflow/#create-issues-for-a-hackathon).
+
 ### Disable Vale tests
 
 You can disable a specific Vale linting rule or all Vale linting rules for any portion of a

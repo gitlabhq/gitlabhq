@@ -1840,11 +1840,11 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
   end
 
   def has_secret_detection_reports?
-    !!actual_head_pipeline&.complete_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
+    !!actual_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:secret_detection))
   end
 
   def compare_sast_reports(current_user)

@@ -47,6 +47,10 @@ module Ci
         COMPLETED_STATUSES.map(&:to_sym)
       end
 
+      def completed_with_manual_statuses
+        completed_statuses + [:manual]
+      end
+
       def stopped_statuses
         STOPPED_STATUSES.map(&:to_sym)
       end
@@ -112,6 +116,10 @@ module Ci
 
     def complete?
       COMPLETED_STATUSES.include?(status)
+    end
+
+    def complete_or_manual?
+      self.class.completed_with_manual_statuses.map(&:to_s).include?(status)
     end
 
     def incomplete?

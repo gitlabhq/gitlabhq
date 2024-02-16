@@ -22,7 +22,8 @@
     "releases_events",
     "alert_status",
     "disabled_until",
-    "emoji_events"
+    "emoji_events",
+    "custom_webhook_template"
   ],
   "optional": [
     "url_variables"
@@ -126,6 +127,12 @@
           }
         }
       }
+    },
+    "custom_webhook_template": {
+      "type": [
+        "string",
+        "null"
+      ]
     }
   },
   "additionalProperties": false

@@ -2576,6 +2576,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
+
+      context 'when head pipeline is blocked by manual jobs' do
+        before do
+          merge_request.actual_head_pipeline.block!
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'when head pipeline does not have sast reports' do
@@ -2598,6 +2606,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:merge_request) { create(:merge_request, :with_secret_detection_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
+
+      context 'when head pipeline is blocked by manual jobs' do
+        before do
+          merge_request.actual_head_pipeline.block!
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
     context 'when head pipeline does not have secrets detection reports' do

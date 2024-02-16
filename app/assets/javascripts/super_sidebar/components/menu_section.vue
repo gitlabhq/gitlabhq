@@ -138,7 +138,7 @@ export default {
       </span>
 
       <span class="gl-text-right gl-text-gray-400">
-        <gl-icon :name="collapseIcon" />
+        <gl-icon class="super-sidebar-mix-blend-mode" :name="collapseIcon" />
       </span>
     </button>
 

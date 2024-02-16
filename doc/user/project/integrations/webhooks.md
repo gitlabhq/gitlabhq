@@ -106,6 +106,37 @@ You must define the following variables:
 Variable names can contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 You can define URL variables directly using the REST API.
 
+## Custom webhook template
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can
+[enable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_template`.
+On GitLab.com, this feature is not available.
+
+You can set a custom payload template in the webhook configuration. The request body is rendered from the template
+with the data for the current event. The template must render as valid JSON.
+
+You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
+for a deployment event. For example:
+
+Given this custom payload template:
+
+```json
+{
+  "event": "{{object_kind}}"
+}
+```
+
+You'll have this request payload that combines the template with a `push` event:
+
+```json
+{
+  "event": "push"
+}
+```
+
 ## Configure your webhook receiver endpoint
 
 Webhook receiver endpoints should be fast and stable.

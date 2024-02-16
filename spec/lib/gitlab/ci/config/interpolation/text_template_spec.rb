@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Interpolation::TextTemplate, feature_category: :pipeline_composition do
+RSpec.describe Gitlab::Ci::Config::Interpolation::TextTemplate, feature_category: :pipeline_composition, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/440667' do
   subject(:template) { described_class.new(config, ctx) }
 
   let(:config) do

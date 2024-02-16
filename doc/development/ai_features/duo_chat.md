@@ -6,6 +6,16 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
+[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md) offering.
+
+How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on helping developers with DevSecOps,
+software development, source code, project management, CI/CD, and GitLab. Please feel free to engage me in these areas."
+
+Chat can answer different questions and perform certain tasks. It's done with the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
+
+To answer a user's question asked in the Chat interface, GitLab sends a [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb) to the Rails backend.
+Rails backend sends then instructions to the Large Language Model (LLM) via the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+
 ## Set up GitLab Duo Chat
 
 There is a difference in the setup for Saas and self-managed instances.
@@ -16,13 +26,26 @@ We recommend to start with a process described for SaaS-only AI features.
 
 ## Working with GitLab Duo Chat
 
-Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the Large Language Model to perform certain tasks.
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the LLM to perform certain tasks.
 
 The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
 
 If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
 
+### Troubleshooting
+
+When working with Chat locally, you might run into an error. Most commons problems are documented in this section.
+If you find an undocumented issue, you should document it in this section after you find a solution.
+
+| Problem                                               | Solution |
+| ----------------------------------------------------- | -------- |
+| There is no Chat button in the GitLab UI.             | Make sure your user is a part of a group with enabled Experimental and Beta features. |
+| Chat replies with "Forbidden by auth provider" error. | Backend can't access LLMs. Make sure your [AI Gateway](index.md#test-ai-features-with-ai-gateway-locally) is setup correctly. |
+| Requests takes too long to appear in UI  | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
+
 ## Contributing to GitLab Duo Chat
+
+From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#abstraction-layer).
 
 The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
 answer. The system prompt defines available tools that can be used to gather

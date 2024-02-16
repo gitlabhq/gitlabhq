@@ -107,6 +107,23 @@ Code Suggestions do not prevent you from writing code in your IDE.
 
 To disable Code Suggestions, disable the feature in your IDE editor extension.
 
+### Disable Code Suggestions for a project
+
+DETAILS:
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10. This feature is an [Experiment](../../../../policy/experiment-beta-support.md).
+
+Prerequisites:
+
+- You must have at least the Maintainer role in the project.
+
+You can disable Code Suggestions for specific projects.
+
+To do so, use the GraphQL API to [update the `duoFeaturesEnabled` setting in your project](../../../../api/graphql/getting_started.md#update-project-settings).
+
+For more information on this setting, see the [API documentation on the `projectSettingsUpdate` mutation](../../../../api/graphql/reference/index.md#mutationprojectsettingsupdate).
+
 ## Feedback
 
 Provide feedback about your Code Suggestions experience in [issue 435783](https://gitlab.com/gitlab-org/gitlab/-/issues/435783).

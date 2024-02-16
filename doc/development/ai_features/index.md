@@ -8,28 +8,6 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117296) in GitLab 15.11.
 
-## Features
-
-- Async execution of the long running API requests
-  - GraphQL Action starts the request
-  - Background workers execute
-  - GraphQL subscriptions deliver results back in real time
-- Abstraction for
-  - Google Vertex AI
-  - Anthropic
-- Rate Limiting
-- Circuit Breaker
-- Multi-Level feature flags
-- License checks on group level
-- Snowplow execution tracking
-- Tracking of Token Spent on Prometheus
-- Configuration for Moderation check of inputs
-- Automatic Markdown Rendering of responses
-- Centralised Group Level settings for experiment and 3rd party
-- Experimental API endpoints for exploration of AI APIs by GitLab team members without the need for credentials
-  - Google Vertex AI
-  - Anthropic
-
 ## Feature flags
 
 Apply the following feature flags to any AI feature work:

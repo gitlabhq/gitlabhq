@@ -5608,6 +5608,9 @@ msgstr ""
 msgid "Analytics|Enter a dashboard title"
 msgstr ""
 
+msgid "Analytics|Enter a prompt to continue."
+msgstr ""
+
 msgid "Analytics|Enter a visualization title"
 msgstr ""
 
@@ -5735,6 +5738,9 @@ msgid "Analytics|Tables"
 msgstr ""
 
 msgid "Analytics|Target URL"
+msgstr ""
+
+msgid "Analytics|There was a problem generating your query. Please try again."
 msgstr ""
 
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
@@ -29098,9 +29104,6 @@ msgid "LearnGitLab|Your team is growing! You've successfully invited new team me
 msgstr ""
 
 msgid "LearnGitlab|- Included in trial"
-msgstr ""
-
-msgid "LearnGitlab|After your 30-day trial, this feature is available on the %{planName} tier only."
 msgstr ""
 
 msgid "LearnGitlab|Contact your administrator to enable this action."
@@ -55811,6 +55814,9 @@ msgstr ""
 msgid "Webhooks|Confidential issues events"
 msgstr ""
 
+msgid "Webhooks|Custom webhook template (optional)"
+msgstr ""
+
 msgid "Webhooks|Delete webhook"
 msgstr ""
 
@@ -55839,6 +55845,9 @@ msgid "Webhooks|Go to webhooks"
 msgstr ""
 
 msgid "Webhooks|How it looks in the UI"
+msgstr ""
+
+msgid "Webhooks|How to create a custom webhook template?"
 msgstr ""
 
 msgid "Webhooks|Issues events"
