@@ -45,6 +45,8 @@
 class AddressableUrlValidator < ActiveModel::EachValidator
   attr_reader :record
 
+  DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT = proc { deny_all_requests_except_allowed? }.freeze
+
   # By default, we avoid checking the dns rebinding protection
   # when saving/updating a record. Sometimes, the url
   # is not resolvable at that point, and some automated
@@ -56,7 +58,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     allow_localhost: true,
     allow_local_network: true,
     ascii_only: false,
-    deny_all_requests_except_allowed: false,
+    deny_all_requests_except_allowed: DENY_ALL_REQUESTS_EXCEPT_ALLOWED_DEFAULT,
     enforce_user: false,
     enforce_sanitization: false,
     dns_rebind_protection: false,
@@ -110,11 +112,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
         args[:allow_localhost] = args[:allow_local_network] = true
       end
 
-      if deny_all_requests_except_allowed?
-        args[:deny_all_requests_except_allowed] = true
-      end
-
-      args[:outbound_local_requests_allowlist] = ApplicationSetting.current&.outbound_local_requests_whitelist || [] # rubocop:disable Naming/InclusiveLanguage -- existing setting
+      args[:outbound_local_requests_allowlist] = self.class.outbound_local_requests_allowlist
     end
   end
 
@@ -128,7 +126,11 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     ApplicationSetting.current&.allow_local_requests_from_web_hooks_and_services?
   end
 
-  def deny_all_requests_except_allowed?
+  def self.deny_all_requests_except_allowed?
     ApplicationSetting.current&.deny_all_requests_except_allowed?
+  end
+
+  def self.outbound_local_requests_allowlist
+    ApplicationSetting.current&.outbound_local_requests_whitelist || [] # rubocop:disable Naming/InclusiveLanguage -- existing setting
   end
 end

@@ -397,6 +397,34 @@ RSpec.describe AddressableUrlValidator do
         end
       end
     end
+
+    context 'a proc' do
+      let(:options) { super().merge(deny_all_requests_except_allowed: deny_all_requests_except_allowed_proc) }
+
+      context 'that is evaluating true' do
+        let(:deny_all_requests_except_allowed_proc) { ->(_) { true } }
+
+        it 'prevents the url' do
+          badge.link_url = url
+
+          subject
+
+          expect(badge.errors).to be_present
+        end
+      end
+
+      context 'that is evaluating false' do
+        let(:deny_all_requests_except_allowed_proc) { ->(_) { false } }
+
+        it 'allows the url' do
+          badge.link_url = url
+
+          subject
+
+          expect(badge.errors).to be_empty
+        end
+      end
+    end
   end
 
   context 'when enforce_sanitization is' do
