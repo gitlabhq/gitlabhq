@@ -48067,6 +48067,9 @@ msgstr ""
 msgid "Status:"
 msgstr ""
 
+msgid "Status: %{status}"
+msgstr ""
+
 msgid "Status: %{title}"
 msgstr ""
 

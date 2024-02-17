@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { sprintf, __ } from '~/locale';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.
@@ -58,11 +59,7 @@ export default {
       return null;
     },
     ariaLabel() {
-      // show aria-label only when text is not rendered
-      if (!this.showStatusText) {
-        return this.status?.text;
-      }
-      return null;
+      return sprintf(__('Status: %{status}'), { status: this.status?.text });
     },
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)
