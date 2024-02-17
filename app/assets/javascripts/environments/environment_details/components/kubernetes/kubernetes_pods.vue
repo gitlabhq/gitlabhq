@@ -11,7 +11,7 @@ import {
 import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
-import k8sPodsQuery from '../graphql/queries/k8s_pods.query.graphql';
+import k8sPodsQuery from '~/environments/graphql/queries/k8s_pods.query.graphql';
 
 export default {
   components: {

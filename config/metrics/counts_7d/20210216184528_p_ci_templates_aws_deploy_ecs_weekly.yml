@@ -5,7 +5,7 @@ description: Count of projects using `AWS/Deploy-ECS.gitlab-ci.yml` template in 
   7 days.
 product_section: ops
 product_stage: release
-product_group: release
+product_group: delivery
 value_type: number
 status: active
 time_frame: 7d

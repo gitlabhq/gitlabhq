@@ -4,7 +4,7 @@ key_path: redis_hll_counters.incident_management.incident_management_total_uniqu
 description: Count of unique users performing events related to the incident management
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 7d

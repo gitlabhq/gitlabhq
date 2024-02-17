@@ -5,16 +5,16 @@ import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import { useFakeDate } from 'helpers/fake_date';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import KubernetesServices from '~/environments/components/kubernetes_services.vue';
+import KubernetesServices from '~/environments/environment_details/components/kubernetes/kubernetes_services.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
-import { mockKasTunnelUrl } from './mock_data';
-import { k8sServicesMock } from './graphql/mock_data';
+import { mockKasTunnelUrl } from '../../../mock_data';
+import { k8sServicesMock } from '../../../graphql/mock_data';
 
 Vue.use(VueApollo);
 
-describe('~/environments/components/kubernetes_services.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_services.vue', () => {
   let wrapper;
 
   const namespace = 'my-kubernetes-namespace';

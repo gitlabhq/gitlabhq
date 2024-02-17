@@ -2,17 +2,17 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlEmptyState, GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import KubernetesOverview from '~/environments/environment_details/components/kubernetes_overview.vue';
-import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
-import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
-import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
+import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
+import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
+import KubernetesAgentInfo from '~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue';
+import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { agent, kubernetesNamespace, fluxResourcePathMock } from '../../graphql/mock_data';
-import { mockKasTunnelUrl } from '../../mock_data';
+import { agent, kubernetesNamespace, fluxResourcePathMock } from '../../../graphql/mock_data';
+import { mockKasTunnelUrl } from '../../../mock_data';
 
-describe('~/environments/kubernetes_overview/index.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_overview.vue', () => {
   Vue.use(VueApollo);
 
   let wrapper;
@@ -50,10 +50,9 @@ describe('~/environments/kubernetes_overview/index.vue', () => {
         },
       },
     };
-    const mockApollo = createMockApollo(
-      [[environmentClusterAgentQuery, jest.fn().mockResolvedValue(defaultEnvironmentData)]],
-      [],
-    );
+    const mockApollo = createMockApollo([
+      [environmentClusterAgentQuery, jest.fn().mockResolvedValue(defaultEnvironmentData)],
+    ]);
 
     return shallowMount(KubernetesOverview, {
       apolloProvider: mockApollo,

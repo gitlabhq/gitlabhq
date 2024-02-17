@@ -5,7 +5,7 @@ description: Count of issues where a user have added AND removed a zoom meeting 
   slash commands
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

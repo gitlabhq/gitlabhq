@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon, GlLink, GlSprintf } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
+import KubernetesAgentInfo from '~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue';
 import { AGENT_STATUSES, ACTIVE_CONNECTION_TIME } from '~/clusters_list/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -15,7 +15,7 @@ const defaultClusterAgent = {
 const connectedTimeNow = new Date();
 const connectedTimeInactive = new Date(connectedTimeNow.getTime() - ACTIVE_CONNECTION_TIME);
 
-describe('~/environments/components/kubernetes_agent_info.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue', () => {
   let wrapper;
 
   const findAgentLink = () => wrapper.findComponent(GlLink);

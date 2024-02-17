@@ -5,7 +5,7 @@ description: Count of unique users per week to create an incident corresponding 
   an alert
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 7d

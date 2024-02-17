@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import EnvironmentsDetailPage from '~/environments/environment_details/index.vue';
 import DeploymentsHistory from '~/environments/environment_details/components/deployment_history.vue';
-import KubernetesOverview from '~/environments/environment_details/components/kubernetes_overview.vue';
+import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
 
 const projectFullPath = 'gitlab-group/test-project';
 const environmentName = 'test-environment-name';

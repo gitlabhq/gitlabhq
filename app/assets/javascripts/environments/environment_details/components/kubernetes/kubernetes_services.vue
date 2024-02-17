@@ -7,8 +7,8 @@ import {
 } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { SERVICES_TABLE_FIELDS } from '~/kubernetes_dashboard/constants';
-import k8sServicesQuery from '../graphql/queries/k8s_services.query.graphql';
-import { SERVICES_LIMIT_PER_PAGE } from '../constants';
+import k8sServicesQuery from '~/environments/graphql/queries/k8s_services.query.graphql';
+import { SERVICES_LIMIT_PER_PAGE } from '~/environments/constants';
 
 export default {
   components: {

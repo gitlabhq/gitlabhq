@@ -12,9 +12,9 @@ import {
   REASON_PROGRESSING,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
-} from '../constants';
-import fluxKustomizationStatusQuery from '../graphql/queries/flux_kustomization_status.query.graphql';
-import fluxHelmReleaseStatusQuery from '../graphql/queries/flux_helm_release_status.query.graphql';
+} from '~/environments/constants';
+import fluxKustomizationStatusQuery from '~/environments/graphql/queries/flux_kustomization_status.query.graphql';
+import fluxHelmReleaseStatusQuery from '~/environments/graphql/queries/flux_helm_release_status.query.graphql';
 
 export default {
   components: {

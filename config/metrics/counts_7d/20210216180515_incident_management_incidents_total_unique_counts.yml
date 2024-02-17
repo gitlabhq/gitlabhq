@@ -4,7 +4,7 @@ key_path: counts_weekly.aggregated_metrics.incident_management_incidents_total_u
 description: Count of unique users per week to take an action on an incident
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: 7d

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
+import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
@@ -12,7 +12,7 @@ import {
 } from '~/environments/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { mockKasTunnelUrl } from './mock_data';
+import { mockKasTunnelUrl } from '../../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -27,7 +27,7 @@ const environmentName = 'environment_name';
 const kustomizationResourcePath =
   'kustomize.toolkit.fluxcd.io/v1beta1/namespaces/my-namespace/kustomizations/app';
 
-describe('~/environments/components/kubernetes_status_bar.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue', () => {
   let wrapper;
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);

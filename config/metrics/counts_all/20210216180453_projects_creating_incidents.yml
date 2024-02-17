@@ -4,7 +4,7 @@ key_path: counts.projects_creating_incidents
 description: Counts of Projects that have incident issues, regardless of status.
 product_section: ops
 product_stage: monitor
-product_group: monitor
+product_group: respond
 value_type: number
 status: active
 time_frame: all

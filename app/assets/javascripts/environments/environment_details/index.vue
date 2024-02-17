@@ -3,7 +3,7 @@
 import { GlTabs, GlTab } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import DeploymentHistory from './components/deployment_history.vue';
-import KubernetesOverview from './components/kubernetes_overview.vue';
+import KubernetesOverview from './components/kubernetes/kubernetes_overview.vue';
 
 export default {
   components: {

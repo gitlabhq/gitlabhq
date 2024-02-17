@@ -1,11 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlTabs } from '@gitlab/ui';
-import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
-import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
-import KubernetesServices from '~/environments/components/kubernetes_services.vue';
-import { mockKasTunnelUrl } from './mock_data';
+import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
+import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
+import KubernetesServices from '~/environments/environment_details/components/kubernetes/kubernetes_services.vue';
+import { mockKasTunnelUrl } from '../../../mock_data';
 
-describe('~/environments/components/kubernetes_tabs.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue', () => {
   let wrapper;
 
   const namespace = 'my-kubernetes-namespace';

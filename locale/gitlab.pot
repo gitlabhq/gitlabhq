@@ -19517,9 +19517,6 @@ msgstr ""
 msgid "Environment|Healthy"
 msgstr ""
 
-msgid "Environment|Kubernetes overview"
-msgstr ""
-
 msgid "Environment|No Kubernetes clusters configured"
 msgstr ""
 
@@ -23318,10 +23315,25 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Connect Google Cloud Workload Identity Federation to GitLab."
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Google Cloud Artifact Registry"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Google Cloud Identity and Access Management"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Google Cloud project ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project ID for the Workload Identity Federation."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project number"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|ID of the Google Cloud project."

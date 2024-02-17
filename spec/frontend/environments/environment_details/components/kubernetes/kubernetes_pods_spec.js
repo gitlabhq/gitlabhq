@@ -4,16 +4,16 @@ import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlTab } from '@gitlab/ui';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import KubernetesPods from '~/environments/components/kubernetes_pods.vue';
+import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import { useFakeDate } from 'helpers/fake_date';
-import { mockKasTunnelUrl } from './mock_data';
-import { k8sPodsMock, k8sPodsStatsData, k8sPodsTableData } from './graphql/mock_data';
+import { mockKasTunnelUrl } from '../../../mock_data';
+import { k8sPodsMock, k8sPodsStatsData, k8sPodsTableData } from '../../../graphql/mock_data';
 
 Vue.use(VueApollo);
 
-describe('~/environments/components/kubernetes_pods.vue', () => {
+describe('~/environments/environment_details/components/kubernetes/kubernetes_pods.vue', () => {
   let wrapper;
 
   const namespace = 'my-kubernetes-namespace';

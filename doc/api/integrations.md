@@ -930,6 +930,47 @@ Get the Google Cloud Artifact Registry integration settings for a project.
 GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 ```
 
+## Google Cloud Identity and Access Management (IAM)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_workload_identity_federation`. Disabled by default.
+
+FLAG:
+On GitLab.com, this feature is not available.
+This feature is not ready for production use.
+
+### Set up Google Cloud Identity and Access Management
+
+Set up the Google Cloud Identity and Access Management integration for a project.
+
+```plaintext
+PUT /projects/:id/integrations/google-cloud-platform-workload-identity-federation
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `workload_identity_federation_project_id` | string | true | Google Cloud project ID for the Workload Identity Federation. |
+| `workload_identity_federation_project_number` | integer | true | Google Cloud project number for the Workload Identity Federation. |
+| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
+| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
+
+### Disable Google Cloud Identity and Access Management
+
+Disable the Google Cloud Identity and Access Management integration for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/google-cloud-platform-workload-identity-federation
+```
+
+### Get Google Cloud Artifact Identity and Access Management
+
+Get the settings for the Google Cloud Artifact Identity and Access Management for a project.
+
+```plaintext
+GET /projects/:id/integration/google-cloud-platform-workload-identity-federation
+```
+
 ## Google Play
 
 ### Set up Google Play

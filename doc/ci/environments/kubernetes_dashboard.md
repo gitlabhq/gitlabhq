@@ -14,12 +14,13 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390769) in GitLab 16.1, with [flags](../../administration/feature_flags.md) named `environment_settings_to_graphql`, `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents`. This feature is in [Beta](../../policy/experiment-beta-support.md#beta).
 > - Feature flag `environment_settings_to_graphql` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124177) in GitLab 16.2.
 > - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431746) to the environment details page in 16.10.
 
 Use the Dashboard for Kubernetes to understand the status of your clusters with an intuitive visual interface.
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
-![Kubernetes summary UI](img/kubernetes_summary_ui.png)
+![Kubernetes summary UI](img/kubernetes_summary_ui_v16_10.png)
 
 ## Configure a dashboard
 
@@ -76,8 +77,8 @@ To view a configured dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Environments**.
-1. Expand the environment associated with the agent for Kubernetes.
-1. Expand **Kubernetes overview**.
+1. Select the environment associated with the agent for Kubernetes.
+1. Select the **Kubernetes overview** tab.
 
 ### Flux sync status
 

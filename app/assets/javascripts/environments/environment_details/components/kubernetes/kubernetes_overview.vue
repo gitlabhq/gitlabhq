@@ -7,9 +7,9 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';
 import { CLUSTER_HEALTH_SUCCESS, CLUSTER_HEALTH_ERROR } from '~/environments/constants';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
-import KubernetesStatusBar from '~/environments/components/kubernetes_status_bar.vue';
-import KubernetesAgentInfo from '~/environments/components/kubernetes_agent_info.vue';
-import KubernetesTabs from '~/environments/components/kubernetes_tabs.vue';
+import KubernetesStatusBar from './kubernetes_status_bar.vue';
+import KubernetesAgentInfo from './kubernetes_agent_info.vue';
+import KubernetesTabs from './kubernetes_tabs.vue';
 
 export default {
   components: {
