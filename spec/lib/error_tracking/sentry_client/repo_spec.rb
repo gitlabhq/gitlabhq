@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ErrorTracking::SentryClient::Repo do
+RSpec.describe ErrorTracking::SentryClient::Repo, feature_category: :error_tracking do
   include SentryClientHelpers
 
   let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project' }

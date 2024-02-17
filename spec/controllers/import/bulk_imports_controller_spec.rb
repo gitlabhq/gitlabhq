@@ -338,14 +338,41 @@ RSpec.describe Import::BulkImportsController, feature_category: :importers do
         end
       end
 
-      describe 'GET details' do
-        subject(:request) { get :details }
+      describe 'GET failures' do
+        let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+        let_it_be(:bulk_import_entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
+        let(:id) { bulk_import.id }
+        let(:entity_id) { bulk_import_entity.id }
 
-        it 'responds with a 200 and shows the template', :aggregate_failures do
-          request
+        subject(:request) { get :failures, params: { id: id, entity_id: entity_id } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:details)
+        describe 'when bulk_import does not exist' do
+          let(:id) { 18231 }
+
+          it 'responds with a 404' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        describe 'when bulk_import_entity does not exist' do
+          let(:entity_id) { 136485 }
+
+          it 'responds with a 404' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        describe 'when both bulk_import and bulk_import_entity exist' do
+          it 'responds with a 200 and shows the template', :aggregate_failures do
+            request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:failures)
+          end
         end
       end
 

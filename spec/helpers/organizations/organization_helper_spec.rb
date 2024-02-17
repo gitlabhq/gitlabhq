@@ -18,6 +18,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:projects_empty_state_svg_path) { 'illustrations/empty-state/empty-projects-md.svg' }
   let_it_be(:preview_markdown_organizations_path) { '/-/organizations/preview_markdown' }
   let_it_be(:groups_and_projects_organization_path) { '/-/organizations/default/groups_and_projects' }
+  let_it_be(:users_organization_path) { '/-/organizations/default/users' }
 
   let(:stubbed_results) do
     {
@@ -105,6 +106,10 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       allow(helper).to receive(:groups_and_projects_organization_path)
         .with(organization)
         .and_return(groups_and_projects_organization_path)
+
+      allow(helper).to receive(:users_organization_path)
+        .with(organization)
+        .and_return(users_organization_path)
     end
 
     context 'when the user can create a group' do
@@ -148,6 +153,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'avatar_url' => 'avatar.jpg'
           },
           'groups_and_projects_organization_path' => groups_and_projects_organization_path,
+          'users_organization_path' => users_organization_path,
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,

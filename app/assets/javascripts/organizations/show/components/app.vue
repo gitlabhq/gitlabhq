@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    usersOrganizationPath: {
+      type: String,
+      required: true,
+    },
     associationCounts: {
       type: Object,
       required: true,
@@ -32,6 +36,7 @@ export default {
       v-if="Object.keys(associationCounts).length"
       :association-counts="associationCounts"
       :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"
+      :users-organization-path="usersOrganizationPath"
     />
     <groups-and-projects
       :groups-and-projects-organization-path="groupsAndProjectsOrganizationPath"

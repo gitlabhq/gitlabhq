@@ -1,9 +1,7 @@
 import { GlDropdownItem, GlSorting, GlFilteredSearch, GlFormCheckbox } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 
+import { nextTick } from 'vue';
 import RecentSearchesService from '~/filtered_search/services/recent_searches_service';
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import {
@@ -36,39 +34,45 @@ jest.mock('~/vue_shared/components/filtered_search_bar/filtered_search_utils', (
   ).filterEmptySearchTerm,
 }));
 
-const defaultProps = {
-  namespace: 'gitlab-org/gitlab-test',
-  recentSearchesStorageKey: 'requirements',
-  tokens: mockAvailableTokens,
-  initialFilterValue: [],
-  showCheckbox: false,
-  checkboxChecked: false,
-  searchInputPlaceholder: 'Filter requirements',
+const createComponent = ({
+  shallow = true,
+  namespace = 'gitlab-org/gitlab-test',
+  recentSearchesStorageKey = 'requirements',
+  tokens = mockAvailableTokens,
+  sortOptions,
+  initialSortBy,
+  initialFilterValue = [],
+  showCheckbox = false,
+  checkboxChecked = false,
+  searchInputPlaceholder = 'Filter requirements',
+} = {}) => {
+  const mountMethod = shallow ? shallowMount : mount;
+
+  return mountMethod(FilteredSearchBarRoot, {
+    propsData: {
+      namespace,
+      recentSearchesStorageKey,
+      tokens,
+      sortOptions,
+      initialSortBy,
+      initialFilterValue,
+      showCheckbox,
+      checkboxChecked,
+      searchInputPlaceholder,
+    },
+  });
 };
 
 describe('FilteredSearchBarRoot', () => {
-  useLocalStorageSpy();
   let wrapper;
-
-  const createComponent = ({ shallow = true, propsData = {} } = {}) => {
-    const mountMethod = shallow ? shallowMount : mount;
-
-    wrapper = mountMethod(FilteredSearchBarRoot, { propsData: { ...defaultProps, ...propsData } });
-  };
 
   const findGlSorting = () => wrapper.findComponent(GlSorting);
   const findGlFilteredSearch = () => wrapper.findComponent(GlFilteredSearch);
-  const findGlFormCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findGlDropdownItem = () => wrapper.findComponent(GlDropdownItem);
-
-  afterEach(() => {
-    localStorage.clear();
-  });
 
   describe('data', () => {
     describe('when `sortOptions` are provided', () => {
       beforeEach(() => {
-        createComponent({ propsData: { sortOptions: mockSortOptions } });
+        wrapper = createComponent({ sortOptions: mockSortOptions });
       });
 
       it('sets a correct initial value for GlFilteredSearch', () => {
@@ -91,7 +95,7 @@ describe('FilteredSearchBarRoot', () => {
     });
 
     it('does not initialize the sort dropdown when `sortOptions` are not provided', () => {
-      createComponent();
+      wrapper = createComponent();
 
       expect(findGlSorting().exists()).toBe(false);
     });
@@ -100,7 +104,6 @@ describe('FilteredSearchBarRoot', () => {
   describe('computed', () => {
     describe('tokenSymbols', () => {
       it('returns a map containing type and symbols from `tokens` prop', () => {
-        createComponent();
         expect(wrapper.vm.tokenSymbols).toEqual({
           [TOKEN_TYPE_AUTHOR]: '@',
           [TOKEN_TYPE_LABEL]: '~',
@@ -111,7 +114,6 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('tokenTitles', () => {
       it('returns a map containing type and title from `tokens` prop', () => {
-        createComponent();
         expect(wrapper.vm.tokenTitles).toEqual({
           [TOKEN_TYPE_AUTHOR]: 'Author',
           [TOKEN_TYPE_LABEL]: 'Label',
@@ -122,7 +124,7 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('sortDirectionIcon', () => {
       beforeEach(() => {
-        createComponent({ propsData: { sortOptions: mockSortOptions } });
+        wrapper = createComponent({ sortOptions: mockSortOptions });
       });
 
       it('passes isAscending=false to GlSorting by default', () => {
@@ -139,7 +141,7 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('filteredRecentSearches', () => {
       beforeEach(() => {
-        createComponent();
+        wrapper = createComponent();
       });
 
       it('returns array of recent searches filtering out any string type (unsupported) items', async () => {
@@ -185,7 +187,7 @@ describe('FilteredSearchBarRoot', () => {
 
   describe('events', () => {
     it('emits component event `onFilter` with empty array and true when initially selected filter value was cleared', async () => {
-      createComponent({ propsData: { initialFilterValue: [tokenValueLabel] } });
+      wrapper = createComponent({ initialFilterValue: [tokenValueLabel] });
 
       wrapper.findComponent(GlFilteredSearch).vm.$emit('clear');
 
@@ -197,16 +199,15 @@ describe('FilteredSearchBarRoot', () => {
   describe('methods', () => {
     describe('setupRecentSearch', () => {
       it('initializes `recentSearchesService` and `recentSearchesStore` props when `recentSearchesStorageKey` is available', () => {
-        createComponent();
         expect(wrapper.vm.recentSearchesService instanceof RecentSearchesService).toBe(true);
         expect(wrapper.vm.recentSearchesStore instanceof RecentSearchesStore).toBe(true);
       });
 
       it('initializes `recentSearchesPromise` prop with a promise by using `recentSearchesService.fetch()`', () => {
-        expect(localStorage.setItem).not.toHaveBeenCalled();
-        createComponent();
+        jest.spyOn(wrapper.vm.recentSearchesService, 'fetch').mockResolvedValue([]);
 
-        expect(localStorage.setItem).toHaveBeenCalledWith('canUseLocalStorage', 'true');
+        wrapper.vm.setupRecentSearch();
+
         expect(wrapper.vm.recentSearchesPromise instanceof Promise).toBe(true);
       });
     });
@@ -215,7 +216,6 @@ describe('FilteredSearchBarRoot', () => {
       const mockFilters = [tokenValueAuthor, tokenValueLabel, tokenValueConfidential, 'foo'];
 
       it('returns filter array with unescaped strings for values which have spaces', () => {
-        createComponent();
         expect(wrapper.vm.removeQuotesEnclosure(mockFilters)).toEqual([
           tokenValueAuthor,
           tokenValueLabel,
@@ -227,7 +227,7 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleSortOptionChange', () => {
       it('emits component event `onSort` with selected sort by value', async () => {
-        createComponent({ propsData: { sortOptions: mockSortOptions } });
+        wrapper = createComponent({ sortOptions: mockSortOptions });
 
         findGlSorting().vm.$emit('sortByChange', mockSortOptions[1].id);
         await nextTick();
@@ -239,11 +239,9 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleSortDirectionChange', () => {
       beforeEach(() => {
-        createComponent({
-          propsData: {
-            sortOptions: mockSortOptions,
-            initialSortBy: mockSortOptions[0].sortDirection.descending,
-          },
+        wrapper = createComponent({
+          sortOptions: mockSortOptions,
+          initialSortBy: mockSortOptions[0].sortDirection.descending,
         });
       });
 
@@ -265,27 +263,24 @@ describe('FilteredSearchBarRoot', () => {
 
     describe('handleHistoryItemSelected', () => {
       it('emits `onFilter` event with provided filters param', () => {
-        createComponent();
-        expect(wrapper.emitted('onFilter')).toEqual(undefined);
-        findGlFilteredSearch().vm.$emit('history-item-selected', mockHistoryItems[0]);
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
+        wrapper.vm.handleHistoryItemSelected(mockHistoryItems[0]);
+
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockHistoryItems[0]]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockHistoryItems[0]);
       });
     });
 
     describe('handleClearHistory', () => {
       it('clears search history from recent searches store', () => {
-        createComponent();
         jest.spyOn(wrapper.vm.recentSearchesStore, 'setRecentSearches').mockReturnValue([]);
+        jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
-        expect(localStorage.setItem).toHaveBeenCalledTimes(2);
-        findGlFilteredSearch().vm.$emit('clear-history');
+        wrapper.vm.handleClearHistory();
 
         expect(wrapper.vm.recentSearchesStore.setRecentSearches).toHaveBeenCalledWith([]);
-        expect(localStorage.setItem).toHaveBeenCalledTimes(4);
-        expect(localStorage.setItem).toHaveBeenLastCalledWith(
-          'gitlab-org/gitlab-test-requirements-recent-searches',
-          '[]',
-        );
+        expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([]);
         expect(wrapper.vm.recentSearches).toEqual([]);
       });
     });
@@ -294,7 +289,7 @@ describe('FilteredSearchBarRoot', () => {
       const mockFilters = [tokenValueAuthor, 'foo'];
 
       beforeEach(async () => {
-        createComponent();
+        wrapper = createComponent();
 
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
@@ -324,27 +319,25 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('calls `recentSearchesService.save` with array of searches', async () => {
-        expect(localStorage.setItem).toHaveBeenCalledTimes(4);
-        findGlFilteredSearch().vm.$emit('submit');
-        await waitForPromises();
+        jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
-        expect(localStorage.setItem).toHaveBeenCalledTimes(6);
-        expect(localStorage.setItem).toHaveBeenLastCalledWith(
-          'gitlab-org/gitlab-test-requirements-recent-searches',
-          JSON.stringify([mockFilters]),
-        );
+        wrapper.vm.handleFilterSubmit();
+
+        await nextTick();
+
+        return wrapper.vm.recentSearchesPromise.then(() => {
+          expect(wrapper.vm.recentSearchesService.save).toHaveBeenCalledWith([mockFilters]);
+        });
       });
 
-      it('sets `recentSearches` data prop with array of searches', async () => {
-        expect(localStorage.setItem).toHaveBeenCalledTimes(4);
-        findGlFilteredSearch().vm.$emit('submit');
-        await waitForPromises();
+      it('sets `recentSearches` data prop with array of searches', () => {
+        jest.spyOn(wrapper.vm.recentSearchesService, 'save');
 
-        expect(localStorage.setItem).toHaveBeenCalledTimes(6);
-        expect(localStorage.setItem).toHaveBeenLastCalledWith(
-          'gitlab-org/gitlab-test-requirements-recent-searches',
-          JSON.stringify([mockFilters]),
-        );
+        wrapper.vm.handleFilterSubmit();
+
+        return wrapper.vm.recentSearchesPromise.then(() => {
+          expect(wrapper.vm.recentSearches).toEqual([mockFilters]);
+        });
       });
 
       it('calls `blurSearchInput` method to remove focus from filter input field', () => {
@@ -356,18 +349,20 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('emits component event `onFilter` with provided filters param', async () => {
-        expect(wrapper.emitted('onFilter')).toEqual(undefined);
+        jest.spyOn(wrapper.vm, 'removeQuotesEnclosure');
+
         findGlFilteredSearch().vm.$emit('submit');
         await nextTick();
 
         expect(wrapper.emitted('onFilter')[0]).toEqual([mockFilters]);
+        expect(wrapper.vm.removeQuotesEnclosure).toHaveBeenCalledWith(mockFilters);
       });
     });
   });
 
   describe('template', () => {
     it('renders gl-filtered-search component', async () => {
-      createComponent();
+      wrapper = createComponent();
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       await wrapper.setData({
@@ -381,70 +376,89 @@ describe('FilteredSearchBarRoot', () => {
       expect(glFilteredSearchEl.props('historyItems')).toEqual(mockHistoryItems);
     });
 
-    it('renders unchecked checkbox when `showCheckbox` prop is true', () => {
-      createComponent({ propsData: { showCheckbox: true } });
-      expect(findGlFormCheckbox().exists()).toBe(true);
-      expect(findGlFormCheckbox().attributes('checked')).not.toBeDefined();
-    });
+    it('renders checkbox when `showCheckbox` prop is true', () => {
+      let wrapperWithCheckbox = createComponent({
+        showCheckbox: true,
+      });
 
-    it('renders checked checkbox when `checkboxChecked` prop is true', () => {
-      createComponent({ propsData: { showCheckbox: true, checkboxChecked: true } });
-      expect(findGlFormCheckbox().attributes('checked')).toBe('true');
+      expect(wrapperWithCheckbox.findComponent(GlFormCheckbox).exists()).toBe(true);
+      expect(
+        wrapperWithCheckbox.findComponent(GlFormCheckbox).attributes('checked'),
+      ).not.toBeDefined();
+
+      wrapperWithCheckbox.destroy();
+
+      wrapperWithCheckbox = createComponent({
+        showCheckbox: true,
+        checkboxChecked: true,
+      });
+
+      expect(wrapperWithCheckbox.findComponent(GlFormCheckbox).attributes('checked')).toBe('true');
+
+      wrapperWithCheckbox.destroy();
     });
 
     it('renders search history items dropdown with formatting done using token symbols', async () => {
-      createComponent({ propsData: { sortOptions: mockSortOptions }, shallow: false });
-      wrapper.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
+      const wrapperFullMount = createComponent({ sortOptions: mockSortOptions, shallow: false });
+      wrapperFullMount.vm.recentSearchesStore.addRecentSearch(mockHistoryItems[0]);
+
       await nextTick();
 
-      const searchHistoryItemsEl = wrapper.findAll(
+      const searchHistoryItemsEl = wrapperFullMount.findAll(
         '.gl-search-box-by-click-menu .gl-search-box-by-click-history-item',
       );
 
       expect(searchHistoryItemsEl.at(0).text()).toBe(
         'Author := @rootLabel := ~bugMilestone := %v1.0"duo"',
       );
+
+      wrapperFullMount.destroy();
     });
 
     describe('when token options have `title` attribute defined', () => {
       it('renders search history items using the provided `title` attribute', async () => {
-        createComponent({
-          propsData: {
-            sortOptions: mockSortOptions,
-            tokens: [mockMembershipToken],
-          },
+        const wrapperFullMount = createComponent({
+          sortOptions: mockSortOptions,
+          tokens: [mockMembershipToken],
           shallow: false,
         });
 
-        wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
+        wrapperFullMount.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
+
         await nextTick();
-        expect(findGlDropdownItem().text()).toBe('Membership := Direct');
+
+        expect(wrapperFullMount.findComponent(GlDropdownItem).text()).toBe('Membership := Direct');
+
+        wrapperFullMount.destroy();
       });
     });
 
     describe('when token options have do not have `title` attribute defined', () => {
       it('renders search history items using the provided `value` attribute', async () => {
-        createComponent({
-          propsData: {
-            sortOptions: mockSortOptions,
-            tokens: [mockMembershipTokenOptionsWithoutTitles],
-          },
+        const wrapperFullMount = createComponent({
+          sortOptions: mockSortOptions,
+          tokens: [mockMembershipTokenOptionsWithoutTitles],
           shallow: false,
         });
-        wrapper.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
+
+        wrapperFullMount.vm.recentSearchesStore.addRecentSearch([tokenValueMembership]);
+
         await nextTick();
-        expect(findGlDropdownItem().text()).toBe('Membership := exclude');
+
+        expect(wrapperFullMount.findComponent(GlDropdownItem).text()).toBe('Membership := exclude');
+
+        wrapperFullMount.destroy();
       });
     });
 
     it('renders sort dropdown component', () => {
-      createComponent({ propsData: { sortOptions: mockSortOptions } });
+      wrapper = createComponent({ sortOptions: mockSortOptions });
 
       expect(findGlSorting().exists()).toBe(true);
     });
 
     it('renders sort dropdown items', () => {
-      createComponent({ propsData: { sortOptions: mockSortOptions } });
+      wrapper = createComponent({ sortOptions: mockSortOptions });
 
       const { sortOptions, sortBy } = findGlSorting().props();
 
@@ -471,7 +485,7 @@ describe('FilteredSearchBarRoot', () => {
     };
 
     beforeEach(() => {
-      createComponent({ propsData: { sortOptions: mockSortOptions } });
+      wrapper = createComponent({ sortOptions: mockSortOptions });
     });
 
     it('syncs filter value', async () => {

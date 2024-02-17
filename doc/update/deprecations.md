@@ -1583,6 +1583,41 @@ that is available now. We recommend this alternative solution because it provide
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### SAST analyzer coverage changing in GitLab 17.0
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431123).
+</div>
+
+We're reducing the number of supported [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) used by default in GitLab SAST.
+This is part of our long-term strategy to deliver a faster, more consistent user experience across different programming languages.
+
+In GitLab 17.0, we will:
+
+1. Remove a set of language-specific analyzers from the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) and replace their coverage with [GitLab-supported detection rules](https://docs.gitlab.com/ee/user/application_security/sast/rules.html) in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep). The following analyzers are now deprecated and will reach End of Support in GitLab 17.0:
+    1. [Brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Ruby, Ruby on Rails)
+    1. [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (C, C++)
+    1. [MobSF](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (Android, iOS)
+    1. [NodeJS Scan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (Node.js)
+    1. [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP)
+1. Change the [SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to stop running the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) for Kotlin and Scala code. These languages will instead be scanned using [GitLab-supported detection rules](https://docs.gitlab.com/ee/user/application_security/sast/rules.html) in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+
+Effective immediately, the deprecated analyzers will receive only security updates; other routine improvements or updates are not guaranteed.
+After the analyzers reach End of Support in GitLab 17.0, no further updates will be provided.
+However, we won't delete container images previously published for these analyzers or remove the ability to run them by using custom CI/CD pipeline job definitions.
+
+The vulnerability management system will update most existing findings so that they're matched with the new detection rules.
+Findings that aren't migrated to the new analyzer will be [automatically resolved](https://docs.gitlab.com/ee/user/application_security/sast/#automatic-vulnerability-resolution).
+See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
+
+If you applied customizations to the removed analyzers, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/431123#breaking-change).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Secure analyzers major version update
 
 <div class="deprecation-notes">

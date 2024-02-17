@@ -23,7 +23,7 @@ module ErrorTracking
 
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
     self.reactive_cache_work_type = :external_dependency
-    self.reactive_cache_hard_limit = ErrorTracking::SentryClient::RESPONSE_SIZE_LIMIT
+    self.reactive_cache_hard_limit = ErrorTracking::SentryClient::RESPONSE_MEMORY_SIZE_LIMIT
 
     self.table_name = 'project_error_tracking_settings'
 

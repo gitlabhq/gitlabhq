@@ -32,13 +32,13 @@ module Ci
       end
     end
 
-    def outdated_deployment?
+    def has_outdated_deployment?
       deployment_job? &&
         project.ci_forward_deployment_enabled? &&
         (!project.ci_forward_deployment_rollback_allowed? || incomplete?) &&
         deployment&.older_than_last_successful_deployment?
     end
-    strong_memoize_attr :outdated_deployment?
+    strong_memoize_attr :has_outdated_deployment?
 
     # Virtual deployment status depending on the environment status.
     def deployment_status

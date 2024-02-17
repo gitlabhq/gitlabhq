@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { generateText } from '../extensions/utils';
+import { generateText } from './utils';
 import ContentRow from './widget_content_row.vue';
 import Actions from './action_buttons.vue';
 

@@ -40,6 +40,15 @@ RSpec.describe ProtectedBranches::UpdateService, feature_category: :compliance_m
           expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
         end
       end
+
+      context 'with skip authorization and unauthorized user' do
+        let(:user) { create(:user) }
+        let(:result) { service.execute(protected_branch, skip_authorization: true) }
+
+        it 'updates a protected branch' do
+          expect(result.reload.name).to eq(params[:name])
+        end
+      end
     end
   end
 

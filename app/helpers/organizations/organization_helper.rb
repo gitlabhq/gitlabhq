@@ -13,6 +13,7 @@ module Organizations
         organization: organization.slice(:id, :name, :description_html)
           .merge({ avatar_url: organization.avatar_url(size: 128) }),
         groups_and_projects_organization_path: groups_and_projects_organization_path(organization),
+        users_organization_path: users_organization_path(organization),
         association_counts: association_counts(organization)
       }.merge(shared_groups_and_projects_app_data(organization)).to_json
     end

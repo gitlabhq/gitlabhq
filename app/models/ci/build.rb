@@ -410,6 +410,10 @@ module Ci
       auto_retry.allowed?
     end
 
+    def exit_code=(value)
+      ensure_metadata.exit_code = value
+    end
+
     def auto_retry_expected?
       failed? && auto_retry_allowed?
     end
@@ -1030,7 +1034,7 @@ module Ci
     end
 
     def exit_codes_defined?
-      options.dig(:allow_failure_criteria, :exit_codes).present?
+      options.dig(:allow_failure_criteria, :exit_codes).present? || options.dig(:retry, :exit_codes).present?
     end
 
     def create_queuing_entry!

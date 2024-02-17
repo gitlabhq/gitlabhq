@@ -199,7 +199,7 @@ export const GROUP_FILTERED_SEARCH_NAMESPACE = 'group_runners';
 export const LINUX_PLATFORM = 'linux';
 export const MACOS_PLATFORM = 'osx';
 export const WINDOWS_PLATFORM = 'windows';
-export const GOOGLE_CLOUD_PLATFORM = 'google';
+export const GOOGLE_CLOUD_PLATFORM = 'google_cloud';
 
 // Stages for the google cloud setup
 export const GOOGLE_CLOUD_SETUP_START = 'google_cloud_setup_start';

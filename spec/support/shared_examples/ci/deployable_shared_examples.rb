@@ -15,8 +15,8 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
-  describe '#outdated_deployment?' do
-    subject { job.outdated_deployment? }
+  describe '#has_outdated_deployment?' do
+    subject { job.has_outdated_deployment? }
 
     let(:job) { create(factory_type, :created, :with_deployment, project: project, pipeline: pipeline, environment: 'production') }
 

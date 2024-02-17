@@ -5,6 +5,7 @@ import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
+import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCloudConnectionForm from '~/ci/runner/components/runner_cloud_connection_form.vue';
 import RunnerCloudExecutionEnvironment from '~/ci/runner/components/runner_cloud_execution_environment.vue';
@@ -24,6 +25,7 @@ export default {
   name: 'GroupNewRunnerApp',
   components: {
     RegistrationCompatibilityAlert,
+    RunnerGoogleCloudOption,
     RunnerPlatformsRadioGroup,
     RunnerCloudConnectionForm,
     RunnerCreateForm,
@@ -139,7 +141,11 @@ export default {
       {{ s__('Runners|Platform') }}
     </h2>
 
-    <runner-platforms-radio-group v-model="platform" />
+    <runner-platforms-radio-group v-model="platform">
+      <template v-if="googleCloudProvisioningEnabled" #cloud-options>
+        <runner-google-cloud-option v-model="platform" />
+      </template>
+    </runner-platforms-radio-group>
 
     <hr aria-hidden="true" />
 

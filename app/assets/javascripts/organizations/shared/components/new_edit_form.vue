@@ -154,7 +154,7 @@ export default {
     },
     textareaCharacterCounter() {
       const remainingCharacters =
-        MAX_DESCRIPTION_COUNT - this.formValues[FORM_FIELD_DESCRIPTION].length;
+        MAX_DESCRIPTION_COUNT - (this.formValues[FORM_FIELD_DESCRIPTION] || '').length;
 
       if (remainingCharacters >= 0) {
         return {
@@ -213,7 +213,7 @@ export default {
             :can-attach-file="false"
             :markdown-preview-path="previewMarkdownPath"
             :markdown-docs-path="$options.markdownDocsPath"
-            :textarea-value="value"
+            :textarea-value="value || ''"
             :restricted-tool-bar-items="$options.restrictedToolBarItems"
           >
             <template #textarea>

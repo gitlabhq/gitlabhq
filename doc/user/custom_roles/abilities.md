@@ -49,6 +49,12 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_terraform_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) |  | Allows to admin terraform state | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/421789) |  |  |
 
+## Secrets management
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_cicd_variables`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143369) |  | Allows to admin CI/CD variables. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/437947) |  |  |
+
 ## System access
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

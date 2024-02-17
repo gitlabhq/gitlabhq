@@ -41,25 +41,9 @@ module Gitlab
             direction = params[:direction] || :desc
 
             if params[:sort] == :duration
-              order_by_duration(direction)
-            else
-              order_by_end_event(direction)
-            end
-          end
-
-          def order_by_duration(direction)
-            if Feature.enabled?(:vsa_duration_from_db, type: :gitlab_com_derisk)
               build.order_by_db_duration(direction)
             else
-              build.order_by_calculated_duration(direction)
-            end
-          end
-
-          def order_by_end_event(direction)
-            if Feature.enabled?(:vsa_duration_from_db, type: :gitlab_com_derisk)
               build.order_by_end_event_with_db_duration(direction)
-            else
-              build.order_by_end_event(direction)
             end
           end
 

@@ -4,8 +4,18 @@ classes:
 - MergeRequestDiff
 feature_categories:
 - code_review_workflow
-description: Store information about the changes made within a git push for a merge request
+description: Store information about the changes made within a git push for a merge
+  request
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/c983e8eb3d9cac01090b8657735544f71f891576
 milestone: '6.6'
-gitlab_schema: gitlab_main
+
+gitlab_schema: gitlab_main_cell
 desired_sharding_key_migration_job_name: BackfillMergeRequestDiffsProjectId
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key:
+  project_id: projects

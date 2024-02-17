@@ -9,5 +9,10 @@ FactoryBot.define do
 
     start_event_timestamp { 3.weeks.ago.to_date }
     end_event_timestamp { 2.weeks.ago.to_date }
+    duration_in_milliseconds do
+      if start_event_timestamp && end_event_timestamp
+        (end_event_timestamp.to_time - start_event_timestamp.to_time).in_milliseconds
+      end
+    end
   end
 end

@@ -6,8 +6,8 @@ module Gitlab
       class Dashboard < Chemlab::Page
         path '/admin'
 
-        h2 :users_in_license
-        h2 :billable_users
+        span :users_in_license
+        span :billable_users
       end
     end
   end

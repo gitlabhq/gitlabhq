@@ -205,7 +205,8 @@ describe('JobArtifactsTable component', () => {
     it('shows the job status as an icon for a successful job', () => {
       expect(findCiIcon().props()).toMatchObject({
         status: {
-          group: 'success',
+          text: 'Passed',
+          icon: 'status_success',
         },
         showStatusText: false,
       });

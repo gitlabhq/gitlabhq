@@ -3240,9 +3240,11 @@
 .as-if-jh:rules:start-as-if-jh:
   rules:
     - <<: *if-merge-request-labels-as-if-jh
+      when: never # See https://gitlab.com/gitlab-org/gitlab/-/issues/442194
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
+      when: never # See https://gitlab.com/gitlab-org/gitlab/-/issues/442194
       allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
 
 ##############################

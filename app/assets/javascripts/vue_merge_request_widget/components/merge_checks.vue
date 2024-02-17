@@ -176,7 +176,7 @@ export default {
           :is="checkComponent(check)"
           v-for="(check, index) in sortedChecks"
           :key="index"
-          class="gl-pl-9"
+          class="gl-pl-9 gl-pr-4"
           :class="{
             'gl-border-b-solid gl-border-b-1 gl-border-gray-100': index !== sortedChecks.length - 1,
           }"

@@ -5,4 +5,4 @@
   - add_to_breadcrumbs params[:id], history_import_bulk_import_path(id: params[:id])
 - page_title format(s_('Import|Failures for %{id}'), id: params[:entity_id])
 
-.js-bulk-import-details
+.js-bulk-import-details{ data: { id: params[:id], entity_id: params[:entity_id] } }

@@ -11,10 +11,10 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
-import MrWidgetHowToMergeModal from '~/vue_merge_request_widget/components/mr_widget_how_to_merge_modal.vue';
 import { initMrExperienceSurvey } from '~/surveys/merge_request_experience';
 import toast from '~/vue_shared/plugins/global_toast';
 import getStateQuery from './queries/get_state.query.graphql';
+import initCheckoutModal from './init_checkout_modal';
 
 export default function initMergeRequestShow(store) {
   new ZenMode(); // eslint-disable-line no-new
@@ -24,6 +24,7 @@ export default function initMergeRequestShow(store) {
   initIssuableSidebar();
   initAwardsApp(document.getElementById('js-vue-awards-block'));
   initMrExperienceSurvey();
+  initCheckoutModal();
 
   const el = document.querySelector('.js-mr-header');
   const { hidden, iid, projectPath, state } = el.dataset;
@@ -46,26 +47,6 @@ export default function initMergeRequestShow(store) {
       return createElement(MergeRequestHeader, {
         props: {
           initialState: state,
-        },
-      });
-    },
-  });
-
-  const modalEl = document.getElementById('js-check-out-modal');
-
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: modalEl,
-    render(h) {
-      return h(MrWidgetHowToMergeModal, {
-        props: {
-          canMerge: modalEl.dataset.canMerge === 'true',
-          isFork: modalEl.dataset.isFork === 'true',
-          sourceBranch: modalEl.dataset.sourceBranch,
-          sourceProjectPath: modalEl.dataset.sourceProjectPath,
-          targetBranch: modalEl.dataset.targetBranch,
-          sourceProjectDefaultUrl: modalEl.dataset.sourceProjectDefaultUrl,
-          reviewingDocsPath: modalEl.dataset.reviewingDocsPath,
         },
       });
     },

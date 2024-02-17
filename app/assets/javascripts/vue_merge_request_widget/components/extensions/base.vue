@@ -10,10 +10,10 @@ import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { EXTENSION_ICON_CLASS, EXTENSION_ICONS } from '../../constants';
 import Actions from '../action_buttons.vue';
 import StateContainer from '../state_container.vue';
+import { generateText } from '../widget/utils';
+import { createTelemetryHub } from '../widget/telemetry';
 import StatusIcon from './status_icon.vue';
 import ChildContent from './child_content.vue';
-import { createTelemetryHub } from './telemetry';
-import { generateText } from './utils';
 
 export const LOADING_STATES = {
   collapsedLoading: 'collapsedLoading',

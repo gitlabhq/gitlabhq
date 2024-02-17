@@ -149,27 +149,18 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-    serializer_options = {
-      disable_coverage: true,
-      disable_failed_builds: true,
-      preload: true
-    }
-
-    if Feature.enabled?(:skip_status_preload_in_pipeline_lists, @project, type: :gitlab_com_derisk)
-      serializer_options.merge!(
-        disable_manual_and_scheduled_actions: true,
-        preload_statuses: false,
-        preload_downstream_statuses: false
-      )
-    end
-
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
         .with_pagination(request, response)
         .represent(
           @pipelines,
-          **serializer_options
+          disable_coverage: true,
+          disable_failed_builds: true,
+          disable_manual_and_scheduled_actions: true,
+          preload: true,
+          preload_statuses: false,
+          preload_downstream_statuses: false
         ),
       count: {
         all: @pipelines.count

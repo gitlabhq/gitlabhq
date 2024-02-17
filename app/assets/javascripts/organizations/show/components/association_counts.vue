@@ -22,6 +22,10 @@ export default {
       type: String,
       required: true,
     },
+    usersOrganizationPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     groupsLinkHref() {
@@ -49,9 +53,7 @@ export default {
           iconName: 'users',
           count: this.associationCounts.users,
           linkText: this.$options.i18n.manage,
-          // TODO: update `linkHref` prop to point to users route
-          // https://gitlab.com/gitlab-org/gitlab/-/issues/409313
-          linkHref: '/',
+          linkHref: this.usersOrganizationPath,
         },
       ];
     },

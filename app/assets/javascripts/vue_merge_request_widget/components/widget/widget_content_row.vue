@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { EXTENSION_ICONS } from '../../constants';
-import { generateText } from '../extensions/utils';
+import { generateText } from './utils';
 import ActionButtons from './action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 

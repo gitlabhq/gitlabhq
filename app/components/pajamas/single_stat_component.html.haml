@@ -6,7 +6,7 @@
       = title || @title
   .gl-single-stat-content.gl-display-flex.gl-align-items-baseline.gl-font-weight-bold.gl-text-gray-900
     %span.gl-single-stat-number.gl-line-height-1{ class: unit_class, data: { testid: 'displayValue' } }
-      %span{ data: { testid: 'non-animated-value' } }
+      %span{ data: { testid: @stat_value_testid } }
         = stat_value || @stat_value
     - if unit?
       %span.gl-font-sm.gl-mx-2.gl-transition-medium.gl-opacity-10{ data: { testid: 'unit' } }

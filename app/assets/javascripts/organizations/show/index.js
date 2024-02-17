@@ -30,6 +30,7 @@ export const initOrganizationsShow = () => {
     organizationGid,
     organization,
     groupsAndProjectsOrganizationPath,
+    usersOrganizationPath,
     projectsEmptyStateSvgPath,
     groupsEmptyStateSvgPath,
     newGroupPath,
@@ -63,7 +64,12 @@ export const initOrganizationsShow = () => {
     },
     render(createElement) {
       return createElement(App, {
-        props: { organization, groupsAndProjectsOrganizationPath, associationCounts },
+        props: {
+          organization,
+          groupsAndProjectsOrganizationPath,
+          usersOrganizationPath,
+          associationCounts,
+        },
       });
     },
   });

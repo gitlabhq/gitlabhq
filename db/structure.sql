@@ -885,7 +885,8 @@ CREATE TABLE p_ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL
+    debug_trace_enabled boolean DEFAULT false NOT NULL,
+    exit_code smallint
 )
 PARTITION BY LIST (partition_id);
 
@@ -5780,7 +5781,8 @@ CREATE TABLE ci_builds_metadata (
     runtime_runner_features jsonb DEFAULT '{}'::jsonb NOT NULL,
     id_tokens jsonb DEFAULT '{}'::jsonb NOT NULL,
     partition_id bigint NOT NULL,
-    debug_trace_enabled boolean DEFAULT false NOT NULL
+    debug_trace_enabled boolean DEFAULT false NOT NULL,
+    exit_code smallint
 );
 
 CREATE TABLE ci_builds_runner_session (
@@ -27442,6 +27444,8 @@ CREATE INDEX tmp_index_cis_vulnerability_reads_on_id ON vulnerability_reads USIN
 CREATE INDEX tmp_index_for_null_member_namespace_id ON members USING btree (member_namespace_id) WHERE (member_namespace_id IS NULL);
 
 CREATE INDEX tmp_index_for_project_namespace_id_migration_on_routes ON routes USING btree (id) WHERE ((namespace_id IS NULL) AND ((source_type)::text = 'Project'::text));
+
+CREATE INDEX tmp_index_for_succeeded_security_scans ON security_scans USING btree (id) WHERE (status = 1);
 
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 

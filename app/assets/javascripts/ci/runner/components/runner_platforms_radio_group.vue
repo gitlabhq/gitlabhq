@@ -9,7 +9,6 @@ import {
   LINUX_PLATFORM,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
-  GOOGLE_CLOUD_PLATFORM,
   DOCKER_HELP_URL,
   KUBERNETES_HELP_URL,
 } from '../constants';
@@ -30,21 +29,11 @@ export default {
       required: false,
       default: null,
     },
-    admin: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
       model: this.value,
     };
-  },
-  computed: {
-    googleCloudProvisioningEnabled() {
-      return this.glFeatures.googleCloudRunnerProvisioning && !this.admin;
-    },
   },
   watch: {
     model() {
@@ -55,7 +44,6 @@ export default {
   LINUX_LOGO_URL,
   MACOS_PLATFORM,
   WINDOWS_PLATFORM,
-  GOOGLE_CLOUD_PLATFORM,
   DOCKER_HELP_URL,
   DOCKER_LOGO_URL,
   KUBERNETES_HELP_URL,
@@ -86,16 +74,7 @@ export default {
       </div>
     </div>
 
-    <div v-if="googleCloudProvisioningEnabled" class="gl-mt-3 gl-mb-6">
-      <label>{{ s__('Runners|Cloud') }}</label>
-
-      <div class="gl-display-flex gl-flex-wrap gl-gap-3">
-        <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-        <runner-platforms-radio v-model="model" :value="$options.GOOGLE_CLOUD_PLATFORM">
-          Google Cloud
-        </runner-platforms-radio>
-      </div>
-    </div>
+    <slot name="cloud-options"></slot>
 
     <div class="gl-mt-3 gl-mb-6">
       <label>{{ s__('Runners|Containers') }}</label>

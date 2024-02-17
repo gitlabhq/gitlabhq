@@ -1,4 +1,4 @@
-import { generateText } from '~/vue_merge_request_widget/components/extensions/utils';
+import { generateText } from '~/vue_merge_request_widget/components/widget/utils';
 
 describe('generateText', () => {
   it.each`

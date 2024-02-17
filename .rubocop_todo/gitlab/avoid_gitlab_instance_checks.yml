@@ -78,7 +78,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/app/models/gitlab_subscription.rb'
     - 'ee/app/models/gitlab_subscriptions/add_on_purchase.rb'
     - 'ee/app/models/gitlab_subscriptions/upcoming_reconciliation.rb'
-    - 'ee/app/models/namespaces/storage/cost_factor.rb'
     - 'ee/app/models/namespaces/storage/enforcement.rb'
     - 'ee/app/policies/ee/global_policy.rb'
     - 'ee/app/policies/ee/group_policy.rb'

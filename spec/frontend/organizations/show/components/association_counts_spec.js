@@ -12,6 +12,7 @@ describe('AssociationCounts', () => {
       users: 6,
     },
     groupsAndProjectsOrganizationPath: '/-/organizations/default/groups_and_projects',
+    usersOrganizationPath: '/-/organizations/default/users',
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -55,7 +56,7 @@ describe('AssociationCounts', () => {
       iconName: 'users',
       count: defaultPropsData.associationCounts.users,
       linkText: 'Manage',
-      linkHref: '/',
+      linkHref: '/-/organizations/default/users',
     });
   });
 });

@@ -8,11 +8,18 @@ export const initBulkImportDetails = () => {
     return null;
   }
 
+  const { id, entityId } = el.dataset;
+
   return new Vue({
     el,
     name: 'BulkImportDetailsRoot',
     render(createElement) {
-      return createElement(BulkImportDetailsApp);
+      return createElement(BulkImportDetailsApp, {
+        props: {
+          id,
+          entityId,
+        },
+      });
     },
   });
 };

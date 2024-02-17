@@ -11,7 +11,7 @@ describe('Group import status component', () => {
     status: STATUSES.FINISHED,
   };
 
-  const mockDetailsPath = '/details';
+  const mockDetailsPath = '/:id/failures/:entity_id';
 
   const createComponent = ({ props } = {}) => {
     wrapper = shallowMount(ImportStatus, {
@@ -92,7 +92,7 @@ describe('Group import status component', () => {
         },
       });
 
-      expect(findGlLink().attributes('href')).toBe('/details?id=2&entity_id=11');
+      expect(findGlLink().attributes('href')).toBe('/2/failures/11');
     });
   });
 });

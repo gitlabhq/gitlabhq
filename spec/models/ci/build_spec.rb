@@ -5075,6 +5075,11 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.drop_with_exit_code!(:unknown_failure, exit_code)
     end
 
+    it 'correctly sets the exit code' do
+      expect { drop_with_exit_code }
+        .to change { build.reload.metadata&.exit_code }.from(nil).to(1)
+    end
+
     shared_examples 'drops the build without changing allow_failure' do
       it 'does not change allow_failure' do
         expect { drop_with_exit_code }
@@ -5175,38 +5180,93 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       build.exit_codes_defined?
     end
 
-    context 'without allow_failure_criteria' do
+    context 'without allow_failure_criteria nor retry' do
       it { is_expected.to be_falsey }
     end
 
-    context 'when exit_codes is nil' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: nil
+    context 'with allow_failure_critera' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: nil
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when exit_codes is an empty array' do
-      let(:options) do
-        {
-          allow_failure_criteria: {
-            exit_codes: []
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: []
+            }
           }
-        }
+        end
+
+        it { is_expected.to be_falsey }
       end
 
-      it { is_expected.to be_falsey }
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            allow_failure_criteria: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'when exit_codes are defined' do
+    context 'with retry' do
+      context 'when exit_codes is nil' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: nil
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes is an empty array' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: []
+            }
+          }
+        end
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when exit_codes are defined' do
+        let(:options) do
+          {
+            retry: {
+              exit_codes: [5, 6]
+            }
+          }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context "with exit_codes defined for retry and allow_failure_criteria" do
       let(:options) do
         {
           allow_failure_criteria: {
+            exit_codes: [1]
+          },
+          retry: {
             exit_codes: [5, 6]
           }
         }

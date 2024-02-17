@@ -20,7 +20,7 @@
   &:has(.read-more-content--has-scrim:not(.is-expanded)) {
     position: relative;
     max-height: var(--read-more-height, #{$fallback - $height});
-    overflow: clip;
+    scroll-padding-top: 1000vh; // Fix anchor scroll, keep it up top
   }
 
   // only appears when size is > $height.

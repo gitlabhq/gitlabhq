@@ -659,6 +659,8 @@
   - 1
 - - sbom_reports
   - 1
+- - sbom_sync_archived_status
+  - 1
 - - sbom_sync_project_traversal_ids
   - 1
 - - search_elastic_default_branch_changed

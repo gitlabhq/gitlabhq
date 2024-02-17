@@ -14,6 +14,15 @@ module ErrorTracking
     ResponseInvalidSizeError = Class.new(StandardError)
 
     RESPONSE_SIZE_LIMIT = 1.megabyte
+    private_constant :RESPONSE_SIZE_LIMIT
+
+    # The bytes size of a JSON payload is different from what DeepSize
+    # calculates which is Ruby's object size.
+    #
+    # This factor accounts for the difference.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/393029#note_1289914133
+    RESPONSE_MEMORY_SIZE_LIMIT = RESPONSE_SIZE_LIMIT * 5
 
     attr_accessor :url, :token
 
@@ -25,10 +34,19 @@ module ErrorTracking
     private
 
     def validate_size(response)
-      return if Gitlab::Utils::DeepSize.new(response, max_size: RESPONSE_SIZE_LIMIT).valid?
+      bytesize = response.body.bytesize
 
-      limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_SIZE_LIMIT)
-      message = "Sentry API response is too big. Limit is #{limit}."
+      if bytesize > RESPONSE_SIZE_LIMIT
+        limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_SIZE_LIMIT)
+        message = "Sentry API response is too big. Limit is #{limit}. Got #{bytesize} bytes."
+        raise ResponseInvalidSizeError, message
+      end
+
+      parsed = response.parsed_response
+      return if Gitlab::Utils::DeepSize.new(parsed, max_size: RESPONSE_MEMORY_SIZE_LIMIT).valid?
+
+      limit = ActiveSupport::NumberHelper.number_to_human_size(RESPONSE_MEMORY_SIZE_LIMIT)
+      message = "Sentry API response memory footprint is too big. Limit is #{limit}."
       raise ResponseInvalidSizeError, message
     end
 
@@ -36,7 +54,7 @@ module ErrorTracking
       @api_urls ||= SentryClient::ApiUrls.new(@url)
     end
 
-    def handle_mapping_exceptions(&block)
+    def handle_mapping_exceptions
       yield
     rescue KeyError => e
       Gitlab::ErrorTracking.track_exception(e)
@@ -98,7 +116,7 @@ module ErrorTracking
     def handle_response(response)
       raise_error "Sentry response status code: #{response.code}" unless response.code.between?(200, 204)
 
-      validate_size(response.parsed_response)
+      validate_size(response)
 
       { body: response.parsed_response, headers: response.headers }
     end

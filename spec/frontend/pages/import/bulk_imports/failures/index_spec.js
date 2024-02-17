@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { initBulkImportDetails } from '~/pages/import/bulk_imports/details/index';
+import { initBulkImportDetails } from '~/pages/import/bulk_imports/failures/index';
 
 jest.mock('~/import/details/components/bulk_import_details_app.vue');
 

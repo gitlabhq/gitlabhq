@@ -80,19 +80,45 @@ end
 #   - sentry_api_response
 #   - sentry_url, token
 RSpec.shared_examples 'Sentry API response size limit' do
-  let(:invalid_deep_size) { instance_double(Gitlab::Utils::DeepSize, valid?: false) }
+  let(:response_body) { Gitlab::Json.generate(sentry_api_response) }
 
-  before do
-    allow(Gitlab::Utils::DeepSize)
-      .to receive(:new)
-      .with(sentry_api_response, any_args)
-      .and_return(invalid_deep_size)
+  context 'when response body is within limit' do
+    before do
+      allow(Gitlab::Utils::DeepSize).to receive(:new).and_call_original
+    end
+
+    it 'checks parsed response' do
+      subject
+
+      expect(Gitlab::Utils::DeepSize).to have_received(:new)
+    end
   end
 
-  it 'raises an exception when response is too large' do
-    expect { subject }.to raise_error(
-      ErrorTracking::SentryClient::ResponseInvalidSizeError,
-      'Sentry API response is too big. Limit is 1 MiB.'
-    )
+  context 'when response body is too large' do
+    before do
+      stub_const('ErrorTracking::SentryClient::RESPONSE_SIZE_LIMIT', response_body.bytesize - 1)
+      stub_const('ErrorTracking::SentryClient::RESPONSE_MEMORY_SIZE_LIMIT', 1)
+    end
+
+    it 'raises an exception' do
+      expect { subject }.to raise_error(
+        ErrorTracking::SentryClient::ResponseInvalidSizeError,
+        /Sentry API response is too big\. Limit is \d+(\.\d+)? \w+\. Got \d+ bytes\./
+      )
+    end
+  end
+
+  context 'when resulting memory size of the parsed response is too large' do
+    before do
+      stub_const('ErrorTracking::SentryClient::RESPONSE_SIZE_LIMIT', response_body.bytesize + 1)
+      stub_const('ErrorTracking::SentryClient::RESPONSE_MEMORY_SIZE_LIMIT', 1)
+    end
+
+    it 'raises an exception' do
+      expect { subject }.to raise_error(
+        ErrorTracking::SentryClient::ResponseInvalidSizeError,
+        /Sentry API response memory footprint is too big. Limit is \d+(\.\d+)? \w+\./
+      )
+    end
   end
 end

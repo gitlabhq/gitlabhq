@@ -19,6 +19,7 @@ describe('OrganizationShowApp', () => {
       users: 6,
     },
     groupsAndProjectsOrganizationPath: '/-/organizations/default/groups_and_projects',
+    usersOrganizationPath: '/-/organizations/default/users',
   };
 
   const createComponent = ({ propsData } = {}) => {
@@ -60,6 +61,7 @@ describe('OrganizationShowApp', () => {
       expect(findAssociationsCount().props()).toEqual({
         associationCounts: defaultPropsData.associationCounts,
         groupsAndProjectsOrganizationPath: defaultPropsData.groupsAndProjectsOrganizationPath,
+        usersOrganizationPath: defaultPropsData.usersOrganizationPath,
       });
     });
   });
