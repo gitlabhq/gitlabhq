@@ -76,7 +76,7 @@ To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 1. Add the `fuzz` stage to the list of stages.
 
 1. If your application is not written in Go, [provide a Docker image](../../../ci/yaml/index.md#image) using the matching fuzzing
-  engine. For example:
+   engine. For example:
 
    ```yaml
    image: python:latest

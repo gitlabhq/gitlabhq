@@ -551,7 +551,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.
   - Scan execution enforcement is required for SAST, SAST IaC, Secret Detection, Dependency Scanning, or Container Scanning with project-specific
-variable customizations. To accomplish this, users must create a separate security policy per project.
+    variable customizations. To accomplish this, users must create a separate security policy per project.
   - Scans are required to run on a regular, scheduled cadence.
 
 - Either solution can be used equally well when:

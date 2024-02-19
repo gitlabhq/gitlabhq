@@ -1518,7 +1518,7 @@ ee/lib/ee/api/entities/project.rb
 /gems/gitlab-housekeeper/
 /keeps/
 
-^[Storage Statistics] @gitlab-org/fulfillment/utilization/be
+^[Storage Statistics] @jagood @suraj_tripathy @vij
 /app/models/namespace/root_storage_statistics.rb
 /ee/app/models/ee/namespace/root_storage_statistics.rb
 /app/models/project_statistics.rb

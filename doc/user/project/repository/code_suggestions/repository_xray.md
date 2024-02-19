@@ -44,7 +44,7 @@ xray:
   image: registry.gitlab.com/gitlab-org/code-creation/repository-x-ray:latest
   allow_failure: true
   rules:
-  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
     OUTPUT_DIR: reports
   script:

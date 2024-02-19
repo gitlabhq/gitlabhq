@@ -38,11 +38,11 @@ After you've gotten familiar with how scanning works, you can then choose to:
    to identify any leaked secrets and vulnerable packages in that project.
    - Security scanners run in your project's [CI/CD pipelines](../../ci/pipelines/index.md). Creating a merge request to update your [`.gitlab-ci.yml`](../../ci/index.md#the-gitlab-ciyml-file) helps you check how the scanners work with your project before they start running in every pipeline. In the merge request, you can change relevant [Secret Detection settings](secret_detection/index.md#configure-scan-settings) or [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables) to accommodate your project's layout or configuration. For example, you might choose to exclude a directory of third-party code from scanning.
    - After you merge this MR to your [default branch](../project/repository/branches/default.md), the system creates a baseline scan. This scan identifies which vulnerabilities already exist on the default branch so [merge requests](../project/merge_requests/index.md) can highlight only newly-introduced problems. Without a baseline scan, merge requests display every
-   vulnerability in the branch, even if the vulnerability already exists on the default branch.
+     vulnerability in the branch, even if the vulnerability already exists on the default branch.
 1. Let your team get comfortable with [viewing security findings in merge requests](index.md#view-security-scan-information) and the [vulnerability report](vulnerability_report/index.md).
 1. Establish a vulnerability triage workflow.
    - Consider creating [labels](../project/labels.md) and [issue boards](../project/issue_board.md) to
-   help manage issues created from vulnerabilities. Issue boards allow all stakeholders to have a
+     help manage issues created from vulnerabilities. Issue boards allow all stakeholders to have a
    common view of all issues and track remediation progress.
 1. Monitor the [Security Dashboard](security_dashboard/index.md) trends to gauge success in remediating existing vulnerabilities and preventing the introduction of new ones.
 1. Enforce scheduled security scanning jobs by using a [scan execution policy](policies/scan-execution-policies.md).

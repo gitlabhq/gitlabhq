@@ -15,8 +15,8 @@ without having to take your GitLab instance offline. However, for this to work
 there are the following requirements:
 
 - You can only upgrade one minor release at a time. So from 13.1 to 13.2, not to
-   13.3. If you skip releases, database modifications may be run in the wrong
-   sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
+  13.3. If you skip releases, database modifications may be run in the wrong
+  sequence [and leave the database schema in a broken state](https://gitlab.com/gitlab-org/gitlab/-/issues/321542).
 - You have to use [post-deployment migrations](../development/database/post_deployment_migrations.md).
 - You are using PostgreSQL. Starting from GitLab 12.1, MySQL is not supported.
 - You have set up a multi-node GitLab instance. Cloud Native Hybrid installations do [not support zero-downtime upgrades](../administration/reference_architectures/index.md#zero-downtime-upgrades).

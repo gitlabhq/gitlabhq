@@ -295,6 +295,5 @@ However, there are some minor differences:
 
   Given a request to `/old`:
 
-  - Netlify redirects to `/new/:placeholder` (with a
-  literal `:placeholder`).
+  - Netlify redirects to `/new/:placeholder` (with a literal `:placeholder`).
   - GitLab redirects to `/new/`.

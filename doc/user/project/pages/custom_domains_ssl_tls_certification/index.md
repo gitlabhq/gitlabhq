@@ -269,9 +269,9 @@ meet these requirements.
 
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy
-  and paste the root certificate (usually available from your CA website)
-  and paste it in the [same field as your PEM certificate](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
-  just jumping a line between them.
+   and paste the root certificate (usually available from your CA website)
+   and paste it in the [same field as your PEM certificate](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
+   just jumping a line between them.
 1. Copy your private key and paste it in the last field.
 
 **Do not** open certificates or encryption keys in

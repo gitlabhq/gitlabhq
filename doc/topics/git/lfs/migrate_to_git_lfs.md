@@ -120,9 +120,9 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    so that we can force-push the rewritten repository:
 
    1. Navigate to your project's **Settings > Repository** and
-   expand **Protected branches**.
+      expand **Protected branches**.
    1. Scroll down to locate the protected branches and select
-   **Unprotect** the default branch.
+      **Unprotect** the default branch.
 
 1. Force-push to GitLab:
 
@@ -158,10 +158,10 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
 1. [Re-protect the default branch](../../../user/project/protected_branches.md):
 
    1. Navigate to your project's **Settings > Repository** and
-   expand **Protected branches**.
+      expand **Protected branches**.
    1. Select the default branch from the **Branch** dropdown list,
-   and set up the
-   **Allowed to push and merge** and **Allowed to merge** rules.
+      and set up the
+      **Allowed to push and merge** and **Allowed to merge** rules.
    1. Select **Protect**.
 
 <!-- ## Troubleshooting

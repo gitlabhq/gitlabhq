@@ -25,11 +25,17 @@ class ActiveSession
   SESSION_BATCH_SIZE = 200
   ALLOWED_NUMBER_OF_ACTIVE_SESSIONS = 100
 
-  attr_accessor :ip_address, :browser, :os,
+  ATTR_ACCESSOR_LIST = [
+    :ip_address, :browser, :os,
     :device_name, :device_type,
     :is_impersonated, :session_id, :session_private_id
+  ].freeze
+  ATTR_READER_LIST = [
+    :created_at, :updated_at
+  ].freeze
 
-  attr_reader :created_at, :updated_at
+  attr_accessor(*ATTR_ACCESSOR_LIST)
+  attr_reader(*ATTR_READER_LIST)
 
   def created_at=(time)
     @created_at = time.is_a?(String) ? Time.zone.parse(time) : time
@@ -240,6 +246,8 @@ class ActiveSession
 
     if raw_session.start_with?('v2:')
       session_data = Gitlab::Json.parse(raw_session[3..]).symbolize_keys
+      # load only known attributes
+      session_data.slice!(*ATTR_ACCESSOR_LIST.union(ATTR_READER_LIST))
       new(**session_data)
     else
       # Deprecated legacy format. To be removed in 15.0

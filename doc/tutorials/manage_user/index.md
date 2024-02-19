@@ -133,15 +133,15 @@ a fake email, you must set the user's password without using the email confirmat
 
 You have created the first test user. Now repeat this for the other users:
 
-| Name              | Username         | Email                        |
-|:------------------|:-----------------|:-----------------------------|
-| `Blake Wang`      | `blakewang`      | `blakewang@example.com`      |
-| `Charlie Devi`    | `charliedevi`    | `charliedevi@example.com`    |
-| `Devon Ivanov`    | `devonivanov`    | `devonivanov@example.com`    |
-| `Evan Kim`        | `evankim`        | `evankim@example.com`        |
-| `Frankie Ali`     | `frankieali`     | `frankieali@example.com`     |
-| `Grayson Garcia`  | `graysongarcia`  | `graysongarcia@example.com`  |
-| `Hunter Silva`    | `huntersilva`    | `huntersilva@example.com`    |
+| Name             | Username        | Email |
+|------------------|-----------------|-------|
+| `Blake Wang`     | `blakewang`     | `blakewang@example.com` |
+| `Charlie Devi`   | `charliedevi`   | `charliedevi@example.com` |
+| `Devon Ivanov`   | `devonivanov`   | `devonivanov@example.com` |
+| `Evan Kim`       | `evankim`       | `evankim@example.com` |
+| `Frankie Ali`    | `frankieali`    | `frankieali@example.com` |
+| `Grayson Garcia` | `graysongarcia` | `graysongarcia@example.com` |
+| `Hunter Silva`   | `huntersilva`   | `huntersilva@example.com` |
 
 You have created the users for your organization. Next you will add these users
 to the different groups and subgroups.
@@ -162,15 +162,15 @@ First, you will add all the users to the parent group, Development.
 1. Select **Invite**.
 1. Repeat this process for the following users:
 
-   | User            | Role        | Access expiration date  |
-   |:----------------|:------------|:------------------------|
-   | Blake Wang      | Maintainer  | Leave blank             |
-   | Charlie Devi    | Developer   | Leave blank             |
-   | Devon Ivanov    | Developer   | Leave blank             |
-   | Evan Kim        | Developer   | Leave blank             |
-   | Frankie Ali     | Reporter    | Leave blank             |
-   | Grayson Garcia  | Reporter    | Leave blank             |
-   | Hunter Silva    | Guest       | `2025-12-31`            |
+   | User           | Role       | Access expiration date |
+   |----------------|------------|------------------------|
+   | Blake Wang     | Maintainer | Leave blank            |
+   | Charlie Devi   | Developer  | Leave blank            |
+   | Devon Ivanov   | Developer  | Leave blank            |
+   | Evan Kim       | Developer  | Leave blank            |
+   | Frankie Ali    | Reporter   | Leave blank            |
+   | Grayson Garcia | Reporter   | Leave blank            |
+   | Hunter Silva   | Guest      | `2025-12-31`           |
 
    You can invite multiple users at the same time if they have the same role and
    access expiration date.
@@ -277,12 +277,12 @@ You are now going to invite some users to the Engineering subgroup.
 1. Select **Invite members**.
 1. Complete the fields for the following members:
 
-   | User            | Role        | Access expiration date  |
-   |:----------------|:------------|:------------------------|
-   | Blake Wang      | Maintainer  | Leave blank             |
-   | Charlie Devi    | Developer   | Leave blank             |
-   | Devon Ivanov    | Developer   | Leave blank             |
-   | Evan Kim        | Developer   | Leave blank             |
+   | User         | Role       | Access expiration date |
+   |--------------|------------|------------------------|
+   | Blake Wang   | Maintainer | Leave blank            |
+   | Charlie Devi | Developer  | Leave blank            |
+   | Devon Ivanov | Developer  | Leave blank            |
+   | Evan Kim     | Developer  | Leave blank            |
 
 1. Select **Invite**.
 
@@ -315,23 +315,23 @@ included in both nested subgroups due to inherited permissions.
 Therefore, you will add these users to the appropriate nested subgroup directly
 rather than to the User Experience subgroup.
 
-1. 1. On the left sidebar, select **Search or go to** and find the **Development** group.
+1. On the left sidebar, select **Search or go to** and find the **Development** group.
 1. Select the **User Experience** subgroup, and then the **UX Design** subgroup.
 1. On the left sidebar, select **Subgroup information > Members**. You and Alex
    Smith are currently the only members. These are inherited roles.
 1. Select **Invite members**.
 1. Complete the fields and select **Invite** for the following members:
 
-   | User            | Role        | Access expiration date  |
-   |:----------------|:------------|:------------------------|
-   | Frankie Ali     | Maintainer  | Leave blank             |
-   | Hunter Silva    | Guest       | `2025-12-31`            |
+   | User         | Role       | Access expiration date |
+   |--------------|------------|------------------------|
+   | Frankie Ali  | Maintainer | Leave blank            |
+   | Hunter Silva | Guest      | `2025-12-31`           |
 
 1. Repeat for the **Technical Writing** subgroup:
 
-   | User            | Role        | Access expiration date  |
-   |:----------------|:------------|:------------------------|
-   | Grayson Garcia  | Maintainer  | Leave blank             |
+   | User           | Role       | Access expiration date |
+   |----------------|------------|------------------------|
+   | Grayson Garcia | Maintainer | Leave blank            |
 
 You have added the users to their appropriate nested subgroups. You decide that
 Grayson Garcia should be in the **User Experience** subgroup as well.
@@ -407,11 +407,11 @@ directly to the project.
 1. On the left sidebar, select **Manage > Members**.
 1. Select **Invite members**. Invite the following users:
 
-   | User            | Role          | Access expiration date  |
-   |:----------------|:--------------|:------------------------|
-   | Charlie Devi    | Maintainer    | Leave blank             |
-   | Frankie Ali     | Maintainer    | Leave blank             |
-   | Grayson Garcia  | Maintainer    | Leave blank             |
+   | User           | Role       | Access expiration date |
+   |----------------|------------|------------------------|
+   | Charlie Devi   | Maintainer | Leave blank            |
+   | Frankie Ali    | Maintainer | Leave blank            |
+   | Grayson Garcia | Maintainer | Leave blank            |
 
 1. Select **Invite**.
 1. Because you added these users directly to the project, you can change

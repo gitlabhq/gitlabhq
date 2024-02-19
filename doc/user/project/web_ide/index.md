@@ -101,7 +101,7 @@ To upload a file in the Web IDE:
    To create a new directory:
 
    - On the left **Explorer** sidebar, in the upper right,
-   select **New Folder** (**{folder-new}**).
+     select **New Folder** (**{folder-new}**).
 
 1. Right-click the directory and select **Upload**.
 1. Select the file you want to upload.

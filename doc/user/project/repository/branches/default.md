@@ -114,15 +114,15 @@ at the [instance level](#instance-level-default-branch-protection) and
 [group level](#group-level-default-branch-protection) with one of the following options:
 
 - **Fully protected** - Default value. Developers cannot push new commits, but maintainers can.
-   No one can force push.
+  No one can force push.
 - **Fully protected after initial push** - Developers can push the initial commit
   to a repository, but none afterward. Maintainers can always push. No one can force push.
 - **Protected against pushes** - Developers cannot push new commits, but are
-   allowed to accept merge requests to the branch. Maintainers can push to the branch.
+  allowed to accept merge requests to the branch. Maintainers can push to the branch.
 - **Partially protected** - Both developers and maintainers can push new commits,
-   but cannot force push.
+  but cannot force push.
 - **Not protected** - Both developers and maintainers can push new commits
-   and force push.
+  and force push.
 
 WARNING:
 Unless **Fully protected** is chosen, a malicious developer could attempt to steal your sensitive data. For example, a malicious `.gitlab-ci.yml` file could be committed to a protected branch and later, if a pipeline is run against that branch, result in exfiltration of group CI/CD variables.

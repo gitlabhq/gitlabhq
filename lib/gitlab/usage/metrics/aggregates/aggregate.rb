@@ -17,11 +17,8 @@ module Gitlab
               events = select_defined_events(aggregation[:events], aggregation[:source])
               property_name = aggregation[:attribute]
 
-              if aggregation[:operator] == UNION_OF_AGGREGATED_METRICS
-                source.calculate_metrics_union(**time_constraints(time_frame).merge(metric_names: events, property_name: property_name, recorded_at: recorded_at))
-              else
-                source.calculate_metrics_intersections(**time_constraints(time_frame).merge(metric_names: events, property_name: property_name, recorded_at: recorded_at))
-              end
+              source.calculate_metrics_union(**time_constraints(time_frame)
+                .merge(metric_names: events, property_name: property_name, recorded_at: recorded_at))
             end
           rescue Gitlab::UsageDataCounters::HLLRedisCounter::EventError, AggregatedMetricError => error
             failure(error)

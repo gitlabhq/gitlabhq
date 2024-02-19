@@ -140,7 +140,7 @@ describe('WorkItemActions component', () => {
       },
       provide: {
         isGroup: false,
-        glFeatures: { workItemsMvc: true, workItemsMvc2: true },
+        glFeatures: { workItemsBeta: true, workItemsMvc2: true },
       },
       mocks: {
         $toast,

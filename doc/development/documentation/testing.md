@@ -308,6 +308,19 @@ included in backticks. For example:
   - `git clone` is a command, so it must be lowercase, while Git is the product,
     so it must have a capital G.
 
+### Mermaid
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144328) in GitLab 16.10.
+
+[Mermaid](https://mermaid.js.org/) builds charts and diagrams from code.
+
+The `mermaidlint` job runs on merge requests that contain changes to Markdown files.
+The script (`scripts/lint/check_mermaid.mjs`) returns an error if any Markdown
+files return a Mermaid syntax error.
+
+To help debug your Mermaid charts, use the
+[Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit).
+
 ### Vale
 
 [Vale](https://vale.sh/) is a grammar, style, and word usage linter for the

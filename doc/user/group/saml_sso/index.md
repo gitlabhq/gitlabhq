@@ -260,7 +260,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 1. Optional. Select:
    - **Enforce SSO-only authentication for web activity for this group**.
    - **Enforce SSO-only authentication for Git activity for this group**.
-   For more information, see the [SSO enforcement documentation](#sso-enforcement).
+     For more information, see the [SSO enforcement documentation](#sso-enforcement).
 1. Select **Save changes**.
 
 NOTE:

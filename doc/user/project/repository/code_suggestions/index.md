@@ -99,7 +99,7 @@ When using Code Suggestions, [code review best practice](../../../../development
 ## Progressive enhancement
 
 This feature is designed as a progressive enhancement to developer IDEs.
-Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely matter.
+Code Suggestions offer a completion if a suitable recommendation is provided to the user in a timely manner.
 In the event of a connection issue or model inference failure, the feature gracefully degrades.
 Code Suggestions do not prevent you from writing code in your IDE.
 

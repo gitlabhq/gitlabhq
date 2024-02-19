@@ -102,7 +102,7 @@ If GitLab is in FIPS mode, use the following:
   - Use `RSA`, set to **Must be at least 2048 bits**.
   - Use `ECDSA` (and `ECDSA-SK`), set to **Must be at least 256 bits**.
   - Set all other key types to **Are forbidden**.
-  `RSA` and `ECDSA` are both approved for FIPS use.
+    `RSA` and `ECDSA` are both approved for FIPS use.
 - If not running in FIPS mode, you must use `ED25519` and can also use `RSA`:
   - Set `ED25519` (and `ED25519-SK`) to **Must be at least 256 bits**.
   - If using `RSA`, set it to **Must be at least 2048 bits**.

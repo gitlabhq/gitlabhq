@@ -191,7 +191,7 @@ To enable the Sentry integration:
       For the SaaS version of Sentry, the hostname is `https://sentry.io`.
    1. Under **Auth Token**, enter the token you previously generated.
    1. To test the connection to Sentry and populate the **Project** dropdown list,
-   select **Connect**.
+      select **Connect**.
    1. From the **Project** list, choose a Sentry project to link to your GitLab project.
    1. Select **Save changes**.
 

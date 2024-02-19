@@ -877,8 +877,8 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items)
   end
 
-  def work_items_mvc_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc)
+  def work_items_beta_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_beta, type: :beta)
   end
 
   def work_items_mvc_2_feature_flag_enabled?

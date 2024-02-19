@@ -4,7 +4,7 @@ name: quickactions_checkin_reminder_weekly
 description: Count of WAU using the `/checkin_reminder` quick action
 product_section: dev
 product_stage: plan
-product_group: team_planning
+product_group: project_management
 value_type: number
 status: active
 milestone: "16.4"

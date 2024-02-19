@@ -38,10 +38,10 @@ You must have a [blank project](../../index.md#create-a-blank-project) in GitLab
 Create three files in the root (top-level) directory:
 
 - `.gitlab-ci.yml`: A YAML file that contains the commands you want to run.
-   For now, leave the file's contents blank.
+  For now, leave the file's contents blank.
 
 - `index.html`: An HTML file you can populate with whatever HTML content
-   you'd like, for example:
+  you'd like, for example:
 
    ```html
    <html>

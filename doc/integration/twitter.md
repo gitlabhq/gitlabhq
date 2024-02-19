@@ -31,7 +31,7 @@ Twitter. Twitter generates a client ID and secret key for you to use.
 
 1. Fill in the application details.
    - **Name**: This can be anything. Consider something like `<Organization>'s GitLab`, `<Your Name>'s GitLab` or
-   something else descriptive.
+     something else descriptive.
    - **Description**: Create a description.
    - **Website**: The URL to your GitLab installation. For example, `https://gitlab.example.com`
    - **Callback URL**: `https://gitlab.example.com/users/auth/twitter/callback`

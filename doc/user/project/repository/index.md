@@ -60,16 +60,16 @@ to a branch in the repository. When you use the command line, you can commit mul
   In GitLab, you can add keywords to the commit
   message to perform one of the following actions:
   - **Trigger a GitLab CI/CD pipeline:**
-  If the project is configured with [GitLab CI/CD](../../../ci/index.md),
-  you trigger a pipeline per push, not per commit.
+    If the project is configured with [GitLab CI/CD](../../../ci/index.md),
+    you trigger a pipeline per push, not per commit.
   - **Skip pipelines:**
-  Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
-  your commit message to make GitLab CI/CD skip the pipeline.
+    Add the [`ci skip`](../../../ci/pipelines/index.md#skip-a-pipeline) keyword to
+    your commit message to make GitLab CI/CD skip the pipeline.
   - **Cross-link issues and merge requests:**
-  Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
-  to keep track of related parts of your workflow.
-  If you mention an issue or a merge request in a commit message, they are displayed
-  on their respective thread.
+    Use [cross-linking](../issues/crosslinking_issues.md#from-commit-messages)
+    to keep track of related parts of your workflow.
+    If you mention an issue or a merge request in a commit message, they are displayed
+    on their respective thread.
 - **Cherry-pick a commit:**
   In GitLab, you can
   [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-pick-a-single-commit)

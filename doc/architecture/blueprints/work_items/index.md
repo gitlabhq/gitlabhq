@@ -85,6 +85,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | | |No|
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
+| WorkItemWidgetLock | Lock/Unlock a work item | |`Reporter`|No|
 
 #### Widget availability (updating)
 
@@ -144,12 +145,12 @@ Task is a special Work Item type. Tasks can be added to issues as child items an
 
 ### Feature flags
 
-Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.  
+Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.
 
 | feature flag name | audience |
 |---|---|
 | `work_items` | defaulted to on |
-| `work_items_mvc` | `gitlab-org`, `gitlab-com` |
+| `work_items_beta` | `gitlab-org`, `gitlab-com` |
 | `work_items_mvc_2` | `gitlab-org/plan-stage` |
 
 ## Motivation

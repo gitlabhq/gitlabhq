@@ -185,7 +185,7 @@ export default {
       };
     },
     canLockWorkItem() {
-      return this.canUpdate && this.glFeatures.workItemsMvc;
+      return this.canUpdate && this.glFeatures.workItemsBeta;
     },
     canPromoteToObjective() {
       return this.canUpdate && this.workItemType === WORK_ITEM_TYPE_VALUE_KEY_RESULT;

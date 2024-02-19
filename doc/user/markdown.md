@@ -1733,15 +1733,15 @@ When creating tables:
 - The first line contains the headers, separated by "pipes" (`|`).
 - The second line separates the headers from the cells.
   - The cells can contain only empty spaces, hyphens, and
-   (optionally) colons for horizontal alignment.
+    (optionally) colons for horizontal alignment.
   - Each cell must contain at least one hyphen, but adding more hyphens to a
-   cell does not change the cell's rendering.
+    cell does not change the cell's rendering.
   - Any content other than hyphens, whitespace, or colons is not allowed
 - The third, and any following lines, contain the cell values.
   - You **can't** have cells separated over many lines in the Markdown, they must be kept to single lines,
-   but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
+    but they can be very long. You can also include HTML `<br>` tags to force newlines if needed.
   - The cell sizes **don't** have to match each other. They are flexible, but must be separated
-   by pipes (`|`).
+    by pipes (`|`).
   - You **can** have blank cells.
 - Column widths are calculated dynamically based on the content of the cells.
 - To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).

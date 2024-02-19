@@ -230,11 +230,11 @@ A table displays the member's:
 
 - **Account** name and username.
 - **Source** of their [membership](../project/members/index.md#membership-types).
-   For transparency, GitLab displays all membership sources of group members.
-   Members who have multiple membership sources are displayed and counted as separate members.
-   For example, if a member has been added to the group both directly and through inheritance,
-   the member is displayed twice in the **Members** table, with different sources,
-   and is counted as two individual members of the group.
+  For transparency, GitLab displays all membership sources of group members.
+  Members who have multiple membership sources are displayed and counted as separate members.
+  For example, if a member has been added to the group both directly and through inheritance,
+  the member is displayed twice in the **Members** table, with different sources,
+  and is counted as two individual members of the group.
 - [**Max role**](../project/members/index.md#which-roles-you-can-assign) in the group.
 - **Expiration** date of their group membership.
 - **Activity** related to their account.
@@ -323,8 +323,8 @@ Prerequisites:
 
    - GitLab username, the user is added to the member list.
    - Email address, the user receives an email invitation and is prompted to create an account.
-   If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
-   Unaccepted invites are automatically deleted after 90 days.
+     If the invitation is not accepted, GitLab sends reminder emails two, five, and ten days later.
+     Unaccepted invites are automatically deleted after 90 days.
 
 Members that are not automatically added are displayed on the **Invited** tab.
 This tab includes users who:

@@ -8,6 +8,7 @@ module QA
         # since tablets have the regular top navigation bar
         include SubMenus::CreateNewMenu
         include SubMenus::SuperSidebar::GlobalSearchModal
+        include SubMenus::Explore
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
           element 'super-sidebar', required: true

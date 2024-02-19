@@ -29,8 +29,8 @@ A deploy key has a defined scope when it is created:
 
 - **Project deploy key:** Access is limited to the selected project.
 - **Public deploy key:** Access can be granted to _any_ project in a GitLab instance. Access to each
-    project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
-    the Maintainer role.
+  project must be [granted](#grant-project-access-to-a-public-deploy-key) by a user with at least
+  the Maintainer role.
 
 You cannot change a deploy key's scope after creating it.
 

@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/279039) in GitLab 13.10.
 > - The legacy key/value pair `{ "<date>" => "<value>" }` was removed from the payload in GitLab 14.0.
-> `time_to_restore_service` metric was introduced in GitLab 14.9.
+> - `time_to_restore_service` metric was introduced in GitLab 14.9.
 
 You can also retrieve [DORA metrics](../../user/analytics/dora_metrics.md) with the [GraphQL API](../../api/graphql/reference/index.md).
 

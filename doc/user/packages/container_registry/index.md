@@ -143,12 +143,12 @@ see [Container registry visibility permissions](#container-registry-visibility-p
 1. Under **Container Registry**, select an option from the dropdown list:
 
    - **Everyone With Access** (Default): The container registry is visible to everyone with access
-   to the project. If the project is public, the container registry is also public. If the project
-   is internal or private, the container registry is also internal or private.
+     to the project. If the project is public, the container registry is also public. If the project
+     is internal or private, the container registry is also internal or private.
 
    - **Only Project Members**: The container registry is visible only to project members with
-   at least the Reporter role. This visibility is similar to the behavior of a private project with Container
-   Registry visibility set to **Everyone With Access**.
+     at least the Reporter role. This visibility is similar to the behavior of a private project with Container
+     Registry visibility set to **Everyone With Access**.
 
 1. Select **Save changes**.
 

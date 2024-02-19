@@ -33,6 +33,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{yml,yaml}{,.*}'
       run: scripts/lint-yaml.sh {files}
+    mermaidlint:
+      tags: documentation style,backend style,frontend style
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{app,lib,ee,spec,doc,scripts}/**/*.md'
+      run: scripts/lint/check_mermaid.mjs {files}
     stylelint:
       tags: stylesheet css style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

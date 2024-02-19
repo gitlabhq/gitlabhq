@@ -16,9 +16,10 @@ import WorkItemAttributesWrapper from '~/work_items/components/work_item_attribu
 import {
   workItemResponseFactory,
   taskType,
-  issueType,
   objectiveType,
   keyResultType,
+  issueType,
+  epicType,
 } from '../mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
@@ -54,7 +55,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
-          workItemsMvc: true,
+          workItemsBeta: true,
           workItemsMvc2,
         },
       },
@@ -185,11 +186,12 @@ describe('WorkItemAttributesWrapper component', () => {
 
   describe('parent widget', () => {
     describe.each`
-      description                           | workItemType     | exists
-      ${'when work item type is task'}      | ${taskType}      | ${true}
-      ${'when work item type is objective'} | ${objectiveType} | ${true}
-      ${'when work item type is keyresult'} | ${keyResultType} | ${true}
-      ${'when work item type is issue'}     | ${issueType}     | ${false}
+      description                            | workItemType     | exists
+      ${'when work item type is task'}       | ${taskType}      | ${true}
+      ${'when work item type is objective'}  | ${objectiveType} | ${true}
+      ${'when work item type is key result'} | ${keyResultType} | ${true}
+      ${'when work item type is issue'}      | ${issueType}     | ${true}
+      ${'when work item type is epic'}       | ${epicType}      | ${true}
     `('$description', ({ workItemType, exists }) => {
       it(`${exists ? 'renders' : 'does not render'} parent component`, async () => {
         const response = workItemResponseFactory({ workItemType });

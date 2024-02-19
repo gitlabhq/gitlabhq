@@ -29,6 +29,7 @@ import {
 import { issuableAttributesQueries } from 'ee_else_ce/sidebar/queries/constants';
 import { createAlert } from '~/alert';
 import { PathIdSeparator } from '~/related_issues/constants';
+import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 
 export default {
   noAttributeId,
@@ -122,6 +123,10 @@ export default {
           sort: defaultEpicSort,
           includeWorkItems: this.showWorkItemEpics,
         };
+
+        if (this.showWorkItemEpics) {
+          variables.types = [WORK_ITEM_TYPE_ENUM_EPIC];
+        }
 
         if (epicIidPattern.test(this.searchTerm)) {
           const matches = this.searchTerm.match(epicIidPattern);
@@ -222,12 +227,7 @@ export default {
     @show="handleShow"
     @shown="setFocus"
   >
-    <gl-search-box-by-type
-      v-if="!showWorkItemEpics"
-      ref="search"
-      v-model="searchTerm"
-      :placeholder="__('Search')"
-    />
+    <gl-search-box-by-type ref="search" v-model="searchTerm" :placeholder="__('Search')" />
     <gl-dropdown-item
       :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
       is-check-item
