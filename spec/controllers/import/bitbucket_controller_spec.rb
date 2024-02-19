@@ -463,7 +463,7 @@ RSpec.describe Import::BitbucketController, feature_category: :importers do
         post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(response.parsed_body['errors']).to eq('You are not allowed to import projects in this namespace.')
+        expect(response.parsed_body['errors']).to eq(s_('BitbucketImport|You are not allowed to import projects in this namespace.'))
       end
     end
   end

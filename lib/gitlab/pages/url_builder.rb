@@ -14,16 +14,9 @@ module Gitlab
       end
 
       def pages_url(with_unique_domain: false)
-        return namespace_in_path_url(with_unique_domain && unique_domain_enabled?) if config.namespace_in_path
         return unique_url if with_unique_domain && unique_domain_enabled?
 
-        project_path_url = "#{config.protocol}://#{project_path}".downcase
-
-        # If the project path is the same as host, we serve it as group page
-        # On development we ignore the URL port to make it work on GDK
-        return namespace_url if Rails.env.development? && portless(namespace_url) == project_path_url
-        # If the project path is the same as host, we serve it as group page
-        return namespace_url if namespace_url == project_path_url
+        return namespace_url if namespace_pages?
 
         "#{namespace_url}/#{project_path}"
       end
@@ -35,18 +28,24 @@ module Gitlab
         URI(unique_url).host
       end
 
+      # If the project path is the same as host, we serve it as group/user page.
+      #
+      # e.g. For Pages external url `example.io`,
+      #      `acmecorp/acmecorp.example.io` project will publish to `http(s)://acmecorp.example.io`
+      # See https://docs.gitlab.com/ee/user/project/pages/getting_started_part_one.html#user-and-group-website-examples.
       def namespace_pages?
-        namespace_url == pages_url
+        project_path_url = "#{config.protocol}://#{project_path}".downcase
+
+        # On development we ignore the URL port to make it work on GDK
+        host_base_url(project_namespace, include_port: !Rails.env.development?) == project_path_url
       end
 
       def artifact_url(artifact, job)
         return unless artifact_url_available?(artifact, job)
 
-        host_url = config.namespace_in_path ? "#{pages_base_url}/#{project_namespace}" : namespace_url
-
         format(
           ARTIFACT_URL,
-          host: host_url,
+          host: namespace_url,
           project_path: project_path,
           job_id: job.id,
           artifact_path: artifact.path)
@@ -71,33 +70,24 @@ module Gitlab
         @unique_url ||= url_for(project.project_setting.pages_unique_domain)
       end
 
-      def pages_base_url
-        @pages_url ||= URI(config.url)
-          .tap { |url| url.port = config.port }
-          .to_s
-          .downcase
-      end
-
-      def namespace_in_path_url(with_unique_domain)
-        if with_unique_domain
-          "#{pages_base_url}/#{project.project_setting.pages_unique_domain}".downcase
+      def url_for(subdomain)
+        if config.namespace_in_path
+          URI(config.url)
+            .tap { |url| url.port = config.port }
+            .tap { |url| url.path = "/#{subdomain}" }
+            .to_s
+            .downcase
         else
-          "#{pages_base_url}/#{project_namespace}/#{project_path}".downcase
+          host_base_url(subdomain)
         end
       end
 
-      def url_for(subdomain)
+      def host_base_url(subdomain, include_port: true)
         URI(config.url)
-          .tap { |url| url.port = config.port }
+          .tap { |url| url.port = include_port ? config.port : nil }
           .tap { |url| url.host.prepend("#{subdomain}.") }
           .to_s
           .downcase
-      end
-
-      def portless(url)
-        URI(url)
-          .tap { |u| u.port = nil }
-          .to_s
       end
 
       def unique_domain_enabled?

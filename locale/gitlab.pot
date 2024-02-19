@@ -77,9 +77,6 @@ msgstr ""
 msgid "\"%{path}\" did not exist on \"%{ref}\""
 msgstr ""
 
-msgid "\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
-msgstr ""
-
 msgid "##### ERROR ##### You have used %{usage_percentage} of the storage quota for %{namespace_name} (%{current_size} of %{size_limit}). %{namespace_name} is now read-only. Projects under this namespace are locked and actions will be restricted. To manage storage, or purchase additional storage, see %{manage_storage_url}. To learn more about restricted actions, see %{restricted_actions_url}"
 msgstr ""
 
@@ -8210,6 +8207,9 @@ msgid "Bitbucket Server import"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "BitbucketImport|You are not allowed to import projects in this namespace."
 msgstr ""
 
 msgid "Blame"
@@ -22776,13 +22776,28 @@ msgstr ""
 msgid "GithubImporter|Your import of GitHub gists into GitLab snippets is complete."
 msgstr ""
 
+msgid "GithubImport|\"%{repository_name}\" size (%{repository_size}) is larger than the limit of %{limit}."
+msgstr ""
+
 msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:"
+msgstr ""
+
+msgid "GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})"
+msgstr ""
+
+msgid "GithubImport|Namespace or group to import repository into does not exist."
+msgstr ""
+
+msgid "GithubImport|Target namespace is required"
 msgstr ""
 
 msgid "GithubImport|To connect to GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
 msgstr ""
 
 msgid "GithubImport|To import GitHub repositories, you must first authorize GitLab to access your GitHub repositories."
+msgstr ""
+
+msgid "GithubImport|You are not allowed to import projects in this namespace."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -25399,9 +25414,6 @@ msgid "Import and export rate limits"
 msgstr ""
 
 msgid "Import and export settings"
-msgstr ""
-
-msgid "Import failed due to a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
 msgid "Import from"
@@ -32030,9 +32042,6 @@ msgid "Namespace doesn't exist or you don't have permission."
 msgstr ""
 
 msgid "Namespace must be provided."
-msgstr ""
-
-msgid "Namespace or group to import repository into does not exist."
 msgstr ""
 
 msgid "Namespace or project is required"
@@ -57046,9 +57055,6 @@ msgid "You are not allowed to create this tag as it is protected."
 msgstr ""
 
 msgid "You are not allowed to download code from this project."
-msgstr ""
-
-msgid "You are not allowed to import projects in this namespace."
 msgstr ""
 
 msgid "You are not allowed to log in using password"

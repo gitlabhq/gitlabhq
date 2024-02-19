@@ -59,7 +59,7 @@ module Import
     end
 
     def oversize_error_message
-      _('"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
+      s_('GithubImport|"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.') % {
         repository_name: repo[:name],
         repository_size: number_to_human_size(repo[:size]),
         limit: number_to_human_size(repository_size_limit)
@@ -103,16 +103,16 @@ module Import
       if blocked_url?
         log_and_return_error("Invalid URL: #{url}", _("Invalid URL: %{url}") % { url: url }, :bad_request)
       elsif target_namespace.nil?
-        error(_('Namespace or group to import repository into does not exist.'), :unprocessable_entity)
+        error(s_('GithubImport|Namespace or group to import repository into does not exist.'), :unprocessable_entity)
       elsif !authorized?
-        error(_('You are not allowed to import projects in this namespace.'), :unprocessable_entity)
+        error(s_('GithubImport|You are not allowed to import projects in this namespace.'), :unprocessable_entity)
       elsif oversized?
         error(oversize_error_message, :unprocessable_entity)
       end
     end
 
     def target_namespace_path
-      raise ArgumentError, 'Target namespace is required' if params[:target_namespace].blank?
+      raise ArgumentError, s_('GithubImport|Target namespace is required') if params[:target_namespace].blank?
 
       params[:target_namespace]
     end
@@ -124,7 +124,7 @@ module Import
         error: exception.response_body
       )
 
-      error(_('Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
+      error(s_('GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})') % { original: exception.response_body, code: exception.response_status }, :unprocessable_entity)
     end
 
     def log_and_return_error(message, translated_message, http_status)

@@ -29,6 +29,8 @@ Each streaming destination can have up to 20 custom HTTP headers included with e
 GitLab can stream a single event more than once to the same destination. Use the `id` key in the payload to deduplicate
 incoming data.
 
+Audit events are sent using the POST request method protocol supported by HTTP.
+
 WARNING:
 Streaming destinations receive **all** audit event data, which could include sensitive information. Make sure you trust
 the streaming destination.
@@ -38,6 +40,10 @@ the streaming destination.
 Manage streaming destinations for top-level groups.
 
 ### HTTP destinations
+
+Prerequisites:
+
+- For better security, you should use an SSL certificate on the destination URL.
 
 Manage HTTP streaming destinations for top-level groups.
 
@@ -371,6 +377,10 @@ DETAILS:
 Manage streaming destinations for an entire instance.
 
 ### HTTP destinations
+
+Prerequisites:
+
+- For better security, you should use an SSL certificate on the destination URL.
 
 Manage HTTP streaming destinations for an entire instance.
 

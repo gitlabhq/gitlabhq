@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
       context 'when using domain pages' do
         let(:full_path) { 'group/group.example.com' }
 
-        it { is_expected.to eq('http://example.com/group/group.example.com') }
+        it { is_expected.to eq('http://example.com/group') }
 
         context 'in development mode' do
           let(:port) { 3010 }
@@ -145,7 +145,7 @@ RSpec.describe Gitlab::Pages::UrlBuilder, feature_category: :pages do
             stub_rails_env('development')
           end
 
-          it { is_expected.to eq('http://example.com:3010/group/group.example.com') }
+          it { is_expected.to eq('http://example.com:3010/group') }
         end
       end
 

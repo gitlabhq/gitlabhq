@@ -59,7 +59,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       result = subject.execute(access_params, :github)
 
       expect(result).to include(
-        message: 'Import failed due to a GitHub error: Not Found (HTTP 404)',
+        message: s_('GithubImport|Import failed due to a GitHub error: Not Found (HTTP 404)'),
         status: :error,
         http_status: :unprocessable_entity
       )
@@ -137,12 +137,15 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       it 'returns error when the repository is larger than the limit' do
         repository_double[:size] = 101
 
-        expect(subject.execute(access_params, :github)).to include(size_limit_error)
+        expect(subject.execute(access_params, :github)).to include(
+          size_limit_error(repository_double[:name], repository_double[:size], group.repository_size_limit)
+        )
       end
     end
 
     context 'when target namespace repository limit is not defined' do
       let_it_be(:group) { create(:group) }
+      let(:repository_size_limit) { 100 }
 
       before do
         stub_application_setting(repository_size_limit: 100)
@@ -171,7 +174,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         it 'returns error when the repository is larger than the limit' do
           repository_double[:size] = 101
 
-          expect(subject.execute(access_params, :github)).to include(size_limit_error)
+          expect(subject.execute(access_params, :github)).to include(
+            size_limit_error(repository_double[:name], repository_double[:size], repository_size_limit)
+          )
         end
       end
     end
@@ -317,7 +322,10 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
 
     it 'raises an exception' do
-      expect { subject.execute(access_params, :github) }.to raise_error(ArgumentError, 'Target namespace is required')
+      expect do
+        subject.execute(access_params,
+          :github)
+      end.to raise_error(ArgumentError, s_('GithubImport|Target namespace is required'))
     end
   end
 
@@ -343,11 +351,15 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
   end
 
-  def size_limit_error
+  def size_limit_error(repository_name, repository_size, limit)
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: '"repository" size (101 B) is larger than the limit of 100 B.'
+      message: format(
+        s_('GithubImport|"%{repository_name}" size (%{repository_size}) is larger than the limit of %{limit}.'),
+        repository_name: repository_name,
+        repository_size: ActiveSupport::NumberHelper.number_to_human_size(repository_size),
+        limit: ActiveSupport::NumberHelper.number_to_human_size(limit))
     }
   end
 
@@ -363,7 +375,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: 'Namespace or group to import repository into does not exist.'
+      message: s_('GithubImport|Namespace or group to import repository into does not exist.')
     }
   end
 
@@ -371,7 +383,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     {
       status: :error,
       http_status: :unprocessable_entity,
-      message: 'You are not allowed to import projects in this namespace.'
+      message: s_('GithubImport|You are not allowed to import projects in this namespace.')
     }
   end
 end
