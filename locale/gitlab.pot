@@ -319,6 +319,11 @@ msgid_plural "%d jobs"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d label"
+msgid_plural "%d labels"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d layer"
 msgid_plural "%d layers"
 msgstr[0] ""
@@ -32862,6 +32867,9 @@ msgid "No iteration"
 msgstr ""
 
 msgid "No label"
+msgstr ""
+
+msgid "No labels"
 msgstr ""
 
 msgid "No labels found"

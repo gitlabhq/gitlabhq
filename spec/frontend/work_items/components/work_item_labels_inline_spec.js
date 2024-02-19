@@ -10,7 +10,7 @@ import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemLabelsInline from '~/work_items/components/work_item_labels_inline.vue';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS } from '~/work_items/constants';
 import {
   groupWorkItemByIidResponseFactory,
@@ -18,13 +18,14 @@ import {
   mockLabels,
   workItemByIidResponseFactory,
   updateWorkItemMutationResponse,
+  groupLabelsResponse,
 } from '../mock_data';
 
 Vue.use(VueApollo);
 
 const workItemId = 'gid://gitlab/WorkItem/1';
 
-describe('WorkItemLabels component', () => {
+describe('WorkItemLabelsInline component', () => {
   let wrapper;
 
   const findTokenSelector = () => wrapper.findComponent(GlTokenSelector);
@@ -39,7 +40,7 @@ describe('WorkItemLabels component', () => {
     .fn()
     .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
   const projectLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
-  const groupLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
+  const groupLabelsQueryHandler = jest.fn().mockResolvedValue(groupLabelsResponse);
   const successUpdateWorkItemMutationHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemMutationResponse);
@@ -53,7 +54,7 @@ describe('WorkItemLabels component', () => {
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     workItemIid = '1',
   } = {}) => {
-    wrapper = mountExtended(WorkItemLabels, {
+    wrapper = mountExtended(WorkItemLabelsInline, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
@@ -152,7 +153,7 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expect(findSkeletonLoader().exists()).toBe(false);
-    expect(findTokenSelector().props('dropdownItems')).toHaveLength(2);
+    expect(findTokenSelector().props('dropdownItems')).toHaveLength(3);
   });
 
   it.each([true, false])(

@@ -4,7 +4,8 @@ import Participants from '~/sidebar/components/participants/participants.vue';
 import WorkItemAssigneesWithEdit from '~/work_items/components/work_item_assignees_with_edit.vue';
 import WorkItemDueDateInline from '~/work_items/components/work_item_due_date_inline.vue';
 import WorkItemDueDateWithEdit from '~/work_items/components/work_item_due_date_with_edit.vue';
-import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemLabelsInline from '~/work_items/components/work_item_labels_inline.vue';
+import WorkItemLabelsWithEdit from '~/work_items/components/work_item_labels_with_edit.vue';
 import WorkItemMilestoneInline from '~/work_items/components/work_item_milestone_inline.vue';
 import WorkItemMilestoneWithEdit from '~/work_items/components/work_item_milestone_with_edit.vue';
 import WorkItemParentInline from '~/work_items/components/work_item_parent_inline.vue';
@@ -28,7 +29,8 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemAssignees = () => wrapper.findComponent(WorkItemAssigneesWithEdit);
   const findWorkItemDueDate = () => wrapper.findComponent(WorkItemDueDateWithEdit);
   const findWorkItemDueDateInline = () => wrapper.findComponent(WorkItemDueDateInline);
-  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabels);
+  const findWorkItemLabelsInline = () => wrapper.findComponent(WorkItemLabelsInline);
+  const findWorkItemLabels = () => wrapper.findComponent(WorkItemLabelsWithEdit);
   const findWorkItemMilestone = () => wrapper.findComponent(WorkItemMilestoneWithEdit);
   const findWorkItemMilestoneInline = () => wrapper.findComponent(WorkItemMilestoneInline);
   const findWorkItemParentInline = () => wrapper.findComponent(WorkItemParentInline);
@@ -91,6 +93,26 @@ describe('WorkItemAttributesWrapper component', () => {
 
       expect(findWorkItemLabels().exists()).toBe(exists);
     });
+
+    it.each`
+      description                                                   | labelsWidgetInlinePresent | labelsWidgetWithEditPresent | workItemsMvc2FlagEnabled
+      ${'renders WorkItemLabels when workItemsMvc2 enabled'}        | ${false}                  | ${true}                     | ${true}
+      ${'renders WorkItemLabelsInline when workItemsMvc2 disabled'} | ${true}                   | ${false}                    | ${false}
+    `(
+      '$description',
+      async ({
+        labelsWidgetInlinePresent,
+        labelsWidgetWithEditPresent,
+        workItemsMvc2FlagEnabled,
+      }) => {
+        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+
+        await waitForPromises();
+
+        expect(findWorkItemLabels().exists()).toBe(labelsWidgetWithEditPresent);
+        expect(findWorkItemLabelsInline().exists()).toBe(labelsWidgetInlinePresent);
+      },
+    );
   });
 
   describe('dates widget', () => {

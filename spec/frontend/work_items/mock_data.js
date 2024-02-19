@@ -36,6 +36,14 @@ export const mockLabels = [
     color: '#b00',
     textColor: '#00b',
   },
+  {
+    __typename: 'Label',
+    id: 'gid://gitlab/Label/3',
+    title: 'Label 3',
+    description: 'Label 3 description',
+    color: '#fff',
+    textColor: '#000',
+  },
 ];
 
 export const mockMilestone = {
@@ -2109,6 +2117,30 @@ export const projectLabelsResponse = {
     },
   },
 };
+
+export const groupLabelsResponse = {
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Group',
+      labels: {
+        nodes: mockLabels,
+      },
+    },
+  },
+};
+
+export const getProjectLabelsResponse = (labels) => ({
+  data: {
+    workspace: {
+      id: '1',
+      __typename: 'Project',
+      labels: {
+        nodes: labels,
+      },
+    },
+  },
+});
 
 export const mockIterationWidgetResponse = {
   description: 'Iteration description',

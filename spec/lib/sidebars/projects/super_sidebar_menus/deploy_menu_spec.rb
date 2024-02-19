@@ -19,6 +19,7 @@ RSpec.describe Sidebars::Projects::SuperSidebarMenus::DeployMenu, feature_catego
       :feature_flags,
       :packages_registry,
       :container_registry,
+      :google_artifact_registry,
       :model_registry
     ])
   end

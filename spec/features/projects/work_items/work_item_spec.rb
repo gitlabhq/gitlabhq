@@ -166,8 +166,14 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
         wait_for_all_requests
       end
 
-      it 'assignees input field is disabled' do
+      it 'disabled the assignees input field' do
         within('[data-testid="work-item-assignees-input"]') do
+          expect(page).to have_field(type: 'text', disabled: true)
+        end
+      end
+
+      it 'disables the labels input field' do
+        within('[data-testid="work-item-labels-input"]') do
           expect(page).to have_field(type: 'text', disabled: true)
         end
       end
@@ -181,16 +187,16 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
         wait_for_all_requests
       end
 
-      it 'assignees edit button is not visible' do
+      it 'hides the assignees edit button' do
         within('[data-testid="work-item-assignees-with-edit"]') do
           expect(page).not_to have_button('Edit')
         end
       end
-    end
 
-    it 'labels input field is disabled' do
-      within('[data-testid="work-item-labels-input"]') do
-        expect(page).to have_field(type: 'text', disabled: true)
+      it 'hides the labels edit button' do
+        within('[data-testid="work-item-labels-with-edit"]') do
+          expect(page).not_to have_button('Edit')
+        end
       end
     end
   end
