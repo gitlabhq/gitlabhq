@@ -2,7 +2,8 @@
 import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { __, s__, sprintf } from '~/locale';
-import { FORM_FIELD_PATH } from '../constants';
+import { slugify } from '~/lib/utils/text_utility';
+import { FORM_FIELD_NAME, FORM_FIELD_PATH } from '../constants';
 import GroupPathField from './group_path_field.vue';
 
 export default {
@@ -41,6 +42,7 @@ export default {
       hasPathBeenManuallySet: false,
       isPathLoading: false,
       formValues: {
+        [FORM_FIELD_NAME]: '',
         [FORM_FIELD_PATH]: '',
       },
     };
@@ -48,6 +50,21 @@ export default {
   computed: {
     fields() {
       return {
+        [FORM_FIELD_NAME]: {
+          label: s__('Groups|Group name'),
+          validators: [
+            formValidators.required(s__('Groups|Enter a descriptive name for your group.')),
+          ],
+          inputAttrs: {
+            width: { md: 'lg' },
+            placeholder: __('My awesome group'),
+          },
+          groupAttrs: {
+            description: s__(
+              'Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
+            ),
+          },
+        },
         [FORM_FIELD_PATH]: {
           label: s__('Groups|Group URL'),
           validators: [
@@ -74,6 +91,15 @@ export default {
           },
         },
       };
+    },
+  },
+  watch: {
+    [`formValues.${FORM_FIELD_NAME}`](newName) {
+      if (this.hasPathBeenManuallySet) {
+        return;
+      }
+
+      this.formValues[FORM_FIELD_PATH] = slugify(newName);
     },
   },
   methods: {

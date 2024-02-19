@@ -13,11 +13,21 @@ Please do not use any utilities that are prefixed with `gl-deprecated-`, instead
 
 In order to reduce the generation of more CSS as our site grows, prefer the use of utility classes over adding new CSS. In complex cases, CSS can be addressed by adding component classes.
 
-### Tailwind CSS migration
+### Tailwind CSS
 
 We are in the process of migrating our CSS utility class setup to [Tailwind CSS](https://tailwindcss.com/).
 See the [Tailwind CSS blueprint](../../../architecture/blueprints/tailwindcss/index.md) for motivation, proposal,
 and implementation details.
+
+#### Building the Tailwind CSS bundle
+
+When using Vite or Webpack with the GitLab Development Kit, Tailwind CSS watches for file changes to
+build detected utilities on the fly.
+
+To build a fresh Tailwind CSS bundle, run `yarn tailwindcss:build`. This is the script that gets
+called internally when building production assets with `bundle exec rake gitlab:assets:compile`.
+
+However the bundle gets built, the output is saved to `app/assets/builds/tailwind.css`.
 
 ### Where are utility classes defined?
 
@@ -46,7 +56,7 @@ result (such as `ml-1` becoming `gl-ml-2`).
 
 ### Where should you put new utility classes?
 
-Because we are in the process of [migrating to Tailwind](#tailwind-css-migration) the utility class you need may already be
+Because we are in the process of [migrating to Tailwind](#tailwind-css) the utility class you need may already be
 available from Tailwind. The [IntelliSense for VS Code plugin](https://tailwindcss.com/docs/editor-setup#intelli-sense-for-vs-code) will tell you what utility classes are available. If the utility class you need is not available from Tailwind, you should continue to use the [utility classes defined in GitLab UI](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/css.md#utilities) which can be [seen on Unpkg](https://unpkg.com/browse/@gitlab/ui/src/scss/utilities.scss). If the utility class is still not available we need to enable a new core plugin in Tailwind. [Find the relevant core plugin](https://tailwindcss.com/docs/theme#configuration-reference) and open a MR to add the core plugin to the `corePlugins` array in [tailwind.defaults.js](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/bad526b4662f38868cfc3d89157b22f5cc9a94c5/tailwind.defaults.js).
 
 ### When should you create component classes?
@@ -65,7 +75,7 @@ Inspiration:
 
 ### Utility mixins
 
-We are currently in the process of [migrating to Tailwind](#tailwind-css-migration). The migration removes utility mixins so please do not add any new usages of utility mixins. Instead use [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values) with SCSS variables.
+We are currently in the process of [migrating to Tailwind](#tailwind-css). The migration removes utility mixins so please do not add any new usages of utility mixins. Instead use [pre-defined CSS keywords](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Values_and_Units#pre-defined_keyword_values) with SCSS variables.
 
 ```scss
 // Bad

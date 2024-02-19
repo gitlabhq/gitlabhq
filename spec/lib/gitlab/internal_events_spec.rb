@@ -272,10 +272,12 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     context 'when there are multiple unique keys' do
       let(:property_names) { [:project, :user] }
 
+      before do
+        stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
+      end
+
       context "with the property_name tracking feature flag enabled" do
-        before do
-          stub_feature_flags(redis_hll_property_name_tracking: true)
-        end
+        let(:property_name_flag_enabled) { true }
 
         it 'all of them are used when logging to RedisHLL', :aggregate_failures do
           described_class.track_event(event_name, user: user, project: project)
@@ -288,6 +290,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       end
 
       context "with the property_name tracking feature flag disabled" do
+        let(:property_name_flag_enabled) { false }
+
         context "with multiple property_names defined" do
           it 'logs an error', :aggregate_failures do
             described_class.track_event(event_name, user: user, project: project)

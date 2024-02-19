@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Provision
+group: Subscription management
 description: Seat assignment, GitLab Duo Pro add-on
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -29,9 +29,7 @@ After you purchase GitLab Duo Pro, you can assign seats to billable users to gra
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-<!-- vale gitlab.Substitutions = NO -->
-1. Select the **Duo Pro** tab.
-<!-- vale gitlab.Substitutions = YES -->
+1. Select the **GitLab Duo Pro** tab.
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 ### For self-managed
@@ -41,14 +39,12 @@ Prerequisites:
 - You must be an administrator.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-<!-- vale gitlab.Substitutions = NO -->
-1. Select **Duo Pro**.
-   - If the **Duo Pro** menu item is not available, synchronize your subscription
+1. Select **GitLab Duo Pro**.
+   - If the **GitLab Duo Pro** menu item is not available, synchronize your subscription
    after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
      synchronize subscription (**{retry}**).
-<!-- vale gitlab.Substitutions = YES -->
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 ### Assign seats in bulk
@@ -66,3 +62,27 @@ allow outbound connections to `cloud.gitlab.com`.
 
 To use an HTTP proxy, ensure that both `gitLab _workhorse` and `gitLab_rails` set the necessary
 [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
+
+## Purchase additional GitLab Duo Pro seats
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** SaaS
+
+Prerequisites:
+
+- You must purchase the GitLab Duo Pro add-on from the [GitLab Sales Team](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/).
+
+You can purchase additional GitLab Duo Pro seats for your group namespace. After you complete the purchase,
+the seats are added to the total number of GitLab Duo Pro seats in your subscription.
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Usage Quotas**.
+1. Select the **GitLab Duo Pro** tab.
+1. Select **Add seats**.
+1. In the Customers Portal, in the **Add additional seats** field, enter the number of seats. The amount
+   cannot be higher than the number of seats in the subscription associated with your group namespace.
+1. In the **Billing information** section, select the payment method from the dropdown list.
+1. Select the **Privacy Policy** and **Terms of Service** checkbox.
+1. Select **Purchase seats**.
+1. Select the **GitLab SaaS** tab and refresh the page.

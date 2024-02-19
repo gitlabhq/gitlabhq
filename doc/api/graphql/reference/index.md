@@ -2101,9 +2101,8 @@ Input type: `BranchRuleUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationbranchruleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationbranchruleupdateid"></a>`id` | [`ProtectedBranchID!`](#protectedbranchid) | Global ID of the protected branch. |
+| <a id="mutationbranchruleupdateid"></a>`id` | [`ProjectsBranchRuleID!`](#projectsbranchruleid) | Global ID of the branch rule to update. |
 | <a id="mutationbranchruleupdatename"></a>`name` | [`String!`](#string) | Branch name, with wildcards, for the branch rules. |
-| <a id="mutationbranchruleupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path to the project that the branch is associated with. |
 
 #### Fields
 
@@ -33856,12 +33855,6 @@ An example `ProjectImportStateID` is: `"gid://gitlab/ProjectImportState/1"`.
 A `ProjectsBranchRuleID` is a global ID. It is encoded as a string.
 
 An example `ProjectsBranchRuleID` is: `"gid://gitlab/Projects::BranchRule/1"`.
-
-### `ProtectedBranchID`
-
-A `ProtectedBranchID` is a global ID. It is encoded as a string.
-
-An example `ProtectedBranchID` is: `"gid://gitlab/ProtectedBranch/1"`.
 
 ### `ReleaseID`
 

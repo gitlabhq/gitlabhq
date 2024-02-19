@@ -27,6 +27,7 @@ describe('NewGroupForm', () => {
     });
   };
 
+  const findNameField = () => wrapper.findByLabelText('Group name');
   const findPathField = () => wrapper.findComponent(GroupPathField);
 
   const setPathFieldValue = async (value) => {
@@ -36,6 +37,12 @@ describe('NewGroupForm', () => {
   const submitForm = async () => {
     await wrapper.findByRole('button', { name: 'Create group' }).trigger('click');
   };
+
+  it('renders `Group name` field', () => {
+    createComponent();
+
+    expect(findNameField().exists()).toBe(true);
+  });
 
   it('renders `Group URL` field', () => {
     createComponent();
@@ -50,6 +57,7 @@ describe('NewGroupForm', () => {
     });
 
     it('shows error message', () => {
+      expect(wrapper.findByText('Enter a descriptive name for your group.').exists()).toBe(true);
       expect(wrapper.findByText('Enter a path for your group.').exists()).toBe(true);
       expect(wrapper.emitted('submit')).toBeUndefined();
     });
@@ -89,16 +97,41 @@ describe('NewGroupForm', () => {
     });
   });
 
+  describe('when `Group URL` has not been manually set', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await findNameField().setValue('Foo bar');
+    });
+
+    it('sets `Group URL` when typing in `Group name`', () => {
+      expect(findPathField().props('value')).toBe('foo-bar');
+    });
+  });
+
+  describe('when `Group URL` has been manually set', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      await setPathFieldValue('foo-bar-baz');
+      await findNameField().setValue('Foo bar');
+    });
+
+    it('does not modify `Group URL` when typing in `Group name`', () => {
+      expect(findPathField().props('value')).toBe('foo-bar-baz');
+    });
+  });
+
   describe('when form is submitted successfully', () => {
     beforeEach(async () => {
       createComponent();
 
-      await setPathFieldValue('foo-bar');
+      await findNameField().setValue('Foo bar');
       await submitForm();
     });
 
     it('emits `submit` event with form values', () => {
-      expect(wrapper.emitted('submit')).toEqual([[{ path: 'foo-bar' }]]);
+      expect(wrapper.emitted('submit')).toEqual([[{ name: 'Foo bar', path: 'foo-bar' }]]);
     });
   });
 

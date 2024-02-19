@@ -22961,6 +22961,9 @@ msgstr ""
 msgid "GlobalSearch|Language"
 msgstr ""
 
+msgid "GlobalSearch|List of filtered labels."
+msgstr ""
+
 msgid "GlobalSearch|Merge requests I've created"
 msgstr ""
 
@@ -23063,10 +23066,10 @@ msgstr ""
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
 msgstr ""
 
-msgid "GlobalSearch|Type and press the enter key to submit search."
+msgid "GlobalSearch|Type for new suggestions to appear below."
 msgstr ""
 
-msgid "GlobalSearch|Type for new suggestions to appear below."
+msgid "GlobalSearch|Type to filter labels."
 msgstr ""
 
 msgid "GlobalSearch|Users"

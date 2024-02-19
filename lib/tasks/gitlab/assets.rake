@@ -83,11 +83,21 @@ namespace :gitlab do
   namespace :assets do
     desc 'GitLab | Assets | Return the hash sum of all frontend assets'
     task :hash_sum do
+      Rake::Task['gitlab:assets:tailwind'].invoke('silent')
       print Tasks::Gitlab::Assets.sha256_of_assets_impacting_compilation(verbose: false)
     end
 
+    task :tailwind, [:silent] do |_t, args|
+      cmd = 'yarn tailwindcss:build'
+      cmd += '> /dev/null 2>&1' if args[:silent].present?
+
+      unless system(cmd)
+        abort 'Error: Unable to build Tailwind CSS bundle.'.color(:red)
+      end
+    end
+
     desc 'GitLab | Assets | Compile all frontend assets'
-    task :compile do
+    task compile: :tailwind do
       require 'fileutils'
 
       require_dependency 'gitlab/task_helpers'

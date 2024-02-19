@@ -76,6 +76,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     let(:productivity_category) { 'productivity' }
     let(:analytics_category) { 'analytics' }
     let(:other_category) { 'other' }
+    let(:property_name_flag_enabled) { false }
 
     let(:known_events) do
       [
@@ -92,6 +93,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     before do
       skip_default_enabled_yaml_check
       allow(described_class).to receive(:known_events).and_return(known_events)
+      stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
     end
 
     describe '.track_event' do
@@ -218,10 +220,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       end
 
       describe "property_name" do
-        before do
-          stub_feature_flags(redis_hll_property_name_tracking: property_name_flag_enabled)
-        end
-
         context "with enabled feature flag" do
           let(:property_name_flag_enabled) { true }
 
@@ -289,8 +287,6 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         end
 
         context "with disabled feature flag" do
-          let(:property_name_flag_enabled) { false }
-
           it "uses old Redis key for overridden events" do
             expected_key = "{hll_counters}_#{event_overridden_for_user}-2020-23"
             expect(Gitlab::Redis::HLL).to receive(:add).with(hash_including(key: expected_key))

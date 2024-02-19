@@ -28,6 +28,14 @@ By understanding the frameworks, libraries and other dependencies in use, Reposi
 | Python     | Poetry          | `pyproject.toml`     |
 | Python     | Pip             | `requirements.txt`   |
 | Python     | Conda           | `environment.yml`    |
+| PHP        | Composer        | `composer.json`      |
+| Java       | Maven           | `pom.xml`            |
+| Java       | Gradle          | `build.gradle`       |
+| Kotlin     | Gradle          | `build.gradle.kts`   |
+| C#         | NuGet           | `*.csproj`           |
+| C/C++      | Conan           | `conanfile.txt`      |
+| C/C++      | Conan           | `conanfile.py`       |
+| C/C++      | vcpkg           | `vcpkg.json`         |
 
 ## Enable Repository X-Ray
 

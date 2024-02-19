@@ -93,9 +93,10 @@ module Gitlab
         puts change.description
         puts
 
-        if change.labels.present?
+        if change.labels.present? || change.reviewers.present?
           puts '=> Attributes:'
           puts "Labels: #{change.labels.join(', ')}"
+          puts "Reviewers: #{change.reviewers.join(', ')}"
           puts
         end
 

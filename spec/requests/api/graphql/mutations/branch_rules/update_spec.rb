@@ -7,18 +7,17 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
 
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
-  let!(:branch_rule_1) { create(:protected_branch, project: project, name: name_1) }
-  let!(:branch_rule_2) { create(:protected_branch, project: project, name: name_2) }
+  let!(:protected_branch_1) { create(:protected_branch, project: project, name: name_1) }
+  let!(:protected_branch_2) { create(:protected_branch, project: project, name: name_2) }
+  let(:branch_rule) { Projects::BranchRule.new(project, protected_branch_1) }
   let(:name_1) { "name_1" }
   let(:name_2) { "name_2" }
   let(:new_name) { "new name" }
-  let(:id) { branch_rule_1.to_global_id }
-  let(:project_path) { project.full_path }
+  let(:global_id) { branch_rule.to_global_id }
   let(:name) { new_name }
   let(:params) do
     {
-      id: id,
-      project_path: project_path,
+      id: global_id,
       name: name
     }
   end
@@ -37,7 +36,9 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
     end
 
     it 'does not update the branch rule' do
-      expect { post_mutation }.not_to change { branch_rule_1 }
+      post_mutation
+
+      expect(protected_branch_1.reload.name).to eq(name_1)
     end
   end
 
@@ -48,10 +49,10 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
       project.add_maintainer(user)
     end
 
-    it 'updates the protected branch' do
+    it 'updates the branch rule' do
       post_mutation
 
-      expect(branch_rule_1.reload.name).to eq(new_name)
+      expect(protected_branch_1.reload.name).to eq(new_name)
     end
 
     it 'returns the updated branch rule' do
@@ -65,8 +66,7 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
     context 'when name already exists for the project' do
       let(:params) do
         {
-          id: id,
-          project_path: project_path,
+          id: global_id,
           name: name_2
         }
       end
@@ -78,18 +78,16 @@ RSpec.describe 'BranchRuleUpdate', feature_category: :source_code_management do
       end
     end
 
-    context 'when the protected branch cannot be found' do
-      let(:id) { "gid://gitlab/ProtectedBranch/#{non_existing_record_id}" }
+    context 'when branch rule cannot be found' do
+      let(:global_id) { project.to_gid.to_s }
+      let(:error_message) { %("#{global_id}" does not represent an instance of Projects::BranchRule) }
+      let(:global_id_error) { a_hash_including('message' => a_string_including(error_message)) }
 
-      it_behaves_like 'a mutation that returns top-level errors',
-        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
-    end
+      it 'returns an error' do
+        post_mutation
 
-    context 'when the project cannot be found' do
-      let(:project_path) { 'not a project path' }
-
-      it_behaves_like 'a mutation that returns top-level errors',
-        errors: [Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR]
+        expect(graphql_errors).to include(global_id_error)
+      end
     end
   end
 end

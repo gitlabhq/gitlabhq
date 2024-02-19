@@ -178,7 +178,7 @@ module Gitlab
       end
 
       def usernames_to_ids(usernames)
-        usernames.map do |username|
+        Array(usernames).map do |username|
           data = request(:get, "/users", query: { username: username })
           data[0]['id']
         end

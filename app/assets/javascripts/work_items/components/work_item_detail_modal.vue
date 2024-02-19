@@ -121,7 +121,7 @@ export default {
     <work-item-detail
       is-modal
       :work-item-iid="displayedWorkItemIid"
-      class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolation-isolate"
+      class="gl-p-5 gl-mt-n3 gl-reset-bg gl-isolate"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"
       @update-modal="updateModal"
