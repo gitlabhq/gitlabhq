@@ -39,6 +39,10 @@ module Gitlab
           return unless project
           return latest_version_sha if version == LATEST_VERSION_KEYWORD
 
+          release_with_tag = project.releases.find_by_tag(version)
+
+          return release_with_tag.sha if release_with_tag.present?
+
           project.commit(version)&.id
         end
         strong_memoize_attr :sha

@@ -43,13 +43,13 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
       )
   end
 
-  where(:data_source, :time_frame, :operator, :attribute, :expected_value, :property_name_flag_enabled) do
-    'redis_hll' | '28d' | 'OR'  | 'user_id'    | 3   | true
-    'redis_hll' | '28d' | 'OR'  | 'user_id'    | 4   | false
-    'redis_hll' | '28d' | 'OR'  | 'project_id' | 4   | false
-    'redis_hll' | '7d'  | 'OR'  | 'user_id'    | 2   | true
-    'redis_hll' | '7d'  | 'OR'  | 'project_id' | 1   | true
-    'database'  | '7d'  | 'OR'  | 'user_id'    | 3.0 | true
+  where(:data_source, :time_frame, :attribute, :expected_value, :property_name_flag_enabled) do
+    'redis_hll' | '28d' | 'user_id'    | 3   | true
+    'redis_hll' | '28d' | 'user_id'    | 4   | false
+    'redis_hll' | '28d' | 'project_id' | 4   | false
+    'redis_hll' | '7d'  | 'user_id'    | 2   | true
+    'redis_hll' | '7d'  | 'project_id' | 1   | true
+    'database'  | '7d'  | 'user_id'    | 3.0 | true
   end
 
   with_them do
@@ -60,7 +60,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
         time_frame: time_frame,
         options: {
           aggregate: {
-            operator: operator,
             attribute: attribute
           },
           events: %w[
@@ -88,7 +87,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
         time_frame: '28d',
         options: {
           aggregate: {
-            operator: 'OR',
             attribute: 'project.name'
           },
           events: %w[

@@ -327,3 +327,5 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
 export const CHILD_ITEMS_ANCHOR = 'childitems';
 export const TASKS_ANCHOR = 'tasks';
+
+export const ISSUABLE_EPIC = 'issue-type-epic';

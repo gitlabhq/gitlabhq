@@ -108,7 +108,7 @@ module DraftNotes
       # We are allowing this since gitaly call will be created for each sha and
       # even though they're unique, there will still be multiple Gitaly calls.
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        project.repository.keep_around(*shas)
+        project.repository.keep_around(*shas, source: self.class.name)
       end
     end
 

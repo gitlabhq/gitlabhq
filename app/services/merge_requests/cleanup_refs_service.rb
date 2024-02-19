@@ -66,7 +66,7 @@ module MergeRequests
     end
 
     def keep_around
-      repository.keep_around(ref_head_sha, merge_ref_sha)
+      repository.keep_around(ref_head_sha, merge_ref_sha, source: self.class.name)
     end
 
     def cache_merge_ref_sha

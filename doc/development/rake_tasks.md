@@ -166,6 +166,12 @@ bundle exec rake "gitlab:seed:project_environments[flightjs/Flight]"
 bundle exec rake "gitlab:seed:project_environments[flightjs/Flight, 25, FLIGHT_ENV_]"
 ```
 
+#### Seed a group with dependencies
+
+```shell
+bundle exec rake gitlab:seed:dependencies
+```
+
 #### Seed CI variables
 
 You can seed a project, group, or instance with [CI variables](../ci/variables/index.md).

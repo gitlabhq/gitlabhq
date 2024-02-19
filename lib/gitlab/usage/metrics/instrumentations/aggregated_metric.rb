@@ -12,7 +12,6 @@ module Gitlab
         # data_source: redis_hll
         # options:
         #   aggregate:
-        #     operator: OR
         #     attribute: user_id
         #   events:
         #     - 'incident_management_alert_status_changed'
@@ -55,7 +54,6 @@ module Gitlab
             {
               source: source,
               events: options[:events],
-              operator: aggregate[:operator],
               attribute: attribute
             }
           end

@@ -5,9 +5,6 @@ class PagesDeployment < ApplicationRecord
   include EachBatch
   include FileStoreMounter
   include Gitlab::Utils::StrongMemoize
-  include SafelyChangeColumnDefault
-
-  columns_changing_default :upload_ready
 
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 

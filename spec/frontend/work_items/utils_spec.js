@@ -1,4 +1,9 @@
-import { autocompleteDataSources, markdownPreviewPath, isReference } from '~/work_items/utils';
+import {
+  autocompleteDataSources,
+  markdownPreviewPath,
+  isReference,
+  getWorkItemIcon,
+} from '~/work_items/utils';
 
 describe('autocompleteDataSources', () => {
   beforeEach(() => {
@@ -37,6 +42,12 @@ describe('markdownPreviewPath', () => {
     expect(markdownPreviewPath({ fullPath: 'group', iid: '2', isGroup: true })).toBe(
       '/foobar/groups/group/preview_markdown?target_type=WorkItem&target_id=2',
     );
+  });
+});
+
+describe('getWorkItemIcon', () => {
+  it.each(['epic', 'issue-type-epic'])('returns epic icon in case of %s', (icon) => {
+    expect(getWorkItemIcon(icon)).toBe('epic');
   });
 });
 

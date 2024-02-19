@@ -2018,7 +2018,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def keep_around_commit
-    project.repository.keep_around(self.merge_commit_sha)
+    project.repository.keep_around(self.merge_commit_sha, source: self.class.name)
   end
 
   def has_commits?

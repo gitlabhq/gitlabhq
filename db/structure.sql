@@ -6679,7 +6679,8 @@ CREATE TABLE ci_stages (
     id bigint NOT NULL,
     partition_id bigint NOT NULL,
     pipeline_id bigint,
-    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL))
+    CONSTRAINT check_81b431e49b CHECK ((lock_version IS NOT NULL)),
+    CONSTRAINT partitioning_constraint CHECK ((partition_id = ANY (ARRAY[(100)::bigint, (101)::bigint])))
 );
 
 CREATE SEQUENCE ci_stages_id_seq
@@ -16623,11 +16624,6 @@ CREATE TABLE user_highest_roles (
     highest_access_level integer
 );
 
-CREATE TABLE user_interacted_projects (
-    user_id integer NOT NULL,
-    project_id integer NOT NULL
-);
-
 CREATE TABLE user_namespace_callouts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -21489,9 +21485,6 @@ ALTER TABLE ONLY pages_domain_acme_orders
 ALTER TABLE ONLY pages_domains
     ADD CONSTRAINT pages_domains_pkey PRIMARY KEY (id);
 
-ALTER TABLE ci_stages
-    ADD CONSTRAINT partitioning_constraint CHECK ((partition_id = ANY (ARRAY[(100)::bigint, (101)::bigint]))) NOT VALID;
-
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT path_locks_pkey PRIMARY KEY (id);
 
@@ -22004,9 +21997,6 @@ ALTER TABLE ONLY user_group_callouts
 
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT user_namespace_callouts_pkey PRIMARY KEY (id);
@@ -26987,8 +26977,6 @@ CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING 
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
-CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
-
 CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_callouts USING btree (namespace_id);
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
@@ -29235,9 +29223,6 @@ ALTER TABLE ONLY sbom_occurrences_vulnerabilities
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_0894651f08 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -29672,9 +29657,6 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_722ceba4f7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
@@ -32242,10 +32224,10 @@ ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_build_trace_metadata
-    ADD CONSTRAINT tmp_fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT tmp_fk_21d25cac1a_p FOREIGN KEY (partition_id, trace_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_job_artifact_states
-    ADD CONSTRAINT tmp_fk_rails_80a9cba3b2_p FOREIGN KEY (partition_id, job_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+    ADD CONSTRAINT tmp_fk_rails_80a9cba3b2_p FOREIGN KEY (partition_id, job_artifact_id) REFERENCES p_ci_job_artifacts(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;

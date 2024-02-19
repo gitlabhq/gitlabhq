@@ -829,7 +829,7 @@ class Note < ApplicationRecord
   end
 
   def keep_around_commit
-    project.repository.keep_around(self.commit_id)
+    project.repository.keep_around(self.commit_id, source: self.class.name)
   end
 
   def ensure_namespace_id

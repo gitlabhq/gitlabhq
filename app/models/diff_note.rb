@@ -189,7 +189,7 @@ class DiffNote < Note
   end
 
   def keep_around_commits
-    repository.keep_around(*shas)
+    repository.keep_around(*shas, source: self.class.name)
   end
 
   def repository

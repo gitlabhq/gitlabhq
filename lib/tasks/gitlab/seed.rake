@@ -88,5 +88,13 @@ namespace :gitlab do
         puts "\nDone."
       end
     end
+
+    desc "GitLab | Seed | Seed a new group with dependencies"
+    task :dependencies, [] => :environment do |t, args|
+      puts "\nSeeding a new group with dependencies"
+      seeder = Quality::Seeders::Dependencies.new
+      seeder.seed!
+      puts "\nDone."
+    end
   end
 end

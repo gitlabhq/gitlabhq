@@ -4,10 +4,7 @@ module Gitlab
   module Usage
     module Metrics
       module Aggregates
-        UNION_OF_AGGREGATED_METRICS = 'OR'
-        ALLOWED_METRICS_AGGREGATIONS = [UNION_OF_AGGREGATED_METRICS].freeze
         AggregatedMetricError = Class.new(StandardError)
-        UnknownAggregationOperator = Class.new(AggregatedMetricError)
         UnknownAggregationSource = Class.new(AggregatedMetricError)
         DisallowedAggregationTimeFrame = Class.new(AggregatedMetricError)
         UndefinedEvents = Class.new(AggregatedMetricError)

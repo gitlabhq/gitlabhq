@@ -1194,26 +1194,29 @@ a single test triggers the rate limit, the `:disable_rate_limit` can be used ins
 
 In the situations where you need to
 [stub](https://rspec.info/features/3-12/rspec-mocks/basics/allowing-messages/)
-methods such as `File.read`, make sure to:
+the contents of a file use the `stub_file_read`, and
+`expect_file_read` helper methods which handle the stubbing for
+`File.read` correctly. These methods stub `File.read` for the given
+filename, and also stub `File.exist?` to return `true`.
 
-1. Stub `File.read` for only the file path you are interested in.
-1. Call the original implementation for other file paths.
+If you need to manually stub `File.read` for any reason be sure to:
+
+1. Stub and call the original implementation for other file paths.
+1. Then stub `File.read` for only the file path you are interested in.
 
 Otherwise `File.read` calls from other parts of the codebase get
-stubbed incorrectly. You should use the `stub_file_read`, and
-`expect_file_read` helper methods which does the stubbing for
-`File.read` correctly.
+stubbed incorrectly.
 
 ```ruby
 # bad, all Files will read and return nothing
 allow(File).to receive(:read)
 
 # good
-stub_file_read(my_filepath)
+stub_file_read(my_filepath, content: "fake file content")
 
 # also OK
 allow(File).to receive(:read).and_call_original
-allow(File).to receive(:read).with(my_filepath)
+allow(File).to receive(:read).with(my_filepath).and_return("fake file_content")
 ```
 
 #### File system

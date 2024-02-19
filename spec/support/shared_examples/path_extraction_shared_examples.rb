@@ -79,10 +79,28 @@ RSpec.shared_examples 'extracts refs' do
         expect(extract_ref('v2.0.0')).to eq(['v2.0.0', ''])
       end
 
-      it 'extracts a valid commit ref without a path' do
+      it 'extracts a valid commit SHA1 ref without a path' do
         expect(extract_ref('f4b14494ef6abf3d144c28e4af0c20143383e062')).to eq(
           ['f4b14494ef6abf3d144c28e4af0c20143383e062', '']
         )
+      end
+
+      it 'extracts a valid commit SHA256 ref without a path' do
+        expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c')).to eq(
+          ['34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c', '']
+        )
+      end
+
+      context 'when feature flag "ref_extract_sha256" is disabled' do
+        before do
+          stub_feature_flags(ref_extract_sha256: false)
+        end
+
+        it 'cannot extract a valid commit SHA256 ref' do
+          expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c')).to eq(
+            %w[34627760127d5ff2a644771225af09bbd79f28a5 4a0a4c03c1881bf2c26dc13c]
+          )
+        end
       end
 
       it 'falls back to a primitive split for an invalid ref' do
@@ -112,10 +130,28 @@ RSpec.shared_examples 'extracts refs' do
         expect(extract_ref('v2.0.0/CHANGELOG')).to eq(['v2.0.0', 'CHANGELOG'])
       end
 
-      it 'extracts a valid commit SHA' do
+      it 'extracts a valid commit SHA1' do
         expect(extract_ref('f4b14494ef6abf3d144c28e4af0c20143383e062/CHANGELOG')).to eq(
           %w[f4b14494ef6abf3d144c28e4af0c20143383e062 CHANGELOG]
         )
+      end
+
+      it 'extracts a valid commit SHA256' do
+        expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c/CHANGELOG')).to eq(
+          %w[34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c CHANGELOG]
+        )
+      end
+
+      context 'when feature flag "ref_extract_sha256" is disabled' do
+        before do
+          stub_feature_flags(ref_extract_sha256: false)
+        end
+
+        it 'cannot extract a valid commit SHA256 ref' do
+          expect(extract_ref('34627760127d5ff2a644771225af09bbd79f28a54a0a4c03c1881bf2c26dc13c/CHANGELOG')).to eq(
+            ['34627760127d5ff2a644771225af09bbd79f28a5', '4a0a4c03c1881bf2c26dc13c/CHANGELOG']
+          )
+        end
       end
 
       it 'falls back to a primitive split for an invalid ref' do

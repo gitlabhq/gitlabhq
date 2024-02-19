@@ -313,7 +313,7 @@ class Todo < ApplicationRecord
   private
 
   def keep_around_commit
-    project.repository.keep_around(self.commit_id)
+    project.repository.keep_around(self.commit_id, source: self.class.name)
   end
 end
 

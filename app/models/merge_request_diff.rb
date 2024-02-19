@@ -875,7 +875,7 @@ class MergeRequestDiff < ApplicationRecord
 
   def keep_around_commits
     [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha)
+      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha, source: self.class.name)
     end
   end
 

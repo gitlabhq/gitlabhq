@@ -10,24 +10,36 @@
 module Gitlab
   module Git
     class KeepAround
-      def self.execute(repository, shas)
-        new(repository).execute(shas)
+      def self.execute(repository, shas, source:)
+        new(repository).execute(shas, source: source)
       end
 
       def initialize(repository)
         @repository = repository
+        @keeparound_requested_counter = Gitlab::Metrics.counter(
+          :gitlab_keeparound_refs_requested_total,
+          'Counts the number of keep-around refs requested to be created'
+        )
+        @keeparound_created_counter = Gitlab::Metrics.counter(
+          :gitlab_keeparound_refs_created_total,
+          'Counts the number of keep-around refs actually created'
+        )
       end
 
-      def execute(shas)
+      def execute(shas, source:)
         return if disabled?
 
         shas.uniq.each do |sha|
           next unless sha.present? && commit_by(oid: sha)
 
+          @keeparound_requested_counter.increment(source: source)
+
           next if kept_around?(sha)
 
           # This will still fail if the file is corrupted (e.g. 0 bytes)
           raw_repository.write_ref(keep_around_ref_name(sha), sha)
+
+          @keeparound_created_counter.increment(source: source)
         rescue Gitlab::Git::CommandError => ex
           Gitlab::AppLogger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
         end

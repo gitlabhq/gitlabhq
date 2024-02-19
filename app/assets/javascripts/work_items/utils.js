@@ -7,6 +7,9 @@ import {
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  ISSUABLE_EPIC,
+  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_ENUM_EPIC,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -32,10 +35,15 @@ export const findHierarchyWidgetChildren = (workItem) =>
 export const findHierarchyWidgetAncestors = (workItem) =>
   findHierarchyWidgets(workItem?.widgets)?.ancestors?.nodes || [];
 
+export const getWorkItemIcon = (icon) => {
+  if (icon === ISSUABLE_EPIC) return WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon;
+  return icon;
+};
+
 export const formatAncestors = (workItem) =>
   findHierarchyWidgetAncestors(workItem).map((ancestor) => ({
     ...ancestor,
-    icon: ancestor.workItemType?.iconName,
+    icon: getWorkItemIcon(ancestor.workItemType?.iconName),
     href: ancestor.webUrl,
   }));
 

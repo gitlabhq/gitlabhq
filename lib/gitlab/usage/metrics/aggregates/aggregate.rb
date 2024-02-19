@@ -31,13 +31,6 @@ module Gitlab
           def with_validate_configuration(aggregation, time_frame)
             source = aggregation[:source]
 
-            unless ALLOWED_METRICS_AGGREGATIONS.include?(aggregation[:operator])
-              return failure(
-                UnknownAggregationOperator
-                  .new("Events should be aggregated with one of operators #{ALLOWED_METRICS_AGGREGATIONS}")
-              )
-            end
-
             unless SOURCES[source]
               return failure(
                 UnknownAggregationSource

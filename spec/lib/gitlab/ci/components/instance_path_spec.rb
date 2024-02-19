@@ -187,6 +187,74 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           expect(path.sha).to eq(project.commit('master').id)
         end
       end
+
+      describe '#sha' do
+        let_it_be(:version) { '0.1.0' }
+        let_it_be(:catalog_resource) { create(:ci_catalog_resource, :published, project: project) }
+        let_it_be(:commit) { project.repository.commit }
+        let_it_be(:tag) { project.repository.add_tag(user, version, commit.id) }
+
+        before_all do
+          project.add_maintainer(user)
+          project.repository.rm_tag(user, version)
+          project.repository.add_tag(user, version, commit.id)
+        end
+
+        context 'when project has a release' do
+          context 'when version match' do
+            let_it_be(:release) do
+              create(
+                :release, :with_catalog_resource_version,
+                project: project, tag: version, author: user, sha: commit.id
+              )
+            end
+
+            it 'returns the release sha' do
+              result = path.fetch_content!(current_user: user)
+
+              expect(path.sha).to eq(release.sha)
+
+              expect(result.content).to eq('image: alpine_1')
+              expect(result.path).to eq('templates/secret-detection.yml')
+              expect(path.host).to eq(current_host)
+              expect(path.project).to eq(project)
+            end
+          end
+
+          context 'when version does not match' do
+            let_it_be(:release) do
+              create(
+                :release, :with_catalog_resource_version,
+                project: project, tag: '0.2.0', author: user, sha: commit.id
+              )
+            end
+
+            it 'returns project commit sha' do
+              result = path.fetch_content!(current_user: user)
+
+              expect(path.sha).to eq(project.commit(version).id)
+
+              expect(result.content).to eq('image: alpine_1')
+              expect(result.path).to eq('templates/secret-detection.yml')
+              expect(path.host).to eq(current_host)
+              expect(path.project).to eq(project)
+            end
+          end
+        end
+
+        context 'when project does not have any releases' do
+          it 'returns project commit sha' do
+            result = path.fetch_content!(current_user: user)
+
+            expect(path.sha).to eq(project.commit(version).id)
+
+            expect(result.content).to eq('image: alpine_1')
+            expect(result.path).to eq('templates/secret-detection.yml')
+            expect(path.host).to eq(current_host)
+            expect(path.project).to eq(project)
+          end
+        end
+      end
     end
   end
 end

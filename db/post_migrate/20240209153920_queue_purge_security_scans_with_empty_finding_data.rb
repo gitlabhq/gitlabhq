@@ -35,7 +35,7 @@ class QueuePurgeSecurityScansWithEmptyFindingData < Gitlab::Database::Migration[
 
     first_finding = first_succeeded_scan.findings.first
 
-    return if first_finding.finding_data.present?
+    return if first_finding&.finding_data.present?
 
     queue_batched_background_migration(
       MIGRATION,

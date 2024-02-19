@@ -1456,7 +1456,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha, self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha, source: self.class.name)
     end
 
     def observe_age_in_minutes
