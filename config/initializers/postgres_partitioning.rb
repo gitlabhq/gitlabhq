@@ -9,7 +9,6 @@ Gitlab::Database::Partitioning.register_models(
     Ci::RunnerManagerBuild,
     Ci::JobAnnotation,
     Ci::BuildMetadata,
-    Ci::PipelineVariable,
     CommitStatus,
     BatchedGitRefUpdates::Deletion,
     Users::ProjectVisit,
