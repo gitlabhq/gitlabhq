@@ -53,6 +53,7 @@ export default {
   data() {
     return {
       board: {},
+      currentForm: '',
     };
   },
   apollo: {
@@ -86,6 +87,11 @@ export default {
       return this.$apollo.queries.board.loading;
     },
   },
+  methods: {
+    setCurrentForm(formType) {
+      this.currentForm = formType;
+    },
+  },
 };
 </script>
 
@@ -100,10 +106,12 @@ export default {
         <boards-selector
           :board="board"
           :is-current-board-loading="isLoading"
+          :board-modal-form="currentForm"
           @switchBoard="$emit('switchBoard', $event)"
           @updateBoard="$emit('updateBoard', $event)"
+          @showBoardModal="setCurrentForm"
         />
-        <new-board-button />
+        <new-board-button @showBoardModal="setCurrentForm" />
         <issue-board-filtered-search
           v-if="isIssueBoard"
           :board="board"
@@ -127,7 +135,7 @@ export default {
           :is-swimlanes-on="isSwimlanesOn"
           @toggleSwimlanes="$emit('toggleSwimlanes', $event)"
         />
-        <config-toggle />
+        <config-toggle @showBoardModal="setCurrentForm" />
         <board-add-new-column-trigger
           v-if="canAdminList"
           :is-new-list-showing="addColumnFormVisible"

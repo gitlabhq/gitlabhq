@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipeline_composition do
-  subject { described_class.new(data, ctx) }
+  subject { described_class.new(block, data, ctx) }
 
   let(:data) do
     'inputs.data'
@@ -23,6 +23,26 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
 
   it 'properly evaluates the access pattern' do
     expect(subject.value).to eq 'abcdef'
+  end
+
+  describe '.match' do
+    it 'matches each block in a string' do
+      expect { |b| described_class.match('$[[ access1 ]] $[[ access2 ]]', &b) }
+        .to yield_successive_args(['$[[ access1 ]]', 'access1'], ['$[[ access2 ]]', 'access2'])
+    end
+
+    it 'does not match an empty block' do
+      expect { |b| described_class.match('$[[]]', &b) }
+        .not_to yield_with_args(anything)
+    end
+
+    context 'when functions are specified in the block' do
+      it 'matches each block in a string' do
+        expect { |b| described_class.match('$[[ access1 | func1 ]] $[[ access2 | func1 | func2(0,1) ]]', &b) }
+          .to yield_successive_args(['$[[ access1 | func1 ]]', 'access1 | func1'],
+            ['$[[ access2 | func1 | func2(0,1) ]]', 'access2 | func1 | func2(0,1)'])
+      end
+    end
   end
 
   describe 'when functions are specified in the block' do

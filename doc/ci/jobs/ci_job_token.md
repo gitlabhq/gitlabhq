@@ -171,7 +171,7 @@ To disable the job token scope allowlist:
 1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
-You can also enable and disable the setting [with the API](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate).
+You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
 
 ## Use a job token to clone a private project's repository
 

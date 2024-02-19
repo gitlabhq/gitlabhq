@@ -13,18 +13,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
 
     $[[ inputs.key ]]:
       name: $[[ inputs.key ]]
-      parallel: $[[ inputs.parallel ]]
-      allow_failure: $[[ inputs.allow_failure ]]
-      script: 'echo "This job makes $[[ inputs.parallel ]] jobs"'
+      script: my-value
     CFG
   end
 
   let(:ctx) do
-    { inputs: { allow_failure: true, env: 'dev', key: 'abc', parallel: 6 } }
+    { inputs: { env: 'dev', key: 'abc' } }
   end
 
   it 'collects interpolation blocks' do
-    expect(subject.size).to eq 4
+    expect(subject.size).to eq 2
   end
 
   it 'interpolates the values properly' do
@@ -35,9 +33,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
 
     abc:
       name: abc
-      parallel: 6
-      allow_failure: true
-      script: 'echo "This job makes 6 jobs"'
+      script: my-value
     RESULT
   end
 

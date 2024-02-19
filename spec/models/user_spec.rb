@@ -1521,25 +1521,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#user_belongs_to_organization?' do
-    let_it_be(:user) { create(:user) }
-    let_it_be(:organization) { create(:organization) }
-
-    subject { user.user_belongs_to_organization?(organization) }
-
-    context 'when user is an organization user' do
-      before do
-        create(:organization_user, organization: organization, user: user)
-      end
-
-      it { is_expected.to eq true }
-    end
-
-    context 'when user is not an organization user' do
-      it { is_expected.to eq false }
-    end
-  end
-
   context 'strip attributes' do
     context 'name' do
       let(:user) { described_class.new(name: ' John Smith ') }

@@ -72,6 +72,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ### Geo installations
 
+- PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. Due to a known issue, existing Geo secondary
+sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue 7768](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
+All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site on GitLab 16.7 to 16.8.1, 
+you must take one of the following actions based on your configuration:
+
+  - To add your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) 
+  before you set up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
+  - To add a new Geo secondary site to a deployment that already has one or more Geo secondaries:
+    - If all existing sites are running PostgreSQL 13, install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
+    - If all existing sites are running PostgreSQL 14: No special action is required.
+    - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
+
 - Due to a bug introduced GitLab 16.5, [personal snippets](../../user/snippets.md) are not being replicated to secondary Geo sites. This can lead to loss of personal snippet data in the event of a Geo failover.
   See details of the problem and workaround in issue [#439933](https://gitlab.com/gitlab-org/gitlab/-/issues/439933).
 
@@ -102,12 +114,16 @@ Specific information applies to Linux package installations:
 
 ### Geo installations
 
-- PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. However, due to an [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255), existing Geo secondary sites cannot be upgraded to PostgreSQL version 14. All Geo sites must run the same version of PostgreSQL. If you are adding a new Geo secondary site based on GitLab 16.7 you must take one of the following actions based on your configuration:
+- PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. Due to a known issue, existing Geo secondary
+sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
+All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site based on GitLab 16.7 to 16.8.1, you must 
+take one of the following actions based on your configuration:
 
   - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
   - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries:
-    - All sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
-    - All sites are running PostgreSQL 14: No special action is required.
+    - If all existing sites are running PostgreSQL 13: Install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
+    - If all existing sites are running PostgreSQL 14: No special action is required.
+    - Upgrade all existing sites to GitLab 16.8.2 or later and PostgreSQL 14 before you add the new Geo secondary site to the deployment.
 
 - You might experience verification failures on a subset of projects due to checksum mismatch between the primary site and the secondary site. The details are tracked in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/427493). There is no risk of data loss as the data is being correctly replicated to the secondary sites. Users cloning impacted projects from a Geo secondary site will always be redirected to the primary site. There are no known workarounds at this time. We are actively working on a fix.
 

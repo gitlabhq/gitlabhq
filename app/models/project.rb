@@ -560,7 +560,6 @@ class Project < ApplicationRecord
       delegate :show_default_award_emojis, :show_default_award_emojis=
       delegate :enforce_auth_checks_on_uploads, :enforce_auth_checks_on_uploads=
       delegate :warn_about_potentially_unwanted_characters, :warn_about_potentially_unwanted_characters=
-      delegate :code_suggestions, :code_suggestions=
       delegate :duo_features_enabled, :duo_features_enabled=
     end
   end

@@ -11,91 +11,103 @@ exports[`Design management design index page renders design index 1`] = `
       iid="1"
       project-path="project-path"
     />
-    <design-presentation-stub
-      discussions="[object Object],[object Object]"
-      image="test.jpg"
-      imagename="test.jpg"
-      scale="1"
-    />
     <div
-      class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
+      class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-lg-flex-direction-row gl-overflow-hidden gl-relative"
     >
-      <design-scaler-stub
-        maxscale="2"
-      />
-    </div>
-  </div>
-  <div
-    class="gl-pt-0 image-notes"
-  >
-    <div
-      class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
-    >
-      <span>
-        To Do
-      </span>
-      <design-todo-button-stub
-        design="[object Object]"
-      />
-    </div>
-    <h2
-      class="gl-font-weight-bold gl-mt-0"
-    >
-      My precious issue
-    </h2>
-    <a
-      class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
-      href="full-issue-url"
-    >
-      ull-issue-path
-    </a>
-    <description-form-stub
-      design="[object Object]"
-      designvariables="[object Object]"
-      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-    />
-    <participants-stub
-      class="gl-mb-4"
-      lazy="true"
-      numberoflessparticipants="8"
-      participants="[object Object]"
-    />
-    <design-note-signed-out-stub
-      class="gl-mb-4"
-      isadddiscussion="true"
-      registerpath=""
-      signinpath=""
-    />
-    <design-discussion-stub
-      data-testid="unresolved-discussion"
-      designid="gid::/gitlab/Design/1"
-      discussion="[object Object]"
-      discussionwithopenform=""
-      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-      noteableid="gid::/gitlab/Design/1"
-      registerpath=""
-      signinpath=""
-    />
-    <gl-accordion-stub
-      class="gl-mb-5"
-      headerlevel="3"
-    >
-      <gl-accordion-item-stub
-        headerclass="gl-mb-5!"
-        title="Resolved Comments (1)"
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-flex-grow-2 gl-overflow-hidden gl-relative"
       >
-        <design-discussion-stub
-          data-testid="resolved-discussion"
-          designid="gid::/gitlab/Design/1"
-          discussion="[object Object]"
-          discussionwithopenform=""
-          markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-          noteableid="gid::/gitlab/Design/1"
-          registerpath=""
-          signinpath=""
+        <design-presentation-stub
+          discussions="[object Object],[object Object]"
+          image="test.jpg"
+          imagename="test.jpg"
+          scale="1"
         />
-      </gl-accordion-item-stub>
-    </gl-accordion-stub>
+        <div
+          class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
+        >
+          <design-scaler-stub
+            maxscale="2"
+          />
+        </div>
+      </div>
+      <design-disclosure-stub
+        open="true"
+      >
+        <div
+          class="gl-h-full gl-pt-0 image-notes"
+        >
+          <div
+            class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
+          >
+            <span>
+              To Do
+            </span>
+            <design-todo-button-stub
+              design="[object Object]"
+            />
+          </div>
+          <h2
+            class="gl-font-weight-bold gl-mt-0"
+          >
+            My precious issue
+          </h2>
+          <a
+            class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
+            href="full-issue-url"
+          >
+            ull-issue-path
+          </a>
+          <description-form-stub
+            design="[object Object]"
+            designvariables="[object Object]"
+            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+          />
+          <participants-stub
+            class="gl-mb-4"
+            lazy="true"
+            numberoflessparticipants="8"
+            participants="[object Object]"
+          />
+          <design-note-signed-out-stub
+            class="gl-mb-4"
+            isadddiscussion="true"
+            registerpath=""
+            signinpath=""
+          />
+          <design-discussion-stub
+            data-testid="unresolved-discussion"
+            designid="gid::/gitlab/Design/1"
+            discussion="[object Object]"
+            discussionwithopenform=""
+            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+            noteableid="gid::/gitlab/Design/1"
+            registerpath=""
+            signinpath=""
+          />
+          <gl-accordion-stub
+            class="gl-mb-5"
+            headerlevel="3"
+          >
+            <gl-accordion-item-stub
+              headerclass="gl-mb-5!"
+              title="Resolved Comments (1)"
+            >
+              <design-discussion-stub
+                data-testid="resolved-discussion"
+                designid="gid::/gitlab/Design/1"
+                discussion="[object Object]"
+                discussionwithopenform=""
+                markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+                noteableid="gid::/gitlab/Design/1"
+                registerpath=""
+                signinpath=""
+              />
+            </gl-accordion-item-stub>
+          </gl-accordion-stub>
+        </div>
+      </design-disclosure-stub>
+    </div>
   </div>
 </div>
 `;
@@ -112,77 +124,89 @@ exports[`Design management design index page with error GlAlert is rendered in c
       project-path="project-path"
     />
     <div
-      class="gl-p-5"
+      class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-lg-flex-direction-row gl-overflow-hidden gl-relative"
     >
-      <gl-alert-stub
-        dismissible="true"
-        dismisslabel="Dismiss"
-        primarybuttonlink=""
-        primarybuttontext=""
-        secondarybuttonlink=""
-        secondarybuttontext=""
-        showicon="true"
-        title=""
-        variant="danger"
+      <div
+        class="gl-display-flex gl-flex-direction-column gl-flex-grow-2 gl-overflow-hidden gl-relative"
       >
-        woops
-      </gl-alert-stub>
+        <div
+          class="gl-p-5"
+        >
+          <gl-alert-stub
+            dismissible="true"
+            dismisslabel="Dismiss"
+            primarybuttonlink=""
+            primarybuttontext=""
+            secondarybuttonlink=""
+            secondarybuttontext=""
+            showicon="true"
+            title=""
+            variant="danger"
+          >
+            woops
+          </gl-alert-stub>
+        </div>
+        <design-presentation-stub
+          discussions=""
+          image="test.jpg"
+          imagename="test.jpg"
+          scale="1"
+        />
+        <div
+          class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
+        >
+          <design-scaler-stub
+            maxscale="2"
+          />
+        </div>
+      </div>
+      <design-disclosure-stub
+        open="true"
+      >
+        <div
+          class="gl-h-full gl-pt-0 image-notes"
+        >
+          <div
+            class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
+          >
+            <span>
+              To Do
+            </span>
+            <design-todo-button-stub
+              design="[object Object]"
+            />
+          </div>
+          <h2
+            class="gl-font-weight-bold gl-mt-0"
+          >
+            My precious issue
+          </h2>
+          <a
+            class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
+            href="full-issue-url"
+          >
+            ull-issue-path
+          </a>
+          <description-form-stub
+            design="[object Object]"
+            designvariables="[object Object]"
+            markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
+          />
+          <participants-stub
+            class="gl-mb-4"
+            lazy="true"
+            numberoflessparticipants="8"
+            participants="[object Object]"
+          />
+          <design-note-signed-out-stub
+            class="gl-mb-4"
+            isadddiscussion="true"
+            registerpath=""
+            signinpath=""
+          />
+        </div>
+      </design-disclosure-stub>
     </div>
-    <design-presentation-stub
-      discussions=""
-      image="test.jpg"
-      imagename="test.jpg"
-      scale="1"
-    />
-    <div
-      class="design-scaler-wrapper gl-absolute gl-align-items-center gl-display-flex gl-justify-content-center gl-mb-6"
-    >
-      <design-scaler-stub
-        maxscale="2"
-      />
-    </div>
-  </div>
-  <div
-    class="gl-pt-0 image-notes"
-  >
-    <div
-      class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
-    >
-      <span>
-        To Do
-      </span>
-      <design-todo-button-stub
-        design="[object Object]"
-      />
-    </div>
-    <h2
-      class="gl-font-weight-bold gl-mt-0"
-    >
-      My precious issue
-    </h2>
-    <a
-      class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
-      href="full-issue-url"
-    >
-      ull-issue-path
-    </a>
-    <description-form-stub
-      design="[object Object]"
-      designvariables="[object Object]"
-      markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
-    />
-    <participants-stub
-      class="gl-mb-4"
-      lazy="true"
-      numberoflessparticipants="8"
-      participants="[object Object]"
-    />
-    <design-note-signed-out-stub
-      class="gl-mb-4"
-      isadddiscussion="true"
-      registerpath=""
-      signinpath=""
-    />
   </div>
 </div>
 `;

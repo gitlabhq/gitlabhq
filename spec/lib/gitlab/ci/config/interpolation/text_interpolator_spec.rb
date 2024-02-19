@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Interpolation::TextInterpolator, feature_category: :pipeline_composition, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/440667' do
+RSpec.describe Gitlab::Ci::Config::Interpolation::TextInterpolator, feature_category: :pipeline_composition do
   let(:arguments) { { website: 'gitlab.com' } }
   let(:content) { ::Gitlab::Config::Loader::Yaml.new("test: 'deploy $[[ inputs.website ]]'") }
   let(:header) { ::Gitlab::Config::Loader::Yaml.new("spec:\n  inputs:\n     website: ") }

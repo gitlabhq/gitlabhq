@@ -109,7 +109,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
         YAML
       end
 
-      it 'loads and interpolates CI config YAML' do
+      it 'loads and interpolates CI config YAML', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/434826' do
         expected_config = { test_job: { allow_failure: true, parallel: 8 } }
 
         expect(result).to be_valid

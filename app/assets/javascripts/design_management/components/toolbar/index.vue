@@ -105,20 +105,9 @@ export default {
 
 <template>
   <header
-    class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-bg-white gl-py-4 gl-pl-4 js-design-header"
+    class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-bg-white gl-py-4 gl-pl-5 gl-border-b js-design-header"
   >
     <div class="gl-display-flex gl-align-items-center">
-      <router-link
-        :to="{
-          name: $options.DESIGNS_ROUTE_NAME,
-          query: $route.query,
-        }"
-        :aria-label="s__('DesignManagement|Go back to designs')"
-        data-testid="close-design"
-        class="gl-mr-5 gl-display-flex gl-align-items-center gl-justify-content-center text-plain"
-      >
-        <gl-icon name="close" />
-      </router-link>
       <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
         <h2 v-else class="gl-m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
@@ -144,5 +133,19 @@ export default {
       :title="s__('DesignManagement|Archive design')"
       @delete-selected-designs="$emit('delete')"
     />
+    <div class="gl-ml-5 gl-border-l">
+      <router-link
+        :to="{
+          name: $options.DESIGNS_ROUTE_NAME,
+          query: $route.query,
+        }"
+        :aria-label="s__('DesignManagement|Go back to designs')"
+        data-testid="close-design"
+        class="btn btn-default-tertiary gl-display-flex gl-align-items-center gl-justify-content-center text-plain gl-p-3 gl-mx-3 gl-border-0"
+        tag="button"
+      >
+        <gl-icon name="close" />
+      </router-link>
+    </div>
   </header>
 </template>

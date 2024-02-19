@@ -356,55 +356,63 @@ export default {
         </template>
       </design-destroyer>
 
-      <div v-if="errorMessage" class="gl-p-5">
-        <gl-alert variant="danger" @dismiss="errorMessage = null">
-          {{ errorMessage }}
-        </gl-alert>
-      </div>
-      <design-presentation
-        :image="design.image"
-        :image-name="design.filename"
-        :discussions="discussions"
-        :is-annotating="isAnnotating"
-        :scale="scale"
-        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-        :is-loading="isLoading"
-        @openCommentForm="openCommentForm"
-        @closeCommentForm="closeCommentForm"
-        @moveNote="onMoveNote"
-        @setMaxScale="setMaxScale"
-      />
-
       <div
-        class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+        class="gl-display-flex gl-overflow-hidden gl-flex-direction-column gl-lg-flex-direction-row gl-flex-grow-1 gl-relative"
       >
-        <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+        <div
+          class="gl-display-flex gl-overflow-hidden gl-flex-grow-2 gl-flex-direction-column gl-relative"
+        >
+          <div v-if="errorMessage" class="gl-p-5">
+            <gl-alert variant="danger" @dismiss="errorMessage = null">
+              {{ errorMessage }}
+            </gl-alert>
+          </div>
+          <design-presentation
+            :image="design.image"
+            :image-name="design.filename"
+            :discussions="discussions"
+            :is-annotating="isAnnotating"
+            :scale="scale"
+            :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+            :is-loading="isLoading"
+            @openCommentForm="openCommentForm"
+            @closeCommentForm="closeCommentForm"
+            @moveNote="onMoveNote"
+            @setMaxScale="setMaxScale"
+          />
+
+          <div
+            class="design-scaler-wrapper gl-absolute gl-mb-6 gl-display-flex gl-justify-content-center gl-align-items-center"
+          >
+            <design-scaler :max-scale="maxScale" @scale="scale = $event" />
+          </div>
+        </div>
+        <design-sidebar
+          :design="design"
+          :design-variables="designVariables"
+          :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+          :markdown-preview-path="markdownPreviewPath"
+          :is-loading="isLoading"
+          @deleteNoteError="onDeleteNoteError"
+          @resolveDiscussionError="onResolveDiscussionError"
+          @toggleResolvedComments="toggleResolvedComments"
+          @todoError="onTodoError"
+        >
+          <template #reply-form>
+            <design-reply-form
+              v-if="isAnnotating"
+              ref="newDiscussionForm"
+              :design-note-mutation="$options.createImageDiffNoteMutation"
+              :mutation-variables="mutationVariables"
+              :markdown-preview-path="markdownPreviewPath"
+              :noteable-id="design.id"
+              :is-discussion="true"
+              @note-submit-complete="addImageDiffNoteToStore"
+              @cancel-form="closeCommentForm"
+            />
+          </template>
+        </design-sidebar>
       </div>
     </div>
-    <design-sidebar
-      :design="design"
-      :design-variables="designVariables"
-      :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-      :markdown-preview-path="markdownPreviewPath"
-      :is-loading="isLoading"
-      @deleteNoteError="onDeleteNoteError"
-      @resolveDiscussionError="onResolveDiscussionError"
-      @toggleResolvedComments="toggleResolvedComments"
-      @todoError="onTodoError"
-    >
-      <template #reply-form>
-        <design-reply-form
-          v-if="isAnnotating"
-          ref="newDiscussionForm"
-          :design-note-mutation="$options.createImageDiffNoteMutation"
-          :mutation-variables="mutationVariables"
-          :markdown-preview-path="markdownPreviewPath"
-          :noteable-id="design.id"
-          :is-discussion="true"
-          @note-submit-complete="addImageDiffNoteToStore"
-          @cancel-form="closeCommentForm"
-        />
-      </template>
-    </design-sidebar>
   </div>
 </template>

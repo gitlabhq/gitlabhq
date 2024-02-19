@@ -31,9 +31,9 @@ RSpec.describe Integrations::Bugzilla, feature_category: :integrations do
     end
   end
 
-  describe '.attribution_notice' do
+  describe '#attribution_notice' do
     it do
-      expect(described_class.attribution_notice)
+      expect(subject.attribution_notice)
       .to eq('The Bugzilla logo is a trademark of the Mozilla Foundation in the U.S. and other countries.')
     end
   end

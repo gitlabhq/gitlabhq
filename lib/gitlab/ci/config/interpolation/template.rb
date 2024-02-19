@@ -10,8 +10,6 @@ module Gitlab
           attr_reader :blocks, :ctx
 
           MAX_BLOCKS = 10_000
-          BLOCK_PATTERN = /(?<block>\$\[\[\s*(?<data>\S{1}.*?\S{1})\s*\]\])/
-          BLOCK_PREFIX = '$[['
 
           def initialize(config, ctx)
             @config = Interpolation::Config.fabricate(config)
@@ -41,42 +39,20 @@ module Gitlab
           private
 
           def interpolate!
-            @result = @config.replace! do |node|
+            @result = @config.replace! do |data|
               break if @errors.any?
-              next node unless node_might_contain_interpolation_block?(node)
 
-              match = node.match(BLOCK_PATTERN)
-              next node unless match
+              Interpolation::Block.match(data) do |block, data|
+                block = (@blocks[block] ||= Interpolation::Block.new(block, data, ctx))
 
-              block = interpolate_block(match)
+                break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
+                break unless block.valid?
 
-              break @errors.push('too many interpolation blocks') if @blocks.size > MAX_BLOCKS
-              break unless block.valid?
-
-              get_block_value!(node, match, block)
+                block.value
+              end
             end
           end
           strong_memoize_attr :interpolate!
-
-          def node_might_contain_interpolation_block?(node)
-            node.is_a?(String) && node.include?(BLOCK_PREFIX)
-          end
-
-          def interpolate_block(match)
-            @blocks[match[:block]] ||= Interpolation::Block.new(match[:data], ctx)
-          end
-
-          def get_block_value!(node, match, block)
-            if used_inside_a_string?(node, match)
-              node.gsub(match[:block], block.value.to_s)
-            else
-              block.value
-            end
-          end
-
-          def used_inside_a_string?(node, match)
-            node.length != match[:block].length
-          end
         end
       end
     end

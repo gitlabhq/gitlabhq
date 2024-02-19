@@ -12,6 +12,7 @@ import DesignDiscussion from './design_notes/design_discussion.vue';
 import DescriptionForm from './design_description/description_form.vue';
 import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
 import DesignTodoButton from './design_todo_button.vue';
+import DesignDisclosure from './design_disclosure.vue';
 
 export default {
   components: {
@@ -23,6 +24,7 @@ export default {
     GlSkeletonLoader,
     DesignTodoButton,
     DescriptionForm,
+    DesignDisclosure,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -134,75 +136,52 @@ export default {
 </script>
 
 <template>
-  <div class="image-notes gl-pt-0" @click.self="handleSidebarClick">
-    <div
-      class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
-    >
-      <span>{{ __('To Do') }}</span>
-      <design-todo-button :design="design" @error="$emit('todoError', $event)" />
-    </div>
-    <h2 class="gl-font-weight-bold gl-mt-0">
-      {{ issue.title }}
-    </h2>
-    <a
-      class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
-      :href="issue.webUrl"
-      >{{ issue.webPath }}</a
-    >
-    <description-form
-      v-if="!isLoading"
-      :design="design"
-      :design-variables="designVariables"
-      :markdown-preview-path="markdownPreviewPath"
-    />
-    <participants
-      :participants="discussionParticipants"
-      :show-participant-label="false"
-      class="gl-mb-4"
-    />
-    <gl-skeleton-loader v-if="isLoading" />
-    <template v-else>
-      <h2
-        v-if="isLoggedIn && unresolvedDiscussions.length === 0"
-        class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
-        data-testid="new-discussion-disclaimer"
-      >
-        {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
-      </h2>
-      <design-note-signed-out
-        v-if="!isLoggedIn"
-        class="gl-mb-4"
-        :register-path="registerPath"
-        :sign-in-path="signInPath"
-        :is-add-discussion="true"
-      />
-      <design-discussion
-        v-for="discussion in unresolvedDiscussions"
-        :key="discussion.id"
-        :discussion="discussion"
-        :design-id="$route.params.id"
-        :noteable-id="design.id"
-        :markdown-preview-path="markdownPreviewPath"
-        :register-path="registerPath"
-        :sign-in-path="signInPath"
-        :resolved-discussions-expanded="resolvedDiscussionsExpanded"
-        :discussion-with-open-form="discussionWithOpenForm"
-        data-testid="unresolved-discussion"
-        @create-note-error="$emit('onDesignDiscussionError', $event)"
-        @update-note-error="$emit('updateNoteError', $event)"
-        @delete-note-error="$emit('deleteNoteError', $event)"
-        @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
-        @update-active-discussion="updateActiveDiscussion(discussion.notes[0].id)"
-        @open-form="updateDiscussionWithOpenForm"
-      />
-      <gl-accordion v-if="hasResolvedDiscussions" :header-level="3" class="gl-mb-5">
-        <gl-accordion-item
-          v-model="isResolvedDiscussionsExpanded"
-          :title="resolvedDiscussionsTitle"
-          header-class="gl-mb-5!"
+  <design-disclosure :open="true">
+    <template #default>
+      <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
+        <div
+          class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
         >
+          <span>{{ __('To Do') }}</span>
+          <design-todo-button :design="design" @error="$emit('todoError', $event)" />
+        </div>
+        <h2 class="gl-font-weight-bold gl-mt-0">
+          {{ issue.title }}
+        </h2>
+        <a
+          class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
+          :href="issue.webUrl"
+          >{{ issue.webPath }}</a
+        >
+        <description-form
+          v-if="!isLoading"
+          :design="design"
+          :design-variables="designVariables"
+          :markdown-preview-path="markdownPreviewPath"
+        />
+        <participants
+          :participants="discussionParticipants"
+          :show-participant-label="false"
+          class="gl-mb-4"
+        />
+        <gl-skeleton-loader v-if="isLoading" />
+        <template v-else>
+          <h2
+            v-if="isLoggedIn && unresolvedDiscussions.length === 0"
+            class="new-discussion-disclaimer gl-font-base gl-m-0 gl-mb-4"
+            data-testid="new-discussion-disclaimer"
+          >
+            {{ s__("DesignManagement|Click the image where you'd like to start a new discussion") }}
+          </h2>
+          <design-note-signed-out
+            v-if="!isLoggedIn"
+            class="gl-mb-4"
+            :register-path="registerPath"
+            :sign-in-path="signInPath"
+            :is-add-discussion="true"
+          />
           <design-discussion
-            v-for="discussion in resolvedDiscussions"
+            v-for="discussion in unresolvedDiscussions"
             :key="discussion.id"
             :discussion="discussion"
             :design-id="$route.params.id"
@@ -212,16 +191,43 @@ export default {
             :sign-in-path="signInPath"
             :resolved-discussions-expanded="resolvedDiscussionsExpanded"
             :discussion-with-open-form="discussionWithOpenForm"
-            data-testid="resolved-discussion"
-            @error="$emit('onDesignDiscussionError', $event)"
+            data-testid="unresolved-discussion"
+            @create-note-error="$emit('onDesignDiscussionError', $event)"
             @update-note-error="$emit('updateNoteError', $event)"
             @delete-note-error="$emit('deleteNoteError', $event)"
-            @open-form="updateDiscussionWithOpenForm"
+            @resolve-discussion-error="$emit('resolveDiscussionError', $event)"
             @update-active-discussion="updateActiveDiscussion(discussion.notes[0].id)"
+            @open-form="updateDiscussionWithOpenForm"
           />
-        </gl-accordion-item>
-      </gl-accordion>
-      <slot name="reply-form"></slot>
+          <gl-accordion v-if="hasResolvedDiscussions" :header-level="3" class="gl-mb-5">
+            <gl-accordion-item
+              v-model="isResolvedDiscussionsExpanded"
+              :title="resolvedDiscussionsTitle"
+              header-class="gl-mb-5!"
+            >
+              <design-discussion
+                v-for="discussion in resolvedDiscussions"
+                :key="discussion.id"
+                :discussion="discussion"
+                :design-id="$route.params.id"
+                :noteable-id="design.id"
+                :markdown-preview-path="markdownPreviewPath"
+                :register-path="registerPath"
+                :sign-in-path="signInPath"
+                :resolved-discussions-expanded="resolvedDiscussionsExpanded"
+                :discussion-with-open-form="discussionWithOpenForm"
+                data-testid="resolved-discussion"
+                @error="$emit('onDesignDiscussionError', $event)"
+                @update-note-error="$emit('updateNoteError', $event)"
+                @delete-note-error="$emit('deleteNoteError', $event)"
+                @open-form="updateDiscussionWithOpenForm"
+                @update-active-discussion="updateActiveDiscussion(discussion.notes[0].id)"
+              />
+            </gl-accordion-item>
+          </gl-accordion>
+          <slot name="reply-form"></slot>
+        </template>
+      </div>
     </template>
-  </div>
+  </design-disclosure>
 </template>

@@ -3,7 +3,6 @@ import { GlButton } from '@gitlab/ui';
 import NewBoardButton from '~/boards/components/new_board_button.vue';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import { stubExperiments } from 'helpers/experimentation_helper';
-import eventHub from '~/boards/eventhub';
 
 const FEATURE = 'prominent_create_board_btn';
 
@@ -57,13 +56,11 @@ describe('NewBoardButton', () => {
     });
 
     it('emits `showBoardModal` when button is clicked', () => {
-      jest.spyOn(eventHub, '$emit').mockImplementation();
-
       wrapper = createComponent();
 
       wrapper.findComponent(GlButton).vm.$emit('click', { preventDefault: () => {} });
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('showBoardModal', 'new');
+      expect(wrapper.emitted('showBoardModal')).toEqual([['new']]);
     });
   });
 });

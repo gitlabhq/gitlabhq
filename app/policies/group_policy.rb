@@ -246,6 +246,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :update_runners_registration_token
     enable :owner_access
     enable :update_git_access_protocol
+    enable :admin_cicd_variables
 
     enable :read_billing
     enable :edit_billing

@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 
@@ -22,7 +21,7 @@ export default {
   methods: {
     showPage() {
       this.track('click_button', { label: 'edit_board' });
-      eventHub.$emit('showBoardModal', formType.edit);
+      this.$emit('showBoardModal', formType.edit);
     },
   },
 };

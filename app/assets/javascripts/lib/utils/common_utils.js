@@ -277,10 +277,17 @@ export const getSelectedFragment = (restrictToNode) => {
   return documentFragment;
 };
 
-function execInsertText(text) {
-  if (text === '') return document.execCommand('delete');
+function execInsertText(text, hasSelection) {
+  if (text !== '') {
+    return document.execCommand('insertText', false, text);
+  }
 
-  return document.execCommand('insertText', false, text);
+  if (hasSelection) {
+    return document.execCommand('delete');
+  }
+
+  // Nothing to do :)
+  return true;
 }
 
 /**
@@ -295,6 +302,7 @@ export const insertText = (target, text) => {
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
   const insertedText = text instanceof Function ? text(textBefore, textAfter) : text;
+  const hasSelection = selectionEnd !== selectionStart;
 
   // The `execCommand` is officially deprecated.  However, for `insertText`,
   // there is currently no alternative. We need to use it in order to trigger
@@ -310,7 +318,7 @@ export const insertText = (target, text) => {
   //     87 was released in Mar of 2021
   //   89 and above: works well
   //     89 was released in May of 2021
-  if (!execInsertText(insertedText)) {
+  if (!execInsertText(insertedText, hasSelection)) {
     const newText = textBefore + insertedText + textAfter;
 
     // eslint-disable-next-line no-param-reassign

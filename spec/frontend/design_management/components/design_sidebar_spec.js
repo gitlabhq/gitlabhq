@@ -5,6 +5,7 @@ import DesignDiscussion from '~/design_management/components/design_notes/design
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
+import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import Participants from '~/sidebar/components/participants/participants.vue';
 import design from '../mock_data/design';
@@ -39,6 +40,7 @@ describe('Design management design sidebar component', () => {
   let wrapper;
 
   const findDiscussions = () => wrapper.findAllComponents(DesignDiscussion);
+  const findDisclosure = () => wrapper.findAllComponents(DesignDisclosure);
   const findFirstDiscussion = () => findDiscussions().at(0);
   const findUnresolvedDiscussions = () => wrapper.findAll('[data-testid="unresolved-discussion"]');
   const findResolvedDiscussions = () => wrapper.findAll('[data-testid="resolved-discussion"]');
@@ -72,6 +74,12 @@ describe('Design management design sidebar component', () => {
 
   beforeEach(() => {
     window.gon = { current_user_id: 1 };
+  });
+
+  it('renders disclosure', () => {
+    createComponent();
+
+    expect(findDisclosure().exists()).toBe(true);
   });
 
   it('renders participants', () => {
@@ -152,7 +160,7 @@ describe('Design management design sidebar component', () => {
     });
 
     it('sends a mutation to reset an active discussion when clicking outside of discussion', () => {
-      wrapper.trigger('click');
+      wrapper.find('.image-notes').trigger('click');
 
       expect(mutate).toHaveBeenCalledWith({
         ...updateActiveDiscussionMutationVariables,

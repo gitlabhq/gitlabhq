@@ -16,21 +16,19 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(_('Learn more.'),
+      docs_link = ActionController::Base.helpers.link_to _('Learn more.'),
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/bugzilla'),
         target: '_blank',
-        rel: 'noopener noreferrer')
-
-      help = format(s_("IssueTracker|Use Bugzilla as this project's issue tracker. %{docs_link}").html_safe,
+        rel: 'noopener noreferrer'
+      format(s_("IssueTracker|Use Bugzilla as this project's issue tracker. %{docs_link}").html_safe,
         docs_link: docs_link.html_safe)
-      help << "<br><br><i>#{attribution_notice}</i>".html_safe
     end
 
     def self.to_param
       'bugzilla'
     end
 
-    def self.attribution_notice
+    def attribution_notice
       _('The Bugzilla logo is a trademark of the Mozilla Foundation in the U.S. and other countries.')
     end
   end

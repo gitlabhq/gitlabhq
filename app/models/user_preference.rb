@@ -53,16 +53,6 @@ class UserPreference < MainClusterwide::ApplicationRecord
     end
   end
 
-  def user_belongs_to_home_organization
-    # If we don't ignore the default organization id below then all users need to have their corresponding entry
-    # with default organization id as organization id in the `organization_users` table.
-    # Otherwise, the user won't be able to the default organization as the home organization.
-    return if home_organization_id == Organizations::Organization::DEFAULT_ORGANIZATION_ID
-    return if user.user_belongs_to_organization?(home_organization_id)
-
-    errors.add(:user, _("is not part of the given organization"))
-  end
-
   def set_notes_filter(filter_id, issuable)
     # No need to update the column if the value is already set.
     if filter_id && NOTES_FILTERS.value?(filter_id)
@@ -137,6 +127,16 @@ class UserPreference < MainClusterwide::ApplicationRecord
   end
 
   private
+
+  def user_belongs_to_home_organization
+    # If we don't ignore the default organization id below then all users need to have their corresponding entry
+    # with default organization id as organization id in the `organization_users` table.
+    # Otherwise, the user won't be able to set the default organization as the home organization.
+    return if home_organization.default?
+    return if home_organization.user?(user)
+
+    errors.add(:user, _("is not part of the given organization"))
+  end
 
   def notes_filter_field_for(resource)
     field_key =

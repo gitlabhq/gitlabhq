@@ -28,6 +28,16 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
   }
 }
 
+.design-disclosure {
+  min-width: 400px;
+  flex-shrink: 4;
+
+  @media (min-width: $breakpoint-lg) {
+    width: 400px !important;
+    flex-shrink: 0;
+  }
+}
+
 .design-list-item {
   height: 160px;
   text-decoration: none;
@@ -106,13 +116,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 }
 
 .image-notes {
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: $gl-padding;
   padding-top: 50px;
   background-color: var(--white, $white);
-  flex-shrink: 0;
-  min-width: 400px;
-  flex-basis: 28%;
 
   .link-inherit-color {
     &,

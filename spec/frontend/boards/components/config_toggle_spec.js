@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
-import eventHub from '~/boards/eventhub';
 import { mockTracking } from 'helpers/tracking_helper';
 
 describe('ConfigToggle', () => {
@@ -29,12 +28,11 @@ describe('ConfigToggle', () => {
   });
 
   it('emits `showBoardModal` when button is clicked', () => {
-    const eventHubSpy = jest.spyOn(eventHub, '$emit');
     wrapper = createComponent();
 
     findButton().vm.$emit('click', { preventDefault: () => {} });
 
-    expect(eventHubSpy).toHaveBeenCalledWith('showBoardModal', 'edit');
+    expect(wrapper.emitted('showBoardModal')).toEqual([['edit']]);
   });
 
   it('tracks clicking the button', () => {

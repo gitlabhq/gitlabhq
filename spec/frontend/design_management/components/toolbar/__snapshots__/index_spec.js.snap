@@ -2,21 +2,11 @@
 
 exports[`Design management toolbar component renders design and updated data 1`] = `
 <header
-  class="gl-align-items-center gl-bg-white gl-display-flex gl-justify-content-space-between gl-pl-4 gl-py-4 js-design-header"
+  class="gl-align-items-center gl-bg-white gl-border-b gl-display-flex gl-justify-content-space-between gl-pl-5 gl-py-4 js-design-header"
 >
   <div
     class="gl-align-items-center gl-display-flex"
   >
-    <a
-      aria-label="Go back to designs"
-      class="gl-align-items-center gl-display-flex gl-justify-content-center gl-mr-5 text-plain"
-      data-testid="close-design"
-    >
-      <gl-icon-stub
-        name="close"
-        size="16"
-      />
-    </a>
     <div
       class="gl-align-items-center gl-display-flex gl-overflow-hidden"
     >
@@ -56,5 +46,20 @@ exports[`Design management toolbar component renders design and updated data 1`]
     hasselecteddesigns="true"
     title="Archive design"
   />
+  <div
+    class="gl-border-l gl-ml-5"
+  >
+    <a
+      aria-label="Go back to designs"
+      class="btn btn-default-tertiary gl-align-items-center gl-border-0 gl-display-flex gl-justify-content-center gl-mx-3 gl-p-3 text-plain"
+      data-testid="close-design"
+      tag="button"
+    >
+      <gl-icon-stub
+        name="close"
+        size="16"
+      />
+    </a>
+  </div>
 </header>
 `;

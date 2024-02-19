@@ -72,6 +72,32 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       it { is_expected.to define_enum_for(:visibility_pipeline_id_type).with_values(id: 0, iid: 1) }
     end
+
+    describe 'user belongs to the home organization' do
+      let_it_be(:organization) { create(:organization) }
+
+      context 'when user is an organization user' do
+        before do
+          create(:organization_user, organization: organization, user: user)
+        end
+
+        it 'does not add any validation errors' do
+          user_preference.home_organization = organization
+
+          expect(user_preference).to be_valid
+          expect(user_preference.errors).to be_empty
+        end
+      end
+
+      context 'when user is not an organization user' do
+        it 'adds a validation error' do
+          user_preference.home_organization = organization
+
+          expect(user_preference).to be_invalid
+          expect(user_preference.errors.messages[:user].first).to eq(_("is not part of the given organization"))
+        end
+      end
+    end
   end
 
   describe 'associations' do
@@ -275,32 +301,6 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       pref = described_class.new(render_whitespace_in_code: true)
 
       expect(pref.read_attribute(:render_whitespace_in_code)).to eq(true)
-    end
-  end
-
-  describe '#user_belongs_to_home_organization' do
-    let_it_be(:organization) { create(:organization) }
-
-    context 'when user is an organization user' do
-      before do
-        create(:organization_user, organization: organization, user: user)
-      end
-
-      it 'does not add any validation errors' do
-        user_preference.home_organization = organization
-
-        expect(user_preference).to be_valid
-        expect(user_preference.errors).to be_empty
-      end
-    end
-
-    context 'when user is not an organization user' do
-      it 'adds a validation error' do
-        user_preference.home_organization = organization
-
-        expect(user_preference).to be_invalid
-        expect(user_preference.errors.messages[:user].first).to eq(_("is not part of the given organization"))
-      end
     end
   end
 end

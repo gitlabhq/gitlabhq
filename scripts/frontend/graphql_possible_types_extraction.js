@@ -65,5 +65,6 @@ Options:
 
 main().catch((error) => {
   console.warn(error.message);
+  console.warn(error.stack);
   process.exitCode = 1;
 });

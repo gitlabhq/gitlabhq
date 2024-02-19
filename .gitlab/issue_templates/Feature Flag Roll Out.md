@@ -139,10 +139,22 @@ You can either [create a follow-up issue for Feature Flag Cleanup](https://gitla
 
 ## Rollback Steps
 
-- [ ] This feature can be disabled by running the following Chatops command:
+- [ ] This feature can be disabled on production by running the following Chatops command:
 
 ```
 /chatops run feature set <feature-flag-name> false
+```
+
+- [ ] Disable the feature flag on non-production environments:
+
+```
+/chatops run feature set <feature-flag-name> false --dev --pre --staging --staging-ref
+```
+
+- [ ] Delete feature flag from all environments:
+
+```
+/chatops run feature delete <feature-flag-name> --dev --pre --staging --staging-ref --production
 ```
 
 /label <group-label>

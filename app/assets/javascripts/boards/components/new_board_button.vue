@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlModalDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
-import eventHub from '~/boards/eventhub';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
@@ -27,7 +26,7 @@ export default {
   methods: {
     showDialog() {
       this.track('click_button', { label: 'create_board' });
-      eventHub.$emit('showBoardModal', formType.new);
+      this.$emit('showBoardModal', formType.new);
     },
   },
 };

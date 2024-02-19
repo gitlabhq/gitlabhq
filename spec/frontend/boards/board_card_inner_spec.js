@@ -15,7 +15,6 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { mockLabelList, mockIssue, mockIssueFullPath, mockIssueDirectNamespace } from './mock_data';
 
 jest.mock('~/lib/utils/url_utility');
-jest.mock('~/boards/eventhub');
 
 Vue.use(VueApollo);
 

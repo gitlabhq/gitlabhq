@@ -655,10 +655,6 @@ class User < MainClusterwide::ApplicationRecord
 
   strip_attributes! :name
 
-  def user_belongs_to_organization?(organization)
-    organization_users.exists?(organization: organization)
-  end
-
   def preferred_language
     read_attribute('preferred_language').presence || Gitlab::CurrentSettings.default_preferred_language
   end
