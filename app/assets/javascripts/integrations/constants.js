@@ -34,6 +34,7 @@ export const integrationFormSections = {
   TRIGGER: 'trigger',
   APPLE_APP_STORE: 'apple_app_store',
   GOOGLE_PLAY: 'google_play',
+  GOOGLE_CLOUD_ARTIFACT_REGISTRY: 'google_cloud_artifact_registry',
 };
 
 export const integrationFormSectionComponents = {
@@ -44,6 +45,8 @@ export const integrationFormSectionComponents = {
   [integrationFormSections.TRIGGER]: 'IntegrationSectionTrigger',
   [integrationFormSections.APPLE_APP_STORE]: 'IntegrationSectionAppleAppStore',
   [integrationFormSections.GOOGLE_PLAY]: 'IntegrationSectionGooglePlay',
+  [integrationFormSections.GOOGLE_CLOUD_ARTIFACT_REGISTRY]:
+    'IntegrationSectionGoogleCloudArtifactRegistry',
 };
 
 export const integrationTriggerEvents = {
@@ -118,6 +121,8 @@ export const placeholderForType = {
   [INTEGRATION_TYPE_MATTERMOST]: __('my-channel'),
 };
 
+export const INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY =
+  'google_cloud_platform_artifact_registry';
 export const INTEGRATION_FORM_TYPE_JIRA = 'jira';
 export const INTEGRATION_FORM_TYPE_SLACK = 'gitlab_slack_application';
 

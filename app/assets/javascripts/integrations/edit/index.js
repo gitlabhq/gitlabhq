@@ -35,6 +35,7 @@ function parseDatasetToProps(data) {
     vulnerabilitiesIssuetype,
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
+    artifactRegistryPath,
     redirectTo,
     upgradeSlackUrl,
     ...booleanAttributes
@@ -42,6 +43,7 @@ function parseDatasetToProps(data) {
   const {
     showActive,
     activated,
+    operating,
     activateDisabled,
     editable,
     canTest,
@@ -57,6 +59,7 @@ function parseDatasetToProps(data) {
 
   return {
     initialActivated: activated,
+    operating,
     showActive,
     activateDisabled,
     type,
@@ -81,6 +84,9 @@ function parseDatasetToProps(data) {
       initialEnableJiraVulnerabilities: enableJiraVulnerabilities,
       initialVulnerabilitiesIssuetype: vulnerabilitiesIssuetype,
       initialProjectKey: projectKey,
+    },
+    googleCloudArtifactRegistryProps: {
+      artifactRegistryPath,
     },
     learnMorePath,
     aboutPricingUrl,

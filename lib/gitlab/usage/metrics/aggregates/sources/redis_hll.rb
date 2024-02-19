@@ -6,8 +6,6 @@ module Gitlab
       module Aggregates
         module Sources
           class RedisHll
-            extend Calculations::Intersection
-
             def self.calculate_metrics_union(metric_names:, start_date:, end_date:, property_name:, recorded_at: nil)
               union = Gitlab::UsageDataCounters::HLLRedisCounter.calculate_events_union(
                 event_names: metric_names,

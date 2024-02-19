@@ -23297,6 +23297,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Location"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Manage your artifacts in Google Artifact Registry:"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Media type"
 msgstr ""
 
@@ -23312,6 +23315,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Push new ones from your CI/CD pipeline."
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Repository"
 msgstr ""
 
@@ -23322,6 +23328,12 @@ msgid "GoogleArtifactRegistry|Tags"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Updated"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|View artifacts"
+msgstr ""
+
+msgid "GoogleArtifactRegistry|View them in %{strong_start}Deploy &gt; Google Artifact Registry%{strong_end}."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Virtual size"

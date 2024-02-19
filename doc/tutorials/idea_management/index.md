@@ -80,7 +80,7 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, Self-managed
+**Offering:** SaaS, self-managed
 
 Next, you'll create labels to add to ideas to represent the status workflow.
 

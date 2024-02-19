@@ -6,7 +6,6 @@ module Gitlab
       module Aggregates
         module Sources
           class PostgresHll
-            extend Calculations::Intersection
             class << self
               def calculate_metrics_union(metric_names:, start_date:, end_date:, recorded_at:, property_name:) # rubocop:disable Lint/UnusedMethodArgument -- property_name is used only for RedisHLL source
                 time_period = start_date && end_date ? (start_date..end_date) : nil

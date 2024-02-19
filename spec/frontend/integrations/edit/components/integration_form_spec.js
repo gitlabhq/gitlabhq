@@ -18,6 +18,7 @@ import {
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,
   INTEGRATION_FORM_TYPE_SLACK,
+  INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY,
 } from '~/integrations/constants';
 import { createStore } from '~/integrations/edit/store';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -560,6 +561,42 @@ describe('IntegrationForm', () => {
             },
           });
           expect(findAlert().exists()).toBe(shouldShowAlert);
+        },
+      );
+    });
+  });
+
+  describe('Google Cloud Artifact Registry integration', () => {
+    describe('Help and sections rendering', () => {
+      const dummyHelp = 'Foo Help';
+
+      it.each`
+        integration                                             | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
+        ${INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY} | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${INTEGRATION_FORM_TYPE_GOOGLE_CLOUD_ARTIFACT_REGISTRY} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
+        ${'foo'}                                                | ${''}        | ${[]}                      | ${false}           | ${false}
+        ${'foo'}                                                | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+        ${'foo'}                                                | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+        ${'foo'}                                                | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+      `(
+        '$sections sections, and "$helpHtml" helpHtml for "$integration" integration',
+        ({ integration, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
+          createComponent({
+            provide: {
+              helpHtml,
+            },
+            customStateProps: {
+              sections,
+              type: integration,
+            },
+          });
+          expect(findAllSections().length > 0).toEqual(shouldShowSections);
+          expect(findHelpHtml().exists()).toBe(shouldShowHelp);
+          if (shouldShowHelp) {
+            expect(findHelpHtml().html()).toContain(helpHtml);
+          }
         },
       );
     });

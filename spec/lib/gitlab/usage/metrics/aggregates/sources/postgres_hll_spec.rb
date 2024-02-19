@@ -59,32 +59,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
         end
       end
     end
-
-    describe '.calculate_metrics_intersections' do
-      subject(:calculate_metrics_intersections) do
-        described_class.calculate_metrics_intersections(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)
-      end
-
-      it 'returns the number of common events in the intersection of all metrics' do
-        expect(calculate_metrics_intersections.round(2)).to be_within(error_rate).percent_of(1)
-      end
-
-      context 'when there is no aggregated data saved' do
-        let(:metric_names) { [metric_1, 'i do not have any records'] }
-
-        it 'raises error when union data is missing' do
-          expect { calculate_metrics_intersections }.to raise_error Gitlab::Usage::Metrics::Aggregates::Sources::UnionNotAvailable
-        end
-      end
-
-      context 'when there is only one metric defined in aggregate' do
-        let(:metric_names) { [metric_1] }
-
-        it 'returns the number of common/unique events for the intersection of that metric' do
-          expect(calculate_metrics_intersections.round(2)).to be_within(error_rate).percent_of(2)
-        end
-      end
-    end
   end
 
   describe '.save_aggregated_metrics' do

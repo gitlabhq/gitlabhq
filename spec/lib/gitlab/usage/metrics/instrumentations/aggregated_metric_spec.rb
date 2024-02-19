@@ -44,16 +44,12 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric, :clea
   end
 
   where(:data_source, :time_frame, :operator, :attribute, :expected_value, :property_name_flag_enabled) do
-    'redis_hll' | '28d' | 'AND' | 'user_id'    | 2   | true
     'redis_hll' | '28d' | 'OR'  | 'user_id'    | 3   | true
     'redis_hll' | '28d' | 'OR'  | 'user_id'    | 4   | false
     'redis_hll' | '28d' | 'OR'  | 'project_id' | 4   | false
-    'redis_hll' | '7d'  | 'AND' | 'user_id'    | 1   | true
     'redis_hll' | '7d'  | 'OR'  | 'user_id'    | 2   | true
     'redis_hll' | '7d'  | 'OR'  | 'project_id' | 1   | true
-    'redis_hll' | '7d'  | 'AND' | 'project_id' | 0   | true
     'database'  | '7d'  | 'OR'  | 'user_id'    | 3.0 | true
-    'database'  | '7d'  | 'AND' | 'user_id'    | 1.0 | true
   end
 
   with_them do
