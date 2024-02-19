@@ -44,7 +44,7 @@ SAST supports the following official analyzers:
 <html>
 <small>Footnotes:
   <ol>
-    <li>These analyzers were [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/431123) in GitLab 16.9</a> and are planned for removal in 17.0. The <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep analyzer</a> is proposed as their replacement.</li>
+    <li>These analyzers were <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431123">deprecated</a> in GitLab 16.9 and are planned for removal in 17.0. The <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep analyzer</a> is proposed as their replacement.</li>
   </ol>
 </small>
 </html>

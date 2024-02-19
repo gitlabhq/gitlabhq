@@ -8,7 +8,7 @@ coach:
 approvers: []
 ---
 
-Disclaimer: This blueprint requires more cross-functional alignment - [Confidence Level] --> Low
+Disclaimer: This blueprint requires more cross-functional alignment - **Confidence Level:** Low
 
 # Application Deployment with a Cellular Architecture
 

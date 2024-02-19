@@ -332,6 +332,15 @@
     PG_VERSION: "15"
     REDIS_VERSION: "7.0"
 
+.use-pg16:
+  extends:
+    - .pg-base-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+  variables:
+    PG_VERSION: "16"
+    REDIS_VERSION: "7.0"
+
 .es7-services:
   services:
     - !reference [.zoekt-services, services]
@@ -357,6 +366,14 @@
 .use-pg15-es7-ee:
   extends:
     - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es7-services, services]
+
+.use-pg16-es7-ee:
+  extends:
+    - .use-pg16
     - .zoekt-variables
   services:
     - !reference [.db-services-with-auto-explain, services]
@@ -400,6 +417,15 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es8-services, services]
 
+.use-pg16-es8-ee:
+  extends:
+    - .use-pg16
+    - .zoekt-variables
+    - .es8-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es8-services, services]
+
 .os1-services:
   services:
     - !reference [.zoekt-services, services]
@@ -431,6 +457,14 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.os1-services, services]
 
+.use-pg16-opensearch1-ee:
+  extends:
+    - .use-pg16
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os1-services, services]
+
 .os2-services:
   services:
     - !reference [.zoekt-services, services]
@@ -457,6 +491,14 @@
 .use-pg15-opensearch2-ee:
   extends:
     - .use-pg15
+    - .zoekt-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.os2-services, services]
+
+.use-pg16-opensearch2-ee:
+  extends:
+    - .use-pg16
     - .zoekt-variables
   services:
     - !reference [.db-services-with-auto-explain, services]

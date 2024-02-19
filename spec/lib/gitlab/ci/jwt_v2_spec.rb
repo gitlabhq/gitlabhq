@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:runner) { build_stubbed(:ci_runner) }
   let(:aud) { described_class::DEFAULT_AUD }
-  let(:wlif) { nil }
+  let(:target_audience) { nil }
 
   let(:build) do
     build_stubbed(
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
     )
   end
 
-  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud, wlif: wlif) }
+  subject(:ci_job_jwt_v2) { described_class.new(build, ttl: 30, aud: aud, target_audience: target_audience) }
 
   it { is_expected.to be_a Gitlab::Ci::Jwt }
 
@@ -61,16 +61,16 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         expect(payload[:aud]).to eq('AWS')
       end
 
-      it 'does not use wlif claim in the payload' do
-        expect(payload.include?(:wlif)).to be_falsey
+      it 'does not use target_audience claim in the payload' do
+        expect(payload.include?(:target_audience)).to be_falsey
       end
     end
 
-    context 'when given an wlif claim' do
-      let(:wlif) { '//iam.googleapis.com/foo' }
+    context 'when given an target_audience claim' do
+      let(:target_audience) { '//iam.googleapis.com/foo' }
 
-      it 'uses specified wlif in the payload' do
-        expect(payload[:wlif]).to eq(wlif)
+      it 'uses specified target_audience in the payload' do
+        expect(payload[:target_audience]).to eq(target_audience)
       end
     end
 

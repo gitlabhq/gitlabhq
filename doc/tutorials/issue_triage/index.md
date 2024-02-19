@@ -165,11 +165,11 @@ To set up your issue board:
 1. Select **Plan > Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
-1. In the **Title field**, enter `Issue triage (by severity)`.
+1. In the **Title** field, enter `Issue triage (by severity)`.
 1. Keep the **Show the Open list** checkbox selected and clear the **Show the Closed list** one.
 1. Select **Create board**. You should see an empty board.
 1. Create a list for the `severity::1` label:
-   1. In the upper-left corner of the issue board page, select **Create list**.
+   1. In the upper-right corner of the issue board page, select **Create list**.
    1. In the column that appears, from the **Value** dropdown list, select the `severity::1` label.
    1. Select **Add to board**.
 1. Repeat the previous step for labels `severity::2`, `severity::3`, and `severity::4`.

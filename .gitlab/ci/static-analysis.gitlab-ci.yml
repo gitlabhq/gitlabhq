@@ -219,7 +219,7 @@ templates-shellcheck:
     - .default-before_script
     - .default-retry
     - .ruby-cache
-    - .use-pg15
+    - .use-pg16
   stage: lint
   needs:
     - setup-test-env

@@ -1418,6 +1418,7 @@ Input type: `AiActionInput`
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
 | <a id="mutationaiactionresolvevulnerability"></a>`resolveVulnerability` | [`AiResolveVulnerabilityInput`](#airesolvevulnerabilityinput) | Input for resolve_vulnerability AI action. |
 | <a id="mutationaiactionsummarizecomments"></a>`summarizeComments` | [`AiSummarizeCommentsInput`](#aisummarizecommentsinput) | Input for summarize_comments AI action. |
+| <a id="mutationaiactionsummarizenewmergerequest"></a>`summarizeNewMergeRequest` | [`AiSummarizeNewMergeRequestInput`](#aisummarizenewmergerequestinput) | Input for summarize_new_merge_request AI action. |
 | <a id="mutationaiactionsummarizereview"></a>`summarizeReview` | [`AiSummarizeReviewInput`](#aisummarizereviewinput) | Input for summarize_review AI action. |
 
 #### Fields
@@ -34984,6 +34985,19 @@ see the associated mutation type above.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aisummarizecommentsinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+
+### `AiSummarizeNewMergeRequestInput`
+
+Summarize a new merge request based on two branches. Returns `null` if the `add_ai_summary_for_new_mr` feature flag is disabled.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aisummarizenewmergerequestinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
+| <a id="aisummarizenewmergerequestinputsourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the changes. |
+| <a id="aisummarizenewmergerequestinputsourceprojectid"></a>`sourceProjectId` | [`ID`](#id) | ID of the project where the changes are from. |
+| <a id="aisummarizenewmergerequestinputtargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of where the changes will be merged into. |
 
 ### `AiSummarizeReviewInput`
 

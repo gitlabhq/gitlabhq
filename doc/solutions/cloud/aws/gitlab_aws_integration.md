@@ -54,7 +54,7 @@ Documentation and References:
 
 #### AWS CodePipeline Integrations
 
-[AWS CodePipeline Integration](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab.html) - by using GitLab as CodeStar Connections source for CodePipeline, additional AWS service integrations are available. [[12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)] `[AWS Built]`
+[AWS CodePipeline Integration](https://docs.aws.amazon.com/codepipeline/latest/userguide/connections-gitlab.html) - by using GitLab as CodeStar Connections source for CodePipeline, additional AWS service integrations are available. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 AWS Services that are supported by an AWS CodePipeline integration:
 
