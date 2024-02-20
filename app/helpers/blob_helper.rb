@@ -300,20 +300,6 @@ module BlobHelper
     end
   end
 
-  def show_suggest_pipeline_creation_celebration?
-    @project.ci_config_path_or_default == @blob.path &&
-      @blob.auxiliary_viewer&.valid?(project: @project, sha: @commit.sha, user: current_user) &&
-      cookies[suggest_pipeline_commit_cookie_name].present?
-  end
-
-  def suggest_pipeline_commit_cookie_name
-    "suggest_gitlab_ci_yml_commit_#{@project.id}"
-  end
-
-  def human_access
-    @project.team.human_max_access(current_user&.id).try(:downcase)
-  end
-
   def vue_blob_app_data(project, blob, ref)
     {
       blob_path: blob.path,

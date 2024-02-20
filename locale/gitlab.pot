@@ -29701,18 +29701,6 @@ msgstr ""
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
-msgid "MR widget|Back to the merge request"
-msgstr ""
-
-msgid "MR widget|See your pipeline in action"
-msgstr ""
-
-msgid "MR widget|Take a look at our %{beginnerLinkStart}Beginner's Guide to Continuous Integration%{beginnerLinkEnd} and our %{exampleLinkStart}examples of GitLab CI/CD%{exampleLinkEnd} to learn more."
-msgstr ""
-
-msgid "MR widget|The pipeline will test your code on every commit. A %{codeQualityLinkStart}code quality report%{codeQualityLinkEnd} will appear in your merge requests to warn you about potential code degradations."
-msgstr ""
-
 msgid "MRApprovals|Approvals"
 msgstr ""
 
@@ -49725,9 +49713,6 @@ msgstr ""
 msgid "That's OK, I don't want to renew"
 msgstr ""
 
-msgid "That's it, well done!"
-msgstr ""
-
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr ""
 
@@ -60266,21 +60251,6 @@ msgid "stuck"
 msgstr ""
 
 msgid "success"
-msgstr ""
-
-msgid "suggestPipeline|1/2: Choose a template"
-msgstr ""
-
-msgid "suggestPipeline|2/2: Commit your changes"
-msgstr ""
-
-msgid "suggestPipeline|Choose %{boldStart}Code Quality%{boldEnd} to add a pipeline that tests the quality of your code."
-msgstr ""
-
-msgid "suggestPipeline|The template is ready! You can now commit it to create your first pipeline."
-msgstr ""
-
-msgid "suggestPipeline|We’re adding a GitLab CI configuration file to add a pipeline to the project. You could create it manually, but we recommend that you start with a GitLab template that works out of the box."
 msgstr ""
 
 msgid "supported SSH public key."

@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
 
@@ -61,46 +60,6 @@ describe('BlobBundle', () => {
       $('#cancel-changes').click();
 
       expect(window.onbeforeunload).toBeNull();
-    });
-  });
-
-  describe('Suggest Popover', () => {
-    let trackingSpy;
-
-    beforeEach(() => {
-      setHTMLFixture(`
-      <div class="js-edit-blob-form" data-blob-filename="blah" id="target">
-        <div class="js-suggest-gitlab-ci-yml"
-          data-target="#target"
-          data-track-label="suggest_gitlab_ci_yml"
-          data-dismiss-key="1"
-          data-human-access="owner"
-          data-merge-request-path="path/to/mr">
-          <button id='commit-changes' class="js-commit-button"></button>
-          <button id='cancel-changes'></button>
-        </div>
-      </div>`);
-
-      trackingSpy = mockTracking('_category_', $('#commit-changes').element, jest.spyOn);
-      document.body.dataset.page = 'projects:blob:new';
-
-      blobBundle();
-    });
-
-    afterEach(() => {
-      unmockTracking();
-      resetHTMLFixture();
-    });
-
-    it('sends a tracking event when the commit button is clicked', () => {
-      $('#commit-changes').click();
-
-      expect(trackingSpy).toHaveBeenCalledTimes(1);
-      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_button', {
-        label: 'suggest_gitlab_ci_yml_commit_changes',
-        property: 'owner',
-        value: '20',
-      });
     });
   });
 

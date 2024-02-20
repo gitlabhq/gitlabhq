@@ -2,14 +2,12 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import TemplateSelector from '~/blob/filepath_form/components/template_selector.vue';
-import SuggestGitlabCiYml from '~/blob/suggest_gitlab_ci_yml/components/popover.vue';
-import { Templates as TemplatesMock, SuggestCiYmlData as SuggestCiYmlDataMock } from './mock_data';
+import { Templates as TemplatesMock } from './mock_data';
 
 describe('Template Selector component', () => {
   let wrapper;
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSuggestCiYmlPopover = () => wrapper.findComponent(SuggestGitlabCiYml);
   const findDisplayedTemplates = () =>
     findListbox()
       .props('items')
@@ -39,10 +37,6 @@ describe('Template Selector component', () => {
     it('does not render listbox', () => {
       expect(findListbox().exists()).toBe(false);
     });
-
-    it('does not render suggest-ci-yml popover', () => {
-      expect(findSuggestCiYmlPopover().exists()).toBe(false);
-    });
   });
 
   describe.each`
@@ -61,26 +55,6 @@ describe('Template Selector component', () => {
       expect(findListbox().props('toggleText')).toBe('Apply a template');
       expect(findListbox().props('searchPlaceholder')).toBe('Filter');
       expect(findDisplayedTemplates()).toEqual(getTemplateKeysFromMock(key));
-    });
-
-    it('does not render suggest-ci-yml popover', () => {
-      expect(findSuggestCiYmlPopover().exists()).toBe(false);
-    });
-  });
-
-  describe('when filename input is .gitlab-ci.yml with suggestCiYmlData prop', () => {
-    beforeEach(() => {
-      createComponent({ filename: '.gitlab-ci.yml', suggestCiYmlData: SuggestCiYmlDataMock });
-    });
-
-    it('renders listbox with correct props', () => {
-      expect(findListbox().exists()).toBe(true);
-      expect(findListbox().props('toggleText')).toBe('Apply a template');
-      expect(findListbox().props('searchPlaceholder')).toBe('Filter');
-    });
-
-    it('renders suggest-ci-yml popover', () => {
-      expect(findSuggestCiYmlPopover().exists()).toBe(true);
     });
   });
 

@@ -254,7 +254,7 @@ Code Quality can be customized by defining available CI/CD variables:
 | `ENGINE_MEMORY_LIMIT_BYTES`     | Set the memory limit for engines. Default: 1,024,000,000 bytes. |
 | `REPORT_STDOUT`                 | Set to print the report to `STDOUT` instead of generating the usual report file. |
 | `REPORT_FORMAT`                 | Set to control the format of the generated report file. Either `json` or `html`. |
-| `SOURCE_CODE`                   | Path to the source code to scan. |
+| `SOURCE_CODE`                   | Path to the source code to scan. Must be the absolute path to a directory where cloned sources are stored. |
 | `TIMEOUT_SECONDS`               | Custom timeout per engine container for the `codeclimate analyze` command. Default: 900 seconds (15 minutes) |
 
 ## Output

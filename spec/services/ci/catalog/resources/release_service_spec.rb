@@ -4,6 +4,31 @@ require 'spec_helper'
 
 RSpec.describe Ci::Catalog::Resources::ReleaseService, feature_category: :pipeline_composition do
   describe '#execute' do
+    context 'when executing release service' do
+      let(:histogram) { instance_double(Prometheus::Client::Histogram) }
+
+      before do
+        allow(Gitlab::Metrics).to receive(:histogram).and_call_original
+
+        allow(::Gitlab::Metrics).to receive(:histogram).with(
+          :gitlab_ci_catalog_release_duration_seconds,
+          'CI Catalog Release duration',
+          {},
+          [0.01, 0.05, 0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 240.0]
+        ).and_return(histogram)
+        allow(::Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
+      end
+
+      it 'tracks release duration' do
+        project = create(:project, :catalog_resource_with_components)
+        release = create(:release, project: project, sha: project.repository.root_ref_sha)
+
+        expect(histogram).to receive(:observe).with({}, an_instance_of(Float))
+
+        described_class.new(release).execute
+      end
+    end
+
     context 'with a valid catalog resource and release' do
       it 'validates the catalog resource and creates a version' do
         project = create(:project, :catalog_resource_with_components)

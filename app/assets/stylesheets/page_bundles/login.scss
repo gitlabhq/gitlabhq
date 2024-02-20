@@ -30,40 +30,34 @@
       margin-right: auto;
     }
   }
+}
 
-  .new-session-tabs {
-    display: flex;
-    border-color: transparent;
+.new-session-tabs {
+  display: flex;
+  border-color: transparent;
 
-    .nav-item {
-      border-bottom: 1px solid $gray-100;
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    border-bottom: 1px solid $gray-100;
+  }
 
-      .nav-link.active {
-        .gl-dark & {
-          background-color: var(--gray-100);
-        }
-      }
-    }
+  .nav-link {
+    width: 100%;
+    font-size: 18px !important;
+    
+    &.active {
+      cursor: default;
 
-    li {
-      flex: 1;
-      text-align: center;
-
-      a {
-        width: 100%;
-        font-size: 18px;
-      }
-
-      &.active > a {
-        cursor: default;
+      .gl-dark & {
+      background-color: var(--gray-100);
       }
     }
   }
+}
 
-
-  .devise-errors {
-    @include devise-errors;
-  }
+.devise-errors {
+  @include devise-errors;
 }
 
 @include media-breakpoint-down(sm) {

@@ -3117,7 +3117,6 @@ Layout/LineLength:
     - 'spec/features/projects/blobs/blob_show_spec.rb'
     - 'spec/features/projects/blobs/edit_spec.rb'
     - 'spec/features/projects/blobs/shortcuts_blob_spec.rb'
-    - 'spec/features/projects/blobs/user_follows_pipeline_suggest_nudge_spec.rb'
     - 'spec/features/projects/blobs/user_views_pipeline_editor_button_spec.rb'
     - 'spec/features/projects/ci/editor_spec.rb'
     - 'spec/features/projects/commit/cherry_pick_spec.rb'

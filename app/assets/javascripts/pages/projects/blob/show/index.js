@@ -5,7 +5,6 @@ import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import { provideWebIdeLink } from 'ee_else_ce/pages/projects/shared/web_ide_link/provide_web_ide_link';
 import TableOfContents from '~/blob/components/table_contents.vue';
-import PipelineTourSuccessModal from '~/blob/pipeline_tour_success_modal.vue';
 import { BlobViewer, initAuxiliaryViewer } from '~/blob/viewer/index';
 import GpgBadges from '~/gpg_badges';
 import createDefaultClient from '~/lib/graphql';
@@ -189,22 +188,6 @@ if (codeNavEl && !viewBlobEl) {
       definitionPathPrefix,
     }),
   );
-}
-
-const successPipelineEl = document.querySelector('.js-success-pipeline-modal');
-
-if (successPipelineEl) {
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: successPipelineEl,
-    render(createElement) {
-      return createElement(PipelineTourSuccessModal, {
-        props: {
-          ...successPipelineEl.dataset,
-        },
-      });
-    },
-  });
 }
 
 const tableContentsEl = document.querySelector('.js-table-contents');

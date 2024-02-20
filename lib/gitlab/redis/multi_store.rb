@@ -144,7 +144,7 @@ module Gitlab
         @primary_pool = primary_pool
         @secondary_pool = secondary_pool
 
-        @borrow_counter = "multi_store_borrowed_connection_#{instance_name}".to_sym
+        @borrow_counter = :"multi_store_borrowed_connection_#{instance_name}"
 
         validate_stores!
       end
@@ -252,18 +252,24 @@ module Gitlab
       end
 
       def use_primary_and_secondary_stores?
-        feature_flag = "use_primary_and_secondary_stores_for_#{instance_name.underscore}"
-
+        # We interpolate the feature flag name within `Feature.enabled?` instead of defining a variable to allow
+        # `RuboCop::Cop::Gitlab::MarkUsedFeatureFlags`'s optimistic matching to work.
         feature_table_exists? &&
-          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+          Feature.enabled?( # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+            "use_primary_and_secondary_stores_for_#{instance_name.underscore}",
+            type: feature_flag_type("use_primary_and_secondary_stores_for_#{instance_name.underscore}")
+          ) &&
           !same_redis_store?
       end
 
       def use_primary_store_as_default?
-        feature_flag = "use_primary_store_as_default_for_#{instance_name.underscore}"
-
+        # We interpolate the feature flag name within `Feature.enabled?` instead of defining a variable to allow
+        # `RuboCop::Cop::Gitlab::MarkUsedFeatureFlags`'s optimistic matching to work.
         feature_table_exists? &&
-          Feature.enabled?(feature_flag, type: feature_flag_type(feature_flag)) && # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+          Feature.enabled?( # rubocop:disable Cop/FeatureFlagUsage -- The flags are dynamic
+            "use_primary_store_as_default_for_#{instance_name.underscore}",
+            type: feature_flag_type("use_primary_store_as_default_for_#{instance_name.underscore}")
+          ) &&
           !same_redis_store?
       end
 
