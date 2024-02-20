@@ -518,6 +518,10 @@ class Member < ApplicationRecord
     end
   end
 
+  def prevent_role_assignement?(_current_user, _params)
+    false
+  end
+
   private
 
   # TODO: https://gitlab.com/groups/gitlab-org/-/epics/7054

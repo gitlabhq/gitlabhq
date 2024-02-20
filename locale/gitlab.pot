@@ -54052,10 +54052,10 @@ msgstr ""
 msgid "UserProfile|Personal projects"
 msgstr ""
 
-msgid "UserProfile|Pronounced as: %{div_start}%{pronunciation}%{div_end}"
+msgid "UserProfile|Pronounced as:"
 msgstr ""
 
-msgid "UserProfile|Pronouns: %{div_start}%{pronouns}%{div_end}"
+msgid "UserProfile|Pronouns:"
 msgstr ""
 
 msgid "UserProfile|Retry"
@@ -56834,9 +56834,6 @@ msgid "You are not allowed to download code from this project."
 msgstr ""
 
 msgid "You are not allowed to import projects in this namespace."
-msgstr ""
-
-msgid "You are not allowed to log in using password"
 msgstr ""
 
 msgid "You are not allowed to reject a user"

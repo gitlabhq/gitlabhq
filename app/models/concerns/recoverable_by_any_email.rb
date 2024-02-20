@@ -14,6 +14,7 @@ module RecoverableByAnyEmail
       return super unless email
 
       recoverable = email.user
+      return recoverable.password_auth_unavailable_error! unless recoverable.allow_password_authentication_for_web?
 
       recoverable.send_reset_password_instructions(to: email.email)
       recoverable
@@ -26,6 +27,11 @@ module RecoverableByAnyEmail
     send_reset_password_instructions_notification(token, opts)
 
     token
+  end
+
+  def password_auth_unavailable_error!
+    errors.add(:password, :unavailable, message: _('Password authentication is unavailable.'))
+    self
   end
 
   protected

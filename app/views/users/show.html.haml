@@ -110,11 +110,15 @@
                     %h2.gl-font-base.gl-mb-2.gl-mt-4= s_('UserProfile|About')
                     .gl-display-flex.gl-gap-2.gl-flex-direction-column
                       - if @user.pronouns.present? || @user.pronunciation.present?
-                        %div
+                        .gl-mb-2
                           - if @user.pronunciation.present?
-                            %div= sprintf(s_("UserProfile|Pronounced as: %{div_start}%{pronunciation}%{div_end}"), { pronunciation: @user.pronunciation, div_start: '<div class="gl-font-sm gl-text-secondary gl-display-inline-flex">', div_end: '</div>' }).html_safe
+                            %p.gl-m-0
+                              = s_("UserProfile|Pronounced as:")
+                              %span.gl-font-sm.gl-text-secondary.gl-display-inline-flex= @user.pronunciation
                           - if @user.pronouns.present?
-                            %div= sprintf(s_("UserProfile|Pronouns: %{div_start}%{pronouns}%{div_end}"), { pronouns: @user.pronouns, div_start: '<div class="gl-font-sm gl-text-secondary gl-display-inline-flex">', div_end: '</div>' }).html_safe
+                            %p.gl-m-0
+                              = s_("UserProfile|Pronouns:")
+                              %span.gl-font-sm.gl-text-secondary.gl-display-inline-flex= @user.pronouns
                       - if @user.bio.present?
                         %p.profile-user-bio.gl-mb-0
                           = @user.bio

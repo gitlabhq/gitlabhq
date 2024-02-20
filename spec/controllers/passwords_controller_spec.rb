@@ -21,16 +21,6 @@ RSpec.describe PasswordsController, feature_category: :system_access do
         expect(flash[:alert]).to eq _('Password authentication is unavailable.')
       end
     end
-
-    context 'when reset email belongs to an ldap user' do
-      let(:user) { create(:omniauth_user, provider: 'ldapmain', email: 'ldapuser@gitlab.com') }
-
-      it 'prevents a password reset' do
-        post :create, params: { user: { email: user.email } }
-
-        expect(flash[:alert]).to eq _('Password authentication is unavailable.')
-      end
-    end
   end
 
   describe '#update' do
