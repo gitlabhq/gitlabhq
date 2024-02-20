@@ -99,7 +99,7 @@ Prerequisites:
 1. Optional. Update the **Expiration date**.
 
 A project deploy key is enabled when it is created. You can modify only a project deploy key's
-name and permissions.
+name and permissions. If the deploy key is enabled in more than one project, you can't modify the deploy key name.
 
 ## Create a public deploy key **(FREE SELF)**
 

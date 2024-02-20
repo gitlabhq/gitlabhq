@@ -117,7 +117,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def update_params
     permitted_params = [deploy_keys_projects_attributes: [:can_push]]
-    permitted_params << :title if can?(current_user, :update_deploy_key, deploy_key)
+    permitted_params << :title if can?(current_user, :update_deploy_key_title, deploy_key)
 
     key_update_params = params.require(:deploy_key).permit(*permitted_params)
     key_update_params.dig(:deploy_keys_projects_attributes, '0')&.merge!(id: deploy_keys_project.id)

@@ -6,7 +6,7 @@
 
 .form-group
   = form.label :title
-  = form.text_field :title, class: 'form-control gl-form-input', data: { testid: 'deploy-key-title-field' }, readonly: ('readonly' unless can?(current_user, :update_deploy_key, deploy_key))
+  = form.text_field :title, class: 'form-control gl-form-input', data: { testid: 'deploy-key-title-field' }, readonly: ('readonly' unless can?(current_user, :update_deploy_key_title, deploy_key))
 
 - if deploy_key.new_record?
   .form-group
