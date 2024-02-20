@@ -64,6 +64,18 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
 
+## 16.9.0
+
+You might encounter the following error while upgrading to GitLab 16.9.0:
+
+```plaintext
+PG::UndefinedTable: ERROR:  relation "p_ci_pipeline_variables" does not exist
+```
+
+Make sure that all migrations complete and restart all Rails and Sidekiq nodes.
+A [fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144952) for this bug is
+planned for release in 16.9.1.
+
 ## 16.8.0
 
 - In GitLab 16.8.0 and 16.8.1, the Sidekiq gem was upgraded, and the newer version requires Redis 6.2 or later. If you are using Redis 6.0, upgrade

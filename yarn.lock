@@ -1263,10 +1263,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.1.tgz#16308cea045f0fc777b6ff20a9f25474dd8293d2"
   integrity sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==
 
-"@gitlab/application-sdk-browser@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/application-sdk-browser/-/application-sdk-browser-0.3.1.tgz#1eaf8838c48417223bcecbb19bf262c6c6d88d8e"
-  integrity sha512-I7IDm5yvVDAqi9/GlOfDSJBpxrAoJxs0A8dHQNIXZ+y5r66i259cW+laWfDiq40td/SFNjONjVs0PWBflkuoSQ==
+"@gitlab/application-sdk-browser@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/application-sdk-browser/-/application-sdk-browser-0.3.2.tgz#6cf08d9d0aaaaff97a5041c7503b915802e2991a"
+  integrity sha512-R7LQxJB329KJRQ7pyvewcJ4gDI1uGRhpHaN7f3cB33VGBFKvL2ffyz5PlNMOEhYpHs1kSPLX9grNhgkvuyaBWg==
   dependencies:
     "@snowplow/browser-plugin-client-hints" "^3.9.0"
     "@snowplow/browser-plugin-error-tracking" "^3.9.0"

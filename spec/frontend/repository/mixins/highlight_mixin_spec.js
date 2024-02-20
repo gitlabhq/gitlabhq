@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { nextTick } from 'vue';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -110,6 +111,20 @@ describe('HighlightMixin', () => {
 
     it('highlights hash', () => {
       expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
+
+    describe('when order of events are incorrect', () => {
+      it('renders the correct data', async () => {
+        const chunk1 = { highlightedContent: 'chunk 1 content' };
+        const chunk2 = { highlightedContent: 'chunk 2 content' };
+
+        workerMock.onmessage({ data: [chunk1, chunk2] });
+        workerMock.onmessage({ data: [chunk2] });
+
+        await nextTick();
+
+        expect(wrapper.text()).toBe(chunk1.highlightedContent);
+      });
     });
   });
 

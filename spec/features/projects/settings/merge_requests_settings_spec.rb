@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
           end
         end
 
-        find('[data-testid="project-features-save-button"]').send_keys(:return)
+        find_by_testid('project-features-save-button').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
 
@@ -88,7 +88,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
           end
         end
 
-        find('[data-testid="project-features-save-button"]').send_keys(:return)
+        find_by_testid('project-features-save-button').send_keys(:return)
 
         visit project_settings_merge_requests_path(project)
 
@@ -146,7 +146,7 @@ RSpec.describe 'Projects > Settings > Merge requests', feature_category: :code_r
         end
       end
 
-      find('[data-testid="project-features-save-button"]').send_keys(:return)
+      find_by_testid('project-features-save-button').send_keys(:return)
 
       visit project_settings_merge_requests_path(project)
 

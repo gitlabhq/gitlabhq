@@ -367,7 +367,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
             # Wait for UI to transition to ensure a request has been made
             within(manual_action_dropdown) { find('.gl-spinner') }
-            within(manual_action_dropdown) { find('[data-testid="play-icon"]') }
+            within(manual_action_dropdown) { find_by_testid('play-icon') }
 
             wait_for_requests
           end
@@ -574,7 +574,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               find_by_testid('ci-action-button').click
               wait_for_requests
 
-              expect(find('[data-testid="mini-pipeline-graph-dropdown-toggle"][aria-expanded="true"]')).to be_visible
+              element = find_by_testid('mini-pipeline-graph-dropdown-toggle')
+              expect(element['aria-expanded']).to eq "true"
+              expect(element).to be_visible
             end
           end
         end
@@ -725,7 +727,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           it 'creates a new pipeline' do
             expect do
-              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
+              find_by_testid('run-pipeline-button', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -735,13 +737,13 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
           context 'when variables are specified' do
             it 'creates a new pipeline with variables' do
-              page.within(find("[data-testid='ci-variable-row-container']")) do
-                find("[data-testid='pipeline-form-ci-variable-key-field']").set('key_name')
-                find("[data-testid='pipeline-form-ci-variable-value-field']").set('value')
+              within_testid('ci-variable-row-container') do
+                find_by_testid('pipeline-form-ci-variable-key-field').set('key_name')
+                find_by_testid('pipeline-form-ci-variable-value-field').set('value')
               end
 
               expect do
-                find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
+                find_by_testid('run-pipeline-button', text: 'Run pipeline').click
                 wait_for_requests
               end
                 .to change { Ci::Pipeline.count }.by(1)
@@ -754,7 +756,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'without gitlab-ci.yml' do
           before do
-            find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
+            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
             wait_for_requests
           end
 
@@ -764,7 +766,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
 
             expect do
-              find('[data-testid="run-pipeline-button"]', text: 'Run pipeline').click
+              find_by_testid('run-pipeline-button', text: 'Run pipeline').click
               wait_for_requests
             end
               .to change { Ci::Pipeline.count }.by(1)
@@ -795,7 +797,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           it 'increments jobs_cache_index' do
             click_button 'Clear runner caches'
             wait_for_requests
-            expect(page.find('[data-testid="alert-info"]')).to have_content 'Project cache successfully reset.'
+            expect(find_by_testid('alert-info')).to have_content 'Project cache successfully reset.'
           end
         end
 
@@ -803,7 +805,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           it 'sets jobs_cache_index to 1' do
             click_button 'Clear runner caches'
             wait_for_requests
-            expect(page.find('[data-testid="alert-info"]')).to have_content 'Project cache successfully reset.'
+            expect(find_by_testid('alert-info')).to have_content 'Project cache successfully reset.'
           end
         end
       end

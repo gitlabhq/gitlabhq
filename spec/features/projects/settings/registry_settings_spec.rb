@@ -27,7 +27,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       wait_for_requests
 
       expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
-                                  .skipping :'heading-order'
+                                  .skipping :'heading-order' # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
     end
 
     it 'shows active tab on sidebar' do
@@ -42,7 +42,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
     it 'shows available section' do
       subject
 
-      settings_block = find('[data-testid="container-expiration-policy-project-settings"]')
+      settings_block = find_by_testid('container-expiration-policy-project-settings')
       expect(settings_block).to have_text 'Cleanup policies'
     end
 
@@ -66,7 +66,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       it 'displays the related section' do
         subject
 
-        within '[data-testid="container-expiration-policy-project-settings"]' do
+        within_testid 'container-expiration-policy-project-settings' do
           expect(page).to have_link('Set cleanup rules', href: cleanup_image_tags_project_settings_packages_and_registries_path(project))
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
       it 'does not display the related section' do
         subject
 
-        within '[data-testid="container-expiration-policy-project-settings"]' do
+        within_testid 'container-expiration-policy-project-settings' do
           expect(find('.gl-alert-title')).to have_content('Cleanup policy for tags is disabled')
         end
       end

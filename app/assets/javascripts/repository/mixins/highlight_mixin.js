@@ -90,6 +90,8 @@ export default {
       this.instructWorker(rawTextBlob, language, fileType);
     },
     handleWorkerMessage({ data }) {
+      // If the current length of chunks is bigger, it means we've highlighted the whole file already, so nothing to be done here
+      if (data.length < this.chunks.length) return;
       this.chunks = data;
       this.highlightHash(); // highlight the line if a line number hash is present in the URL
     },
