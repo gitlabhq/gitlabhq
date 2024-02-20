@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.3 (2024-02-20)
+
+### Added (1 change)
+
+- [Allow creation of group-level custom-roles on self-managed instances](gitlab-org/security/gitlab@72eeb80a95e7190b5a6a9a4b113dd88d3f66bdd4) **GitLab Enterprise Edition**
+
+### Fixed (3 changes)
+
+- [Avoid mutating OpenSSL::PKey::EC keys](gitlab-org/security/gitlab@f562d0d13834ec09123d49019265a1202d8c2cc2)
+- [Fix X509::Signature#x509_issuer not working with OpenSSL 3](gitlab-org/security/gitlab@7ad0ea9d286e003814032275cd1bcc487b7ecac7)
+- [Fix urlblocker validate calls with more options](gitlab-org/security/gitlab@04111c2e90b8e40668ccb74a4f64c3a2853bc3c0)
+
+### Security (9 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@55d0ba98eaa460f86b6d750d91d1eb21a0759836) ([merge request](gitlab-org/security/gitlab!3860))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@085b95fd9ec3ad3a4fa3aab7136ce29ae3dac507) ([merge request](gitlab-org/security/gitlab!3892))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@746702abea2a7703f75885f4a52df4d4ec2f8a41) ([merge request](gitlab-org/security/gitlab!3880))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@d018ba8f447e0ae98f4ee74011d1aa4dcaab7432) ([merge request](gitlab-org/security/gitlab!3851))
+- [Check project read access in Environments and Operations dashboard](gitlab-org/security/gitlab@d7c1e953fb21c2aa793156eb035cd170072cffca) ([merge request](gitlab-org/security/gitlab!3872))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@d3dfc38783578bfecc3dfaa26546867b9f63694a) ([merge request](gitlab-org/security/gitlab!3885))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@6bc3fca49ec264873100509683490b91c136b29e) ([merge request](gitlab-org/security/gitlab!3866))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@01a31cdf0d9879f048cdff21fcb20f368307ed11) ([merge request](gitlab-org/security/gitlab!3850))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@6da2d42bfb260dcb387f2ea692df06c6054afd45) ([merge request](gitlab-org/security/gitlab!3868))
+
 ## 16.8.2 (2024-02-07)
 
 ### Fixed (3 changes)
