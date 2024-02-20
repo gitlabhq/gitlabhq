@@ -164,7 +164,7 @@ Prerequisites:
       you should use the secondary site private address for `postgresql['md5_auth_cidr_addresses']`.
 
    1. Add the following lines to `/etc/gitlab/gitlab.rb`. Be sure to replace the IP
-   addresses with addresses appropriate to your network configuration:
+      addresses with addresses appropriate to your network configuration:
 
       ```ruby
       ##
@@ -563,7 +563,7 @@ You must manually replicate the secret file across all of your secondary sites, 
       ![Add secondary site](../replication/img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
-   `/etc/gitlab/gitlab.rb`. The values must match exactly.
+      `/etc/gitlab/gitlab.rb`. The values must match exactly.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`.
       It's okay if one values ends in `/` and the other doesn't. Otherwise, the values must
       match exactly.

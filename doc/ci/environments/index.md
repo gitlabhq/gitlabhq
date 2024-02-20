@@ -36,14 +36,14 @@ There are a few ways to view a list of environments for a given project:
   ![Number of Environments](img/environments_project_home.png "Incremental counter of available Environments")
 
 - On the left sidebar, select **Operate > Environments**.
-   The environments are displayed.
+  The environments are displayed.
 
-   ![Environments list](img/environments_list_v14_8.png)
+  ![Environments list](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
-   for example, `staging`.
+  for example, `staging`.
 
-   ![Deployments list](img/deployments_list.png)
+  ![Deployments list](img/deployments_list.png)
 
 Deployments show up in this list only after a deployment job has created them.
 

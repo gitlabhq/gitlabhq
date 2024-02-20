@@ -35,6 +35,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
           searchbuttonattributes="[object Object]"
           searchinputattributes="[object Object]"
           searchtextoptionlabel="Search for this text"
+          showsearchbutton="true"
           value=""
         />
         <review-tab-container-stub

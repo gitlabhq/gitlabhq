@@ -116,8 +116,8 @@ we introduced a new `cache-workhorse` job that:
 This job tries to download a generic package that contains GitLab Workhorse binaries needed in the GitLab test suite (under `tmp/tests/gitlab-workhorse`).
 
 - If the package URL returns a 404:
-   1. It runs `scripts/setup-test-env`, so that the GitLab Workhorse binaries are built.
-   1. It then creates an archive which contains the binaries and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
+  1. It runs `scripts/setup-test-env`, so that the GitLab Workhorse binaries are built.
+  1. It then creates an archive which contains the binaries and upload it [as a generic package](https://gitlab.com/gitlab-org/gitlab/-/packages/).
 - Otherwise, if the package already exists, it exits the job successfully.
 
 We also changed the `setup-test-env` job to:

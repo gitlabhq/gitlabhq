@@ -605,7 +605,7 @@ On all GitLab Geo **secondary** sites:
    password for the replication user account to two locations:
 
    - `gitlab-geo.conf`: Used by the PostgreSQL replication process, written to the PostgreSQL data
-      directory, by default at `/var/opt/gitlab/postgresql/data/gitlab-geo.conf`.
+     directory, by default at `/var/opt/gitlab/postgresql/data/gitlab-geo.conf`.
    - `.pgpass`: Used by the `gitlab-psql` user, located by default at `/var/opt/gitlab/postgresql/.pgpass`.
 
    Update the plaintext password in both of these files, and restart PostgreSQL:

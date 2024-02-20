@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_users.ci_users_executing_deployment_job_weekly
 description: Weekly counts of times users have executed deployment jobs
 product_section: ops
 product_stage: release
-product_group: delivery
+product_group: environments
 value_type: number
 status: active
 milestone: "14.8"

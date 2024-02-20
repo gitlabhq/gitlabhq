@@ -34,7 +34,7 @@ The following metrics are defined:
 - `Gitlab::Metrics::Sli::Apdex.new('foo')` defines:
   - `gitlab_sli_foo_apdex_total` for the total number of measurements.
   - `gitlab_sli_foo_apdex_success_total` for the number of successful
-       measurements.
+    measurements.
 - `Gitlab::Metrics::Sli::ErrorRate.new('foo')` defines:
   - `gitlab_sli_foo_total` for the total number of measurements.
   - `gitlab_sli_foo_error_total` for the number of error

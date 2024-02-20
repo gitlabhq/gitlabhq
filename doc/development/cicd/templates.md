@@ -439,7 +439,7 @@ To add a metric definition for a new template:
    - [`config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/counts_28d/20210216184559_ci_templates_total_unique_counts_monthly.yml)
 
 1. Use the same event name as above as the last argument in the following command to
-  [add new metric definitions](../internal_analytics/metrics/metrics_instrumentation.md#create-a-new-metric-instrumentation-class):
+   [add new metric definitions](../internal_analytics/metrics/metrics_instrumentation.md#create-a-new-metric-instrumentation-class):
 
    ```shell
    bundle exec rails generate gitlab:usage_metric_definition:redis_hll ci_templates <template_metric_event_name>

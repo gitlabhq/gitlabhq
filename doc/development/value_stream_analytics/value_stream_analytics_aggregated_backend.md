@@ -49,7 +49,7 @@ Benefits of the aggregated VSA backend:
 - Ready for keyset pagination which can be useful for exporting the data.
 - Possibility to implement more complex event definitions.
   - For example, the start event can be two timestamp columns where the earliest value would be
-  used by the system.
+    used by the system.
   - Example: `MIN(issues.created_at, issues.updated_at)`
 
 ### Example configuration

@@ -205,7 +205,7 @@ Reply by email should now be working.
    [this explanation](../development/emails.md#mailroom-gem-updates) for more details.
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
-  and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
+   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 If you use systemd units to manage GitLab:
 

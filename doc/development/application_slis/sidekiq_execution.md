@@ -19,18 +19,18 @@ The error rate measures unsuccessful jobs completion when exception occurs as an
 server misbehavior.
 
 - `gitlab_sli_sidekiq_execution_apdex_total`: This counter gets
-   incremented for every successful job execution that does not result in an exception. It ensures slow jobs are not
-   counted twice, because the job is already counted in the error SLI.
+  incremented for every successful job execution that does not result in an exception. It ensures slow jobs are not
+  counted twice, because the job is already counted in the error SLI.
 
 - `gitlab_sli_sidekiq_execution_apdex_success_total`: This counter gets
-   incremented for every successful job that performed faster than
-   the [defined target duration depending on the job urgency](../sidekiq/worker_attributes.md#job-urgency).
+  incremented for every successful job that performed faster than
+  the [defined target duration depending on the job urgency](../sidekiq/worker_attributes.md#job-urgency).
 
 - `gitlab_sli_sidekiq_execution_error_total`: This counter gets
-   incremented for every job that encountered an exception.
+  incremented for every job that encountered an exception.
 
 - `gitlab_sli_sidekiq_execution_total`: This counter gets
-   incremented for every job execution.
+  incremented for every job execution.
 
 These counters are labeled with:
 

@@ -223,17 +223,17 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    1. On the left sidebar, at the bottom, select **Admin Area**.
    1. On the left sidebar, select **Geo > Sites**.
    1. Select **Add site**.
-   ![Add secondary site](img/adding_a_secondary_v15_8.png)
+      ![Add secondary site](img/adding_a_secondary_v15_8.png)
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
-   `/etc/gitlab/gitlab.rb`. These values must always match **exactly**, character
-   for character.
+      `/etc/gitlab/gitlab.rb`. These values must always match **exactly**, character
+      for character.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`. These
-   values must always match, but it doesn't matter if one ends with a `/` and
-   the other doesn't.
+      values must always match, but it doesn't matter if one ends with a `/` and
+      the other doesn't.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the
-   **secondary** site. Leave blank to replicate all. For more information, see
-   [selective synchronization](#selective-synchronization).
+      **secondary** site. Leave blank to replicate all. For more information, see
+      [selective synchronization](#selective-synchronization).
    1. Select **Save changes** to add the **secondary** site.
 1. SSH into **each Rails, and Sidekiq node on your secondary** site and restart the services:
 

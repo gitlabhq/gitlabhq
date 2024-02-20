@@ -174,7 +174,7 @@ Include in the MR description:
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a link to the plan generated using the `explain` command in the [postgres.ai](database/database_lab.md) chatbot. The `explain` command runs
-    `EXPLAIN ANALYZE`.
+  `EXPLAIN ANALYZE`.
   - If it's not possible to get an accurate picture in Database Lab, you may need to
     seed a development environment, and instead provide output
     from `EXPLAIN ANALYZE`. Create links to the plan using [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com). Be sure to paste both the plan and the query used in the form.
@@ -263,7 +263,7 @@ to add the raw SQL query and query plan to the Merge Request description, and re
     This can be the number of expected batches times the delay interval.
   - Manually trigger the [database testing](database/database_migration_pipeline.md) job (`db:gitlabcom-database-testing`) in the `test` stage.
   - If a single `update` is below than `1s` the query can be placed
-      directly in a regular migration (inside `db/migrate`).
+    directly in a regular migration (inside `db/migrate`).
   - Background migrations are usually used, but not limited to:
     - Migrating data in larger tables.
     - Making numerous SQL queries per record in a dataset.

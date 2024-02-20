@@ -459,9 +459,9 @@ Today we have different use cases where using explicit input parameters would be
 
 1. `Run Pipeline` UI form.
     - **Problem today**: We are using top-level variables with `variables:*:description` to surface environment variables to the UI.
-    The problem with this is the mix of responsibilities as well as the jump in [precedence](../../../ci/variables/index.md#cicd-variable-precedence)
-    that a variable gets (from a YAML variable to a pipeline variable).
-    Building validation and features on top of this solution is challenging and complex.
+      The problem with this is the mix of responsibilities as well as the jump in [precedence](../../../ci/variables/index.md#cicd-variable-precedence)
+      that a variable gets (from a YAML variable to a pipeline variable).
+      Building validation and features on top of this solution is challenging and complex.
 1. Trigger a pipeline via API. For example `POST /projects/:id/pipelines/trigger` with `{ inputs: { provider: 'aws' } }`
 1. Trigger a pipeline via `trigger:` syntax.
 

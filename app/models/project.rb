@@ -2318,7 +2318,13 @@ class Project < ApplicationRecord
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     check_project_export_limit!
 
-    job_id = ProjectExportWorker.perform_async(current_user.id, self.id, after_export_strategy, params)
+    job_id = if Feature.enabled?(:parallel_project_export, current_user)
+               Projects::ImportExport::CreateRelationExportsWorker
+                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+             else
+               ProjectExportWorker
+                 .perform_async(current_user.id, self.id, after_export_strategy, params)
+             end
 
     if job_id
       Gitlab::AppLogger.info "Export job started for project ID #{self.id} with job ID #{job_id}"

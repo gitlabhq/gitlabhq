@@ -193,7 +193,7 @@ which correspond to:
 - `elasticsearch_calls`: Total number of calls to Elasticsearch
 - `elasticsearch_duration_s`: Total time taken by Elasticsearch calls
 - `elasticsearch_timed_out_count`: Total number of calls to Elasticsearch that
-   timed out and therefore returned partial results
+  timed out and therefore returned partial results
 
 ActionCable connection and subscription events are also logged to this file and they follow the
 previous format. The `method`, `path`, and `format` fields are not applicable, and are always empty.

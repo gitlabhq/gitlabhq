@@ -136,11 +136,11 @@ In Prometheus, look for the following metrics:
 You can observe the status of [control groups (cgroups)](configure_gitaly.md#control-groups) using Prometheus:
 
 - `gitaly_cgroups_reclaim_attempts_total`, a gauge for the total number of times
-   there has been a memory reclaim attempt. This number resets each time a server is
-   restarted.
+  there has been a memory reclaim attempt. This number resets each time a server is
+  restarted.
 - `gitaly_cgroups_cpu_usage`, a gauge that measures CPU usage per cgroup.
 - `gitaly_cgroup_procs_total`, a gauge that measures the total number of
-   processes Gitaly has spawned under the control of cgroups.
+  processes Gitaly has spawned under the control of cgroups.
 - `gitaly_cgroup_cpu_cfs_periods_total`, a counter that for the value of [`nr_periods`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_periods_total`, a counter for the value of [`nr_throttled`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics).
 - `gitaly_cgroup_cpu_cfs_throttled_seconds_total`, a counter for the value of [`throttled_time`](https://docs.kernel.org/scheduler/sched-bwc.html#statistics) in seconds.

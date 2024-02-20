@@ -29,7 +29,7 @@ Migrations can be disabled if:
 In order to disable a migration, the following steps apply to all types of migrations:
 
 1. Turn the migration into a no-op by removing the code inside `#up`, `#down`
-  or `#perform` methods, and adding `# no-op` comment instead.
+   or `#perform` methods, and adding `# no-op` comment instead.
 1. Add a comment explaining why the code is gone.
 
 Disabling migrations requires explicit approval of Database Maintainer.

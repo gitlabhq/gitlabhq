@@ -4,7 +4,7 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Set up a single project for idea management
+# Tutorial: Set up a project for idea management
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate

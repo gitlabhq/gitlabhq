@@ -612,9 +612,9 @@ Our current RSpec tests parallelization setup is as follows:
 1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
    [the canonical project](https://gitlab.com/gitlab-org/gitlab) and updates the `knapsack/report-master.json` in 2 ways:
    1. By default, it takes all the `knapsack/rspec*.json` files and merge them all together into a single
-   `knapsack/report-master.json` file that is saved as artifact.
+      `knapsack/report-master.json` file that is saved as artifact.
    1. (Experimental) When the `AVERAGE_KNAPSACK_REPORT` environment variable is set to `true`, instead of merging the reports, the job will calculate the average of the test duration between `knapsack/report-master.json` and `knapsack/rspec*.json` to reduce the performance impact from potentially random factors such as spec ordering, runner hardware differences, flaky tests, etc.
-   This experimental approach is aimed to better predict the duration for each spec files to distribute load among parallel jobs more evenly so the jobs can finish around the same time.
+      This experimental approach is aimed to better predict the duration for each spec files to distribute load among parallel jobs more evenly so the jobs can finish around the same time.
 
 After that, the next pipeline uses the up-to-date `knapsack/report-master.json` file.
 

@@ -247,7 +247,7 @@ The cost factors for jobs running on instance runners on GitLab.com are:
 - Exceptions for public projects:
   - `0.5` for projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source).
   - `0.008` for forks of projects in the [GitLab for Open Source program](../../subscriptions/community_programs.md#gitlab-for-open-source). For every 125 minutes of job execution time,
-  you use 1 compute minute.
+    you use 1 compute minute.
 - Discounted dynamically for [community contributions to GitLab projects](#cost-factor-for-community-contributions-to-gitlab-projects).
 
 The cost factors on self-managed instances are:

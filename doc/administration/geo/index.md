@@ -128,8 +128,8 @@ NOTE:
 
 - All sites must run [the same PostgreSQL versions](setup/database.md#postgresql-replication).
   - Where possible, you should also use the same operating system version on all
-  Geo sites. If using different operating system versions between Geo sites, you
-  **must** [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
+    Geo sites. If using different operating system versions between Geo sites, you
+    **must** [check OS locale data compatibility](replication/troubleshooting.md#check-os-locale-data-compatibility)
     across Geo sites to avoid silent corruption of database indexes.
 - Git 2.9 or later
 - Git-lfs 2.4.2 or later on the user side when using LFS

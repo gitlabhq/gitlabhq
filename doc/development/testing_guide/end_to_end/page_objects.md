@@ -248,7 +248,7 @@ These modules must:
 
 1. Extend from the `QA::Page::PageConcern` module, with `extend QA::Page::PageConcern`.
 1. Override the `self.prepended` method if they need to `include`/`prepend` other modules themselves, and/or define
-  `view` or `elements`.
+   `view` or `elements`.
 1. Call `super` as the first thing in `self.prepended`.
 1. Include/prepend other modules and define their `view`/`elements` in a `base.class_eval` block to ensure they're
    defined in the class that prepends the module.

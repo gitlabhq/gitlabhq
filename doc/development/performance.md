@@ -136,13 +136,13 @@ In short:
 
 - Don't trust benchmarks you find on the internet.
 - Never make claims based on just benchmarks, always measure in production to
-   confirm your findings.
+  confirm your findings.
 - X being N times faster than Y is meaningless if you don't know what impact it
-   has on your production environment.
+  has on your production environment.
 - A production environment is the _only_ benchmark that always tells the truth
-   (unless your performance monitoring systems are not set up correctly).
+  (unless your performance monitoring systems are not set up correctly).
 - If you must write a benchmark use the benchmark-ips Gem instead of Ruby's
-   `Benchmark` module.
+  `Benchmark` module.
 
 ## Profiling with Stackprof
 
@@ -443,7 +443,7 @@ There are two ways of measuring your own code:
 The `mem_*` values represent different aspects of how objects and memory are allocated in Ruby:
 
 - The following example will create around of `1000` of `mem_objects` since strings
-   can be frozen, and while the underlying string object remains the same, we still need to allocate 1000 references to this string:
+  can be frozen, and while the underlying string object remains the same, we still need to allocate 1000 references to this string:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -454,7 +454,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create around of `1000` of `mem_objects`, as strings are created dynamically.
-   Each of them will not allocate additional memory, as they fit into Ruby slot of 40 bytes:
+  Each of them will not allocate additional memory, as they fit into Ruby slot of 40 bytes:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -466,7 +466,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create around of `1000` of `mem_objects`, as strings are created dynamically.
-   Each of them will allocate additional memory as strings are larger than Ruby slot of 40 bytes:
+  Each of them will allocate additional memory as strings are larger than Ruby slot of 40 bytes:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -478,7 +478,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will allocate over 40 kB of data, and perform only a single memory allocation.
-   The existing object will be reallocated/resized on subsequent iterations:
+  The existing object will be reallocated/resized on subsequent iterations:
 
   ```ruby
   Gitlab::Memory::Instrumentation.with_memory_allocations do
@@ -490,7 +490,7 @@ The `mem_*` values represent different aspects of how objects and memory are all
   ```
 
 - The following example will create over 1k of objects, perform over 1k of allocations, each time mutating the object.
-   This does result in copying a lot of data and perform a lot of memory allocations
+  This does result in copying a lot of data and perform a lot of memory allocations
   (as represented by `mem_bytes` counter) indicating very inefficient method of appending string:
 
   ```ruby

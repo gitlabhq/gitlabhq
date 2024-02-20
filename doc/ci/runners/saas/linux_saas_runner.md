@@ -67,20 +67,20 @@ For example:
 
 ```yaml
 job_small:
- script:
-  - echo "this job runs on the default (small) Linux instance"
+  script:
+    - echo "this job runs on the default (small) Linux instance"
 
 job_medium:
- tags:
-  - saas-linux-medium-amd64
- script:
-  - echo "this job runs on the medium Linux instance"
+  tags:
+    - saas-linux-medium-amd64
+  script:
+    - echo "this job runs on the medium Linux instance"
 
 job_large:
- tags:
-  - saas-linux-large-amd64
- script:
-  - echo "this job runs on the large Linux instance"
+  tags:
+    - saas-linux-large-amd64
+  script:
+    - echo "this job runs on the large Linux instance"
 ```
 
 ## SaaS runners for GitLab community contributions

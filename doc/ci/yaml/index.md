@@ -316,7 +316,7 @@ include:
     full 40-character SHA hash to ensure the desired commit is referenced, because
     using a short SHA hash for the `ref` might be ambiguous.
   - Applying both [protected branch](../../user/project/protected_branches.md) and [protected tag](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches) rules to
-  the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
+    the `ref` in the other project. Protected tags and branches are more likely to pass through change management before changing.
 
 #### `include:remote`
 
@@ -2622,7 +2622,7 @@ Use `image:docker` to pass options to the Docker executor of a GitLab Runner.
 A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
-    the default is the same platform as the host runner.
+  the default is the same platform as the host runner.
 - `user`: Specify the username or UID to use when running the container.
 
 **Example of `image:docker`**:
@@ -4584,7 +4584,7 @@ Use `services:docker` to pass options to the Docker executor of a GitLab Runner.
 A hash of options for the Docker executor, which can include:
 
 - `platform`: Selects the architecture of the image to pull. When not specified,
-    the default is the same platform as the host runner.
+  the default is the same platform as the host runner.
 - `user`: Specify the username or UID to use when running the container.
 
 **Example of `services:docker`**:

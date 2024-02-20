@@ -190,6 +190,6 @@ pipeline can run:
 workflow:
   rules:
     - changes:
-      - .gitlab/**/**.md
+        - .gitlab/**/**.md
       when: never
 ```

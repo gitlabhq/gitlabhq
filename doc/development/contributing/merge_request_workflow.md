@@ -301,7 +301,7 @@ requirements.
 1. Your merge request has at least 1 approval, but depending on your changes
    you might need additional approvals. Refer to the [Approval guidelines](../code_review.md#approval-guidelines).
    - You don't have to select any specific approvers, but you can if you really want
-      specific people to approve your merge request.
+     specific people to approve your merge request.
 1. Merged by a project maintainer.
 
 ### Production use

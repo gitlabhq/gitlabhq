@@ -168,10 +168,10 @@ To use private runners:
    ```
 
 1. **Optional, but recommended:** Set the builds directory to `/tmp/builds`,
-  so job artifacts are periodically purged from the runner host. If you skip
-  this step, you must clean up the default builds directory (`/builds`) yourself.
-  You can do this by adding the following two flags to `gitlab-runner register`
-  in the previous step.
+   so job artifacts are periodically purged from the runner host. If you skip
+   this step, you must clean up the default builds directory (`/builds`) yourself.
+   You can do this by adding the following two flags to `gitlab-runner register`
+   in the previous step.
 
    ```shell
    --builds-dir "/tmp/builds"

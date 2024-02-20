@@ -5,7 +5,7 @@ description: Count of projects using `AWS/CF-Provision-and-Deploy-EC2.gitlab-ci.
   template in last 7 days.
 product_section: ops
 product_stage: release
-product_group: delivery
+product_group: environments
 value_type: number
 status: removed
 milestone_removed: '14.6'

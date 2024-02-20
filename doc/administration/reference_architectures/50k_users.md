@@ -1036,9 +1036,9 @@ a node and change its status from primary to replica (and vice versa).
       to take effect.
 
    1. Go through the steps again for all the other replica nodes, and
-   make sure to set up the IPs correctly.
+      make sure to set up the IPs correctly.
 
-   Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html) are supported and can be added if needed.
+Advanced [configuration options](https://docs.gitlab.com/omnibus/settings/redis.html) are supported and can be added if needed.
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

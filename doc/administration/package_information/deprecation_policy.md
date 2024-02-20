@@ -29,7 +29,7 @@ is available in the next major release. See [example](#example) for more details
 If the configuration becomes obsolete, we announce the deprecation:
 
 - via release blog post on `https://about.gitlab.com/blog/`. The blog post item
-   contains the deprecation notice together with the target removal date.
+  contains the deprecation notice together with the target removal date.
 - via installation/reconfigure output (if applicable).
 - via official documentation on `https://docs.gitlab.com/`. The documentation update contains the corrected syntax (if applicable) or a date of configuration removal.
 

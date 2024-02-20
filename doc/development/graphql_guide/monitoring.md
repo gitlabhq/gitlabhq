@@ -13,7 +13,7 @@ In Kibana we can inspect two kinds of GraphQL logs:
 
 - Logs of each GraphQL query executed within the request.
 - Logs of the full request, which due to [query multiplexing](https://graphql-ruby.org/queries/multiplex.html)
-   may have executed multiple queries.
+  may have executed multiple queries.
 
 ## Logs of each GraphQL query
 

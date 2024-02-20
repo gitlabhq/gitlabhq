@@ -506,7 +506,7 @@ For example, in a GitLab CI/CD `.gitlab-ci.yml` file:
 workflow:
   rules:
     - changes:
-      - .gitlab/**/**.md
+        - .gitlab/**/**.md
       when: never
 ```
 

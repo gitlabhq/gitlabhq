@@ -162,12 +162,12 @@ The AI-Gateway protocol defines each request in the following way:
 Each JSON envelope contains 3 elements:
 
 1. `type`: A string identifier specifying a type of information that is being presented in the envelopes
-  `payload`. The AI-gateway single-purpose endpoint may ignore any types it does not know about.
+   `payload`. The AI-gateway single-purpose endpoint may ignore any types it does not know about.
 1. `payload`: The actual information that can be used by the AI-Gateway single-purpose endpoint to send requests to 3rd party AI services providers. The data inside the `payload` element can differ depending on the `type`, and the version of
-  the client providing the `payload`. This means that the AI-Gateway
- single-purpose endpoint must consider the structure and the type of data present inside the `payload` optional, and gracefully handle missing or malformed information.
+   the client providing the `payload`. This means that the AI-Gateway
+   single-purpose endpoint must consider the structure and the type of data present inside the `payload` optional, and gracefully handle missing or malformed information.
 1. `metadata`: This field contains information about a client that built this `prompt_components` envelope. Information from the `metadata` field may, or may not be used by GitLab for
-  telemetry. The same as with the `payload` all fields inside the `metadata` shall be considered optional.
+   telemetry. The same as with the `payload` all fields inside the `metadata` shall be considered optional.
 
 The only envelope field that is expected to likely change often is the
 `payload` one. There we need to make sure that all fields are

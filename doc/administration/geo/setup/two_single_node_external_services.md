@@ -317,7 +317,7 @@ secondary site is a read-only copy.
       ![Add secondary site](../replication/img/adding_a_secondary_v15_8.png)
 
    1. In **Name**, enter the value for `gitlab_rails['geo_node_name']` in
-   `/etc/gitlab/gitlab.rb`. The values must match exactly.
+      `/etc/gitlab/gitlab.rb`. The values must match exactly.
    1. In **External URL**, enter the value for `external_url` in `/etc/gitlab/gitlab.rb`.
       It's okay if one values ends in `/` and the other doesn't. Otherwise, the values must
       match exactly.

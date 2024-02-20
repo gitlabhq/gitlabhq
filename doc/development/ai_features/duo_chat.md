@@ -153,14 +153,14 @@ commit it together with the change.
 The following CI jobs for GitLab project run the tests tagged with `real_ai_request`:
 
 - `rspec-ee unit gitlab-duo-chat-zeroshot`:
-   the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
-   The job must be manually triggered and is allowed to fail.
+  the job runs `ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb`.
+  The job must be manually triggered and is allowed to fail.
 
 - `rspec-ee unit gitlab-duo-chat-qa`:
-   The job runs the QA evaluation tests in
-   `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
-   The job must be manually triggered and is allowed to fail.
-   Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
+  The job runs the QA evaluation tests in
+  `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
+  The job must be manually triggered and is allowed to fail.
+  Read about [GitLab Duo Chat QA Evaluation Test](#gitlab-duo-chat-qa-evaluation-test).
 
 - `rspec-ee unit gitlab-duo-chat-qa-fast`:
   The job runs a single QA evaluation test from `ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb`.
@@ -207,12 +207,12 @@ See [the snippet](https://gitlab.com/gitlab-org/gitlab/-/snippets/3613745) used 
 #### RSpec and helpers
 
 1. [The RSpec file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/lib/gitlab/llm/chain/agents/zero_shot/qa_evaluation_spec.rb)
-  and the included helpers invoke the Chat service, an internal interface with the question.
+   and the included helpers invoke the Chat service, an internal interface with the question.
 
 1. After collecting the Chat service's answer,
-  the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
-  a LLM to grade the correctness of the answer based on the question and a context.
-  The context is simply a JSON serialization of the issue or epic being asked about in each question.
+   the answer is injected into a prompt, also known as an "evaluation prompt", that instructs
+   a LLM to grade the correctness of the answer based on the question and a context.
+   The context is simply a JSON serialization of the issue or epic being asked about in each question.
 
 1. The evaluation prompt is sent to two LLMs, Claude and Vertex.
 
