@@ -257,6 +257,7 @@ Here's an example of breaking a feature into vertically sliced job stories based
 journey:
 
 ```mermaid
+flowchart TD
 Epic["Epic: When using the application, I need to create an <br> account, so that I can use the application features"] --> Issue1["Issue: When creating my account, I need to specify my email address,<br> so that I can receive future updates from the application"]
     Epic --> Issue2["Issue: When creating my account, I need to <br>specify a password, so that my account remains secure"]
     Epic --> Issue3["Issue: When creating my account and entering the required info, I need to <br>finalize creating my account, so that I can login"]
