@@ -2,7 +2,7 @@
 
 module Resolvers
   class SavedReplyResolver < BaseResolver
-    type Types::SavedReplyType, null: true
+    type ::Types::Users::SavedReplyType, null: true
 
     alias_method :target, :object
 
@@ -11,11 +11,7 @@ module Resolvers
       description: 'ID of a saved reply.'
 
     def resolve(id:)
-      saved_reply = ::Users::SavedReply.find_saved_reply(user_id: current_user.id, id: id.model_id)
-
-      return unless saved_reply
-
-      saved_reply
+      ::Users::SavedReply.find_saved_reply(user_id: current_user.id, id: id.model_id)
     end
   end
 end

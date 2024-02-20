@@ -42,20 +42,27 @@ describe('SearchTypeIndicator', () => {
   // all possible combinations
 
   describe.each`
-    searchType    | searchLevel  | repository  | showSearchTypeIndicator
-    ${'advanced'} | ${'project'} | ${'master'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'advanced-disabled'}
-    ${'advanced'} | ${'group'}   | ${'master'} | ${'advanced-enabled'}
-    ${'advanced'} | ${'global'}  | ${'master'} | ${'advanced-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'master'} | ${'zoekt-enabled'}
-    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'zoekt-disabled'}
-    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'zoekt-enabled'}
+    searchType    | searchLevel  | repository  | scope       | showSearchTypeIndicator
+    ${'advanced'} | ${'project'} | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
+    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${'advanced-disabled'}
+    ${'advanced'} | ${'group'}   | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
+    ${'advanced'} | ${'global'}  | ${'master'} | ${'blobs'}  | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'master'} | ${'blobs'}  | ${'zoekt-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'blobs'}  | ${'zoekt-disabled'}
+    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'blobs'}  | ${'zoekt-enabled'}
+    ${'advanced'} | ${'project'} | ${'master'} | ${'issues'} | ${'advanced-enabled'}
+    ${'advanced'} | ${'project'} | ${'v0.1'}   | ${'issues'} | ${'advanced-enabled'}
+    ${'advanced'} | ${'group'}   | ${'master'} | ${'issues'} | ${'advanced-enabled'}
+    ${'advanced'} | ${'global'}  | ${'master'} | ${'issues'} | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'master'} | ${'issues'} | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'project'} | ${'v0.1'}   | ${'issues'} | ${'advanced-enabled'}
+    ${'zoekt'}    | ${'group'}   | ${'master'} | ${'issues'} | ${'advanced-enabled'}
   `(
-    'search type indicator for $searchType $searchLevel',
-    ({ searchType, repository, showSearchTypeIndicator, searchLevel }) => {
+    'search type indicator for $searchType $searchLevel $scope',
+    ({ searchType, repository, showSearchTypeIndicator, scope, searchLevel }) => {
       beforeEach(() => {
         createComponent({
-          query: { repository_ref: repository },
+          query: { repository_ref: repository, scope },
           searchType,
           searchLevel,
           defaultBranchName: 'master',
@@ -76,8 +83,9 @@ describe('SearchTypeIndicator', () => {
     ({ searchType, repository, showSearchTypeIndicator }) => {
       beforeEach(() => {
         createComponent({
-          query: { repository_ref: repository },
+          query: { repository_ref: repository, scope: 'blobs' },
           searchType,
+          searchLevel: 'project',
           defaultBranchName: 'master',
         });
       });
@@ -97,7 +105,7 @@ describe('SearchTypeIndicator', () => {
   `('documentation link for $searchType', ({ searchType, docsLink }) => {
     beforeEach(() => {
       createComponent({
-        query: { repository_ref: 'master' },
+        query: { repository_ref: 'master', scope: 'blobs' },
         searchType,
         searchLevel: 'project',
         defaultBranchName: 'master',
@@ -115,7 +123,7 @@ describe('SearchTypeIndicator', () => {
   `('Syntax documentation $searchType', ({ searchType, syntaxdocsLink }) => {
     beforeEach(() => {
       createComponent({
-        query: { repository_ref: '000' },
+        query: { repository_ref: '000', scope: 'blobs' },
         searchType,
         searchLevel: 'project',
         defaultBranchName: 'master',

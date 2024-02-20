@@ -327,4 +327,22 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       end
     end
   end
+
+  context 'when cyclonedx report has no dependencies' do
+    it 'skips component processing' do
+      expect(report).not_to receive(:add_dependency)
+
+      parse!
+    end
+  end
+
+  context 'when report has dependencies' do
+    let(:report_data) { base_report_data.merge({ 'dependencies' => [{ ref: 'ref', dependsOn: ['dependency_ref'] }] }) }
+
+    it 'passes dependencies to report' do
+      expect(report).to receive(:add_dependency).with('ref', 'dependency_ref')
+
+      parse!
+    end
+  end
 end

@@ -3,6 +3,7 @@
 module Integrations
   class Youtrack < BaseIssueTracker
     include Integrations::HasIssueTrackerFields
+    include HasAvatar
 
     validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
@@ -15,16 +16,16 @@ module Integrations
     end
 
     def self.title
-      'YouTrack'
+      'JetBrains YouTrack'
     end
 
     def self.description
-      s_("IssueTracker|Use YouTrack as this project's issue tracker.")
+      s_("IssueTracker|Use JetBrains YouTrack as this project's issue tracker.")
     end
 
     def self.help
       docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/youtrack'), target: '_blank', rel: 'noopener noreferrer'
-      s_("IssueTracker|Use YouTrack as this project's issue tracker. %{docs_link}").html_safe % { docs_link: docs_link.html_safe }
+      s_("IssueTracker|Use JetBrains YouTrack as this project's issue tracker. %{docs_link}").html_safe % { docs_link: docs_link.html_safe }
     end
 
     def self.to_param
@@ -33,6 +34,10 @@ module Integrations
 
     def self.fields
       super.select { %w[project_url issues_url].include?(_1.name) }
+    end
+
+    def attribution_notice
+      'Copyright © 2024 JetBrains s.r.o. JetBrains YouTrack and the JetBrains YouTrack logo are registered trademarks of JetBrains s.r.o.'
     end
   end
 end

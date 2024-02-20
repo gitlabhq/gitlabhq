@@ -27,6 +27,7 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Component, feature_category: :dependen
         expect(component.purl.name).to eq("activesupport")
         expect(component.properties).to be_nil
         expect(component.source_package_name).to be_nil
+        expect(component.ref).to eq("pkg:gem/activesupport@5.1.4")
       end
     end
 

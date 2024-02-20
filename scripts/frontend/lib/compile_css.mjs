@@ -172,6 +172,11 @@ export async function compileAllStyles({ shouldWatch = false }) {
   const sassCompilerOptions = {
     loadPaths: resolveLoadPaths(),
     logger: Logger.silent,
+    // For now we compress CSS directly with SASS if we do not watch
+    // We probably want to change this later if there are more
+    // post-processing steps, because we would compress
+    // _after_ things like auto-prefixer, etc. happened
+    style: shouldWatch ? 'expanded' : 'compressed',
   };
 
   let fileWatcher = null;
@@ -218,8 +223,20 @@ export async function compileAllStyles({ shouldWatch = false }) {
   return fileWatcher;
 }
 
-function shouldUseNewPipeline() {
-  return /^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`);
+// Mirroring gems/gitlab-utils/lib/gitlab/utils.rb
+function shouldUseNewPipeline(defaultValue = true) {
+  if ([true, false, 0, 1].includes(env?.USE_NEW_CSS_PIPELINE)) {
+    return env.USE_NEW_CSS_PIPELINE;
+  }
+
+  if (/^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`)) {
+    return true;
+  }
+  if (/^(false|f|no|n|0|off)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`)) {
+    return false;
+  }
+
+  return defaultValue;
 }
 
 export function viteCSSCompilerPlugin({ shouldWatch = true }) {

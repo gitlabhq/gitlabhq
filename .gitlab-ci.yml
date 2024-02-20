@@ -254,6 +254,10 @@ variables:
   BUILD_ASSETS_IMAGE: "true"  # Set it to "false" to disable assets image building, used in `build-assets-image`
   SIMPLECOV: "true"
 
+  # Temporary variable to enable new CSS compiler
+  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
+  USE_NEW_CSS_PIPELINE: "true"
+
 include:
   - local: .gitlab/ci/_skip.yml
     rules:

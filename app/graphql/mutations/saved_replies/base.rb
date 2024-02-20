@@ -3,7 +3,7 @@
 module Mutations
   module SavedReplies
     class Base < BaseMutation
-      field :saved_reply, Types::SavedReplyType,
+      field :saved_reply, ::Types::Users::SavedReplyType,
             null: true,
             description: 'Saved reply after mutation.'
 

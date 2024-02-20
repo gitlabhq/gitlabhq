@@ -9,9 +9,11 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
   let(:purl) { Sbom::PackageUrl.new(type: purl_type, name: name, version: version) }
   let(:version) { 'v0.0.1' }
   let(:source_package_name) { 'source-component' }
+  let(:ref) { 'ref' }
 
   subject(:component) do
     described_class.new(
+      ref: ref,
       type: component_type,
       name: name,
       purl: purl,
@@ -168,6 +170,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
     with_them do
       specify do
         a = described_class.new(
+          ref: ref,
           name: a_name,
           type: a_type,
           purl: a_purl,
@@ -175,6 +178,7 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependen
         )
 
         b = described_class.new(
+          ref: ref,
           name: b_name,
           type: b_type,
           purl: b_purl,

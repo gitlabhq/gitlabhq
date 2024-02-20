@@ -220,6 +220,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
+
+          context 'with quick action' do
+            let(:input) { { 'descriptionWidget' => { 'description' => "/remove_label ~\"#{existing_label.name}\"" } } }
+
+            it_behaves_like 'mutation updating work item labels'
+          end
         end
       end
 
@@ -241,6 +247,14 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:mutation_work_item) { group_work_item }
 
           it_behaves_like 'mutation updating work item labels'
+
+          context 'with quick action' do
+            let(:input) do
+              { 'descriptionWidget' => { 'description' => "/labels ~\"#{label1.name}\" ~\"#{label2.name}\"" } }
+            end
+
+            it_behaves_like 'mutation updating work item labels'
+          end
         end
       end
 

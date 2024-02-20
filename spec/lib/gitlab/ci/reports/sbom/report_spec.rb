@@ -48,4 +48,20 @@ RSpec.describe Gitlab::Ci::Reports::Sbom::Report, feature_category: :dependency_
       expect(report.components).to match_array(components)
     end
   end
+
+  describe 'ensure_ancestors!' do
+    let_it_be(:components) { create_list(:ci_reports_sbom_component, 3) }
+    let_it_be(:component_first) { components.first }
+    let_it_be(:component_last) { components.last }
+    let_it_be(:expected_value) { { name: component_first.name, version: component_first.version } }
+
+    it 'stores hierachies' do
+      components.each { |component| report.add_component(component) }
+      report.add_dependency(component_first.ref, component_last.ref)
+
+      report.ensure_ancestors!
+
+      expect(component_last.ancestors).to match_array([expected_value])
+    end
+  end
 end

@@ -26,7 +26,7 @@ module Resolvers
       private
 
       def resolve_groups(**args)
-        Groups::UserGroupsFinder.new(current_user, object, args).execute
+        ::Groups::UserGroupsFinder.new(current_user, object, args).execute
       end
     end
   end

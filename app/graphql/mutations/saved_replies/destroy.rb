@@ -9,7 +9,7 @@ module Mutations
 
       argument :id, Types::GlobalIDType[::Users::SavedReply],
                required: true,
-               description: copy_field_description(Types::SavedReplyType, :id)
+               description: copy_field_description(::Types::Users::SavedReplyType, :id)
 
       def resolve(id:)
         saved_reply = authorized_find!(id: id)

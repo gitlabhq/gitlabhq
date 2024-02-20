@@ -27246,16 +27246,16 @@ msgstr ""
 msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker. %{docs_link}"
 msgstr ""
 
+msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker."
+msgstr ""
+
+msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker. %{docs_link}"
+msgstr ""
+
 msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|Use Redmine as this project's issue tracker."
-msgstr ""
-
-msgid "IssueTracker|Use YouTrack as this project's issue tracker."
-msgstr ""
-
-msgid "IssueTracker|Use YouTrack as this project's issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|Use a custom issue tracker as this project's issue tracker."
@@ -32786,9 +32786,6 @@ msgid "No contributions were found"
 msgstr ""
 
 msgid "No credit card data for matching"
-msgstr ""
-
-msgid "No credit card required."
 msgstr ""
 
 msgid "No data"
@@ -52785,7 +52782,7 @@ msgstr ""
 msgid "Try again?"
 msgstr ""
 
-msgid "Try all GitLab has to offer for 30 days."
+msgid "Try all GitLab has to offer for 30 days. No credit card required."
 msgstr ""
 
 msgid "Try changing or removing filters."

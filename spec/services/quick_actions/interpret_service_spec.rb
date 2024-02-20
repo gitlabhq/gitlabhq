@@ -20,8 +20,9 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
   let(:commit) { create(:commit, project: project) }
   let(:current_user) { developer }
+  let(:container) { project }
 
-  subject(:service) { described_class.new(project, current_user) }
+  subject(:service) { described_class.new(container: container, current_user: current_user) }
 
   before_all do
     public_project.add_developer(developer)
@@ -860,8 +861,14 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     context 'merge command' do
-      let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: merge_request.diff_head_sha }) }
       let(:merge_request) { create(:merge_request, source_project: repository_project) }
+      let(:service) do
+        described_class.new(
+          container: project,
+          current_user: developer,
+          params: { merge_request_diff_head_sha: merge_request.diff_head_sha }
+        )
+      end
 
       it_behaves_like 'merge immediately command' do
         let(:content) { '/merge' }
@@ -881,7 +888,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'can not be merged when logged user does not have permissions' do
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'failed command', 'Could not apply merge command.' do
           let(:content) { "/merge" }
@@ -890,7 +897,13 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'can not be merged when sha does not match' do
-        let(:service) { described_class.new(project, developer, { merge_request_diff_head_sha: 'othersha' }) }
+        let(:service) do
+          described_class.new(
+            container: project,
+            current_user: developer,
+            params: { merge_request_diff_head_sha: 'othersha' }
+          )
+        end
 
         it_behaves_like 'failed command', 'Branch has been updated since the merge was requested.' do
           let(:content) { "/merge" }
@@ -900,7 +913,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when sha is missing' do
         let(:project) { repository_project }
-        let(:service) { described_class.new(project, developer, {}) }
+        let(:service) { described_class.new(container: project, current_user: developer) }
 
         it_behaves_like 'failed command', 'The `/merge` quick action requires the SHA of the head of the branch.' do
           let(:content) { "/merge" }
@@ -1607,7 +1620,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when non-member is creating a new issue' do
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'confidential command' do
           let(:content) { '/confidential' }
@@ -1697,6 +1710,33 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    context '/label command' do
+      context 'when target is a group level work item' do
+        let_it_be(:new_group) { create(:group).tap { |g| g.add_developer(developer) } }
+        let_it_be(:group_level_work_item) { create(:work_item, :group_level, namespace: new_group) }
+        # this label should not be show on the list as belongs to another group
+        let_it_be(:invalid_label) { create(:group_label, title: 'not_from_group', group: group) }
+        let(:container) { new_group }
+
+        # This spec was introduced just to validate that the label finder scopes que query to a single group.
+        # The command checks that labels are available as part of the condition.
+        # Query was timing out in .com https://gitlab.com/gitlab-org/gitlab/-/issues/441123
+        it 'is not available when there are no labels associated with the group' do
+          expect(service.available_commands(group_level_work_item)).not_to include(a_hash_including(name: :label))
+        end
+
+        context 'when a label exists at the group level' do
+          before do
+            create(:group_label, group: new_group)
+          end
+
+          it 'is available' do
+            expect(service.available_commands(group_level_work_item)).to include(a_hash_including(name: :label))
+          end
+        end
+      end
+    end
+
     context '/copy_metadata command' do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
@@ -1707,7 +1747,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when the user does not have permission' do
         let(:guest) { create(:user) }
-        let(:service) { described_class.new(project, guest) }
+        let(:service) { described_class.new(container: project, current_user: guest) }
 
         it 'is not available' do
           expect(service.available_commands(issue)).not_to include(a_hash_including(name: :copy_metadata))
@@ -1814,7 +1854,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context 'when current_user cannot :admin_issue' do
       let(:visitor) { create(:user) }
       let(:issue) { create(:issue, project: project, author: visitor) }
-      let(:service) { described_class.new(project, visitor) }
+      let(:service) { described_class.new(container: project, current_user: visitor) }
 
       it_behaves_like 'failed command', 'Could not apply assign command.' do
         let(:content) { "/assign @#{developer.username}" }
@@ -1959,7 +1999,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     context '/target_branch command' do
       let(:non_empty_project) { create(:project, :repository) }
       let(:another_merge_request) { create(:merge_request, author: developer, source_project: non_empty_project) }
-      let(:service) { described_class.new(non_empty_project, developer) }
+      let(:service) { described_class.new(container: non_empty_project, current_user: developer) }
 
       it 'updates target_branch if /target_branch command is executed' do
         _, updates, _ = service.execute('/target_branch merge-test', merge_request)
@@ -2164,7 +2204,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when logged user cannot push code to the project' do
         let(:project) { create(:project, :private) }
-        let(:service) { described_class.new(project, create(:user)) }
+        let(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'failed command', 'Could not apply create_merge_request command.'
       end
@@ -2892,7 +2932,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
   end
 
   describe '#explain' do
-    let(:service) { described_class.new(project, developer) }
+    let(:service) { described_class.new(container: project, current_user: developer) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     describe 'close command' do
@@ -3477,7 +3517,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when user cannot admin link' do
-        subject(:service) { described_class.new(project, create(:user)) }
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'command is not available'
       end
@@ -3526,7 +3566,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when user cannot admin link' do
-        subject(:service) { described_class.new(project, create(:user)) }
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'command is not available'
       end
@@ -3573,7 +3613,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
 
       context 'when user cannot admin link' do
-        subject(:service) { described_class.new(project, create(:user)) }
+        subject(:service) { described_class.new(container: project, current_user: create(:user)) }
 
         it_behaves_like 'command is not available'
       end
@@ -3591,7 +3631,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let_it_be(:guest) { create(:user) }
 
       let(:issue) { build(:issue, project: public_project) }
-      let(:service) { described_class.new(project, guest) }
+      let(:service) { described_class.new(container: project, current_user: guest) }
 
       before_all do
         public_project.add_guest(guest)

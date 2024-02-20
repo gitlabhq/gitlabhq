@@ -110,9 +110,7 @@ module Search
     end
 
     def show_wiki_search_tab?
-      return true if tab_enabled_for_project?(:wiki_blobs)
-
-      project.nil? && show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_wiki_tab)
+      tab_enabled_for_project?(:wiki_blobs)
     end
 
     def show_commits_search_tab?
@@ -147,6 +145,7 @@ module Search
       project.nil? || tab_enabled_for_project?(:milestones)
     end
 
+    # deprecated - this method is being refactored and will eventually be removed
     def feature_flag_tab_enabled?(flag)
       group.present? || Feature.enabled?(flag, user, type: :ops)
     end

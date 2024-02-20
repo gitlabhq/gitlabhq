@@ -113,7 +113,8 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
     context 'with an invalid metadata' do
       let(:requires_python) { 'x' * 256 }
 
-      it_behaves_like 'returning an error service response', /Pypi package metadata invalid/ do
+      it_behaves_like 'returning an error service response',
+        message: 'Validation failed: Required python is too long (maximum is 255 characters)' do
         it { is_expected.to have_attributes(reason: :invalid_parameter) }
       end
     end
@@ -142,7 +143,8 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
           params[:md5_digest] = md5
         end
 
-        it_behaves_like 'returning an error service response', /File name has already been taken/ do
+        it_behaves_like 'returning an error service response',
+          message: 'Validation failed: File name has already been taken' do
           it { is_expected.to have_attributes(reason: :invalid_parameter) }
         end
 

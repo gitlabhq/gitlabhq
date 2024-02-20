@@ -652,7 +652,7 @@ class Note < ApplicationRecord
   end
 
   def resource_parent
-    project
+    noteable.try(:resource_parent) || project
   end
 
   def user_mentions
@@ -943,4 +943,4 @@ class Note < ApplicationRecord
   end
 end
 
-Note.prepend_mod_with('Note')
+Note.prepend_mod

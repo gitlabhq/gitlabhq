@@ -158,7 +158,7 @@ module Keeps
     def each_feature_flag
       all_feature_flag_files.map do |f|
         yield(
-          Feature::Definition.new(f, YAML.load_file(f, permitted_classes: [Symbol], symbolize_names: true))
+          Feature::Definition.new(f, YAML.safe_load_file(f, permitted_classes: [Symbol], symbolize_names: true))
         )
       end
     end

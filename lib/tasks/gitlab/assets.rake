@@ -52,6 +52,7 @@ module Tasks
         puts "Generating the SHA256 hash for #{asset_files.size} Webpack-related assets..." if verbose
 
         assets_sha256 = asset_files.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
+        assets_sha256 += ENV.fetch('USE_NEW_CSS_PIPELINE', 'true')
 
         Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
       end

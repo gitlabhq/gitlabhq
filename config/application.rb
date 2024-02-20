@@ -260,7 +260,7 @@ module Gitlab
     # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
     # Need to be loaded before initializers
     config.before_configuration do
-      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"])
+      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"], default: true)
         require 'cssbundling-rails'
       else
         require 'fileutils'

@@ -9,6 +9,8 @@ import {
   ADVANCED_SEARCH_TYPE,
   BASIC_SEARCH_TYPE,
   SEARCH_LEVEL_PROJECT,
+  SEARCH_LEVEL_GLOBAL,
+  SEARCH_LEVEL_GROUP,
 } from '~/search/store/constants';
 import {
   ZOEKT_HELP_PAGE,
@@ -16,6 +18,8 @@ import {
   ADVANCED_SEARCH_SYNTAX_HELP_ANCHOR,
   ZOEKT_HELP_PAGE_SYNTAX_ANCHOR,
 } from '../constants';
+
+import { SCOPE_BLOB } from '../../sidebar/constants';
 
 export default {
   name: 'SearchTypeIndicator',
@@ -40,7 +44,7 @@ export default {
     GlLink,
   },
   computed: {
-    ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel']),
+    ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel', 'query']),
     zoektHelpUrl() {
       return helpPagePath(ZOEKT_HELP_PAGE);
     },
@@ -58,17 +62,39 @@ export default {
       });
     },
     isZoekt() {
-      return this.searchType === ZOEKT_SEARCH_TYPE;
+      return this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope === SCOPE_BLOB;
     },
     isAdvancedSearch() {
-      return this.searchType === ADVANCED_SEARCH_TYPE;
+      return (
+        this.searchType === ADVANCED_SEARCH_TYPE ||
+        (this.searchType === ZOEKT_SEARCH_TYPE && this.query.scope !== SCOPE_BLOB)
+      );
     },
-    isEnabled() {
-      if (this.searchLevel !== SEARCH_LEVEL_PROJECT) {
-        return true;
+    searchTypeTestId() {
+      if (this.isZoekt) {
+        return ZOEKT_SEARCH_TYPE;
+      }
+      if (this.isAdvancedSearch) {
+        return ADVANCED_SEARCH_TYPE;
       }
 
-      return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
+      return BASIC_SEARCH_TYPE;
+    },
+    isEnabled() {
+      const repoRef = this.query.repository_ref;
+      switch (this.searchLevel) {
+        case SEARCH_LEVEL_GLOBAL:
+        case SEARCH_LEVEL_GROUP:
+          return true;
+        case SEARCH_LEVEL_PROJECT: {
+          if (this.query.scope !== SCOPE_BLOB) {
+            return true;
+          }
+          return !repoRef || repoRef === this.defaultBranchName;
+        }
+        default:
+          return false;
+      }
     },
     isBasicSearch() {
       return this.searchType === BASIC_SEARCH_TYPE;
@@ -94,14 +120,14 @@ export default {
 <template>
   <div class="gl-text-gray-600">
     <div v-if="isBasicSearch" data-testid="basic">&nbsp;</div>
-    <div v-else-if="isEnabled" :data-testid="`${searchType}-enabled`">
+    <div v-else-if="isEnabled" :data-testid="`${searchTypeTestId}-enabled`">
       <gl-sprintf :message="enabledMessage">
         <template #link="{ content }">
           <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }} </gl-link>
         </template>
       </gl-sprintf>
     </div>
-    <div v-else :data-testid="`${searchType}-disabled`">
+    <div v-else :data-testid="`${searchTypeTestId}-disabled`">
       <gl-sprintf :message="disabledMessage">
         <template #link="{ content }">
           <gl-link :href="helpUrl" target="_blank" data-testid="docs-link">{{ content }} </gl-link>

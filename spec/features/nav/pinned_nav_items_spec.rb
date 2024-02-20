@@ -221,34 +221,28 @@ RSpec.describe 'Navigation menu item pinning', :js, feature_category: :navigatio
     nav_item = find_by_testid('nav-item', text: nav_item_title)
     scroll_to(nav_item)
     nav_item.hover
-    within(nav_item) do
-      pin_button = find_by_testid('nav-item-pin')
-      pin_button.click
-      wait_for_requests
-    end
+    find_by_testid('nav-item-pin', context: nav_item).click
+
+    wait_for_requests
   end
 
   def remove_pin(nav_item_title)
     nav_item = find_by_testid('nav-item', text: nav_item_title)
     scroll_to(nav_item)
     nav_item.hover
-    within(nav_item) do
-      unpin_button = find_by_testid('nav-item-unpin')
-      unpin_button.click
-      wait_for_requests
-    end
+    find_by_testid('nav-item-unpin', context: nav_item).click
+
+    wait_for_requests
   end
 
   def drag_item(item, to:)
     item.hover
-    within(item) do
-      drag_handle = find_by_testid('grip-icon')
 
-      # Reduce delay to make it less likely for draggables to
-      # change position during drag operation, which reduces
-      # flakiness.
-      drag_handle.drag_to(to, delay: 0.01)
-      wait_for_requests
-    end
+    # Reduce delay to make it less likely for draggables to
+    # change position during drag operation, which reduces
+    # flakiness.
+    find_by_testid('grip-icon', context: item).drag_to(to, delay: 0.01)
+
+    wait_for_requests
   end
 end

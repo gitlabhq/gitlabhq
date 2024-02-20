@@ -66,7 +66,7 @@ module WorkItems
       original_description = description_param.fetch(:description, work_item.description)
 
       description, command_params = QuickActions::InterpretService
-                                      .new(work_item.project, current_user, {})
+                                      .new(container: work_item.resource_parent, current_user: current_user)
                                       .execute(original_description, work_item)
 
       description_param[:description] = description if description && description != original_description

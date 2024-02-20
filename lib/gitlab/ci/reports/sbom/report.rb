@@ -23,6 +23,7 @@ module Gitlab
             }
             @components = []
             @metadata = ::Gitlab::Ci::Reports::Sbom::Metadata.new
+            @dependencies = DependencyAdjacencyList.new
             @errors = []
           end
 
@@ -40,11 +41,27 @@ module Gitlab
 
           def add_component(component)
             components << component
+            dependencies.add_component_info(component.ref, component.name, component.version)
+          end
+
+          def add_dependency(parent, child)
+            dependencies.add_edge(parent, child)
+          end
+
+          def ensure_ancestors!
+            components.each do |component|
+              component.ancestors = ancestors_for(component.ref)
+            end
           end
 
           private
 
+          def ancestors_for(ref)
+            dependencies.ancestors_for(ref)
+          end
+
           attr_writer :source
+          attr_reader :dependencies
         end
       end
     end

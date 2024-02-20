@@ -9,15 +9,15 @@ module Mutations
 
       argument :id, Types::GlobalIDType[::Users::SavedReply],
                required: true,
-               description: copy_field_description(Types::SavedReplyType, :id)
+               description: copy_field_description(::Types::Users::SavedReplyType, :id)
 
       argument :name, GraphQL::Types::String,
                required: true,
-               description: copy_field_description(Types::SavedReplyType, :name)
+               description: copy_field_description(::Types::SavedReplyType, :name)
 
       argument :content, GraphQL::Types::String,
                required: true,
-               description: copy_field_description(Types::SavedReplyType, :content)
+               description: copy_field_description(::Types::SavedReplyType, :content)
 
       def resolve(id:, name:, content:)
         saved_reply = authorized_find!(id: id)

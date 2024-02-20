@@ -7043,7 +7043,7 @@ Input type: `SavedReplyDestroyInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsavedreplydestroyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+| <a id="mutationsavedreplydestroyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the user saved reply. |
 
 #### Fields
 
@@ -7063,7 +7063,7 @@ Input type: `SavedReplyUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsavedreplyupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsavedreplyupdatecontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
-| <a id="mutationsavedreplyupdateid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+| <a id="mutationsavedreplyupdateid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the user saved reply. |
 | <a id="mutationsavedreplyupdatename"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
 #### Fields
@@ -11388,6 +11388,30 @@ The edge type for [`GroupMember`](#groupmember).
 | ---- | ---- | ----------- |
 | <a id="groupmemberedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="groupmemberedgenode"></a>`node` | [`GroupMember`](#groupmember) | The item at the end of the edge. |
+
+#### `GroupSavedReplyConnection`
+
+The connection type for [`GroupSavedReply`](#groupsavedreply).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedreplyconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="groupsavedreplyconnectionedges"></a>`edges` | [`[GroupSavedReplyEdge]`](#groupsavedreplyedge) | A list of edges. |
+| <a id="groupsavedreplyconnectionnodes"></a>`nodes` | [`[GroupSavedReply]`](#groupsavedreply) | A list of nodes. |
+| <a id="groupsavedreplyconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GroupSavedReplyEdge`
+
+The edge type for [`GroupSavedReply`](#groupsavedreply).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedreplyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="groupsavedreplyedgenode"></a>`node` | [`GroupSavedReply`](#groupsavedreply) | The item at the end of the edge. |
 
 #### `GroupWikiRepositoryRegistryConnection`
 
@@ -19925,6 +19949,7 @@ GPG signature for a signed commit.
 | <a id="grouprequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="grouprequiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in this group are required to set up two-factor authentication. |
 | <a id="grouprootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
+| <a id="groupsavedreplies"></a>`savedReplies` **{warning-solid}** | [`GroupSavedReplyConnection`](#groupsavedreplyconnection) | **Introduced** in 16.10. **Status**: Experiment. Saved replies available to the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request. |
 | <a id="groupsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within this group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
@@ -20807,6 +20832,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
 | <a id="grouprunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
+##### `Group.savedReply`
+
+Saved reply in the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
+
+NOTE:
+**Introduced** in 16.10.
+**Status**: Experiment.
+
+Returns [`GroupSavedReply`](#groupsavedreply).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of a saved reply. |
+
 ##### `Group.scanExecutionPolicies`
 
 Scan Execution Policies of the namespace.
@@ -21117,6 +21158,16 @@ Contains release-related statistics about a group.
 | ---- | ---- | ----------- |
 | <a id="groupreleasestatsreleasescount"></a>`releasesCount` | [`Int`](#int) | Total number of releases in all descendant projects of the group. |
 | <a id="groupreleasestatsreleasespercentage"></a>`releasesPercentage` | [`Int`](#int) | Percentage of the group's descendant projects that have at least one release. |
+
+### `GroupSavedReply`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsavedreplycontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
+| <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of the group saved reply. |
+| <a id="groupsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
 ### `GroupSecurityPolicySource`
 
@@ -27624,7 +27675,7 @@ Represents an entity for options in SAST CI configuration.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="savedreplycontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
-| <a id="savedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the saved reply. |
+| <a id="savedreplyid"></a>`id` | [`UsersSavedReplyID!`](#userssavedreplyid) | Global ID of the user saved reply. |
 | <a id="savedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
 ### `Scan`
@@ -33580,6 +33631,12 @@ Global identifiers are encoded as strings.
 A `GroupID` is a global ID. It is encoded as a string.
 
 An example `GroupID` is: `"gid://gitlab/Group/1"`.
+
+### `GroupsSavedReplyID`
+
+A `GroupsSavedReplyID` is a global ID. It is encoded as a string.
+
+An example `GroupsSavedReplyID` is: `"gid://gitlab/Groups::SavedReply/1"`.
 
 ### `ID`
 

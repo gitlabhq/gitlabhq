@@ -1,6 +1,5 @@
 <script>
 import { GlIcon, GlLink, GlCard } from '@gitlab/ui';
-import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import { __ } from '~/locale';
 
 export default {
@@ -16,7 +15,7 @@ export default {
       required: true,
     },
     count: {
-      type: Number,
+      type: String,
       required: true,
     },
     linkHref: {
@@ -27,11 +26,6 @@ export default {
       type: String,
       required: false,
       default: __('View all'),
-    },
-  },
-  computed: {
-    formattedCount() {
-      return numberToMetricPrefix(this.count, 0);
     },
   },
 };
@@ -48,7 +42,7 @@ export default {
     </div>
     <span
       class="gl-font-size-h-display gl-font-weight-bold gl-line-height-ratio-1000 gl-mt-2 gl-display-block"
-      >{{ formattedCount }}</span
+      >{{ count }}</span
     >
   </gl-card>
 </template>

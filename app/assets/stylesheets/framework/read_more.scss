@@ -21,6 +21,7 @@
     position: relative;
     max-height: var(--read-more-height, #{$fallback - $height});
     scroll-padding-top: 1000vh; // Fix anchor scroll, keep it up top
+    overflow: hidden;
   }
 
   // only appears when size is > $height.
