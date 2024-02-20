@@ -1,0 +1,10 @@
+# This file holds a list of Redis keys for Internal Events tracking total
+# counters in the new format, mapped to the existing legacy keys, in order
+# to keep the continuity of past data and not have to migrate the keys.
+#
+# Format:
+# NEW_KEY_1: LEGACY_KEY_1
+# NEW_KEY_2: LEGACY_KEY_2
+# ...
+#
+'{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT

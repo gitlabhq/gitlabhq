@@ -12946,6 +12946,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Check"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Date since last status change"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Failure reason"
 msgstr ""
 
@@ -12967,13 +12970,10 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|How to fix"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Last Scanned"
-msgstr ""
-
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|More Information"
+msgid "ComplianceStandardsAdherence|More information"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|No projects with standards adherence checks found"
@@ -23308,7 +23308,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Project"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Project ID"
+msgid "GoogleArtifactRegistry|Project ID: %{projectId}"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Push new ones from your CI/CD pipeline."
@@ -23317,7 +23317,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Repository"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Repository name"
+msgid "GoogleArtifactRegistry|Repository: %{repository}"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Tags"
@@ -44236,6 +44236,9 @@ msgstr ""
 msgid "Secrets"
 msgstr ""
 
+msgid "Secrets|Actions"
+msgstr ""
+
 msgid "Secrets|Add a new secret to the group by following the instructions in the form below."
 msgstr ""
 
@@ -44245,22 +44248,37 @@ msgstr ""
 msgid "Secrets|Audit log"
 msgstr ""
 
+msgid "Secrets|Created"
+msgstr ""
+
+msgid "Secrets|Delete"
+msgstr ""
+
 msgid "Secrets|Edit %{key}"
+msgstr ""
+
+msgid "Secrets|Edit secret"
+msgstr ""
+
+msgid "Secrets|Last accessed"
+msgstr ""
+
+msgid "Secrets|Name"
 msgstr ""
 
 msgid "Secrets|New secret"
 msgstr ""
 
-msgid "Secrets|Secret details"
+msgid "Secrets|Revoke"
 msgstr ""
 
-msgid "Secrets|Secret name"
+msgid "Secrets|Secret details"
 msgstr ""
 
 msgid "Secrets|Secrets"
 msgstr ""
 
-msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job. %{linkStart}Learn more.%{linkEnd}"
+msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job."
 msgstr ""
 
 msgid "Secrets|Stored secrets"
@@ -58427,7 +58445,13 @@ msgstr ""
 msgid "cannot be changed to %{new_type} when linked to a parent %{parent_type}."
 msgstr ""
 
+msgid "cannot be changed to %{new_type} when the work item is a legacy epic synced work item"
+msgstr ""
+
 msgid "cannot be changed to %{new_type} with these child item types."
+msgstr ""
+
+msgid "cannot be destroyed because this is a synced work item for a legacy epic"
 msgstr ""
 
 msgid "cannot be enabled"

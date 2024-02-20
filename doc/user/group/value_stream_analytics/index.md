@@ -201,11 +201,13 @@ Keep in mind the following observations related to this example:
 
 #### Cumulative label event duration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. These feature flags are disabled by default.
-> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.10 by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432576) in GitLab 16.9 [with flags](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation` and `vsa_duration_from_db`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17476) in GitLab 16.10. Feature flag `vsa_duration_from_db` removed.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To disable it, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation`. On GitLab.com, this feature is available.
+On self-managed GitLab, by default this feature is available.
+To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `enable_vsa_cumulative_label_duration_calculation`.
+On GitLab.com, this feature is available.
 
 With this feature, value stream analytics measures the duration of repetitive events for label-based stages. You should configure label removal or addition events for both start and end events.
 

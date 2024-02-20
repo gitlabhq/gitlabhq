@@ -28,8 +28,10 @@ module Gitlab
 
           initialize_file
 
-          each_final_object do |object|
-            log_orphan_object(object) if object.orphan?
+          each_batch do |fog_collection|
+            Batch.new(fog_collection, bucket_prefix: bucket_prefix).orphan_objects.each do |fog_file|
+              log_orphan_object(fog_file)
+            end
           end
 
           log_info("Done. All orphan objects are listed in #{filename}.")
@@ -68,22 +70,6 @@ module Gitlab
                 end
 
           raise UnsupportedProviderError, msg
-        end
-
-        def each_final_object
-          each_batch do |files|
-            files.each_file_this_page do |fog_file|
-              object = ::Gitlab::Cleanup::OrphanJobArtifactFinalObjects::JobArtifactObject.new(
-                fog_file,
-                bucket_prefix: bucket_prefix
-              )
-
-              # We still need to check here if the object is in the final location because
-              # if the provider does not support filtering objects by glob pattern, we will
-              # then receive all job artifact objects here, even the ones not in the @final directory.
-              yield object if object.in_final_location?
-            end
-          end
         end
 
         def each_batch
@@ -132,8 +118,8 @@ module Gitlab
 
         def save_last_page_marker(marker)
           Gitlab::Redis::SharedState.with do |redis|
-            # Set TTL to 1 day (86400 seconds)
-            redis.set(LAST_PAGE_MARKER_REDIS_KEY, marker, ex: 86400)
+            # Set TTL to 1 week (86400 * 7 seconds)
+            redis.set(LAST_PAGE_MARKER_REDIS_KEY, marker, ex: 604_800)
           end
         end
 
@@ -164,13 +150,13 @@ module Gitlab
         end
         strong_memoize_attr :artifacts_directory
 
-        def log_orphan_object(object)
-          add_orphan_object_to_list(object)
-          log_info("Found orphan object #{object.path} (#{object.size} bytes)")
+        def log_orphan_object(fog_file)
+          add_orphan_object_to_list(fog_file)
+          log_info("Found orphan object #{fog_file.key} (#{fog_file.content_length} bytes)")
         end
 
-        def add_orphan_object_to_list(object)
-          file.puts([object.path, object.size].join(','))
+        def add_orphan_object_to_list(fog_file)
+          file.puts([fog_file.key, fog_file.content_length].join(','))
         end
 
         def log_info(msg)

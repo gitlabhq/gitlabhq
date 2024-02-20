@@ -30,7 +30,13 @@ RSpec.describe IdeController, feature_category: :web_ide do
     shared_examples 'user access rights check' do
       context 'when user can read project' do
         it 'increases the views counter' do
-          expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_views_count)
+          expect(Gitlab::InternalEvents).to receive(:track_event)
+            .with(
+              'web_ide_viewed',
+              user: user,
+              project: project,
+              namespace: project.namespace
+            ).once
 
           subject
         end
@@ -138,19 +144,6 @@ RSpec.describe IdeController, feature_category: :web_ide do
           end
 
           it_behaves_like 'user access rights check'
-        end
-      end
-
-      describe 'Snowplow view event', :snowplow do
-        it 'is tracked' do
-          subject
-
-          expect_snowplow_event(
-            category: described_class.to_s,
-            action: 'web_ide_views',
-            namespace: project.namespace,
-            user: user
-          )
         end
       end
 

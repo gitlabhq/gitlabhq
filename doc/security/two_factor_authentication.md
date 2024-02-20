@@ -107,6 +107,8 @@ Enforcement affects all [direct and inherited members](../user/project/members/i
 Access tokens are not required to provide a second factor for authentication because
 they are API-based. Tokens generated before 2FA is enforced remain valid.
 
+The GitLab [incoming email](../administration/incoming_email.md) feature does not follow 2FA enforcement. Users can use incoming email features such as creating issues or commenting on merge requests without having to authenticate themselves using 2FA first. This applies even if 2FA is enforced.
+
 ### 2FA in subgroups
 
 You can enable and enforce 2FA for individual subgroups in the same way as a top

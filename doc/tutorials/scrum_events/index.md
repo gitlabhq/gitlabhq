@@ -26,29 +26,10 @@ processes and work habits to provide more business and customer value.
 
 This tutorial covers the following topics:
 
-- Setting up GitLab
-  - Understand inheritance model in GitLab
-  - Create your group
-  - Create your projects
-  - Create labels
-  - Create an iteration cadence
-- Managing your feature backlog
-  - How to structure your work
-  - Setup a release planning board
-  - Write your first feature
-- Managing your story backlog
-  - Break down features into stories
-  - Refine your story backlog
-- Tracking sprint progress
-  - Manage the workflow of stories in your sprint
-  - View burndown/up charts for your sprint
-- Facilitating other Scrum ceremonies in GitLab
-  - Synchronous and asynchronous stand-up
-  - Synchronous and asynchronous retrospective
-- Advanced tips and tricks
-  - Leverage issue templates
-  - Decide on a story point scale
-  - Measure velocity and lower your team's volatility
+- [Setting up your groups and projects](#setting-up-your-groups-and-projects)
+- [Managing your feature backlog](#managing-your-feature-backlog)
+- [Managing your story backlog](#managing-your-story-backlog)
+- [Tracking sprint progress](#tracking-sprint-progress)
 
 ## Setting up your groups and projects
 

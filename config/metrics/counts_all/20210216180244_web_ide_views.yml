@@ -8,12 +8,12 @@ product_group: ide
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
+data_source: internal_events
+events:
+  - name: web_ide_viewed
 options:
-  prefix: web_ide
-  event: views_count
-  include_usage_prefix: false
+  events:
+    - web_ide_viewed
 distribution:
 - ce
 - ee

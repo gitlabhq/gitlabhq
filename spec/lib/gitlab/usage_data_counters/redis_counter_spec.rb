@@ -13,6 +13,14 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
         subject.increment(redis_key)
       end.to change { subject.total_count(redis_key) }.by(1)
     end
+
+    context 'with aliased legacy key' do
+      let(:redis_key) { '{event_counters}_web_ide_viewed' }
+
+      it 'counter is increased for a legacy key' do
+        expect { subject.increment(redis_key) }.to change { subject.total_count('WEB_IDE_VIEWS_COUNT') }.by(1)
+      end
+    end
   end
 
   describe '.increment_by' do

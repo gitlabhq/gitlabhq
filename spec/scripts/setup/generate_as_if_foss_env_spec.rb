@@ -39,7 +39,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         'eslint',
         'generate-apollo-graphql-schema',
         'graphql-schema-dump',
-        'jest',
+        'jest 1/5',
         'jest-integration',
         'qa:internal',
         'qa:selectors',

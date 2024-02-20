@@ -5,7 +5,7 @@ module Gitlab
     module OrphanJobArtifactFinalObjects
       module Paginators
         class BasePaginator
-          BATCH_SIZE = Rails.env.development? ? 5 : 200
+          BATCH_SIZE = Rails.env.development? ? 5 : 1000
 
           def initialize(bucket_prefix: nil)
             @bucket_prefix = bucket_prefix

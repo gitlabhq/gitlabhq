@@ -58,6 +58,7 @@ class SchemaRegenerator
       setup_db
       unhide_migrations
       migrate
+      dump_schema
       rollback if @rollback_testing
     ensure
       unhide_migrations
@@ -193,6 +194,12 @@ class SchemaRegenerator
   # Run rake task to run migrations.
   def migrate
     run %q(bin/rails db:migrate RAILS_ENV=test)
+  end
+
+  ##
+  # Run rake task to dump schema.
+  def dump_schema
+    run %q(bin/rails db:schema:dump RAILS_ENV=test)
   end
 
   ##

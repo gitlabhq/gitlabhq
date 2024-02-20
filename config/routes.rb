@@ -259,6 +259,8 @@ InitializerConnections.raise_if_new_database_connection do
     resources(:groups, only: [:index, :new, :create]) do
       # The constraints ensure that the `group_id` parameter in the URL allows for multiple levels
       # of subgroups, permitting both regular and encoded slashes (%2F).
+      # Deprecated in favor of /groups/*group_id/-/preview_markdown
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/442218
       post :preview_markdown, constraints: { group_id: %r{#{Gitlab::PathRegex.full_namespace_route_regex.source}(%2F#{Gitlab::PathRegex.full_namespace_route_regex.source})*} }
     end
 

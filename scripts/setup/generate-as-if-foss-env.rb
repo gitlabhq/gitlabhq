@@ -15,8 +15,6 @@ class GenerateAsIfFossEnv
     eslint
     generate-apollo-graphql-schema
     graphql-schema-dump
-    jest
-    jest-integration
     qa:internal
     qa:selectors
     static-analysis
@@ -76,7 +74,13 @@ class GenerateAsIfFossEnv
   end
 
   def detect_other_jobs(job)
-    other_jobs << job.name if FOSS_JOBS.member?(job.name)
+    if FOSS_JOBS.member?(job.name)
+      other_jobs << job.name
+    else
+      jest_type = job.name[%r{^(jest(?:-\w+)?)(?: \d+/\d+)?$}, 1]
+
+      other_jobs << jest_type if jest_type
+    end
   end
 
   def rspec_variables

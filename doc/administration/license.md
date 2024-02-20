@@ -105,10 +105,15 @@ You may have connectivity issues due to the following reasons:
 
 - **Firewall settings**:
   - Confirm that GitLab instance can establish an encrypted connection to `https://customers.gitlab.com` on port 443.
-    Note: IP addresses for `https://customers.gitlab.com` are 172.64.146.11 and 104.18.41.245)
 
-   ```shell
-   curl --verbose "https://customers.gitlab.com/"
+  ```shell
+  curl --verbose "https://customers.gitlab.com/"
+  ```
+
+  - Use `nslookup` to identify the target IP addresses that your GitLab instance will need to access.
+
+  ```shell
+  nslookup customers.gitlab.com 
   ```
 
   - If the curl command returns an error, either:

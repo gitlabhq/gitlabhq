@@ -11,6 +11,7 @@ module Gitlab
     class << self
       include Gitlab::Tracking::Helpers
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::UsageDataCounters::RedisCounter
 
       def track_event(event_name, category: nil, send_snowplow_event: true, **kwargs)
         raise UnknownEventError, "Unknown event: #{event_name}" unless EventDefinitions.known_event?(event_name)
@@ -50,15 +51,15 @@ module Gitlab
       end
 
       def increase_total_counter(event_name)
-        redis_counter_key =
-          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
-        Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
+        redis_counter_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
+
+        increment(redis_counter_key)
       end
 
       def increase_weekly_total_counter(event_name)
-        redis_counter_key =
-          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name, Date.today)
-        Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
+        redis_counter_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name, Date.today)
+
+        increment(redis_counter_key)
       end
 
       def update_unique_counters(event_name, kwargs)

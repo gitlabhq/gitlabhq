@@ -26,7 +26,10 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 SAML Group Sync only manages a group if that group has one or more SAML group links.
 
-You must configure the SAML group links before you configure SAML Group Sync.
+Prerequisites:
+
+- Self-managed GitLab instances must have configured [SAML Group Sync](#configure-saml-group-sync). GitLab.com
+  instances are already configured for SAML Group Sync, and require no extra configuration.
 
 When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
@@ -42,11 +45,6 @@ item in group **Settings > SAML Group Links**.
     link are automatically removed from the group during sync.
   - No other SAML group links configured, users remain in the group during sync.
     Those users must be manually removed from the group.
-
-Prerequisites:
-
-- Self-managed GitLab instances must have configured SAML Group Sync. GitLab.com
-  instances are already configured for SAML Group Sync, and require no extra configuration.
 
 To link the SAML groups:
 
@@ -87,7 +85,7 @@ enabling Group Sync in GitLab.
 To configure SAML Group Sync for **self-managed GitLab instances**:
 
 1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following attribute statement example for reference:
+1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting. See the following provider configuration example in `/etc/gitlab/gitlab.rb` for reference:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
