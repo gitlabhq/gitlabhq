@@ -140,7 +140,6 @@ Style/InlineDisableAnnotation:
     - 'app/finders/fork_targets_finder.rb'
     - 'app/finders/group_descendants_finder.rb'
     - 'app/finders/group_finder.rb'
-    - 'app/finders/group_members_finder.rb'
     - 'app/finders/groups/accepting_group_transfers_finder.rb'
     - 'app/finders/groups/accepting_project_creations_finder.rb'
     - 'app/finders/groups/accepting_project_shares_finder.rb'

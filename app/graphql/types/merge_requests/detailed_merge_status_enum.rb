@@ -54,6 +54,12 @@ module Types
       value 'JIRA_ASSOCIATION',
             value: :jira_association_missing,
             description: 'Either the title or description must reference a Jira issue.'
+      value 'CONFLICT',
+            value: :conflict,
+            description: 'There are conflicts between the source and target branches.'
+      value 'NEED_REBASE',
+            value: :need_rebase,
+            description: 'Merge request needs to be rebased.'
     end
   end
 end

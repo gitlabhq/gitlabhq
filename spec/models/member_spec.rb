@@ -787,6 +787,37 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.with_group_group_sharing_access' do
+    let_it_be(:shared_group) { create(:group) }
+    let_it_be(:invited_group) { create(:group) }
+
+    where(:member_access_in_invited_group, :group_sharing_access) do
+      Gitlab::Access::REPORTER | Gitlab::Access::DEVELOPER
+      Gitlab::Access::DEVELOPER | Gitlab::Access::REPORTER
+    end
+
+    with_them do
+      before do
+        create(:group_group_link,
+          shared_group: shared_group,
+          shared_with_group: invited_group,
+          group_access: group_sharing_access)
+      end
+
+      let(:member) { create(:group_member, source: invited_group, access_level: member_access_in_invited_group) }
+
+      it 'returns the minimum of member access level and group sharing access level' do
+        access_level = invited_group
+                         .members
+                         .with_group_group_sharing_access
+                         .find(member.id)
+                         .access_level
+
+        expect(access_level).to eq(Gitlab::Access::REPORTER)
+      end
+    end
+  end
+
   describe '#accept_request' do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
 

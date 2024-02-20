@@ -376,6 +376,28 @@ class Member < ApplicationRecord
     def pluck_user_ids
       pluck(:user_id)
     end
+
+    def with_group_group_sharing_access
+      joins("LEFT OUTER JOIN group_group_links ON members.source_id = group_group_links.shared_with_group_id")
+        .select(member_columns_with_group_sharing_access)
+    end
+
+    def member_columns_with_group_sharing_access
+      group_group_link_table = GroupGroupLink.arel_table
+
+      column_names.map do |column_name|
+        if column_name == 'access_level'
+          args = [group_group_link_table[:group_access], arel_table[:access_level]]
+          smallest_value_arel(args, 'access_level')
+        else
+          arel_table[column_name]
+        end
+      end
+    end
+
+    def smallest_value_arel(args, column_alias)
+      Arel::Nodes::As.new(Arel::Nodes::NamedFunction.new('LEAST', args), Arel::Nodes::SqlLiteral.new(column_alias))
+    end
   end
 
   def real_source_type

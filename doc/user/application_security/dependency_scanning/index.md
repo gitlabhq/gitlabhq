@@ -1255,3 +1255,132 @@ environment variable due to a possible exploit documented by [CVE-2018-20225](ht
 intended to obtain a private package from a private index. This only affects use of the `PIP_EXTRA_INDEX_URL` option, and exploitation
 requires that the package does not already exist in the public index (and thus the attacker can put the package there with an arbitrary
 version number).
+
+### Version number parsing
+
+In some cases it's not possible to determine if the version of a project dependency is in the affected range of a security advisory.
+
+For example:
+
+- The version is unknown.
+- The version is invalid.
+- Parsing the version or comparing it to the range fails.
+- The version is a branch, like `dev-master` or `1.5.x`.
+- The compared versions are ambiguous. For example, `1.0.0-20241502` can't be compared to `1.0.0-2`
+  because one version contains a timestamp while the other does not.
+
+In these cases, the analyzer skips the dependency and outputs a message to the log.
+
+The GitLab analyzers do not make assumptions as they could result in a false positive or false
+negative. For a discussion, see [issue 442027](https://gitlab.com/gitlab-org/gitlab/-/issues/442027).
+
+## Example vulnerability report
+
+The following is an example vulnerability report output by dependency scanning:
+
+```json
+{
+  "version": "2.0",
+  "vulnerabilities": [
+    {
+      "id": "51e83874-0ff6-4677-a4c5-249060554eae",
+      "category": "dependency_scanning",
+      "name": "Regular Expression Denial of Service",
+      "message": "Regular Expression Denial of Service in debug",
+      "description": "The debug module is vulnerable to regular expression denial of service when untrusted user input is passed into the `o` formatter. It takes around 50k characters to block for 2 seconds making this a low severity issue.",
+      "severity": "Unknown",
+      "solution": "Upgrade to latest versions.",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "debug"
+          },
+          "version": "1.0.5"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "value": "37283ed4-0380-40d7-ada7-2d994afcc62a",
+          "url": "https://deps.sec.gitlab.com/packages/npm/debug/versions/1.0.5/advisories"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://nodesecurity.io/advisories/534"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/issues/501"
+        },
+        {
+          "url": "https://github.com/visionmedia/debug/pull/504"
+        }
+      ]
+    },
+    {
+      "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+      "category": "dependency_scanning",
+      "name": "Authentication bypass via incorrect DOM traversal and canonicalization",
+      "message": "Authentication bypass via incorrect DOM traversal and canonicalization in saml2-js",
+      "description": "Some XML DOM traversal and canonicalization APIs may be inconsistent in handling of comments within XML nodes. Incorrect use of these APIs by some SAML libraries results in incorrect parsing of the inner text of XML nodes such that any inner text after the comment is lost prior to cryptographically signing the SAML message. Text after the comment, therefore, has no impact on the signature on the SAML message.\r\n\r\nA remote attacker can modify SAML content for a SAML service provider without invalidating the cryptographic signature, which may allow attackers to bypass primary authentication for the affected SAML service provider.",
+      "severity": "Unknown",
+      "solution": "Upgrade to fixed version.\r\n",
+      "scanner": {
+        "id": "gemnasium",
+        "name": "Gemnasium"
+      },
+      "location": {
+        "file": "yarn.lock",
+        "dependency": {
+          "package": {
+            "name": "saml2-js"
+          },
+          "version": "1.5.0"
+        }
+      },
+      "identifiers": [
+        {
+          "type": "gemnasium",
+          "name": "Gemnasium-9952e574-7b5b-46fa-a270-aeb694198a98",
+          "value": "9952e574-7b5b-46fa-a270-aeb694198a98",
+          "url": "https://deps.sec.gitlab.com/packages/npm/saml2-js/versions/1.5.0/advisories"
+        },
+        {
+          "type": "cve",
+          "name": "CVE-2017-11429",
+          "value": "CVE-2017-11429",
+          "url": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-11429"
+        }
+      ],
+      "links": [
+        {
+          "url": "https://github.com/Clever/saml2/commit/3546cb61fd541f219abda364c5b919633609ef3d#diff-af730f9f738de1c9ad87596df3f6de84R279"
+        },
+        {
+          "url": "https://github.com/Clever/saml2/issues/127"
+        },
+        {
+          "url": "https://www.kb.cert.org/vuls/id/475445"
+        }
+      ]
+    }
+  ],
+  "remediations": [
+    {
+      "fixes": [
+        {
+          "id": "5d681b13-e8fa-4668-957e-8d88f932ddc7",
+        }
+      ],
+      "summary": "Upgrade saml2-js",
+      "diff": "ZGlmZiAtLWdpdCBhL...OR0d1ZUc2THh3UT09Cg==" // some content is omitted for brevity
+    }
+  ]
+}
+```

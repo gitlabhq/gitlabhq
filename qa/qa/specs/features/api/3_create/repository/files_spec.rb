@@ -11,39 +11,48 @@ module QA
 
       let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
       let(:sanitized_project_path) { CGI.escape("#{Runtime::User.username}/#{project_name}") }
+      let(:file_name) { 'bã®' }
+      # this file path deliberately includes a subdirectory which matches the file name to verify file/dir matching logic
+      let(:file_path) { CGI.escape("føo/#{file_name}/føo/#{file_name}") }
 
       it 'user creates a project with a file and deletes them afterwards', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347745' do
         create_project_request = Runtime::API::Request.new(@api_client, '/projects')
         post create_project_request.url, path: project_name, name: project_name
 
-        expect_status(201)
-        expect(json_body).to match(
-          a_hash_including(name: project_name, path: project_name)
-        )
+        aggregate_failures do
+          expect_status(201)
+          expect(json_body).to match(
+            a_hash_including(name: project_name, path: project_name)
+          )
+        end
 
         default_branch = json_body[:default_branch].to_s.empty? ? Runtime::Env.default_branch : json_body[:default_branch]
 
-        create_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md")
+        create_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/#{file_path}")
         post create_file_request.url, branch: default_branch, content: 'Hello world', commit_message: 'Add README.md'
 
-        expect_status(201)
-        expect(json_body).to match(
-          a_hash_including(branch: default_branch, file_path: 'README.md')
-        )
+        aggregate_failures do
+          expect_status(201)
+          expect(json_body).to match(
+            a_hash_including(branch: default_branch, file_path: CGI.unescape(file_path))
+          )
+        end
 
-        get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", ref: default_branch)
+        get_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/#{file_path}", ref: default_branch)
         get get_file_request.url
 
-        expect_status(200)
-        expect(json_body).to match(
-          a_hash_including(
-            ref: default_branch,
-            file_path: 'README.md', file_name: 'README.md',
-            encoding: 'base64', content: 'SGVsbG8gd29ybGQ='
+        aggregate_failures do
+          expect_status(200)
+          expect(json_body).to match(
+            a_hash_including(
+              ref: default_branch,
+              file_path: CGI.unescape(file_path), file_name: file_name,
+              encoding: 'base64', content: 'SGVsbG8gd29ybGQ='
+            )
           )
-        )
+        end
 
-        delete_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/README.md", branch: default_branch, commit_message: 'Remove README.md')
+        delete_file_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/files/#{file_path}", branch: default_branch, commit_message: 'Remove README.md')
         delete delete_file_request.url
 
         expect_status(204)
@@ -51,16 +60,20 @@ module QA
         get_tree_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}/repository/tree")
         get get_tree_request.url
 
-        expect_status(200)
-        expect(json_body).to eq([])
+        aggregate_failures do
+          expect_status(200)
+          expect(json_body).to eq([])
+        end
 
         delete_project_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}")
         delete delete_project_request.url
 
-        expect_status(202)
-        expect(json_body).to match(
-          a_hash_including(message: '202 Accepted')
-        )
+        aggregate_failures do
+          expect_status(202)
+          expect(json_body).to match(
+            a_hash_including(message: '202 Accepted')
+          )
+        end
       end
 
       describe 'raw file access' do
@@ -111,10 +124,12 @@ module QA
           delete_project_request = Runtime::API::Request.new(@api_client, "/projects/#{sanitized_project_path}")
           delete delete_project_request.url
 
-          expect_status(202)
-          expect(json_body).to match(
-            a_hash_including(message: '202 Accepted')
-          )
+          aggregate_failures do
+            expect_status(202)
+            expect(json_body).to match(
+              a_hash_including(message: '202 Accepted')
+            )
+          end
         end
       end
     end
