@@ -83,8 +83,8 @@ Please list the test areas (unit, integration and end-to-end) that needs to be a
 * End-to-end test change
 
 See the Quality Engineering quad planning and test planning processes and reach out to your counterpart Software Engineer in Test for assistance. 
-Quad Planning: https://about.gitlab.com/handbook/engineering/quality/quality-engineering/quad-planning 
-Test Planning: https://about.gitlab.com/handbook/engineering/quality/quality-engineering/test-engineering/#test-planning -->
+Quad Planning: https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/quad-planning/ 
+Test Planning: https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/test-engineering/#test-planning -->
 
 ### Available Tier
 
@@ -110,8 +110,8 @@ Explore (../../doc/development/internal_analytics/internal_event_instrumentation
 
 ### What is the type of buyer?
 
-<!-- What is the buyer persona for this feature? See https://handbook.gitlab.com/handbook/product/personas/buyer-persona/
-In which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#three-tiers -->
+<!-- What is the buyer persona for this feature? See https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/roles-personas/buyer-persona/
+In which enterprise tier should this feature go? See https://handbook.gitlab.com/handbook/company/pricing/#three-tiers -->
 
 ### Is this a cross-stage feature?
 

@@ -8,32 +8,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use the Code Suggestions API to access the Code Suggestions feature.
 
-## Create an access token
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/404427) in GitLab 16.1.
-
-Creates an access token to access Code Suggestions.
-
-```plaintext
-POST /code_suggestions/tokens
-```
-
-```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/code_suggestions/tokens"
-```
-
-Example response:
-
-```json
-{
-    "access_token": "secret-access-token",
-    "expires_in": 3600,
-    "created_at": 1687865199
-}
-```
-
 ## Generate code completions
 
 DETAILS:

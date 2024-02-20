@@ -247,7 +247,7 @@ module Gitlab
 
             issuable.notes.create!(comment.attributes)
           rescue StandardError => e
-            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:url]), errors: e.message }
+            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw[:html_url]), errors: e.message }
           end
         end
       end

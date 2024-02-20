@@ -24,8 +24,18 @@ module GitalySetup
     Logger.new($stdout, level: level, formatter: ->(_, _, _, msg) { msg })
   end
 
+  # Expands a path relative to rails root. This module is used in non-rails
+  # contexts and so Rails.root cannot be used.
   def expand_path(path)
     File.expand_path(path, File.join(__dir__, '../../..'))
+  end
+
+  def storage_path
+    expand_path('tmp/tests/repositories')
+  end
+
+  def second_storage_path
+    expand_path('tmp/tests/second_storage')
   end
 
   def tmp_tests_gitaly_dir
@@ -68,12 +78,6 @@ module GitalySetup
       File.join(tmp_tests_gitaly_dir, 'gitaly2.config.toml')
     when :praefect
       File.join(tmp_tests_gitaly_dir, 'praefect.config.toml')
-    end
-  end
-
-  def repos_path(storage = REPOS_STORAGE)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
     end
   end
 
@@ -199,6 +203,8 @@ module GitalySetup
     Gitlab::GitalyClient.address(REPOS_STORAGE).delete_prefix('unix:')
   end
 
+  # Extracts the gitaly install directory based on the gitaly socket configured
+  # in gitlab.yml. This allows the test gitaly to be temporarily overridden.
   def gitaly_dir
     socket_path = gitaly_socket_path
     socket_path = File.expand_path(gitaly_socket_path) if expand_path_for_socket?
@@ -222,7 +228,7 @@ module GitalySetup
 
     Gitlab::SetupHelper::Gitaly.create_configuration(
       gitaly_dir,
-      { 'default' => repos_path },
+      { 'default' => storage_path, 'test_second_storage' => second_storage_path },
       force: true,
       options: {
         runtime_dir: runtime_dir,
@@ -231,7 +237,7 @@ module GitalySetup
     )
     Gitlab::SetupHelper::Gitaly.create_configuration(
       gitaly_dir,
-      { 'default' => repos_path },
+      { 'default' => storage_path, 'test_second_storage' => second_storage_path },
       force: true,
       options: {
         runtime_dir: runtime_dir,
@@ -245,7 +251,7 @@ module GitalySetup
     if ENV['CI'] || !praefect_with_db?
       Gitlab::SetupHelper::Praefect.create_configuration(
         gitaly_dir,
-        { 'praefect' => repos_path },
+        nil,
         force: true
       )
     end
@@ -253,7 +259,7 @@ module GitalySetup
     if ENV['CI'] || praefect_with_db?
       Gitlab::SetupHelper::Praefect.create_configuration(
         gitaly_dir,
-        { 'praefect' => repos_path },
+        nil,
         force: true,
         options: {
           per_repository: true,

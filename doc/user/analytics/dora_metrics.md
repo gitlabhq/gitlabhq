@@ -170,6 +170,28 @@ Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master
 
 To retrieve DORA data, use the [GraphQL](../../api/graphql/reference/index.md) or the [REST](../../api/dora/metrics.md) APIs.
 
+The following example uses the GraphQL API to retrieve the monthly deployment frequency for a given time period:
+
+```graphql
+{
+  project(fullPath: "gitlab-org/gitlab") {
+    dora {
+      metrics(
+        metric: DEPLOYMENT_FREQUENCY
+        startDate: "2023-12-01"
+        endDate: "2024-02-01"
+        interval: MONTHLY
+      ) {
+        date
+        value
+      }
+    }
+  }
+}
+```
+
+You can explore the GraphQL API resources with the interactive [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+
 ## Measure DORA metrics
 
 ### Measure DORA metrics without using GitLab CI/CD pipelines
