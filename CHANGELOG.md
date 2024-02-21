@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.1 (2024-02-20)
+
+### Fixed (2 changes)
+
+- [Fix Duo Chat CORS issue by updating web-ide package](gitlab-org/security/gitlab@6c4fccdd4d33fd40550197699a990a0d07a65137)
+- [Fix deny_all_requests_except_allowed of AddressableUrlValidator](gitlab-org/security/gitlab@18ff795a3b9fdd54705c1a8898ad15b5dd84e2f0)
+
+### Security (10 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@b090b503c47300d708d7e51192a486467fdecefd) ([merge request](gitlab-org/security/gitlab!3894))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@1c2de5ef077c5710e213b668373557c01ff8ba26) ([merge request](gitlab-org/security/gitlab!3891))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@07621ad26d2db3656c99b332e697a6b0857f6e07) ([merge request](gitlab-org/security/gitlab!3879))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@c9d8ffebe020dfdc1435e073516a098a8d188ff0) ([merge request](gitlab-org/security/gitlab!3889))
+- [Check project read access in Environment and Operations dashboard](gitlab-org/security/gitlab@83fdac099562fa4aebcc43e400b0da2026c730a6) ([merge request](gitlab-org/security/gitlab!3873))
+- [Fix Stored-XSS in user's profile page: Change markup used for pronouns](gitlab-org/security/gitlab@0fafb29660c08e72b87bd79d792da802c566b650) ([merge request](gitlab-org/security/gitlab!3882))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@3411c25e77642fddc3619bf24ee956d4ba4d99b2) ([merge request](gitlab-org/security/gitlab!3884))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@46ffceb9c94b6f4ba207ddf035ae67e8de413d57) ([merge request](gitlab-org/security/gitlab!3876))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@01e2c82cb79b6b4a9f6cf3428890149d023aacfb) ([merge request](gitlab-org/security/gitlab!3877))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@eafc00662cb6e604b35278a5f59c25d418ef00c9) ([merge request](gitlab-org/security/gitlab!3878))
+
 ## 16.9.0 (2024-02-14)
 
 ### Added (145 changes)

@@ -320,105 +320,200 @@ RSpec.describe Projects::DeployKeysController, feature_category: :continuous_del
       { deploy_key: { title: title, deploy_keys_projects_attributes: deploy_keys_projects_attributes } }
     end
 
-    let(:deploy_key) { create(:deploy_key, public: true) }
     let(:project) { create(:project) }
-    let!(:deploy_keys_project) do
-      create(:deploy_keys_project, project: project, deploy_key: deploy_key)
-    end
 
-    context 'with project maintainer' do
-      before do
-        project.add_maintainer(user)
+    context 'public deploy key' do
+      let(:deploy_key) { create(:deploy_key, public: true) }
+      let!(:deploy_keys_project) do
+        create(:deploy_keys_project, project: project, deploy_key: deploy_key)
       end
 
-      context 'public deploy key attached to project' do
-        let(:extra_params) { deploy_key_params('updated title', '1') }
-
-        it 'does not update the title of the deploy key' do
-          expect { subject }.not_to change { deploy_key.reload.title }
+      context 'with project maintainer' do
+        before do
+          project.add_maintainer(user)
         end
 
-        it 'updates can_push of deploy_keys_project' do
-          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-        end
-      end
-    end
+        context 'public deploy key attached to project' do
+          let(:extra_params) { deploy_key_params('updated title', '1') }
 
-    context 'with admin', :enable_admin_mode do
-      before do
-        sign_in(admin)
-      end
-
-      context 'public deploy key attached to project' do
-        let(:extra_params) { deploy_key_params('updated title', '1') }
-
-        it 'updates the title of the deploy key' do
-          expect { subject }.to change { deploy_key.reload.title }.to('updated title')
-        end
-
-        it 'updates can_push of deploy_keys_project' do
-          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
-        end
-      end
-
-      context 'when a different deploy key id param is injected' do
-        let(:extra_params) { deploy_key_params('updated title', '1') }
-        let(:hacked_params) do
-          extra_params.reverse_merge(id: other_deploy_key_id, namespace_id: project.namespace, project_id: project)
-        end
-
-        subject { put :update, params: hacked_params }
-
-        context 'and that deploy key id exists' do
-          let(:other_project) { create(:project) }
-          let(:other_deploy_key) do
-            key = create(:deploy_key)
-            project.deploy_keys << key
-            key
-          end
-
-          let(:other_deploy_key_id) { other_deploy_key.id }
-
-          it 'does not update the can_push attribute' do
-            expect { subject }.not_to change { deploy_key.deploy_keys_project_for(project).can_push }
-          end
-        end
-
-        context 'and that deploy key id does not exist' do
-          let(:other_deploy_key_id) { 9999 }
-
-          it 'returns 404' do
-            subject
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-      end
-    end
-
-    context 'with admin as project maintainer' do
-      before do
-        sign_in(admin)
-        project.add_maintainer(admin)
-      end
-
-      context 'public deploy key attached to project' do
-        let(:extra_params) { deploy_key_params('updated title', '1') }
-
-        context 'admin mode disabled' do
           it 'does not update the title of the deploy key' do
             expect { subject }.not_to change { deploy_key.reload.title }
           end
+
+          it 'updates can_push of deploy_keys_project' do
+            expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          end
+        end
+      end
+
+      context 'with admin', :enable_admin_mode do
+        before do
+          sign_in(admin)
         end
 
-        context 'admin mode enabled', :enable_admin_mode do
+        context 'public deploy key attached to project' do
+          let(:extra_params) { deploy_key_params('updated title', '1') }
+
+          it 'updates the title of the deploy key' do
+            expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+          end
+
+          it 'updates can_push of deploy_keys_project' do
+            expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          end
+        end
+
+        context 'when a different deploy key id param is injected' do
+          let(:extra_params) { deploy_key_params('updated title', '1') }
+          let(:hacked_params) do
+            extra_params.reverse_merge(id: other_deploy_key_id, namespace_id: project.namespace, project_id: project)
+          end
+
+          subject { put :update, params: hacked_params }
+
+          context 'and that deploy key id exists' do
+            let(:other_project) { create(:project) }
+            let(:other_deploy_key) do
+              key = create(:deploy_key)
+              project.deploy_keys << key
+              key
+            end
+
+            let(:other_deploy_key_id) { other_deploy_key.id }
+
+            it 'does not update the can_push attribute' do
+              expect { subject }.not_to change { deploy_key.deploy_keys_project_for(project).can_push }
+            end
+          end
+
+          context 'and that deploy key id does not exist' do
+            let(:other_deploy_key_id) { 9999 }
+
+            it 'returns 404' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+        end
+      end
+
+      context 'with admin as project maintainer' do
+        before do
+          sign_in(admin)
+          project.add_maintainer(admin)
+        end
+
+        context 'public deploy key attached to project' do
+          let(:extra_params) { deploy_key_params('updated title', '1') }
+
+          context 'admin mode disabled' do
+            it 'does not update the title of the deploy key' do
+              expect { subject }.not_to change { deploy_key.reload.title }
+            end
+          end
+
+          context 'admin mode enabled', :enable_admin_mode do
+            it 'updates the title of the deploy key' do
+              expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+            end
+          end
+
+          it 'updates can_push of deploy_keys_project' do
+            expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          end
+        end
+      end
+    end
+
+    context 'private deploy key' do
+      let_it_be(:deploy_key) { create(:deploy_key) }
+      let_it_be(:extra_params) { deploy_key_params('updated title', '1') }
+
+      context 'when attached to one project' do
+        let!(:deploy_keys_project) do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+        end
+
+        context 'with admin', :enable_admin_mode do
+          before do
+            sign_in(admin)
+          end
+
+          it 'updates the title of the deploy key' do
+            expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+          end
+
+          it 'updates can_push of deploy_keys_project' do
+            expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          end
+        end
+
+        context 'with project maintainer' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'updates the title of the deploy key' do
+            expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+          end
+
+          it 'updates can_push of deploy_keys_project' do
+            expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          end
+        end
+
+        context 'with project guest' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not update the title of the deploy key' do
+            expect { subject }.not_to change { deploy_key.reload.title }
+          end
+
+          it 'does not update can_push of deploy_keys_project' do
+            expect { subject }.not_to change { deploy_keys_project.reload.can_push }
+          end
+        end
+      end
+
+      context 'when attached to multiple projects' do
+        let_it_be(:another_project) { create(:project) }
+
+        before do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+          create(:deploy_keys_project, project: another_project, deploy_key: deploy_key)
+        end
+
+        context 'with admin', :enable_admin_mode do
+          before do
+            sign_in(admin)
+          end
+
           it 'updates the title of the deploy key' do
             expect { subject }.to change { deploy_key.reload.title }.to('updated title')
           end
         end
 
-        it 'updates can_push of deploy_keys_project' do
-          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+        context 'with project maintainer' do
+          before do
+            project.add_maintainer(user)
+          end
+
+          it 'does not update the title of the deploy key' do
+            expect { subject }.not_to change { deploy_key.reload.title }
+          end
+        end
+
+        context 'with project guest' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'does not update the title of the deploy key' do
+            expect { subject }.not_to change { deploy_key.reload.title }
+          end
         end
       end
     end
