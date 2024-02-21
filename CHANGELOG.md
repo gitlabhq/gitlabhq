@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.6 (2024-02-20)
+
+### Fixed (2 changes)
+
+- [Avoid mutating OpenSSL::PKey::EC keys](gitlab-org/security/gitlab@3d15d7efb953ff7abe9837caa99dd9be776c1a58)
+- [Fix X509::Signature#x509_issuer not working with OpenSSL 3](gitlab-org/security/gitlab@e1fb88e53d6a699f3b26db233ec275fc6dbaeeb9)
+
+### Security (9 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@df77f98beec6c91605b697a84dabcabe12a9aa8e) ([merge request](gitlab-org/security/gitlab!3861))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@a711d3d91d2c66b97fef6987107838b68f471b68) ([merge request](gitlab-org/security/gitlab!3893))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@4c0cb71664cc31f93a3adbc71aa2339c8ce8ee20) ([merge request](gitlab-org/security/gitlab!3881))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@9699f280e711fd75e8c02e6849efbc09e6162b59) ([merge request](gitlab-org/security/gitlab!3852))
+- [Check project read access in Environments and Operations dashboard](gitlab-org/security/gitlab@0a6b7ffd36aafd377065e61e6806734e9fcf449c) ([merge request](gitlab-org/security/gitlab!3871))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@d17f1b2b42c5d0872392e0c26f244e4ae55f4c2c) ([merge request](gitlab-org/security/gitlab!3886))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@b581173dbe86002261584a16a13360e2e6497274) ([merge request](gitlab-org/security/gitlab!3865))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@b4eec07d6a987d1ae508ba7aacc66f39ec2dd30d) ([merge request](gitlab-org/security/gitlab!3857))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@52e8d1a80ae99ac8c68b1df3581c1817e6fb7d49) ([merge request](gitlab-org/security/gitlab!3869))
+
 ## 16.7.5 (2024-02-07)
 
 ### Fixed (1 change)

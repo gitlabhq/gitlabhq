@@ -158,6 +158,10 @@ To view the Value Streams Dashboard as an analytics dashboard for a group:
 
 You can change the location of your project or group dashboards.
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project or group the project belongs to.
+
 ### Group dashboards
 
 NOTE:

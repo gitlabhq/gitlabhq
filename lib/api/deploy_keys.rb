@@ -172,7 +172,7 @@ module API
         update_params[:can_push] = params[:can_push] if params.key?(:can_push)
         update_params[:deploy_key_attributes] = { id: params[:key_id] }
 
-        if can?(current_user, :update_deploy_key, deploy_keys_project.deploy_key)
+        if can?(current_user, :update_deploy_key_title, deploy_keys_project.deploy_key)
           update_params[:deploy_key_attributes][:title] = params[:title] if params.key?(:title)
         end
 

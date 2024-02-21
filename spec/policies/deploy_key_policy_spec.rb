@@ -17,12 +17,16 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       it { is_expected.to be_disallowed(:read_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key_title) }
     end
 
     context 'and current_user is present' do
       it { is_expected.to be_allowed(:read_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key_title) }
     end
 
     context 'when current_user is admin' do
@@ -32,12 +36,16 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
         it { is_expected.to be_allowed(:read_deploy_key) }
 
         it { is_expected.to be_allowed(:update_deploy_key) }
+
+        it { is_expected.to be_allowed(:update_deploy_key_title) }
       end
 
       context 'when admin mode disabled' do
         it { is_expected.to be_allowed(:read_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
+
+        it { is_expected.to be_disallowed(:update_deploy_key_title) }
       end
     end
   end
@@ -51,6 +59,8 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       it { is_expected.to be_disallowed(:read_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key_title) }
     end
 
     context 'when current_user is admin' do
@@ -60,12 +70,16 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
         it { is_expected.to be_allowed(:read_deploy_key) }
 
         it { is_expected.to be_allowed(:update_deploy_key) }
+
+        it { is_expected.to be_allowed(:update_deploy_key_title) }
       end
 
       context 'when admin mode disabled' do
         it { is_expected.to be_disallowed(:read_deploy_key) }
 
         it { is_expected.to be_disallowed(:update_deploy_key) }
+
+        it { is_expected.to be_disallowed(:update_deploy_key_title) }
       end
     end
 
@@ -79,12 +93,34 @@ RSpec.describe DeployKeyPolicy, feature_category: :groups_and_projects do
       it { is_expected.to be_allowed(:read_deploy_key) }
 
       it { is_expected.to be_allowed(:update_deploy_key) }
+
+      it { is_expected.to be_allowed(:update_deploy_key_title) }
     end
 
     context 'when assigned to another project' do
       it { is_expected.to be_disallowed(:read_deploy_key) }
 
       it { is_expected.to be_disallowed(:update_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key_title) }
+    end
+
+    context 'when assigned to miltiple projects' do
+      let_it_be(:project_one) { create(:project) }
+      let_it_be(:project_two) { create(:project) }
+
+      before_all do
+        create(:deploy_keys_project, project: project_one, deploy_key: deploy_key)
+        create(:deploy_keys_project, project: project_two, deploy_key: deploy_key)
+
+        project_one.add_maintainer(current_user)
+      end
+
+      it { is_expected.to be_allowed(:read_deploy_key) }
+
+      it { is_expected.to be_allowed(:update_deploy_key) }
+
+      it { is_expected.to be_disallowed(:update_deploy_key_title) }
     end
   end
 end

@@ -26,8 +26,10 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :check_forbidden_password_based_login, if: -> { action_name == 'create' && password_based_login? }
-  prepend_before_action :ensure_password_authentication_enabled!, if: -> { action_name == 'create' && password_based_login? }
+  prepend_before_action :ensure_user_allowed_to_password_authenticate,
+    if: -> { action_name == 'create' && password_based_login? }
+  prepend_before_action :ensure_password_authentication_enabled!,
+    if: -> { action_name == 'create' && password_based_login? }
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :init_preferred_language, only: :new
   before_action :store_unauthenticated_sessions, only: [:new]
@@ -317,11 +319,11 @@ class SessionsController < Devise::SessionsController
     @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
   end
 
-  def check_forbidden_password_based_login
-    if find_user&.password_based_login_forbidden?
-      flash[:alert] = _('You are not allowed to log in using password')
-      redirect_to new_user_session_path
-    end
+  def ensure_user_allowed_to_password_authenticate
+    return unless find_user
+    return if find_user.allow_password_authentication_for_web? && !find_user.password_based_login_forbidden?
+
+    redirect_to new_user_session_path, alert: I18n.t('devise.failure.invalid')
   end
 end
 

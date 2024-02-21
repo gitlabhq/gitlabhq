@@ -60,11 +60,7 @@ class PasswordsController < Devise::PasswordsController
   end
 
   def check_password_authentication_available
-    if resource
-      return if resource.allow_password_authentication?
-    elsif Gitlab::CurrentSettings.password_authentication_enabled?
-      return
-    end
+    return if Gitlab::CurrentSettings.password_authentication_enabled?
 
     redirect_to after_sending_reset_password_instructions_path_for(resource_name),
       alert: _("Password authentication is unavailable.")
