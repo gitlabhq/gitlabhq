@@ -4,7 +4,7 @@
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
     %style
-      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.html_safe
+      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.force_encoding('UTF-8').html_safe
   %body
     .page-container
       = yield

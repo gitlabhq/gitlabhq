@@ -17,7 +17,6 @@ class ContainerRepository < ApplicationRecord
   ABORTABLE_MIGRATION_STATES = (ACTIVE_MIGRATION_STATES + %w[pre_import_done default]).freeze
   SKIPPABLE_MIGRATION_STATES = (ABORTABLE_MIGRATION_STATES + %w[import_aborted]).freeze
 
-  MIGRATION_PHASE_1_STARTED_AT = Date.new(2021, 11, 4).freeze
   MIGRATION_PHASE_1_ENDED_AT = Date.new(2022, 01, 23).freeze
 
   MAX_TAGS_PAGES = 2000
@@ -547,8 +546,6 @@ class ContainerRepository < ApplicationRecord
 
   def size
     strong_memoize(:size) do
-      next unless Gitlab.com_except_jh?
-      next if self.created_at.before?(MIGRATION_PHASE_1_STARTED_AT) && self.migration_state != 'import_done'
       next unless gitlab_api_client.supports_gitlab_api?
 
       gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']

@@ -5,7 +5,7 @@
     %title= yield(:title)
     = stylesheet_link_tag 'application_utilities'
     %style
-      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.html_safe
+      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.force_encoding('UTF-8').html_safe
     :css
       svg {
         width: 280px;

@@ -126,7 +126,7 @@ Before you can import a project, you must export it.
 
 Prerequisites:
 
-- Review the list of [items that are exported](#items-that-are-exported). Not all items are exported.
+- Review the list of [items that are exported](#project-items-that-are-exported). Not all items are exported.
 - You must have at least the Maintainer role for the project.
 
 To export a project and its data, follow these steps:
@@ -142,7 +142,7 @@ To export a project and its data, follow these steps:
 The export is generated in your configured `shared_path`, a temporary shared directory, and then
 moved to your configured `uploads_directory`. Every 24 hours, a worker deletes these export files.
 
-#### Items that are exported
+#### Project items that are exported
 
 Exported project items depend on the version of GitLab you use. To determine if a
 specific project item is exported:
@@ -185,7 +185,7 @@ For a quick overview, items that are exported include:
 - Project and inherited group members, as long as the user has the Maintainer role in the
   exported project's group or is an administrator
 
-#### Items that are not exported
+#### Project items that are not exported
 
 Items that are **not** exported include:
 
@@ -349,7 +349,7 @@ For example:
 | 13.0                | 13.0, 12.10, 12.9          |
 | 13.1                | 13.1, 13.0, 12.10          |
 
-### Exported contents
+### Group items that are exported
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/group/import_export.yml)
 file for groups lists items exported and imported when migrating groups using file exports. View this file in the branch
@@ -369,11 +369,14 @@ Group items that are exported include:
 - [Wikis](../../project/wiki/group.md)
 - Iterations cadences. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95372) in GitLab 15.4.
 
+### Group items that are not exported
+
 Items that are **not** exported include:
 
 - Projects
 - Runner tokens
 - SAML discovery tokens
+- Uploads
 
 ### Preparation
 

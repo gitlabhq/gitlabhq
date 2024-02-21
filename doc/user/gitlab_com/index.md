@@ -104,7 +104,7 @@ To back up an entire project on GitLab.com, you can export it either:
   can also use the API to programmatically upload exports to a storage platform,
   such as Amazon S3.
 
-With exports, be aware of [what is and is not](../project/settings/import_export.md#items-that-are-exported)
+With exports, be aware of [what is and is not](../project/settings/import_export.md#project-items-that-are-exported)
 included in a project export.
 
 GitLab is built on Git, so you can back up just the repository of a project by

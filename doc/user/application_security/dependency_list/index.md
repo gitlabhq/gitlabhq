@@ -68,11 +68,7 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 ## Filter dependency list
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.7  [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/424727) in GitLab 16.10.
-
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`.
-On GitLab.com, this feature is available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
 
 In the group-level dependency list you can filter by:
 

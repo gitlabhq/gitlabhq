@@ -50202,6 +50202,9 @@ msgstr ""
 msgid "The repository must be accessible over %{code_open}http://%{code_close}, %{code_open}https://%{code_close}, %{code_open}ssh://%{code_close} or %{code_open}git://%{code_close}."
 msgstr ""
 
+msgid "The requested `version` attribute format is not correct. Use formats such as `1.0.0` or `v1.0.0`."
+msgstr ""
+
 msgid "The resource that you are attempting to access does not exist or you don't have permission to perform this action."
 msgstr ""
 
@@ -50926,6 +50929,9 @@ msgid "This feature requires local storage to be enabled"
 msgstr ""
 
 msgid "This field is auto-calculated based on the Progress score of its direct children. You can overwrite this value but it will be replaced by the auto-calculation anytime the Progress score of its direct children are updated."
+msgstr ""
+
+msgid "This field is auto-calculated based on the progress score of its direct children. You can overwrite this value but it will be replaced by the auto-calculation anytime the progress score of its direct children are updated."
 msgstr ""
 
 msgid "This field is required"

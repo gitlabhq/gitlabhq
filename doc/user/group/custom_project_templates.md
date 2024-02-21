@@ -89,7 +89,7 @@ If the user:
   project deploy keys and project webhooks aren't copied over because they contain sensitive data.
 
 To learn more about what is migrated, see
-[Items that are exported](../project/settings/import_export.md#items-that-are-exported).
+[Items that are exported](../project/settings/import_export.md#project-items-that-are-exported).
 
 ## User assignments in templates
 

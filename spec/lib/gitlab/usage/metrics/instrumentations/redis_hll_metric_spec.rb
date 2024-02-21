@@ -40,13 +40,13 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:g_project_management_issue_iteration_changed, values: 3, time: 2.weeks.ago, property_name: 'project')
     end
 
-    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['g_project_management_issue_iteration_changed'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+    it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
 
     context "with feature flag disabled" do
       let(:expected_value) { 3 }
       let(:flag_enabled) { false }
 
-      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['g_project_management_issue_iteration_changed'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
+      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
     end
 
     context "with events having different `unique` values" do
@@ -61,9 +61,13 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisHLLMetric, :clean_
 
       it 'raises an exception' do
         expect do
-          described_class.new(time_frame: '28d', options: { events: %w[g_project_management_issue_iteration_changed g_project_management_issue_label_changed] }, events: events).value
+          described_class.new(time_frame: '28d', events: events).value
         end.to raise_error(Gitlab::Usage::MetricDefinition::InvalidError)
       end
+    end
+
+    context "with options attributes also defined" do
+      it_behaves_like 'a correct instrumented metric value', { time_frame: '28d', options: { events: ['i_quickactions_approve'] }, events: [name: 'g_project_management_issue_iteration_changed', unique: 'user.id'] }
     end
   end
 

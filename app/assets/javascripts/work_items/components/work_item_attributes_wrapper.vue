@@ -45,7 +45,10 @@ export default {
       import('ee_component/work_items/components/work_item_weight_inline.vue'),
     WorkItemWeight: () =>
       import('ee_component/work_items/components/work_item_weight_with_edit.vue'),
-    WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
+    WorkItemProgressInline: () =>
+      import('ee_component/work_items/components/work_item_progress_inline.vue'),
+    WorkItemProgressWithEdit: () =>
+      import('ee_component/work_items/components/work_item_progress_with_edit.vue'),
     WorkItemIterationInline: () =>
       import('ee_component/work_items/components/work_item_iteration_inline.vue'),
     WorkItemIteration: () =>
@@ -261,15 +264,26 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-progress
-      v-if="workItemProgress"
-      class="gl-mb-5"
-      :can-update="canUpdate"
-      :progress="workItemProgress.progress"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
+    <template v-if="workItemProgress">
+      <work-item-progress-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :progress="workItemProgress.progress"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+      <work-item-progress-inline
+        v-else
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :progress="workItemProgress.progress"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         v-if="glFeatures.workItemsMvc2"

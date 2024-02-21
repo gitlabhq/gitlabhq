@@ -114,6 +114,8 @@ module ContainerRegistry
           response.success? || response.status == 401
         end
       end
+    rescue ::Faraday::Error
+      false
     end
 
     # Deprecated. Will be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/409873.
