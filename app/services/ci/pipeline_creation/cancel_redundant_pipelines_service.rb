@@ -70,20 +70,7 @@ module Ci
           .alive_or_scheduled
       end
 
-      def legacy_auto_cancel_pipelines(pipeline_ids)
-        ::Ci::Pipeline
-          .id_in(pipeline_ids)
-          .conservative_interruptible
-          .each do |cancelable_pipeline|
-            cancel_pipeline(cancelable_pipeline, safe_cancellation: false)
-          end
-      end
-
       def auto_cancel_pipelines(pipeline_ids)
-        if Feature.disabled?(:ci_workflow_auto_cancel_on_new_commit, project)
-          return legacy_auto_cancel_pipelines(pipeline_ids)
-        end
-
         ::Ci::Pipeline
           .id_in(pipeline_ids)
           .each do |cancelable_pipeline|

@@ -139,7 +139,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     ml_candidates: %w[internal_id],
     value_stream_dashboard_counts: %w[namespace_id],
     zoekt_indices: %w[namespace_id], # needed for cells sharding key
-    zoekt_repositories: %w[namespace_id project_identifier] # needed for cells sharding key
+    zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
+    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id] # needed for: cells sharding key, partitioning, and performance reasons
   }.with_indifferent_access.freeze
 
   context 'for table' do

@@ -108,7 +108,10 @@ describe('HelpCenter component', () => {
           expect.objectContaining({
             icon: 'tanuki-ai',
             text: HelpCenter.i18n.chat,
-            extraAttrs: trackingAttrs('tanuki_bot_help_dropdown'),
+            extraAttrs: {
+              ...trackingAttrs('tanuki_bot_help_dropdown'),
+              'data-testid': 'duo-chat-menu-item',
+            },
           }),
           ...DEFAULT_HELP_ITEMS,
         ]);

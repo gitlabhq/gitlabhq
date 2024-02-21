@@ -79,7 +79,7 @@ The biggest examples we've seen lately are:
 1. Identify the common tasks that take development time and automate them.
 1. Focus on MR creation rather than issue creation as MRs are the results we
    want and issues are a process for reminding us to get those results.
-1. Improve developer job satisfication by knowing that automation is doing the
+1. Improve developer job satisfaction by knowing that automation is doing the
    busy work while we get to do the challenging and creative work.
 1. Developers should be encouraged to contribute to the automation framework
    when they see a pattern rather than documenting the manual work for future

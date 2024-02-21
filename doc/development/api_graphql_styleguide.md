@@ -1059,6 +1059,14 @@ If necessary, provide the default. For example:
 Sets the issue to confidential. Default is false.
 ```
 
+#### Sort enums
+
+[Enums for sorting](#sort-arguments) should have the description `'Values for sorting {x}.'`. For example:
+
+```plaintext
+Values for sorting container repositories.
+```
+
 #### `Types::TimeType` field description
 
 For `Types::TimeType` GraphQL fields, include the word `timestamp`. This lets
@@ -2042,6 +2050,41 @@ argument :draft,
 These arguments automatically generate an input type called
 `MergeRequestSetDraftInput` with the 3 arguments we specified and the
 `clientMutationId`.
+
+### Sort arguments
+
+Sort arguments should use an [enum type](#enums) whenever possible to describe the set of available sorting values.
+
+The enum can inherit from `Types::SortEnum` to inherit some common values.
+
+The enum values should follow the format `{PROPERTY}_{DIRECTION}`. For example:
+
+```plaintext
+TITLE_ASC
+```
+
+Also see the [description style guide for sort enums](#sort-enums).
+
+Example from [`ContainerRepositoriesResolver`](https://gitlab.com/gitlab-org/gitlab/-/blob/dad474605a06c8ed5404978b0a9bd187e9fded80/app/graphql/resolvers/container_repositories_resolver.rb#L13-16):
+
+```ruby
+# Types::ContainerRepositorySortEnum:
+module Types
+  class ContainerRepositorySortEnum < SortEnum
+    graphql_name 'ContainerRepositorySort'
+    description 'Values for sorting container repositories'
+
+    value 'NAME_ASC', 'Name by ascending order.', value: :name_asc
+    value 'NAME_DESC', 'Name by descending order.', value: :name_desc
+  end
+end
+
+# Resolvers::ContainerRepositoriesResolver:
+argument :sort, Types::ContainerRepositorySortEnum,
+          description: 'Sort container repositories by this criteria.',
+          required: false,
+          default_value: :created_desc
+```
 
 ## GitLab custom scalars
 

@@ -9,6 +9,7 @@ module QA
         include SubMenus::CreateNewMenu
         include SubMenus::SuperSidebar::GlobalSearchModal
         include SubMenus::Explore
+        include SubMenus::Help
 
         view 'app/assets/javascripts/super_sidebar/components/super_sidebar.vue' do
           element 'super-sidebar', required: true

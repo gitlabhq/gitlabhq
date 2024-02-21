@@ -23,7 +23,8 @@ if Gitlab.ee?
       IncidentManagement::PendingEscalations::Issue,
       Security::Finding,
       Analytics::ValueStreamDashboard::Count,
-      Ci::FinishedBuildChSyncEvent
+      Ci::FinishedBuildChSyncEvent,
+      Search::Zoekt::Task
     ])
 else
   Gitlab::Database::Partitioning.register_tables(
