@@ -67,11 +67,38 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       end
     end
 
+    shared_examples "does not send 'Reset password instructions' email when password auth is not allowed" do
+      it 'find the user with error' do
+        expect(send_reset_password_instructions).to be_instance_of User
+        expect(send_reset_password_instructions.errors[:password])
+          .to include(_('Password authentication is unavailable.'))
+      end
+
+      it 'does not send email to anyone' do
+        reset_delivered_emails!
+
+        expect { send_reset_password_instructions }
+          .not_to have_enqueued_mail(DeviseMailer, :reset_password_instructions)
+
+        perform_enqueued_jobs
+
+        should_not_email_anyone
+      end
+    end
+
     context "when email param matches user's confirmed primary email" do
       let(:expected_user) { user }
       let(:email) { user_confirmed_primary_email }
 
       it_behaves_like "sends 'Reset password instructions' email"
+
+      context 'when password authentication is not allowed' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive_messages(password_authentication_enabled_for_web?: false)
+        end
+
+        it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+      end
     end
 
     context "when email param matches user's unconfirmed primary email" do
@@ -138,6 +165,24 @@ RSpec.describe RecoverableByAnyEmail, feature_category: :system_access do
       end
 
       it_behaves_like "does not send 'Reset password instructions' email"
+    end
+
+    context 'with an LDAP user' do
+      let_it_be(:ldap_user) { create(:omniauth_user, :ldap) }
+
+      context 'with a confirmed primary email' do
+        let(:email) { ldap_user.email }
+
+        it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+      end
+
+      context 'with a confirmed secondary email' do
+        let(:email) do
+          create(:email, :confirmed, user: ldap_user, email: 'confirmed-secondary-ldap-email@example.com').email
+        end
+
+        it_behaves_like "does not send 'Reset password instructions' email when password auth is not allowed"
+      end
     end
   end
 end

@@ -367,6 +367,51 @@ RSpec.describe API::DeployKeys, :aggregate_failures, feature_category: :continuo
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
+
+      context 'private deploy key attached to one project' do
+        let_it_be(:deploy_key) { create(:deploy_key, public: false) }
+        let_it_be(:deploy_keys_project) do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+        end
+
+        let_it_be(:extra_params) { { title: 'new title', can_push: true } }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to('new title')
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'private deploy key attached to multiple projects' do
+        let_it_be(:deploy_key) { create(:deploy_key, public: false) }
+        let_it_be(:another_project) { create(:project, title: 'hello world') }
+        let_it_be(:extra_params) { { title: 'new title', can_push: true } }
+
+        let_it_be(:deploy_keys_project) do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+        end
+
+        before do
+          create(:deploy_keys_project, project: another_project, deploy_key: deploy_key)
+
+          another_project.add_maintainer(maintainer)
+        end
+
+        it 'does not update the title of the deploy key' do
+          expect { subject }.not_to change { deploy_key.reload.title }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 
