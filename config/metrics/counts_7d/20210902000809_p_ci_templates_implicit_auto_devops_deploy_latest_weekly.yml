@@ -3,7 +3,7 @@ key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_auto_devops_de
 description: Count of pipelines using the latest Auto Deploy template
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 value_type: number
 status: removed
 milestone: '14.3'

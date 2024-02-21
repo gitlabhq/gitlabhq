@@ -97,6 +97,14 @@ If your job is failing at the build step with the message "Project couldn't be b
 
 The solution is to use [pre-compilation](index.md#pre-compilation). Pre-compilation ensures the images required by SpotBugs are available in the job's container.
 
+## SpotBugs message: `Exception analyzing ... using detector ...` followed by a Java stack trace
+
+If your job log contains a message of the form "Exception analyzing ... using detector ..." followed by a Java stack trace, this is **not** a failure of the SAST pipeline. SpotBugs has determined that the exception is [recoverable](https://github.com/spotbugs/spotbugs/blob/5ebd4439f6f8f2c11246b79f58c44324718d39d8/spotbugs/src/main/java/edu/umd/cs/findbugs/FindBugs2.java#L1200), logged it, and resumed analysis.
+
+The first "..." part of the message is the class being analyzed - if it's not part of your project, you can likely ignore the message and the stack trace that follows.
+
+If, on the other hand, the class being analyzed is part of your project, consider creating an issue with the SpotBugs project on [GitHub](https://github.com/spotbugs/spotbugs/issues).
+
 ## Flawfinder encoding error
 
 This occurs when Flawfinder encounters an invalid UTF-8 character. To fix this, convert all source code in your project to UTF-8 character encoding. This can be done with [`cvt2utf`](https://github.com/x1angli/cvt2utf) or [`iconv`](https://www.gnu.org/software/libiconv/documentation/libiconv-1.13/iconv.1.html) either over the entire project or per job using the [`before_script`](../../../ci/yaml/index.md#before_script) feature.

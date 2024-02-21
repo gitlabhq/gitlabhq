@@ -4,7 +4,7 @@ key_path: redis_hll_counters.ci_templates.ci_templates_total_unique_counts_weekl
 description: Total count of pipelines runs
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 value_type: number
 status: removed
 milestone_removed: '14.3'

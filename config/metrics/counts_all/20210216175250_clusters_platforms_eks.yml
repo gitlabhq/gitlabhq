@@ -4,7 +4,7 @@ key_path: counts.clusters_platforms_eks
 description: Total GitLab Managed clusters provisioned with GitLab on AWS EKS
 product_section: ops
 product_stage: configure
-product_group: configure
+product_group: environments
 product_category: deployment_management
 value_type: number
 status: active

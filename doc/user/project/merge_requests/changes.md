@@ -68,12 +68,7 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140180) in GitLab 16.8 [with a flag](../../../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../../administration/feature_flags.md)
-named `collapse_generated_diff_files`.
-On GitLab.com, this feature is not available.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. These files are collapsed by default, because

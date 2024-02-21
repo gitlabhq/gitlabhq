@@ -9,6 +9,7 @@ import {
   sprintfWorkItem,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
+import groupWorkItemTypesQuery from '../graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
@@ -42,7 +43,9 @@ export default {
   },
   apollo: {
     workItemTypes: {
-      query: projectWorkItemTypesQuery,
+      query() {
+        return this.isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery;
+      },
       variables() {
         return {
           fullPath: this.fullPath,

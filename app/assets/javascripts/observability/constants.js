@@ -36,9 +36,9 @@ export const TIME_RANGE_OPTIONS = [
 ];
 Object.freeze(TIME_RANGE_OPTIONS);
 
-const OPERERATOR_LIKE = '=~';
+export const OPERERATOR_LIKE = '=~';
 const OPERERATOR_LIKE_TEXT = s__('ObservabilityMetrics|is like');
-const OPERERATOR_NOT_LIKE = '!~';
+export const OPERERATOR_NOT_LIKE = '!~';
 const OPERERATOR_NOT_LIKE_TEXT = s__('ObservabilityMetrics|is not like');
 
 const OPERATORS_LIKE = [{ value: OPERERATOR_LIKE, description: OPERERATOR_LIKE_TEXT }];

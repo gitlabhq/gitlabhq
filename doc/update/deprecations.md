@@ -623,12 +623,20 @@ The GraphQL fields, `isTemporaryStorageIncreaseEnabled` and `temporaryStorageInc
 </div>
 
 Support for the Grype scanner in the GitLab Container Scanning analyzer is deprecated in
-GitLab 16.9 and will be removed in GitLab 17.0.
+GitLab 16.9.
 
-You should use the default setting for `CS_ANALYZER_IMAGE`, which uses the Trivy
+From GitLab 17.0, the Grype analyzer will no longer be maintained, except for limited fixes as
+explained in our [statement of support](https://about.gitlab.com/support/statement-of-support/#version-support).
+
+Users are advised to use the default setting for `CS_ANALYZER_IMAGE`, which uses the Trivy
 scanner.
 
-To continue to use Grype, see the [Security scanner integration documentation](https://docs.gitlab.com/ee/development/integrations/secure.html) to learn how to
+The existing current major version for the Grype analyzer image will continue to be updated
+with the latest advisory database, and operating system packages until GitLab 19.0, at which
+point the analyzer will stop working.
+
+To continue to use Grype past 19.0, see the [Security scanner integration
+documentation](https://docs.gitlab.com/ee/development/integrations/secure.html) to learn how to
 create your own integration with GitLab.
 
 </div>
