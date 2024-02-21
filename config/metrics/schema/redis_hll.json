@@ -50,12 +50,6 @@
               "aggregate": {
                 "type": "object",
                 "properties": {
-                  "operator": {
-                    "enum": [
-                      "OR",
-                      "AND"
-                    ]
-                  },
                   "attribute": {
                     "enum": [
                       "user_id",
@@ -64,7 +58,6 @@
                   }
                 },
                 "required": [
-                  "operator",
                   "attribute"
                 ],
                 "additionalProperties": false

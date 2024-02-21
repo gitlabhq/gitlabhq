@@ -1203,6 +1203,7 @@ rspec-ee unit pg16:
 rspec-ee unit pg16 es8:
   extends:
     - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-unit-parallel
 
 rspec-ee integration pg16:
@@ -1214,6 +1215,7 @@ rspec-ee integration pg16:
 rspec-ee integration pg16 es8:
   extends:
     - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-integration-parallel
 
 rspec-ee system pg16:
@@ -1225,6 +1227,7 @@ rspec-ee system pg16:
 rspec-ee system pg16 es8:
   extends:
     - .rspec-ee-base-pg16-es8
+    - .rails:rules:default-branch-schedule-nightly--code-backstage-ee-only
     - .rspec-ee-system-parallel
 # EE: default branch nightly scheduled jobs #
 #####################################

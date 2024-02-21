@@ -253,9 +253,6 @@ You can use a YAML file to define your aggregated metrics. The following argumen
   use the same data source. Additional data source requirements are described in
   [Database sourced aggregated metrics](#database-sourced-aggregated-metrics) and
   [Event sourced aggregated metrics](#event-sourced-aggregated-metrics).
-- `options.aggregate.operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
-  - `OR`: Removes duplicates and counts all entries that triggered any of the listed events.
-  - `AND`: Removes duplicates and counts all elements that were observed triggering all of the following events.
 - `options.aggregate.attribute`: Information pointing to the attribute that is being aggregated across events.
 - `time_frame`: One or more valid time frames. Use these to limit the data included in aggregated metrics to events within a specific date-range. Valid time frames are:
   - `7d`: The last 7 days of data.
@@ -277,7 +274,6 @@ instrumentation_class: AggregatedMetric
 data_source: internal_events
 options:
     aggregate:
-        operator: OR
         attribute: user_id
     events:
         - `incident_management_alert_status_changed`
@@ -384,7 +380,6 @@ instrumentation_class: MergeUsageCountAggregatedMetric
 data_source: redis_hll
 options:
     aggregate:
-        operator: OR
         attribute: user_id
     events:
         - `incident_management_alert_status_changed`

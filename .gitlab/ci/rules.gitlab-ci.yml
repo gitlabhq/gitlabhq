@@ -2049,6 +2049,9 @@
   rules:
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request
+      changes: *core-backend-patterns
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-approved

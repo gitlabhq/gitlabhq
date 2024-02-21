@@ -58,7 +58,7 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '{,ee/}app/graphql/**/*.rb'
       run: bundle exec rake gitlab:graphql:check_docs
-    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing.html#install-linters
+    vale: # Requires Vale: https://docs.gitlab.com/ee/development/documentation/testing/vale.html
       tags: documentation style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       exclude: "doc/api/graphql/reference/index.md"

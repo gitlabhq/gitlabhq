@@ -13,7 +13,6 @@ data_source: redis_hll
 time_frame: 7d
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
     - users_creating_work_items

@@ -12,7 +12,6 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
     - 'incident_management_incident_created'

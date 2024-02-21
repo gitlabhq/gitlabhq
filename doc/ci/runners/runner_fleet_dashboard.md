@@ -82,7 +82,7 @@ To enable additional CI analytics features:
     | Feature flag name                  | Purpose                                                                   | Status                             |
     |------------------------------------|---------------------------------------------------------------------------|------------------------------------|
     | `ci_data_ingestion_to_click_house` | Enables synchronization of new finished CI builds to ClickHouse database. | Enabled by default in GitLab 16.8. |
-    | `clickhouse_ci_analytics`          | Enables the **Wait time to pick a job** chart.                            | Removed in 16.8.                   |
+    | `clickhouse_ci_analytics`          | Enables the **Wait time to pick a job** chart.                            | Removed in GitLab 16.8.                   |
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video walkthrough, see [Setting up Runner Fleet Dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).

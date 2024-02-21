@@ -14,7 +14,6 @@ data_category: optional
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
   - i_container_registry_push_tag_user

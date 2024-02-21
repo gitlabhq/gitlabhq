@@ -14,7 +14,6 @@ instrumentation_class: AggregatedMetric
 data_source: redis_hll
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
     - 'i_testing_test_report_uploaded'

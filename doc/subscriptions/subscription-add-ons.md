@@ -32,6 +32,8 @@ After you purchase GitLab Duo Pro, you can assign seats to billable users to gra
 1. Select the **GitLab Duo Pro** tab.
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
+To use Code Suggestions in any project or group, a user must be assigned a seat in at least one top-level group.
+
 ### For self-managed
 
 Prerequisites:

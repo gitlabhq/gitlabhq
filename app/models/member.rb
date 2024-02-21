@@ -698,7 +698,6 @@ class Member < ApplicationRecord
   end
 
   def create_organization_user_record
-    return if Feature.disabled?(:update_organization_users, source.root_ancestor, type: :gitlab_com_derisk)
     return if invite?
     return if source.organization.blank?
 

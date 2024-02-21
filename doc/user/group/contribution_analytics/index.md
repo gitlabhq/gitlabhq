@@ -67,6 +67,16 @@ under **Contribution Analytics**.
 
 The selected time period applies to all charts and the table.
 
+## Contribution analytics with ClickHouse
+
+On GitLab.com, contribution analytics run through the ClickHouse Cloud cluster.
+When you configure the ClickHouse integration, the ClickHouse events table is populated in the ClickHouse database, and new events are inserted automatically in ClickHouse.
+
+For more information, see:
+
+- [ClickHouse integration guidelines](../../../integration/clickhouse.md)
+- [ClickHouse usage at GitLab](../../../architecture/blueprints/clickhouse_usage/index.md)
+
 ## Contribution analytics GraphQL API
 
 To retrieve metrics for user contributions, use the [GraphQL](../../../api/graphql/reference/index.md#groupcontributions) API.

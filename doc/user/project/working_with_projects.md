@@ -202,7 +202,12 @@ To restore a project marked for deletion:
 ## Archive a project
 
 When you archive a project, the repository, packages, issues, merge requests, and all
-other features become read-only. Archived projects are also hidden from project lists.
+other features become read-only. Archived projects are:
+
+- Labeled with an `archived` badge on the project page.
+- Listed on the group page in the **Archived projects** tab.
+- Hidden from project lists in **Your Work** and **Explore**.
+- Read-only.
 
 To archive a project:
 

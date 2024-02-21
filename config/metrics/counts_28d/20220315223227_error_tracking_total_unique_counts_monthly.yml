@@ -14,7 +14,6 @@ data_category: optional
 instrumentation_class: AggregatedMetric
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
     - error_tracking_view_list

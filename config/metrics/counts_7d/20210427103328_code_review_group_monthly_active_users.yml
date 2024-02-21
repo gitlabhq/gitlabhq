@@ -20,7 +20,6 @@ time_frame: 7d
 data_source: redis_hll
 options:
   aggregate:
-    operator: OR
     attribute: user_id
   events:
     - 'i_code_review_user_single_file_diffs'

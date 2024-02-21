@@ -233,6 +233,8 @@ module QA
       # Selenium::WebDriver::Error::ElementClickInterceptedError
       def click_element_coordinates(name, **kwargs)
         page.driver.browser.action.move_to(find_element(name, **kwargs).native).click.perform
+      rescue Selenium::WebDriver::Error::StaleElementReferenceError => e
+        QA::Runtime::Logger.error("Element #{name} has become stale: #{e}")
       end
 
       # replace with (..., page = self.class)
