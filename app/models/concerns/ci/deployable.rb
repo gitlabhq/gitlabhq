@@ -36,6 +36,7 @@ module Ci
       deployment_job? &&
         project.ci_forward_deployment_enabled? &&
         (!project.ci_forward_deployment_rollback_allowed? || incomplete?) &&
+        deployment&.persisted? &&
         deployment&.older_than_last_successful_deployment?
     end
     strong_memoize_attr :has_outdated_deployment?

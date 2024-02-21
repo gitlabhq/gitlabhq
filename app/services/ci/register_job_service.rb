@@ -133,7 +133,11 @@ module Ci
 
       @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
 
-      build_ids.each { |build_id| yield Ci::Build.find(build_id) }
+      if Feature.enabled?(:use_partition_id_for_register_job_service, Feature.current_request)
+        build_ids.each { |build_id, partition_id| yield Ci::Build.find_by!(partition_id: partition_id, id: build_id) }
+      else
+        build_ids.each { |build_id| yield Ci::Build.find(build_id) }
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

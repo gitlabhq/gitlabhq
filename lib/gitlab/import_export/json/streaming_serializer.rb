@@ -7,6 +7,8 @@ module Gitlab
         include Gitlab::ImportExport::CommandLineUtil
 
         BATCH_SIZE = 100
+        SMALLER_BATCH_SIZE = 2
+        SMALL_BATCH_RELATIONS = %i[merge_requests ci_pipelines].freeze
 
         attr_reader :exported_objects_count
 
@@ -144,7 +146,7 @@ module Gitlab
         end
 
         def batch(relation, key)
-          opts = { of: BATCH_SIZE }
+          opts = { of: batch_size(key) }
           order_by = reorders(relation, key)
 
           # we need to sort issues by non primary key column(relative_position)
@@ -233,6 +235,13 @@ module Gitlab
                 order_expression: arel_order_classes[direction].new(arel_table[klass.primary_key.to_sym])
               )
             ])
+        end
+
+        def batch_size(relation_name)
+          return SMALLER_BATCH_SIZE if Feature.enabled?(:export_reduce_relation_batch_size, exportable, type: :ops) &&
+            SMALL_BATCH_RELATIONS.include?(relation_name)
+
+          BATCH_SIZE
         end
 
         def read_from_replica_if_available(&block)

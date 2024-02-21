@@ -1294,6 +1294,18 @@ class Repository
     nil
   end
 
+  def empty_tree_id
+    return Gitlab::Git::SHA1_EMPTY_TREE_ID unless exists? &&
+      Feature.enabled?(:dynamic_empty_tree_id, project)
+
+    case object_format
+    when FORMAT_SHA1
+      Gitlab::Git::SHA1_EMPTY_TREE_ID
+    when FORMAT_SHA256
+      Gitlab::Git::SHA256_EMPTY_TREE_ID
+    end
+  end
+
   def blank_ref
     return Gitlab::Git::SHA1_BLANK_SHA unless exists?
 

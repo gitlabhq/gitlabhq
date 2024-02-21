@@ -18,6 +18,7 @@ module Gitlab
           milestone
           saved_to_database
           streamed
+          scope
         ].freeze
       end
     end

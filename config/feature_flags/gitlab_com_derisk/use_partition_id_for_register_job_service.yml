@@ -1,0 +1,9 @@
+---
+name: use_partition_id_for_register_job_service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/437851
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144543
+rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17585
+milestone: '16.10'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

@@ -815,7 +815,7 @@ Gitlab.ee do
   Settings.cron_jobs['sync_seat_link_worker']['job_class'] = 'SyncSeatLinkWorker'
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
   Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} #{rand(5..6)} * * * UTC"
-  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::Ai::SyncServiceTokenWorker'
+  Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker'] ||= {}
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
   Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker'

@@ -1,7 +1,7 @@
 - render_remember_me = admin_mode ? false : remember_me_enabled?
 - submit_message = admin_mode ? _('Enter admin mode') : _('Sign in')
 
-= gitlab_ui_form_for(:crowd, url: omniauth_authorize_path(:user, :crowd), html: { class: 'gl-p-5 gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_crowd_user' }}) do |f|
+= gitlab_ui_form_for(:crowd, url: omniauth_authorize_path(:user, :crowd), html: { class: 'gl-show-field-errors', aria: { live: 'assertive' }, data: { testid: 'new_crowd_user' }}) do |f|
   .form-group
     = f.label :username, _('Username or email')
     = f.text_field :username, name: :username, autocomplete: :username, class: 'form-control gl-form-input', title: _('This field is required.'), autofocus: 'autofocus', required: true

@@ -1212,6 +1212,14 @@ module Gitlab
         end
       end
 
+      # Note: this problem should be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/441770
+      # Gitlab::Git::Repository shouldn't call Repository directly
+      # Instead empty_tree_id value should be passed to Gitaly client
+      # via method arguments
+      def empty_tree_id
+        container.repository.empty_tree_id
+      end
+
       def object_format
         wrapped_gitaly_errors do
           gitaly_repository_client.object_format.format

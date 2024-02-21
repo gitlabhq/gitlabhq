@@ -199,7 +199,8 @@ module Ci
             let!(:build1_project3) { create(:ci_build, :pending, :queued, pipeline: pipeline3) }
 
             it 'picks builds one-by-one' do
-              expect(Ci::Build).to receive(:find).with(pending_job.id).and_call_original
+              expect(Ci::Build).to receive(:find_by!).with(partition_id: pending_job.partition_id, id: pending_job.id)
+                .and_call_original
 
               expect(build_on(shared_runner)).to eq(build1_project1)
             end
@@ -433,7 +434,7 @@ module Ci
             before do
               allow_any_instance_of(::Ci::Queue::BuildQueueService)
                 .to receive(:execute)
-                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id))
+                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
             end
 
             it "receives second build from the queue" do
@@ -446,7 +447,7 @@ module Ci
             before do
               allow_any_instance_of(::Ci::Queue::BuildQueueService)
                 .to receive(:execute)
-                .and_return(Ci::Build.where(id: pending_job).pluck(:id))
+                .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
             end
 
             it "does not receive any valid result" do

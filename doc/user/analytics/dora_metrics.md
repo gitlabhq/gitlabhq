@@ -163,7 +163,7 @@ This feature supports only project-level propagation.
 To do this, in the Rails console run the following command:
 
 ```ruby
-Dora::Configuration.create!(project: my_project, ltfc_target_branches: \['master', 'main'\])
+Dora::Configuration.create!(project: my_project, branches_for_lead_time_for_changes: ['master', 'main'])
 ```
 
 ## Retrieve DORA metrics data

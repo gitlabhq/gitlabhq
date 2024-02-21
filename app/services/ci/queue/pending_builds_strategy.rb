@@ -43,7 +43,11 @@ module Ci
       end
 
       def build_ids(relation)
-        relation.pluck(:build_id)
+        if Feature.enabled?(:use_partition_id_for_register_job_service, Feature.current_request)
+          relation.pluck(:build_id, :partition_id)
+        else
+          relation.pluck(:build_id)
+        end
       end
 
       private

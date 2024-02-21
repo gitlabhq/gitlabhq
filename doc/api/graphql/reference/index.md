@@ -14747,6 +14747,7 @@ An AI agent.
 | ---- | ---- | ----------- |
 | <a id="aiagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="aiagentid"></a>`id` | [`ID!`](#id) | ID of the agent. |
+| <a id="aiagentlatestversion"></a>`latestVersion` | [`AiAgentVersion`](#aiagentversion) | Latest version of the agent. |
 | <a id="aiagentname"></a>`name` | [`String!`](#string) | Name of the agent. |
 | <a id="aiagentrouteid"></a>`routeId` | [`Int!`](#int) | Route ID of the agent. |
 | <a id="aiagentversions"></a>`versions` | [`[AiAgentVersion!]`](#aiagentversion) | Versions of the agent. |
@@ -25140,6 +25141,22 @@ Represents vulnerability finding of a security report on the pipeline.
 
 #### Fields with arguments
 
+##### `Project.aiAgent`
+
+Find a specific AI Agent.
+
+NOTE:
+**Introduced** in 16.10.
+**Status**: Experiment.
+
+Returns [`AiAgent`](#aiagent).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaiagentid"></a>`id` | [`AiAgentID!`](#aiagentid) | ID of the Agent. |
+
 ##### `Project.alertManagementAlert`
 
 A single Alert Management alert of the project.
@@ -33202,6 +33219,12 @@ An example `AchievementsAchievementID` is: `"gid://gitlab/Achievements::Achievem
 A `AchievementsUserAchievementID` is a global ID. It is encoded as a string.
 
 An example `AchievementsUserAchievementID` is: `"gid://gitlab/Achievements::UserAchievement/1"`.
+
+### `AiAgentID`
+
+A `AiAgentID` is a global ID. It is encoded as a string.
+
+An example `AiAgentID` is: `"gid://gitlab/Ai::Agent/1"`.
 
 ### `AiAgentVersionID`
 

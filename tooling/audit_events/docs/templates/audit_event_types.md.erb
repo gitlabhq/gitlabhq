@@ -50,15 +50,22 @@ Every audit event is associated with an event type. Audit event types can allow 
 Some audit event types don't allow saving audit events to the database. Other audit event types don't allow streaming
 audit events to external destinations.
 
+An audit event type's scope limits the availability of the audit event type to either project, group,
+or instance and user audit events. You can see the audit events in [audit event reports](audit_event_reports.md).
+
 ## Available audit event types
 
 Audit event types belong to the following product categories.
+
+NOTE:
+Audit event types with the `-` scope are limited to either project, group, or instance and user audit events, but the
+[information on the scope](https://gitlab.com/gitlab-org/gitlab/-/issues/438620) is still being added to the documentation.
 <% audit_event_types_by_feature_category.sort.each do |category, audit_event_types| %>
 
 ### <%= "#{humanize(category)}" %>
 
-| Name | Description | Saved to database | Streamed | Introduced in |
-|:-----|:------------|:------------------|:---------|:--------------|
-<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %>| <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> |
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+<% audit_event_types.each do |event_type| %>| <%= "[`#{event_type.name}`](#{event_type.introduced_by_mr})" %> | <%= event_type.description %>| <%= boolean_to_docs(event_type.saved_to_database) %> | <%= boolean_to_docs(event_type.streamed) %> | GitLab <%= "[#{event_type.milestone}](#{event_type.introduced_by_issue})" %> | <%= event_type.scope&.join(", ") %> |
 <% end %>
 <% end %>

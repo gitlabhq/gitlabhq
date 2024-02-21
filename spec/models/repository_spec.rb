@@ -4083,6 +4083,38 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#empty_tree_id' do
+    subject { repository.empty_tree_id }
+
+    context 'for existing repository' do
+      context 'for SHA1 repository' do
+        it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+      end
+
+      context 'for SHA256 repository' do
+        let_it_be(:project) { create(:project, :empty_repo, object_format: Repository::FORMAT_SHA256) }
+
+        it { is_expected.to eq(::Gitlab::Git::SHA256_EMPTY_TREE_ID) }
+
+        context 'when "dynamic_empty_tree_id" feature flag is disabled' do
+          before do
+            stub_feature_flags(dynamic_empty_tree_id: false)
+          end
+
+          it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+        end
+      end
+    end
+
+    context 'for missing repository' do
+      before do
+        allow(repository).to receive(:exists?).and_return(false)
+      end
+
+      it { is_expected.to eq(::Gitlab::Git::SHA1_EMPTY_TREE_ID) }
+    end
+  end
+
   describe '#get_file_attributes' do
     let(:project) do
       create(:project, :custom_repo, files: {

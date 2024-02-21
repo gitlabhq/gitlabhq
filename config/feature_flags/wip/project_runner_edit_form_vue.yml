@@ -1,0 +1,9 @@
+---
+name: project_runner_edit_form_vue
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432935
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144848
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442018
+milestone: '16.10'
+group: group::runner
+type: wip
+default_enabled: false

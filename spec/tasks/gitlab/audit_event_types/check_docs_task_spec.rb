@@ -28,7 +28,8 @@ RSpec.describe Tasks::Gitlab::AuditEventTypes::CheckDocsTask, feature_category: 
         introduced_by_issue: 'https://issue',
         milestone: '16.0',
         saved_to_database: true,
-        streamed: false
+        streamed: false,
+        scope: ['Project']
       ) }
     end
 

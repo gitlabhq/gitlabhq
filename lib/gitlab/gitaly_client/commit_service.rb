@@ -49,8 +49,8 @@ module Gitlab
       end
 
       def diff(from, to, options = {})
-        from_id = from || Gitlab::Git::SHA1_EMPTY_TREE_ID
-        to_id = to || Gitlab::Git::SHA1_EMPTY_TREE_ID
+        from_id = from || @repository.empty_tree_id
+        to_id = to || @repository.empty_tree_id
 
         request_params = diff_between_commits_request_params(from_id, to_id, options)
 
@@ -610,7 +610,7 @@ module Gitlab
       end
 
       def diff_from_parent_request_params(commit, options = {})
-        parent_id = commit.parent_ids.first || Gitlab::Git::SHA1_EMPTY_TREE_ID
+        parent_id = commit.parent_ids.first || @repository.empty_tree_id
 
         diff_between_commits_request_params(parent_id, commit.id, options)
       end
