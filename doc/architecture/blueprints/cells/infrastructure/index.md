@@ -17,34 +17,34 @@ status: proposed
 
 ## Philosophy
 
-- **Cell local by default**: All services should be cell local, and not global unless there are documented and good reasons why they aren't.
-  If we keep things cell local communication between the cell and service stays internal, the service has to run at a smaller scale, and the blast radius is much smaller.
-  Example, Gitaly and GitLab Registry are cell local.
+- **Cell-local by default**: All services should be cell-local, and not global, unless there are documented and good reasons why they aren't cell-local.
+  If we keep things cell-local, communication between the cell and service stays internal, the service has to run at a smaller scale, and the blast radius is much smaller.
+  Example, Gitaly and GitLab Registry are cell-local.
 - **homogeneous environments**: For now, every GitLab cell should look the same. Bootstrapping and provisioning should be done in an automated way.
-  For the first iteration all Cells is the same size, there are benefits of running different sizes but this adds complexity, and scope.
+  For the first iteration all Cells are the same size, there are benefits of running different sizes but this adds complexity and scope.
 - **Fresh start, but not so much**: Brand new GitLab instances are created, so it's tempting to redo everything. We have to balance the existing infrastructure, dedicated tooling, and time.
 - **All operations get rolled out the same**: Configuration changes, Feature Flags, Deployments, and operational tasks ideally go through the same process of rolling out a change.
   Having 1 way of doing things can bring efficiencies and a single source of truth for automation.
 - **Centralize Tooling**: We have a lot of tooling to manage GitLab.com and separate tooling for GitLab Dedicated,
-  which creates silos, duplication of effort and less portability.
-  We have to provision multiple Cells for GitLab.com we need new tooling, GitLab Dedicated built tooling just for this reason.
-  We should try use this tooling as much as possible, if there are things we don't agree with we should try [disagree, commit, and disagree](https://handbook.gitlab.com/handbook/values/#disagree-commit-and-disagree) to improve a single tool.
+  which creates silos, duplication of effort, and less portability.
+  We have to provision multiple Cells for GitLab.com, we need new tooling, GitLab Dedicated built tooling just for this reason.
+  We should try to use this tooling as much as possible, if there are things we don't agree with we should try [disagree, commit, and disagree](https://handbook.gitlab.com/handbook/values/#disagree-commit-and-disagree) to improve a single tool.
   It is ok to start with tooling that has shortcomings, an iterative approach leads to _one_ mature product instead of two.
 
 ## Glossary/[Ubiquitous Language](https://martinfowler.com/bliki/UbiquitousLanguage.html)
 
-- `Provision`: When we create a new Cell. Example; We _provisioned_ Cell 5, which is a brand new Cell.
-- `Deploy`: When we change the running code inside of an existing Cell. Example; We _deployed_ the new auto-deploy version on GitLab.com.
+- `Provision`: When we create a new Cell. Example: We _provisioned_ Cell 5, which is a brand new Cell.
+- `Deploy`: When we change the running code inside of an existing Cell. Example: We _deployed_ the new auto-deploy version on GitLab.com.
   - [Blueprint](deployments.md)
-- `Configuration change`: When we change any configuration on the application or infrastructure. Example; We did a _configuration change_ on labels added to VMs.
+- `Configuration change`: When we change any configuration on the application or infrastructure. Example: We did a _configuration change_ on labels added to VMs.
 - `Cell`: A single unit, and instance of GitLab. Not used to refer to Dedicated, where an instance of GitLab is called a Tenant.
-- `Cluster`: A collection of Cells, and the existing GitLab.com infrastructure. Example; We need to change the version of Registry in the Cluster.
+- `Cluster`: A collection of Cells, and the existing GitLab.com infrastructure. Example: We need to change the version of Registry in the Cluster.
 - `Fleet`: The collection of all SaaS environments, both single-tenant and multi-tenant, that collectively form our production environments.
   This includes existing GitLab.com infrastructure, Cells, and Dedicated.
 
 ## Architecture
 
-Below is the Cell architecture you can find the current GitLab.com architecture (pre-Cells) in <https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/>
+Below is the Cell architecture. You can find the current GitLab.com architecture (pre-Cells) in <https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/>.
 
 ```plantuml
 @startuml
@@ -208,8 +208,8 @@ frame "Google Cloud Platform" <<gcp>> {
 
 The infrastructure is multifaceted and all teams have a role in setting up the cell infrastructure.
 
-The `Confidence` column is to get a sense of how confident we are with the specific domain and it's path forward for Cells.
-When we have a blueprint merged ideally the confidence should move to  👍 because we have a blueprint that provides direction to that domain.
+The `Confidence` column refers to how confident we are with the specific domain and its path forward for Cells.
+When we have a blueprint merged ideally the confidence should move to 👍 because we have a blueprint that provides direction to that domain.
 
 | Domain                           | Owner                             | Blueprint                            | Confidence |
 |----------------------------------|-----------------------------------|--------------------------------------|------------|
@@ -262,7 +262,7 @@ component "Configuration Management"
 ## Stakeholders
 
 We have several teams partaking in the operations of Cell.
-The first distinction is between teams implementing and maintaining the tools and teams using those tools.
+The first distinction is between teams implementing and maintaining the tools, and teams using those tools.
 
 | Areas                                             | Features                                                  | Owners                          |
 |---------------------------------------------------|-----------------------------------------------------------|---------------------------------|
@@ -270,7 +270,7 @@ The first distinction is between teams implementing and maintaining the tools an
 |                                                   | Integration with Release Managers' workflows              | team::Delivery-Deployments      |
 |                                                   | Deployment mechanics using `Instrumentor` and `AMP`       | team::Foundations               |
 |                                                   | Cell application reference architectures and overlays     | team::Ops                       |
-|                                                   | Cell bootstrapping, tooling and supporting infrastructure | team::Ops                       |
+|                                                   | Cell bootstrapping, tooling, and supporting infrastructure | team::Ops                       |
 |                                                   | Cell deprovisioning                                       | team::Ops                       |
 | Control Plane for cluster state**                 |                                                           |                                 |
 |                                                   | Investigate GitOps model                                  | team::Delivery-Deployments      |
@@ -295,12 +295,12 @@ The first distinction is between teams implementing and maintaining the tools an
 |                                                   | Load Balancing and networking                             | team::Foundations               |
 |                                                   | Rate Limiting                                             | team::Foundations               |
 
-> \* These items may require contributions from various stakeholders in SaaS Platforms and Core Platform. This work should be heavily collaborated on as to help ensure appropriate alignment to meet the needs of the owning team and customer teams.
+> \* These items may require contributions from various stakeholders in SaaS Platforms and Core Platform. Stakeholders should closely collaborate on this work to ensure appropriate alignment to meet the needs of the owning team and customer teams.
 >
-> \*\* These items are for consideration after Cell 2.0 iteration .
+> \*\* These items are for consideration after the Cell 2.0 iteration.
 
 The users of those features are the Release Managers, the Engineer On Call, and the Team:Ops.
-The following list define the tasks those groups can perform in the cell cluster:
+The following list defines the tasks those groups can perform in the cell cluster:
 
 1. Release Managers
    - Command deployments inside the perimeter

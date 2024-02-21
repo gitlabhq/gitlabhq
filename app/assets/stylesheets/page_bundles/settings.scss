@@ -120,6 +120,14 @@
     margin-top: 0;
   }
 
+  .instance-runners-info {
+    .gl-alert-body {
+      p:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   .form-check .form-text.text-muted {
     margin-bottom: $grid-size;
   }

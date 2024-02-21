@@ -1,17 +1,17 @@
 %h4
   = s_('Runners|Project runners')
 
-.bs-callout.help-callout
-  %p= s_('Runners|These runners are assigned to this project.')
-  - if can?(current_user, :create_runner, @project)
-    = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
-      = s_('Runners|New project runner')
-    .gl-display-inline
-      #js-project-runner-registration-dropdown{ data: { registration_token: @project.runners_token, project_id: @project.id } }
-  - else
-    = _('Please contact an admin to create runners.')
-    = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
-
+= render Pajamas::AlertComponent.new(dismissible: false, show_icon: false, alert_options: { class: 'gl-mb-5' }) do |c|
+  - c.with_body do
+    %p= s_('Runners|These runners are assigned to this project.')
+    - if can?(current_user, :create_runner, @project)
+      = render Pajamas::ButtonComponent.new(href: new_project_runner_path(@project), variant: :confirm) do
+        = s_('Runners|New project runner')
+      .gl-display-inline
+        #js-project-runner-registration-dropdown{ data: { registration_token: @project.runners_token, project_id: @project.id } }
+    - else
+      = _('Please contact an admin to create runners.')
+      = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
 %hr
 
 - if @project_runners.any?

@@ -103,6 +103,80 @@ Example response:
 }
 ```
 
+### Update group-level approval rules
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440639) in GitLab 16.10.
+
+Group admins can update group level approval rules using the following endpoint:
+
+```shell
+PUT /groups/:id/approval_rules/:approval_rule_id
+```
+
+Supported attributes:
+
+| Attribute            | Type              | Required | Description                                                                                                                                          |
+|----------------------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `approval_rule_id`.  | integer           | Yes      | The ID of the approval rule.                                                                                                                         |
+| `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/index.md#namespaced-path-encoding).                                                                     |
+| `approvals_required` | string            | No       | The number of required approvals for this rule.                                                                                                      |
+| `group_ids`          | integer           | No       | The IDs of users as approvers.                                                                                                                       |
+| `name`               | string            | No       | The name of the approval rule.                                                                                                                       |
+| `rule_type`          | array             | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` and `report_approver`. |
+| `user_ids`           | array             | No       | The IDs of groups as approvers.                                                                                                                      |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules/5?name=security2&approvals_required=1"
+```
+
+Example response:
+
+```json
+{
+  "id": 5,
+  "name": "security2",
+  "rule_type": "any_approver",
+  "eligible_approvers": [],
+  "approvals_required": 1,
+  "users": [],
+  "groups": [],
+  "contains_hidden_groups": false,
+  "protected_branches": [
+    {
+      "id": 5,
+      "name": "master",
+      "push_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "deploy_key_id": null,
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "merge_access_levels": [
+        {
+          "id": 5,
+          "access_level": 40,
+          "access_level_description": "Maintainers",
+          "user_id": null,
+          "group_id": null
+        }
+      ],
+      "allow_force_push": false,
+      "unprotect_access_levels": [],
+      "code_owner_approval_required": false,
+      "inherited": false
+    }
+  ],
+  "applies_to_all_protected_branches": true
+}
+```
+
 ## Project-level MR approvals
 
 ### Get Configuration

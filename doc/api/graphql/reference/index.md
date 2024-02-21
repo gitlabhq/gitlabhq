@@ -24724,6 +24724,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelineusesneeds"></a>`usesNeeds` | [`Boolean`](#boolean) | Indicates if the pipeline has jobs with `needs` dependencies. |
 | <a id="pipelinewarningmessages"></a>`warningMessages` | [`[PipelineMessage!]`](#pipelinemessage) | Pipeline warning messages. |
 | <a id="pipelinewarnings"></a>`warnings` | [`Boolean!`](#boolean) | Indicates if a pipeline has warnings. |
+| <a id="pipelineyamlerrormessages"></a>`yamlErrorMessages` | [`String`](#string) | The pipeline YAML errors. |
 | <a id="pipelineyamlerrors"></a>`yamlErrors` | [`Boolean!`](#boolean) | If the pipeline has YAML errors. |
 
 #### Fields with arguments

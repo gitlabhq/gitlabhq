@@ -10,12 +10,16 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** SaaS, self-managed
 
-GitLab supports defining custom [Git attributes](https://git-scm.com/docs/gitattributes) such as what
-files to treat as binary, and what language to use for syntax highlighting
-diffs.
+GitLab supports defining custom Git attributes in a `.gitattributes` file in the
+root directory of your repository. Use the `.gitattributes` file to declare changes
+to file handling and display, such as:
 
-To define these attributes, create a file called `.gitattributes` in the root
-directory of your repository and push it to the default branch of your project.
+- [Collapse generated files](merge_requests/changes.md#collapse-generated-files) in diffs.
+- Create [custom merge drivers](#custom-merge-drivers).
+- Create [exclusive lock files](file_lock.md) to mark files as read-only.
+- Change [syntax highlighting](highlighting.md) in diffs.
+- Declare binary file handling with [Git LFS](../../topics/git/lfs/index.md).
+- Declare [languages used in your repository](repository/index.md#add-repository-languages).
 
 ## Encoding requirements
 
@@ -128,3 +132,7 @@ config/* merge=foo
 ```
 
 In this case, every file under the `config/` folder uses the custom merge driver called `foo` defined in the GitLab configuration.
+
+## Resources
+
+- Official Git documentation for [Git attributes](https://git-scm.com/docs/gitattributes)

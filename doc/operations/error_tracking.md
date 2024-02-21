@@ -228,3 +228,7 @@ you might see an error when you try to [enable Sentry integration for a project]
 The resulting request to `/project/path/-/error_tracking/projects.json?api_host=https:%2F%2Fsentry.example.com%2F&token=<token>` returns a 404 status.
 
 To fix this issue, enable the Monitor feature for the project.
+
+## Data Retention
+
+GitLab has a retention limit of 90 days for all errors.

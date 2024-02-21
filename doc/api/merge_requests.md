@@ -1149,7 +1149,7 @@ following response attributes:
 | `new_file`     | boolean | Indicates if the file has just been added. |
 | `renamed_file` | boolean | Indicates if the file has been renamed. |
 | `deleted_file` | boolean | Indicates if the file has been removed. |
-| `generated_file` | boolean | Indicates if the file is marked as generated. |
+| `generated_file` | boolean | Indicates if the file is [marked as generated](../user/project/merge_requests/changes.md#collapse-generated-files). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9. |
 
 Example request:
 

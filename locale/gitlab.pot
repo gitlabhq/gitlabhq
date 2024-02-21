@@ -12691,7 +12691,7 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Edit framework"
 msgstr ""
 
-msgid "ComplianceFrameworks| Frameworks export"
+msgid "ComplianceFrameworks| Project frameworks export"
 msgstr ""
 
 msgid "ComplianceFrameworks|Active compliance frameworks"
@@ -12820,10 +12820,10 @@ msgstr ""
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
 msgstr ""
 
-msgid "ComplianceFrameworks|Your Compliance Frameworks CSV export for the group \"%{group_name}\" has been attached to this email."
+msgid "ComplianceFrameworks|Your Compliance Project Frameworks CSV export for the group \"%{group_name}\" has been attached to this email."
 msgstr ""
 
-msgid "ComplianceFrameworks|Your Compliance Frameworks CSV export for the group %{group_link} has been attached to this email."
+msgid "ComplianceFrameworks|Your Compliance Project Frameworks CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
 msgid "ComplianceFrameworks|default"
@@ -54290,10 +54290,10 @@ msgstr ""
 msgid "UserProfile|Personal projects"
 msgstr ""
 
-msgid "UserProfile|Pronounced as: %{div_start}%{pronunciation}%{div_end}"
+msgid "UserProfile|Pronounced as:"
 msgstr ""
 
-msgid "UserProfile|Pronouns: %{div_start}%{pronouns}%{div_end}"
+msgid "UserProfile|Pronouns:"
 msgstr ""
 
 msgid "UserProfile|Retry"
@@ -57075,9 +57075,6 @@ msgid "You are not allowed to create this tag as it is protected."
 msgstr ""
 
 msgid "You are not allowed to download code from this project."
-msgstr ""
-
-msgid "You are not allowed to log in using password"
 msgstr ""
 
 msgid "You are not allowed to reject a user"

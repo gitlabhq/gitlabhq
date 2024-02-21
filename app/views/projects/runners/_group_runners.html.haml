@@ -3,23 +3,28 @@
 %h4
   = _('Group runners')
 
-.bs-callout.bs-callout-warning
-  = _('These runners are shared across projects in this group.')
-  %br
-  %br
-  = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
-
+= render Pajamas::AlertComponent.new(variant: :warning,
+  dismissible: false,
+  show_icon: false,
+  alert_options: { class: 'gl-mb-5' }) do |c|
+  - c.with_body do
+    = _('These runners are shared across projects in this group.')
+    %br
+    %br
+    = _('Group runners can be managed with the %{link}.').html_safe % { link: link }
   - if @project.group
-    %br
-    %br
-    - if @project.group_runners_enabled?
-      = link_button_to toggle_group_runners_project_runners_path(@project), method: :post do
-        = _('Disable group runners')
-    - else
-      = link_button_to toggle_group_runners_project_runners_path(@project), method: :post, variant: :confirm, category: :secondary do
-        = _('Enable group runners')
-    &nbsp;
-    = _('for this project')
+    - c.with_actions do
+      %br
+      %br
+      %div
+        - if @project.group_runners_enabled?
+          = link_button_to toggle_group_runners_project_runners_path(@project), method: :post do
+            = _('Disable group runners')
+        - else
+          = link_button_to toggle_group_runners_project_runners_path(@project), method: :post, variant: :confirm, category: :secondary do
+            = _('Enable group runners')
+        &nbsp;
+        = _('for this project')
 
 - if !@project.group
   = _('This project does not belong to a group and cannot make use of group runners.')

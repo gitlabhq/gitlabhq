@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.9.1 (2024-02-20)
+
+### Fixed (2 changes)
+
+- [Fix Duo Chat CORS issue by updating web-ide package](gitlab-org/security/gitlab@6c4fccdd4d33fd40550197699a990a0d07a65137)
+- [Fix deny_all_requests_except_allowed of AddressableUrlValidator](gitlab-org/security/gitlab@18ff795a3b9fdd54705c1a8898ad15b5dd84e2f0)
+
+### Security (10 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@b090b503c47300d708d7e51192a486467fdecefd) ([merge request](gitlab-org/security/gitlab!3894))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@1c2de5ef077c5710e213b668373557c01ff8ba26) ([merge request](gitlab-org/security/gitlab!3891))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@07621ad26d2db3656c99b332e697a6b0857f6e07) ([merge request](gitlab-org/security/gitlab!3879))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@c9d8ffebe020dfdc1435e073516a098a8d188ff0) ([merge request](gitlab-org/security/gitlab!3889))
+- [Check project read access in Environment and Operations dashboard](gitlab-org/security/gitlab@83fdac099562fa4aebcc43e400b0da2026c730a6) ([merge request](gitlab-org/security/gitlab!3873))
+- [Fix Stored-XSS in user's profile page: Change markup used for pronouns](gitlab-org/security/gitlab@0fafb29660c08e72b87bd79d792da802c566b650) ([merge request](gitlab-org/security/gitlab!3882))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@3411c25e77642fddc3619bf24ee956d4ba4d99b2) ([merge request](gitlab-org/security/gitlab!3884))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@46ffceb9c94b6f4ba207ddf035ae67e8de413d57) ([merge request](gitlab-org/security/gitlab!3876))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@01e2c82cb79b6b4a9f6cf3428890149d023aacfb) ([merge request](gitlab-org/security/gitlab!3877))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@eafc00662cb6e604b35278a5f59c25d418ef00c9) ([merge request](gitlab-org/security/gitlab!3878))
+
 ## 16.9.0 (2024-02-14)
 
 ### Added (145 changes)
@@ -739,6 +759,30 @@ entry.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.3 (2024-02-20)
+
+### Added (1 change)
+
+- [Allow creation of group-level custom-roles on self-managed instances](gitlab-org/security/gitlab@72eeb80a95e7190b5a6a9a4b113dd88d3f66bdd4) **GitLab Enterprise Edition**
+
+### Fixed (3 changes)
+
+- [Avoid mutating OpenSSL::PKey::EC keys](gitlab-org/security/gitlab@f562d0d13834ec09123d49019265a1202d8c2cc2)
+- [Fix X509::Signature#x509_issuer not working with OpenSSL 3](gitlab-org/security/gitlab@7ad0ea9d286e003814032275cd1bcc487b7ecac7)
+- [Fix urlblocker validate calls with more options](gitlab-org/security/gitlab@04111c2e90b8e40668ccb74a4f64c3a2853bc3c0)
+
+### Security (9 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@55d0ba98eaa460f86b6d750d91d1eb21a0759836) ([merge request](gitlab-org/security/gitlab!3860))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@085b95fd9ec3ad3a4fa3aab7136ce29ae3dac507) ([merge request](gitlab-org/security/gitlab!3892))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@746702abea2a7703f75885f4a52df4d4ec2f8a41) ([merge request](gitlab-org/security/gitlab!3880))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@d018ba8f447e0ae98f4ee74011d1aa4dcaab7432) ([merge request](gitlab-org/security/gitlab!3851))
+- [Check project read access in Environments and Operations dashboard](gitlab-org/security/gitlab@d7c1e953fb21c2aa793156eb035cd170072cffca) ([merge request](gitlab-org/security/gitlab!3872))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@d3dfc38783578bfecc3dfaa26546867b9f63694a) ([merge request](gitlab-org/security/gitlab!3885))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@6bc3fca49ec264873100509683490b91c136b29e) ([merge request](gitlab-org/security/gitlab!3866))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@01a31cdf0d9879f048cdff21fcb20f368307ed11) ([merge request](gitlab-org/security/gitlab!3850))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@6da2d42bfb260dcb387f2ea692df06c6054afd45) ([merge request](gitlab-org/security/gitlab!3868))
+
 ## 16.8.2 (2024-02-07)
 
 ### Fixed (3 changes)
@@ -1255,6 +1299,25 @@ entry.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.6 (2024-02-20)
+
+### Fixed (2 changes)
+
+- [Avoid mutating OpenSSL::PKey::EC keys](gitlab-org/security/gitlab@3d15d7efb953ff7abe9837caa99dd9be776c1a58)
+- [Fix X509::Signature#x509_issuer not working with OpenSSL 3](gitlab-org/security/gitlab@e1fb88e53d6a699f3b26db233ec275fc6dbaeeb9)
+
+### Security (9 changes)
+
+- [Add a limit to CodeOwners reference extractor regex](gitlab-org/security/gitlab@df77f98beec6c91605b697a84dabcabe12a9aa8e) ([merge request](gitlab-org/security/gitlab!3861))
+- [Ensure LDAP user cannot sign in with password](gitlab-org/security/gitlab@a711d3d91d2c66b97fef6987107838b68f471b68) ([merge request](gitlab-org/security/gitlab!3893))
+- [Ensure LDAP users cannot reset local password to bypass LDAP](gitlab-org/security/gitlab@4c0cb71664cc31f93a3adbc71aa2339c8ce8ee20) ([merge request](gitlab-org/security/gitlab!3881))
+- [Disallow assigning higher role than current user](gitlab-org/security/gitlab@9699f280e711fd75e8c02e6849efbc09e6162b59) ([merge request](gitlab-org/security/gitlab!3852))
+- [Check project read access in Environments and Operations dashboard](gitlab-org/security/gitlab@0a6b7ffd36aafd377065e61e6806734e9fcf449c) ([merge request](gitlab-org/security/gitlab!3871))
+- [Invalidate markdown cache to clear up stored XSS](gitlab-org/security/gitlab@d17f1b2b42c5d0872392e0c26f244e4ae55f4c2c) ([merge request](gitlab-org/security/gitlab!3886))
+- [Disallow users to modify deploy key title](gitlab-org/security/gitlab@b581173dbe86002261584a16a13360e2e6497274) ([merge request](gitlab-org/security/gitlab!3865))
+- [Adds authorization for analytics settings](gitlab-org/security/gitlab@b4eec07d6a987d1ae508ba7aacc66f39ec2dd30d) ([merge request](gitlab-org/security/gitlab!3857))
+- [Use merge_head_diff for codeowners when merge request is mergeable](gitlab-org/security/gitlab@52e8d1a80ae99ac8c68b1df3581c1817e6fb7d49) ([merge request](gitlab-org/security/gitlab!3869))
 
 ## 16.7.5 (2024-02-07)
 

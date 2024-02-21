@@ -151,7 +151,6 @@ Style/RedundantSelf:
     - 'app/uploaders/gitlab_uploader.rb'
     - 'app/uploaders/object_storage.rb'
     - 'app/workers/background_migration/single_database_worker.rb'
-    - 'app/workers/build_hooks_worker.rb'
     - 'app/workers/concerns/application_worker.rb'
     - 'app/workers/concerns/limited_capacity/worker.rb'
     - 'app/workers/concerns/project_start_import.rb'

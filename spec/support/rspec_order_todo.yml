@@ -9364,7 +9364,6 @@
 - './spec/workers/auto_merge_process_worker_spec.rb'
 - './spec/workers/background_migration/ci_database_worker_spec.rb'
 - './spec/workers/background_migration_worker_spec.rb'
-- './spec/workers/build_hooks_worker_spec.rb'
 - './spec/workers/build_queue_worker_spec.rb'
 - './spec/workers/bulk_imports/entity_worker_spec.rb'
 - './spec/workers/bulk_imports/export_request_worker_spec.rb'

@@ -16,7 +16,7 @@ RSpec.describe Types::Ci::PipelineType do
       upstream path project active user_permissions warnings commit commit_path uses_needs
       test_report_summary test_suite ref ref_path warning_messages merge_request_event_type
       name total_jobs triggered_by_path child source stuck
-      latest merge_request ref_text failure_reason yaml_errors trigger
+      latest merge_request ref_text failure_reason yaml_errors yaml_error_messages trigger
     ]
 
     if Gitlab.ee?

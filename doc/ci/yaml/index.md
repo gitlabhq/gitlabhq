@@ -2557,6 +2557,8 @@ The name of the Docker image that the job runs in. Similar to [`image`](#image) 
 - `<image-name>:<tag>`
 - `<image-name>@<digest>`
 
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+
 **Example of `image:name`**:
 
 ```yaml

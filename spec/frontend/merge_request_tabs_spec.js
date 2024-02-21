@@ -5,7 +5,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import initMrPage from 'helpers/init_vue_mr_page_helper';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import axios from '~/lib/utils/axios_utils';
-import MergeRequestTabs from '~/merge_request_tabs';
+import MergeRequestTabs, { getActionFromHref } from '~/merge_request_tabs';
 import Diff from '~/diff';
 import '~/lib/utils/common_utils';
 import '~/lib/utils/url_utility';
@@ -474,6 +474,19 @@ describe('MergeRequestTabs', () => {
           testContext.class.setHubToDiff();
         }).not.toThrow();
       });
+    });
+  });
+
+  describe('getActionFromHref', () => {
+    it.each`
+      pathName                                        | action
+      ${'/user/pipelines/-/merge_requests/1/diffs'}   | ${'diffs'}
+      ${'/user/diffs/-/merge_requests/1/pipelines'}   | ${'pipelines'}
+      ${'/user/pipelines/-/merge_requests/1/commits'} | ${'commits'}
+      ${'/user/pipelines/1/-/merge_requests/1/diffs'} | ${'diffs'}
+      ${'/user/pipelines/-/merge_requests/1'}         | ${'show'}
+    `('returns $action for $location', ({ pathName, action }) => {
+      expect(getActionFromHref(pathName)).toBe(action);
     });
   });
 });

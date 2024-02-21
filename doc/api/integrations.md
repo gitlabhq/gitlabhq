@@ -712,15 +712,22 @@ FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
 On GitLab.com, this feature is not available.
 
-WARNING:
-Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
-
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
 It scans Git repositories, alerts on policy violations, and helps organizations
 fix security issues before hackers can exploit them.
 
 You can configure GitLab to reject commits based on GitGuardian policies.
+
+### Known issues
+
+- Pushes can be delayed or can time out. With the GitGuardian integration, pushes are sent to a third-party, and GitLab has no control over the connection with GitGuardian or the GitGuardian process.
+- Due to a [GitGuardian API limitation](https://api.gitguardian.com/docs#operation/multiple_scan), the integration ignores files over the size of 1 MB. They are not scanned.
+- If a pushed file has a name over 256 characters long the push won't go through.
+  For more information, see [GitGuardian API documentation](https://api.gitguardian.com/docs#operation/multiple_scan) .
+
+Troubleshooting steps on [the integration page](../user/project/integrations/git_guardian.md#troubleshooting)
+show how to mitigate some of these problems.
 
 ### Set up GitGuardian
 

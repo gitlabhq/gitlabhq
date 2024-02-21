@@ -2145,15 +2145,6 @@
   :weight: 3
   :idempotent: false
   :tags: []
-- :name: pipeline_hooks:build_hooks
-  :worker_name: BuildHooksWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 2
-  :idempotent: false
-  :tags: []
 - :name: pipeline_hooks:pipeline_hooks
   :worker_name: PipelineHooksWorker
   :feature_category: :continuous_integration

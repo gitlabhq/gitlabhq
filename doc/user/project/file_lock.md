@@ -27,8 +27,8 @@ said to have "released the lock".
 
 GitLab supports two different modes of file locking:
 
-- [Exclusive file locks](#exclusive-file-locks) for binary files: done **through
-  the command line** with Git LFS and `.gitattributes`, it prevents locked
+- [Exclusive file locks](#exclusive-file-locks) for binary files: done
+  **through the command line** with Git LFS and `.gitattributes`, it prevents locked
   files from being modified on any branch.
 - [Default branch locks](#default-branch-file-and-directory-locks): done
   **through the GitLab UI**, it prevents locked files and directories being

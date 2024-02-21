@@ -7,4 +7,20 @@ feature_categories:
 description: Helm package file metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57017
 milestone: '13.12'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_joins:
+- gitlab_main_clusterwide
+allow_cross_transactions:
+- gitlab_main_clusterwide
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: package_file_id
+        table: packages_package_files
+        sharding_key: project_id
+        belongs_to: package_file
+    awaiting_backfill_on_parent: true

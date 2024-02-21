@@ -93,3 +93,7 @@ Tracing ingests a maximum of 102,400 bytes per minute.
 After the limit is exceeded, a `429 Too Many Requests` response is returned.
 
 To request a limit increase to 104,8576 bytes per minute, contact GitLab support.
+
+## Data Retention
+
+GitLab has a retention limit of 30 days for all traces.

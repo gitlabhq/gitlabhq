@@ -152,19 +152,33 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 ## Convert a regular issue to a Service Desk ticket
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+> - Enabled on GitLab.com in GitLab 16.10.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket
-and add them to the list of external participants. They receive Service Desk emails for any public
+and adds them to the list of external participants. They receive Service Desk emails for any public
 comment on the ticket and can reply to these emails. Replies add a new comment on the ticket.
 
 GitLab doesn't send [the default `thank_you` email](configure.md#customize-emails-sent-to-the-requester).
 You can add a public comment on the ticket to let the end user know that the ticket has been created.
+
+<!--
+When the feature flag convert_to_ticket_quick_action is removed, move the steps below
+into a new topic called "### Create a Service Desk ticket in GitLab UI"
+and nest it under "## As an end user (issue creator)".
+-->
+To create a Service Desk ticket from the UI:
+
+1. [Create an issue](../issues/create_issues.md)
+1. Add a comment that contains only the quick action `/convert_to_ticket user@example.com`.
+   You should see a comment from the [GitLab Support Bot](configure.md#support-bot-user).
+1. Reload the page so the UI reflects the type change.
+1. Optional. Add a comment on the ticket to send an initial Service Desk email to the external participant.
 
 ## Privacy considerations
 

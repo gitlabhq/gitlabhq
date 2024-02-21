@@ -23,6 +23,7 @@ provide the following information to your account team:
 - Email addresses of the users who are responsible to complete the onboarding and create your
   GitLab Dedicated instance.
 - Whether you want to [bring your own encryption keys (BYOK)](#encrypted-data-at-rest-byok). If so, GitLab provides an AWS account ID, which is necessary to enable BYOK.
+- Whether you want to use Geo migration for inbound migration of your Dedicated instance.
 
 If you've been granted access to Switchboard, you will receive an email invitation with temporary
 credentials to sign in.

@@ -12,15 +12,15 @@ Disclaimer: This blueprint requires more cross-functional alignment - **Confiden
 
 # Application Deployment with a Cellular Architecture
 
-This blueprint describes a deployment strategy that can support the new scaling dimension intruduced by the Cell Architecture.
+This blueprint describes a deployment strategy that can support the new scaling dimension introduced by the Cell Architecture.
 
-The complexity of this transition will demand participation from many team in the Platforms section to take ownership of the features necessary to reach the production grade rating on this architecture.
+The complexity of this transition will require many teams in the Platforms section to participate by taking ownership of the features necessary to reach the production grade rating on this architecture.
 
 ## Introduction
 
 ### Preamble
 
-From an high level perspective, a Cell Cluster is a system made of only 3 items:
+From a high level perspective, a Cell Cluster is a system made of only 3 items:
 
 1. **Router** - An HA routing system deployed independently from the GitLab application.
 1. **Primary Cell** - The GitLab installation that is the leader for all the cluster wide data and services. This will be the legacy GitLab.com deployment.
@@ -55,12 +55,12 @@ It is important to note that even if a Secondary Cell supports GitLab Geo out of
 
 - Deployment - The GitLab application and its components being installed into infrastructure
 - `auto-deploy` version - The active version that creates a package viable for deployment
-- ring - A logical partition of the cell cluster. In order to deploy to the next ring a package must be validated inside the current ring
+- ring - A logical partition of the cell cluster. In order to deploy to the next ring a package must be validated inside the current ring.
 - `perimeter` - the ring marking the "definition of done" for Release Managers, a package validated inside the perimeter is allowed to rollout in the rest of the fleet
 - `graduated` version - The version deemed safe to deploy to cells outside of the perimeter
-- `.com` - refers to our old existing or currently running infrastructure
+- `.com` - Our old existing or currently running infrastructure
 - Primary Cell - The GitLab installation that is the leader for all the cluster wide data and services. Initially this will be the legacy GitLab.com deployment. This implicitly includes .com as our legacy infrastructure.
-- Secondary Cell(s) - GitLab installation(s) authoritative for a limited number of Organizations. Cell(s) are deployed using GitLab Dedicated tools.
+- Secondary Cell(s) - GitLab installation(s) authoritative for a limited number of Organizations. Deployed using GitLab Dedicated tools.
 
 ### Ring deployment
 
@@ -123,7 +123,7 @@ In the image above we are showing a possible ring layout with a cluster made of 
 
 The general rule is that:
 
-1. The deployment process progresses from Ring 0 to the outer rings
+1. The deployment process progresses from Ring 0 to the outer rings.
 1. Rings are a collection of Cells sharing the same risk factor associated to a deployment.
 1. Deployments can get halted at any stage and the package will not reach the outer rings.
 1. We define the "perimeter" ring that marks the "definition of done" for the Release Managers.
