@@ -168,9 +168,10 @@ RSpec.describe Backup::Targets::Files, feature_category: :backup_restore do
       end.to raise_error(/Failed to create compressed file/)
     end
 
-    describe 'with STRATEGY=copy' do
+    describe 'with Backup::Options.strategy = copy' do
+      let(:backup_options) { create(:backup_options, :strategy_copy) }
+
       before do
-        stub_env('STRATEGY', 'copy')
         allow(files).to receive(:backup_basepath).and_return(Pathname('/var/gitlab-backup'))
         allow(File).to receive(:realpath).with('/var/gitlab-backup').and_return('/var/gitlab-backup')
       end

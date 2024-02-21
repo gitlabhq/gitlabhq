@@ -7939,7 +7939,7 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
-msgid "BillingPlans|Start a free Duo Pro trial"
+msgid "BillingPlans|Start a free GitLab Duo Pro trial"
 msgstr ""
 
 msgid "BillingPlans|Start a free Ultimate trial"
@@ -38661,6 +38661,9 @@ msgid "ProjectOverview|You must sign in to star a project"
 msgstr ""
 
 msgid "ProjectPage|Copy project ID: %{id}"
+msgstr ""
+
+msgid "ProjectPage|Created on"
 msgstr ""
 
 msgid "ProjectPage|Project ID copied to clipboard."

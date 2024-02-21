@@ -14,6 +14,7 @@ module DesignManagement
     include Todoable
     include Participable
     include CacheMarkdownField
+    include Subscribable
 
     cache_markdown_field :description
 
@@ -184,6 +185,10 @@ module DesignManagement
 
     def self.build_full_path(issue, design)
       File.join(DesignManagement.designs_directory, "issue-#{issue.iid}", design.filename)
+    end
+
+    def self.to_ability_name
+      'design'
     end
 
     def new_design?

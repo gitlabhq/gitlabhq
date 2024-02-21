@@ -1239,7 +1239,7 @@ class Repository
   def remove_prohibited_branches
     return unless exists?
 
-    prohibited_branches = raw_repository.branch_names.select { |name| name.match(/\A\h{40}\z/) }
+    prohibited_branches = raw_repository.branch_names.select { |name| name.match(Gitlab::Git::COMMIT_ID) }
 
     return if prohibited_branches.blank?
 

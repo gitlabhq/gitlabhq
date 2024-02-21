@@ -1174,6 +1174,7 @@ virtualizing
 Vite
 VMs
 VPCs
+VSCodium
 Vue
 Vuex
 waitlist

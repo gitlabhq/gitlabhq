@@ -14,7 +14,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
   end
 
   def tars_glob
-    Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar'))
+    Dir.glob(backup_path.join('*_gitlab_backup.tar'))
   end
 
   def backup_tar
@@ -36,6 +36,10 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
 
   def backup_directories
     %w[db repositories]
+  end
+
+  def backup_path
+    Pathname(Gitlab.config.backup.path)
   end
 
   before(:all) do
@@ -245,7 +249,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       before do
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
-        backup_tar = Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar')).last
+        backup_tar = Dir.glob(backup_path.join('*_gitlab_backup.tar')).last
         allow(Dir).to receive(:glob).and_return([backup_tar])
         allow(File).to receive(:exist?).and_return(true)
         allow(File).to receive(:exist?).with(backup_restore_pid_path).and_return(false)
@@ -419,10 +423,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
         temp_dirs = Dir.glob(
-          File.join(
-            Gitlab.config.backup.path,
-            '{db,repositories,uploads,builds,artifacts,pages,lfs,terraform_state,registry,packages}'
-          )
+          backup_path.join('{db,repositories,uploads,builds,artifacts,pages,lfs,terraform_state,registry,packages}')
         )
 
         expect(temp_dirs).to be_empty
@@ -659,7 +660,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
     it 'created files with backup content and no tar archive' do
       expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout_from_any_process
 
-      dir_contents = Dir.children(Gitlab.config.backup.path)
+      dir_contents = Dir.children(backup_path)
 
       expect(dir_contents).to contain_exactly(
         'backup_information.yml',

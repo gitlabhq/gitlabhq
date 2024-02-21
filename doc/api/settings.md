@@ -635,6 +635,7 @@ listed in the descriptions of the relevant settings.
 | `whats_new_variant`                      | string           | no                                   | What's new variant, possible values: `all_tiers`, `current_tier`, and `disabled`. |
 | `wiki_page_max_content_bytes`            | integer          | no                                   | Maximum wiki page content size in **bytes**. Default: 52428800 Bytes (50 MB). The minimum value is 1024 bytes. |
 | `bulk_import_concurrent_pipeline_batch_limit` | integer     | no                                   | Maximum simultaneous Direct Transfer batches to process. |
+| `asciidoc_max_includes`                  | integer          | no                                   | Maximum limit of AsciiDoc include directives being processed in any one document. Default: 32. Maximum: 64. |
 
 ### Configure inactive project deletion
 

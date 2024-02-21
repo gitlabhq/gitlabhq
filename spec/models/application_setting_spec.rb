@@ -30,6 +30,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.allow_project_creation_for_guest_and_below).to eq(true) }
     it { expect(setting.members_delete_limit).to eq(60) }
     it { expect(setting.downstream_pipeline_trigger_limit_per_project_user_sha).to eq(0) }
+    it { expect(setting.asciidoc_max_includes).to eq(32) }
   end
 
   describe 'validations' do
@@ -1664,5 +1665,10 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
   context 'security txt content' do
     it { is_expected.to validate_length_of(:security_txt_content).is_at_most(2048) }
+  end
+
+  context 'ascii max includes' do
+    it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_less_than_or_equal_to(64) }
   end
 end

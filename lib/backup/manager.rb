@@ -33,7 +33,7 @@ module Backup
       build_backup_information
 
       definition = definitions[task_name]
-      destination_dir = File.join(Gitlab.config.backup.path, definition.destination_path)
+      destination_dir = backup_path.join(definition.destination_path)
 
       unless definition.enabled?
         puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -66,6 +66,7 @@ module Backup
       read_backup_information
 
       definition = definitions[task_name]
+      destination_dir = backup_path.join(definition.destination_path)
 
       unless definition.enabled?
         puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
@@ -80,8 +81,7 @@ module Backup
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      definition.target.restore(File.join(Gitlab.config.backup.path, definition.destination_path), backup_id)
-
+      definition.target.restore(destination_dir, backup_id)
       puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
 
       warning = definition.target.post_restore_warning
@@ -227,7 +227,8 @@ module Backup
         # create archive
         puts_time "Creating backup archive: #{tar_file} ... ".color(:blue)
         # Set file permissions on open to prevent chmod races.
-        tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
+        archive_permissions = Gitlab.config.backup.archive_permissions
+        tar_system_options = { out: [tar_file, 'w', archive_permissions] }
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
           puts_time "Creating backup archive: #{tar_file} ... ".color(:blue) + 'done'.color(:green)
         else
@@ -253,7 +254,7 @@ module Backup
     end
 
     def remove_backup_path(path)
-      absolute_path = File.join(backup_path, path)
+      absolute_path = backup_path.join(path)
       return unless File.exist?(absolute_path)
 
       puts_time "Cleaning up #{absolute_path}"
@@ -264,7 +265,7 @@ module Backup
       # delete tmp inside backups
       puts_time "Deleting backups/tmp ... ".color(:blue)
 
-      FileUtils.rm_rf(File.join(backup_path, "tmp"))
+      FileUtils.rm_rf(backup_path.join('tmp'))
       puts_time "Deleting backups/tmp ... ".color(:blue) + "done".color(:green)
     end
 
@@ -392,11 +393,11 @@ module Backup
     end
 
     def manifest_filepath
-      File.join(backup_path, MANIFEST_NAME)
+      backup_path.join(MANIFEST_NAME)
     end
 
     def backup_path
-      Gitlab.config.backup.path
+      Pathname(Gitlab.config.backup.path)
     end
 
     def backup_file_list
@@ -409,8 +410,9 @@ module Backup
 
     def backup_contents
       [MANIFEST_NAME] + definitions.reject do |name, definition|
-        options.skip_task?(name) || !definition.enabled? ||
-          (definition.destination_optional && !File.exist?(File.join(backup_path, definition.destination_path)))
+        options.skip_task?(name) || # task skipped via CLI option
+          !definition.enabled? || # task disabled via definition/configuration
+          (definition.destination_optional && !File.exist?(backup_path.join(definition.destination_path)))
       end.values.map(&:destination_path)
     end
 

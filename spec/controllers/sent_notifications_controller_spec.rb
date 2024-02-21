@@ -255,6 +255,26 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
           expect(response)
             .to redirect_to(project_merge_request_path(project, merge_request))
         end
+
+        context 'when unsubscribing from design' do
+          let(:design) do
+            create(:design, issue: issue) do |design|
+              design.subscriptions.create!(user: user, project: project, subscribed: true)
+            end
+          end
+
+          let(:sent_notification) do
+            create(:sent_notification, project: project, noteable: design, recipient: user)
+          end
+
+          before do
+            unsubscribe
+          end
+
+          it 'unsubscribes the user' do
+            expect(design.subscribed?(user, project)).to be_falsey
+          end
+        end
       end
 
       context 'when project is private' do

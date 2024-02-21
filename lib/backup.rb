@@ -4,15 +4,15 @@ module Backup
   Error = Class.new(StandardError)
 
   class FileBackupError < Backup::Error
-    attr_reader :app_files_dir, :backup_tarball
+    attr_reader :storage_path, :backup_tarball
 
     def initialize(app_files_dir, backup_tarball)
-      @app_files_dir = app_files_dir
+      @storage_path = app_files_dir
       @backup_tarball = backup_tarball
     end
 
     def message
-      "Failed to create compressed file '#{backup_tarball}' when trying to backup the following paths: '#{app_files_dir}'"
+      "Failed to create compressed file '#{backup_tarball}' when trying to backup the following paths: '#{storage_path}'"
     end
   end
 

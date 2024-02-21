@@ -29,7 +29,7 @@ module Backup
       @input_stream, stdout, @thread = Open3.popen2(
         build_env,
         bin_path,
-        *gitaly_backup_args(type, backup_repos_path, backup_id, remove_all_repositories)
+        *gitaly_backup_args(type, backup_repos_path.to_s, backup_id, remove_all_repositories)
       )
 
       @out_reader = Thread.new do

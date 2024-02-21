@@ -852,9 +852,9 @@ module Gitlab
             ADOC
           end
 
-          context 'when the document includes more than MAX_INCLUDES' do
+          context 'when the document includes more than asciidoc_max_includes' do
             before do
-              stub_const("#{described_class}::MAX_INCLUDES", 2)
+              stub_application_setting(asciidoc_max_includes: 2)
             end
 
             it 'includes only the content of the first 2 sources' do

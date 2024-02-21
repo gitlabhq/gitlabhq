@@ -3789,7 +3789,7 @@ RSpec.describe Repository, feature_category: :source_code_management do
       allow(repository.raw_repository).to receive(:branch_names).and_return([branch_name])
     end
 
-    context 'when prohibited branch exists' do
+    shared_examples 'deletes the branch' do
       it 'deletes prohibited branch' do
         expect(repository.raw_repository).to receive(:delete_branch).with(branch_name)
 
@@ -3803,6 +3803,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
         repository.remove_prohibited_branches
       end
+    end
+
+    context 'when branch name is hexadecmal and 40-characters long' do
+      include_examples 'deletes the branch'
+    end
+
+    context 'when branch name is hexadecmal and 64-characters long' do
+      let(:branch_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
+
+      include_examples 'deletes the branch'
     end
 
     context 'when branch name is 40-characters long but not hexadecimal' do

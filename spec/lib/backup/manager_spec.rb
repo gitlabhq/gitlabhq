@@ -22,6 +22,10 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
     allow(progress).to receive(:print)
   end
 
+  def backup_path
+    Pathname(Gitlab.config.backup.path)
+  end
+
   describe '#run_create_task' do
     let(:terraform_state) do
       Backup::Tasks::TerraformState.new(progress: progress, options: options)
@@ -187,8 +191,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       allow(Gitlab::BackupLogger).to receive(:info)
       allow(Kernel).to receive(:system).and_return(true)
 
-      allow(target1).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-      allow(target2).to receive(:dump).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+      allow(target1).to receive(:dump).with(backup_path.join('lfs.tar.gz'), backup_id)
+      allow(target2).to receive(:dump).with(backup_path.join('pages.tar.gz'), backup_id)
     end
 
     it 'creates a backup tar' do
@@ -197,8 +201,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-      expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+      expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+      expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
     end
 
     context 'when BACKUP is set' do
@@ -225,8 +229,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           end.to raise_error(Backup::Error, 'Backup failed')
 
           expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
       end
 
@@ -254,7 +258,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'executes tar' do
-          expect(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz')).and_return(false)
+          expect(File).to receive(:exist?).with(backup_path.join('pages.tar.gz')).and_return(false)
 
           subject.create # rubocop:disable Rails/SaveBang
 
@@ -607,7 +611,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       end
 
       after do
-        FileUtils.rm_rf(Dir.glob(File.join(Gitlab.config.backup.path, '*')), secure: true)
+        FileUtils.rm_rf(Dir.glob(backup_path.join('*')), secure: true)
       end
 
       it 'creates a non-tarred backup' do
@@ -625,7 +629,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
           skipped: 'tar',
           tar_version: be_a(String)
         )
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
     end
 
@@ -726,8 +730,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
           expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
 
         context 'untar fails' do
@@ -755,8 +759,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
           end
         end
 
@@ -819,8 +823,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
           expect(Kernel).to have_received(:system).with(*unpack_tar_cmdline)
           expect(Kernel).to have_received(:system).with(*pack_tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
 
         context 'untar fails' do
@@ -852,8 +856,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
             end.to raise_error(Backup::Error, 'Backup failed')
 
             expect(Gitlab::BackupLogger).to have_received(:info).with(message: "Creating archive #{pack_tar_file} failed")
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-            expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+            expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
           end
         end
 
@@ -889,12 +893,12 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
               'backup_information.yml'
             ]
           )
-          allow(File).to receive(:exist?).with(File.join(Gitlab.config.backup.path, 'backup_information.yml')).and_return(true)
+          allow(File).to receive(:exist?).with(backup_path.join('backup_information.yml')).and_return(true)
           stub_env('SKIP', 'pages')
         end
 
         after do
-          FileUtils.rm(File.join(Gitlab.config.backup.path, 'backup_information.yml'), force: true)
+          FileUtils.rm(backup_path.join('backup_information.yml'), force: true)
         end
 
         it 'updates the non-tarred backup' do
@@ -963,8 +967,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
       Rake.application.rake_require 'tasks/cache'
 
       allow(Gitlab::BackupLogger).to receive(:info)
-      allow(target1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-      allow(target2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+      allow(target1).to receive(:restore).with(backup_path.join('lfs.tar.gz'), backup_id)
+      allow(target2).to receive(:restore).with(backup_path.join('pages.tar.gz'), backup_id)
       allow_next_instance_of(Backup::Metadata) do |metadata|
         allow(metadata).to receive(:load_from_file).and_return(backup_information)
       end
@@ -1048,8 +1052,8 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         subject.restore
 
         expect(Kernel).to have_received(:system).with(*tar_cmdline)
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
 
       context 'backup information mismatches' do
@@ -1063,14 +1067,14 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
         end
 
         it 'unpacks the BACKUP specified file but uses the backup information backup ID' do
-          expect(target1).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'lfs.tar.gz'), backup_id)
-          expect(target2).to receive(:restore).with(File.join(Gitlab.config.backup.path, 'pages.tar.gz'), backup_id)
+          expect(target1).to receive(:restore).with(backup_path.join('lfs.tar.gz'), backup_id)
+          expect(target2).to receive(:restore).with(backup_path.join('pages.tar.gz'), backup_id)
 
           subject.restore
 
           expect(Kernel).to have_received(:system).with(*tar_cmdline)
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'backup_information.yml'))
-          expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('backup_information.yml'))
+          expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
         end
       end
 
@@ -1121,7 +1125,7 @@ RSpec.describe Backup::Manager, feature_category: :backup_restore do
 
         expect(progress).to have_received(:puts)
           .with(a_string_matching('Non tarred backup found '))
-        expect(FileUtils).to have_received(:rm_rf).with(File.join(Gitlab.config.backup.path, 'tmp'))
+        expect(FileUtils).to have_received(:rm_rf).with(backup_path.join('tmp'))
       end
 
       context 'on version mismatch' do

@@ -59,9 +59,14 @@
 
   -# Buttons
   - if has_project_shortcut_buttons
-    .project-page-sidebar-block.gl-py-4
+    .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-gray-50
       .project-buttons.gl-mb-2.js-show-on-project-root{ data: { testid: 'project-buttons' } }
         - if @project.empty_repo?
           = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons, project_buttons: true
         - else
           = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout), project_buttons: true
+
+  -# Project created
+  .project-page-sidebar-block.gl-py-4
+    %p.gl-font-weight-bold.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Created on')
+    %span= @project.created_at.to_date.to_fs(:long)

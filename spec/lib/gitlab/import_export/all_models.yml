@@ -969,6 +969,7 @@ design: &design
 - notes
 - user_mentions
 - events
+- subscriptions
 designs: *design
 actions:
 - design

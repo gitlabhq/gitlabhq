@@ -12,12 +12,12 @@ module Backup
       def target
         excludes = ['tmp']
 
-        ::Backup::Targets::Files.new(progress, app_files_dir, options: options, excludes: excludes)
+        ::Backup::Targets::Files.new(progress, storage_path, options: options, excludes: excludes)
       end
 
       private
 
-      def app_files_dir
+      def storage_path
         Settings.packages.storage_path
       end
     end

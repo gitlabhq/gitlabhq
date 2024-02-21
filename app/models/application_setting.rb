@@ -685,6 +685,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     length: { maximum: 2_048, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
+  validates :asciidoc_max_includes,
+    numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 64 }
+
   attr_encrypted :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: Settings.attr_encrypted_db_key_base_truncated,
