@@ -713,6 +713,8 @@
   - 2
 - - security_scans_purge_by_job_id
   - 1
+- - security_sync_policy_violation_comment
+  - 1
 - - security_sync_scan_policies
   - 1
 - - security_unenforceable_policy_rules_notification

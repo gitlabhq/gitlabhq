@@ -57,7 +57,7 @@ When you find an issue you'd like to work on:
   @docs-hackathon I would like to work on this issue
   ```
 
-You can try installing and running the [Vale linting tool](testing.md#vale)
+You can try installing and running the [Vale linting tool](testing/vale.md)
 and fixing the resulting issues.
 
 ## Ask for help

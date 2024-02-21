@@ -27,4 +27,4 @@ Use CI/CD to generate your application.
 - [ChatOps](../ci/chatops/index.md)
 - [Mobile DevOps](../ci/mobile_devops.md)
 - [External repository integrations](../ci/ci_cd_for_external_repos/index.md)
-- [Troubleshooting](../ci/troubleshooting.md)
+- [Debugging and troubleshooting](../ci/debugging.md)

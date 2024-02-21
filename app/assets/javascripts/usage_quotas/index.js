@@ -28,7 +28,7 @@ export default () => {
     apolloProvider,
     provide: {
       namespaceName,
-      tabs: usageQuotasTabsMetadata,
+      tabs: usageQuotasTabsMetadata.filter(Boolean),
       ...usageQuotasViewProvideData,
     },
     render(createElement) {

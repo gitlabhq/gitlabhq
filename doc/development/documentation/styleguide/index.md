@@ -65,7 +65,7 @@ the documentation helps others efficiently accomplish tasks and solve problems.
 The GitLab documentation is not localized, but we follow guidelines that help us write for a global audience.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly with translation in mind.
-Our style guide, [word list](word_list.md), and [Vale rules](../testing.md) ensure consistency in the documentation.
+Our style guide, [word list](word_list.md), and [Vale rules](../testing/index.md) ensure consistency in the documentation.
 
 When documentation is translated into other languages, the meaning of each word must be clear.
 The increasing use of machine translation, GitLab Duo Chat, and other AI tools
@@ -114,7 +114,7 @@ linked style guide. You can't use Kramdown-specific markup (for example, `{:.cla
 For a complete Kramdown reference, see the
 [GitLab Markdown Guide](https://handbook.gitlab.com/handbook/markdown-guide/).
 
-The Markdown format is [tested](../testing.md) by using markdownlint and Vale.
+The Markdown format is tested by using [markdownlint](../testing/markdownlint.md) and [Vale](../testing/vale.md).
 
 ### HTML in Markdown
 
@@ -803,7 +803,7 @@ use a relative file path. For example, `../user/gitlab_com/index.md`.
 Use inline link Markdown markup `[Text](https://example.com)`,
 rather than reference-style links, like `[Text][identifier]`.
 
-Put the entire link on a single line so that [linters](../testing.md) can find it.
+Put the entire link on a single line so that [linters](../testing/index.md) can find it.
 
 ### Links in separate repositories
 
@@ -836,7 +836,7 @@ any related links, search these directories:
 - `app/views/*`
 - `ee/app/views/*`
 
-If you do not fix these links, the [`ui-docs-lint` job](../testing.md#ui-link-tests)
+If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
 in your merge request fails.
 
 ### Text for links
