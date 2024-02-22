@@ -105,6 +105,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     p_ci_finished_build_ch_sync_events: %w[build_id],
     p_ci_job_artifacts: %w[partition_id project_id job_id],
     p_ci_pipeline_variables: %w[partition_id],
+    p_ci_stages: %w[partition_id project_id pipeline_id],
     project_build_artifacts_size_refreshes: %w[last_job_artifact_id],
     project_data_transfers: %w[project_id namespace_id],
     project_error_tracking_settings: %w[sentry_project_id],

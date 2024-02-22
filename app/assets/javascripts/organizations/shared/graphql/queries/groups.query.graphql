@@ -2,7 +2,7 @@
 query getOrganizationGroups(
   $id: OrganizationsOrganizationID!
   $search: String
-  $sort: OrganizationGroupSort
+  $sort: String
   $first: Int
   $last: Int
   $before: String

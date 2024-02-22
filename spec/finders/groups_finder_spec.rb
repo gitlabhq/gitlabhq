@@ -4,13 +4,12 @@ require 'spec_helper'
 
 RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
   include AdminModeHelper
+  using RSpec::Parameterized::TableSyntax
 
   describe '#execute' do
     let(:user) { create(:user) }
 
     describe 'root level groups' do
-      using RSpec::Parameterized::TableSyntax
-
       where(:user_type, :params, :results) do
         nil | { all_available: true } | %i[public_group user_public_group]
         nil | { all_available: false } | %i[public_group user_public_group]
@@ -405,6 +404,28 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
             private_sub_sub_subgroup
           )
         end
+      end
+    end
+
+    describe 'group sorting' do
+      let_it_be(:all_groups) { create_list(:group, 3, :public) }
+
+      subject(:result) { described_class.new(nil, params).execute.to_a }
+
+      where(:field, :direction, :sorted_groups) do
+        'id'   | 'asc'  | lazy { all_groups.sort_by(&:id) }
+        'id'   | 'desc' | lazy { all_groups.sort_by(&:id).reverse }
+        'name' | 'asc'  | lazy { all_groups.sort_by(&:name) }
+        'name' | 'desc' | lazy { all_groups.sort_by(&:name).reverse }
+        'path' | 'asc'  | lazy { all_groups.sort_by(&:path) }
+        'path' | 'desc' | lazy { all_groups.sort_by(&:path).reverse }
+      end
+
+      with_them do
+        let(:sort) { "#{field}_#{direction}" }
+        let(:params) { { sort: sort } }
+
+        it { is_expected.to eq(sorted_groups) }
       end
     end
   end

@@ -136,7 +136,7 @@ describe('GroupsView', () => {
         expect(successHandler).toHaveBeenCalledWith({
           id: defaultProvide.organizationGid,
           search: defaultPropsData.search,
-          sort: 'NAME_ASC',
+          sort: 'name_asc',
           last: null,
           first: DEFAULT_PER_PAGE,
           before: null,
@@ -233,7 +233,7 @@ describe('GroupsView', () => {
             id: defaultProvide.organizationGid,
             last: null,
             search: defaultPropsData.search,
-            sort: 'NAME_ASC',
+            sort: 'name_asc',
           });
         });
       });
@@ -296,7 +296,7 @@ describe('GroupsView', () => {
             id: defaultProvide.organizationGid,
             last: DEFAULT_PER_PAGE,
             search: defaultPropsData.search,
-            sort: 'NAME_ASC',
+            sort: 'name_asc',
           });
         });
       });

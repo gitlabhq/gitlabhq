@@ -1,6 +1,5 @@
 <script>
 import { isEmpty, clamp } from 'lodash';
-import { registeredExtensions } from '~/vue_merge_request_widget/components/extensions';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import MrWidgetApprovals from 'ee_else_ce/vue_merge_request_widget/components/approvals/approvals.vue';
 import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
@@ -39,7 +38,6 @@ import ReadyToMergeState from './components/states/ready_to_merge.vue';
 import ShaMismatch from './components/states/sha_mismatch.vue';
 import UnresolvedDiscussionsState from './components/states/unresolved_discussions.vue';
 import WorkInProgressState from './components/states/work_in_progress.vue';
-import ExtensionsContainer from './components/extensions/container';
 import WidgetContainer from './components/widget/app.vue';
 import {
   STATE_MACHINE,
@@ -65,7 +63,6 @@ export default {
   },
   components: {
     Loading,
-    ExtensionsContainer,
     WidgetContainer,
     MrWidgetSuggestPipeline: WidgetSuggestPipeline,
     MrWidgetPipelineContainer,
@@ -246,9 +243,6 @@ export default {
       if (this.mr.state === 'readyToMerge') return true;
 
       return !this.mr.mergeDetailsCollapsed;
-    },
-    hasExtensions() {
-      return registeredExtensions.extensions.length;
     },
     mergeBlockedComponentEnabled() {
       return (
@@ -544,7 +538,6 @@ export default {
     />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
-      <extensions-container v-if="hasExtensions" :mr="mr" />
       <widget-container :mr="mr" />
     </report-widget-container>
     <div class="mr-section-container mr-widget-workflow">

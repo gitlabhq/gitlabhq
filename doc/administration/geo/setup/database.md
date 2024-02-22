@@ -329,7 +329,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    sudo -i
    ```
 
-1. Stop application server and Sidekiq
+1. Stop application server and Sidekiq:
 
    ```shell
    gitlab-ctl stop puma

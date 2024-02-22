@@ -9,6 +9,7 @@ module Ci
     include Presentable
 
     self.primary_key = :id
+    self.sequence_name = :ci_job_stages_id_seq
 
     partitionable scope: :pipeline
 

@@ -161,9 +161,6 @@
 .if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified: &if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_TESTS'
 
-.if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e: &if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $QA_MANUAL_FF_PACKAGE_AND_QA'
-
 .if-dot-com-gitlab-org-and-security-tag: &if-dot-com-gitlab-org-and-security-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/security$)/ && $CI_COMMIT_TAG'
 
@@ -898,8 +895,6 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -985,9 +980,6 @@
       changes: *nodejs-patterns
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      when: manual
     - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
       changes: *code-patterns
     - <<: *if-merge-request
@@ -1016,8 +1008,6 @@
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -1252,8 +1242,6 @@
     # Rules to support .qa:rules:package-and-test
     - <<: *if-default-branch-schedule-nightly
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
       changes: *dependency-patterns
     - <<: *if-force-ci
@@ -1533,9 +1521,6 @@
       allow_failure: true
     - <<: *if-merge-request-labels-run-all-e2e
       allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
       allow_failure: true
@@ -1561,8 +1546,6 @@
       variables:
         OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
     - <<: *if-merge-request
@@ -1604,10 +1587,6 @@
       variables:
         OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
     - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      when: manual
       allow_failure: true
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -1773,43 +1752,6 @@
     - <<: *if-merge-request-and-specific-devops-stage
       when: never
     - !reference [".qa:rules:code-merge-request-manual", rules]
-    - <<: *if-dot-com-gitlab-org-schedule
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-      when: never
-    - <<: *if-ruby-branch
-      when: never
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      when: never
-    - <<: *if-merge-request-labels-run-all-e2e
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      when: manual
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *qa-patterns
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
-      changes: *code-patterns
-      when: never
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
 
 # These are based on `.qa:rules:manual-omnibus-and-follow-up-e2e` but with manual jobs changed to automatic
 .qa:rules:follow-up-e2e:
@@ -1819,41 +1761,6 @@
       when: never
     - <<: *if-merge-request
       changes: *code-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-schedule
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-      when: never
-    - <<: *if-ruby-branch
-      when: never
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      when: never
-    - <<: *if-merge-request-labels-run-all-e2e
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-      when: never
-    - <<: *if-merge-request
-      changes: *qa-patterns
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-and-qa-tests-specified
-      changes: *code-patterns
-      when: never
-    - <<: *if-force-ci
       allow_failure: true
 
 # These are based on `qa:rules:package-and-test-ee` but with when:never in all except for code-patterns in merge requests
@@ -1870,9 +1777,6 @@
       changes: *dependency-patterns
       when: never
     - <<: *if-merge-request-labels-run-all-e2e
-      when: never
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
       when: never
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -3026,8 +2930,6 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
 
 .as-if-foss:rules:start-as-if-foss:allow-failure:manual:
   rules:
@@ -3126,10 +3028,6 @@
       changes: *db-patterns
       allow_failure: true
       when: manual
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
-      allow_failure: true
-      when: manual
 
 .as-if-foss:rules:start-as-if-foss:allow-failure:
   rules:
@@ -3204,9 +3102,6 @@
       allow_failure: true
     - <<: *if-security-merge-request
       changes: *db-patterns
-      allow_failure: true
-    - <<: *if-dot-com-gitlab-org-and-security-merge-request-manual-ff-package-and-e2e
-      changes: *feature-flag-development-config-patterns
       allow_failure: true
 
 ##################

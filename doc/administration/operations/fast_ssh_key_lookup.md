@@ -138,7 +138,7 @@ To disable writes to the `authorized_keys` file:
 Again, confirm that SSH is working by removing your user's SSH key in the UI,
 adding a new one, and attempting to pull a repository.
 
-Then you can backup and delete your `authorized_keys` file for best performance.
+Then you can back up and delete your `authorized_keys` file for best performance.
 The current users' keys are already present in the database, so there is no need for migration
 or for users to re-add their keys.
 

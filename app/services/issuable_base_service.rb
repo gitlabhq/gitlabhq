@@ -58,6 +58,10 @@ class IssuableBaseService < ::BaseContainerService
     can?(current_user, ability_name, issuable)
   end
 
+  def can_set_confidentiality?(issuable)
+    can?(current_user, :set_confidentiality, issuable)
+  end
+
   def filter_params(issuable)
     unless can_set_issuable_metadata?(issuable)
       params.delete(:labels)
@@ -78,7 +82,7 @@ class IssuableBaseService < ::BaseContainerService
 
     # confidential attribute is a special type of metadata and needs to be allowed to be set
     # by non-members on issues in public projects so that security issues can be reported as confidential.
-    params.delete(:confidential) unless can?(current_user, :set_confidentiality, issuable)
+    params.delete(:confidential) unless can_set_confidentiality?(issuable)
     filter_contact_params(issuable)
     filter_assignees(issuable)
     filter_labels

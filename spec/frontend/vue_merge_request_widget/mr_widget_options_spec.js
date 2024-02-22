@@ -1,4 +1,3 @@
-import { GlBadge, GlLink, GlIcon, GlButton, GlDropdown } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -9,18 +8,11 @@ import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/re
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK, HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
-import Poll from '~/lib/utils/poll';
+import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { setFaviconOverlay } from '~/lib/utils/favicon';
 import notify from '~/lib/utils/notify';
 import SmartInterval from '~/smart_interval';
-import {
-  registerExtension,
-  registeredExtensions,
-} from '~/vue_merge_request_widget/components/extensions';
 import { STATUS_CLOSED, STATUS_OPEN, STATUS_MERGED } from '~/issues/constants';
 import { STATE_QUERY_POLLING_INTERVAL_BACKOFF } from '~/vue_merge_request_widget/constants';
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
@@ -34,7 +26,6 @@ import MergedState from '~/vue_merge_request_widget/components/states/mr_widget_
 import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import WidgetSuggestPipeline from '~/vue_merge_request_widget/components/mr_widget_suggest_pipeline.vue';
 import MrWidgetAlertMessage from '~/vue_merge_request_widget/components/mr_widget_alert_message.vue';
-import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
 import getStateSubscription from '~/vue_merge_request_widget/queries/get_state.subscription.graphql';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
@@ -45,21 +36,9 @@ import approvedBySubscription from 'ee_else_ce/vue_merge_request_widget/componen
 import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
 import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
-import ExtensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData, { mockDeployment, mockMergePipeline, mockPostMergeDeployments } from './mock_data';
-import {
-  workingExtension,
-  collapsedDataErrorExtension,
-  fullDataErrorExtension,
-  fullReportExtension,
-  noTelemetryExtension,
-  pollingExtension,
-  pollingFullDataExtension,
-  pollingErrorExtension,
-  multiPollingExtension,
-} from './test_extensions';
 
 jest.mock('~/api.js');
 
@@ -160,10 +139,6 @@ describe('MrWidgetOptions', () => {
   const findPipelineContainer = () => wrapper.findByTestId('pipeline-container');
   const findAlertMessage = () => wrapper.findComponent(MrWidgetAlertMessage);
   const findMergePipelineForkAlert = () => wrapper.findByTestId('merge-pipeline-fork-warning');
-  const findExtensionToggleButton = () =>
-    wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
-  const findExtensionLink = (linkHref) =>
-    wrapper.find(`[data-testid="widget-extension"] [href="${linkHref}"]`);
   const findSuggestPipeline = () => wrapper.findComponent(WidgetSuggestPipeline);
   const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
 
@@ -715,397 +690,6 @@ describe('MrWidgetOptions', () => {
       await waitForPromises();
 
       expect(wrapper.findByTestId('merge-error').exists()).toBe(show);
-    });
-  });
-
-  describe('mock extension', () => {
-    beforeEach(() => {
-      registerExtension(workingExtension());
-
-      createComponent({ mountFn: mountExtended });
-    });
-
-    afterEach(() => {
-      registeredExtensions.extensions = [];
-    });
-
-    it('renders collapsed data', async () => {
-      await waitForPromises();
-
-      expect(wrapper.text()).toContain('Test extension summary count: 1');
-    });
-
-    it('renders full data', async () => {
-      await waitForPromises();
-
-      findExtensionToggleButton().trigger('click');
-
-      await nextTick();
-
-      expect(
-        wrapper
-          .find('[data-testid="widget-extension-top-level"]')
-          .findComponent(GlDropdown)
-          .exists(),
-      ).toBe(false);
-
-      await waitForPromises();
-
-      const collapsedSection = wrapper.find('[data-testid="widget-extension-collapsed-section"]');
-      expect(collapsedSection.exists()).toBe(true);
-      expect(collapsedSection.text()).toContain('Hello world');
-
-      // Renders icon in the row
-      expect(collapsedSection.findComponent(GlIcon).exists()).toBe(true);
-      expect(collapsedSection.findComponent(GlIcon).props('name')).toBe('status-failed');
-
-      // Renders badge in the row
-      expect(collapsedSection.findComponent(GlBadge).exists()).toBe(true);
-      expect(collapsedSection.findComponent(GlBadge).text()).toBe('Closed');
-
-      // Renders a link in the row
-      expect(collapsedSection.findComponent(GlLink).exists()).toBe(true);
-      expect(collapsedSection.findComponent(GlLink).text()).toBe('GitLab.com');
-
-      expect(collapsedSection.findComponent(GlButton).exists()).toBe(true);
-      expect(collapsedSection.findComponent(GlButton).text()).toBe('Full report');
-    });
-  });
-
-  describe('expansion', () => {
-    it('hides collapse button', async () => {
-      registerExtension(workingExtension(false));
-      await createComponent();
-
-      expect(findExtensionToggleButton().exists()).toBe(false);
-    });
-
-    it('shows collapse button', async () => {
-      registerExtension(workingExtension(true));
-      await createComponent({ mountFn: mountExtended });
-
-      expect(findExtensionToggleButton().exists()).toBe(true);
-    });
-  });
-
-  describe('mock polling extension', () => {
-    let pollRequest;
-
-    const findWidgetTestExtension = () => wrapper.find('[data-testid="widget-extension"]');
-
-    beforeEach(() => {
-      pollRequest = jest.spyOn(Poll.prototype, 'makeRequest');
-
-      registeredExtensions.extensions = [];
-    });
-
-    afterEach(() => {
-      registeredExtensions.extensions = [];
-    });
-
-    describe('success - multi polling', () => {
-      it('sets data when polling is complete', async () => {
-        registerExtension(
-          multiPollingExtension([
-            () =>
-              Promise.resolve({
-                headers: { 'poll-interval': 0 },
-                status: HTTP_STATUS_OK,
-                data: { reports: 'parsed' },
-              }),
-            () =>
-              Promise.resolve({
-                status: HTTP_STATUS_OK,
-                data: { reports: 'parsed' },
-              }),
-          ]),
-        );
-
-        await createComponent({ mountFn: mountExtended });
-        expect(findWidgetTestExtension().html()).toContain(
-          'Multi polling test extension reports: parsed, count: 2',
-        );
-      });
-
-      it('shows loading state until polling is complete', async () => {
-        registerExtension(
-          multiPollingExtension([
-            () =>
-              Promise.resolve({
-                headers: { 'poll-interval': 1 },
-                status: HTTP_STATUS_NO_CONTENT,
-              }),
-            () =>
-              Promise.resolve({
-                status: HTTP_STATUS_OK,
-                data: { reports: 'parsed' },
-              }),
-          ]),
-        );
-
-        await createComponent({ mountFn: mountExtended });
-        expect(findWidgetTestExtension().html()).toContain('Test extension loading...');
-      });
-    });
-
-    describe('success', () => {
-      it('does not make additional requests after poll is successful', async () => {
-        registerExtension(pollingExtension);
-
-        await createComponent({ mountFn: mountExtended });
-
-        expect(pollRequest).toHaveBeenCalledTimes(1);
-      });
-    });
-
-    describe('success - full data polling', () => {
-      it('sets data when polling is complete', async () => {
-        registerExtension(pollingFullDataExtension);
-
-        await createComponent({ mountFn: mountExtended });
-
-        api.trackRedisHllUserEvent.mockClear();
-        api.trackRedisCounterEvent.mockClear();
-
-        findExtensionToggleButton().trigger('click');
-
-        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_expand',
-        );
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_expand_warning',
-        );
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_count_expand',
-        );
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
-        );
-      });
-    });
-
-    describe('error', () => {
-      it('does not make additional requests after poll has failed', async () => {
-        registerExtension(pollingErrorExtension);
-        await createComponent({ mountFn: mountExtended });
-
-        expect(pollRequest).toHaveBeenCalledTimes(1);
-      });
-
-      it('captures sentry error and displays error when poll has failed', async () => {
-        registerExtension(pollingErrorExtension);
-        await createComponent({ mountFn: mountExtended });
-
-        expect(Sentry.captureException).toHaveBeenCalled();
-        expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-        expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
-      });
-    });
-  });
-
-  describe('mock extension errors', () => {
-    afterEach(() => {
-      registeredExtensions.extensions = [];
-    });
-
-    it('handles collapsed data fetch errors', async () => {
-      registerExtension(collapsedDataErrorExtension);
-      await createComponent({ mountFn: mountExtended });
-
-      expect(
-        wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]').exists(),
-      ).toBe(false);
-      expect(Sentry.captureException).toHaveBeenCalled();
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
-    });
-
-    it('handles full data fetch errors', async () => {
-      registerExtension(fullDataErrorExtension);
-      await createComponent({ mountFn: mountExtended });
-
-      expect(wrapper.findComponent(StatusIcon).props('iconName')).not.toBe('error');
-      wrapper
-        .find('[data-testid="widget-extension"] [data-testid="toggle-button"]')
-        .trigger('click');
-
-      await nextTick();
-      await waitForPromises();
-
-      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
-      expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
-    });
-  });
-
-  describe('telemetry', () => {
-    afterEach(() => {
-      registeredExtensions.extensions = [];
-    });
-
-    describe('component name tier suffixes', () => {
-      let extension;
-
-      beforeEach(() => {
-        extension = workingExtension();
-      });
-
-      it('reports events without a CE suffix', async () => {
-        extension.name = `${extension.name}CE`;
-
-        registerExtension(extension);
-        await createComponent({
-          mountFn: mountExtended,
-          options: { stubs: { ExtensionsContainer } },
-        });
-
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_view',
-        );
-        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_c_e_view',
-        );
-      });
-
-      it('reports events without a EE suffix', async () => {
-        extension.name = `${extension.name}EE`;
-
-        registerExtension(extension);
-        await createComponent({
-          mountFn: mountExtended,
-          options: { stubs: { ExtensionsContainer } },
-        });
-
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_view',
-        );
-        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_e_e_view',
-        );
-      });
-
-      it('leaves non-CE & non-EE all caps suffixes intact', async () => {
-        extension.name = `${extension.name}HI`;
-
-        registerExtension(extension);
-        await createComponent({
-          mountFn: mountExtended,
-          options: { stubs: { ExtensionsContainer } },
-        });
-
-        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_view',
-        );
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_h_i_view',
-        );
-      });
-
-      it("doesn't remove CE or EE from the middle of a widget name", async () => {
-        extension.name = 'TestCEExtensionEETest';
-
-        registerExtension(extension);
-        await createComponent({
-          mountFn: mountExtended,
-          options: { stubs: { ExtensionsContainer } },
-        });
-
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_c_e_extension_e_e_test_view',
-        );
-      });
-    });
-
-    it('triggers view events when mounted', async () => {
-      registerExtension(workingExtension());
-      await createComponent({
-        mountFn: mountExtended,
-        options: { stubs: { ExtensionsContainer } },
-      });
-
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_test_extension_view',
-      );
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_test_extension_count_view',
-      );
-    });
-
-    describe('expand button', () => {
-      it('triggers expand events when clicked', async () => {
-        registerExtension(workingExtension());
-        createComponent({ mountFn: mountExtended });
-
-        await waitForPromises();
-
-        api.trackRedisHllUserEvent.mockClear();
-        api.trackRedisCounterEvent.mockClear();
-
-        findExtensionToggleButton().trigger('click');
-
-        // The default working extension is a "warning" type, which generates a second - more specific - telemetry event for expansions
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(2);
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_expand',
-        );
-        expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_expand_warning',
-        );
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(2);
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_count_expand',
-        );
-        expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-          'i_code_review_merge_request_widget_test_extension_count_expand_warning',
-        );
-      });
-    });
-
-    it('triggers the "full report clicked" events when the appropriate button is clicked', async () => {
-      registerExtension(fullReportExtension);
-
-      await createComponent({
-        mountFn: mountExtended,
-        options: { stubs: { ExtensionsContainer } },
-      });
-
-      api.trackRedisHllUserEvent.mockClear();
-      api.trackRedisCounterEvent.mockClear();
-
-      findExtensionLink('testref').trigger('click');
-
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_test_extension_click_full_report',
-      );
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_test_extension_count_click_full_report',
-      );
-    });
-
-    describe('when disabled', () => {
-      afterEach(() => {
-        registeredExtensions.extensions = [];
-      });
-
-      it("doesn't emit any telemetry events", async () => {
-        registerExtension(noTelemetryExtension);
-        createComponent({ mountFn: mountExtended });
-
-        await waitForPromises();
-
-        findExtensionToggleButton().trigger('click');
-        findExtensionLink('testref').trigger('click'); // The "full report" link
-
-        expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
-        expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
-      });
     });
   });
 

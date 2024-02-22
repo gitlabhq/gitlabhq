@@ -413,6 +413,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="querygroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 
 ### `Query.instanceExternalAuditEventDestinations`
 
@@ -18740,6 +18741,7 @@ Describes where code is deployed for a project.
 | <a id="environmentclusteragent"></a>`clusterAgent` | [`ClusterAgent`](#clusteragent) | Cluster agent of the environment. |
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
 | <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
+| <a id="environmentdeploymentsdisplaycount"></a>`deploymentsDisplayCount` | [`String`](#string) | Number of deployments in the environment for display. Returns the precise number up to 999, and "999+" for counts exceeding this limit. |
 | <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
 | <a id="environmentexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="environmentfluxresourcepath"></a>`fluxResourcePath` | [`String`](#string) | Flux resource path of the environment. |
@@ -24218,8 +24220,8 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationgroupssearch"></a>`search` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.4. **Status**: Experiment. Search query for group name or full path. |
-| <a id="organizationgroupssort"></a>`sort` **{warning-solid}** | [`OrganizationGroupSort`](#organizationgroupsort) | **Introduced** in 16.4. **Status**: Experiment. Criteria to sort organization groups by. |
+| <a id="organizationgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="organizationgroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 
 ##### `Organization.projects`
 
@@ -24239,7 +24241,15 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.9. **Status**: Experiment. Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="organizationprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
+| <a id="organizationprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
+| <a id="organizationprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
+| <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
+| <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="organizationprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
+| <a id="organizationprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
+| <a id="organizationprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
 ### `OrganizationStateCounts`
 
@@ -32129,23 +32139,6 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumdays"></a>`DAYS` | Days. |
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
-
-### `OrganizationGroupSort`
-
-Values for sorting organization groups.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="organizationgroupsortcreated_at_asc"></a>`CREATED_AT_ASC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Created at in ascending order. |
-| <a id="organizationgroupsortcreated_at_desc"></a>`CREATED_AT_DESC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Created at in descending order. |
-| <a id="organizationgroupsortid_asc"></a>`ID_ASC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. ID in ascending order. |
-| <a id="organizationgroupsortid_desc"></a>`ID_DESC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. ID in descending order. |
-| <a id="organizationgroupsortname_asc"></a>`NAME_ASC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Name in ascending order. |
-| <a id="organizationgroupsortname_desc"></a>`NAME_DESC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Name in descending order. |
-| <a id="organizationgroupsortpath_asc"></a>`PATH_ASC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Path in ascending order. |
-| <a id="organizationgroupsortpath_desc"></a>`PATH_DESC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Path in descending order. |
-| <a id="organizationgroupsortupdated_at_asc"></a>`UPDATED_AT_ASC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Updated at in ascending order. |
-| <a id="organizationgroupsortupdated_at_desc"></a>`UPDATED_AT_DESC` **{warning-solid}** | **Introduced** in 16.4. **Status**: Experiment. Updated at in descending order. |
 
 ### `OrganizationSort`
 

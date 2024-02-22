@@ -1933,6 +1933,18 @@ msgstr ""
 msgid "AIAgent|AI Agent: %{agentId}"
 msgstr ""
 
+msgid "AIAgent|Agent"
+msgstr ""
+
+msgid "AIAgent|Ask your agent"
+msgstr ""
+
+msgid "AIAgent|Try out your agent"
+msgstr ""
+
+msgid "AIAgent|Your agent's system prompt will be applied to the chat input."
+msgstr ""
+
 msgid "AIPoweredSM|AI-powered features"
 msgstr ""
 
@@ -49007,7 +49019,7 @@ msgstr ""
 msgid "Sync LDAP"
 msgstr ""
 
-msgid "Sync now"
+msgid "Sync changes"
 msgstr ""
 
 msgid "Synced"
@@ -58523,12 +58535,6 @@ msgstr ""
 msgid "ciReport|%{scanner} detected %{number} new potential %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected %{strong_start}%{number}%{strong_end} new potential %{vulnStr}"
-msgstr ""
-
-msgid "ciReport|%{scanner} detected no new %{vulnStr}"
-msgstr ""
-
 msgid "ciReport|%{scanner} detected no new potential vulnerabilities"
 msgstr ""
 
@@ -58758,22 +58764,7 @@ msgstr ""
 msgid "ciReport|TTFB P95"
 msgstr ""
 
-msgid "ciReport|There was an error creating the issue. Please try again."
-msgstr ""
-
 msgid "ciReport|There was an error creating the merge request. Please try again."
-msgstr ""
-
-msgid "ciReport|There was an error dismissing the vulnerability. Please try again."
-msgstr ""
-
-msgid "ciReport|There was an error dismissing the vulnerability: %{error}"
-msgstr ""
-
-msgid "ciReport|There was an error reverting the dismissal. Please try again."
-msgstr ""
-
-msgid "ciReport|There was an error reverting the dismissal: %{error}"
 msgstr ""
 
 msgid "ciReport|This report contains all Code Quality issues in the source branch."
@@ -59617,9 +59608,6 @@ msgstr ""
 msgid "mrWidget|Go to first unresolved thread"
 msgstr ""
 
-msgid "mrWidget|Hide %{widget} details"
-msgstr ""
-
 msgid "mrWidget|If the %{type} branch exists in your local repository, you can merge this merge request manually using the command line."
 msgstr ""
 
@@ -59704,9 +59692,6 @@ msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipel
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to start a merge train when the pipeline succeeds"
-msgstr ""
-
-msgid "mrWidget|Show %{widget} details"
 msgstr ""
 
 msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."

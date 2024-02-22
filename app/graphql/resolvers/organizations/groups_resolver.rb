@@ -2,26 +2,12 @@
 
 module Resolvers
   module Organizations
-    class GroupsResolver < BaseResolver
+    class GroupsResolver < Resolvers::GroupsResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
-      include ResolvesGroups
 
       type Types::GroupType.connection_type, null: true
 
       authorize :read_group
-
-      argument :search,
-        GraphQL::Types::String,
-        required: false,
-        description: 'Search query for group name or full path.',
-        alpha: { milestone: '16.4' }
-
-      argument :sort,
-        Types::Organizations::GroupSortEnum,
-        description: 'Criteria to sort organization groups by.',
-        required: false,
-        default_value: { field: 'name', direction: :asc },
-        alpha: { milestone: '16.4' }
 
       private
 
@@ -30,13 +16,13 @@ module Resolvers
       def resolve_groups(**args)
         return Group.none if Feature.disabled?(:resolve_organization_groups, current_user)
 
-        extra_args = { organization: organization, include_ancestors: false, all_available: false }
-        groups = GroupsFinder.new(current_user, args.merge(extra_args)).execute
+        super
+      end
 
-        args[:sort] ||= { field: 'name', direction: :asc }
-        field = args[:sort][:field]
-        direction = args[:sort][:direction]
-        groups.sort_by_attribute("#{field}_#{direction}")
+      def finder_params(args)
+        extra_args = { organization: organization, include_ancestors: false, all_available: false }
+
+        super.merge(extra_args)
       end
     end
   end

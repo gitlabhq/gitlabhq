@@ -126,7 +126,7 @@ export default {
       };
     },
     sort() {
-      return `${this.sortName}_${this.sortDirection}`.toUpperCase();
+      return `${this.sortName}_${this.sortDirection}`;
     },
     isLoading() {
       return this.$apollo.queries.groups.loading;

@@ -20,7 +20,6 @@ import { totalArtifactsSizeForJob, mapArchivesToJobNodes, mapBooleansToJobNodes 
 import bulkDestroyJobArtifactsMutation from '../graphql/mutations/bulk_destroy_job_artifacts.mutation.graphql';
 import { removeArtifactFromStore } from '../graphql/cache_update';
 import {
-  STATUS_BADGE_VARIANTS,
   I18N_DOWNLOAD,
   I18N_BROWSE,
   I18N_DELETE,
@@ -351,7 +350,6 @@ export default {
       tdClass: 'gl-text-right',
     },
   ],
-  STATUS_BADGE_VARIANTS,
   i18n: {
     download: I18N_DOWNLOAD,
     browse: I18N_BROWSE,

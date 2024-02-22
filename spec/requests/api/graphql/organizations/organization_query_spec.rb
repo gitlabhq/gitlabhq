@@ -154,8 +154,10 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         end
       end
 
-      context 'with `sort` argument' do
-        let(:authorized_groups) { [public_group, private_group, other_group] }
+      describe 'group sorting' do
+        let_it_be(:authorized_groups) { [public_group, private_group, other_group] }
+        let_it_be(:first_param) { 2 }
+        let_it_be(:data_path) { [:organization, :groups] }
 
         where(:field, :direction, :sorted_groups) do
           'id'   | 'asc'  | lazy { authorized_groups.sort_by(&:id) }
@@ -167,24 +169,17 @@ RSpec.describe 'getting organization information', feature_category: :cell do
         end
 
         with_them do
-          let(:sort) { "#{field}_#{direction}".upcase }
-          let(:organization_fields) do
-            <<~FIELDS
-              id
-              path
-              groups(sort: #{sort}) {
-                nodes {
-                  id
-                }
-              }
-            FIELDS
+          it_behaves_like 'sorted paginated query' do
+            let(:sort_param) { "#{field}_#{direction}" }
+            let(:all_records) { sorted_groups.map { |p| global_id_of(p).to_s } }
           end
+        end
 
-          it 'sorts the groups' do
-            request_organization
-
-            expect(groups.pluck('id')).to eq(sorted_groups.map(&:to_global_id).map(&:to_s))
-          end
+        def pagination_query(params)
+          graphql_query_for(
+            :organization, { id: organization.to_global_id },
+            query_nodes(:groups, :id, include_pagination_info: true, args: params)
+          )
         end
       end
     end
@@ -213,6 +208,34 @@ RSpec.describe 'getting organization information', feature_category: :cell do
 
       it 'returns projects' do
         expect(projects).to contain_exactly(a_graphql_entity_for(project))
+      end
+
+      describe 'project searching' do
+        let_it_be(:other_project) do
+          create(:project, name: 'other-project', organization: organization) { |p| p.add_developer(user) }
+        end
+
+        let_it_be(:non_member_project) { create(:project, :public, organization: organization) }
+
+        context 'with `search` argument' do
+          let(:search) { 'other' }
+          let(:organization_fields) do
+            <<~FIELDS
+              projects(search: "#{search}") {
+                nodes {
+                  id
+                  name
+                }
+              }
+            FIELDS
+          end
+
+          it 'filters projects by name' do
+            request_organization
+
+            expect(projects).to contain_exactly(a_graphql_entity_for(other_project))
+          end
+        end
       end
 
       describe 'project sorting' do

@@ -57,6 +57,10 @@ module Types
     field :environment_type, GraphQL::Types::String,
       description: 'Folder name of the environment.'
 
+    field :deployments_display_count, GraphQL::Types::String, null: true,
+      description: 'Number of deployments in the environment for display. '\
+                   'Returns the precise number up to 999, and "999+" for counts exceeding this limit.'
+
     field :latest_opened_most_severe_alert,
           Types::AlertManagement::AlertType,
           null: true,

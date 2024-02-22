@@ -37,7 +37,8 @@ class GroupsFinder < UnionFinder
   def execute
     # filtered_groups can contain an array of scopes, so these
     # are combined into a single query using UNION.
-    find_union(filtered_groups, Group).with_route.order_id_desc
+    groups = find_union(filtered_groups, Group)
+    sort(groups).with_route
   end
 
   private
@@ -145,6 +146,12 @@ class GroupsFinder < UnionFinder
     return groups unless params[:search].present?
 
     groups.search(params[:search], include_parents: params[:parent].blank?)
+  end
+
+  def sort(groups)
+    return groups.order_id_desc unless params[:sort]
+
+    groups.sort_by_attribute(params[:sort])
   end
 
   def min_access_level?

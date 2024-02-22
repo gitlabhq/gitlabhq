@@ -106,6 +106,13 @@ p_ci_job_artifacts:
     - p_ci_job_artifacts_project_id_idx
   p_ci_job_artifacts_project_id_id_idx1:
     - p_ci_job_artifacts_project_id_idx
+p_ci_stages:
+  p_ci_stages_pipeline_id_name_partition_id_idx:
+    - p_ci_stages_pipeline_id_idx
+  p_ci_stages_pipeline_id_idx:
+    - p_ci_stages_pipeline_id_idx
+  p_ci_stages_pipeline_id_position_idx:
+    - p_ci_stages_pipeline_id_idx
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
     - index_pages_domains_on_project_id
