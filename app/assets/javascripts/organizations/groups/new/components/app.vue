@@ -57,6 +57,8 @@ export default {
       :path-maxlength="pathMaxlength"
       :path-pattern="pathPattern"
       :cancel-path="groupsOrganizationPath"
+      :available-visibility-levels="availableVisibilityLevels"
+      :restricted-visibility-levels="restrictedVisibilityLevels"
     />
   </div>
 </template>

@@ -51,6 +51,24 @@ export const ORGANIZATION_VISIBILITY_TYPE = {
   ),
 };
 
+export const GROUP_VISIBILITY_LEVEL_DESCRIPTIONS = {
+  [VISIBILITY_LEVEL_PUBLIC_STRING]: s__(
+    'VisibilityLevel|The group and any public projects can be viewed without any authentication.',
+  ),
+  [VISIBILITY_LEVEL_INTERNAL_STRING]: s__(
+    'VisibilityLevel|The group and any internal projects can be viewed by any logged in user except external users.',
+  ),
+  [VISIBILITY_LEVEL_PRIVATE_STRING]: s__(
+    'VisibilityLevel|The group and its projects can only be viewed by members.',
+  ),
+};
+
+export const VISIBILITY_LEVEL_LABELS = {
+  [VISIBILITY_LEVEL_PUBLIC_STRING]: s__('VisibilityLevel|Public'),
+  [VISIBILITY_LEVEL_INTERNAL_STRING]: s__('VisibilityLevel|Internal'),
+  [VISIBILITY_LEVEL_PRIVATE_STRING]: s__('VisibilityLevel|Private'),
+};
+
 export const VISIBILITY_TYPE_ICON = {
   [VISIBILITY_LEVEL_PUBLIC_STRING]: 'earth',
   [VISIBILITY_LEVEL_INTERNAL_STRING]: 'shield',

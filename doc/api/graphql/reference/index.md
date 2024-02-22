@@ -31472,7 +31472,7 @@ Types of add-ons.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="gitlabsubscriptionsaddontypecode_suggestions"></a>`CODE_SUGGESTIONS` | Code suggestions seat add-on. |
+| <a id="gitlabsubscriptionsaddontypecode_suggestions"></a>`CODE_SUGGESTIONS` | GitLab Duo Pro seat add-on. |
 
 ### `GitlabSubscriptionsUserRole`
 

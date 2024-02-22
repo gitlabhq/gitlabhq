@@ -2,6 +2,13 @@ import { nextTick } from 'vue';
 
 import NewGroupForm from '~/groups/components/new_group_form.vue';
 import GroupPathField from '~/groups/components/group_path_field.vue';
+import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
+import {
+  VISIBILITY_LEVELS_STRING_TO_INTEGER,
+  VISIBILITY_LEVEL_PRIVATE_INTEGER,
+  VISIBILITY_LEVEL_PUBLIC_INTEGER,
+  GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
+} from '~/visibility_level/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('NewGroupForm', () => {
@@ -12,6 +19,8 @@ describe('NewGroupForm', () => {
     cancelPath: '/-/organizations/default/groups_and_projects?display=groups',
     pathMaxlength: 10,
     pathPattern: '[a-zA-Z0-9_\\.][a-zA-Z0-9_\\-\\.]{0,254}[a-zA-Z0-9_\\-]|[a-zA-Z0-9_]',
+    availableVisibilityLevels: Object.values(VISIBILITY_LEVELS_STRING_TO_INTEGER),
+    restrictedVisibilityLevels: [],
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
@@ -29,9 +38,14 @@ describe('NewGroupForm', () => {
 
   const findNameField = () => wrapper.findByLabelText('Group name');
   const findPathField = () => wrapper.findComponent(GroupPathField);
+  const findVisibilityLevelField = () => wrapper.findComponent(VisibilityLevelRadioButtons);
 
   const setPathFieldValue = async (value) => {
     findPathField().vm.$emit('input', value);
+    await nextTick();
+  };
+  const setVisibilityLevelFieldValue = async (value) => {
+    findVisibilityLevelField().vm.$emit('input', value);
     await nextTick();
   };
   const submitForm = async () => {
@@ -48,6 +62,16 @@ describe('NewGroupForm', () => {
     createComponent();
 
     expect(findPathField().exists()).toBe(true);
+  });
+
+  it('renders `Visibility level` field with correct props', () => {
+    createComponent();
+
+    expect(findVisibilityLevelField().props()).toMatchObject({
+      checked: VISIBILITY_LEVEL_PRIVATE_INTEGER,
+      visibilityLevels: defaultPropsData.availableVisibilityLevels,
+      visibilityLevelDescriptions: GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
+    });
   });
 
   describe('when form is submitted without filling in required fields', () => {
@@ -127,11 +151,14 @@ describe('NewGroupForm', () => {
       createComponent();
 
       await findNameField().setValue('Foo bar');
+      await setVisibilityLevelFieldValue(VISIBILITY_LEVEL_PUBLIC_INTEGER);
       await submitForm();
     });
 
     it('emits `submit` event with form values', () => {
-      expect(wrapper.emitted('submit')).toEqual([[{ name: 'Foo bar', path: 'foo-bar' }]]);
+      expect(wrapper.emitted('submit')).toEqual([
+        [{ name: 'Foo bar', path: 'foo-bar', visibilityLevel: VISIBILITY_LEVEL_PUBLIC_INTEGER }],
+      ]);
     });
   });
 

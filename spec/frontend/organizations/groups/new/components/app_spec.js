@@ -56,6 +56,8 @@ describe('OrganizationGroupsNewApp', () => {
       cancelPath: '/-/organizations/carrot/groups_and_projects?display=groups',
       pathMaxlength: 10,
       pathPattern: 'mockPattern',
+      availableVisibilityLevels: defaultProvide.availableVisibilityLevels,
+      restrictedVisibilityLevels: defaultProvide.restrictedVisibilityLevels,
     });
   });
 });
