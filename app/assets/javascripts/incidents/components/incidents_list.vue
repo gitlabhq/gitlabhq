@@ -20,7 +20,6 @@ import SeverityToken from '~/sidebar/components/severity/severity.vue';
 import Tracking from '~/tracking';
 import {
   tdClass,
-  thClass,
   bodyTrClass,
   initialPaginationState,
 } from '~/vue_shared/components/paginated_table_with_search_and_tabs/constants';
@@ -54,7 +53,8 @@ export default {
     {
       key: 'severity',
       label: s__('IncidentManagement|Severity'),
-      thClass: `${thClass} gl-w-15p`,
+      variant: 'secondary',
+      thClass: `gl-w-15p`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'SEVERITY',
       sortable: true,
@@ -69,7 +69,8 @@ export default {
     {
       key: 'escalationStatus',
       label: s__('IncidentManagement|Status'),
-      thClass: `${thClass} gl-w-eighth`,
+      variant: 'secondary',
+      thClass: `gl-w-eighth`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'ESCALATION_STATUS',
       sortable: true,
@@ -78,7 +79,8 @@ export default {
     {
       key: 'createdAt',
       label: s__('IncidentManagement|Date created'),
-      thClass: `${thClass} gl-w-eighth`,
+      variant: 'secondary',
+      thClass: `gl-w-eighth`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'CREATED',
       sortable: true,
@@ -87,7 +89,8 @@ export default {
     {
       key: 'incidentSla',
       label: s__('IncidentManagement|Time to SLA'),
-      thClass: `${thClass} gl-text-right gl-w-10p`,
+      variant: 'secondary',
+      thClass: `gl-text-right gl-w-10p`,
       tdClass: `${tdClass} gl-text-right`,
       thAttr: TH_INCIDENT_SLA_TEST_ID,
       actualSortKey: 'SLA_DUE_AT',
@@ -102,7 +105,8 @@ export default {
     {
       key: 'published',
       label: s__('IncidentManagement|Published'),
-      thClass: `${thClass} gl-w-15`,
+      variant: 'secondary',
+      thClass: `gl-w-15`,
       tdClass: `${tdClass} sortable-cell`,
       actualSortKey: 'PUBLISHED',
       sortable: true,
@@ -388,8 +392,10 @@ export default {
           sort-by="createdAt"
           show-empty
           no-local-sorting
-          sort-icon-left
           fixed
+          hover
+          selectable
+          selected-variant="primary"
           @row-clicked="navigateToIncidentDetails"
           @sort-changed="fetchSortedData"
         >

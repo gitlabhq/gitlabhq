@@ -82,6 +82,11 @@ planned for release in 16.9.1.
   directly to 16.8.2, which [restores compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
 - NOTE: You should upgrade to Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
 
+- Backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). But due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+
+  - Affected releases: 15.11.x - 16.8.x 
+  - Fixed in: 16.9
+
 ### Geo installations
 
 - PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. Due to a known issue, existing Geo secondary

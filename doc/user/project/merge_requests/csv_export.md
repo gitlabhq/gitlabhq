@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** SaaS, self-managed
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3619) in GitLab 13.6.
-
 Export all the data collected from a project's merge requests into a comma-separated values (CSV) file.
 
 To export merge requests to a CSV file:

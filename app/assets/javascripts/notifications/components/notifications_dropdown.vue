@@ -21,7 +21,7 @@ export default {
     containerClass: {
       default: '',
     },
-    disabled: {
+    emailsDisabled: {
       default: false,
     },
     dropdownItems: {
@@ -81,7 +81,7 @@ export default {
         this.$options.i18n.notificationTitles[this.selectedNotificationLevel] ||
         this.selectedNotificationLevel;
 
-      return this.disabled
+      return this.emailsDisabled
         ? this.$options.i18n.notificationDescriptions.owner_disabled
         : sprintf(this.$options.i18n.notificationTooltipTitle, {
             notification_title: notificationTitle,
@@ -127,7 +127,7 @@ export default {
       :size="buttonSize"
       :icon="buttonIcon"
       :loading="isLoading"
-      :disabled="disabled"
+      :disabled="emailsDisabled"
       :split="isCustomNotification"
       :text="buttonText"
       :no-flip="noFlip"

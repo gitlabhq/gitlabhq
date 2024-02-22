@@ -75,8 +75,7 @@ export default {
       try {
         const response = await this.$apollo.query({
           query: getCurrentUserOrganizationsQuery,
-          // TODO: implement search support - https://gitlab.com/gitlab-org/gitlab/-/issues/433954.
-          variables: { after: this.endCursor, first: DEFAULT_PER_PAGE },
+          variables: { search, after: this.endCursor, first: DEFAULT_PER_PAGE },
         });
         const { nodes, pageInfo } = response.data.currentUser.organizations;
         this.endCursor = pageInfo.endCursor;

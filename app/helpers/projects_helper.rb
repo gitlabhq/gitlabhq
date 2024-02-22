@@ -427,20 +427,21 @@ module ProjectsHelper
 
   def fork_button_data_attributes(project)
     return unless current_user
+    return if project.empty_repo?
 
     if current_user.already_forked?(project) && current_user.forkable_namespaces.size < 2
       user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
 
     {
-      forks_count: project.forks_count,
-      project_full_path: project.full_path,
-      project_forks_url: project_forks_path(project),
-      user_fork_url: user_fork_url,
-      new_fork_url: new_project_fork_path(project),
-      can_read_code: can?(current_user, :read_code, project).to_s,
+      can_create_fork: can?(current_user, :create_fork).to_s,
       can_fork_project: can?(current_user, :fork_project, project).to_s,
-      can_create_fork: can?(current_user, :create_fork).to_s
+      can_read_code: can?(current_user, :read_code, project).to_s,
+      forks_count: project.forks_count,
+      new_fork_url: new_project_fork_path(project),
+      project_forks_url: project_forks_path(project),
+      project_full_path: project.full_path,
+      user_fork_url: user_fork_url
     }
   end
 
@@ -448,14 +449,46 @@ module ProjectsHelper
     starred = current_user ? current_user.starred?(project) : false
 
     {
-      data: {
-        project_id: project.id,
-        sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
-        star_count: project.star_count,
-        starred: starred.to_s,
-        starrers_path: project_starrers_path(project)
-      }
+      project_id: project.id,
+      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
+      star_count: project.star_count,
+      starred: starred.to_s,
+      starrers_path: project_starrers_path(project)
     }
+  end
+
+  def notification_data_attributes(project)
+    return unless current_user
+
+    notification_setting = current_user.notification_settings_for(project)
+    dropdown_items = notification_dropdown_items(notification_setting).to_json if notification_setting
+    notification_level = notification_setting.level if notification_setting
+
+    {
+      emails_disabled: project.emails_disabled?.to_s,
+      notification_dropdown_items: dropdown_items,
+      notification_help_page_path: help_page_path('user/profile/notifications'),
+      notification_level: notification_level
+    }
+  end
+
+  def home_panel_data_attributes
+    project = @project.is_a?(ProjectPresenter) ? @project.project : @project
+    dropdown_attributes = groups_projects_more_actions_dropdown_data(project) || {}
+    fork_button_attributes = fork_button_data_attributes(project) || {}
+    notification_attributes = notification_data_attributes(project) || {}
+    star_count_attributes = star_count_data_attributes(project)
+
+    {
+      can_read_project: can?(current_user, :read_project, project).to_s,
+      is_project_empty: project.empty_repo?.to_s,
+      project_id: project.id
+    }.merge(
+      dropdown_attributes,
+      fork_button_attributes,
+      notification_attributes,
+      star_count_attributes
+    )
   end
 
   def import_from_bitbucket_message

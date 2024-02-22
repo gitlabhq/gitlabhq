@@ -131,6 +131,12 @@ describe('User select dropdown', () => {
     expect(participantsQueryHandlerSuccess).not.toHaveBeenCalled();
   });
 
+  it('skips the participant query if `iid` is not defined', () => {
+    createComponent({ props: { iid: null } });
+
+    expect(participantsQueryHandlerSuccess).not.toHaveBeenCalled();
+  });
+
   it('emits an `error` event if participants query was rejected', async () => {
     createComponent({ participantsQueryHandler: mockError });
     await waitForPromises();

@@ -15,9 +15,12 @@ describe('Bulk import details app', () => {
     entityId: mockEntityId,
   };
 
-  const createComponent = () => {
+  const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMount(BulkImportDetailsApp, {
-      propsData: { ...defaultProps },
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
     });
   };
 
@@ -30,6 +33,20 @@ describe('Bulk import details app', () => {
       const headingText = wrapper.find('h1').text();
 
       expect(headingText).toBe(`Items that failed to be imported for ${mockEntityId}`);
+    });
+
+    it('renders heading with fullPath when provided', () => {
+      const mockFullPath = 'full/path';
+
+      createComponent({
+        props: {
+          fullPath: mockFullPath,
+        },
+      });
+
+      const headingText = wrapper.find('h1').text();
+
+      expect(headingText).toBe(`Items that failed to be imported for ${mockFullPath}`);
     });
 
     it('renders import table', () => {

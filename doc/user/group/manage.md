@@ -308,7 +308,7 @@ in the hierarchy.
 
 To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
 
-User cap doesn’t consider whether users are billable or not (e.g., Free Guest Users in Ultimate). In other words, if you set a cap of 500, user caps block new sign-ups after 500 users, regardless of whether those are all consuming paid seats or not.
+On GitLab.com, on the Ultimate tier, there is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add new guest users to a group when the amount of billable users exceeds the user cap. For example, suppose you have a user cap of 5, with 3 developers and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 
 ## Group file templates
 

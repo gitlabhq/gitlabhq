@@ -1078,6 +1078,124 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
+  describe '#star_count_data_attributes' do
+    before do
+      allow(user).to receive(:starred?).with(project).and_return(starred)
+      allow(helper).to receive(:new_session_path).and_return(sign_in_path)
+      allow(project).to receive(:star_count).and_return(5)
+    end
+
+    let(:sign_in_path) { 'sign/in/path' }
+    let(:common_data_attributes) do
+      {
+        project_id: project.id,
+        sign_in_path: sign_in_path,
+        star_count: 5,
+        starrers_path: "/#{project.full_path}/-/starrers"
+      }
+    end
+
+    subject { helper.star_count_data_attributes(project) }
+
+    context 'when user has already starred the project' do
+      let(:starred) { true }
+      let(:expected) { common_data_attributes.merge({ starred: "true" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context 'when user has not starred the project' do
+      let(:starred) { false }
+      let(:expected) { common_data_attributes.merge({ starred: "false" }) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#notification_data_attributes' do
+    before do
+      allow(helper).to receive(:help_page_path).and_return(notification_help_path)
+      allow(project).to receive(:emails_disabled?).and_return(false)
+    end
+
+    let(:notification_help_path) { 'notification/help/path' }
+    let(:notification_dropdown_items) { '["global","watch","participating","mention","disabled"]' }
+
+    context "returns default user notification settings" do
+      let(:expected) do
+        {
+          emails_disabled: "false",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "global"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+
+    context "returns configured users notification settings" do
+      before do
+        allow(project).to receive(:emails_disabled?).and_return(true)
+        setting = user.notification_settings_for(project)
+        setting.level = :watch
+        setting.save!
+      end
+
+      let(:expected) do
+        {
+          emails_disabled: "true",
+          notification_dropdown_items: notification_dropdown_items,
+          notification_help_page_path: notification_help_path,
+          notification_level: "watch"
+        }
+      end
+
+      subject { helper.notification_data_attributes(project) }
+
+      it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#home_panel_data_attributes' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
+      allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
+      allow(helper).to receive(:notification_data_attributes).and_return(nil)
+      allow(helper).to receive(:star_count_data_attributes).and_return({})
+    end
+
+    where(:can_read_project, :is_empty_repo) do
+      true  | true
+      false | false
+    end
+
+    with_them do
+      context "returns default user project details" do
+        before do
+          allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
+          allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+        end
+
+        let(:expected) do
+          {
+            can_read_project: can_read_project.to_s,
+            is_project_empty: is_empty_repo.to_s,
+            project_id: project.id
+          }
+        end
+
+        subject { helper.home_panel_data_attributes }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
+  end
+
   shared_examples 'configure import method modal' do
     context 'as a user' do
       it 'returns a link to contact an administrator' do

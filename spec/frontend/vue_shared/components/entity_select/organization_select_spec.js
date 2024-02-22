@@ -177,10 +177,31 @@ describe('OrganizationSelect', () => {
 
     it('calls graphQL query correct `after` variable', () => {
       expect(getCurrentUserOrganizationsQueryMultiplePagesHandler).toHaveBeenCalledWith({
+        search: '',
         after: pageInfo.endCursor,
         first: DEFAULT_PER_PAGE,
       });
       expect(findListbox().props('infiniteScroll')).toBe(false);
+    });
+  });
+
+  describe('when listbox is searched', () => {
+    const searchTerm = 'foo';
+
+    beforeEach(async () => {
+      createComponent();
+      openListbox();
+      await waitForPromises();
+
+      findListbox().vm.$emit('search', searchTerm);
+    });
+
+    it('calls graphQL query with search term', () => {
+      expect(getCurrentUserOrganizationsQueryHandler).toHaveBeenCalledWith({
+        search: searchTerm,
+        after: null,
+        first: DEFAULT_PER_PAGE,
+      });
     });
   });
 

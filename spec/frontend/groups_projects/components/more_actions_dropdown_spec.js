@@ -13,7 +13,7 @@ describe('moreActionsDropdown', () => {
     wrapper = shallowMountExtended(moreActionsDropdown, {
       provide: {
         isGroup: false,
-        id: 1,
+        groupOrProjectId: 1,
         leavePath: '',
         leaveConfirmMessage: '',
         withdrawPath: '',
@@ -39,7 +39,7 @@ describe('moreActionsDropdown', () => {
       beforeEach(async () => {
         createComponent({
           provideData: {
-            id: 22,
+            groupOrProjectId: 22,
           },
         });
         await showDropdown();
@@ -60,7 +60,7 @@ describe('moreActionsDropdown', () => {
         createComponent({
           provideData: {
             isGroup: true,
-            id: 11,
+            groupOrProjectId: 11,
           },
         });
         await showDropdown();

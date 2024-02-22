@@ -53,7 +53,7 @@ RSpec.shared_examples 'variable list pagination' do |variable_type|
     end
 
     page.within('[data-testid="ci-variable-table"]') do
-      find('.b-table-sort-icon-left').click
+      find('[aria-sort="ascending"]').click
     end
 
     wait_for_requests

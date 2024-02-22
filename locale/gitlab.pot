@@ -5802,6 +5802,9 @@ msgstr ""
 msgid "Analytics|Visualization was saved successfully"
 msgstr ""
 
+msgid "Analytics|Would you like to replace your existing selection with a new visualization generated through GitLab Duo?"
+msgstr ""
+
 msgid "Analyze your dependencies for known vulnerabilities."
 msgstr ""
 
@@ -13765,6 +13768,9 @@ msgstr ""
 msgid "Continue to the next step"
 msgstr ""
 
+msgid "Continue with GitLab Duo"
+msgstr ""
+
 msgid "Continue with overages"
 msgstr ""
 
@@ -13864,7 +13870,13 @@ msgstr ""
 msgid "ContributionAnalytics|There is too much data to calculate. Try lowering the period_limit setting in the insights configuration file."
 msgstr ""
 
+msgid "ContributionAnalytics|This page sources data from the %{link_start}analytical database ClickHouse%{link_end}, with a few minutes of delay."
+msgstr ""
+
 msgid "ContributionAnalytics|Total Contributions"
+msgstr ""
+
+msgid "ContributionAnalytics|Using ClickHouse"
 msgstr ""
 
 msgid "ContributionEvent|Accepted merge request %{targetLink} in %{resourceParentLink}."
@@ -35381,6 +35393,9 @@ msgstr ""
 msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr ""
 
+msgid "PackageRegistry|Published to the %{project} Terraform Module Registry %{datetime}"
+msgstr ""
+
 msgid "PackageRegistry|Push protected up to access level"
 msgstr ""
 
@@ -54257,7 +54272,7 @@ msgstr ""
 msgid "UserProfile|Edit profile"
 msgstr ""
 
-msgid "UserProfile|Explore public groups to find projects to contribute to."
+msgid "UserProfile|Explore public groups to find projects to contribute to"
 msgstr ""
 
 msgid "UserProfile|Failed to set avatar. Please reload the page to try again."
@@ -54284,7 +54299,10 @@ msgstr ""
 msgid "UserProfile|Join or create a group to start contributing by commenting on issues or submitting merge requests!"
 msgstr ""
 
-msgid "UserProfile|No snippets found."
+msgid "UserProfile|No activities found"
+msgstr ""
+
+msgid "UserProfile|No snippets found"
 msgstr ""
 
 msgid "UserProfile|Overview"
@@ -54308,7 +54326,7 @@ msgstr ""
 msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
 msgstr ""
 
-msgid "UserProfile|Star projects to track their progress and show your appreciation."
+msgid "UserProfile|Star projects to track their progress and show your appreciation"
 msgstr ""
 
 msgid "UserProfile|Starred projects"
@@ -54320,13 +54338,10 @@ msgstr ""
 msgid "UserProfile|Subscribe"
 msgstr ""
 
-msgid "UserProfile|There are no projects available to be displayed here."
+msgid "UserProfile|There are no projects available to be displayed here"
 msgstr ""
 
 msgid "UserProfile|This user doesn't have any followers"
-msgstr ""
-
-msgid "UserProfile|This user doesn't have any followers."
 msgstr ""
 
 msgid "UserProfile|This user doesn't have any snippets"
@@ -54345,9 +54360,6 @@ msgid "UserProfile|This user is blocked"
 msgstr ""
 
 msgid "UserProfile|This user isn't following other users"
-msgstr ""
-
-msgid "UserProfile|This user isn't following other users."
 msgstr ""
 
 msgid "UserProfile|Unconfirmed user"
@@ -54374,22 +54386,16 @@ msgstr ""
 msgid "UserProfile|You are not following other users"
 msgstr ""
 
-msgid "UserProfile|You are not following other users."
-msgstr ""
-
-msgid "UserProfile|You can create a group for several dependent projects."
+msgid "UserProfile|You can create a group for several dependent projects"
 msgstr ""
 
 msgid "UserProfile|You do not have any followers"
 msgstr ""
 
-msgid "UserProfile|You do not have any followers."
+msgid "UserProfile|You haven't created any personal projects"
 msgstr ""
 
-msgid "UserProfile|You haven't created any personal projects."
-msgstr ""
-
-msgid "UserProfile|You haven't created any snippets."
+msgid "UserProfile|You haven't created any snippets"
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."

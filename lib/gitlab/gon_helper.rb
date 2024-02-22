@@ -78,7 +78,6 @@ module Gitlab
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:encoding_logs_tree)
       push_frontend_feature_flag(:group_user_saml)
     end
 

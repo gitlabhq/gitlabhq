@@ -37,44 +37,17 @@ RSpec.describe 'projects/_home_panel' do
     end
   end
 
-  context 'notifications' do
+  context 'home panel' do
     let(:project) { create(:project) }
 
     before do
       assign(:project, project)
-
-      allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:can?).with(user, :read_project, project).and_return(false)
-      allow(project).to receive(:license_anchor_data).and_return(false)
     end
 
-    context 'when user is signed in' do
-      let(:user) { create(:user) }
+    it 'renders Vue app root' do
+      render
 
-      before do
-        notification_settings = user.notification_settings_for(project)
-        assign(:notification_setting, notification_settings)
-      end
-
-      it 'renders Vue app root' do
-        render
-
-        expect(rendered).to have_selector('.js-vue-notification-dropdown')
-      end
-    end
-
-    context 'when user is signed out' do
-      let(:user) { nil }
-
-      before do
-        assign(:notification_setting, nil)
-      end
-
-      it 'does not render Vue app root' do
-        render
-
-        expect(rendered).not_to have_selector('.js-vue-notification-dropdown')
-      end
+      expect(rendered).to have_selector('#js-home-panel')
     end
   end
 

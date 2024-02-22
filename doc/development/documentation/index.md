@@ -22,20 +22,22 @@ To update the documentation:
 
 1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab) or your own fork.
 1. Find the documentation page in the `\doc` directory.
-1. If you know Git, make your changes and open a merge request.
-   If not, follow these steps:
-   1. In the upper right, select **Edit > Edit single file**.
-   1. Make your changes.
-   1. When you're ready to submit your changes, in the **Commit message** text box, enter a commit message.
-      Use 3-5 words, start with a capital letter, and do not end with a period.
-   1. Select **Commit changes**.
+1. In the upper right, select **Edit > Edit single file**.
+1. Make your changes.
+1. When you're ready to submit your changes, in the **Commit message** text box, enter a commit message.
+   Use 3-5 words, start with a capital letter, and do not end with a period.
+1. Select **Commit changes**.
+1. If you're working from the community fork, a new merge request opens and you can continue to the next step.
+   If you're working from your own fork, first do the following:
    1. On the left sidebar, select **Code > Merge requests**.
    1. Select **New merge request**.
    1. For the source branch, select your fork and branch. If you did not create a branch, select `master`.
       For the target branch, select the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) `master` branch.
    1. Select **Compare branches and continue**. A new merge request opens.
-   1. Select the **Documentation** template. In the description, write a brief summary of the changes and link to the related issue, if there is one.
-   1. Select **Create merge request**.
+1. On the **New merge request** page, select the **Documentation** template and select **Apply template**.
+1. In the description, write a brief summary of the changes and link to the related issue, if there is one.
+1. Select **Create merge request**.
+1. After your merge request is created, look for a message from **GitLab Bot**. This message has instructions for what to do when you're ready for review.
 
 Alternatively, if you don't want to search through the `/doc` directory, on <https://docs.gitlab.com>, at the bottom of any page, select **View page source** or **Edit in Web IDE**.
 You are prompted to create a fork or switch to your fork before you can make changes.

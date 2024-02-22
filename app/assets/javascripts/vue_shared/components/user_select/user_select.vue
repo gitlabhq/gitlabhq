@@ -99,7 +99,9 @@ export default {
         return participantsQueries[this.issuableType].query;
       },
       skip() {
-        return Boolean(participantsQueries[this.issuableType].skipQuery) || !this.isEditing;
+        return (
+          Boolean(participantsQueries[this.issuableType].skipQuery) || !this.isEditing || !this.iid
+        );
       },
       variables() {
         return {

@@ -29,8 +29,8 @@ module CycleAnalyticsHelpers
 
   def select_event_label(sel)
     page.within(sel) do
-      find('.dropdown-toggle').click
-      page.find(".dropdown-menu").all(".dropdown-item")[1].click
+      find('[data-testid="base-dropdown-toggle"]').click
+      page.find('[data-testid="base-dropdown-menu"]').all(".gl-new-dropdown-item")[1].click
     end
   end
 

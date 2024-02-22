@@ -87,7 +87,7 @@ RSpec.describe 'shared/projects/_list' do
         it 'renders a no-content message' do
           render
 
-          expect(rendered).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to.'))
+          expect(rendered).to have_content(s_('UserProfile|Explore public groups to find projects to contribute to'))
         end
       end
 
@@ -95,7 +95,7 @@ RSpec.describe 'shared/projects/_list' do
         it 'renders a no-content message' do
           render
 
-          expect(rendered).to have_content(s_('UserProfile|There are no projects available to be displayed here.'))
+          expect(rendered).to have_content(s_('UserProfile|There are no projects available to be displayed here'))
         end
       end
     end

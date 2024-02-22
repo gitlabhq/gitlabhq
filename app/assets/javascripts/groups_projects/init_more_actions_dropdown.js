@@ -24,7 +24,7 @@ export default function InitMoreActionsDropdown() {
     name: 'MoreActionsDropdownRoot',
     provide: {
       isGroup: parseBoolean(isGroup),
-      id,
+      groupOrProjectId: id,
       leavePath,
       leaveConfirmMessage,
       withdrawPath,

@@ -55,15 +55,23 @@ For more information, see [Data usage in GitLab Duo Suggested Reviewers](data_us
 
 ### Enable Suggested Reviewers
 
-Project Maintainers or Owners can enable Suggested Reviewers by visiting
-the [project settings](../../settings/index.md).
-
 Enabling Suggested Reviewers triggers GitLab to create an ML model for your
 project that is used to generate reviewers. The larger your project, the longer
 this process can take. Usually, the model is ready to generate suggestions
 within a few hours.
 
-No action is required after the feature is enabled. After the model is ready,
+Prerequisites:
+
+- You have the Owner or Maintainer role in the project.
+
+To do this:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. Scroll to **Suggested reviewers**, and select **Enable suggested reviewers**.
+1. Select **Save changes**.
+
+After you enable the feature, no additional action is needed. After the model is ready,
 recommendations populate the **Reviewer** dropdown list in the right-hand sidebar
 of a merge request with new commits.
 
@@ -111,8 +119,6 @@ The merge request is added to the user's review requests.
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** SaaS, self-managed
-
-> - Moved to GitLab Premium in 13.9.
 
 To assign multiple reviewers to a merge request, in a text area in
 the merge request, use the `/assign_reviewer @user`

@@ -8,7 +8,7 @@ export const initBulkImportDetails = () => {
     return null;
   }
 
-  const { id, entityId } = el.dataset;
+  const { id, entityId, fullPath } = el.dataset;
 
   return new Vue({
     el,
@@ -18,6 +18,7 @@ export const initBulkImportDetails = () => {
         props: {
           id,
           entityId,
+          fullPath,
         },
       });
     },

@@ -45,12 +45,17 @@ export default {
       required: false,
       default: null,
     },
+    fullPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   computed: {
     title() {
       return sprintf(s__('BulkImport|Items that failed to be imported for %{id}'), {
-        id: this.entityId,
+        id: this.fullPath || this.entityId,
       });
     },
   },

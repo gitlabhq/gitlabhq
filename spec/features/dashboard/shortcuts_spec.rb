@@ -66,7 +66,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content('Explore public groups to find projects to contribute to.')
+      expect(page).to have_content('Explore public groups to find projects to contribute to')
     end
   end
 

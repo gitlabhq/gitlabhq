@@ -16500,6 +16500,7 @@ Options for runner Google Cloud provisioning.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="cirunnergooglecloudprovisioningoptionsprojectsetupshellscript"></a>`projectSetupShellScript` | [`String`](#string) | Instructions for setting up a Google Cloud project. |
 | <a id="cirunnergooglecloudprovisioningoptionsregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
 
 #### Fields with arguments
@@ -26344,7 +26345,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `Project.runnerCloudProvisioningOptions`
 
-Options for provisioning the runner on Google Cloud. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Options for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 NOTE:
 **Introduced** in 16.9.

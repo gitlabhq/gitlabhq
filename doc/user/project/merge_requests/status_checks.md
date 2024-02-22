@@ -80,7 +80,8 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 
 Within each project's settings, you can see a list of status check services added to the project:
 
-1. In your project, go to **Settings > Merge requests** section.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. Scroll down to **Status checks**.
 
 ![Status checks list](img/status_checks_list_view_v14_0.png)
@@ -121,8 +122,8 @@ The name **has** to be unique for the project.
 
 #### API to check
 
-This field requires a URL and **must** use either the HTTP or HTTPs protocols.
-We **recommend** using HTTPs to protect your merge request data in transit.
+This field requires a URL and **must** use either the HTTP or HTTPS protocols.
+We **recommend** using HTTPS to protect your merge request data in transit.
 The URL **must** be set and **must** be unique for the project.
 
 #### Target branch
@@ -170,7 +171,9 @@ When there are pending status checks, the widget polls for updates every few sec
 
 To retry a failed status check:
 
-1. Expand the merge request widget to show the list of external status checks.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. Scroll to the merge request reports section, and expand the dropdown list to show the list of external status checks.
 1. Select **Retry** (**{retry}**) on the failed external status check row. The status check is put back into a pending state.
 
 An organization might have a policy that does not allow merging merge requests if

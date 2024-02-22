@@ -222,7 +222,6 @@ export default {
           sort-by="createdAt"
           show-empty
           no-local-sorting
-          sort-icon-left
           fixed
           @sort-changed="fetchSortedData"
         >

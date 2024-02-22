@@ -23,7 +23,7 @@ export default {
   },
   inject: [
     'isGroup',
-    'id',
+    'groupOrProjectId',
     'leavePath',
     'leaveConfirmMessage',
     'withdrawPath',
@@ -90,7 +90,7 @@ export default {
     },
     copyIdItem() {
       return {
-        text: sprintf(this.copyTitle, { id: this.id }),
+        text: sprintf(this.copyTitle, { id: this.groupOrProjectId }),
         action: () => {
           this.$toast.show(this.copiedToClipboard);
         },
@@ -148,7 +148,11 @@ export default {
       </div>
     </template>
 
-    <gl-disclosure-dropdown-item v-if="id" :item="copyIdItem" :data-clipboard-text="id" />
+    <gl-disclosure-dropdown-item
+      v-if="groupOrProjectId"
+      :item="copyIdItem"
+      :data-clipboard-text="groupOrProjectId"
+    />
 
     <gl-disclosure-dropdown-group v-if="hasPath" bordered>
       <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />
