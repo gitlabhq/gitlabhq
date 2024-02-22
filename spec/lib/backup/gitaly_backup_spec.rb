@@ -49,7 +49,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         project_snippet = create(:project_snippet, :repository, project: project)
         personal_snippet = create(:personal_snippet, :repository, author: project.first_owner)
 
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'manifest', '-id', backup_id).and_call_original
 
         subject.start(:create, destination, backup_id: backup_id)
         subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -59,11 +59,8 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         subject.enqueue(project_snippet, Gitlab::GlRepository::SNIPPET)
         subject.finish!
 
-        expect(File).to exist(File.join(destination, project.disk_path, backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, "#{project.disk_path}.wiki", backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, "#{project.disk_path}.design", backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, personal_snippet.disk_path, backup_id, '001.bundle'))
-        expect(File).to exist(File.join(destination, project_snippet.disk_path, backup_id, '001.bundle'))
+        expect(File).to exist(File.join(destination, 'manifests/default', project.repository.relative_path, "#{backup_id}.toml"))
+        expect(File).to exist(File.join(destination, 'manifests/default', project.repository.relative_path, "+latest.toml"))
       end
 
       it 'erases any existing repository backups' do
@@ -80,7 +77,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         let(:max_parallelism) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-parallel', '3', '-id', backup_id).and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'manifest', '-parallel', '3', '-id', backup_id).and_call_original
 
           subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
@@ -91,7 +88,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
         let(:storage_parallelism) { 3 }
 
         it 'passes parallel option through' do
-          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3', '-id', backup_id).and_call_original
+          expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'manifest', '-parallel-storage', '3', '-id', backup_id).and_call_original
 
           subject.start(:create, destination, backup_id: backup_id)
           subject.finish!
@@ -151,7 +148,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
 
       it 'passes through SSL envs' do
         expect(subject).to receive(:current_env).and_return(ssl_env)
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'create', '-path', anything, '-layout', 'manifest', '-id', backup_id).and_call_original
 
         subject.start(:create, destination, backup_id: backup_id)
         subject.finish!
@@ -197,7 +194,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       create_repo_backup('personal_snippet_repo', personal_snippet.repository)
       create_repo_backup('project_snippet_repo', project_snippet.repository)
 
-      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-id', backup_id).and_call_original
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'manifest', '-id', backup_id).and_call_original
 
       subject.start(:restore, destination, backup_id: backup_id)
       subject.enqueue(project, Gitlab::GlRepository::PROJECT)
@@ -217,7 +214,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
     end
 
     it 'clears specified storages when remove_all_repositories is set' do
-      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-remove-all-repositories', 'default', '-id', backup_id).and_call_original
+      expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'manifest', '-remove-all-repositories', 'default', '-id', backup_id).and_call_original
 
       create_repo_backup('project_repo', project.repository.raw)
       subject.start(:restore, destination, backup_id: backup_id, remove_all_repositories: %w[default])
@@ -229,7 +226,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       let(:max_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel', '3', '-id', backup_id).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'manifest', '-parallel', '3', '-id', backup_id).and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
@@ -240,7 +237,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
       let(:storage_parallelism) { 3 }
 
       it 'passes parallel option through' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer', '-parallel-storage', '3', '-id', backup_id).and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'manifest', '-parallel-storage', '3', '-id', backup_id).and_call_original
 
         subject.start(:restore, destination, backup_id: backup_id)
         subject.finish!
@@ -269,7 +266,7 @@ RSpec.describe Backup::GitalyBackup, feature_category: :backup_restore do
 
     context 'missing backup_id' do
       it 'wont set the option' do
-        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'pointer').and_call_original
+        expect(Open3).to receive(:popen2).with(expected_env, anything, 'restore', '-path', anything, '-layout', 'manifest').and_call_original
 
         subject.start(:restore, destination)
         subject.finish!

@@ -482,12 +482,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           expect(exit_status).to eq(0)
 
           %W[
-            #{project_a.disk_path}/.+/001.bundle
-            #{project_a.disk_path}.wiki/.+/001.bundle
-            #{project_a.disk_path}.design/.+/001.bundle
-            #{project_b.disk_path}/.+/001.bundle
-            #{project_snippet_a.disk_path}/.+/001.bundle
-            #{project_snippet_b.disk_path}/.+/001.bundle
+            #{project_a.repository.relative_path}/.+/001.bundle
+            #{project_a.wiki.repository.relative_path}/.+/001.bundle
+            #{project_a.design_management_repository.repository.relative_path}/.+/001.bundle
+            #{project_b.repository.relative_path}/.+/001.bundle
+            #{project_snippet_a.repository.relative_path}/.+/001.bundle
+            #{project_snippet_b.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).to include(a_string_matching(repo_name))
           end
@@ -535,17 +535,17 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           expect(exit_status).to eq(0)
 
           %W[
-            #{project_a.disk_path}/.+/001.bundle
-            #{project_a.disk_path}.wiki/.+/001.bundle
-            #{project_a.disk_path}.design/.+/001.bundle
-            #{project_snippet_a.disk_path}/.+/001.bundle
+            #{project_a.repository.relative_path}/.+/001.bundle
+            #{project_a.wiki.repository.relative_path}/.+/001.bundle
+            #{project_a.design_management_repository.repository.relative_path}/.+/001.bundle
+            #{project_snippet_a.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).to include(a_string_matching(repo_name))
           end
 
           %W[
-            #{project_b.disk_path}/.+/001.bundle
-            #{project_snippet_b.disk_path}/.+/001.bundle
+            #{project_b.repository.relative_path}/.+/001.bundle
+            #{project_snippet_b.repository.relative_path}/.+/001.bundle
           ].each do |repo_name|
             expect(tar_lines).not_to include(a_string_matching(repo_name))
           end

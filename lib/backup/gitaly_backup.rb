@@ -80,7 +80,7 @@ module Backup
       args = [command] + if server_side?
                            ['-server-side']
                          else
-                           ['-path', backup_repos_path, '-layout', 'pointer']
+                           ['-path', backup_repos_path, '-layout', 'manifest']
                          end
 
       args += ['-parallel', @max_parallelism.to_s] if @max_parallelism
