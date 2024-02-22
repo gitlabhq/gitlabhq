@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationController, type: :request, feature_category: :shared do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
 
   it_behaves_like 'Base action controller' do
     before do
@@ -32,6 +32,23 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
           Settings.gitlab['unauthenticated_session_expire_delay']
         )
       end
+    end
+  end
+
+  describe 'unknown route' do
+    # This spec targets CI environment with precompiled assets to trigger
+    # Sprockets' `File.binread` and find encoding issues.
+    #
+    # See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17627#note_1782396646
+    it 'returns 404 even when locale contains UTF-8 chars' do
+      user.update!(preferred_language: 'ZH-cn')
+
+      sign_in(user)
+
+      get "/some/undefined/path"
+
+      expect(response).to have_gitlab_http_status(:not_found)
+      expect(response.body.encoding.name).to eq('UTF-8')
     end
   end
 end

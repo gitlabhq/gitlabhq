@@ -74,6 +74,9 @@
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
 
+.if-merge-request-labels-force-as-if-jh: &if-merge-request-labels-force-as-if-jh
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:force-run-as-if-jh/'
+
 .if-merge-request-labels-update-caches: &if-merge-request-labels-update-caches
   if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
@@ -3209,6 +3212,10 @@
 ##################
 .as-if-jh:rules:prepare-as-if-jh:
   rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-force-as-if-jh
+    - if: '$CI_AS_IF_JH_ENABLED != "true"'
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -3232,23 +3239,16 @@
 # dependencies changes.
 .as-if-jh:rules:sync-as-if-jh:
   rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - <<: *if-merge-request-labels-force-as-if-jh
+      changes: *dependency-patterns
+    - if: '$CI_AS_IF_JH_ENABLED != "true"'
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns
       # Ideally, we should be able to do this:
       # - <<: *if-dot-com-gitlab-org-merge-request
       #   changes: *feature-flag-development-config-patterns && *dependency-patterns
-
-# This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
-# Because the jobs using this need jobs using the preparation rules
-.as-if-jh:rules:start-as-if-jh:
-  rules:
-    - <<: *if-merge-request-labels-as-if-jh
-      when: never # See https://gitlab.com/gitlab-org/gitlab/-/issues/442194
-      allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-      when: never # See https://gitlab.com/gitlab-org/gitlab/-/issues/442194
-      allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136
 
 ##############################
 # release-environments rules #

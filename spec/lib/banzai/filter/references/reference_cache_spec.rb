@@ -9,22 +9,21 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
   let_it_be(:issue2)   { create(:issue, project: project) }
   let_it_be(:issue3)   { create(:issue, project: project2) }
   let_it_be(:doc)      { Nokogiri::HTML.fragment("#{issue1.to_reference} #{issue2.to_reference} #{issue3.to_reference(full: true)}") }
+  let_it_be(:result)   { {} }
+  let_it_be(:filter_class) { Banzai::Filter::References::IssueReferenceFilter }
 
-  let(:filter_class) { Banzai::Filter::References::IssueReferenceFilter }
-  let(:filter)       { filter_class.new(doc, project: project) }
-  let(:cache)        { described_class.new(filter, { project: project }, result) }
-  let(:result)       { {} }
+  let(:filter) { filter_class.new(doc, project: project) }
+  let(:cache)  { described_class.new(filter, { project: project }, result) }
 
-  describe '#load_references_per_parent' do
-    subject { cache.load_references_per_parent(filter.nodes) }
+  describe '#load_reference_cache' do
+    subject { cache.load_reference_cache(filter.nodes) }
 
-    it 'loads references grouped per parent paths' do
-      expect(doc).to receive(:to_html).and_call_original
+    context 'when rendered_html is not memoized' do
+      it 'generates new html' do
+        expect(doc).to receive(:to_html).and_call_original
 
-      subject
-
-      expect(cache.references_per_parent).to eq({ project.full_path => [issue1.iid, issue2.iid].to_set,
-                                                  project2.full_path => [issue3.iid].to_set })
+        subject
+      end
     end
 
     context 'when rendered_html is memoized' do
@@ -42,25 +41,38 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
 
       it { expect { subject }.not_to raise_error }
     end
-  end
 
-  describe '#load_parent_per_reference' do
-    it 'returns a Hash containing projects grouped per parent paths' do
-      cache.load_references_per_parent(filter.nodes)
-      cache.load_parent_per_reference
+    context 'when cache is loaded' do
+      let_it_be(:cache) do
+        filter = filter_class.new(doc, project: project)
+        cache = described_class.new(filter, { project: project }, result)
+        cache.load_reference_cache(filter.nodes)
+        cache
+      end
 
-      expect(cache.parent_per_reference).to match({ project.full_path => project, project2.full_path => project2 })
-    end
-  end
+      it 'loads the cache' do
+        expect(cache.cache_loaded?).to be_truthy
+      end
 
-  describe '#load_records_per_parent' do
-    it 'returns a Hash containing projects grouped per parent paths' do
-      cache.load_references_per_parent(filter.nodes)
-      cache.load_parent_per_reference
-      cache.load_records_per_parent
+      describe '#references_per_parent' do
+        it 'loads references grouped per parent paths' do
+          expect(cache.references_per_parent).to eq({ project.full_path => [issue1.iid, issue2.iid].to_set,
+                                                      project2.full_path => [issue3.iid].to_set })
+        end
+      end
 
-      expect(cache.records_per_parent).to match({ project => { issue1.iid => issue1, issue2.iid => issue2 },
-                                                  project2 => { issue3.iid => issue3 } })
+      describe '#parent_per_reference' do
+        it 'returns a Hash containing projects grouped per parent paths' do
+          expect(cache.parent_per_reference).to match({ project.full_path => project, project2.full_path => project2 })
+        end
+      end
+
+      describe '#records_per_parent' do
+        it 'returns a Hash containing projects grouped per parent paths' do
+          expect(cache.records_per_parent).to match({ project => { issue1.iid => issue1, issue2.iid => issue2 },
+                                                      project2 => { issue3.iid => issue3 } })
+        end
+      end
     end
   end
 
@@ -71,9 +83,7 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       cache_single = described_class.new(filter_single, { project: project }, {})
 
       control = ActiveRecord::QueryRecorder.new do
-        cache_single.load_references_per_parent(filter_single.nodes)
-        cache_single.load_parent_per_reference
-        cache_single.load_records_per_parent
+        cache_single.load_reference_cache(filter_single.nodes)
       end
 
       expect(control.count).to eq 3
@@ -89,43 +99,41 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
       # 1x2 for work_item_types
       # Total = 11
       expect do
-        cache.load_references_per_parent(filter.nodes)
-        cache.load_parent_per_reference
-        cache.load_records_per_parent
+        cache.load_reference_cache(filter.nodes)
       end.not_to exceed_query_limit(control).with_threshold(8)
     end
   end
 
   describe '#find_for_paths' do
+    def find_for_paths(paths)
+      cache.send(:find_for_paths, paths)
+    end
+
     context 'with RequestStore disabled' do
       it 'returns a list of Projects for a list of paths' do
-        expect(cache.find_for_paths([project.full_path]))
-          .to eq([project])
+        expect(find_for_paths([project.full_path])).to eq([project])
       end
 
       it 'return an empty array for paths that do not exist' do
-        expect(cache.find_for_paths(['nonexistent/project']))
-          .to eq([])
+        expect(find_for_paths(['nonexistent/project'])).to eq([])
       end
     end
 
     context 'with RequestStore enabled', :request_store do
       it 'returns a list of Projects for a list of paths' do
-        expect(cache.find_for_paths([project.full_path]))
-          .to eq([project])
+        expect(find_for_paths([project.full_path])).to eq([project])
       end
 
       context 'when no project with that path exists' do
         it 'returns no value' do
-          expect(cache.find_for_paths(['nonexistent/project']))
-            .to eq([])
+          expect(find_for_paths(['nonexistent/project'])).to eq([])
         end
 
         it 'adds the ref to the project refs cache' do
           project_refs_cache = {}
           allow(cache).to receive(:refs_cache).and_return(project_refs_cache)
 
-          cache.find_for_paths(['nonexistent/project'])
+          find_for_paths(['nonexistent/project'])
 
           expect(project_refs_cache).to eq({ 'nonexistent/project' => nil })
         end
@@ -135,12 +143,16 @@ RSpec.describe Banzai::Filter::References::ReferenceCache, feature_category: :te
 
   describe '#current_parent_path' do
     it 'returns the path of the current parent' do
+      cache.clear_memoization(:current_parent_path)
+
       expect(cache.current_parent_path).to eq project.full_path
     end
   end
 
   describe '#current_project_namespace_path' do
     it 'returns the path of the current project namespace' do
+      cache.clear_memoization(:current_project_namespace_path)
+
       expect(cache.current_project_namespace_path).to eq project.namespace.full_path
     end
   end

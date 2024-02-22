@@ -40,6 +40,16 @@ module ApplicationHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def error_css
+    Rails.application
+      .assets_manifest
+      .find_sources('errors.css')
+      .first
+      .to_s
+      .force_encoding('UTF-8') # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145363
+      .html_safe # rubocop:disable Rails/OutputSafety -- No escaping needed
+  end
+
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check (using path notation when inside namespaces)

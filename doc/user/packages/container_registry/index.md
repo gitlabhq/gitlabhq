@@ -27,7 +27,7 @@ You can view the container registry for a project or group.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
-   - A group, select **Operate > Container Registry**.
+   - A group, select **Deploy > Container Registry**.
    - A project, select **Deploy > Container Registry**.
 
 You can search, sort, filter, and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
@@ -44,7 +44,7 @@ You can use the container registry **Tag Details** page to view a list of tags a
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
-   - A group, select **Operate > Container Registry**.
+   - A group, select **Deploy > Container Registry**.
    - A project, select **Deploy > Container Registry**.
 1. Select your container image.
 
@@ -60,7 +60,7 @@ To download and run a container image hosted in the container registry:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
-   - A group, select **Operate > Container Registry**.
+   - A group, select **Deploy > Container Registry**.
    - A project, select **Deploy > Container Registry**.
 1. Find the container image you want to work with and select **Copy**.
 

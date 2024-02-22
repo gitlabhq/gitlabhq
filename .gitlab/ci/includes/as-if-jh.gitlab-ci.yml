@@ -104,7 +104,8 @@ sync-as-if-jh-branch:
 
 start-as-if-jh:
   extends:
-    - .as-if-jh:rules:start-as-if-jh
+    - .as-if-jh:rules:prepare-as-if-jh
+  allow_failure: true
   stage: prepare
   needs:
     - job: "prepare-as-if-jh-branch"

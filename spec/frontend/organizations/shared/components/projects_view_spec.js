@@ -70,6 +70,10 @@ describe('ProjectsView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
+  const findProjectsListProjectById = (projectId) =>
+    findProjectsList()
+      .props('projects')
+      .find((project) => project.id === projectId);
   const findNewProjectButton = () => wrapper.findComponent(NewProjectButton);
 
   afterEach(() => {
@@ -313,16 +317,25 @@ describe('ProjectsView', () => {
         deleteProject.mockResolvedValueOnce(Promise.resolve());
 
         createComponent();
-        jest.spyOn(wrapper.vm.$apollo.queries.projects, 'refetch');
 
         await waitForPromises();
       });
 
-      it('calls deleteProject and properly sets project.isDeleting to true before the promise resolves', () => {
+      it('calls deleteProject, properly sets loading state, and refetches list when promise resolves', async () => {
         findProjectsList().vm.$emit('delete', MOCK_PROJECT);
 
         expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
-        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(true);
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(true);
+
+        await waitForPromises();
+
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(false);
+        // Refetches list
+        expect(successHandler).toHaveBeenCalledTimes(2);
       });
 
       it('does not call createAlert', async () => {
@@ -330,14 +343,6 @@ describe('ProjectsView', () => {
         await waitForPromises();
 
         expect(createAlert).not.toHaveBeenCalled();
-      });
-
-      it('calls refetch and properly sets project.isDeleting to false when the promise resolves', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-        await waitForPromises();
-
-        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(false);
-        expect(wrapper.vm.$apollo.queries.projects.refetch).toHaveBeenCalled();
       });
     });
 
@@ -348,35 +353,31 @@ describe('ProjectsView', () => {
         deleteProject.mockRejectedValue(error);
 
         createComponent();
-        jest.spyOn(wrapper.vm.$apollo.queries.projects, 'refetch');
 
         await waitForPromises();
       });
 
-      it('calls deleteProject and properly sets project.isDeleting to true before the promise resolves', () => {
+      it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
         findProjectsList().vm.$emit('delete', MOCK_PROJECT);
 
         expect(deleteProject).toHaveBeenCalledWith(MOCK_PROJECT.id);
-        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(true);
-      });
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(true);
 
-      it('does call createAlert', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
         await waitForPromises();
 
+        expect(
+          findProjectsListProjectById(MOCK_PROJECT.id).actionLoadingStates[ACTION_DELETE],
+        ).toBe(false);
+
+        // Does not refetch list
+        expect(successHandler).toHaveBeenCalledTimes(1);
         expect(createAlert).toHaveBeenCalledWith({
           message: 'An error occurred deleting the project. Please refresh the page to try again.',
           error,
           captureError: true,
         });
-      });
-
-      it('calls refetch and properly sets project.isDeleting to false when the promise resolves', async () => {
-        findProjectsList().vm.$emit('delete', MOCK_PROJECT);
-        await waitForPromises();
-
-        expect(MOCK_PROJECT.actionLoadingStates[ACTION_DELETE]).toBe(false);
-        expect(wrapper.vm.$apollo.queries.projects.refetch).toHaveBeenCalled();
       });
     });
   });

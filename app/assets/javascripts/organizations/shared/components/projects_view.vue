@@ -168,18 +168,20 @@ export default {
         startCursor,
       });
     },
-    setProjectIsDeleting(project, val) {
-      this.$set(project.actionLoadingStates, ACTION_DELETE, val);
+    setProjectIsDeleting(nodeIndex, value) {
+      this.projects.nodes[nodeIndex].actionLoadingStates[ACTION_DELETE] = value;
     },
-    async deleteProject(data) {
+    async deleteProject(project) {
+      const nodeIndex = this.projects.nodes.findIndex((node) => node.id === project.id);
+
       try {
-        this.setProjectIsDeleting(data, true);
-        await deleteProject(data.id);
+        this.setProjectIsDeleting(nodeIndex, true);
+        await deleteProject(project.id);
+        this.$apollo.queries.projects.refetch();
       } catch (error) {
         createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
       } finally {
-        this.setProjectIsDeleting(data, false);
-        this.$apollo.queries.projects.refetch();
+        this.setProjectIsDeleting(nodeIndex, false);
       }
     },
   },

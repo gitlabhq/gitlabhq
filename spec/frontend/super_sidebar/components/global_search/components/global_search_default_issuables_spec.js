@@ -4,6 +4,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_search/components/global_search_default_issuables.vue';
+import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 import {
   MOCK_SEARCH_CONTEXT,
   MOCK_PROJECT_SEARCH_CONTEXT,
@@ -41,6 +42,7 @@ describe('GlobalSearchDefaultPlaces', () => {
 
   const findGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findLayover = () => wrapper.findComponent(SearchResultHoverLayover);
 
   describe('given no contextSwitcherLinks', () => {
     beforeEach(() => {
@@ -87,26 +89,45 @@ describe('GlobalSearchDefaultPlaces', () => {
 
       expect(itemProps).toEqual([
         {
+          extraAttrs: {
+            class: 'show-hover-layover',
+          },
           text: 'Issues assigned to me',
           href: '/dashboard/issues/?assignee_username=anyone',
         },
         {
+          extraAttrs: {
+            class: 'show-hover-layover',
+          },
           text: "Issues I've created",
           href: '/dashboard/issues/?author_username=anyone',
         },
         {
+          extraAttrs: {
+            class: 'show-hover-layover',
+          },
           text: 'Merge requests assigned to me',
           href: '/dashboard/merge_requests/?assignee_username=anyone',
         },
         {
+          extraAttrs: {
+            class: 'show-hover-layover',
+          },
           text: "Merge requests that I'm a reviewer",
           href: '/dashboard/merge_requests/?reviewer_username=anyone',
         },
         {
+          extraAttrs: {
+            class: 'show-hover-layover',
+          },
           text: "Merge requests I've created",
           href: '/dashboard/merge_requests/?author_username=anyone',
         },
       ]);
+    });
+
+    it('renders the layover component', () => {
+      expect(findLayover().exists()).toBe(true);
     });
   });
 

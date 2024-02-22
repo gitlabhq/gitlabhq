@@ -16,7 +16,7 @@ describe('SearchResultHoverLayover', () => {
     });
   };
 
-  const findOverlayMessage = () => wrapper.findByTestId('overlayMessage');
+  const findOverlayMessage = () => wrapper.findByTestId('overlay-message');
 
   describe('Render', () => {
     beforeEach(() => {

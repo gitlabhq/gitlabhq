@@ -37,6 +37,7 @@ Prerequisites:
 - This feature only scans non-binary blobs under 1 MiB in size. Binary blobs and blobs larger than 1 MiB are not scanned.
 - The scan does not analyze the content of a commit if it is identical to the content of another file already present in the source code.
 - The scan skips analyzing files that are renamed, deleted, or moved, unless their content is modified in the same commit.
+- The feature does not analyze files that are introduced during a repository creation.
 
 ## Resolve a blocked push
 

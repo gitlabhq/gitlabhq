@@ -337,23 +337,25 @@ export default {
       </span>
       <div
         ref="resultsList"
-        class="global-search-results gl-overflow-y-auto gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden gl-pb-3"
+        class="global-search-results gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
         @keydown="onKeydown"
       >
-        <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
-          <command-palette-items
-            v-if="isCommandMode"
-            :search-query="commandPaletteQuery"
-            :handle="searchTextFirstChar"
-            @updated="highlightFirstCommand"
-          />
+        <scroll-scrim class="gl-flex-grow-1 gl-overflow-x-hidden!" data-testid="nav-container">
+          <div class="gl-pb-3">
+            <command-palette-items
+              v-if="isCommandMode"
+              :search-query="commandPaletteQuery"
+              :handle="searchTextFirstChar"
+              @updated="highlightFirstCommand"
+            />
 
-          <global-search-default-items v-else-if="showDefaultItems" />
+            <global-search-default-items v-else-if="showDefaultItems" />
 
-          <template v-else>
-            <global-search-autocomplete-items />
-            <global-search-scoped-items v-if="showScopedSearchItems" />
-          </template>
+            <template v-else>
+              <global-search-autocomplete-items />
+              <global-search-scoped-items v-if="showScopedSearchItems" />
+            </template>
+          </div>
         </scroll-scrim>
       </div>
       <template v-if="searchContext">

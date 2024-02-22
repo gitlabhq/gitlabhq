@@ -2,18 +2,23 @@
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
-import { TRACKING_CLICK_COMMAND_PALETTE_ITEM } from '../command_palette/constants';
+import { TRACKING_CLICK_COMMAND_PALETTE_ITEM, OVERLAY_GOTO } from '../command_palette/constants';
 import FrequentItem from './frequent_item.vue';
 import FrequentItemSkeleton from './frequent_item_skeleton.vue';
+import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 
 export default {
   name: 'FrequentlyVisitedItems',
+  i18n: {
+    OVERLAY_GOTO,
+  },
   components: {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlIcon,
     FrequentItem,
     FrequentItemSkeleton,
+    SearchResultHoverLayover,
   },
   props: {
     loading: {
@@ -101,7 +106,7 @@ export default {
         v-for="item of formattedItems"
         :key="item.forDropdown.id"
         :item="item.forDropdown"
-        class="show-on-focus-or-hover--context"
+        class="show-on-focus-or-hover--context show-hover-layover"
       >
         <template #list-item><frequent-item :item="item.forRenderer" /></template>
       </gl-disclosure-dropdown-item>
@@ -111,12 +116,12 @@ export default {
       <span class="gl-text-gray-500 gl-font-sm gl-my-3 gl-mx-3">{{ emptyStateText }}</span>
     </gl-disclosure-dropdown-item>
 
-    <gl-disclosure-dropdown-item key="all" :item="viewAllItem">
+    <gl-disclosure-dropdown-item key="all" :item="viewAllItem" class="show-hover-layover">
       <template #list-item>
-        <span>
+        <search-result-hover-layover :text-message="$options.i18n.OVERLAY_GOTO">
           <gl-icon :name="viewAllItemsIcon" class="gl-w-6!" />
           {{ viewAllItemsText }}
-        </span>
+        </search-result-hover-layover>
       </template>
     </gl-disclosure-dropdown-item>
   </gl-disclosure-dropdown-group>

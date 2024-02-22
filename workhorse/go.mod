@@ -13,10 +13,10 @@ require (
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
 	github.com/gorilla/websocket v1.5.1
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
-	github.com/johannesboyne/gofakes3 v0.0.0-20240117152127-f7e9c41d81b2
+	github.com/johannesboyne/gofakes3 v0.0.0-20240217095638-c55a48f17be6
 	github.com/jpillora/backoff v1.0.0
 	github.com/mitchellh/copystructure v1.2.0
-	github.com/prometheus/client_golang v1.17.0
+	github.com/prometheus/client_golang v1.18.0
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
@@ -83,7 +83,7 @@ require (
 	github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect
 	github.com/lightstep/lightstep-tracer-go v0.25.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
-	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
+	github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/oklog/ulid/v2 v2.0.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
@@ -93,8 +93,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
-	github.com/prometheus/common v0.44.0 // indirect
-	github.com/prometheus/procfs v0.11.1 // indirect
+	github.com/prometheus/common v0.45.0 // indirect
+	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/prometheus/prometheus v0.48.0 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/shabbyrobe/gocovmerge v0.0.0-20190829150210-3e036491d500 // indirect
