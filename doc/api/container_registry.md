@@ -234,6 +234,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### Within a project
 
+> - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/432470) in GitLab 16.10 for GitLab.com only.
+
 Get a list of tags for given registry repository.
 
 ```plaintext

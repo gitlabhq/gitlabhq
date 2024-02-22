@@ -21,7 +21,7 @@ global.Option = window.Option;
 DOMPurify.addHook = () => {};
 DOMPurify.sanitize = (x) => x;
 
-const defaultGlob = "{app,lib,ee,spec,doc,scripts}/**/*.md";
+const defaultGlob = "doc/**/*.md";
 const mermaidMatch = /```mermaid(.*?)```/gms;
 
 const argv = process.argv.length > 2 ? process.argv.slice(2) : [defaultGlob];

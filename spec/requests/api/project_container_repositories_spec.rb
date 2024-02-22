@@ -289,17 +289,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :container_r
                 expect(response).to have_gitlab_http_status(:method_not_allowed)
               end
             end
-
-            context 'when the feature use_registry_api_to_list_tags is disabled' do
-              before do
-                stub_feature_flags(use_registry_api_to_list_tags: false)
-              end
-
-              it 'returns method not allowed' do
-                subject
-                expect(response).to have_gitlab_http_status(:method_not_allowed)
-              end
-            end
           end
         end
       end

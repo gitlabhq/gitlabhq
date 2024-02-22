@@ -258,6 +258,8 @@ The below reflects the current retention periods of GitLab AI model [Sub-Process
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
+GitLab retains input and output for up to 30 days for the purpose of troubleshooting, debugging, and addressing latency issues.
+
 ### Telemetry
 
 GitLab Duo collects aggregated or de-identified first-party usage data through our [Snowplow collector](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowplow/). This usage data includes the following metrics:

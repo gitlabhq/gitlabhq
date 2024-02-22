@@ -546,6 +546,7 @@ options:
 | [Project audit events](../audit_events.md#retrieve-all-project-audit-events)   | `order_by=id`, `sort=desc` only  | Authenticated users only.                |
 | [Projects](../projects.md)                                                     | `order_by=id` only               | Authenticated and unauthenticated users. |
 | [Users](../users.md)                                                           | `order_by=id`, `order_by=name`, `order_by=username`               | Authenticated and unauthenticated users.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5. |
+| [Registry Repository Tags](../container_registry.md) | `order_by=name`, `sort=asc`, or `sort=desc` only. | Authenticated users only. |
 
 ### Pagination response headers
 

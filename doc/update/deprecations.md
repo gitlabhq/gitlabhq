@@ -262,6 +262,20 @@ From GitLab 18.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### The `Project.services` GraphQL field is deprecated
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388424).
+</div>
+
+The `Project.services` GraphQL field is deprecated. A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### The `direction` GraphQL argument for `ciJobTokenScopeRemoveProject` is deprecated
 
 <div class="deprecation-notes">

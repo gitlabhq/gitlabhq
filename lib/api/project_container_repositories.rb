@@ -89,8 +89,7 @@ module API
 
         paginated_tags =
           if params[:pagination] == 'keyset'
-            not_allowed! unless repository.migrated? &&
-              Feature.enabled?(:use_registry_api_to_list_tags, repository.project, type: :gitlab_com_derisk)
+            not_allowed! unless repository.migrated?
 
             per_page_param = params[:per_page] || DEFAULT_PAGE_COUNT
             sort_param = params[:sort] == 'desc' ? '-name' : 'name'

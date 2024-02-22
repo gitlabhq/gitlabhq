@@ -23,16 +23,19 @@ module Gitlab
         target_project_id:
       )
 
-        iid = get_existing_merge_request(
+        existing_merge_request = get_existing_merge_request(
           source_project_id: source_project_id,
           source_branch: source_branch,
           target_branch: target_branch,
           target_project_id: target_project_id
         )
 
-        return [] if iid.nil?
+        return [] if existing_merge_request.nil?
 
-        merge_request_notes = get_merge_request_notes(target_project_id: target_project_id, iid: iid)
+        merge_request_notes = get_merge_request_notes(
+          target_project_id: target_project_id,
+          iid: existing_merge_request['iid']
+        )
 
         changes = Set.new
 
@@ -48,7 +51,10 @@ module Gitlab
           changes << :reviewers if note['body'].include?('removed review request for')
         end
 
-        resource_label_events = get_merge_request_resource_label_events(target_project_id: target_project_id, iid: iid)
+        resource_label_events = get_merge_request_resource_label_events(
+          target_project_id: target_project_id,
+          iid: existing_merge_request['iid']
+        )
 
         resource_label_events.each do |event|
           next if event["user"]["id"] == current_user_id
@@ -76,17 +82,17 @@ module Gitlab
         update_labels:,
         update_reviewers:
       )
-        existing_iid = get_existing_merge_request(
+        existing_merge_request = get_existing_merge_request(
           source_project_id: source_project_id,
           source_branch: source_branch,
           target_branch: target_branch,
           target_project_id: target_project_id
         )
 
-        if existing_iid
+        if existing_merge_request
           update_existing_merge_request(
             change: change,
-            existing_iid: existing_iid,
+            existing_iid: existing_merge_request['iid'],
             target_project_id: target_project_id,
             update_title: update_title,
             update_description: update_description,
@@ -105,6 +111,21 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
+      def get_existing_merge_request(source_project_id:, source_branch:, target_branch:, target_project_id:)
+        data = request(:get, "/projects/#{target_project_id}/merge_requests", query: {
+          state: :opened,
+          source_branch: source_branch,
+          target_branch: target_branch,
+          source_project_id: source_project_id
+        })
+
+        return nil if data.empty?
+
+        raise Error, "More than one matching MR exists: iids: #{data.pluck('iid').join(',')}" unless data.size == 1
+
+        data.first
+      end
+
       private
 
       def get_merge_request_notes(target_project_id:, iid:)
@@ -118,23 +139,6 @@ module Gitlab
 
       def current_user_id
         @current_user_id ||= request(:get, "/user")['id']
-      end
-
-      def get_existing_merge_request(source_project_id:, source_branch:, target_branch:, target_project_id:)
-        data = request(:get, "/projects/#{target_project_id}/merge_requests", query: {
-          state: :opened,
-          source_branch: source_branch,
-          target_branch: target_branch,
-          source_project_id: source_project_id
-        })
-
-        return nil if data.empty?
-
-        iids = data.pluck('iid')
-
-        raise Error, "More than one matching MR exists: iids: #{iids.join(',')}" unless data.size == 1
-
-        iids.first
       end
 
       def create_merge_request(

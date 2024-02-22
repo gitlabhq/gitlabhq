@@ -1,1 +1,2 @@
-.js-language-switcher{ data: { locales: ordered_selectable_locales.to_json } }
+- unless Feature.enabled?(:disable_preferred_language_cookie)
+  .js-language-switcher{ data: { locales: ordered_selectable_locales.to_json } }

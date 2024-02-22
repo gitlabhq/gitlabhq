@@ -234,11 +234,12 @@
   - "config/metrics/**/*.yml"
 
 .docs-patterns: &docs-patterns
-  - ".gitlab/route-map.yml"
-  - "doc/**/*"
-  - ".markdownlint.yml"
-  - "scripts/lint-doc.sh"
   - ".gitlab/ci/docs.gitlab-ci.yml"
+  - ".gitlab/route-map.yml"
+  - ".markdownlint.yml"
+  - "doc/**/*"
+  - "scripts/lint-doc.sh"
+  - "scripts/lint/check_mermaid.mjs"
 
 .docs-blueprints-patterns: &docs-blueprints-patterns
   - "doc/architecture/blueprints/**/*"

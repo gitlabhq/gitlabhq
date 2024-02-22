@@ -45,7 +45,7 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
     FileUtils.rm_rf(repository_path)
   end
 
-  describe '#with_branch_from_branch and #commit_in_branch' do
+  describe '#with_clean_state and #commit_in_branch' do
     let(:file_not_to_commit) { repository_path.join('test_file_not_to_commit.txt') }
     let(:test_file1) { 'test_file1.txt' }
     let(:test_file2) { 'files/test_file2.txt' }
@@ -69,8 +69,12 @@ RSpec.describe ::Gitlab::Housekeeper::Git do
       change.changed_files = [test_file1, test_file2]
 
       branch_name = nil
-      git.with_branch_from_branch do
-        branch_name = git.commit_in_branch(change)
+      git.with_clean_state do
+        branch_name = git.create_branch(change)
+
+        git.in_branch(branch_name) do
+          git.create_commit(change)
+        end
       end
 
       expect(branch_name).to eq(test_branch_name)

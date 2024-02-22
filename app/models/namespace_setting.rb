@@ -6,7 +6,6 @@ class NamespaceSetting < ApplicationRecord
   include ChronicDurationAttribute
   include IgnorableColumns
 
-  ignore_column :project_import_level, remove_with: '16.10', remove_after: '2024-02-22'
   ignore_column :third_party_ai_features_enabled, remove_with: '16.10', remove_after: '2024-02-22'
   ignore_column %i[code suggestions delayed_project_removal lock_delayed_project_removal], remove_with: '16.10', remove_after: '2024-02-22'
 

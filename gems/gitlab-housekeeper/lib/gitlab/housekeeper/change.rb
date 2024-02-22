@@ -9,7 +9,8 @@ module Gitlab
         :changed_files,
         :labels,
         :keep_class,
-        :changelog_type
+        :changelog_type,
+        :mr_web_url
       attr_reader :reviewers
 
       def initialize

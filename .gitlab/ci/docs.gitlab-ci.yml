@@ -73,6 +73,7 @@ docs-lint markdown:
     - yarn_install_script
     - install_gitlab_gem
     - scripts/lint-doc.sh
+    - scripts/lint/check_mermaid.mjs
 
 docs-lint blueprint:
   extends:

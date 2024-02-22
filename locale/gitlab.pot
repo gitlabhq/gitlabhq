@@ -25660,6 +25660,9 @@ msgstr ""
 msgid "Import|Timeout for decompressing archived files."
 msgstr ""
 
+msgid "Import|You can import a Subversion repository by using third-party tools. %{svn_link}."
+msgstr ""
+
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
@@ -51886,9 +51889,6 @@ msgid "To get started, use the link below to confirm your account."
 msgstr ""
 
 msgid "To go to GitLab Pages, on the left sidebar, select %{pages_link}."
-msgstr ""
-
-msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
 msgid "To invite more users, you can reduce the number of users in your top-level group to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
