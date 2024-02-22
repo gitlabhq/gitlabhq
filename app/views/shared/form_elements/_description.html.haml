@@ -7,7 +7,10 @@
 - preview_url = preview_markdown_path(project, target_type: model.class.name)
 
 .form-group
-  = form.label :description, _('Description'), class: 'gl-display-block'
+  .gl-display-flex
+    = form.label :description, _('Description'), class: 'gl-display-block'
+    - if model.is_a?(MergeRequest)
+      = render_if_exists "/shared/form_elements/summarize_merge_request"
   - if model.is_a?(MergeRequest)
     = hidden_field_tag :merge_request_diff_head_sha, model.diff_head_sha
 

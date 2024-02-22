@@ -1,5 +1,7 @@
 ---
 table_name: cloud_connector_access
+classes:
+- CloudConnector::Access
 feature_categories:
   - cloud_connector
 description: Information about Cloud Connector features

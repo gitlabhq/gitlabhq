@@ -461,7 +461,6 @@
 - './ee/spec/finders/auth/provisioned_users_finder_spec.rb'
 - './ee/spec/finders/autocomplete/group_subgroups_finder_spec.rb'
 - './ee/spec/finders/autocomplete/project_invited_groups_finder_spec.rb'
-- './ee/spec/finders/autocomplete/vulnerabilities_autocomplete_finder_spec.rb'
 - './ee/spec/finders/billed_users_finder_spec.rb'
 - './ee/spec/finders/boards/boards_finder_spec.rb'
 - './ee/spec/finders/boards/epic_boards_finder_spec.rb'

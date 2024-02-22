@@ -1,9 +1,0 @@
----
-name: ci_partitioning_use_ci_pipeline_variables_routing_table
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/439069
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143334
-rollout_issue_url: https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17508
-milestone: '16.10'
-group: group::pipeline execution
-type: gitlab_com_derisk
-default_enabled: false

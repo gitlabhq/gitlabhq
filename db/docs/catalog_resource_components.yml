@@ -1,5 +1,7 @@
 ---
 table_name: catalog_resource_components
+classes:
+- Ci::Catalog::Resources::Component
 feature_categories:
 - pipeline_composition
 description: CI component available in the CI Catalog

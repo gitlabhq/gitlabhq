@@ -347,6 +347,36 @@ describe('Global Search Store Getters', () => {
     });
   });
 
+  describe('scopedSearchGroup', () => {
+    beforeEach(() => {
+      createState();
+    });
+
+    it('returns the correct name', () => {
+      state.search = 'pie';
+
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual('Search for `pie` in...');
+
+      state.commandChar = '@';
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
+        'Search for `pie` users in...',
+      );
+    });
+
+    it('does not escape name', () => {
+      state.search = '<pie`>#$%';
+
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
+        'Search for `<pie`>#$%` in...',
+      );
+
+      state.commandChar = '>';
+      expect(getters.scopedSearchGroup(state, {}).name).toStrictEqual(
+        'Search for `<pie`>#$%` pages in...',
+      );
+    });
+  });
+
   describe('autocompleteGroupedSearchOptions', () => {
     beforeEach(() => {
       createState();

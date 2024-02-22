@@ -341,9 +341,8 @@ RSpec.describe Gitlab::Conflict::File do
 
     let(:conflict) { { ancestor: { path: ancestor_path }, theirs: { path: their_path }, ours: { path: our_path } } }
     let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit, conflict, '') }
-    let(:diff_file) { double(renamed_file?: renamed_file?) }
 
-    subject(:conflict_type) { conflict_file.conflict_type(diff_file) }
+    subject(:conflict_type) { conflict_file.conflict_type(when_renamed: renamed_file?) }
 
     where(:ancestor_path, :their_path, :our_path, :renamed_file?, :result) do
       '/ancestor/path' | '/their/path' | '/our/path' | false | :both_modified

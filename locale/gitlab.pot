@@ -15802,9 +15802,6 @@ msgstr ""
 msgid "DastProfiles|Authentication URL"
 msgstr ""
 
-msgid "DastProfiles|Branch missing"
-msgstr ""
-
 msgid "DastProfiles|Change scanner profile"
 msgstr ""
 
@@ -15998,9 +15995,6 @@ msgid "DastProfiles|Select a scanner profile to run a DAST scan"
 msgstr ""
 
 msgid "DastProfiles|Select a site profile to run a DAST scan"
-msgstr ""
-
-msgid "DastProfiles|Select branch"
 msgstr ""
 
 msgid "DastProfiles|Select scanner profile"
@@ -23374,28 +23368,28 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|ID of the Google Cloud project."
-msgstr ""
-
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Location of Artifact Registry repository"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Location of Artifact Registry repository."
-msgstr ""
-
 msgid "GoogleCloudPlatformService|Project number of the Workload Identity Pool."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Repository of Artifact Registry"
+msgid "GoogleCloudPlatformService|Project with the Artifact Registry repository."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Repository of Artifact Registry."
+msgid "GoogleCloudPlatformService|Repository location"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Repository must be Docker format and Standard mode."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Repository name"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Workload Identity Pool ID"
@@ -26663,6 +26657,9 @@ msgid "Interval"
 msgstr ""
 
 msgid "Introducing Your DevOps Reports"
+msgstr ""
+
+msgid "Introducing: Summarize code changes"
 msgstr ""
 
 msgid "Invalid 'schemaVersion' '%{schema_version}'"
@@ -45722,6 +45719,9 @@ msgstr ""
 msgid "SecurityTxt|When present, this will be publicly available at %{codeOpen}https://gitlab.example.com/.well-known/security.txt%{codeClose}. Maximum 2048 characters."
 msgstr ""
 
+msgid "See an AI-generated summary of your code changes."
+msgstr ""
+
 msgid "See example DevOps Score page in our documentation."
 msgstr ""
 
@@ -48739,6 +48739,9 @@ msgid "Suggestions:"
 msgstr ""
 
 msgid "Suite"
+msgstr ""
+
+msgid "Summarize code changes"
 msgstr ""
 
 msgid "Summarize comments"

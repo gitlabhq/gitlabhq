@@ -236,6 +236,16 @@ describe('DynamicField', () => {
       });
     });
 
+    describe('with label description', () => {
+      it('renders label description', () => {
+        createComponent({
+          labelDescription: 'This is a description',
+        });
+
+        expect(findGlFormGroup().props('labelDescription')).toBe('This is a description');
+      });
+    });
+
     describe('password field validations', () => {
       describe('without value', () => {
         it('requires validation', () => {

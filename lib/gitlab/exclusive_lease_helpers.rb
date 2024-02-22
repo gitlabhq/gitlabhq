@@ -31,13 +31,32 @@ module Gitlab
     def in_lock(key, ttl: 1.minute, retries: 10, sleep_sec: 0.01.seconds)
       raise ArgumentError, 'Key needs to be specified' unless key
 
+      Gitlab::Instrumentation::ExclusiveLock.increment_requested_count
+
       lease = SleepingLock.new(key, timeout: ttl, delay: sleep_sec)
 
-      lease.obtain(1 + retries)
+      with_instrumentation(:wait) do
+        lease.obtain(1 + retries)
+      end
 
-      yield(lease.retried?, lease)
+      with_instrumentation(:hold) do
+        yield(lease.retried?, lease)
+      end
     ensure
       lease&.cancel
+    end
+
+    private
+
+    def with_instrumentation(metric)
+      start_time = Time.current
+      yield
+    ensure
+      if metric == :wait
+        Gitlab::Instrumentation::ExclusiveLock.add_wait_duration(Time.current - start_time)
+      else
+        Gitlab::Instrumentation::ExclusiveLock.add_hold_duration(Time.current - start_time)
+      end
     end
   end
 end

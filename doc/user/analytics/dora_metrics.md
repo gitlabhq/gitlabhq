@@ -199,7 +199,9 @@ You can explore the GraphQL API resources with the interactive [GraphQL explorer
 Deployment frequency is calculated based on the deployments record, which is created for typical push-based deployments.
 These deployment records are not created for pull-based deployments, for example when Container Images are connected to GitLab with an agent.
 
-To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API. For more information, see [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
+To track DORA metrics in these cases, you can [create a deployment record](../../api/deployments.md#create-a-deployment) using the Deployments API.
+You must set the environment name where the deployment tier is configured, because the tier variable is specified for the given environment, not for the deployments.
+For more information, see [Track deployments of an external deployment tool](../../ci/environments/external_deployment_tools.md).
 
 ### Measure DORA metrics with Jira
 

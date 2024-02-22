@@ -1,19 +1,17 @@
 <script>
-import { GlLoadingIcon, GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';
 import { CLUSTER_HEALTH_SUCCESS, CLUSTER_HEALTH_ERROR } from '~/environments/constants';
-import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
 
 export default {
   components: {
-    GlLoadingIcon,
     GlEmptyState,
     KubernetesStatusBar,
     KubernetesAgentInfo,
@@ -24,29 +22,27 @@ export default {
   },
   inject: ['kasTunnelUrl'],
   props: {
-    projectFullPath: {
-      type: String,
-      required: true,
-    },
     environmentName: {
       type: String,
       required: true,
     },
-  },
-  apollo: {
-    environment: {
-      query: environmentClusterAgentQuery,
-      variables() {
-        return {
-          projectFullPath: this.projectFullPath,
-          environmentName: this.environmentName,
-        };
-      },
-      update(data) {
-        return data?.project?.environment;
-      },
+    clusterAgent: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    kubernetesNamespace: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    fluxResourcePath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
+
   data() {
     return {
       error: null,
@@ -55,18 +51,6 @@ export default {
     };
   },
   computed: {
-    isLoading() {
-      return this.$apollo.queries.environment.loading;
-    },
-    clusterAgent() {
-      return this.environment?.clusterAgent;
-    },
-    kubernetesNamespace() {
-      return this.environment?.kubernetesNamespace || '';
-    },
-    fluxResourcePath() {
-      return this.environment?.fluxResourcePath || '';
-    },
     gitlabAgentId() {
       return getIdFromGraphQLId(this.clusterAgent.id).toString();
     },
@@ -110,8 +94,7 @@ export default {
 };
 </script>
 <template>
-  <gl-loading-icon v-if="isLoading" />
-  <div v-else-if="clusterAgent" class="gl-p-5 gl-bg-gray-10 gl-mt-n3">
+  <div v-if="clusterAgent" class="gl-p-5 gl-bg-gray-10 gl-mt-n3">
     <div
       class="gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center"
     >

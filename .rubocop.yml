@@ -330,6 +330,13 @@ Rails/InverseOf:
     - app/models/**/*.rb
     - ee/app/models/**/*.rb
 
+Rails/MigrationTimestamp:
+  Enabled: true
+  Include:
+    - 'db/migrate/*.rb'
+    - 'db/post_migrate/*.rb'
+    - 'ee/db/geo/migrate/*.rb'
+
 # This is currently exiting with a rubocop exception error and should be
 # resolved hopefully a future update
 # An error occurred while Rails/UniqueValidationWithoutIndex cop was inspecting

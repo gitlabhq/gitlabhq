@@ -241,11 +241,58 @@ module DiffHelper
     {}
   end
 
+  def conflicts_with_types
+    return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
+
+    cached_conflicts_with_types(enabled: Feature.enabled?(:cached_conflicts_with_types, merge_request.project)) do
+      conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: true) # rubocop:disable CodeReuse/ServiceClass
+
+      {}.tap do |h|
+        conflicts_service.conflicts.files.each do |file|
+          h[file.path] = {
+            conflict_type: file.conflict_type,
+            conflict_type_when_renamed: file.conflict_type(when_renamed: true)
+          }
+        end
+      end
+    end
+  rescue Gitlab::Git::Conflict::Resolver::ConflictSideMissing
+    # This exception is raised when changes on a fork isn't present on canonical repo yet.
+    # We can't list conflicts until the canonical repo gets the references from the fork
+    # which happens asynchronously when updating MR.
+    #
+    # Return empty hash to indicate that there are no conflicts.
+    {}
+  end
+
   def params_with_whitespace
     hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
   end
 
   private
+
+  def cached_conflicts_with_types(enabled: false)
+    return yield unless enabled
+
+    cache_key = "merge_request_#{merge_request.id}_conflicts_with_types"
+    cache = Rails.cache.read(cache_key)
+    source_branch_sha = merge_request.source_branch_sha
+    target_branch_sha = merge_request.target_branch_sha
+
+    if cache.blank? || cache[:source_sha] != source_branch_sha || cache[:target_sha] != target_branch_sha
+      conflicts_files = yield
+
+      cache = {
+        source_sha: source_branch_sha,
+        target_sha: target_branch_sha,
+        conflicts: conflicts_files
+      }
+
+      Rails.cache.write(cache_key, cache)
+    end
+
+    cache[:conflicts]
+  end
 
   def diff_btn(title, name, selected)
     params_copy = safe_params.dup

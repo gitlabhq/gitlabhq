@@ -28,6 +28,11 @@ export default {
       required: false,
       default: null,
     },
+    labelDescription: {
+      type: String,
+      required: false,
+      default: null,
+    },
     name: {
       type: String,
       required: true,
@@ -141,6 +146,7 @@ export default {
 <template>
   <gl-form-group
     :label="humanizedTitle"
+    :label-description="labelDescription"
     :label-for="fieldId"
     :invalid-feedback="__('This field is required.')"
     :state="valid"

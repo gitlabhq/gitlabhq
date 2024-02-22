@@ -1,5 +1,7 @@
 ---
 table_name: catalog_resource_versions
+classes:
+- Ci::Catalog::Resources::Version
 feature_categories:
 - pipeline_composition
 description: Catalog resource versions that contain valid CI components.

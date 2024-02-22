@@ -111,7 +111,7 @@
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
-  if: '($CI_MERGE_REQUEST_LABELS =~ /master:(foss-)?broken/ || $CI_MERGE_REQUEST_LABELS =~ /quarantine/) && $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
+  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
@@ -664,6 +664,7 @@
   - "ee/config/custom_abilities/*.yml"
   - "doc/user/custom_roles/abilities.md"
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
+  - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 ##################
 # Conditions set #
