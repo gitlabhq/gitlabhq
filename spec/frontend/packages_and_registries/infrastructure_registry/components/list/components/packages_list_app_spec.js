@@ -4,6 +4,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import * as commonUtils from '~/lib/utils/common_utils';
 import PackageListApp from '~/packages_and_registries/infrastructure_registry/list/components/packages_list_app.vue';
@@ -29,7 +30,6 @@ describe('packages_list_app', () => {
   };
   const GlLoadingIcon = { name: 'gl-loading-icon', template: '<div>loading</div>' };
 
-  const emptyListHelpUrl = 'helpUrl';
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findListComponent = () => wrapper.findComponent(PackageList);
   const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
@@ -41,8 +41,6 @@ describe('packages_list_app', () => {
         config: {
           resourceId: 'project_id',
           emptyListIllustration: 'helpSvg',
-          emptyListHelpUrl,
-          packageHelpUrl: 'foo',
           isGroupPage,
         },
         filter,
@@ -150,7 +148,9 @@ describe('packages_list_app', () => {
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
 
-      expect(link.attributes('href')).toBe(emptyListHelpUrl);
+      expect(link.attributes('href')).toBe(
+        helpPagePath('user/packages/terraform_module_registry/index'),
+      );
       expect(link.text()).toBe('publish and share your packages');
     });
 

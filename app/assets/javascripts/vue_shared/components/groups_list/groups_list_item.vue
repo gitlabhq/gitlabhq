@@ -3,7 +3,7 @@ import { GlAvatarLabeled, GlIcon, GlTooltipDirective, GlTruncateText, GlBadge } 
 import uniqueId from 'lodash/uniqueId';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -66,7 +66,7 @@ export default {
       return ACCESS_LEVEL_LABELS[this.accessLevel];
     },
     shouldShowAccessLevel() {
-      return this.accessLevel !== undefined;
+      return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     groupIconName() {
       return this.group.parent ? 'subgroup' : 'group';
@@ -138,9 +138,13 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
-                    accessLevelLabel
-                  }}</gl-badge>
+                  <gl-badge
+                    v-if="shouldShowAccessLevel"
+                    size="sm"
+                    class="gl-display-block"
+                    data-testid="access-level-badge"
+                    >{{ accessLevelLabel }}</gl-badge
+                  >
                 </div>
               </div>
             </div>

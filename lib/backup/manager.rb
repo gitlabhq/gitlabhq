@@ -7,9 +7,9 @@ module Backup
 
     attr_reader :progress, :remote_storage, :options
 
-    def initialize(progress, definitions: nil)
+    def initialize(progress, backup_tasks: nil)
       @progress = progress
-      @definitions = definitions
+      @backup_tasks = backup_tasks
       @options = Backup::Options.new
       @metadata = Backup::Metadata.new(manifest_filepath)
       @options.extract_from_env! # preserve existing behavior
@@ -29,28 +29,28 @@ module Backup
       puts_time "Backup #{backup_id} is done."
     end
 
-    def run_create_task(task_name)
+    # @param [Gitlab::Backup::Tasks::Task] task
+    def run_create_task(task)
       build_backup_information
 
-      definition = definitions[task_name]
-      destination_dir = backup_path.join(definition.destination_path)
+      destination_dir = backup_path.join(task.destination_path)
 
-      unless definition.enabled?
-        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+      unless task.enabled?
+        puts_time "Dumping #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
-      if options.skip_task?(task_name)
-        puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
+      if options.skip_task?(task.id)
+        puts_time "Dumping #{task.human_name} ... ".color(:blue) + "[SKIPPED]".color(:cyan)
         return
       end
 
-      puts_time "Dumping #{definition.human_name} ... ".color(:blue)
-      definition.target.dump(destination_dir, backup_id)
-      puts_time "Dumping #{definition.human_name} ... ".color(:blue) + "done".color(:green)
+      puts_time "Dumping #{task.human_name} ... ".color(:blue)
+      task.target.dump(destination_dir, backup_id)
+      puts_time "Dumping #{task.human_name} ... ".color(:blue) + "done".color(:green)
 
     rescue Backup::DatabaseBackupError, Backup::FileBackupError => e
-      puts_time "Dumping #{definition.human_name} failed: #{e.message}".color(:red)
+      puts_time "Dumping #{task.human_name} failed: #{e.message}".color(:red)
     end
 
     def restore
@@ -62,29 +62,29 @@ module Backup
       puts_time "Restore task is done."
     end
 
-    def run_restore_task(task_name)
+    # @param [Gitlab::Backup::Tasks::Task] task
+    def run_restore_task(task)
       read_backup_information
 
-      definition = definitions[task_name]
-      destination_dir = backup_path.join(definition.destination_path)
+      destination_dir = backup_path.join(task.destination_path)
 
-      unless definition.enabled?
-        puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
+      unless task.enabled?
+        puts_time "Restoring #{task.human_name} ... ".color(:blue) + "[DISABLED]".color(:cyan)
         return
       end
 
-      puts_time "Restoring #{definition.human_name} ... ".color(:blue)
+      puts_time "Restoring #{task.human_name} ... ".color(:blue)
 
-      warning = definition.target.pre_restore_warning
+      warning = task.target.pre_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
       end
 
-      definition.target.restore(destination_dir, backup_id)
-      puts_time "Restoring #{definition.human_name} ... ".color(:blue) + "done".color(:green)
+      task.target.restore(destination_dir, backup_id)
+      puts_time "Restoring #{task.human_name} ... ".color(:blue) + "done".color(:green)
 
-      warning = definition.target.post_restore_warning
+      warning = task.target.post_restore_warning
       if warning.present?
         puts_time warning.color(:red)
         Gitlab::TaskHelpers.ask_to_continue
@@ -95,13 +95,24 @@ module Backup
       exit 1
     end
 
+    # Finds a task by id
+    #
+    # @param [String] task_id
+    # @return [Backup::Tasks::Task]
+    def find_task(task_id)
+      backup_tasks[task_id].tap do |task|
+        raise ArgumentError, "Cannot find task with name: #{task_id}" unless task
+      end
+    end
+
     private
 
-    def definitions
-      @definitions ||= {
+    # @return [Hash<String, Backup::Tasks::Task>]
+    def backup_tasks
+      @backup_tasks ||= {
         Backup::Tasks::Database.id => Backup::Tasks::Database.new(progress: progress, options: options),
         Backup::Tasks::Repositories.id => Backup::Tasks::Repositories.new(progress: progress, options: options,
-          server_side: backup_information[:repositories_server_side]),
+          server_side_callable: -> { backup_information[:repositories_server_side] }),
         Backup::Tasks::Uploads.id => Backup::Tasks::Uploads.new(progress: progress, options: options),
         Backup::Tasks::Builds.id => Backup::Tasks::Builds.new(progress: progress, options: options),
         Backup::Tasks::Artifacts.id => Backup::Tasks::Artifacts.new(progress: progress, options: options),
@@ -123,9 +134,7 @@ module Backup
 
       build_backup_information
 
-      definitions.each_key do |task_name|
-        run_create_task(task_name)
-      end
+      backup_tasks.each_value { |task| run_create_task(task) }
 
       write_backup_information
 
@@ -144,9 +153,9 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      definitions.each do |task_name, definition|
-        if !options.skip_task?(task_name) && definition.enabled?
-          run_restore_task(task_name)
+      backup_tasks.each_value do |task|
+        if !options.skip_task?(task.id) && task.enabled?
+          run_restore_task(task)
         end
       end
 
@@ -246,8 +255,8 @@ module Backup
       puts_time "Deleting tar staging files ... ".color(:blue)
 
       remove_backup_path(MANIFEST_NAME)
-      definitions.each do |_, definition|
-        remove_backup_path(definition.cleanup_path || definition.destination_path)
+      backup_tasks.each_value do |task|
+        remove_backup_path(task.cleanup_path || task.destination_path)
       end
 
       puts_time "Deleting tar staging files ... ".color(:blue) + 'done'.color(:green)
@@ -409,11 +418,11 @@ module Backup
     end
 
     def backup_contents
-      [MANIFEST_NAME] + definitions.reject do |name, definition|
-        options.skip_task?(name) || # task skipped via CLI option
-          !definition.enabled? || # task disabled via definition/configuration
-          (definition.destination_optional && !File.exist?(backup_path.join(definition.destination_path)))
-      end.values.map(&:destination_path)
+      [MANIFEST_NAME] + backup_tasks.values.reject do |task|
+        options.skip_task?(task.id) || # task skipped via CLI option
+          !task.enabled? || # task disabled via code/configuration
+          (task.destination_optional && !File.exist?(backup_path.join(task.destination_path)))
+      end.map(&:destination_path)
     end
 
     def tar_file

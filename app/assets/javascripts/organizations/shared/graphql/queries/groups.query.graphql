@@ -31,6 +31,9 @@ query getOrganizationGroups(
         projectsCount
         groupMembersCount
         visibility
+        maxAccessLevel {
+          integerValue
+        }
       }
       pageInfo {
         ...PageInfo

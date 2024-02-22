@@ -6694,6 +6694,37 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
+### `Mutation.provisionGoogleCloudRunner`
+
+Provisions a runner in Google Cloud.
+
+NOTE:
+**Introduced** in 16.10.
+**Status**: Experiment.
+
+Input type: `ProvisionGoogleCloudRunnerInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprovisiongooglecloudrunnerclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprovisiongooglecloudrunnerdryrun"></a>`dryRun` | [`Boolean`](#boolean) | If true, returns the Terraform script without executing it. Defaults to false. True is currently not supported. |
+| <a id="mutationprovisiongooglecloudrunnerprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the runner in. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningmachinetype"></a>`provisioningMachineType` | [`String!`](#string) | Name of the machine type to use for provisioning the runner. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningprojectid"></a>`provisioningProjectId` | [`String!`](#string) | Identifier of the project where the runner is provisioned. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningregion"></a>`provisioningRegion` | [`String!`](#string) | Name of the region to provision the runner in. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningzone"></a>`provisioningZone` | [`String!`](#string) | Name of the zone to provision the runner in. |
+| <a id="mutationprovisiongooglecloudrunnerrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprovisiongooglecloudrunnerclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprovisiongooglecloudrunnererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningsteps"></a>`provisioningSteps` | [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep) | Steps used to provision the runner. |
+
 ### `Mutation.refreshStandardsAdherenceChecks`
 
 Input type: `RefreshStandardsAdherenceChecksInput`
@@ -16481,6 +16512,18 @@ Region used for runner cloud provisioning.
 | ---- | ---- | ----------- |
 | <a id="cirunnercloudprovisioningregiondescription"></a>`description` | [`String`](#string) | Description of the region. |
 | <a id="cirunnercloudprovisioningregionname"></a>`name` | [`String`](#string) | Name of the region. |
+
+### `CiRunnerCloudProvisioningStep`
+
+Step used to provision the runner to Google Cloud.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnercloudprovisioningstepinstructions"></a>`instructions` | [`String`](#string) | Instructions to provision the runner. |
+| <a id="cirunnercloudprovisioningsteplanguageidentifier"></a>`languageIdentifier` | [`String`](#string) | Identifier of the language used for the instructions field. This identifier can be any of the identifiers specified in the [list of supported languages and lexers](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers). |
+| <a id="cirunnercloudprovisioningsteptitle"></a>`title` | [`String`](#string) | Title of the step. |
 
 ### `CiRunnerCloudProvisioningZone`
 

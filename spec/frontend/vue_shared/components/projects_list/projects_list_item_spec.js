@@ -12,7 +12,7 @@ import {
   VISIBILITY_LEVEL_PRIVATE_STRING,
   PROJECT_VISIBILITY_TYPE,
 } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import DeleteModal from '~/projects/components/shared/delete_modal.vue';
@@ -22,9 +22,16 @@ jest.mock('lodash/uniqueId');
 describe('ProjectsListItem', () => {
   let wrapper;
 
-  const [project] = convertObjectPropsToCamelCase(projects, { deep: true });
+  const [{ permissions, ...project }] = convertObjectPropsToCamelCase(projects, { deep: true });
 
-  const defaultPropsData = { project };
+  const defaultPropsData = {
+    project: {
+      ...project,
+      accessLevel: {
+        integerValue: permissions.projectAccess.accessLevel,
+      },
+    },
+  };
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(ProjectsListItem, {
@@ -45,6 +52,7 @@ describe('ProjectsListItem', () => {
   const findProjectDescription = () => wrapper.findByTestId('project-description');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
+  const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -90,12 +98,38 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  it('renders access role badge', () => {
+  it('renders access level badge', () => {
     createComponent();
 
-    expect(findAvatarLabeled().findComponent(GlBadge).text()).toBe(
-      ACCESS_LEVEL_LABELS[project.permissions.projectAccess.accessLevel],
+    expect(findAccessLevelBadge().text()).toBe(
+      ACCESS_LEVEL_LABELS[defaultPropsData.project.accessLevel.integerValue],
     );
+  });
+
+  describe('when access level is not available', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: { project },
+      });
+    });
+
+    it('does not render access level badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when access level is `No access`', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          project: { ...project, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
+        },
+      });
+    });
+
+    it('does not render access level badge', () => {
+      expect(findAccessLevelBadge().exists()).toBe(false);
+    });
   });
 
   describe('if project is archived', () => {

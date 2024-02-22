@@ -39,5 +39,31 @@ module WorkItems
     rescue NameError
       nil
     end
+
+    override :use_full_text_search?
+    def use_full_text_search?
+      return false if include_namespace_level_work_items?
+
+      super
+    end
+
+    override :by_parent
+    def by_parent(items)
+      return super unless include_namespace_level_work_items?
+
+      relations = [group_namespaces, project_namespaces].compact
+
+      namespaces = if relations.one?
+                     relations.first
+                   else
+                     Namespace.from_union(relations)
+                   end
+
+      items.in_namespaces(namespaces)
+    end
+
+    def include_namespace_level_work_items?
+      params.group? && Feature.enabled?(:namespace_level_work_items, params.group)
+    end
   end
 end

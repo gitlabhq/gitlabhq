@@ -12,7 +12,7 @@ import {
 import uniqueId from 'lodash/uniqueId';
 
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
-import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
+import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -74,8 +74,8 @@ export default {
      *   issuesAccessLevel: string;
      *   forkingAccessLevel: string;
      *   openIssuesCount: number;
-     *   permissions: {
-     *     projectAccess: { accessLevel: 50 };
+     *   maxAccessLevel: {
+     *     integerValue: number;
      *   };
      *   descriptionHtml: string;
      *   updatedAt: string;
@@ -111,13 +111,13 @@ export default {
       return PROJECT_VISIBILITY_TYPE[this.visibility];
     },
     accessLevel() {
-      return this.project.permissions?.projectAccess?.accessLevel;
+      return this.project.accessLevel?.integerValue;
     },
     accessLevelLabel() {
       return ACCESS_LEVEL_LABELS[this.accessLevel];
     },
     shouldShowAccessLevel() {
-      return this.accessLevel !== undefined;
+      return this.accessLevel !== undefined && this.accessLevel !== ACCESS_LEVEL_NO_ACCESS_INTEGER;
     },
     starsHref() {
       return `${this.project.webUrl}/-/starrers`;
@@ -254,9 +254,13 @@ export default {
                   />
                 </div>
                 <div class="gl-px-2">
-                  <gl-badge v-if="shouldShowAccessLevel" size="sm" class="gl-display-block">{{
-                    accessLevelLabel
-                  }}</gl-badge>
+                  <gl-badge
+                    v-if="shouldShowAccessLevel"
+                    size="sm"
+                    class="gl-display-block"
+                    data-testid="access-level-badge"
+                    >{{ accessLevelLabel }}</gl-badge
+                  >
                 </div>
               </div>
             </div>

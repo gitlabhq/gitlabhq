@@ -17,7 +17,6 @@ describe('Mutations Registry Store', () => {
         pageType: 'groups',
         userCanDelete: '',
         emptyListIllustration: 'foo',
-        emptyListHelpUrl: 'baz',
       };
 
       const expectedState = {

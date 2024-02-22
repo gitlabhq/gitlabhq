@@ -66,6 +66,9 @@ export const organizationProjects = [
     userPermissions: {
       removeProject: true,
     },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Project/7',
@@ -91,6 +94,9 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
     },
   },
   {
@@ -118,6 +124,9 @@ export const organizationProjects = [
     userPermissions: {
       removeProject: true,
     },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Project/5',
@@ -143,6 +152,9 @@ export const organizationProjects = [
     },
     userPermissions: {
       removeProject: true,
+    },
+    maxAccessLevel: {
+      integerValue: 30,
     },
   },
   {
@@ -170,6 +182,9 @@ export const organizationProjects = [
     userPermissions: {
       removeProject: false,
     },
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
 ];
 
@@ -186,6 +201,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 2,
     visibility: 'public',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/33',
@@ -199,6 +217,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 1,
     visibility: 'private',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/24',
@@ -212,6 +233,9 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 2,
     visibility: 'internal',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/27',
@@ -225,6 +249,9 @@ export const organizationGroups = [
     projectsCount: 2,
     groupMembersCount: 3,
     visibility: 'public',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/31',
@@ -237,6 +264,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 10,
     visibility: 'private',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/22',
@@ -250,6 +280,9 @@ export const organizationGroups = [
     projectsCount: 3,
     groupMembersCount: 40,
     visibility: 'internal',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/35',
@@ -263,6 +296,9 @@ export const organizationGroups = [
     projectsCount: 30,
     groupMembersCount: 100,
     visibility: 'public',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/73',
@@ -275,6 +311,9 @@ export const organizationGroups = [
     projectsCount: 1,
     groupMembersCount: 1,
     visibility: 'private',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
   {
     id: 'gid://gitlab/Group/74',
@@ -289,6 +328,9 @@ export const organizationGroups = [
     projectsCount: 4,
     groupMembersCount: 4,
     visibility: 'internal',
+    maxAccessLevel: {
+      integerValue: 30,
+    },
   },
 ];
 

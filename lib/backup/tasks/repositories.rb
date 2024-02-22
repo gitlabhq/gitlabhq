@@ -3,12 +3,12 @@
 module Backup
   module Tasks
     class Repositories < Task
-      attr_reader :server_side
+      attr_reader :server_side_callable
 
       def self.id = 'repositories'
 
-      def initialize(progress:, options:, server_side:)
-        @server_side = server_side
+      def initialize(progress:, options:, server_side_callable:)
+        @server_side_callable = server_side_callable
 
         super(progress: progress, options: options)
       end
@@ -24,7 +24,7 @@ module Backup
           incremental: options.incremental?,
           max_parallelism: options.max_parallelism,
           storage_parallelism: options.max_storage_parallelism,
-          server_side: server_side
+          server_side: server_side_callable.call
         )
 
         ::Backup::Targets::Repositories.new(progress,

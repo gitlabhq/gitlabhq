@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
-module ContentEditorHelpers
+module RichTextEditorHelpers
+  def content_editor_testid
+    '[data-testid="content-editor"] [contenteditable].ProseMirror'
+  end
+
   def switch_to_markdown_editor
     click_button("Switch to plain text editing")
   end

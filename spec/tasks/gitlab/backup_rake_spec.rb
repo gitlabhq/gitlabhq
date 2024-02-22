@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: :backup_restore do
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
-  let(:backup_tasks) do
+  let(:backup_rake_task_names) do
     %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
-  let(:backup_types) do
+  let(:backup_task_ids) do
     %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
   end
 
@@ -69,7 +69,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
   end
 
   def reenable_backup_sub_tasks
-    backup_tasks.each do |subtask|
+    backup_rake_task_names.each do |subtask|
       Rake::Task["gitlab:backup:#{subtask}:create"].reenable
     end
   end
@@ -131,8 +131,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         allow(progress).to receive(:puts).with(delete_message).once
         allow(progress).to receive(:puts).with(rewritten_message).once
 
-        allow_next_instance_of(::Backup::Manager) do |instance|
-          allow(instance).to receive(:run_restore_task).with('db')
+        allow_next_instance_of(::Backup::Manager) do |manager|
+          task = manager.find_task('db')
+          allow(manager).to receive(:run_restore_task).with(task)
         end
 
         expect(pid_file).to receive(:flock).with(File::LOCK_EX)
@@ -168,9 +169,10 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
           allow(File).to receive(:delete).with(backup_restore_pid_path)
           allow(progress).to receive(:puts).at_least(:once)
 
-          allow_next_instance_of(::Backup::Manager) do |instance|
-            Array(task_name).each do |task|
-              allow(instance).to receive(:run_restore_task).with(task)
+          allow_next_instance_of(::Backup::Manager) do |manager|
+            Array(task_name).each do |t|
+              task = manager.find_task(t)
+              allow(manager).to receive(:run_restore_task).with(task)
             end
           end
         end
@@ -206,11 +208,13 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         before do
           allow(YAML).to receive(:safe_load_file)
             .and_return({ gitlab_version: gitlab_version })
-          expect_next_instance_of(::Backup::Manager) do |instance|
-            backup_types.each do |subtask|
-              expect(instance).to receive(:run_restore_task).with(subtask).ordered
+          expect_next_instance_of(::Backup::Manager) do |manager|
+            backup_task_ids.each do |t|
+              task = manager.find_task(t)
+
+              expect(manager).to receive(:run_restore_task).with(task).ordered
             end
-            expect(instance).not_to receive(:run_restore_task)
+            expect(manager).not_to receive(:run_restore_task)
           end
           expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
         end
@@ -259,11 +263,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         allow(YAML).to receive(:safe_load_file)
           .and_return({ gitlab_version: Gitlab::VERSION })
 
-        expect_next_instance_of(::Backup::Manager) do |instance|
-          backup_types.each do |subtask|
-            expect(instance).to receive(:run_restore_task).with(subtask).ordered
+        expect_next_instance_of(::Backup::Manager) do |manager|
+          backup_task_ids.each do |t|
+            task = manager.find_task(t)
+            expect(manager).to receive(:run_restore_task).with(task).ordered
           end
-          expect(instance).not_to receive(:run_restore_task)
+          expect(manager).not_to receive(:run_restore_task)
         end
 
         expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
@@ -296,7 +301,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       end
 
       it 'prints a progress message to stdout' do
-        backup_tasks.each do |task|
+        backup_rake_task_names.each do |task|
           expect { run_rake_task("gitlab:backup:#{task}:create") }.to output(/Dumping /).to_stdout_from_any_process
         end
       end
@@ -324,7 +329,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... ")
         expect(Gitlab::BackupLogger).to receive(:info).with(message: "Dumping ci secure files ... done")
 
-        backup_tasks.each do |task|
+        backup_rake_task_names.each do |task|
           run_rake_task("gitlab:backup:#{task}:create")
         end
       end
@@ -639,11 +644,12 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect_next_instance_of(::Backup::Manager) do |instance|
-        (backup_types - %w[repositories uploads]).each do |subtask|
-          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        (backup_task_ids - %w[repositories uploads]).each do |t|
+          task = manager.find_task(t)
+          expect(manager).to receive(:run_restore_task).with(task).ordered
         end
-        expect(instance).not_to receive(:run_restore_task)
+        expect(manager).not_to receive(:run_restore_task)
       end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout_from_any_process
@@ -684,11 +690,13 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: 
       allow(Rake::Task['gitlab:shell:setup'])
         .to receive(:invoke).and_return(true)
 
-      expect_next_instance_of(::Backup::Manager) do |instance|
-        backup_types.each do |subtask|
-          expect(instance).to receive(:run_restore_task).with(subtask).ordered
+      expect_next_instance_of(::Backup::Manager) do |manager|
+        backup_task_ids.each do |t|
+          task = manager.find_task(t)
+
+          expect(manager).to receive(:run_restore_task).with(task).ordered
         end
-        expect(instance).not_to receive(:run_restore_task)
+        expect(manager).not_to receive(:run_restore_task)
       end
       expect(Rake::Task['gitlab:shell:setup']).to receive :invoke
       expect { run_rake_task("gitlab:backup:restore") }.to output.to_stdout_from_any_process

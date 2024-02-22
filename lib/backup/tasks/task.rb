@@ -16,8 +16,8 @@ module Backup
       end
 
       # Key string that identifies the task
-      def key
-        raise NotImplementedError
+      def id
+        self.class.id
       end
 
       # Name of the task used for logging.

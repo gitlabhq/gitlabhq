@@ -103,21 +103,6 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       with_them do
         it { is_expected.to eq(result) }
       end
-
-      context 'when ci_job_token_groups_allowlist feature flag is disabled' do
-        before do
-          stub_feature_flags(ci_job_token_groups_allowlist: false)
-        end
-
-        where(:accessed_project, :result) do
-          ref(:project_with_target_project_group_in_allowlist) | false
-          ref(:project_wo_target_project_group_in_allowlist) | false
-        end
-
-        with_them do
-          it { is_expected.to eq(result) }
-        end
-      end
     end
 
     context 'with inbound and outbound scopes enabled' do

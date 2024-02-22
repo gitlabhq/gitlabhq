@@ -3793,7 +3793,7 @@ If not defined, defaults to `0` and jobs do not retry.
 When a job fails, the job is processed up to two more times, until it succeeds or
 reaches the maximum number of retries.
 
-By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen)
+By default, all failure types cause the job to be retried. Use [`retry:when`](#retrywhen) or [`retry:exit_codes`](#retryexit_codes)
 to select which failures to retry on.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -3809,7 +3809,19 @@ to select which failures to retry on.
 test:
   script: rspec
   retry: 2
+
+test_advanced:
+  script:
+    - echo "Run a script that results in exit code 137."
+    - exit 137
+  retry:
+    max: 2
+    when: runner_system_failure
+    exit_codes: 137
 ```
+
+`test_advanced` will be retried up to 2 times if the exit code is `137` or if it had
+a runner system failure.
 
 #### `retry:when`
 
@@ -3870,6 +3882,48 @@ test:
     when:
       - runner_system_failure
       - stuck_or_timeout_failure
+```
+
+#### `retry:exit_codes`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`.
+
+Use `retry:exit_codes` with `retry:max` to retry jobs for only specific failure cases.
+`retry:max` is the maximum number of retries, like [`retry`](#retry), and can be
+`0`, `1`, or `2`.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- A single exit code.
+- An array of exit codes.
+
+**Example of `retry:exit_codes`**:
+
+```yaml
+test_job_1:
+  script:
+    - echo "Run a script that results in exit code 1. This job isn't retried."
+    - exit 1
+  retry:
+    max: 2
+    exit_codes: 137
+
+test_job_2:
+  script:
+    - echo "Run a script that results in exit code 137. This job will be retried."
+    - exit 137
+  retry:
+    max: 1
+    exit_codes:
+      - 255
+      - 137
 ```
 
 **Related topics**:

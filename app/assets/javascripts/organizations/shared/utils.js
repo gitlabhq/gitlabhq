@@ -22,6 +22,7 @@ export const formatProjects = (projects) =>
       forkingAccessLevel,
       webUrl,
       userPermissions,
+      maxAccessLevel: accessLevel,
       ...project
     }) => ({
       ...project,
@@ -32,6 +33,7 @@ export const formatProjects = (projects) =>
       forkingAccessLevel: forkingAccessLevel.stringValue,
       webUrl,
       isForked: false,
+      accessLevel,
       editPath: `${webUrl}/edit`,
       availableActions: availableProjectActions(userPermissions),
       actionLoadingStates: {
@@ -41,11 +43,12 @@ export const formatProjects = (projects) =>
   );
 
 export const formatGroups = (groups) =>
-  groups.map(({ id, webUrl, parent, ...group }) => ({
+  groups.map(({ id, webUrl, parent, maxAccessLevel: accessLevel, ...group }) => ({
     ...group,
     id: getIdFromGraphQLId(id),
     webUrl,
     parent: parent?.id || null,
+    accessLevel,
     editPath: `${webUrl}/-/edit`,
     availableActions: [ACTION_EDIT, ACTION_DELETE],
   }));

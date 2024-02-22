@@ -1,0 +1,60 @@
+# invalid retry
+invalid_job_with_retry_int:
+  stage: "test"
+  script: "rspec"
+  retry: -1
+
+invalid_job_with_retry_type:
+  stage: "test"
+  script: "rspec"
+  retry: "2"
+
+invalid_job_with_retry_object_type:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    unknown: 2
+
+# invalid retry:when
+invalid_job_with_retry_single_when_reason:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when: "gitlab-ci-retry-object-unknown-when"
+
+invalid_job_with_retry_when_reason:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    when:
+      - "api_failure"
+      - "gitlab-ci-retry-object-unknown-when"
+
+# invalid retry:exit_codes
+invalid_job_with_retry_single_exit_codes_type:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    exit_codes: "137"
+
+invalid_job_with_retry_exit_codes_type:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    exit_codes:
+      - 137
+      - "1"
+
+invalid_job_with_retry_exit_codes_duplicate:
+  stage: "test"
+  script: "rspec"
+  retry:
+    max: 2
+    exit_codes:
+      - 137
+      - 137

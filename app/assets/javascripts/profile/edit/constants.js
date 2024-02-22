@@ -28,6 +28,11 @@ export const statusI18n = {
   ),
 };
 
+export const timezoneI18n = {
+  setTimezoneTitle: s__('Profiles|Time settings'),
+  setTimezoneDescription: s__('Profiles|Set your local time zone.'),
+};
+
 export const i18n = {
   updateProfileSettings: s__('Profiles|Update profile settings'),
   cancel: __('Cancel'),

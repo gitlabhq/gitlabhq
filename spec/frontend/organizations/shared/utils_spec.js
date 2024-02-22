@@ -15,6 +15,9 @@ describe('formatProjects', () => {
       mergeRequestsAccessLevel: firstMockProject.mergeRequestsAccessLevel.stringValue,
       issuesAccessLevel: firstMockProject.issuesAccessLevel.stringValue,
       forkingAccessLevel: firstMockProject.forkingAccessLevel.stringValue,
+      accessLevel: {
+        integerValue: 30,
+      },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
       actionLoadingStates: {
         [ACTION_DELETE]: false,
@@ -55,6 +58,9 @@ describe('formatGroups', () => {
       id: getIdFromGraphQLId(firstMockGroup.id),
       parent: null,
       editPath: `${firstFormattedGroup.webUrl}/-/edit`,
+      accessLevel: {
+        integerValue: 30,
+      },
       availableActions: [ACTION_EDIT, ACTION_DELETE],
     });
     expect(formattedGroups.length).toBe(organizationGroups.length);

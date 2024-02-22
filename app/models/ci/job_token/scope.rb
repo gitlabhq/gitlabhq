@@ -59,8 +59,7 @@ module Ci
         return true unless accessed_project.ci_inbound_job_token_scope_enabled?
 
         inbound_linked_as_accessible?(accessed_project) ||
-          (::Feature.enabled?(:ci_job_token_groups_allowlist, accessed_project) &&
-          group_linked_as_accessible?(accessed_project))
+          group_linked_as_accessible?(accessed_project)
       end
 
       # We don't check the inbound allowlist here. That is because
