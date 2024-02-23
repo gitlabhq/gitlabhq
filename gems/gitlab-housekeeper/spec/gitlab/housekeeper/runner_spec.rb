@@ -136,12 +136,28 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
       expect(change2.keep_class).to eq(fake_keep)
     end
 
-    xcontext 'when given filter_identifiers' do
+    context 'when given filter_identifiers' do
       it 'skips a change that does not match the filter_identifiers' do
-        # Branches get created. We allow branches to be created for filtered changes but we don't want to push them.
-        allow(git).to receive(:commit_in_branch).and_return("the-branch-should-not-be-pushed")
-        expect(git).to receive(:commit_in_branch).with(change2)
+        # Branches get created
+        expect(git).to receive(:create_branch).with(change1)
+          .and_return('the-identifier-for-the-first-change')
+        allow(git).to receive(:in_branch).with('the-identifier-for-the-first-change')
+          .and_yield
+        expect(git).to receive(:create_commit).with(change1)
+
+        expect(git).to receive(:create_branch).with(change2)
           .and_return('the-identifier-for-the-second-change')
+        allow(git).to receive(:in_branch).with('the-identifier-for-the-second-change')
+          .and_yield
+        expect(git).to receive(:create_commit).with(change2)
+
+        expect(git).to receive(:create_branch).with(change3)
+          .and_return('the-identifier-for-the-third-change')
+        allow(git).to receive(:in_branch).with('the-identifier-for-the-third-change')
+          .and_yield
+        expect(git).to receive(:create_commit).with(change3)
+
+        expect(::Gitlab::Housekeeper::Substitutor).to receive(:perform).with(change2)
 
         # Branches get shown and pushed
         expect(::Gitlab::Housekeeper::Shell).to receive(:execute)
@@ -163,7 +179,7 @@ RSpec.describe ::Gitlab::Housekeeper::Runner do
             update_description: true,
             update_labels: true,
             update_reviewers: true
-          ).and_return({ 'web_url' => 'https://example.com' })
+          ).twice.and_return({ 'web_url' => 'https://example.com' })
 
         described_class.new(max_mrs: 2, keeps: [fake_keep], filter_identifiers: [/second/]).run
       end

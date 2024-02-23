@@ -155,7 +155,6 @@ module GroupsHelper
       new_project_illustration: image_path('illustrations/project-create-new-sm.svg'),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       empty_subgroup_illustration: image_path('illustrations/empty-state/empty-subgroup-md.svg'),
-      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s

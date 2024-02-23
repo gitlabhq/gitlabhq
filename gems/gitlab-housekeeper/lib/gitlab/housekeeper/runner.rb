@@ -45,6 +45,23 @@ module Gitlab
               branch_name = git.create_branch(change)
               add_standard_change_data(change)
 
+              unless change.matches_filters?(@filter_identifiers)
+                # At this point the keep has already run and edited files so we need to
+                # restore the local working copy. We could simply checkout all
+                # changed_files but this is very risky as it could mean losing work that
+                # cannot be recovered. Instead we commit all the work to the branch and
+                # move on without pushing the branch.
+                git.in_branch(branch_name) do
+                  git.create_commit(change)
+                end
+
+                puts "Skipping change: #{change.identifiers} due to not matching filter."
+                puts "Modified files have been committed to branch #{branch_name.yellowish}, but will not be pushed."
+                puts
+
+                next
+              end
+
               # If no merge request exists yet, create an empty one to allow keeps to use the web URL.
               unless @dry_run
                 merge_reqeust = get_existing_merge_request(branch_name) || create(change, branch_name)
@@ -56,13 +73,6 @@ module Gitlab
                 Gitlab::Housekeeper::Substitutor.perform(change)
 
                 git.create_commit(change)
-              end
-
-              # Must be done after we commit so that we don't keep around changed files. We could checkout those files
-              # but then it might be riskier in local development in case we lose unrelated changes.
-              unless change.matches_filters?(@filter_identifiers)
-                puts "Skipping change: #{change.identifiers} due to not matching filter"
-                next
               end
 
               print_change_details(change, branch_name)
@@ -95,7 +105,7 @@ module Gitlab
       end
 
       def print_change_details(change, branch_name)
-        puts "Merge request URL: #{change.mr_web_url || '(known after create)'}".yellowish
+        puts "Merge request URL: #{change.mr_web_url || '(known after create)'}, on branch #{branch_name}".yellowish
         puts "=> #{change.identifiers.join(': ')}".purple
 
         puts '=> Title:'.purple

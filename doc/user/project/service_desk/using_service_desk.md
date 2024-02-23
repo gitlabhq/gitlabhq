@@ -75,13 +75,9 @@ To view Service Desk issues:
 #### Redesigned issue list
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.5.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature per project or for your entire instance, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `service_desk_vue_list`.
-On GitLab.com, this feature is available.
-
-When this feature is enabled, the Service Desk issue list more closely matches the regular issue list.
+The Service Desk issue list more closely matches the regular issue list.
 Available features include:
 
 - The same sorting and ordering options [as on the issue list](../issues/sorting_issue_lists.md).

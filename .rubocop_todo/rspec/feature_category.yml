@@ -5357,7 +5357,6 @@ RSpec/FeatureCategory:
     - 'spec/views/projects/hooks/index.html.haml_spec.rb'
     - 'spec/views/projects/imports/new.html.haml_spec.rb'
     - 'spec/views/projects/issues/_related_branches.html.haml_spec.rb'
-    - 'spec/views/projects/issues/_service_desk_info_content.html.haml_spec.rb'
     - 'spec/views/projects/issues/show.html.haml_spec.rb'
     - 'spec/views/projects/jobs/_build.html.haml_spec.rb'
     - 'spec/views/projects/jobs/_generic_commit_status.html.haml_spec.rb'

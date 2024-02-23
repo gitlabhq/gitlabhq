@@ -7,6 +7,8 @@ let wrapper;
 
 const defaultProvide = {
   groupsEmptyStateIllustration: '/assets/illustrations/empty-state/empty-groups-md.svg',
+  newGroupPath: '/groups/new',
+  exploreGroupsPath: '/explore/groups',
 };
 
 const createComponent = () => {
@@ -22,8 +24,12 @@ describe('GroupsDashboardEmptyState', () => {
     expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
       title: 'A group is a collection of several projects',
       description:
-        "If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group.",
+        'If you organize your projects under a group, it works like a folder. You can manage the permissions and access of your group members for each project in the group.',
       svgPath: defaultProvide.groupsEmptyStateIllustration,
+      primaryButtonText: 'New group',
+      primaryButtonLink: defaultProvide.newGroupPath,
+      secondaryButtonText: 'Explore groups',
+      secondaryButtonLink: defaultProvide.exploreGroupsPath,
     });
   });
 });

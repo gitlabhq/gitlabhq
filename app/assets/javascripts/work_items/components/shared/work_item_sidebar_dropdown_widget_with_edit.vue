@@ -172,7 +172,7 @@ export default {
     </div>
     <gl-form v-if="isEditing">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <label :for="inputId" class="gl-mb-0">{{ dropdownLabel }}</label>
+        <label :for="inputId" class="gl-mb-0! gl-heading-5">{{ dropdownLabel }}</label>
         <gl-button
           data-testid="apply-button"
           category="tertiary"
@@ -215,7 +215,6 @@ export default {
           </div>
         </template>
       </gl-collapsible-listbox>
-      {{ hasValue }}
     </gl-form>
     <slot v-else-if="hasValue" name="readonly"></slot>
     <slot v-else name="none">

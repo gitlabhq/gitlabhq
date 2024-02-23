@@ -133,7 +133,7 @@ export default {
       this.shouldFetch = true;
     },
     itemExpiredText(item) {
-      return item.expired ? this.$options.i18n.expiredText : '';
+      return item.expired ? ` ${this.$options.i18n.expiredText}` : '';
     },
     updateMilestone(selectedMilestoneId) {
       if (this.localMilestone?.id === selectedMilestoneId) {

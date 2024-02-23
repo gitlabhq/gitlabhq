@@ -1506,7 +1506,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/support/shared_examples/services/issuable/issuable_import_csv_service_shared_examples.rb'
     - 'spec/support/shared_examples/services/security/ci_configuration/create_service_shared_examples.rb'
     - 'spec/views/groups/group_members/index.html.haml_spec.rb'
-    - 'spec/views/projects/issues/_service_desk_info_content.html.haml_spec.rb'
     - 'spec/views/projects/pages/new.html.haml_spec.rb'
     - 'spec/views/projects/project_members/index.html.haml_spec.rb'
     - 'spec/workers/group_destroy_worker_spec.rb'

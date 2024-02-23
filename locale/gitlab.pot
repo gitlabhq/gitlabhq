@@ -7711,7 +7711,7 @@ msgstr ""
 msgid "Below are the settings for %{link_to_gitlab_pages}."
 msgstr ""
 
-msgid "Below you will find all the groups that are public."
+msgid "Below you will find all the groups that are public. You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "Beta"
@@ -24232,10 +24232,16 @@ msgstr ""
 msgid "GroupsEmptyState|Create new subgroup"
 msgstr ""
 
+msgid "GroupsEmptyState|Explore groups"
+msgstr ""
+
 msgid "GroupsEmptyState|Groups are the best way to manage multiple projects and members."
 msgstr ""
 
-msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
+msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage the permissions and access of your group members for each project in the group."
+msgstr ""
+
+msgid "GroupsEmptyState|New group"
 msgstr ""
 
 msgid "GroupsEmptyState|No archived projects."
@@ -46181,9 +46187,6 @@ msgstr ""
 msgid "ServiceDesk|Enable custom email address"
 msgstr ""
 
-msgid "ServiceDesk|For help setting up the Service Desk for your instance, please contact an administrator."
-msgstr ""
-
 msgid "ServiceDesk|Forward all emails to the custom email address to %{incomingEmail}."
 msgstr ""
 
@@ -46286,12 +46289,6 @@ msgstr ""
 msgid "ServiceDesk|Service Desk email address to forward emails to"
 msgstr ""
 
-msgid "ServiceDesk|Service Desk is not enabled"
-msgstr ""
-
-msgid "ServiceDesk|Service Desk is not supported"
-msgstr ""
-
 msgid "ServiceDesk|Service Desk setting missing"
 msgstr ""
 
@@ -46317,9 +46314,6 @@ msgid "ServiceDesk|This issue has been converted to a Service Desk ticket. The e
 msgstr ""
 
 msgid "ServiceDesk|This issue has been reopened because it received a new comment from an external participant."
-msgstr ""
-
-msgid "ServiceDesk|To enable Service Desk on this instance, an instance administrator must first set up incoming email."
 msgstr ""
 
 msgid "ServiceDesk|To use a custom email address for this Service Desk, you'll need to configure and verify an email address again."
@@ -57231,9 +57225,6 @@ msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{
 msgstr ""
 
 msgid "You can create new ones at your Personal Access Tokens settings %{pat_link}"
-msgstr ""
-
-msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
