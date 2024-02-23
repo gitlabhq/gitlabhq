@@ -41,7 +41,7 @@ module Types
             description: 'Merge request must be approved before merging.'
       value 'BLOCKED_STATUS',
             value: :merge_request_blocked,
-            description: 'Merge request dependencies have been merged.'
+            description: 'Merge request dependencies must be merged.'
       value 'POLICIES_DENIED',
             value: :policies_denied,
             description: 'There are denied policies for the merge request.'

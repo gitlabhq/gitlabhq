@@ -211,18 +211,18 @@ The infrastructure is multifaceted and all teams have a role in setting up the c
 The `Confidence` column refers to how confident we are with the specific domain and its path forward for Cells.
 When we have a blueprint merged ideally the confidence should move to 👍 because we have a blueprint that provides direction to that domain.
 
-| Domain                           | Owner                             | Blueprint                            | Confidence |
-|----------------------------------|-----------------------------------|--------------------------------------|------------|
-| Routing                          | group::tenant scale               | [Blueprint](../routing-service.md)   | 👍         |
-| Cell Control Plane               | group::Delivery/team::Foundations | To-Do                                | 👎         |
-| Cell Sizing                      | team::Scalability-Observability   | To-Do                                | 👎         |
-| CI Runners                       | team::Scalability-Practices       | To-Do                                | 👎         |
-| Databases                        | team::Database Reliability        | To-Do                                | 👎         |
-| Deployments                      | group::Delivery                   | [Blueprint](deployments.md)          | 👍         |
-| Observability                    | team::Scalability-Observability   | To-Do                                | 👎         |
-| Cell Architecture and Tooling    | team::Foundations                 | To-Do                                | 👎         |
-| Provisioning                     | team::Foundations                 | To-Do                                | 👎         |
-| Configuration Management/Rollout | team::Foundations                 | To-Do                                | 👎         |
+| Domain                           | Owner                             | Blueprint                                                                 | Confidence |
+|----------------------------------|-----------------------------------|---------------------------------------------------------------------------|------------|
+| Routing                          | group::tenant scale               | [Blueprint](../routing-service.md)                                        | 👍         |
+| Cell Control Plane               | group::Delivery/team::Foundations | To-Do                                                                     | 👎         |
+| Cell Sizing                      | team::Scalability-Observability   | [To-Do](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2838) | 👎         |
+| CI Runners                       | team::Scalability-Practices       | To-Do                                                                     | 👎         |
+| Databases                        | team::Database Reliability        | [To-Do](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144238)     | 👎         |
+| Deployments                      | group::Delivery                   | [Blueprint](deployments.md)                                               | 👍         |
+| Observability                    | team::Scalability-Observability   | [To-Do](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143672)     | 👎         |
+| Cell Architecture and Tooling    | team::Foundations                 | [To-Do](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1209)       | 👎         |
+| Provisioning                     | team::Foundations                 | To-Do                                                                     | 👎         |
+| Configuration Management/Rollout | team::Foundations                 | To-Do                                                                     | 👎         |
 
 ```plantuml
 @startuml

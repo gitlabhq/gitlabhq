@@ -232,6 +232,8 @@ class Deployment < ApplicationRecord
 
       by_project.each do |project, ref_paths|
         project.repository.delete_refs(*ref_paths.flatten)
+      rescue Gitlab::Git::Repository::NoRepository
+        next
       end
     end
 

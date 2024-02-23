@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Database::PostgresSequence, type: :model, feature_categor
   let(:schema) { ActiveRecord::Base.connection.current_schema }
   let(:table_name) { '_test_table' }
   let(:table_name_without_sequence) { '_test_table_without_sequence' }
+  let(:col_name) { :id }
 
   before do
     ActiveRecord::Base.connection.execute(<<~SQL)
@@ -21,15 +22,23 @@ RSpec.describe Gitlab::Database::PostgresSequence, type: :model, feature_categor
     SQL
   end
 
-  describe '#by_table_name' do
-    context 'when table does not have a sequence' do
-      it 'returns an empty collection' do
-        expect(described_class.by_table_name(table_name_without_sequence)).to be_empty
+  describe 'scopes' do
+    describe '#by_table_name' do
+      context 'when table does not have a sequence' do
+        it 'returns an empty collection' do
+          expect(described_class.by_table_name(table_name_without_sequence)).to be_empty
+        end
+      end
+
+      it 'returns the sequence for a given table' do
+        expect(described_class.by_table_name(table_name).first[:table_name]).to eq(table_name)
       end
     end
 
-    it 'returns the sequence for a given table' do
-      expect(described_class.by_table_name(table_name).first[:table_name]).to eq(table_name)
+    describe '#by_col_name' do
+      it 'returns the sequence for a col name' do
+        expect(described_class.by_col_name(col_name).first[:table_name]).to eq(table_name)
+      end
     end
   end
 end

@@ -59,7 +59,7 @@ Your passwords must meet a set of requirements when:
 - You choose a new password using the forgotten password reset flow.
 - You change your password proactively.
 - You change your password after it expires.
-- An an administrator creates your account.
+- An administrator creates your account.
 - An administrator updates your account.
 
 By default GitLab enforces the following password requirements:

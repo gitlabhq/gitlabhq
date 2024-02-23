@@ -93,22 +93,29 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
       end
     end
 
-    context 'with a very long metadata description field' do
-      let(:max_length) { ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH }
-      let(:truncated_description) { ('x' * (max_length + 1)).truncate(max_length) }
+    shared_examples 'saves a very long metadata field' do |field_name:, max_length:|
+      let(:truncated_field) { ('x' * (max_length + 1)).truncate(max_length) }
 
       before do
         params.merge!(
-          description: 'x' * (max_length + 1)
+          { field_name.to_sym => 'x' * (max_length + 1) }
         )
       end
 
-      it 'truncates the description field' do
+      it 'truncates the field' do
         expect { subject }.to change { Packages::Package.pypi.count }.by(1)
 
-        expect(created_package.pypi_metadatum.description).to eq(truncated_description)
+        expect(created_package.pypi_metadatum.public_send(field_name)).to eq(truncated_field)
       end
     end
+
+    it_behaves_like 'saves a very long metadata field',
+      field_name: 'keywords',
+      max_length: ::Packages::Pypi::Metadatum::MAX_KEYWORDS_LENGTH
+
+    it_behaves_like 'saves a very long metadata field',
+      field_name: 'description',
+      max_length: ::Packages::Pypi::Metadatum::MAX_DESCRIPTION_LENGTH
 
     context 'with an invalid metadata' do
       let(:requires_python) { 'x' * 256 }

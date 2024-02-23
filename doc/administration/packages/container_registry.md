@@ -1073,6 +1073,22 @@ end
 
 You can also [run cleanup on a schedule](../../user/packages/container_registry/reduce_container_registry_storage.md#cleanup-policy).
 
+To enable cleanup policies for all projects instance-wide, you need to find all projects
+with a container registry, but with the cleanup policy disabled:
+
+```ruby
+# Find all projects where Container registry is enabled, and cleanup policies disabled
+
+projects = Project.find_by_sql ("SELECT * FROM projects WHERE id IN (SELECT project_id FROM container_expiration_policies WHERE enabled=false AND id IN (SELECT project_id FROM container_repositories))")
+
+# Loop through each project
+projects.each do |p|
+
+# Print project IDs and project full names
+    puts "#{p.id},#{p.full_name}"
+end
+```
+
 ## Container registry metadata database
 
 DETAILS:

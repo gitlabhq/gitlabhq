@@ -6874,6 +6874,7 @@ CREATE TABLE cluster_agent_tokens (
     name text,
     last_used_at timestamp with time zone,
     status smallint DEFAULT 0 NOT NULL,
+    project_id bigint,
     CONSTRAINT check_0fb634d04d CHECK ((name IS NOT NULL)),
     CONSTRAINT check_2b79dbb315 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_4e4ec5070a CHECK ((char_length(description) <= 1024)),
@@ -12780,8 +12781,8 @@ CREATE TABLE packages_pypi_metadata (
     author_email text,
     description text,
     description_content_type text,
-    CONSTRAINT check_02be2c39af CHECK ((char_length(keywords) <= 255)),
     CONSTRAINT check_0d9aed55b2 CHECK ((required_python IS NOT NULL)),
+    CONSTRAINT check_222e4f5b58 CHECK ((char_length(keywords) <= 1024)),
     CONSTRAINT check_2d3ed32225 CHECK ((char_length(metadata_version) <= 16)),
     CONSTRAINT check_379019d5da CHECK ((char_length(required_python) <= 255)),
     CONSTRAINT check_65d8dbbd9f CHECK ((char_length(author_email) <= 2048)),
@@ -16664,11 +16665,6 @@ CREATE TABLE user_highest_roles (
     highest_access_level integer
 );
 
-CREATE TABLE user_interacted_projects (
-    user_id integer NOT NULL,
-    project_id integer NOT NULL
-);
-
 CREATE TABLE user_namespace_callouts (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -20399,6 +20395,9 @@ ALTER TABLE workspaces
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE cluster_agent_tokens
+    ADD CONSTRAINT check_5aff240050 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -22057,9 +22056,6 @@ ALTER TABLE ONLY user_group_callouts
 
 ALTER TABLE ONLY user_highest_roles
     ADD CONSTRAINT user_highest_roles_pkey PRIMARY KEY (user_id);
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT user_interacted_projects_pkey PRIMARY KEY (project_id, user_id);
 
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT user_namespace_callouts_pkey PRIMARY KEY (id);
@@ -24569,6 +24565,8 @@ CREATE INDEX index_cluster_agent_tokens_on_agent_id_status_last_used_at ON clust
 
 CREATE INDEX index_cluster_agent_tokens_on_created_by_user_id ON cluster_agent_tokens USING btree (created_by_user_id);
 
+CREATE INDEX index_cluster_agent_tokens_on_project_id ON cluster_agent_tokens USING btree (project_id);
+
 CREATE UNIQUE INDEX index_cluster_agent_tokens_on_token_encrypted ON cluster_agent_tokens USING btree (token_encrypted);
 
 CREATE INDEX index_cluster_agents_on_created_by_user_id ON cluster_agents USING btree (created_by_user_id);
@@ -27053,8 +27051,6 @@ CREATE INDEX index_user_group_callouts_on_group_id ON user_group_callouts USING 
 
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
-CREATE INDEX index_user_interacted_projects_on_user_id ON user_interacted_projects USING btree (user_id);
-
 CREATE INDEX index_user_namespace_callouts_on_namespace_id ON user_namespace_callouts USING btree (namespace_id);
 
 CREATE INDEX index_user_permission_export_uploads_on_user_id_and_status ON user_permission_export_uploads USING btree (user_id, status);
@@ -29319,9 +29315,6 @@ ALTER TABLE ONLY sbom_occurrences_vulnerabilities
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_0894651f08 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY merge_request_assignment_events
     ADD CONSTRAINT fk_08f7602bfd FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -29715,6 +29708,9 @@ ALTER TABLE ONLY approval_group_rules
 ALTER TABLE ONLY ci_pipeline_chat_data
     ADD CONSTRAINT fk_64ebfab6b3 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY cluster_agent_tokens
+    ADD CONSTRAINT fk_64f741f626 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
@@ -29756,9 +29752,6 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY integrations
     ADD CONSTRAINT fk_71cce407f9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY user_interacted_projects
-    ADD CONSTRAINT fk_722ceba4f7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_user_add_on_assignments
     ADD CONSTRAINT fk_724c2df9a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

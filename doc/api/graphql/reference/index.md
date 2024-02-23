@@ -31342,7 +31342,7 @@ Detailed representation of whether a GitLab merge request can be merged.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request dependencies have been merged. |
+| <a id="detailedmergestatusblocked_status"></a>`BLOCKED_STATUS` | Merge request dependencies must be merged. |
 | <a id="detailedmergestatusbroken_status"></a>`BROKEN_STATUS` | Can not merge the source into the target branch, potential conflict. |
 | <a id="detailedmergestatuschecking"></a>`CHECKING` | Currently checking for mergeability. |
 | <a id="detailedmergestatusci_must_pass"></a>`CI_MUST_PASS` | Pipeline must succeed before merging. |

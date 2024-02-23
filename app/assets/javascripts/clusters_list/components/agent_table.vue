@@ -47,7 +47,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['gitlabVersion', 'kasVersion'],
+  inject: ['kasVersion'],
   props: {
     agents: {
       required: true,
@@ -121,9 +121,6 @@ export default {
         return { ...agent, versions };
       });
     },
-    serverVersion() {
-      return this.kasVersion || this.gitlabVersion;
-    },
     showPagination() {
       return !this.maxAgents && this.agents.length > this.limit;
     },
@@ -180,12 +177,12 @@ export default {
       const agentVersion = this.getAgentVersionString(agent);
       let allowableAgentVersion = semverInc(agentVersion, 'minor');
 
-      const isServerPrerelease = Boolean(semverPrerelease(this.serverVersion));
+      const isServerPrerelease = Boolean(semverPrerelease(this.kasVersion));
       if (isServerPrerelease) {
         allowableAgentVersion = semverInc(allowableAgentVersion, 'minor');
       }
 
-      return semverLt(allowableAgentVersion, this.serverVersion);
+      return semverLt(allowableAgentVersion, this.kasVersion);
     },
 
     getVersionPopoverTitle(agent) {
@@ -293,7 +290,7 @@ export default {
 
             <p class="gl-mb-0">
               <gl-sprintf :message="$options.i18n.versionOutdatedText">
-                <template #version>{{ serverVersion }}</template>
+                <template #version>{{ kasVersion }}</template>
               </gl-sprintf>
               <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
                 {{ $options.i18n.viewDocsText }}</gl-link
@@ -306,7 +303,7 @@ export default {
 
           <p v-else-if="isVersionOutdated(item)" class="gl-mb-0">
             <gl-sprintf :message="$options.i18n.versionOutdatedText">
-              <template #version>{{ serverVersion }}</template>
+              <template #version>{{ kasVersion }}</template>
             </gl-sprintf>
             <gl-link :href="$options.versionUpdateLink" class="gl-font-sm">
               {{ $options.i18n.viewDocsText }}</gl-link

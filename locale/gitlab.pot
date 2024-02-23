@@ -11506,7 +11506,7 @@ msgstr ""
 msgid "ClusterAgents|How do I register an agent?"
 msgstr ""
 
-msgid "ClusterAgents|How to update an agent?"
+msgid "ClusterAgents|How do I update an agent?"
 msgstr ""
 
 msgid "ClusterAgents|Install using Helm (recommended)"
@@ -11658,7 +11658,7 @@ msgstr ""
 msgid "ClusterAgents|You will need to create a token to connect to your agent"
 msgstr ""
 
-msgid "ClusterAgents|Your agent version is out of sync with your GitLab version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version."
+msgid "ClusterAgents|Your agent version is out of sync with your GitLab KAS version (v%{version}), which might cause compatibility problems. Update the agent installed on your cluster to the most recent version."
 msgstr ""
 
 msgid "ClusterAgents|Your instance doesn't have the %{linkStart}GitLab Agent Server (KAS)%{linkEnd} set up. Ask a GitLab Administrator to install it."
@@ -30793,7 +30793,7 @@ msgstr ""
 msgid "Merge request dependencies"
 msgstr ""
 
-msgid "Merge request dependencies have been merged."
+msgid "Merge request dependencies must be merged."
 msgstr ""
 
 msgid "Merge request events"

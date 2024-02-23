@@ -61,7 +61,7 @@ GET groups/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the group access token |
+| `token_id` | integer | yes | ID of the group access token |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"
@@ -146,8 +146,8 @@ POST /groups/:id/access_tokens/:token_id/rotate
 
 | Attribute | Type       | required | Description         |
 |-----------|------------|----------|---------------------|
-| `id` | integer/string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer/string | yes | ID of the access token |
+| `id` | integer or string  | yes      | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer | yes | ID of the access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
 NOTE:
@@ -202,7 +202,7 @@ DELETE groups/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the group access token |
+| `token_id` | integer | yes | ID of the group access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens/<token_id>"

@@ -8,8 +8,12 @@ RSpec.describe Keeps::Helpers::Milestones, feature_category: :tooling do
     <<~YAML
     - version: '17.0'
       date: '2024-05-16'
+      manager_americas:
+        - Some Manager
     - version: '16.11'
       date: '2024-04-18'
+      manager_apac_emea:
+        - Some Other Manager
     - version: '16.10'
       date: '2024-03-21'
     - version: '16.9'

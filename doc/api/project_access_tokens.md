@@ -61,7 +61,7 @@ GET projects/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the project access token |
+| `token_id` | integer | yes | ID of the project access token |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"
@@ -107,15 +107,15 @@ POST projects/:id/access_tokens
 | Attribute | Type    | required | Description                                                                                                                           |
 |-----------|---------|----------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding)                                                            |
-| `name` | String | yes | Name of the project access token                                                                                                               |
+| `name` | string | yes | Name of the project access token                                                                                                               |
 | `scopes` | `Array[String]` | yes | [List of scopes](../user/project/settings/project_access_tokens.md#scopes-for-a-project-access-token)                               |
-| `access_level` | Integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
-| `expires_at` | Date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
+| `access_level` | integer | no | Access level. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), and `50` (Owner). Defaults to `40`. |
+| `expires_at` | date    | yes | Expiration date of the access token in ISO format (`YYYY-MM-DD`). The date cannot be set later than the [maximum allowable lifetime of an access token](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --header "Content-Type:application/json" \
---data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
+--data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level":30 }' \
 "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
 ```
 
@@ -155,8 +155,8 @@ POST /projects/:id/access_tokens/:token_id/rotate
 
 | Attribute | Type       | required | Description         |
 |-----------|------------|----------|---------------------|
-| `id` | integer/string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer/string | yes | ID of the project access token |
+| `id` | integer or string  | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `token_id` | integer | yes | ID of the project access token |
 | `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416795) in GitLab 16.6. |
 
 NOTE:
@@ -211,7 +211,7 @@ DELETE projects/:id/access_tokens/:token_id
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `token_id` | integer or string | yes | ID of the project access token |
+| `token_id` | integer | yes | ID of the project access token |
 
 ```shell
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens/<token_id>"

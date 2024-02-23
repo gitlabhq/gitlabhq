@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ClustersHelper do
+RSpec.describe ClustersHelper, feature_category: :deployment_management do
   describe '#has_rbac_enabled?' do
     context 'when kubernetes platform has been created' do
       let(:platform_kubernetes) { build_stubbed(:cluster_platform_kubernetes) }
@@ -84,10 +84,6 @@ RSpec.describe ClustersHelper do
 
     it 'displays kas address' do
       expect(subject[:kas_address]).to eq(Gitlab::Kas.external_url)
-    end
-
-    it 'displays GitLab version' do
-      expect(subject[:gitlab_version]).to eq(Gitlab.version_info)
     end
 
     it 'displays KAS version' do

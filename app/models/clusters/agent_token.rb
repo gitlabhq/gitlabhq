@@ -17,6 +17,7 @@ module Clusters
 
     belongs_to :agent, class_name: 'Clusters::Agent', optional: false
     belongs_to :created_by_user, class_name: 'User', optional: true
+    belongs_to :project, default: -> { agent&.project }
 
     before_save :ensure_token
 

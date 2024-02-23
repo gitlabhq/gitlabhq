@@ -3,7 +3,7 @@
 module Keeps
   module Helpers
     class Milestones
-      RELEASES_YML_URL = "https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/releases.yml"
+      RELEASES_YML_URL = "https://gitlab.com/gitlab-com/www-gitlab-com/-/raw/master/data/releases.yml"
       Error = Class.new(StandardError)
       Milestone = Struct.new(:version, :date, keyword_init: true)
 
@@ -30,7 +30,7 @@ module Keeps
 
       def milestones
         @milestones ||= fetch_milestones.map do |milestone|
-          Milestone.new(**milestone)
+          Milestone.new(**milestone.slice('version', 'date'))
         end
       end
 

@@ -1797,6 +1797,20 @@ RSpec.describe Deployment, feature_category: :continuous_delivery do
 
       expect { project.deployments.fast_destroy_all }.not_to exceed_query_limit(control)
     end
+
+    context 'when repository was already removed' do
+      it 'removes deployment without any errors' do
+        project = create(:project, :repository)
+        environment = create(:environment, project: project)
+        deployment = create(:deployment, environment: environment, project: project)
+
+        Repositories::DestroyService.new(project.repository).execute
+        project.save! # to trigger a repository removal
+
+        expect { described_class.where(id: deployment).fast_destroy_all }
+          .to change { Deployment.count }.by(-1)
+      end
+    end
   end
 
   describe '#update_merge_request_metrics!' do

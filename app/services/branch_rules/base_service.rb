@@ -4,19 +4,39 @@ module BranchRules
   class BaseService
     include Gitlab::Allowable
 
-    attr_reader :project, :branch_rule, :current_user, :params
+    PERMITTED_PARAMS = [].freeze
+    MISSING_METHOD_ERROR = Class.new(StandardError)
+
+    attr_reader :branch_rule, :current_user, :params
+
+    delegate :project, to: :branch_rule, allow_nil: true
 
     def initialize(branch_rule, user = nil, params = {})
       @branch_rule = branch_rule
-      @project = branch_rule.project
       @current_user = user
-      @params = params.slice(*permitted_params)
+      @params = params.slice(*self.class::PERMITTED_PARAMS)
+    end
+
+    def execute(skip_authorization: false)
+      raise Gitlab::Access::AccessDeniedError unless skip_authorization || authorized?
+
+      return execute_on_branch_rule if branch_rule.instance_of?(Projects::BranchRule)
+
+      ServiceResponse.error(message: 'Unknown branch rule type.')
     end
 
     private
 
-    def permitted_params
-      []
+    def execute_on_branch_rule
+      missing_method_error('execute_on_branch_rule')
+    end
+
+    def authorized?
+      missing_method_error('authorized?')
+    end
+
+    def missing_method_error(method_name)
+      raise MISSING_METHOD_ERROR, "Please define an `#{method_name}` method in #{self.class.name}"
     end
   end
 end
