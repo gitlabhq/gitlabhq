@@ -100,4 +100,24 @@ RSpec.describe Backup::DatabaseConnection, :reestablished_active_record_base, fe
       backup_connection.release_snapshot!
     end
   end
+
+  describe '#disable_timeouts!' do
+    it 'disables transaction time out' do
+      expect_next_instance_of(Gitlab::Database::TransactionTimeoutSettings) do |transaction_settings|
+        expect(transaction_settings).to receive(:disable_timeouts).and_call_original
+      end
+
+      backup_connection.disable_timeouts!
+    end
+  end
+
+  describe '#restore_timeouts!' do
+    it 'restores transaction time out' do
+      expect_next_instance_of(Gitlab::Database::TransactionTimeoutSettings) do |transaction_settings|
+        expect(transaction_settings).to receive(:restore_timeouts).and_call_original
+      end
+
+      backup_connection.restore_timeouts!
+    end
+  end
 end

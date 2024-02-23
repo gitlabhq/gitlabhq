@@ -57,13 +57,22 @@ module Backup
         raise DatabaseBackupError.new(active_record_config, dump_file_name) unless success
 
         report_success(success)
+
         progress.flush
       end
     ensure
-      ::Gitlab::Database::EachDatabase.each_connection(
-        only: base_models_for_backup.keys, include_shared: false
-      ) do |connection, _|
-        Gitlab::Database::TransactionTimeoutSettings.new(connection).restore_timeouts
+      if multiple_databases?
+        ::Gitlab::Database::EachDatabase.each_connection(
+          only: base_models_for_backup.keys, include_shared: false
+        ) do |_, database_connection_name|
+          backup_connection = Backup::DatabaseConnection.new(database_connection_name)
+          backup_connection.restore_timeouts!
+        rescue ActiveRecord::ConnectionNotEstablished
+          raise Backup::DatabaseBackupError.new(
+            backup_connection.database_configuration.activerecord_variables,
+            file_name(destination_dir, database_connection_name)
+          )
+        end
       end
     end
 

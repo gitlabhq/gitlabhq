@@ -48,14 +48,27 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
 
       it 'uses snapshots' do
         Dir.mktmpdir do |dir|
-          expect_next_instances_of(Backup::DatabaseConnection, 2) do |backup_connection|
-            expect(backup_connection).to receive(:export_snapshot!).and_call_original
+          # We create two Backup::DatabaseConnection objects for
+          # each database. The first one inside the each_database
+          # block and another in the ensure block.
+          number_of_databases = base_models_for_backup.count
+          number_of_database_connections = number_of_databases * 2
+          number_of_stubbed_database_connections = 0
 
-            expect_next_instance_of(::Gitlab::Backup::Cli::Utils::PgDump) do |pgdump|
-              expect(pgdump.snapshot_id).to eq(backup_connection.snapshot_id)
+          expect_next_instances_of(Backup::DatabaseConnection, number_of_database_connections) do |backup_connection|
+            if number_of_stubbed_database_connections >= number_of_databases
+              expect(backup_connection).to receive(:restore_timeouts!).and_call_original
+            else
+              expect(backup_connection).to receive(:export_snapshot!).and_call_original
+
+              expect_next_instance_of(::Gitlab::Backup::Cli::Utils::PgDump) do |pgdump|
+                expect(pgdump.snapshot_id).to eq(backup_connection.snapshot_id)
+              end
+
+              expect(backup_connection).to receive(:release_snapshot!).and_call_original
             end
 
-            expect(backup_connection).to receive(:release_snapshot!).and_call_original
+            number_of_stubbed_database_connections += 1
           end
 
           subject.dump(dir, backup_id)
@@ -63,7 +76,7 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
       end
     end
 
-    context 'when using a single databases' do
+    context 'when using a single database' do
       before do
         skip_if_database_exists(:ci)
       end
@@ -90,12 +103,44 @@ RSpec.describe Backup::Database, :reestablished_active_record_base, feature_cate
         allow(FileUtils).to receive(:mkdir_p).and_raise(StandardError)
       end
 
-      it 'restores timeouts' do
-        Dir.mktmpdir do |dir|
-          number_of_databases = base_models_for_backup.count
-          expect(Gitlab::Database::TransactionTimeoutSettings)
-            .to receive(:new).exactly(number_of_databases).times.and_return(timeout_service)
-          expect(timeout_service).to receive(:restore_timeouts).exactly(number_of_databases).times
+      context 'when using multiple databases' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'restores timeouts' do
+          Dir.mktmpdir do |dir|
+            number_of_databases = base_models_for_backup.count
+
+            expect(Backup::DatabaseConnection)
+              .to receive(:new)
+              .exactly(number_of_databases)
+              .times
+              .and_call_original
+
+            expect(Gitlab::Database::TransactionTimeoutSettings)
+              .to receive(:new)
+              .exactly(number_of_databases)
+              .times
+              .and_return(timeout_service)
+
+            expect(timeout_service)
+              .to receive(:restore_timeouts)
+              .exactly(number_of_databases)
+              .times
+
+            expect { subject.dump(dir, backup_id) }.to raise_error StandardError
+          end
+        end
+      end
+
+      context 'when using a single database' do
+        before do
+          skip_if_database_exists(:ci)
+        end
+
+        it 'does not restore timeouts' do
+          expect(Gitlab::Database::TransactionTimeoutSettings).not_to receive(:new)
 
           expect { subject.dump(dir, backup_id) }.to raise_error StandardError
         end
