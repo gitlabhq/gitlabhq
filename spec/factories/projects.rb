@@ -608,16 +608,4 @@ FactoryBot.define do
     path { 'gitlab-profile' }
     files { { 'README.md' => 'Hello World' } }
   end
-
-  trait :with_duo_features_enabled do
-    after(:create) do |project|
-      project.project_setting.update!(duo_features_enabled: true)
-    end
-  end
-
-  trait :with_duo_features_disabled do
-    after(:create) do |project|
-      project.project_setting.update!(duo_features_enabled: false)
-    end
-  end
 end

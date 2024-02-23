@@ -7,3 +7,5 @@ description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/1dde609ca6b130aa0a3d39e929edee7e770e62fc
 milestone: '10.7'
 gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

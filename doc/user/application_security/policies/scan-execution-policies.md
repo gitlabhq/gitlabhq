@@ -346,7 +346,7 @@ Prerequisites:
   1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Settings > General**.
   1. Expand **Permissions and group features**.
-  1. Select the **Run customized CI YAML as security policy actions** checkbox.
+  1. Select the **Security policy pipeline execution action** checkbox.
   1. Optional. Select **Enforce for all subgroups**.
 
      If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.

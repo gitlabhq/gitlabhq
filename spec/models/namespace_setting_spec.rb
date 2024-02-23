@@ -21,8 +21,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   end
 
   describe "validations" do
-    it { is_expected.to validate_inclusion_of(:code_suggestions).in_array([true, false]) }
-
     describe "#default_branch_name_content" do
       let_it_be(:group) { create(:group) }
 
@@ -57,36 +55,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         end
 
         it_behaves_like "doesn't return an error"
-      end
-    end
-
-    describe '#code_suggestions' do
-      context 'when group namespaces' do
-        let(:settings) { group.namespace_settings }
-        let(:group) { create(:group) }
-
-        context 'when group is created' do
-          it 'sets default code_suggestions value to true' do
-            expect(settings.code_suggestions).to eq true
-          end
-        end
-
-        context 'when setting is updated' do
-          it 'persists the code suggestions setting' do
-            settings.update!(code_suggestions: false)
-
-            expect(settings.code_suggestions).to eq false
-          end
-        end
-      end
-
-      context 'when user namespace' do
-        let(:user) { create(:user) }
-        let(:settings) { user.namespace.namespace_settings }
-
-        it 'defaults to false' do
-          expect(settings.code_suggestions).to eq false
-        end
       end
     end
 

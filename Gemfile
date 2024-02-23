@@ -240,7 +240,7 @@ gem 'diffy', '~> 3.4' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'diff_match_patch', '~> 0.1.0', path: 'vendor/gems/diff_match_patch', feature_category: :team_planning
 
 # Application server
-gem 'rack', '~> 2.2.8' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'rack', '~> 2.2.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
 # https://github.com/zombocom/rack-timeout/blob/master/README.md#rails-apps-manually
 gem 'rack-timeout', '~> 0.6.3', require: 'rack/timeout/base' # rubocop:todo Gemfile/MissingFeatureCategory
 

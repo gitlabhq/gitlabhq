@@ -116,6 +116,11 @@ export default {
       };
     },
   },
+  methods: {
+    closeDropdown() {
+      this.$refs.dropdown.close();
+    },
+  },
   vsCodeBaseUrl: 'vscode://vscode.git/clone?url=',
   jetBrainsBaseUrl:
     'jetbrains://idea/checkout/git?idea.required.plugins.id=Git4Idea&checkout.repo=',
@@ -131,6 +136,7 @@ export default {
 </script>
 <template>
   <gl-disclosure-dropdown
+    ref="dropdown"
     :toggle-text="$options.i18n.defaultLabel"
     category="primary"
     variant="confirm"
@@ -138,6 +144,7 @@ export default {
     class="code-dropdown gl-text-left"
     fluid-width
     data-testid="code-dropdown"
+    :auto-close="false"
   >
     <gl-disclosure-dropdown-group v-if="sshUrl">
       <clone-dropdown-item
@@ -169,12 +176,18 @@ export default {
         test-id="copy-http-url-button"
       />
     </gl-disclosure-dropdown-group>
-    <gl-disclosure-dropdown-group :group="ideGroup" bordered />
-    <gl-disclosure-dropdown-group v-if="directoryDownloadLinks" :group="sourceCodeGroup" bordered />
+    <gl-disclosure-dropdown-group :group="ideGroup" bordered @action="closeDropdown" />
+    <gl-disclosure-dropdown-group
+      v-if="directoryDownloadLinks"
+      :group="sourceCodeGroup"
+      bordered
+      @action="closeDropdown"
+    />
     <gl-disclosure-dropdown-group
       v-if="currentPath && directoryDownloadLinks"
       :group="directoryDownloadLinksGroup"
       bordered
+      @action="closeDropdown"
     />
   </gl-disclosure-dropdown>
 </template>

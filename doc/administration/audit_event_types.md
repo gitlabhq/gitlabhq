@@ -105,7 +105,6 @@ Audit event types with the `-` scope are limited to either project, group, or in
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`code_suggestions_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117174) | Code Suggestion UI group setting change| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/405295) | Group |
 | [`project_suggestion_commit_message_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83922) | Create this audit event whenever a project has its suggested commit message updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.10](https://gitlab.com/gitlab-org/gitlab/-/issues/301124) | Project |
 
 ### Compliance management

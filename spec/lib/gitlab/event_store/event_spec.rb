@@ -7,7 +7,7 @@ require 'oj'
 RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
   let(:event_class) { stub_const('TestEvent', Class.new(described_class)) }
   let(:event) { event_class.new(data: data) }
-  let(:data) { { project_id: 123, project_path: 'org/the-project' } }
+  let(:data) { { 'project_id' => 123, 'project_path' => 'org/the-project' } }
 
   context 'when schema is not defined' do
     it 'raises an error on initialization' do
@@ -31,6 +31,11 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
       end
     end
 
+    it 'returns data with indifferent access' do
+      expect(event.data[:project_id]).to eq(123)
+      expect(event.data['project_id']).to eq(123)
+    end
+
     describe 'schema validation' do
       context 'when data matches the schema' do
         it 'initializes the event correctly' do
@@ -39,7 +44,7 @@ RSpec.describe Gitlab::EventStore::Event, feature_category: :shared do
       end
 
       context 'when required properties are present as well as unknown properties' do
-        let(:data) { { project_id: 123, unknown_key: 'unknown_value' } }
+        let(:data) { { 'project_id' => 123, 'unknown_key' => 'unknown_value' } }
 
         it 'initializes the event correctly' do
           expect(event.data).to eq(data)

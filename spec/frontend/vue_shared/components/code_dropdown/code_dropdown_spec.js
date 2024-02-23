@@ -1,5 +1,11 @@
-import { GlFormInputGroup, GlDisclosureDropdownGroup, GlDisclosureDropdownItem } from '@gitlab/ui';
+import {
+  GlFormInputGroup,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { stubComponent } from 'helpers/stub_component';
 import CodeDropdown from '~/vue_shared/components/code_dropdown/code_dropdown.vue';
 import CloneDropdownItem from '~/vue_shared/components/clone_dropdown/clone_dropdown_item.vue';
 
@@ -31,12 +37,19 @@ describe('Clone Dropdown Button', () => {
   const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findDropdownItemAtIndex = (index) => findDropdownItems().at(index);
 
+  const closeDropdown = jest.fn();
+
   const createComponent = (propsData = defaultPropsData) => {
     wrapper = shallowMount(CodeDropdown, {
       propsData,
       stubs: {
         GlFormInputGroup,
         GlDisclosureDropdownGroup,
+        GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
+          methods: {
+            close: closeDropdown,
+          },
+        }),
       },
     });
   };
@@ -81,35 +94,73 @@ describe('Clone Dropdown Button', () => {
 
         expect(findCloneDropdownItemAtIndex(0).attributes('label')).toContain('HTTPS');
       });
+
+      it.each`
+        name      | index | link
+        ${'SSH'}  | ${0}  | ${sshUrl}
+        ${'HTTP'} | ${1}  | ${httpUrl}
+      `('does not close dropdown on $name item click', ({ index }) => {
+        createComponent();
+
+        findCloneDropdownItemAtIndex(index).vm.$emit('action');
+
+        expect(closeDropdown).not.toHaveBeenCalled();
+      });
     });
   });
 
   describe('ideGroup', () => {
-    it.each`
+    describe.each`
       name                            | index | href
       ${'Visual Studio Code (SSH)'}   | ${0}  | ${encodedSshUrl}
       ${'Visual Studio Code (HTTPS)'} | ${1}  | ${encodedHttpUrl}
       ${'IntelliJ IDEA (SSH)'}        | ${2}  | ${encodedSshUrl}
       ${'IntelliJ IDEA (HTTPS)'}      | ${3}  | ${encodedHttpUrl}
       ${'Xcode'}                      | ${4}  | ${xcodeUrl}
-    `('renders correct values for $name', ({ name, index, href }) => {
-      createComponent();
+    `('$name', ({ name, index, href }) => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-      const item = findDropdownItemAtIndex(index);
-      expect(item.props('item').text).toBe(name);
-      expect(item.props('item').href).toContain(href);
+      it('renders correct values', () => {
+        const item = findDropdownItemAtIndex(index);
+
+        expect(item.props('item').text).toBe(name);
+        expect(item.props('item').href).toContain(href);
+      });
+
+      it('closes the dropdown on click', () => {
+        findDropdownItemAtIndex(index).vm.$emit('action');
+
+        expect(closeDropdown).toHaveBeenCalled();
+      });
     });
   });
 
   describe('sourceCodeGroup', () => {
-    it.each(
-      directoryDownloadLinks.map((directoryDownloadLink, i) => [i + 5, directoryDownloadLink]),
-    )('renders correct values for $name', (index, directoryDownloadLink) => {
-      createComponent();
+    describe.each(
+      directoryDownloadLinks.map(({ text, path }, i) => ({
+        index: i + 5,
+        text,
+        path,
+      })),
+    )('$text', ({ index, text, path }) => {
+      beforeEach(() => {
+        createComponent();
+      });
 
-      const item = findDropdownItemAtIndex(index);
-      expect(item.props('item').text).toBe(directoryDownloadLink.text);
-      expect(item.props('item').href).toBe(directoryDownloadLink.path);
+      it('renders correct values', () => {
+        const item = findDropdownItemAtIndex(index);
+
+        expect(item.props('item').text).toBe(text);
+        expect(item.props('item').href).toBe(path);
+      });
+
+      it('closes the dropdown on click', () => {
+        findDropdownItemAtIndex(index).vm.$emit('action');
+
+        expect(closeDropdown).toHaveBeenCalled();
+      });
     });
   });
 
@@ -120,16 +171,31 @@ describe('Clone Dropdown Button', () => {
       expect(findDropdownItems().length).toEqual(13);
     });
 
-    it.each(
-      directoryDownloadLinks.map((directoryDownloadLink, i) => [i + 9, directoryDownloadLink]),
-    )('renders correct values for $name directory link', (index, directoryDownloadLink) => {
+    describe.each(
+      directoryDownloadLinks.map(({ text, path }, i) => ({
+        index: i + 9,
+        text,
+        path,
+      })),
+    )('$text', ({ index, text, path }) => {
       const subPath = '/subdir';
 
-      createComponent({ ...defaultPropsData, currentPath: subPath });
+      beforeEach(() => {
+        createComponent({ ...defaultPropsData, currentPath: subPath });
+      });
 
-      const item = findDropdownItemAtIndex(index);
-      expect(item.props('item').text).toBe(directoryDownloadLink.text);
-      expect(item.props('item').href).toBe(`${directoryDownloadLink.path}?path=${subPath}`);
+      it('renders correct values for directory link', () => {
+        const item = findDropdownItemAtIndex(index);
+
+        expect(item.props('item').text).toBe(text);
+        expect(item.props('item').href).toBe(`${path}?path=${subPath}`);
+      });
+
+      it('closes the dropdown on click', () => {
+        findDropdownItemAtIndex(index).vm.$emit('action');
+
+        expect(closeDropdown).toHaveBeenCalled();
+      });
     });
   });
 });

@@ -938,7 +938,9 @@ database encryption. Proceed with caution.
    gitlab_pages['access_control'] = true
    ```
 
-1. Configure [the object storage and migrate pages data to it](#object-storage-settings).
+1. Set up object storage by either:
+   - [Configuring the object storage and migrating GitLab Pages data to it](#object-storage-settings), or
+   - [Configuring network storage](#enable-pages-network-storage-in-multi-node-environments).
 
 1. [Reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the
    changes to take effect. The `gitlab-secrets.json` file is now updated with the
@@ -1186,6 +1188,27 @@ If you use [object storage](#object-storage-settings), you can disable local sto
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+## Enable Pages network storage in multi-node environments
+
+Object storage is the preferred configuration for most environments. However,
+if your requirements call for network storage and you want to configure Pages
+to run on a [separate server](#running-gitlab-pages-on-a-separate-server), you should:
+
+1. Ensure the shared storage volume you intend to use is already mounted and
+   available on both the primary server and your intended Pages server.
+1. Update the `/etc/gitlab/gitlab.rb` of each node to include:
+
+   ```ruby
+   gitlab_pages['enable_disk'] = true
+   gitlab_rails['pages_path'] = "/var/opt/gitlab/gitlab-rails/shared/pages" # Path to your network storage
+   ```
+
+1. Switch over Pages to your separate server.
+
+After you successfully configure Pages on your separate server, only that server
+needs access to the shared storage volume. Consider keeping the shared storage volume
+mounted on your primary server, in case you must migrate back to a single-node environment.
 
 ## ZIP storage
 

@@ -335,7 +335,7 @@ export default {
     />
     <work-item-time-tracking
       v-if="workItemTimeTracking && glFeatures.workItemsMvc2"
-      class="gl-mb-5"
+      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :time-estimate="workItemTimeTracking.timeEstimate"
       :total-time-spent="workItemTimeTracking.totalTimeSpent"
     />

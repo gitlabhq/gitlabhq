@@ -1640,6 +1640,24 @@ If you applied customizations to the removed analyzers, or if you currently disa
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
+### Scan execution policies enforcing scans with an `_EXCLUDED_ANALYZERS` variable will override project variables
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424513).
+</div>
+
+After delivering and verifying [Enforce SEP variables with the highest precedence](https://gitlab.com/gitlab-org/gitlab/-/issues/424028), we have discovered unintended behavior, allowing users to set `_EXCLUDED_PATHS` in pipeline configuration and preventing them from setting `_EXCLUDED_ANALYZERS` in both policy and pipeline configuration.
+
+To ensure proper enforcement of scan execution variables, when an `_EXCLUDED_ANALYZERS` or `_EXCLUDED_PATHS` variables are specified for a scan execution policy using the GitLab scan action, the variable will now override any project variables defined for excluded analyzers.
+
+Users may enable the feature flag to enforce this behavior before 17.0. In 17.0, projects leveraging the `_EXCLUDED_ANALYZERS`/`_EXCLUDED_PATHS` variable where a scan execution policy with the variable is defined will be overridden by default.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="17.0">
+
 ### Secure analyzers major version update
 
 <div class="deprecation-notes">

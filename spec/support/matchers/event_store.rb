@@ -31,7 +31,7 @@ RSpec::Matchers.define :publish_event do |expected_event_class|
   end
 
   chain :with do |expected_data|
-    @expected_data = expected_data
+    @expected_data = expected_data.with_indifferent_access
   end
 
   failure_message do

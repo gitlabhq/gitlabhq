@@ -3258,11 +3258,6 @@ class Project < ApplicationRecord
     false
   end
 
-  # Overridden in EE
-  def code_suggestions_enabled?
-    false
-  end
-
   private
 
   # overridden in EE
