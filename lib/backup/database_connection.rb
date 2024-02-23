@@ -23,7 +23,7 @@ module Backup
     #
     # @return [String] snapshot identifier
     def export_snapshot!
-      Gitlab::Database::TransactionTimeoutSettings.new(connection).disable_timeouts
+      disable_timeouts!
 
       connection.begin_transaction(isolation: :repeatable_read)
       @snapshot_id = connection.select_value("SELECT pg_export_snapshot()")
@@ -35,6 +35,14 @@ module Backup
 
       connection.rollback_transaction
       @snapshot_id = nil
+    end
+
+    def disable_timeouts!
+      transaction_timeout_settings.disable_timeouts
+    end
+
+    def restore_timeouts!
+      transaction_timeout_settings.restore_timeouts
     end
 
     private
@@ -54,6 +62,10 @@ module Backup
       return "#{self.class.name}::#{klass_name}".constantize if self.class.const_defined?(klass_name.to_sym, false)
 
       self.class.const_set(klass_name, Class.new(ApplicationRecord))
+    end
+
+    def transaction_timeout_settings
+      Gitlab::Database::TransactionTimeoutSettings.new(connection)
     end
   end
 end
