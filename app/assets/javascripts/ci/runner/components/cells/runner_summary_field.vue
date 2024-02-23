@@ -27,7 +27,7 @@ export default {
   <div v-gl-tooltip="tooltip" class="gl-display-inline-block gl-text-secondary gl-mb-3 gl-mr-4">
     <gl-icon v-if="icon" :name="icon" :size="12" />
     <!-- display tooltip as a label for screen readers and make it unavailable for copying -->
-    <span class="gl-sr-only gl-user-select-none">{{ tooltip }}</span>
+    <span class="gl-sr-only gl-select-none">{{ tooltip }}</span>
     <slot></slot>
   </div>
 </template>

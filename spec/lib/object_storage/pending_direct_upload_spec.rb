@@ -34,6 +34,25 @@ RSpec.describe ObjectStorage::PendingDirectUpload, :direct_uploads, :clean_gitla
     it { is_expected.to eq(3) }
   end
 
+  describe '.with_pending_only' do
+    let(:path_1) { 'some/path/123' }
+    let(:path_2) { 'some/path/456' }
+    let(:path_3) { 'some/path/789' }
+    let(:paths) { [path_1, path_2, path_3] }
+
+    subject(:result) { described_class.with_pending_only(location_identifier, paths) }
+
+    before do
+      described_class.prepare(location_identifier, path_1)
+      described_class.prepare(:uploads, path_2)
+      described_class.prepare(location_identifier, path_3)
+    end
+
+    it 'selects and returns the paths with a matching redis entry under the location identifier' do
+      expect(result).to eq([path_1, path_3])
+    end
+  end
+
   describe '.exists?' do
     let(:path) { 'some/path/123' }
 

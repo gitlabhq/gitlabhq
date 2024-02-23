@@ -110,7 +110,7 @@ export default {
           <gl-table-lite
             :items="customEmojis"
             :fields="$options.fields"
-            table-class="gl-table-layout-fixed"
+            table-class="gl-table-fixed"
           >
             <template #table-colgroup="scope">
               <col

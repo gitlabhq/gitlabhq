@@ -36,7 +36,7 @@
               %th= _('Trusted')
               %th= _('Confidential')
               %th= _('Actions')
-          %tbody.oauth-applications
+          %tbody{ data: { testid: "oauth-applications" } }
             - @applications.each do |application|
               %tr{ id: "application_#{application.id}" }
                 %td{ data: { label: _('Name') } }= link_to application.name, admin_application_path(application)

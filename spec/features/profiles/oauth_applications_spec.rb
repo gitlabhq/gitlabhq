@@ -24,7 +24,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       create(:oauth_application, owner: user)
       visit oauth_applications_path
 
-      page.within('.oauth-applications') do
+      within_testid('oauth-applications') do
         page.within('.gl-new-card-count') do
           expect(page).to have_content('1')
         end
@@ -34,7 +34,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       accept_gl_confirm(button_text: 'Destroy')
 
       expect(page).to have_content('The application was deleted successfully')
-      page.within('.oauth-applications .gl-new-card-count') do
+      page.within('[data-testid="oauth-applications"] .gl-new-card-count') do
         expect(page).to have_content('0')
       end
       page.within('.oauth-authorized-applications .gl-new-card-count') do

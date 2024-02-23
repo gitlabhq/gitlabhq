@@ -11,7 +11,7 @@ module.exports = {
     './node_modules/@gitlab/ui/dist/**/*.{vue,js}',
   ],
   presets: [tailwindDefaults],
-  corePlugins: ['isolation'],
+  corePlugins: ['appearance', 'content', 'isolation', 'mixBlendMode', 'tableLayout', 'userSelect'],
   blocklist: [
     // Prevents an irrelevant util from being generated.
     // In the long run, we'll look into disabling arbitrary values altogether, which should prevent

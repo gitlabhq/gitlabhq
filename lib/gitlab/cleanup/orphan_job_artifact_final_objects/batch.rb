@@ -18,15 +18,19 @@ module Gitlab
             objects[path_without_bucket_prefix(fog_file.key)] = fog_file
           end
 
+          return [] unless objects.any?
+
           # First we exclude all objects that have matching existing job artifact record in the DB
           paths_with_job_artifact_records(objects.keys).each do |non_orphan_path|
             objects.delete(non_orphan_path)
           end
 
+          return [] unless objects.any?
+
           # Next, if there were no matching job artifact record for the remaining paths, we want to
           # check if there is a pending direct upload for the given path, if found, they are not considered orphans.
-          objects.delete_if do |path, _|
-            pending_direct_upload?(path)
+          paths_with_pending_direct_uploads(objects.keys).each do |non_orphan_path|
+            objects.delete(non_orphan_path)
           end
 
           # Just to keep the lexicographic order of objects
@@ -62,8 +66,8 @@ module Gitlab
           ::Ci::JobArtifact.where(file_final_path: paths).pluck(:file_final_path) # rubocop:disable CodeReuse/ActiveRecord -- intentionally used pluck directly to keep it simple.
         end
 
-        def pending_direct_upload?(path)
-          ::ObjectStorage::PendingDirectUpload.exists?(:artifacts, path) # rubocop:disable CodeReuse/ActiveRecord -- `exists?` here is not the same as the AR method
+        def paths_with_pending_direct_uploads(paths)
+          ::ObjectStorage::PendingDirectUpload.with_pending_only(:artifacts, paths)
         end
       end
     end

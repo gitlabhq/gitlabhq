@@ -1,15 +1,3 @@
-.account-well {
-  padding: 10px;
-  background-color: $gray-light;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-
-  ul {
-    padding-left: 20px;
-    margin-bottom: 0;
-  }
-}
-
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
@@ -46,20 +34,6 @@
   margin-left: -3px;
   line-height: 22px;
   background-color: $gray-light;
-}
-
-.oauth-applications {
-  form {
-    display: inline-block;
-  }
-
-  .last-heading {
-    width: 105px;
-  }
-}
-
-.codes {
-  padding-top: 14px;
 }
 
 .oauth-application-show {

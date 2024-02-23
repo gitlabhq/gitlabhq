@@ -16,10 +16,10 @@ The group relations export API partially exports a group's structure as separate
 top-level
 relation (for example, milestones, boards, and labels).
 
-The group relations export API is primarily used in
-[group migration by direct transfer](../user/group/import/index.md)
-and
-can't be used with the [group import and export API](group_import_export.md).
+The group relations export API is primarily used in [group migration by direct transfer](../user/group/import/index.md)
+and your GitLab instance must meet [certain prerequisites](../user/group/import/index.md#prerequisites).
+
+This API can't be used with the [group import and export API](group_import_export.md).
 
 ## Schedule new export
 

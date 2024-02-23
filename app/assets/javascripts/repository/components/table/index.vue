@@ -121,7 +121,7 @@ export default {
       <table
         :aria-label="tableCaption"
         class="table tree-table"
-        :class="{ 'gl-table-layout-fixed': !showParentRow }"
+        :class="{ 'gl-table-fixed': !showParentRow }"
         aria-live="polite"
         data-testid="file-tree-table"
       >
