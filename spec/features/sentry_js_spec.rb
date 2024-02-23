@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe 'Sentry', feature_category: :error_tracking do
-  context 'when enable_new_sentry_clientside_integration is disabled' do
+  context 'when enable_new_sentry_integration is disabled' do
     before do
-      stub_feature_flags(enable_new_sentry_clientside_integration: false)
+      stub_feature_flags(enable_new_sentry_integration: false)
     end
 
     it 'does not load sentry if sentry is disabled' do
@@ -26,9 +26,9 @@ RSpec.describe 'Sentry', feature_category: :error_tracking do
     end
   end
 
-  context 'when enable_new_sentry_clientside_integration is enabled' do
+  context 'when enable_new_sentry_integration is enabled' do
     before do
-      stub_feature_flags(enable_new_sentry_clientside_integration: true)
+      stub_feature_flags(enable_new_sentry_integration: true)
     end
 
     it 'does not load sentry if sentry settings are disabled' do

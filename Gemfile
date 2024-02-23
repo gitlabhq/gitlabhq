@@ -296,7 +296,7 @@ gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'redis-actionpack', '~> 5.4.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Discord integration
-gem 'discordrb-webhooks', '~> 3.4', require: false, feature_category: :integrations
+gem 'discordrb-webhooks', '~> 3.5', require: false, feature_category: :integrations
 
 # Jira integration
 gem 'jira-ruby', '~> 2.3.0', feature_category: :integrations

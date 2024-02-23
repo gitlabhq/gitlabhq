@@ -25,10 +25,9 @@ module Gitlab
         gon.sentry_environment = Gitlab.config.sentry.environment
       end
 
-      # Support for Sentry setup via configuration files will be removed in 16.0
+      # Support for Sentry setup via configuration files will be removed in 17.0
       # in favor of Gitlab::CurrentSettings.
-      if Feature.enabled?(:enable_new_sentry_clientside_integration,
-                          current_user) && Gitlab::CurrentSettings.sentry_enabled
+      if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
         gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
         gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
         gon.sentry_clientside_traces_sample_rate = Gitlab::CurrentSettings.sentry_clientside_traces_sample_rate

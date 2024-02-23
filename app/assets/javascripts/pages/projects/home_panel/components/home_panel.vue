@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-gap-3">
+  <div class="gl-display-contents">
     <template v-if="isLoggedIn && canReadProject">
       <notifications-dropdown />
     </template>

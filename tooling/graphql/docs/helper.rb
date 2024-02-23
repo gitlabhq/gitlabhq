@@ -41,7 +41,7 @@ module Tooling
 
       CONNECTION_NOTE = <<~MD
         This field returns a [connection](#connections). It accepts the
-        four standard [pagination arguments](#connection-pagination-arguments):
+        four standard [pagination arguments](#pagination-arguments):
         `before: String`, `after: String`, `first: Int`, and `last: Int`.
       MD
 

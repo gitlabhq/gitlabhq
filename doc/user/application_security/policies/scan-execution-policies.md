@@ -27,8 +27,7 @@ implicitly so that the policies can be enforced. This ensures policies enabling 
 secret detection, static analysis, or other scanners that do not require a build in the
 project, are still able to execute and be enforced.
 
-In the event of a job name collision, GitLab appends a hyphen and a number to the job name. GitLab
-increments the number until the name no longer conflicts with existing job names. If you create a
+GitLab appends a hyphen and a number to the job name. The number is unique per policy action to avoid name conflicts.
 policy at the group level, it applies to every child project or subgroup. You cannot edit a
 group-level policy from a child project or subgroup.
 

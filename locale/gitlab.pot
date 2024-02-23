@@ -3544,7 +3544,7 @@ msgstr ""
 msgid "AdminSettings|Git abuse rate limit"
 msgstr ""
 
-msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, enable the %{code_start}enable_new_sentry_integration%{code_end} and %{code_start}enable_new_sentry_clientside_integration%{code_end} feature flags and restart GitLab."
+msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, enable the %{code_start}enable_new_sentry_integration%{code_end} feature flag and restart GitLab."
 msgstr ""
 
 msgid "AdminSettings|GitLab uses the %{bold_start}Rails%{bold_end} and %{bold_start}Browser JavaScript%{bold_end} Sentry SDKs to send events to Sentry. For changes to Rails integration settings to take effect, restart GitLab."
@@ -31809,6 +31809,9 @@ msgstr ""
 msgid "Modal updated"
 msgstr ""
 
+msgid "ModalButton|Add projects"
+msgstr ""
+
 msgid "Modal|Close"
 msgstr ""
 
@@ -47369,6 +47372,9 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
+msgstr ""
+
+msgid "Some members were queued for approval"
 msgstr ""
 
 msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."

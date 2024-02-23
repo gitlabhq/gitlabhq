@@ -65,7 +65,7 @@ NOTE:
 Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -102,7 +102,7 @@ NOTE:
 Returns [`AiMessageConnection!`](#aimessageconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -120,7 +120,7 @@ Definitions for all audit events available on the instance.
 Returns [`AuditEventDefinitionConnection!`](#auditeventdefinitionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.auditEventsInstanceAmazonS3Configurations`
@@ -130,7 +130,7 @@ Instance-level Amazon S3 configurations for audit events.
 Returns [`InstanceAmazonS3ConfigurationTypeConnection`](#instanceamazons3configurationtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.boardList`
@@ -180,7 +180,7 @@ NOTE:
 Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -215,7 +215,7 @@ Compute usage data for a namespace.
 Returns [`CiMinutesNamespaceMonthlyUsageConnection`](#ciminutesnamespacemonthlyusageconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -262,7 +262,7 @@ List of the instance's CI/CD variables.
 Returns [`CiInstanceVariableConnection`](#ciinstancevariableconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -308,7 +308,7 @@ Get configured DevOps adoption namespaces. **Status:** Beta. This endpoint is su
 Returns [`DevopsAdoptionEnabledNamespaceConnection`](#devopsadoptionenablednamespaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -405,7 +405,7 @@ Find groups.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -422,7 +422,7 @@ Instance level external audit event destinations.
 Returns [`InstanceExternalAuditEventDestinationConnection`](#instanceexternalauditeventdestinationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.instanceGoogleCloudLoggingConfigurations`
@@ -432,7 +432,7 @@ Instance level google cloud logging configurations.
 Returns [`InstanceGoogleCloudLoggingConfigurationTypeConnection`](#instancegooglecloudloggingconfigurationtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.instanceSecurityDashboard`
@@ -464,7 +464,7 @@ NOTE:
 Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -529,7 +529,7 @@ All jobs on this GitLab instance. Returns an empty result for users without admi
 Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -547,7 +547,7 @@ Fields related to entries in the license history.
 Returns [`LicenseHistoryEntryConnection`](#licensehistoryentryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.memberRole`
@@ -579,7 +579,7 @@ NOTE:
 Returns [`CustomizablePermissionConnection`](#customizablepermissionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.memberRoles`
@@ -593,7 +593,7 @@ NOTE:
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -705,7 +705,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.package`
@@ -739,7 +739,7 @@ Find projects visible to the current user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -785,7 +785,7 @@ No longer used, use gitlab-runner documentation to learn about supported platfor
 Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.runnerSetup`
@@ -852,7 +852,7 @@ Get all runners in the GitLab instance (project and shared). Access is restricte
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -882,7 +882,7 @@ NOTE:
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -899,7 +899,7 @@ Find Snippets visible to the current user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -920,7 +920,7 @@ Fields related to entries in future subscriptions.
 Returns [`SubscriptionFutureEntryConnection`](#subscriptionfutureentryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ### `Query.syntheticNote`
@@ -947,7 +947,7 @@ Find timelogs visible to the current user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -982,7 +982,7 @@ Find project topics.
 Returns [`TopicConnection`](#topicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -998,7 +998,7 @@ Get statistics on the instance.
 Returns [`UsageTrendsMeasurementConnection`](#usagetrendsmeasurementconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -1029,7 +1029,7 @@ Find users.
 Returns [`UserCoreConnection`](#usercoreconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -1050,7 +1050,7 @@ Vulnerabilities reported on projects on the current user's instance security das
 Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -1081,7 +1081,7 @@ The historical number of vulnerabilities per day for the projects on the current
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -1130,7 +1130,7 @@ NOTE:
 Returns [`WorkItemConnection`](#workitemconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -1159,7 +1159,7 @@ Find workspaces across the entire instance. This field is only available to inst
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 #### Arguments
@@ -8960,7 +8960,7 @@ Some types in our schema are `Connection` types - they represent a paginated
 collection of edges between two nodes in the graph. These follow the
 [Relay cursor connections specification](https://relay.dev/graphql/connections.htm).
 
-### Pagination arguments {#connection-pagination-arguments}
+### Pagination arguments
 
 All connection fields support the following pagination arguments:
 
@@ -14332,7 +14332,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14482,7 +14482,7 @@ NOTE:
 Returns [`UserAddOnAssignmentConnection`](#useraddonassignmentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14498,7 +14498,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14534,7 +14534,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14570,7 +14570,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14591,7 +14591,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14607,7 +14607,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14655,7 +14655,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14673,7 +14673,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14689,7 +14689,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14712,7 +14712,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14733,7 +14733,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14871,7 +14871,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -14887,7 +14887,7 @@ To-do items of the current user for the alert.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15230,7 +15230,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15266,7 +15266,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15302,7 +15302,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15335,7 +15335,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15351,7 +15351,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15399,7 +15399,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15417,7 +15417,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15433,7 +15433,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15456,7 +15456,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15477,7 +15477,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15601,7 +15601,7 @@ Epics associated with board issues.
 Returns [`BoardEpicConnection`](#boardepicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15617,7 +15617,7 @@ Lists of the board.
 Returns [`BoardListConnection`](#boardlistconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15700,7 +15700,7 @@ Ancestors (parents) of the epic.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15737,7 +15737,7 @@ Children (sub-epics) of the epic.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15774,7 +15774,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15790,7 +15790,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15854,7 +15854,7 @@ Board issues.
 Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -15967,7 +15967,7 @@ NOTE:
 Returns [`CiCatalogResourceVersionConnection`](#cicatalogresourceversionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16428,7 +16428,7 @@ Jobs assigned to the runner. This field can only be resolved for one runner in a
 Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16448,7 +16448,7 @@ NOTE:
 Returns [`CiRunnerManagerConnection`](#cirunnermanagerconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16465,7 +16465,7 @@ Find projects the runner is associated with. For project runners only.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16556,7 +16556,7 @@ Machine types available for provisioning a runner.
 Returns [`CiRunnerCloudProvisioningMachineTypeConnection`](#cirunnercloudprovisioningmachinetypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16572,7 +16572,7 @@ Zones available for provisioning a runner.
 Returns [`CiRunnerCloudProvisioningZoneConnection`](#cirunnercloudprovisioningzoneconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16712,7 +16712,7 @@ Workspaces associated with the agent.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -16917,7 +16917,7 @@ Pipelines of the commit ordered latest first.
 Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17255,7 +17255,7 @@ Tags of the container repository.
 Returns [`ContainerRepositoryTagConnection`](#containerrepositorytagconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17449,7 +17449,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17485,7 +17485,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17521,7 +17521,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17542,7 +17542,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17558,7 +17558,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17606,7 +17606,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17624,7 +17624,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17640,7 +17640,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17663,7 +17663,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -17684,7 +17684,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18273,7 +18273,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18289,7 +18289,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18305,7 +18305,7 @@ All versions related to this design ordered newest first.
 Returns [`DesignVersionConnection!`](#designversionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18382,7 +18382,7 @@ All designs for the design collection.
 Returns [`DesignConnection!`](#designconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18413,7 +18413,7 @@ All versions related to all designs, ordered newest first.
 Returns [`DesignVersionConnection!`](#designversionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18512,7 +18512,7 @@ All designs that are visible at this version, as of this version.
 Returns [`DesignAtVersionConnection!`](#designatversionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18578,7 +18578,7 @@ Data snapshots of the namespace.
 Returns [`DevopsAdoptionSnapshotConnection`](#devopsadoptionsnapshotconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18809,7 +18809,7 @@ Deployments of the environment. This field can only be resolved for one environm
 Returns [`DeploymentConnection`](#deploymentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18913,7 +18913,7 @@ Ancestors (parents) of the epic.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18950,7 +18950,7 @@ Children (sub-epics) of the epic.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -18987,7 +18987,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19003,7 +19003,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19050,7 +19050,7 @@ Epic board lists.
 Returns [`EpicListConnection`](#epiclistconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19186,7 +19186,7 @@ Alert Management alerts associated to this issue.
 Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19207,7 +19207,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19223,7 +19223,7 @@ Issuable resource links of the incident issue.
 Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19239,7 +19239,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19286,7 +19286,7 @@ List epics.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19517,7 +19517,7 @@ Find Ci Secure File registries on this Geo node.
 Returns [`CiSecureFileRegistryConnection`](#cisecurefileregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19536,7 +19536,7 @@ Find Container Repository registries on this Geo node.
 Returns [`ContainerRepositoryRegistryConnection`](#containerrepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19559,7 +19559,7 @@ NOTE:
 Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19578,7 +19578,7 @@ Find Dependency Proxy Manifest registries on this Geo node.
 Returns [`DependencyProxyManifestRegistryConnection`](#dependencyproxymanifestregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19601,7 +19601,7 @@ NOTE:
 Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementrepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19620,7 +19620,7 @@ Find group wiki repository registries on this Geo node.
 Returns [`GroupWikiRepositoryRegistryConnection`](#groupwikirepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19639,7 +19639,7 @@ Find Job Artifact registries on this Geo node.
 Returns [`JobArtifactRegistryConnection`](#jobartifactregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19658,7 +19658,7 @@ Find LFS object registries on this Geo node.
 Returns [`LfsObjectRegistryConnection`](#lfsobjectregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19677,7 +19677,7 @@ Find merge request diff registries on this Geo node.
 Returns [`MergeRequestDiffRegistryConnection`](#mergerequestdiffregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19696,7 +19696,7 @@ Package file registries of the GeoNode.
 Returns [`PackageFileRegistryConnection`](#packagefileregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19715,7 +19715,7 @@ Find Pages Deployment registries on this Geo node.
 Returns [`PagesDeploymentRegistryConnection`](#pagesdeploymentregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19734,7 +19734,7 @@ Find pipeline artifact registries on this Geo node.
 Returns [`PipelineArtifactRegistryConnection`](#pipelineartifactregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19753,7 +19753,7 @@ Find Project registries on this Geo node. Ignored if `geo_project_repository_rep
 Returns [`ProjectRepositoryRegistryConnection`](#projectrepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19772,7 +19772,7 @@ Find Project Wiki Repository registries on this Geo node. Ignored if `geo_projec
 Returns [`ProjectWikiRepositoryRegistryConnection`](#projectwikirepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19791,7 +19791,7 @@ Find snippet repository registries on this Geo node.
 Returns [`SnippetRepositoryRegistryConnection`](#snippetrepositoryregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19810,7 +19810,7 @@ Find terraform state version registries on this Geo node.
 Returns [`TerraformStateVersionRegistryConnection`](#terraformstateversionregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19829,7 +19829,7 @@ Find Upload registries on this Geo node.
 Returns [`UploadRegistryConnection`](#uploadregistryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -19885,7 +19885,7 @@ Google Cloud Artifact Registry repository artifacts. Returns `null` if `gcp_arti
 Returns [`GoogleCloudArtifactRegistryArtifactConnection`](#googlecloudartifactregistryartifactconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20029,7 +20029,7 @@ NOTE:
 Returns [`AchievementConnection`](#achievementconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20049,7 +20049,7 @@ NOTE:
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20078,7 +20078,7 @@ Approval Policies of the project.
 Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20130,7 +20130,7 @@ Boards of the group.
 Returns [`BoardConnection`](#boardconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20146,7 +20146,7 @@ List of the group's CI/CD variables.
 Returns [`CiGroupVariableConnection`](#cigroupvariableconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20162,7 +20162,7 @@ Cluster agents associated with projects in the group and its subgroups.
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20180,7 +20180,7 @@ Represents the code coverage activity for this group.
 Returns [`CodeCoverageActivityConnection`](#codecoverageactivityconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20196,7 +20196,7 @@ Compliance frameworks available to projects in this namespace.
 Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20227,7 +20227,7 @@ Find contacts of this group.
 Returns [`CustomerRelationsContactConnection`](#customerrelationscontactconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20246,7 +20246,7 @@ Container repositories of the group.
 Returns [`ContainerRepositoryConnection`](#containerrepositoryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20263,7 +20263,7 @@ Provides the aggregated contributions by users within the group and its subgroup
 Returns [`ContributionAnalyticsContributionConnection`](#contributionanalyticscontributionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20280,7 +20280,7 @@ Custom emoji in this namespace.
 Returns [`CustomEmojiConnection`](#customemojiconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20300,7 +20300,7 @@ NOTE:
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20320,7 +20320,7 @@ NOTE:
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20350,7 +20350,7 @@ List of descendant groups of this group.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20368,7 +20368,7 @@ Group's DORA scores for all projects by DORA key metric for the last complete mo
 Returns [`DoraPerformanceScoreCountConnection`](#doraperformancescorecountconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20384,7 +20384,7 @@ Environment scopes of the group.
 Returns [`CiGroupEnvironmentScopeConnection`](#cigroupenvironmentscopeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20446,7 +20446,7 @@ Find epics.
 Returns [`EpicConnection`](#epicconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20499,7 +20499,7 @@ A membership of a user within this group.
 Returns [`GroupMemberConnection`](#groupmemberconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20518,7 +20518,7 @@ Issues for projects in this group.
 Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20573,7 +20573,7 @@ Find iteration cadences.
 Returns [`IterationCadenceConnection`](#iterationcadenceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20594,7 +20594,7 @@ Find iterations.
 Returns [`IterationConnection`](#iterationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20632,7 +20632,7 @@ Labels available on this group.
 Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20655,7 +20655,7 @@ NOTE:
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20673,7 +20673,7 @@ Compliance violations reported on merge requests merged within the group.
 Returns [`ComplianceViolationConnection`](#complianceviolationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20690,7 +20690,7 @@ Merge requests for projects in this group.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20725,7 +20725,7 @@ Milestones of the group.
 Returns [`MilestoneConnection`](#milestoneconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20762,7 +20762,7 @@ Find organizations of this group.
 Returns [`CustomerRelationsOrganizationConnection`](#customerrelationsorganizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20781,7 +20781,7 @@ Packages of the group. This field can only be resolved for one group in any sing
 Returns [`PackageConnection`](#packageconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20802,7 +20802,7 @@ Compliance standards adherence for the projects in a group and its subgroups.
 Returns [`ComplianceStandardsAdherenceConnection`](#compliancestandardsadherenceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20818,7 +20818,7 @@ Projects within this namespace.
 Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20845,7 +20845,7 @@ Releases belonging to projects in the group.
 Returns [`ReleaseConnection`](#releaseconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20861,7 +20861,7 @@ Find runners visible to the current user.
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20904,7 +20904,7 @@ Scan Execution Policies of the namespace.
 Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20925,7 +20925,7 @@ Use `approvalPolicies`.
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20941,7 +20941,7 @@ Time logged on issues and merge requests in the group and its subgroups.
 Returns [`TimelogConnection!`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -20981,7 +20981,7 @@ Vulnerabilities reported on the projects in the group and its subgroups.
 Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21012,7 +21012,7 @@ The historical number of vulnerabilities per day for the projects in the group a
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21108,7 +21108,7 @@ Work item types available to the group.
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21128,7 +21128,7 @@ NOTE:
 Returns [`WorkItemConnection`](#workitemconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21454,7 +21454,7 @@ Blocks of time for which a participant is on-call within a given time frame. Tim
 Returns [`IncidentManagementOncallShiftConnection`](#incidentmanagementoncallshiftconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21584,7 +21584,7 @@ Cluster agents associated with projects selected in the Instance Security Dashbo
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21602,7 +21602,7 @@ Projects selected in Instance Security Dashboard.
 Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21746,7 +21746,7 @@ Alert Management alerts associated to this issue.
 Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21767,7 +21767,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21783,7 +21783,7 @@ Issuable resource links of the incident issue.
 Returns [`IssuableResourceLinkConnection`](#issuableresourcelinkconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21799,7 +21799,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -21951,7 +21951,7 @@ List of all Jira projects fetched through Jira REST API.
 Returns [`JiraProjectConnection`](#jiraprojectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22314,7 +22314,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22358,7 +22358,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22374,7 +22374,7 @@ Pipelines for the merge request. Note: for performance reasons, no more than the
 Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22470,7 +22470,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22506,7 +22506,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22542,7 +22542,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22563,7 +22563,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22579,7 +22579,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22627,7 +22627,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22645,7 +22645,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22661,7 +22661,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22684,7 +22684,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22705,7 +22705,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22773,7 +22773,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22809,7 +22809,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22845,7 +22845,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22866,7 +22866,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22882,7 +22882,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22930,7 +22930,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22948,7 +22948,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22964,7 +22964,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -22987,7 +22987,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23008,7 +23008,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23139,7 +23139,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23175,7 +23175,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23211,7 +23211,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23232,7 +23232,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23248,7 +23248,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23296,7 +23296,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23314,7 +23314,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23330,7 +23330,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23353,7 +23353,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23374,7 +23374,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23478,7 +23478,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23514,7 +23514,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23550,7 +23550,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23571,7 +23571,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23587,7 +23587,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23635,7 +23635,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23653,7 +23653,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23669,7 +23669,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23692,7 +23692,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23713,7 +23713,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23852,7 +23852,7 @@ Versions of the model.
 Returns [`MlModelVersionConnection`](#mlmodelversionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23935,7 +23935,7 @@ NOTE:
 Returns [`AchievementConnection`](#achievementconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23955,7 +23955,7 @@ NOTE:
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -23984,7 +23984,7 @@ Approval Policies of the project.
 Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24000,7 +24000,7 @@ Compliance frameworks available to projects in this namespace.
 Returns [`ComplianceFrameworkConnection`](#complianceframeworkconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24018,7 +24018,7 @@ Projects within this namespace.
 Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24045,7 +24045,7 @@ Scan Execution Policies of the namespace.
 Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24066,7 +24066,7 @@ Use `approvalPolicies`.
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24256,7 +24256,7 @@ NOTE:
 Returns [`GroupConnection!`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24277,7 +24277,7 @@ NOTE:
 Returns [`ProjectConnection!`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24803,7 +24803,7 @@ Jobs belonging to the pipeline.
 Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -24835,7 +24835,7 @@ Vulnerability findings reported on the pipeline. By default all the states excep
 Returns [`PipelineSecurityReportFindingConnection`](#pipelinesecurityreportfindingconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25249,7 +25249,7 @@ Alert Management alerts of the project.
 Returns [`AlertManagementAlertConnection`](#alertmanagementalertconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25270,7 +25270,7 @@ HTTP Integrations which can receive alerts for the project.
 Returns [`AlertManagementHttpIntegrationConnection`](#alertmanagementhttpintegrationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25286,7 +25286,7 @@ Integrations which can receive alerts for the project.
 Returns [`AlertManagementIntegrationConnection`](#alertmanagementintegrationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25314,7 +25314,7 @@ Approval Policies of the project.
 Returns [`ApprovalPolicyConnection`](#approvalpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25354,7 +25354,7 @@ Boards of the project.
 Returns [`BoardConnection`](#boardconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25398,7 +25398,7 @@ List of the project's CI/CD variables.
 Returns [`CiProjectVariableConnection`](#ciprojectvariableconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25429,7 +25429,7 @@ Cluster agents associated with the project.
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25463,7 +25463,7 @@ Container repositories of the project.
 Returns [`ContainerRepositoryConnection`](#containerrepositoryconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25484,7 +25484,7 @@ NOTE:
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25504,7 +25504,7 @@ NOTE:
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25534,7 +25534,7 @@ DAST Profiles associated with the project.
 Returns [`DastProfileConnection`](#dastprofileconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25562,7 +25562,7 @@ DAST Site Validations associated with the project.
 Returns [`DastSiteValidationConnection`](#dastsitevalidationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25596,7 +25596,7 @@ NOTE:
 Returns [`DependencyConnection`](#dependencyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25641,7 +25641,7 @@ Environments of the project. This field can only be resolved for one project in 
 Returns [`EnvironmentConnection`](#environmentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25676,7 +25676,7 @@ Namespaces in which the current user can fork the project into.
 Returns [`NamespaceConnection`](#namespaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25708,7 +25708,7 @@ Incident Management escalation policies of the project.
 Returns [`EscalationPolicyTypeConnection`](#escalationpolicytypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25737,7 +25737,7 @@ Incident Management On-call schedules of the project.
 Returns [`IncidentManagementOncallScheduleConnection`](#incidentmanagementoncallscheduleconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25766,7 +25766,7 @@ Incident Management Timeline events associated with the incident.
 Returns [`TimelineEventTypeConnection`](#timelineeventtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25782,7 +25782,7 @@ List of CI/CD variables the project inherited from its parent group and ancestor
 Returns [`InheritedCiVariableConnection`](#inheritedcivariableconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25897,7 +25897,7 @@ Issues of the project.
 Returns [`IssueConnection`](#issueconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25952,7 +25952,7 @@ Find iteration cadences.
 Returns [`IterationCadenceConnection`](#iterationcadenceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -25973,7 +25973,7 @@ Find iterations.
 Returns [`IterationConnection`](#iterationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26011,7 +26011,7 @@ Jobs of a project. This field can only be resolved for one project in any single
 Returns [`CiJobConnection`](#cijobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26040,7 +26040,7 @@ Labels available on this project.
 Returns [`LabelConnection`](#labelconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26061,7 +26061,7 @@ NOTE:
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26091,7 +26091,7 @@ Merge requests of the project.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26125,7 +26125,7 @@ Milestones of the project.
 Returns [`MilestoneConnection`](#milestoneconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26152,7 +26152,7 @@ NOTE:
 Returns [`MlModelConnection`](#mlmodelconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26170,7 +26170,7 @@ Environments for this project with nested folders, can only be resolved for one 
 Returns [`NestedEnvironmentConnection`](#nestedenvironmentconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26193,7 +26193,7 @@ Network policies are deprecated and will be removed in GitLab 17.0. This field r
 Returns [`NetworkPolicyConnection`](#networkpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26209,7 +26209,7 @@ Packages of the project.
 Returns [`PackageConnection`](#packageconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26257,7 +26257,7 @@ Pipeline schedules of the project. This field can only be resolved for one proje
 Returns [`PipelineScheduleConnection`](#pipelinescheduleconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26274,7 +26274,7 @@ Build pipelines of the project.
 Returns [`PipelineConnection`](#pipelineconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26313,7 +26313,7 @@ Members of the project.
 Returns [`MemberInterfaceConnection`](#memberinterfaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26343,7 +26343,7 @@ Releases of the project.
 Returns [`ReleaseConnection`](#releaseconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26379,7 +26379,7 @@ Find requirements.
 Returns [`RequirementConnection`](#requirementconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26420,7 +26420,7 @@ Find runners visible to the current user.
 Returns [`CiRunnerConnection`](#cirunnerconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26446,7 +26446,7 @@ Scan Execution Policies of the project.
 Returns [`ScanExecutionPolicyConnection`](#scanexecutionpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26467,7 +26467,7 @@ Use `approvalPolicies`.
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26524,7 +26524,7 @@ This will be renamed to `Project.integrations`.
 Returns [`ServiceConnection`](#serviceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26541,7 +26541,7 @@ Snippets of the project.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26570,7 +26570,7 @@ Time logged on issues and merge requests in the project.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26597,7 +26597,7 @@ NOTE:
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26613,7 +26613,7 @@ Vulnerabilities reported on the project.
 Returns [`VulnerabilityConnection`](#vulnerabilityconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26644,7 +26644,7 @@ The historical number of vulnerabilities per day for the project.
 Returns [`VulnerabilitiesCountByDayConnection`](#vulnerabilitiescountbydayconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26711,7 +26711,7 @@ Work item types available to the project.
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -26731,7 +26731,7 @@ NOTE:
 Returns [`WorkItemConnection`](#workitemconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -27383,7 +27383,7 @@ Blobs contained within the repository.
 Returns [`RepositoryBlobConnection`](#repositoryblobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -27427,7 +27427,7 @@ Paginated tree of the repository.
 Returns [`TreeConnection`](#treeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -27594,7 +27594,7 @@ Test reports of the requirement.
 Returns [`TestReportConnection`](#testreportconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -27989,7 +27989,7 @@ Collection of Sentry Errors.
 Returns [`SentryErrorConnection`](#sentryerrorconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28092,7 +28092,7 @@ Snippet blobs.
 Returns [`SnippetBlobConnection`](#snippetblobconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28108,7 +28108,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28764,7 +28764,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28800,7 +28800,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28836,7 +28836,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28857,7 +28857,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28873,7 +28873,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28921,7 +28921,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28939,7 +28939,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28955,7 +28955,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28978,7 +28978,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -28999,7 +28999,7 @@ Workspaces owned by the current user.
 Returns [`WorkspaceConnection`](#workspaceconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -29197,7 +29197,7 @@ List of issue links related to the vulnerability.
 Returns [`VulnerabilityIssueLinkConnection!`](#vulnerabilityissuelinkconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -29213,7 +29213,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -29938,7 +29938,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -30091,7 +30091,7 @@ NOTE:
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -30131,7 +30131,7 @@ Notes on this work item.
 Returns [`DiscussionConnection`](#discussionconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ###### Arguments
@@ -34375,7 +34375,7 @@ To-do items for the current user.
 Returns [`TodoConnection!`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34537,7 +34537,7 @@ All notes on this noteable.
 Returns [`NoteConnection!`](#noteconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34718,7 +34718,7 @@ Merge requests assigned to the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34754,7 +34754,7 @@ Merge requests authored by the user.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34790,7 +34790,7 @@ Groups where the user has access.
 Returns [`GroupConnection`](#groupconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34811,7 +34811,7 @@ NOTE:
 Returns [`OrganizationConnection`](#organizationconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34827,7 +34827,7 @@ Merge requests assigned to the user for review.
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34875,7 +34875,7 @@ Snippets authored by the user.
 Returns [`SnippetConnection`](#snippetconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34893,7 +34893,7 @@ Projects starred by the user.
 Returns [`ProjectConnection`](#projectconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34909,7 +34909,7 @@ Time logged by the user.
 Returns [`TimelogConnection`](#timelogconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments
@@ -34932,7 +34932,7 @@ To-do items of the user.
 Returns [`TodoConnection`](#todoconnection).
 
 This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#connection-pagination-arguments):
+four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
 ####### Arguments

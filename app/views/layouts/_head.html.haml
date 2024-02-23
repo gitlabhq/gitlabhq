@@ -48,7 +48,7 @@
   = render 'layouts/loading_hints'
 
   = render_if_exists 'layouts/header/translations'
-  - if Feature.enabled?(:enable_new_sentry_clientside_integration, current_user) && Gitlab::CurrentSettings.sentry_enabled
+  - if Feature.enabled?(:enable_new_sentry_integration) && Gitlab::CurrentSettings.sentry_enabled
     = webpack_bundle_tag 'sentry'
   - elsif Gitlab.config.sentry.enabled
     = webpack_bundle_tag 'legacy_sentry'
