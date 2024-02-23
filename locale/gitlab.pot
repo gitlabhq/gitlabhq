@@ -24079,6 +24079,12 @@ msgstr ""
 msgid "GroupSettings|Group path cannot be longer than %{length} characters."
 msgstr ""
 
+msgid "GroupSettings|How do I manage group SSH certificates?"
+msgstr ""
+
+msgid "GroupSettings|If enabled, individual user accounts will be able to use only issued SSH certificates for Git access. It doesn't apply to service accounts, deploy keys, and other types of internal accounts."
+msgstr ""
+
 msgid "GroupSettings|If not specified at the group or instance level, the default is %{default_initial_branch_name}. Does not affect existing repositories."
 msgstr ""
 
@@ -36347,7 +36353,7 @@ msgstr ""
 msgid "PipelineSchedules|There was a problem taking ownership of the pipeline schedule."
 msgstr ""
 
-msgid "PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an exisiting schedule."
+msgid "PipelineSchedules|You have exceeded the maximum number of pipeline schedules for your plan. To create a new schedule, either increase your plan limit or delete an existing schedule."
 msgstr ""
 
 msgid "PipelineSource|API"
@@ -44662,6 +44668,9 @@ msgstr ""
 msgid "SecurityOrchestration|Apply this policy to %{projectScopeType}named %{frameworkSelector}"
 msgstr ""
 
+msgid "SecurityOrchestration|Apply this policy to current project."
+msgstr ""
+
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
@@ -44761,6 +44770,9 @@ msgstr ""
 msgid "SecurityOrchestration|Exceptions"
 msgstr ""
 
+msgid "SecurityOrchestration|Failed to fetch the scope information. Please refresh the page to try again."
+msgstr ""
+
 msgid "SecurityOrchestration|Failed to load cluster agents."
 msgstr ""
 
@@ -44771,6 +44783,9 @@ msgid "SecurityOrchestration|Failed to load group projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|Fetching the scope information."
 msgstr ""
 
 msgid "SecurityOrchestration|Fill in branch name with project name in the format of %{boldStart}branch-name@project-path,%{boldEnd} separate with `,`"

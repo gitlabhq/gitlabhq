@@ -25,6 +25,7 @@ import {
   emptyPipelineSchedulesResponse,
   mockPipelineSchedulesResponseWithPagination,
   mockPipelineSchedulesResponsePlanLimitReached,
+  mockPipelineSchedulesResponseUnlimited,
   noPlanLimitResponse,
 } from '../mock_data';
 
@@ -46,6 +47,9 @@ describe('Pipeline schedules app', () => {
     .fn()
     .mockResolvedValue(mockPipelineSchedulesResponsePlanLimitReached);
   const noPlanLimitHandler = jest.fn().mockResolvedValue(noPlanLimitResponse);
+  const unlimitedSchedulesHandler = jest
+    .fn()
+    .mockResolvedValue(mockPipelineSchedulesResponseUnlimited);
   const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
   const deleteMutationHandlerSuccess = jest.fn().mockResolvedValue(deleteMutationResponse);
@@ -452,29 +456,20 @@ describe('Pipeline schedules app', () => {
     });
   });
 
-  describe('plan limit reached', () => {
-    beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, planLimitReachedHandler]]);
+  it.each`
+    description        | handler                      | buttonDisabled | alertExists
+    ${'limit reached'} | ${planLimitReachedHandler}   | ${true}        | ${true}
+    ${'no access'}     | ${noPlanLimitHandler}        | ${true}        | ${false}
+    ${'unlimited'}     | ${unlimitedSchedulesHandler} | ${false}       | ${false}
+  `(
+    'Alert should show: $alertExists and button should be disabled: $buttonDisabled when plan limit: $description',
+    async ({ handler, buttonDisabled, alertExists }) => {
+      createComponent([[getPipelineSchedulesQuery, handler]]);
 
       await waitForPromises();
-    });
 
-    it('shows disabled new schedule button with alert', () => {
-      expect(findNewButton().props('disabled')).toBe(true);
-      expect(findPlanLimitReachedAlert().exists()).toBe(true);
-    });
-  });
-
-  describe('no plan limit', () => {
-    beforeEach(async () => {
-      createComponent([[getPipelineSchedulesQuery, noPlanLimitHandler]]);
-
-      await waitForPromises();
-    });
-
-    it('shows disabled new schedule button', () => {
-      expect(findNewButton().props('disabled')).toBe(true);
-      expect(findPlanLimitReachedAlert().exists()).toBe(false);
-    });
-  });
+      expect(findNewButton().props('disabled')).toBe(buttonDisabled);
+      expect(findPlanLimitReachedAlert().exists()).toBe(alertExists);
+    },
+  );
 });

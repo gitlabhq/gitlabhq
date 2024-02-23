@@ -162,11 +162,27 @@ export default Extension.create({
                 language: 'markdown',
               });
 
-              const contentToInsert = isMarkdownCodeBlockActive
-                ? gfmContent || textContent
-                : textContent.replace(/^\s+|\s+$/gm, '');
+              let contentToInsert;
+              if (isMarkdownCodeBlockActive) {
+                contentToInsert = gfmContent || textContent;
+              } else if (pasteRaw) {
+                contentToInsert = textContent.replace(/^\s+|\s+$/gm, '');
+              } else {
+                contentToInsert = textContent;
+              }
 
               if (!contentToInsert) return false;
+
+              if (isCodeBlockActive) contentToInsert = { type: 'text', text: contentToInsert };
+              else {
+                contentToInsert = {
+                  type: 'paragraph',
+                  content: contentToInsert
+                    .split('\n')
+                    .map((text) => [{ type: 'text', text }, { type: 'hardBreak' }])
+                    .flat(),
+                };
+              }
 
               this.editor.commands.insertContentAt({ from, to }, contentToInsert);
               return true;

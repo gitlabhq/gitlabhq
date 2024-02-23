@@ -555,6 +555,24 @@ Feature.enabled?(:feature_flag_group, group)
 Feature.enabled?(:feature_flag_user, user)
 ```
 
+Models which `include FeatureGate` have an `.actor_from_id` class method.
+If you have the model's ID and do not need the model for anything other than checking the feature
+flag state, you can use `.actor_from_id` in order check the feature flag state without making a
+database query to retrieve the model.
+
+```ruby
+# Bad -- Unnecessary query is executed
+Feature.enabled?(:feature_flag, Project.find(project_id))
+
+# Good -- No query for projects
+Feature.enabled?(:feature_flag, Project.actor_from_id(project_id))
+
+# Good -- Project model is used after feature flag check
+project = Project.find(project_id)
+return unless Feature.enabled?(:feature_flag, project)
+project.update!(column: value)
+```
+
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 

@@ -89,6 +89,22 @@ RSpec.shared_examples 'rich text editor - copy/paste' do
 
       page.within content_editor_testid do
         expect(page).to have_text('Some rich text content link')
+        expect(page).not_to have_text('    Some rich', normalize_ws: false)
+      end
+    end
+
+    it 'does not strip indentation when pasting inside a plaintext code block' do
+      type_in_content_editor "  text with indentation"
+
+      type_in_content_editor [modifier_key, 'a']
+      type_in_content_editor [modifier_key, 'x']
+
+      type_in_content_editor '```'
+      type_in_content_editor :enter
+      type_in_content_editor [modifier_key, :shift, 'v']
+
+      page.within content_editor_testid do
+        expect(page).to have_text("  text with indentation", normalize_ws: false)
       end
     end
   end
