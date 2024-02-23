@@ -261,7 +261,6 @@ Lint/UnusedMethodArgument:
     - 'ee/app/models/iteration.rb'
     - 'ee/app/models/iteration_note.rb'
     - 'ee/app/replicators/geo/container_repository_replicator.rb'
-    - 'ee/app/replicators/geo/pipeline_replicator.rb'
     - 'ee/app/serializers/analytics/cycle_analytics/value_stream_errors_serializer.rb'
     - 'ee/app/services/app_sec/dast/scans/run_service.rb'
     - 'ee/app/services/audit_events/runners_token_audit_event_service.rb'

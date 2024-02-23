@@ -1876,7 +1876,6 @@
 - './ee/spec/replicators/geo/package_file_replicator_spec.rb'
 - './ee/spec/replicators/geo/pages_deployment_replicator_spec.rb'
 - './ee/spec/replicators/geo/pipeline_artifact_replicator_spec.rb'
-- './ee/spec/replicators/geo/pipeline_replicator_spec.rb'
 - './ee/spec/replicators/geo/snippet_repository_replicator_spec.rb'
 - './ee/spec/replicators/geo/terraform_state_version_replicator_spec.rb'
 - './ee/spec/replicators/geo/upload_replicator_spec.rb'

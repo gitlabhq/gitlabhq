@@ -3,61 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe Admin::SlacksController, :enable_admin_mode, feature_category: :integrations do
-  let_it_be(:admin) { create(:admin) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:user) { create(:admin) }
 
   before do
     stub_application_setting(slack_app_enabled: true)
+    sign_in(user)
   end
 
-  def redirect_url
-    edit_admin_application_settings_integration_path(
-      Integrations::GitlabSlackApplication.to_param
-    )
-  end
+  it_behaves_like Integrations::SlackControllerSettings do
+    let(:slack_auth_path) { slack_auth_admin_application_settings_slack_path }
+    let(:destroy_path) { admin_application_settings_slack_path }
+    let(:service) { Integrations::SlackInstallation::InstanceService }
+    let(:flag_protected) { true }
 
-  describe 'DELETE destroy' do
-    subject(:destroy!) { delete admin_application_settings_slack_path }
-
-    context 'when user is not an admin' do
-      before_all do
-        sign_in(user)
-      end
-
-      it 'responds with status :not_found' do
-        destroy!
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+    let(:redirect_url) do
+      edit_admin_application_settings_integration_path(
+        Integrations::GitlabSlackApplication.to_param
+      )
     end
 
-    context 'when user is an admin' do
-      before do
-        sign_in(admin)
-      end
-
-      it 'destroys the record and redirects back to #edit' do
-        create(:gitlab_slack_application_integration, :instance,
-          slack_integration: build(:slack_integration)
-        )
-
-        expect { destroy! }
-          .to change { Integrations::GitlabSlackApplication.for_instance.first&.slack_integration }.to(nil)
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(redirect_url)
-      end
-
-      context 'when the flag is disabled' do
-        before do
-          stub_feature_flags(gitlab_for_slack_app_instance_and_group_level: false)
-        end
-
-        it 'responds with status :not_found' do
-          destroy!
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
+    def create_integration
+      create(:gitlab_slack_application_integration, :instance,
+        slack_integration: build(:slack_integration)
+      )
     end
   end
 end

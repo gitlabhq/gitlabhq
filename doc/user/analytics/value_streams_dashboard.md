@@ -84,7 +84,7 @@ Each bar on the chart displays the sum of total projects per score category, cal
 To exclude data from the chart (for example, "Not Included"), in the legend select the series you want to exclude.
 Hovering over each bar reveals a dialog that explains the score's definition.
 
-For example, if a project has a high score for Deployment Frequency (Velocity), it means that the project has one or more deploys to production per day.
+For example, if a project has a high score for deployment frequency (velocity), it means that the project has one or more deploys to production per day.
 
 | Metric | Description | High | Medium | Low |
 |--------|-------------|------|--------|-----|

@@ -219,7 +219,7 @@ If the results:
 - Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 NOTE:
-The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).
+The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 

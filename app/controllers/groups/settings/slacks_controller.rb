@@ -13,8 +13,6 @@ module Groups
 
       layout 'group_settings'
 
-      def slack_auth; end
-
       private
 
       def integration
@@ -25,6 +23,10 @@ module Groups
         redirect_to edit_group_settings_integration_path(
           group, integration || Integrations::GitlabSlackApplication.for_group(group).new
         )
+      end
+
+      def installation_service
+        Integrations::SlackInstallation::GroupService.new(group, current_user: current_user, params: params)
       end
     end
   end

@@ -45,6 +45,7 @@ describe('OverviewTabs', () => {
     newProjectIllustration: '',
     emptyProjectsIllustration: '',
     emptySubgroupIllustration: '',
+    emptySearchIllustration: '',
     canCreateSubgroups: false,
     canCreateProjects: false,
     initialSort: 'name_asc',

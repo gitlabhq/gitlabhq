@@ -282,7 +282,8 @@ module ApplicationSettingImplementation
         enable_member_promotion_management: false,
         security_approval_policies_limit: 5,
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
-        asciidoc_max_includes: 32
+        asciidoc_max_includes: 32,
+        use_clickhouse_for_analytics: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

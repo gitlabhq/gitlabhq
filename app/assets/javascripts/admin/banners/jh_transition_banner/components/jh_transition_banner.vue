@@ -1,6 +1,6 @@
 <script>
 import { GlBanner, GlSprintf, GlLink } from '@gitlab/ui';
-import ClusterPopoverSvg from '@gitlab/svgs/dist/illustrations/cluster_popover.svg?url';
+import ClusterPopoverSvg from '@gitlab/svgs/dist/illustrations/devops-sm.svg?url';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import { transitionBannerTexts } from '../constants';
 
@@ -51,7 +51,6 @@ export default {
         :svg-path="$options.ClusterPopoverSvg"
         button-link="https://gitlab.cn/upgrade/"
         class="gl-mt-3"
-        variant="introduction"
         @close="dismiss"
       >
         <p>

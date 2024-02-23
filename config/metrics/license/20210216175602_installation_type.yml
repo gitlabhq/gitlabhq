@@ -4,7 +4,7 @@ key_path: installation_type
 description: The installation method used to install GitLab (Omnibus, Helm, etc)
 product_section: enablement
 product_stage: enablement
-product_group: distribution
+product_group: distribution_deploy
 value_type: string
 status: active
 milestone: "11.0"

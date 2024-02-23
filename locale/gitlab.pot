@@ -3595,7 +3595,7 @@ msgstr ""
 msgid "AdminSettings|Let's Encrypt email"
 msgstr ""
 
-msgid "AdminSettings|Limit the number of namespaces and projects that can be indexed."
+msgid "AdminSettings|Limit the amount of namespace and project data to index"
 msgstr ""
 
 msgid "AdminSettings|Maximum downstream pipelines triggered in a project per user"
@@ -7711,7 +7711,7 @@ msgstr ""
 msgid "Below are the settings for %{link_to_gitlab_pages}."
 msgstr ""
 
-msgid "Below you will find all the groups that are public. You can easily contribute to them by requesting to join these groups."
+msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Beta"
@@ -20667,6 +20667,9 @@ msgstr ""
 msgid "Failed to assign a user because no user was found."
 msgstr ""
 
+msgid "Failed to assign the framework to the project"
+msgstr ""
+
 msgid "Failed to assign you issues related to the merge request."
 msgstr ""
 
@@ -24232,16 +24235,10 @@ msgstr ""
 msgid "GroupsEmptyState|Create new subgroup"
 msgstr ""
 
-msgid "GroupsEmptyState|Explore groups"
-msgstr ""
-
 msgid "GroupsEmptyState|Groups are the best way to manage multiple projects and members."
 msgstr ""
 
-msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage the permissions and access of your group members for each project in the group."
-msgstr ""
-
-msgid "GroupsEmptyState|New group"
+msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder. You can manage your group member's permissions and access to each project in the group."
 msgstr ""
 
 msgid "GroupsEmptyState|No archived projects."
@@ -47095,6 +47092,9 @@ msgstr ""
 msgid "SlackIntegration|- *Slash commands:* Quickly open, access, or close issues from Slack using the `%{slash_command}` command. Streamline your GitLab deployments with ChatOps."
 msgstr ""
 
+msgid "SlackIntegration|Access request canceled"
+msgstr ""
+
 msgid "SlackIntegration|Are you sure you want to unlink this Slack Workspace from this integration?"
 msgstr ""
 
@@ -47117,6 +47117,12 @@ msgid "SlackIntegration|Create and read issue data and comments."
 msgstr ""
 
 msgid "SlackIntegration|Download latest manifest file"
+msgstr ""
+
+msgid "SlackIntegration|Error exchanging OAuth token with Slack"
+msgstr ""
+
+msgid "SlackIntegration|Error exchanging OAuth token with Slack: %{error}"
 msgstr ""
 
 msgid "SlackIntegration|Generated for %{host} by GitLab %{version}."
@@ -47161,6 +47167,9 @@ msgstr ""
 msgid "SlackIntegration|Signing secret"
 msgstr ""
 
+msgid "SlackIntegration|Slack app not enabled on GitLab instance"
+msgstr ""
+
 msgid "SlackIntegration|Step 1: Create your GitLab for Slack app"
 msgstr ""
 
@@ -47168,6 +47177,9 @@ msgid "SlackIntegration|Step 2: Configure the app settings"
 msgstr ""
 
 msgid "SlackIntegration|This integration allows users to perform common operations on their projects by entering slash commands in Slack."
+msgstr ""
+
+msgid "SlackIntegration|Unauthorized"
 msgstr ""
 
 msgid "SlackIntegration|Update to the latest version"
@@ -57225,6 +57237,9 @@ msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{
 msgstr ""
 
 msgid "You can create new ones at your Personal Access Tokens settings %{pat_link}"
+msgstr ""
+
+msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."

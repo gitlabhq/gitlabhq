@@ -108,6 +108,17 @@ class Projects::ApplicationController < ApplicationController
                           false
                         end
   end
+
+  def handle_update_result(result)
+    if result[:status] == :success
+      flash[:notice] = format(_("Project '%{project_name}' was successfully updated."), project_name: @project.name)
+      redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
+    else
+      flash[:alert] = result[:message]
+      @project.reset
+      render 'edit'
+    end
+  end
 end
 
 Projects::ApplicationController.prepend_mod_with('Projects::ApplicationController')

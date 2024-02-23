@@ -85,12 +85,12 @@ write a `before_script` that queries the service.
 
 Services stop at the end of the job, even if the job fails.
 
-## What services are not for
+## Using software provided by a service image
 
-As mentioned before, this feature is designed to provide **network accessible**
+When you specify the `service`, this provides **network accessible**
 services. A database is the simplest example of such a service.
 
-The services feature is not designed to, and does not, add any software from the
+The services feature does not add any software from the
 defined `services` images to the job's container.
 
 For example, if you have the following `services` defined in your job, the `php`,

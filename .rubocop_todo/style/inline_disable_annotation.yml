@@ -719,7 +719,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/projects/open_issues_count_service.rb'
     - 'app/services/projects/overwrite_project_service.rb'
     - 'app/services/projects/record_target_platforms_service.rb'
-    - 'app/services/projects/slack_application_install_service.rb'
     - 'app/services/projects/transfer_service.rb'
     - 'app/services/projects/unlink_fork_service.rb'
     - 'app/services/projects/update_pages_service.rb'

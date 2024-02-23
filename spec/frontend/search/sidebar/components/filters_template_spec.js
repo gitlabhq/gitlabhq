@@ -1,4 +1,4 @@
-import { GlForm, GlButton, GlLink } from '@gitlab/ui';
+import { GlForm } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -52,8 +52,8 @@ describe('GlobalSearchSidebarLanguageFilter', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findApplyButton = () => wrapper.findComponent(GlButton);
-  const findResetButton = () => wrapper.findComponent(GlLink);
+  const findApplyButton = () => wrapper.findComponentByTestId('search-apply-filters-btn');
+  const findResetButton = () => wrapper.findComponentByTestId('search-reset-filters-btn');
   const findSlotContent = () => wrapper.findByText('Filters Content');
 
   describe('Renders correctly', () => {

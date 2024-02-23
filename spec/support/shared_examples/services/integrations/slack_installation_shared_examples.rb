@@ -1,25 +1,19 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe Projects::SlackApplicationInstallService, feature_category: :integrations do
-  let_it_be(:user) { create(:user) }
-  let_it_be_with_refind(:project) { create(:project) }
-
-  let(:integration) { project.gitlab_slack_application_integration }
-  let(:installation) { integration.slack_integration }
-
+RSpec.shared_examples_for Integrations::SlackInstallation::BaseService do
   let(:slack_app_id) { 'A12345' }
   let(:slack_app_secret) { 'secret' }
   let(:oauth_code) { 'code' }
   let(:params) { { code: oauth_code } }
   let(:exchange_url) { described_class::SLACK_EXCHANGE_TOKEN_URL }
-  let(:redirect_url) { Gitlab::Routing.url_helpers.slack_auth_project_settings_slack_url(project) }
-
-  subject(:service) { described_class.new(project, user, params) }
+  let(:installation) { integration.slack_integration }
 
   before do
-    stub_application_setting(slack_app_id: slack_app_id, slack_app_secret: slack_app_secret)
+    stub_application_setting(
+      slack_app_enabled: true,
+      slack_app_id: slack_app_id,
+      slack_app_secret: slack_app_secret
+    )
 
     query = {
       client_id: slack_app_id,
@@ -33,6 +27,16 @@ RSpec.describe Projects::SlackApplicationInstallService, feature_category: :inte
       .to_return(body: response.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 
+  shared_examples 'error response' do |message:|
+    it 'returns error result with message' do
+      result = service.execute
+
+      expect(result).to be_error
+      expect(result.message).to eq(message)
+      expect(integration).to be_nil
+    end
+  end
+
   context 'when Slack responds with an error' do
     let(:response) do
       {
@@ -41,11 +45,43 @@ RSpec.describe Projects::SlackApplicationInstallService, feature_category: :inte
       }
     end
 
-    it 'returns error result' do
-      result = service.execute
+    it_behaves_like 'error response', message: 'Error exchanging OAuth token with Slack: something is wrong'
+  end
 
-      expect(result).to eq(message: 'Slack: something is wrong', status: :error)
+  context 'when HTTP error occurs when exchanging token' do
+    let(:response) { {} }
+
+    before do
+      allow(Gitlab::HTTP).to receive(:get).and_raise(Errno::ECONNREFUSED.new('error'))
     end
+
+    it_behaves_like 'error response', message: 'Error exchanging OAuth token with Slack'
+
+    it 'tracks the error' do
+      expect(Gitlab::ErrorTracking)
+        .to receive(:track_exception)
+        .with(Errno::ECONNREFUSED.new('Error exchanging OAuth token with Slack'), kind_of(Hash))
+
+      service.execute
+    end
+  end
+
+  context 'when slack_app_enabled is not set' do
+    before do
+      stub_application_setting(slack_app_enabled: false)
+    end
+
+    let(:response) { {} }
+
+    it_behaves_like 'error response', message: 'Slack app not enabled on GitLab instance'
+  end
+
+  context 'when user is unauthorized' do
+    let_it_be(:user) { create(:user) }
+
+    let(:response) { {} }
+
+    it_behaves_like 'error response', message: 'Unauthorized'
   end
 
   context 'when Slack responds with an access token' do
@@ -73,14 +109,14 @@ RSpec.describe Projects::SlackApplicationInstallService, feature_category: :inte
       it 'returns success result and creates all needed records' do
         result = service.execute
 
-        expect(result).to eq(status: :success)
-        expect(integration).to be_present
-        expect(installation).to be_present
+        expect(result).to be_success
+        expect(integration.reload).to be_present
+        expect(installation.reload).to be_present
         expect(installation).to have_attributes(
           integration_id: integration.id,
           team_id: team_id,
           team_name: team_name,
-          alias: project.full_path,
+          alias: installation_alias,
           user_id: user_id,
           bot_user_id: bot_user_id,
           bot_access_token: bot_access_token,
@@ -93,7 +129,7 @@ RSpec.describe Projects::SlackApplicationInstallService, feature_category: :inte
 
     context 'when integration record already exists' do
       before do
-        project.create_gitlab_slack_application_integration!
+        create_gitlab_slack_application_integration!
       end
 
       it_behaves_like 'success response'

@@ -4107,6 +4107,7 @@ CREATE TABLE application_settings (
     duo_features_enabled boolean DEFAULT true NOT NULL,
     lock_duo_features_enabled boolean DEFAULT false NOT NULL,
     asciidoc_max_includes smallint DEFAULT 32 NOT NULL,
+    clickhouse jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -4157,6 +4158,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_ae53cf7f82 CHECK ((char_length(vertex_ai_host) <= 255)),
     CONSTRAINT check_app_settings_namespace_storage_forks_cost_factor_range CHECK (((namespace_storage_forks_cost_factor >= (0)::double precision) AND (namespace_storage_forks_cost_factor <= (1)::double precision))),
     CONSTRAINT check_app_settings_sentry_clientside_traces_sample_rate_range CHECK (((sentry_clientside_traces_sample_rate >= (0)::double precision) AND (sentry_clientside_traces_sample_rate <= (1)::double precision))),
+    CONSTRAINT check_application_settings_clickhouse_is_hash CHECK ((jsonb_typeof(clickhouse) = 'object'::text)),
     CONSTRAINT check_application_settings_rate_limits_is_hash CHECK ((jsonb_typeof(rate_limits) = 'object'::text)),
     CONSTRAINT check_b8c74ea5b3 CHECK ((char_length(deactivation_email_additional_text) <= 1000)),
     CONSTRAINT check_cdfbd99405 CHECK ((char_length(security_txt_content) <= 2048)),
@@ -14167,32 +14169,6 @@ CREATE SEQUENCE project_repositories_id_seq
 
 ALTER SEQUENCE project_repositories_id_seq OWNED BY project_repositories.id;
 
-CREATE TABLE project_repository_states (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    repository_verification_checksum bytea,
-    wiki_verification_checksum bytea,
-    last_repository_verification_failure character varying,
-    last_wiki_verification_failure character varying,
-    repository_retry_at timestamp with time zone,
-    wiki_retry_at timestamp with time zone,
-    repository_retry_count integer,
-    wiki_retry_count integer,
-    last_repository_verification_ran_at timestamp with time zone,
-    last_wiki_verification_ran_at timestamp with time zone,
-    last_repository_updated_at timestamp with time zone,
-    last_wiki_updated_at timestamp with time zone
-);
-
-CREATE SEQUENCE project_repository_states_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE project_repository_states_id_seq OWNED BY project_repository_states.id;
-
 CREATE TABLE project_repository_storage_moves (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19239,8 +19215,6 @@ ALTER TABLE ONLY project_relation_exports ALTER COLUMN id SET DEFAULT nextval('p
 
 ALTER TABLE ONLY project_repositories ALTER COLUMN id SET DEFAULT nextval('project_repositories_id_seq'::regclass);
 
-ALTER TABLE ONLY project_repository_states ALTER COLUMN id SET DEFAULT nextval('project_repository_states_id_seq'::regclass);
-
 ALTER TABLE ONLY project_repository_storage_moves ALTER COLUMN id SET DEFAULT nextval('project_repository_storage_moves_id_seq'::regclass);
 
 ALTER TABLE ONLY project_security_settings ALTER COLUMN project_id SET DEFAULT nextval('project_security_settings_project_id_seq'::regclass);
@@ -21676,9 +21650,6 @@ ALTER TABLE ONLY project_relation_exports
 ALTER TABLE ONLY project_repositories
     ADD CONSTRAINT project_repositories_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY project_repository_states
-    ADD CONSTRAINT project_repository_states_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT project_repository_storage_moves_pkey PRIMARY KEY (id);
 
@@ -23676,16 +23647,6 @@ CREATE INDEX idx_projects_on_repository_storage_last_repository_updated_at ON pr
 CREATE UNIQUE INDEX idx_protected_branch_id_external_approval_rule_id ON external_approval_rules_protected_branches USING btree (protected_branch_id, external_approval_rule_id);
 
 CREATE INDEX idx_reminder_frequency_on_work_item_progresses ON work_item_progresses USING btree (reminder_frequency);
-
-CREATE INDEX idx_repository_states_on_last_repository_verification_ran_at ON project_repository_states USING btree (project_id, last_repository_verification_ran_at) WHERE ((repository_verification_checksum IS NOT NULL) AND (last_repository_verification_failure IS NULL));
-
-CREATE INDEX idx_repository_states_on_last_wiki_verification_ran_at ON project_repository_states USING btree (project_id, last_wiki_verification_ran_at) WHERE ((wiki_verification_checksum IS NOT NULL) AND (last_wiki_verification_failure IS NULL));
-
-CREATE INDEX idx_repository_states_on_repository_failure_partial ON project_repository_states USING btree (last_repository_verification_failure) WHERE (last_repository_verification_failure IS NOT NULL);
-
-CREATE INDEX idx_repository_states_on_wiki_failure_partial ON project_repository_states USING btree (last_wiki_verification_failure) WHERE (last_wiki_verification_failure IS NOT NULL);
-
-CREATE INDEX idx_repository_states_outdated_checksums ON project_repository_states USING btree (project_id) WHERE (((repository_verification_checksum IS NULL) AND (last_repository_verification_failure IS NULL)) OR ((wiki_verification_checksum IS NULL) AND (last_wiki_verification_failure IS NULL)));
 
 CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbom_occurrences USING btree (project_id, component_version_id, input_file_path);
 
@@ -26288,8 +26249,6 @@ CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_reposito
 CREATE INDEX index_project_repositories_on_shard_id ON project_repositories USING btree (shard_id);
 
 CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_repositories USING btree (shard_id, project_id);
-
-CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON project_repository_states USING btree (project_id);
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
 
@@ -30565,9 +30524,6 @@ ALTER TABLE ONLY audit_events_google_cloud_logging_configurations
 
 ALTER TABLE ONLY geo_node_statuses
     ADD CONSTRAINT fk_rails_0ecc699c2a FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY project_repository_states
-    ADD CONSTRAINT fk_rails_0f2298ca8a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_synced_attributes_metadata
     ADD CONSTRAINT fk_rails_0f4aa0981f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

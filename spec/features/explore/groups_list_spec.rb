@@ -70,6 +70,26 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       # Check project count
       expect(find('.js-groups-list-holder .groups-list li:first-child .stats .number-projects')).to have_text("1")
     end
+
+    describe 'landing component' do
+      it 'shows a landing component' do
+        expect(page).to have_content('Below you will find all the groups that are public.')
+      end
+
+      it 'is dismissable' do
+        find('.dismiss-button').click
+
+        expect(page).not_to have_content('Below you will find all the groups that are public.')
+      end
+
+      it 'does not show persistently once dismissed' do
+        find('.dismiss-button').click
+
+        visit explore_groups_path
+
+        expect(page).not_to have_content('Below you will find all the groups that are public.')
+      end
+    end
   end
 
   context 'when there are no groups to show' do

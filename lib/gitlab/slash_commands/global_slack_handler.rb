@@ -14,13 +14,12 @@ module Gitlab
         return false unless valid_token?
         return Gitlab::SlashCommands::ApplicationHelp.new(nil, params).execute if help_command?
 
-        unless slack_integration = find_slack_integration
+        unless integration = find_slack_integration
           error_message = 'GitLab error: project or alias not found'
           return Gitlab::SlashCommands::Presenters::Error.new(error_message).message
         end
 
         chat_user = ChatNames::FindUserService.new(params[:team_id], params[:user_id]).execute
-        integration = slack_integration.integration
 
         if chat_user&.user
           Gitlab::SlashCommands::Command.new(integration.project, chat_user, params).execute
@@ -46,11 +45,13 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def find_slack_integration
-        if project_alias.nil?
-          SlackIntegration.find_by(team_id: params[:team_id])
-        else
-          SlackIntegration.find_by(team_id: params[:team_id], alias: project_alias)
-        end
+        find_params = { team_id: params[:team_id], alias: project_alias }.compact
+        slack_app = SlackIntegration.find_by(find_params)
+
+        return unless slack_app
+
+        integration = slack_app.integration
+        integration if integration.project_level?
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

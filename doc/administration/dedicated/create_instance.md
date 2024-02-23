@@ -227,6 +227,18 @@ Consider the following notes:
 - The scheduled weekly maintenance window is different from
   [emergency maintenance](#emergency-maintenance).
 
+#### GitLab release rollout schedule
+
+GitLab Dedicated tenant instances are upgraded to the minor GitLab release using the following schedule.
+
+Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md) `N`. GitLab Dedicated instances are upgraded to the `N-1` release as follows:
+
+1. At T+5 calendar days: Tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded.
+1. At T+6 calendar days: Tenant instances in the `APAC` maintenance window are upgraded.
+1. At T+10 calendar days: Tenant instances in the `AMER Option 2` maintenance window are upgraded.
+
+For example, GitLab 16.9 released on 2024-02-15. Therefore, tenant instances in the `EMEA` and `AMER Option 1` maintenance window are upgraded on 2024-04-20.
+
 #### Emergency maintenance
 
 In an event of a platform outage, degradation or a security event requiring urgent action,

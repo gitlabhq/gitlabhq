@@ -376,14 +376,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         run_rake_task('gitlab:db:configure')
       end
 
-      it 'does not run clickhouse migrations if feature flag is disabled' do
-        stub_feature_flags(run_clickhouse_migrations_automatically: false)
-
-        expect(Rake::Task['gitlab:clickhouse:migrate']).not_to receive(:invoke)
-
-        run_rake_task('gitlab:db:configure')
-      end
-
       it 'does not fail if clickhouse is not configured' do
         allow(::ClickHouse::Client).to receive(:configuration).and_return(::ClickHouse::Client::Configuration.new)
 

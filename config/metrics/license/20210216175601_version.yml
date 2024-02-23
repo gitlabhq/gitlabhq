@@ -4,7 +4,7 @@ key_path: version
 description: Version of GitLab instance
 product_section: enablement
 product_stage: enablement
-product_group: distribution
+product_group: distribution_deploy
 value_type: string
 status: active
 milestone: "<13.9"

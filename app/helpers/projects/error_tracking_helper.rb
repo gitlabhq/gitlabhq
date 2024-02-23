@@ -12,7 +12,7 @@ module Projects::ErrorTrackingHelper
       'integrated-error-tracking-enabled' => integrated_tracking_enabled?(project).to_s,
       'project-path' => project.full_path,
       'list-path' => project_error_tracking_index_path(project),
-      'illustration-path' => image_path('illustrations/cluster_popover.svg'),
+      'illustration-path' => image_path('illustrations/empty-state/empty-radar-md.svg'),
       'show-integrated-tracking-disabled-alert' => show_integrated_tracking_disabled_alert?(project).to_s
     }
   end

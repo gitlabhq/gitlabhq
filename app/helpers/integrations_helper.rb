@@ -226,7 +226,10 @@ module IntegrationsHelper
       state: form_authenticity_token
     }
 
-    "#{::Projects::SlackApplicationInstallService::SLACK_AUTHORIZE_URL}?#{query.to_query}"
+    Gitlab::Utils.add_url_parameters(
+      Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL,
+      query
+    )
   end
 
   def slack_integration_destroy_path(parent)

@@ -114,7 +114,7 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
         expect(subject[:upgrade_slack_url]).to start_with(
           [
-            Projects::SlackApplicationInstallService::SLACK_AUTHORIZE_URL,
+            Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL,
             '?client_id=MOCK_APP_ID',
             "&redirect_uri=#{CGI.escape(redirect_url)}"
           ].join
@@ -232,8 +232,8 @@ RSpec.describe IntegrationsHelper, feature_category: :integrations do
 
     it 'returns the endpoint URL with all needed params' do
       expect(helper).to receive(:slack_auth_project_settings_slack_url).and_return('http://redirect')
-      expect(slack_link).to start_with(Projects::SlackApplicationInstallService::SLACK_AUTHORIZE_URL)
-      expect(slack_link).to include('&state=a+token')
+      expect(slack_link).to include('&state=a%20token')
+      expect(slack_link).to start_with(Integrations::SlackInstallation::BaseService::SLACK_AUTHORIZE_URL)
 
       expect(query).to include(
         'scope' => 'commands,chat:write,chat:write.public',

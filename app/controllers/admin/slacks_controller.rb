@@ -8,8 +8,6 @@ module Admin
 
     include ::Integrations::SlackControllerSettings
 
-    def slack_auth; end
-
     private
 
     def integration
@@ -20,6 +18,10 @@ module Admin
       redirect_to edit_admin_application_settings_integration_path(
         integration || Integrations::GitlabSlackApplication.for_instance.new
       )
+    end
+
+    def installation_service
+      Integrations::SlackInstallation::InstanceService.new(current_user: current_user, params: params)
     end
   end
 end

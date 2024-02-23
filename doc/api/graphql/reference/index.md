@@ -21226,7 +21226,7 @@ Contains release-related statistics about a group.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupsavedreplycontent"></a>`content` | [`String!`](#string) | Content of the saved reply. |
-| <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of the group saved reply. |
+| <a id="groupsavedreplyid"></a>`id` | [`GroupsSavedReplyID!`](#groupssavedreplyid) | Global ID of the group-level saved reply. |
 | <a id="groupsavedreplyname"></a>`name` | [`String!`](#string) | Name of the saved reply. |
 
 ### `GroupSecurityPolicySource`

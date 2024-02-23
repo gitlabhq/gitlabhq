@@ -158,26 +158,35 @@ After migration:
 If you used a private network on your source instance to hide content from the general public,
 make sure to have a similar setup on the destination instance, or to import into a private group.
 
-## Ensure projects can be imported
-
-You cannot import groups with projects when the source instance or group has **Default project creation protection** set to **No one**. If required, this setting can
-be changed:
-
-- For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
-- For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
-
 ## Prerequisites
 
 > - Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
 
-To migrate groups by direct transfer:
+Before migrating by using direct transfer, see the following prerequisites.
+
+### Network
 
 - The network connection between instances or GitLab.com must support HTTPS.
-- Any firewalls must not block the connection between the source and destination GitLab instances.
+- Firewalls must not block the connection between the source and destination GitLab instances.
+
+### Versions
+
+The source GitLab instance must be running GitLab 14.0 or later to import groups and GitLab 14.4 or later to import
+projects. However, to maximize the chance of a successful and performant migration, you should:
+
+- To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations,
+  update the source and destinations instances to GitLab 16.2 or later.
+- Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
+  as possible to take advantage of bug fixes and improvements added over time.
+
+We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
+GitLab 16.8.
+
+### Configuration
+
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
-- The source GitLab instance must be running GitLab 14.0 or later.
 - You must have a
   [personal access token](../../../user/profile/personal_access_tokens.md) for
   the source GitLab instance:
@@ -192,6 +201,10 @@ To migrate groups by direct transfer:
 - To import items stored in object storage, you must either:
   - [Configure `proxy_download`](../../../administration/object_storage.md#configure-the-common-parameters).
   - Ensure that the destination GitLab instance has access to the object storage of the source GitLab instance.
+- You cannot import groups with projects when the source instance or group has **Default project creation protection** set
+  to **No one**. If required, this setting can be changed:
+  - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
+  - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
 ## Prepare user accounts
 
@@ -231,7 +244,7 @@ role.
 
 1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
 1. Next to the groups you want to import, select either:
-   - **Import with projects**. If this is not available, see [Ensure projects can be imported](#ensure-projects-can-be-imported).
+   - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
