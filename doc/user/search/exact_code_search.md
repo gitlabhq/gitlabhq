@@ -52,18 +52,18 @@ To request access to this feature, contact GitLab.
 
 This table shows some example queries for exact code search.
 
-| Query                | Description                                                                           |
-| -------------------- |-------------------------------------------------------------------------------------- |
-| `foo`                | Returns files that contain `foo`                                                      |
-| `foo file:^doc/`     | Returns files that contain `foo` in directories that start with `doc/`                |
-| `"class foo"`        | Returns files that contain the exact string `class foo`                               |
-| `class foo`          | Returns files that contain both `class` and `foo`                                     |
-| `foo or bar`         | Returns files that contain either `foo` or `bar`                                      |
-| `class Foo`          | Returns files that contain `class` (case insensitive) and `Foo` (case sensitive)      |
-| `class Foo case:yes` | Returns files that contain `class` and `Foo` (both case sensitive)                    |
-| `foo -bar`           | Returns files that contain `foo` but not `bar`                                        |
-| `foo file:js`        | Searches for `foo` in files with names that contain `js`                              |
-| `foo -file:test`     | Searches for `foo` in files with names that do not contain `test`                     |
-| `foo lang:ruby`      | Searches for `foo` in Ruby source code                                                |
-| `foo file:\.js$`     | Searches for `foo` in files with names that end with `.js`                            |
-| `foo.*bar`           | Searches for strings that match the regular expression `foo.*bar`                     |
+| Query                | Description                                                                       |
+|----------------------|-----------------------------------------------------------------------------------|
+| `foo`                | Returns files that contain `foo`.                                                 |
+| `foo file:^doc/`     | Returns files that contain `foo` in directories that start with `doc/`.           |
+| `"class foo"`        | Returns files that contain the exact string `class foo`.                          |
+| `class foo`          | Returns files that contain both `class` and `foo`.                                |
+| `foo or bar`         | Returns files that contain either `foo` or `bar`.                                 |
+| `class Foo`          | Returns files that contain `class` (case insensitive) and `Foo` (case sensitive). |
+| `class Foo case:yes` | Returns files that contain `class` and `Foo` (both case sensitive).               |
+| `foo -bar`           | Returns files that contain `foo` but not `bar`.                                   |
+| `foo file:js`        | Searches for `foo` in files with names that contain `js`.                         |
+| `foo -file:test`     | Searches for `foo` in files with names that do not contain `test`.                |
+| `foo lang:ruby`      | Searches for `foo` in Ruby source code.                                           |
+| `foo file:\.js$`     | Searches for `foo` in files with names that end with `.js`.                       |
+| `foo.*bar`           | Searches for strings that match the regular expression `foo.*bar`.                |

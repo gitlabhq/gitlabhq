@@ -169,7 +169,9 @@ in your browser. To run a search from history:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. To view recent searches:
 
-   - For issues, on the left sidebar, select **Plan > Issues**. Above the list, to the left of the search box, select (**{history}**).
-   - For merge requests, on the left sidebar, select **Code > Merge requests**. Above the list, to the left of the search box, select **Recent searches**.
+   - For issues, select **Plan > Issues**.
+     To the left of the search box, select **Recent searches** (**{history}**).
+   - For merge requests, select **Code > Merge requests**.
+     To the left of the search box, select **Recent searches**.
 
 1. From the dropdown list, select a search.

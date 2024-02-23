@@ -341,6 +341,9 @@ You can follow or unfollow users from either:
 In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/360755),
 the maximum number of users you can follow is 300.
 
+In [GitLab 16.10 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/441774),
+blocked users don't appear in the followers list on user profiles.
+
 ### Disable following and being followed by other users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.

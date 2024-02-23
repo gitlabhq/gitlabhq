@@ -3113,6 +3113,8 @@
     - <<: *if-merge-request-labels-force-as-if-jh
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
       when: never
+    - <<: *if-merge-request-not-approved
+      when: never
     - <<: *if-merge-request-labels-as-if-jh
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
@@ -3140,6 +3142,8 @@
     - <<: *if-merge-request-labels-force-as-if-jh
       changes: *dependency-patterns
     - if: '$CI_AS_IF_JH_ENABLED != "true"'
+      when: never
+    - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-merge-request-labels-as-if-jh
       changes: *dependency-patterns

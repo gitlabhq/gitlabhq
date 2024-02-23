@@ -356,7 +356,51 @@ Sample raw job log:
 \e[0Ksection_start:1560896352:my_first_section\r\e[0KHeader of the 1st collapsible section
 this line should be hidden when collapsed
 \e[0Ksection_end:1560896353:my_first_section\r\e[0K
-```
+``` 
+
+Sample job console log:
+
+![Custom collapsible sections](img/collapsible-job.png)
+
+#### Use a script to improve display of collapsible sections
+
+To remove `echo` statements from the job output, you can move the job contents to a script file and invoke it from the job: 
+
+1. Create a script that can handle the section headers. For example: 
+
+   ```shell
+   # function for starting the section
+   function section_start () {
+     local section_title="${1}"
+     local section_description="${2:-$section_title}"
+
+     echo -e "section_start:`date +%s`:${section_title}[collapsed=true]\r\e[0K${section_description}"
+   }
+
+   # Function for ending the section
+   function section_end () {
+     local section_title="${1}"
+
+     echo -e "section_end:`date +%s`:${section_title}\r\e[0K"
+   }
+
+   # Create sections
+   section_start "my_first_section" "Header of the 1st collapsible section"
+
+   echo "this line should be hidden when collapsed"
+
+   section_end "my_first_section"
+
+   # Repeat as required
+   ```
+
+1. Add the script to the `.gitlab-ci.yml` file:
+
+   ```yaml
+   job:
+     script:
+       - source script.sh
+   ```
 
 ### Pre-collapse sections
 

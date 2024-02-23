@@ -519,3 +519,10 @@ apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new
 
 If you cannot link a subscription to your namespace, ensure that you have the Owner role
 for that namespace.
+
+### No purchases listed in the Customers Portal account
+
+To view purchases in the Customers Portal, in the **Manage Purchases** page, you
+must be a contact in your organization for the subscription.
+
+To be added as a contact, [create a ticket with the GitLab Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).

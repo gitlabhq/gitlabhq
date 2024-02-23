@@ -4378,6 +4378,19 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(user.following?(followee)).to be_falsey
     end
+
+    it 'does not include follow if follower user is banned' do
+      user = create(:user)
+
+      follower = create(:user)
+      follower.follow(user)
+
+      expect(user.followed_by?(follower)).to be_truthy
+
+      follower.ban
+
+      expect(user.followed_by?(follower)).to be_falsey
+    end
   end
 
   describe '#unfollow' do

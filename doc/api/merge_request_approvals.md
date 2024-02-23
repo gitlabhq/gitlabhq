@@ -31,6 +31,63 @@ This feature is not ready for production use.
 
 Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [Experiment](../policy/experiment-beta-support.md).
 
+### Get group-level approval rules
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440638) in GitLab 16.10.
+
+Group admins can request information about a group's approval rules using the following endpoint:
+
+```plaintext
+GET /groups/:id/approval_rules
+```
+
+Use the `page` and `per_page` [pagination](rest/index.md#offset-based-pagination) parameters to restrict the list of approval rules.
+
+Supported attributes:
+
+| Attribute | Type              | Required               | Description                                                                   |
+|-----------|-------------------|------------------------|-------------------------------------------------------------------------------|
+| `id`      | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/29/approval_rules"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 2,
+    "name": "rule1",
+    "rule_type": "any_approver",
+    "eligible_approvers": [],
+    "approvals_required": 3,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  },
+  {
+    "id": 3,
+    "name": "rule2",
+    "rule_type": "code_owner",
+    "eligible_approvers": [],
+    "approvals_required": 2,
+    "users": [],
+    "groups": [],
+    "contains_hidden_groups": false,
+    "protected_branches": [],
+    "applies_to_all_protected_branches": true
+  }
+]
+
+```
+
 ### Create group-level approval rules
 
 Group admins can create group level approval rules using the following endpoint:
