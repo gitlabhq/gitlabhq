@@ -117,6 +117,10 @@ module Ci
         transition any - [:success] => :success
       end
 
+      event :canceling do
+        transition any - [:canceling, :canceled] => :canceling
+      end
+
       event :cancel do
         transition any - [:canceled] => :canceled
       end
@@ -134,6 +138,7 @@ module Ci
       Ci::Pipeline.use_partition_id_filter?
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability, consider refactoring issue #439268
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_stage_set_status') do
         case new_status
@@ -145,6 +150,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then canceling
         when 'canceled' then cancel
         when 'manual' then block
         when 'scheduled' then delay
@@ -154,6 +160,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     # This will be removed with ci_remove_ensure_stage_service
     def update_legacy_status

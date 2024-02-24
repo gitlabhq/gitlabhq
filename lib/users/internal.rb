@@ -95,11 +95,11 @@ module Users
 
       # rubocop:enable CodeReuse/ActiveRecord
 
-      private
-
       def bot_avatar(image:)
         Rails.root.join('lib', 'assets', 'images', 'bot_avatars', image).open
       end
+
+      private
 
       # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
       # :before_all scope to keep the specs DRY.

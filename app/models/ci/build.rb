@@ -395,6 +395,12 @@ module Ci
       in_merge_request(merge_request_ids).pluck(:id)
     end
 
+    # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
+    # but only a Ci::Build will transition to `canceling`` via `.cancel`
+    def supports_canceling?
+      Feature.enabled?(:ci_canceling_status, project, type: :wip) && cancel_gracefully?
+    end
+
     def build_matcher
       strong_memoize(:build_matcher) do
         Gitlab::Ci::Matching::BuildMatcher.new({
@@ -472,7 +478,7 @@ module Ci
     # rubocop: enable CodeReuse/ServiceClass
 
     def cancelable?
-      active? || created?
+      (active? || created?) && !canceling?
     end
 
     def retries_count

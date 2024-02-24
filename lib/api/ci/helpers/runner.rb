@@ -82,7 +82,7 @@ module API
 
           forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?
           forbidden!('Job has been erased!') if job.erased?
-          job_forbidden!(job, 'Job is not running') unless job.running?
+          job_forbidden!(job, 'Job is not processing on runner') unless processing_on_runner?(job)
 
           # Only some requests (like updating the job or patching the trace) should trigger
           # runner heartbeat. Operations like artifacts uploading are executed in context of
@@ -151,6 +151,10 @@ module API
         end
 
         private
+
+        def processing_on_runner?(job)
+          job.running? || job.canceling?
+        end
 
         def get_runner_config_from_request
           { config: attributes_for_keys(%w[gpus], params.dig('info', 'config')) }

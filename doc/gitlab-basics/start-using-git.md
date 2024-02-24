@@ -263,7 +263,23 @@ Add another URL to a remote, so both remotes get updated on each push:
 git remote set-url --add <remote_name> <remote_url>
 ```
 
-## Show the log of reference changes to HEAD
+## Display changes to Git references
+
+A Git **reference** is a name that points to a specific commit, or to another reference.
+The reference `HEAD` is special. It usually points to a reference which points to the tip
+of the current working branch:
+
+```shell
+$ git show HEAD
+commit ab123c (HEAD -> main, origin/main, origin/HEAD)
+```
+
+When a reference is changed in the local repository, Git records the change
+in its **reference logs**. You can display the contents of the reference logs
+if you need to find the old values of a reference. For example, you might want
+to display the changes to `HEAD` in order to undo a change.
+
+To display the list of changes to `HEAD`:
 
 ```shell
 git reflog

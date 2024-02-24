@@ -193,11 +193,25 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           end
         end
 
-        it 'cancels the preparing build and shows retry button', :sidekiq_might_not_need_inline do
+        it 'does not show the retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
-            expect(page).to have_css('.js-icon-retry')
+            expect(page).not_to have_css('.js-icon-retry')
+          end
+        end
+
+        context 'when ci_canceling_status is disabled' do
+          before do
+            stub_feature_flags(ci_canceling_status: false)
+          end
+
+          it 'shows retry button', :sidekiq_inline do
+            find('#ci-badge-deploy .ci-action-icon-container').click
+
+            page.within('#ci-badge-deploy') do
+              expect(page).to have_css('.js-icon-retry')
+            end
           end
         end
       end
@@ -371,15 +385,25 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
               expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
             end
 
-            context 'when canceling', :sidekiq_inline do
+            context 'when cancel button clicked', :sidekiq_inline do
               before do
                 find('button[aria-label="Cancel downstream pipeline"]').click
-                wait_for_requests
               end
 
-              it 'shows the pipeline as canceled with the retry action' do
-                expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+              it 'shows the pipeline as canceling with the retry action' do
                 expect(page).to have_selector('[data-testid="status_canceled_borderless-icon"]')
+                expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+              end
+
+              context 'when ci_canceling_status is disabled' do
+                before do
+                  stub_feature_flags(ci_canceling_status: false)
+                end
+
+                it 'shows the pipeline as canceled with the retry action' do
+                  expect(page).to have_selector('[data-testid="status_canceled_borderless-icon"]')
+                  expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+                end
               end
             end
           end
@@ -387,19 +411,25 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           context 'with a failed downstream' do
             let(:status) { :failed }
 
-            it 'indicates that pipeline can be retried' do
-              expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
-            end
-
-            context 'when retrying' do
+            context 'when ci_canceling_status is disabled' do
               before do
-                find('button[aria-label="Retry downstream pipeline"]').click
-                wait_for_requests
+                stub_feature_flags(ci_canceling_status: false)
               end
 
-              it 'shows running pipeline with the cancel action' do
-                expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
-                expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
+              it 'indicates that pipeline can be retried' do
+                expect(page).to have_selector('button[aria-label="Retry downstream pipeline"]')
+              end
+
+              context 'when retrying' do
+                before do
+                  find('button[aria-label="Retry downstream pipeline"]').click
+                  wait_for_requests
+                end
+
+                it 'shows running pipeline with the cancel action' do
+                  expect(page).to have_selector('[data-testid="status_running_borderless-icon"]')
+                  expect(page).to have_selector('button[aria-label="Cancel downstream pipeline"]')
+                end
               end
             end
           end
@@ -546,16 +576,19 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
     context 'canceling jobs' do
       before do
         visit_pipeline
+        click_on 'Cancel pipeline'
       end
 
-      it { expect(page).not_to have_selector('.ci-canceled') }
+      it 'does not show a "Cancel pipeline" button', :sidekiq_inline do
+        expect(page).not_to have_content('Cancel pipeline')
+      end
 
-      context 'when canceling' do
+      context 'when ci_canceling_status disabled' do
         before do
-          click_on 'Cancel pipeline'
+          stub_feature_flags(ci_canceling_status: false)
         end
 
-        it 'does not show a "Cancel pipeline" button', :sidekiq_might_not_need_inline do
+        it 'does not show a "Cancel pipeline" button', :sidekiq_inline do
           expect(page).not_to have_content('Cancel pipeline')
         end
       end

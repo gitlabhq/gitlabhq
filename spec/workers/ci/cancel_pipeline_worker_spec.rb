@@ -54,7 +54,9 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
     end
 
     describe 'with builds and state transition side effects', :sidekiq_inline do
-      let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
+      let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+      include_context 'when canceling support'
 
       it_behaves_like 'an idempotent worker', :sidekiq_inline do
         let(:job_args) { [pipeline.id, pipeline.id] }
@@ -64,8 +66,8 @@ RSpec.describe Ci::CancelPipelineWorker, :aggregate_failures, feature_category: 
 
           pipeline.reload
 
-          expect(pipeline).to be_canceled
-          expect(pipeline.builds.first).to be_canceled
+          expect(pipeline).to be_canceling
+          expect(pipeline.builds.first).to be_canceling
           expect(pipeline.builds.first.auto_canceled_by_id).to eq pipeline.id
           expect(pipeline.auto_canceled_by_id).to eq pipeline.id
         end

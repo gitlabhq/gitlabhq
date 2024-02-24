@@ -187,7 +187,7 @@ module Ci
     state_machine :status, initial: :created do
       event :enqueue do
         transition [:created, :manual, :waiting_for_resource, :preparing, :skipped, :scheduled] => :pending
-        transition [:success, :failed, :canceled] => :running
+        transition [:success, :failed, :canceling, :canceled] => :running
 
         # this is needed to ensure tests to be covered
         transition [:running] => :running
@@ -224,6 +224,10 @@ module Ci
         # manual job transitions to the `manual` status.
         # More info: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98967#note_1144718316
         transition any => :success
+      end
+
+      event :canceling do
+        transition any - [:canceling, :canceled] => :canceling
       end
 
       event :cancel do
@@ -866,6 +870,7 @@ module Ci
       project.notes.for_commit_id(sha)
     end
 
+    # rubocop: disable Metrics/CyclomaticComplexity -- breaking apart hurts readability
     def set_status(new_status)
       retry_optimistic_lock(self, name: 'ci_pipeline_set_status') do
         case new_status
@@ -877,6 +882,7 @@ module Ci
         when 'running' then run
         when 'success' then succeed
         when 'failed' then drop
+        when 'canceling' then canceling
         when 'canceled' then cancel
         when 'skipped' then skip
         when 'manual' then block
@@ -886,6 +892,7 @@ module Ci
         end
       end
     end
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     def protected_ref?
       strong_memoize(:protected_ref) { project.protected_for?(git_ref) }

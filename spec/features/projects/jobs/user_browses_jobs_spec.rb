@@ -69,13 +69,32 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
           visit_jobs_page
         end
 
-        it 'cancels a job successfully' do
-          find_by_testid('cancel-button').click
+        context 'when supports canceling is true' do
+          include_context 'when canceling support'
 
-          wait_for_requests
+          it 'cancels a job successfully' do
+            find_by_testid('cancel-button').click
 
-          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
-          expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
+            wait_for_requests
+
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceling')
+            expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
+          end
+        end
+
+        context 'when supports canceling is false' do
+          before do
+            stub_feature_flags(ci_canceling_status: false)
+          end
+
+          it 'cancels a job successfully' do
+            find_by_testid('cancel-button').click
+
+            wait_for_requests
+
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
+            expect(page).not_to have_selector('[data-testid="jobs-table-error-alert"]')
+          end
         end
       end
 

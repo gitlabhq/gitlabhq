@@ -306,7 +306,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
           context 'when only interruptible builds are running' do
             context 'when build marked explicitly by interruptible is running' do
-              it 'cancels running outdated pipelines', :sidekiq_might_not_need_inline do
+              it 'cancels running outdated pipelines', :sidekiq_inline do
                 pipeline_on_previous_commit
                   .builds
                   .find_by_name('build_1_2')
@@ -320,7 +320,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
             end
 
             context 'when build that is not marked as interruptible is running' do
-              it 'cancels running outdated pipelines', :sidekiq_might_not_need_inline do
+              it 'cancels running outdated pipelines', :sidekiq_inline do
                 build_2_1 = pipeline_on_previous_commit
                   .builds.find_by_name('build_2_1')
 

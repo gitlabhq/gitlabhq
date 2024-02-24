@@ -89,11 +89,17 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
       from_status_names.product(to_status_names)
     end
 
+    let(:not_transitionable) do
+      [
+        { from_status: :canceled, to_status: :canceling }
+      ]
+    end
+
     with_them do
       it do
         stage.status = from_status.to_s
 
-        if from_status != to_status
+        if from_status != to_status && transitionable?(from_status, to_status)
           expect(stage.set_status(to_status.to_s))
             .to eq(true)
         else
@@ -101,6 +107,24 @@ RSpec.describe Ci::Stage, :models, feature_category: :continuous_integration do
             .to eq(false), "loopback transitions are not allowed"
         end
       end
+    end
+
+    def transitionable?(from, to)
+      not_transitionable.each do |exclusion|
+        return false if from.to_sym == exclusion[:from_status].to_sym && to.to_sym == exclusion[:to_status].to_sym
+      end
+
+      true
+    end
+  end
+
+  describe '#canceling' do
+    it 'transitions to canceling' do
+      stage = create(:ci_stage, pipeline: pipeline, project: pipeline.project, status: 'running')
+      create(:ci_build, :success, stage_id: stage.id)
+      create(:ci_build, :running, stage_id: stage.id)
+
+      expect { stage.canceling }.to change { stage.status }.from('running').to('canceling')
     end
   end
 

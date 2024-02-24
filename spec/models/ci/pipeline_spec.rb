@@ -283,6 +283,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe '#set_status' do
     let(:pipeline) { build(:ci_empty_pipeline, :created) }
 
+    let(:not_transitionable) do
+      [
+        { from_status: :canceled, to_status: :canceling }
+      ]
+    end
+
     where(:from_status, :to_status) do
       from_status_names = described_class.state_machines[:status].states.map(&:name)
       to_status_names = from_status_names - [:created] # we never want to transition into created
@@ -294,12 +300,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       it do
         pipeline.status = from_status.to_s
 
-        if from_status != to_status || success_to_success?
+        if (from_status != to_status || success_to_success?) && transitionable?(from_status, to_status)
           expect(pipeline.set_status(to_status.to_s))
             .to eq(true)
         else
           expect(pipeline.set_status(to_status.to_s))
-            .to eq(false), "loopback transitions are not allowed"
+            .to eq(false), 'loopback transitions are not allowed'
         end
       end
 
@@ -307,6 +313,14 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       def success_to_success?
         from_status == :success && to_status == :success
+      end
+
+      def transitionable?(from, to)
+        not_transitionable.each do |exclusion|
+          return false if from.to_sym == exclusion[:from_status].to_sym && to.to_sym == exclusion[:to_status].to_sym
+        end
+
+        true
       end
     end
   end
@@ -1469,6 +1483,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     let(:build) { create_build('build1', queued_at: 0) }
     let(:build_b) { create_build('build2', queued_at: 0) }
     let(:build_c) { create_build('build3', queued_at: 0) }
+
+    describe '#canceling' do
+      it 'transitions to canceling' do
+        expect { pipeline.canceling }.to change { pipeline.status }.from('created').to('canceling')
+      end
+    end
 
     %w[succeed! drop! cancel! skip! block! delay!].each do |action|
       context "when the pipeline received #{action} event" do
@@ -2940,7 +2960,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     subject { described_class.bridgeable_statuses }
 
     it { is_expected.to be_an(Array) }
-    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceled', 'skipped', 'manual', 'scheduled') }
+    it { is_expected.to contain_exactly('running', 'success', 'failed', 'canceling', 'canceled', 'skipped', 'manual', 'scheduled') }
   end
 
   describe '#status', :sidekiq_inline do

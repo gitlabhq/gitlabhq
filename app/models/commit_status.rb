@@ -165,15 +165,18 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     event :drop do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :failed
     end
 
     event :success do
+      transition canceling: :canceled # runner returns success/failed
       transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual, :scheduled] => :canceled
+      transition running: :canceling, if: :supports_canceling?
+      transition [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :manual, :scheduled, :running] => :canceled
     end
 
     before_transition [:created, :waiting_for_resource, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
@@ -256,6 +259,10 @@ class CommitStatus < Ci::ApplicationRecord
     regex = %r{([\b\s:]+((\[.*\])|(\d+[\s:\/\\]+\d+))){1,3}\s*\z}
 
     name.to_s.sub(regex, '').strip
+  end
+
+  def supports_canceling?
+    false
   end
 
   # Time spent running.

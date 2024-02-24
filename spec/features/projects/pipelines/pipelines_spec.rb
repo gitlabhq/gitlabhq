@@ -104,30 +104,58 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       end
 
       context 'when pipeline is cancelable' do
-        let!(:build) do
+        let!(:job) do
           create(:ci_build, pipeline: pipeline, stage: 'test')
         end
 
         before do
-          build.run
+          job.run
           visit_project_pipelines
         end
 
-        it 'indicates that pipeline can be canceled' do
-          expect(page).to have_selector('.js-pipelines-cancel-button')
-          expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
-        end
-
-        context 'when canceling' do
+        context 'when canceling support is disabled' do
           before do
-            find('.js-pipelines-cancel-button').click
-            click_button 'Stop pipeline'
-            wait_for_requests
+            stub_feature_flags(ci_canceling_status: false)
           end
 
-          it 'indicated that pipelines was canceled', :sidekiq_might_not_need_inline do
-            expect(page).not_to have_selector('.js-pipelines-cancel-button')
-            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
+          it 'indicates that pipeline can be canceled' do
+            expect(page).to have_selector('.js-pipelines-cancel-button')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
+          end
+
+          context 'when canceling' do
+            before do
+              find('.js-pipelines-cancel-button').click
+              click_button 'Stop pipeline'
+              wait_for_requests
+            end
+
+            it 'indicates that pipelines was canceled', :sidekiq_inline do
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceled')
+            end
+          end
+        end
+
+        context 'when canceling support is enabled' do
+          include_context 'when canceling support'
+
+          it 'indicates that pipeline can be canceled' do
+            expect(page).to have_selector('.js-pipelines-cancel-button')
+            expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
+          end
+
+          context 'when canceling' do
+            before do
+              find('.js-pipelines-cancel-button').click
+              click_button 'Stop pipeline'
+              wait_for_requests
+            end
+
+            it 'indicates that pipeline is canceling', :sidekiq_inline do
+              expect(page).not_to have_selector('.js-pipelines-cancel-button')
+              expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceling')
+            end
           end
         end
       end

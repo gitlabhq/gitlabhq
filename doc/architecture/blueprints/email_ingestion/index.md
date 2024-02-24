@@ -116,7 +116,7 @@ Remove all other legacy email ingestion infrastructure.**
 flowchart TB
   User --Sends email--> provider[(Email provider mailbox)]
   ingestion --Fetch unread emails via IMAP or Microsoft Graph API--> provider
-  controller --Triggers a job for each mailbox--> ingestion
+  controller --"Triggers a job for each mailbox"--> ingestion
   ingestion --Adds a job for each fetched email--> create
 
   subgraph GitLab
@@ -125,7 +125,7 @@ flowchart TB
     create["Existing Sidekiq email handler jobs
   that create issue/note based
   on email address"]
-  end
+end
 ```
 
 1. Use a `controller` job that is scheduled every minute or every two minutes. This job adds one job for each configured mailbox (`incoming_email` and `service_desk_email`).

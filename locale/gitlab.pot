@@ -10605,6 +10605,9 @@ msgstr ""
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
+msgid "CiStatusLabel|canceling"
+msgstr ""
+
 msgid "CiStatusLabel|created"
 msgstr ""
 
@@ -10651,6 +10654,9 @@ msgid "CiStatusText|Blocked"
 msgstr ""
 
 msgid "CiStatusText|Canceled"
+msgstr ""
+
+msgid "CiStatusText|Canceling"
 msgstr ""
 
 msgid "CiStatusText|Created"
@@ -33398,9 +33404,6 @@ msgstr ""
 msgid "Notify|%{mr_highlight}Merge request%{highlight_end} %{mr_link} %{reviewer_highlight}was unapproved by%{highlight_end} %{reviewer_avatar} %{reviewer_link}"
 msgstr ""
 
-msgid "Notify|%{name} requested a new review on %{mr_link}."
-msgstr ""
-
 msgid "Notify|%{p_start}To update the remote url in your local repository run (for ssh):%{p_end} %{ssh_url_to_repo} %{p_start}or for http(s):%{p_end} %{http_url_to_repo}"
 msgstr ""
 
@@ -51193,6 +51196,9 @@ msgid "This job is deployed to %{environmentLink}."
 msgstr ""
 
 msgid "This job is in pending state and is waiting to be picked by a runner"
+msgstr ""
+
+msgid "This job is in the process of canceling"
 msgstr ""
 
 msgid "This job is performing tasks that must complete before it can start"

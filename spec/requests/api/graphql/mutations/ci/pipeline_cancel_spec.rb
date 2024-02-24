@@ -40,13 +40,33 @@ RSpec.describe 'PipelineCancel', feature_category: :continuous_integration do
     expect(build).not_to be_canceled
   end
 
-  it 'cancels all cancelable builds from a pipeline', :sidekiq_inline do
-    build = create(:ci_build, :running, pipeline: pipeline)
+  context 'when running build' do
+    let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
 
-    post_graphql_mutation(mutation, current_user: user)
+    context 'when supports canceling is true' do
+      include_context 'when canceling support'
 
-    expect(response).to have_gitlab_http_status(:success)
-    expect(build.reload).to be_canceled
-    expect(pipeline.reload).to be_canceled
+      it 'transitions all running jobs to canceling', :sidekiq_inline do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(job.reload).to be_canceling
+        expect(pipeline.reload).to be_canceling
+      end
+    end
+
+    context 'when supports canceling is false' do
+      before do
+        stub_feature_flags(ci_canceling_status: false)
+      end
+
+      it 'cancels all running jobs to canceled', :sidekiq_inline do
+        post_graphql_mutation(mutation, current_user: user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(job.reload).to be_canceled
+        expect(pipeline.reload).to be_canceled
+      end
+    end
   end
 end
