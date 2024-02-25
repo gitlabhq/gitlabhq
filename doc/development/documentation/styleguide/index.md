@@ -677,7 +677,7 @@ To enable the setting:
   ```
 
 To format a table with this extension, select the entire table, right-click the selection,
-and select **Format selection**.
+and select **Format Selection With**. Select **Markdown Table Formatter** in the VS Code Command Palette.
 
 Alternatively, if you use Sublime Text you can try the [Markdown Table Formatter](https://packagecontrol.io/packages/Markdown%20Table%20Formatter)
 plugin, but it does not have a **Follow header row length** setting.
