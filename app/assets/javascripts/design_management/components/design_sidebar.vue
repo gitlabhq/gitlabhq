@@ -11,7 +11,6 @@ import { extractDiscussions, extractParticipants } from '../utils/design_managem
 import DesignDiscussion from './design_notes/design_discussion.vue';
 import DescriptionForm from './design_description/description_form.vue';
 import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
-import DesignTodoButton from './design_todo_button.vue';
 import DesignDisclosure from './design_disclosure.vue';
 
 export default {
@@ -22,7 +21,6 @@ export default {
     GlAccordion,
     GlAccordionItem,
     GlSkeletonLoader,
-    DesignTodoButton,
     DescriptionForm,
     DesignDisclosure,
   },
@@ -139,13 +137,7 @@ export default {
   <design-disclosure :open="true">
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
-        <div
-          class="gl-py-4 gl-mb-4 gl-display-flex gl-justify-content-space-between gl-align-items-center gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
-        >
-          <span>{{ __('To Do') }}</span>
-          <design-todo-button :design="design" @error="$emit('todoError', $event)" />
-        </div>
-        <h2 class="gl-font-weight-bold gl-mt-0">
+        <h2 class="gl-font-weight-bold gl-mt-4">
           {{ issue.title }}
         </h2>
         <a

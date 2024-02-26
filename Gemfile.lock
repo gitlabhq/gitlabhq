@@ -328,7 +328,7 @@ GEM
     axe-core-api (4.8.0)
       dumb_delegator
       virtus
-    axe-core-rspec (4.8.0)
+    axe-core-rspec (4.8.2)
       axe-core-api
       dumb_delegator
       virtus
@@ -685,7 +685,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (16.9.0.pre.rc3)
+    gitaly (16.9.1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1840,7 +1840,7 @@ DEPENDENCIES
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.191.3)
   aws-sdk-s3 (~> 1.143.0)
-  axe-core-rspec (~> 4.8.0)
+  axe-core-rspec (~> 4.8.2)
   babosa (~> 2.0)
   base32 (~> 0.3.0)
   batch-loader (~> 2.0.1)
@@ -1909,7 +1909,7 @@ DEPENDENCIES
   fuubar (~> 2.2.0)
   gettext (~> 3.3)
   gettext_i18n_rails (~> 1.11.0)
-  gitaly (~> 16.9.0.pre.rc3)
+  gitaly (~> 16.9.1)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.6.0)

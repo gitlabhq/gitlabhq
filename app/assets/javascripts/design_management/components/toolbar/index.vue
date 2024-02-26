@@ -6,6 +6,7 @@ import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import DeleteButton from '../delete_button.vue';
+import DesignTodoButton from '../design_todo_button.vue';
 import DesignNavigation from './design_navigation.vue';
 
 export default {
@@ -18,6 +19,7 @@ export default {
     GlSkeletonLoader,
     DesignNavigation,
     DeleteButton,
+    DesignTodoButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -68,6 +70,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    design: {
+      type: Object,
+      required: true,
+    },
   },
   data() {
     return {
@@ -115,6 +121,7 @@ export default {
       </div>
     </div>
     <design-navigation :id="id" class="gl-ml-auto gl-flex-shrink-0" />
+    <design-todo-button :design="design" class="gl-mr-3" @error="$emit('todoError', $event)" />
     <gl-button
       v-gl-tooltip.bottom
       :href="image"

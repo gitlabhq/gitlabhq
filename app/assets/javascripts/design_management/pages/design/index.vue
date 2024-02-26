@@ -350,6 +350,7 @@ export default {
             :is-deleting="loading"
             :is-latest-version="isLatestVersion"
             :is-loading="isLoading"
+            :design="design"
             v-bind="design"
             @delete="mutate"
           />

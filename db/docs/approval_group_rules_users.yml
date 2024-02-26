@@ -1,6 +1,7 @@
 ---
 table_name: approval_group_rules_users
-classes: []
+classes:
+- ApprovalRules::ApprovalGroupRulesUser
 feature_categories:
   - source_code_management
 description: Keeps connection between user and a group approval rule

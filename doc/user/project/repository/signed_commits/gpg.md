@@ -255,6 +255,7 @@ If you must unverify both future and past commits,
 
 ## Related topics
 
+- [Configure commit signing for commits made in the web UI](../../../../administration/gitaly/configure_gitaly.md#configure-commit-signing-for-gitlab-ui-commits)
 - GPG resources:
   - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
   - [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)

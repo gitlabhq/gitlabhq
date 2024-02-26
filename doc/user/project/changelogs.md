@@ -145,6 +145,7 @@ Category sections are generated using a template. The default template:
 - [{{ title }}]({{ commit.reference }})\
 {% if author.credit %} by {{ author.reference }}{% end %}\
 {% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
+{% if commit.trailers.Issue %} ([issue]({{ commit.trailers.Issue }})){% end %}
 
 {% end %}
 

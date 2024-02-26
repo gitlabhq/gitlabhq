@@ -26,6 +26,10 @@ exports[`Design management toolbar component renders design and updated data 1`]
     class="gl-flex-shrink-0 gl-ml-auto"
     id="reference-0"
   />
+  <design-todo-button-stub
+    class="gl-mr-3"
+    design="[object Object]"
+  />
   <gl-button-stub
     aria-label="Download design"
     buttontextclasses=""

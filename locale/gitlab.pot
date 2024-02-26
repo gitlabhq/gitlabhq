@@ -54494,7 +54494,7 @@ msgstr ""
 msgid "Users can launch a development environment from a GitLab browser tab when the %{linkStart}Gitpod%{linkEnd} integration is enabled."
 msgstr ""
 
-msgid "Users can reactivate their account by signing in. %{link_start}Learn more.%{link_end}"
+msgid "Users can reactivate their account by signing in. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki."
@@ -54503,7 +54503,7 @@ msgstr ""
 msgid "Users can request access (if visibility is public or internal)"
 msgstr ""
 
-msgid "Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more.%{link_end}"
+msgid "Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Users cannot be added to projects in this group"

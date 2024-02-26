@@ -37,18 +37,8 @@ exports[`Design management design index page renders design index 1`] = `
         <div
           class="gl-h-full gl-pt-0 image-notes"
         >
-          <div
-            class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
-          >
-            <span>
-              To Do
-            </span>
-            <design-todo-button-stub
-              design="[object Object]"
-            />
-          </div>
           <h2
-            class="gl-font-weight-bold gl-mt-0"
+            class="gl-font-weight-bold gl-mt-4"
           >
             My precious issue
           </h2>
@@ -166,18 +156,8 @@ exports[`Design management design index page with error GlAlert is rendered in c
         <div
           class="gl-h-full gl-pt-0 image-notes"
         >
-          <div
-            class="gl-align-items-center gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-display-flex gl-justify-content-space-between gl-mb-4 gl-py-4"
-          >
-            <span>
-              To Do
-            </span>
-            <design-todo-button-stub
-              design="[object Object]"
-            />
-          </div>
           <h2
-            class="gl-font-weight-bold gl-mt-0"
+            class="gl-font-weight-bold gl-mt-4"
           >
             My precious issue
           </h2>

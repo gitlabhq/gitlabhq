@@ -1,6 +1,7 @@
 ---
 table_name: approval_merge_request_rules_approved_approvers
-classes: []
+classes:
+- ApprovalRules::ApprovalMergeRequestRulesApprovedApprover
 feature_categories:
 - code_review_workflow
 description: Join table for approved approvers and ApprovalMergeRequestRule

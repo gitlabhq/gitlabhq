@@ -7,9 +7,11 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import DeleteButton from '~/design_management/components/delete_button.vue';
+import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import Toolbar from '~/design_management/components/toolbar/index.vue';
 import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 import { getPermissionsQueryResponse } from '../../mock_data/apollo_mock';
+import design from '../../mock_data/design';
 
 Vue.use(VueRouter);
 Vue.use(VueApollo);
@@ -45,6 +47,7 @@ describe('Design management toolbar component', () => {
         isLatestVersion: true,
         isLoading,
         isDeleting: false,
+        design,
         filename: 'test.jpg',
         updatedAt: updatedAt.toString(),
         updatedBy: {
@@ -103,6 +106,12 @@ describe('Design management toolbar component', () => {
     await waitForPromises();
 
     expect(wrapper.findComponent(DeleteButton).exists()).toBe(false);
+  });
+
+  it('renders To-Do button', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(true);
   });
 
   it('emits `delete` event on deleteButton `delete-selected-designs` event', async () => {

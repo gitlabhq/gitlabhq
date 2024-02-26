@@ -159,7 +159,7 @@ module Gitlab
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
-            connection.execute("ANALYZE VERBOSE #{model.quoted_table_name}")
+            connection.execute("ANALYZE #{model.quoted_table_name}")
           end
         end
 

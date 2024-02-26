@@ -4,7 +4,6 @@ import { nextTick } from 'vue';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
-import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import Participants from '~/sidebar/components/participants/participants.vue';
@@ -92,12 +91,6 @@ describe('Design management design sidebar component', () => {
     createComponent();
 
     expect(findParticipants().props('participants')).toHaveLength(1);
-  });
-
-  it('renders To-Do button', () => {
-    createComponent();
-
-    expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(true);
   });
 
   describe('when has no discussions', () => {
