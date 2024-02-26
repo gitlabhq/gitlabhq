@@ -4,14 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BacktraceCleaner do
   describe '.clean_backtrace' do
-    it 'uses the Rails backtrace cleaner' do
-      backtrace = []
-
-      expect(Rails.backtrace_cleaner).to receive(:clean).with(backtrace)
-
-      described_class.clean_backtrace(backtrace)
-    end
-
     it 'removes lines from IGNORE_BACKTRACES' do
       backtrace = [
         "lib/gitlab/gitaly_client.rb:294:in `block (2 levels) in migrate'",

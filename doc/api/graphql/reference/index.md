@@ -42,8 +42,8 @@ The `Query` type contains the API's top-level entry points for all executable qu
 
 Find an abuse report.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Returns [`AbuseReport`](#abusereport).
@@ -58,8 +58,8 @@ Returns [`AbuseReport`](#abusereport).
 
 Abuse report labels.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Returns [`LabelConnection`](#labelconnection).
@@ -78,8 +78,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Retrieve the active add-on purchase. This query can be used in GitLab SaaS and self-managed environments.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`AddOnPurchase`](#addonpurchase).
@@ -95,8 +95,8 @@ Returns [`AddOnPurchase`](#addonpurchase).
 
 Find GitLab Duo Chat messages.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Returns [`AiMessageConnection!`](#aimessageconnection).
@@ -156,8 +156,8 @@ Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
 A single CI/CD Catalog resource visible to an authorized user.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Returns [`CiCatalogResource`](#cicatalogresource).
@@ -173,8 +173,8 @@ Returns [`CiCatalogResource`](#cicatalogresource).
 
 All CI/CD Catalog resources under a common namespace, visible to an authorized user.
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
@@ -206,7 +206,7 @@ Returns [`CiConfig`](#ciconfig).
 | <a id="queryciconfigdryrun"></a>`dryRun` | [`Boolean`](#boolean) | Run pipeline creation simulation, or only do static check. |
 | <a id="queryciconfigprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the CI config. |
 | <a id="queryciconfigsha"></a>`sha` | [`String`](#string) | Sha for the pipeline. |
-| <a id="queryciconfigskipverifyprojectsha"></a>`skipVerifyProjectSha` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.5. **Status**: Experiment. If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
+| <a id="queryciconfigskipverifyprojectsha"></a>`skipVerifyProjectSha` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. If the provided `sha` is found in the project's repository but is not associated with a Git reference (a detached commit), the verification fails and a validation error is returned. Otherwise, verification passes, even if the `sha` is invalid. Set to `true` to skip this verification process. |
 
 ### `Query.ciMinutesUsage`
 
@@ -241,8 +241,8 @@ Returns [`CiStage`](#cistage).
 
 Time it took for ci job to be picked up by runner in percentiles.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
@@ -344,8 +344,8 @@ Returns [`EpicList`](#epiclist).
 
 GitLab Duo Vulnerability explanation prompt for a specified vulnerability.
 
-NOTE:
-**Introduced** in 16.2.
+DETAILS:
+**Introduced** in GitLab 16.2.
 **Status**: Experiment.
 
 Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
@@ -457,8 +457,8 @@ Returns [`Issue`](#issue).
 
 Find issues visible to the current user. At least one filter must be provided.
 
-NOTE:
-**Introduced** in 15.6.
+DETAILS:
+**Introduced** in GitLab 15.6.
 **Status**: Experiment.
 
 Returns [`IssueConnection`](#issueconnection).
@@ -472,7 +472,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryissuesassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported. |
-| <a id="queryissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.11. Use `assigneeUsernames`. |
+| <a id="queryissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.11. Use `assigneeUsernames`. |
 | <a id="queryissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="queryissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="queryissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
@@ -536,8 +536,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryjobsfailurereason"></a>`failureReason` **{warning-solid}** | [`CiJobFailureReason`](#cijobfailurereason) | **Introduced** in 16.4. **Status**: Experiment. Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
-| <a id="queryjobsrunnertypes"></a>`runnerTypes` **{warning-solid}** | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in 16.4. **Status**: Experiment. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
+| <a id="queryjobsfailurereason"></a>`failureReason` **{warning-solid}** | [`CiJobFailureReason`](#cijobfailurereason) | **Introduced** in GitLab 16.4. **Status**: Experiment. Filter jobs by failure reason. Currently only `RUNNER_SYSTEM_FAILURE` together with `runnerTypes: INSTANCE_TYPE` is supported. |
+| <a id="queryjobsrunnertypes"></a>`runnerTypes` **{warning-solid}** | [`[CiRunnerType!]`](#cirunnertype) | **Introduced** in GitLab 16.4. **Status**: Experiment. Filter jobs by runner type if feature flag `:admin_jobs_filter_runner_type` is enabled. |
 | <a id="queryjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 
 ### `Query.licenseHistoryEntries`
@@ -554,8 +554,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Finds a single custom role.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`MemberRole`](#memberrole).
@@ -572,8 +572,8 @@ Returns [`MemberRole`](#memberrole).
 
 List of all customizable permissions.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`CustomizablePermissionConnection`](#customizablepermissionconnection).
@@ -586,8 +586,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Member roles available for the instance.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
@@ -638,8 +638,8 @@ Returns [`Milestone`](#milestone).
 
 Find machine learning models.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`MlModel`](#mlmodel).
@@ -666,8 +666,8 @@ Returns [`Namespace`](#namespace).
 
 Find a note.
 
-NOTE:
-**Introduced** in 15.9.
+DETAILS:
+**Introduced** in GitLab 15.9.
 **Status**: Experiment.
 
 Returns [`Note`](#note).
@@ -682,8 +682,8 @@ Returns [`Note`](#note).
 
 Find an organization.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`Organization`](#organization).
@@ -698,8 +698,8 @@ Returns [`Organization`](#organization).
 
 List organizations.
 
-NOTE:
-**Introduced** in 16.8.
+DETAILS:
+**Introduced** in GitLab 16.8.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -778,8 +778,8 @@ Returns [`CiRunner`](#cirunner).
 
 Supported runner platforms.
 
-NOTE:
-**Deprecated** in 15.9.
+DETAILS:
+**Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about supported platforms.
 
 Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
@@ -792,8 +792,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Runner setup instructions.
 
-NOTE:
-**Deprecated** in 15.9.
+DETAILS:
+**Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about runner registration commands.
 
 Returns [`RunnerSetup`](#runnersetup).
@@ -803,16 +803,16 @@ Returns [`RunnerSetup`](#runnersetup).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnersetuparchitecture"></a>`architecture` | [`String!`](#string) | Architecture to generate the instructions for. |
-| <a id="queryrunnersetupgroupid"></a>`groupId` **{warning-solid}** | [`GroupID`](#groupid) | **Deprecated** in 13.11. No longer used. |
+| <a id="queryrunnersetupgroupid"></a>`groupId` **{warning-solid}** | [`GroupID`](#groupid) | **Deprecated** in GitLab 13.11. No longer used. |
 | <a id="queryrunnersetupplatform"></a>`platform` | [`String!`](#string) | Platform to generate the instructions for. |
-| <a id="queryrunnersetupprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Deprecated** in 13.11. No longer used. |
+| <a id="queryrunnersetupprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Deprecated** in GitLab 13.11. No longer used. |
 
 ### `Query.runnerUsage`
 
 Runner usage by runner.
 
-NOTE:
-**Introduced** in 16.9.
+DETAILS:
+**Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
 Returns [`[CiRunnerUsage!]`](#cirunnerusage).
@@ -830,8 +830,8 @@ Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 
 Runner usage by project.
 
-NOTE:
-**Introduced** in 16.9.
+DETAILS:
+**Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
 Returns [`[CiRunnerUsageByProject!]`](#cirunnerusagebyproject).
@@ -859,9 +859,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="queryrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="queryrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="queryrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="queryrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="queryrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="queryrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="queryrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -869,14 +869,14 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="queryrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="queryrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="queryrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="queryrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ### `Query.selfManagedAddOnEligibleUsers`
 
 Users within the self-managed instance who are eligible for add-ons.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
@@ -927,8 +927,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Find a synthetic note.
 
-NOTE:
-**Introduced** in 15.9.
+DETAILS:
+**Introduced** in GitLab 15.9.
 **Status**: Experiment.
 
 Returns [`Note`](#note).
@@ -1107,8 +1107,8 @@ Returns [`Vulnerability`](#vulnerability).
 
 Find a work item.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Returns [`WorkItem`](#workitem).
@@ -1123,8 +1123,8 @@ Returns [`WorkItem`](#workitem).
 
 Find work items by their reference.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`WorkItemConnection`](#workitemconnection).
@@ -1169,7 +1169,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="queryworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="queryworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="queryworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="queryworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="queryworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 | <a id="queryworkspacesuserids"></a>`userIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by user GlobalIDs. |
 
@@ -1194,8 +1194,8 @@ mutation($id: NoteableID!, $body: String!) {
 
 ### `Mutation.abuseReportLabelCreate`
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Input type: `AbuseReportLabelCreateInput`
@@ -1218,8 +1218,8 @@ Input type: `AbuseReportLabelCreateInput`
 
 ### `Mutation.achievementsAward`
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Input type: `AchievementsAwardInput`
@@ -1242,8 +1242,8 @@ Input type: `AchievementsAwardInput`
 
 ### `Mutation.achievementsCreate`
 
-NOTE:
-**Introduced** in 15.8.
+DETAILS:
+**Introduced** in GitLab 15.8.
 **Status**: Experiment.
 
 Input type: `AchievementsCreateInput`
@@ -1268,8 +1268,8 @@ Input type: `AchievementsCreateInput`
 
 ### `Mutation.achievementsDelete`
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Input type: `AchievementsDeleteInput`
@@ -1291,8 +1291,8 @@ Input type: `AchievementsDeleteInput`
 
 ### `Mutation.achievementsRevoke`
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Input type: `AchievementsRevokeInput`
@@ -1314,8 +1314,8 @@ Input type: `AchievementsRevokeInput`
 
 ### `Mutation.achievementsUpdate`
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Input type: `AchievementsUpdateInput`
@@ -1399,8 +1399,8 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 
 ### `Mutation.aiAction`
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Input type: `AiActionInput`
@@ -1434,8 +1434,8 @@ Input type: `AiActionInput`
 
 ### `Mutation.aiAgentCreate`
 
-NOTE:
-**Introduced** in 16.8.
+DETAILS:
+**Introduced** in GitLab 16.8.
 **Status**: Experiment.
 
 Input type: `AiAgentCreateInput`
@@ -2047,8 +2047,8 @@ Input type: `BoardListUpdateLimitMetricsInput`
 
 ### `Mutation.branchRuleCreate`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `BranchRuleCreateInput`
@@ -2071,8 +2071,8 @@ Input type: `BranchRuleCreateInput`
 
 ### `Mutation.branchRuleDelete`
 
-NOTE:
-**Introduced** in 16.9.
+DETAILS:
+**Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
 Input type: `BranchRuleDeleteInput`
@@ -2094,8 +2094,8 @@ Input type: `BranchRuleDeleteInput`
 
 ### `Mutation.branchRuleUpdate`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `BranchRuleUpdateInput`
@@ -2118,8 +2118,8 @@ Input type: `BranchRuleUpdateInput`
 
 ### `Mutation.buildForecast`
 
-NOTE:
-**Introduced** in 16.0.
+DETAILS:
+**Introduced** in GitLab 16.0.
 **Status**: Experiment.
 
 Input type: `BuildForecastInput`
@@ -2143,8 +2143,8 @@ Input type: `BuildForecastInput`
 
 ### `Mutation.bulkDestroyJobArtifacts`
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Input type: `BulkDestroyJobArtifactsInput`
@@ -2190,8 +2190,8 @@ Input type: `BulkEnableDevopsAdoptionNamespacesInput`
 
 ### `Mutation.bulkRunnerDelete`
 
-NOTE:
-**Introduced** in 15.3.
+DETAILS:
+**Introduced** in GitLab 15.3.
 **Status**: Experiment.
 
 Input type: `BulkRunnerDeleteInput`
@@ -2214,8 +2214,8 @@ Input type: `BulkRunnerDeleteInput`
 
 ### `Mutation.catalogResourcesCreate`
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Input type: `CatalogResourcesCreateInput`
@@ -2236,8 +2236,8 @@ Input type: `CatalogResourcesCreateInput`
 
 ### `Mutation.catalogResourcesDestroy`
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `CatalogResourcesDestroyInput`
@@ -2285,7 +2285,7 @@ Input type: `CiJobTokenScopeAddProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscopeaddprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` **{warning-solid}** | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in 16.0. |
+| <a id="mutationcijobtokenscopeaddprojectdirection"></a>`direction` **{warning-solid}** | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.0. |
 | <a id="mutationcijobtokenscopeaddprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscopeaddprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be added to the CI job token scope. |
 
@@ -2326,7 +2326,7 @@ Input type: `CiJobTokenScopeRemoveProjectInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcijobtokenscoperemoveprojectclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` **{warning-solid}** | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in 16.9. |
+| <a id="mutationcijobtokenscoperemoveprojectdirection"></a>`direction` **{warning-solid}** | [`CiJobTokenScopeDirection`](#cijobtokenscopedirection) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to INBOUND. Deprecated in GitLab 16.9. |
 | <a id="mutationcijobtokenscoperemoveprojectprojectpath"></a>`projectPath` | [`ID!`](#id) | Project that the CI job token scope belongs to. |
 | <a id="mutationcijobtokenscoperemoveprojecttargetprojectpath"></a>`targetProjectPath` | [`ID!`](#id) | Project to be removed from the CI job token scope. |
 
@@ -2587,8 +2587,8 @@ Input type: `CreateAlertIssueInput`
 
 ### `Mutation.createAnnotation`
 
-NOTE:
-**Deprecated** in 16.0.
+DETAILS:
+**Deprecated** in GitLab 16.0.
 Underlying feature was removed in 16.0.
 
 Input type: `CreateAnnotationInput`
@@ -2708,8 +2708,8 @@ Input type: `CreateComplianceFrameworkInput`
 
 Creates a protection rule to restrict access to a project's container registry. Available only when feature flag `container_registry_protected_containers` is enabled.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `CreateContainerRegistryProtectionRuleInput`
@@ -2763,7 +2763,7 @@ Input type: `CreateDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreatediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreatediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreatediffnoteposition"></a>`position` | [`DiffPositionInput!`](#diffpositioninput) | Position of this note on a diff. |
@@ -2786,7 +2786,7 @@ Input type: `CreateDiscussionInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatediscussionbody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatediscussionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatediscussionconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreatediscussionconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreatediscussioninternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatediscussionnoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 
@@ -2838,7 +2838,7 @@ Input type: `CreateImageDiffNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreateimagediffnotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreateimagediffnoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreateimagediffnoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreateimagediffnoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreateimagediffnotenoteableid"></a>`noteableId` | [`NoteableID!`](#noteableid) | Global ID of the resource to add a note to. |
 | <a id="mutationcreateimagediffnoteposition"></a>`position` | [`DiffImagePositionInput!`](#diffimagepositioninput) | Position of this note on a diff. |
@@ -2894,8 +2894,8 @@ Input type: `CreateIssueInput`
 
 ### `Mutation.createIteration`
 
-NOTE:
-**Deprecated** in 14.0.
+DETAILS:
+**Deprecated** in GitLab 14.0.
 Use iterationCreate.
 
 Input type: `CreateIterationInput`
@@ -2936,7 +2936,7 @@ Input type: `CreateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatenotebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="mutationcreatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in 15.3. |
+| <a id="mutationcreatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `internal`. Deprecated in GitLab 15.3. |
 | <a id="mutationcreatenotediscussionid"></a>`discussionId` | [`DiscussionID`](#discussionid) | Global ID of the discussion the note is in reply to. |
 | <a id="mutationcreatenoteinternal"></a>`internal` | [`Boolean`](#boolean) | Internal flag for a note. Default is false. |
 | <a id="mutationcreatenotemergerequestdiffheadsha"></a>`mergeRequestDiffHeadSha` | [`String`](#string) | SHA of the head commit which is used to ensure that the merge request has not been updated since the request was sent. |
@@ -2954,8 +2954,8 @@ Input type: `CreateNoteInput`
 
 Creates a protection rule to restrict access to project packages. Available only when feature flag `packages_protected_packages` is enabled.
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Input type: `CreatePackagesProtectionRuleInput`
@@ -3218,7 +3218,7 @@ Input type: `DastProfileRunInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastprofilerunclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastprofilerunfullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastprofilerunfullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastprofilerunid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be used for the scan. |
 
 #### Fields
@@ -3243,7 +3243,7 @@ Input type: `DastProfileUpdateInput`
 | <a id="mutationdastprofileupdatedastscannerprofileid"></a>`dastScannerProfileId` | [`DastScannerProfileID`](#dastscannerprofileid) | ID of the scanner profile to be associated. |
 | <a id="mutationdastprofileupdatedastsiteprofileid"></a>`dastSiteProfileId` | [`DastSiteProfileID`](#dastsiteprofileid) | ID of the site profile to be associated. |
 | <a id="mutationdastprofileupdatedescription"></a>`description` | [`String`](#string) | Description of the profile. Defaults to an empty string. |
-| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastprofileupdateid"></a>`id` | [`DastProfileID!`](#dastprofileid) | ID of the profile to be deleted. |
 | <a id="mutationdastprofileupdatename"></a>`name` | [`String`](#string) | Name of the profile. |
 | <a id="mutationdastprofileupdaterunafterupdate"></a>`runAfterUpdate` | [`Boolean`](#boolean) | Run scan using profile after update. Defaults to false. |
@@ -3272,7 +3272,7 @@ Input type: `DastScannerProfileCreateInput`
 | <a id="mutationdastscannerprofilecreatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofilecreateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofilecreatespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in 15.8. |
+| <a id="mutationdastscannerprofilecreatetaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in GitLab 15.8. |
 | <a id="mutationdastscannerprofilecreatetargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofilecreateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -3283,7 +3283,7 @@ Input type: `DastScannerProfileCreateInput`
 | <a id="mutationdastscannerprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastscannerprofilecreatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Created scanner profile. |
 | <a id="mutationdastscannerprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofilecreateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
+| <a id="mutationdastscannerprofilecreateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastScannerProfileDelete`
 
@@ -3294,7 +3294,7 @@ Input type: `DastScannerProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastscannerprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastscannerprofiledeleteid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be deleted. |
 
 #### Fields
@@ -3313,13 +3313,13 @@ Input type: `DastScannerProfileUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastscannerprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastscannerprofileupdateid"></a>`id` | [`DastScannerProfileID!`](#dastscannerprofileid) | ID of the scanner profile to be updated. |
 | <a id="mutationdastscannerprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the scanner profile. |
 | <a id="mutationdastscannerprofileupdatescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="mutationdastscannerprofileupdateshowdebugmessages"></a>`showDebugMessages` | [`Boolean`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="mutationdastscannerprofileupdatespidertimeout"></a>`spiderTimeout` | [`Int!`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in 15.8. |
+| <a id="mutationdastscannerprofileupdatetaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Moved to DastProfile. Deprecated in GitLab 15.8. |
 | <a id="mutationdastscannerprofileupdatetargettimeout"></a>`targetTimeout` | [`Int!`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="mutationdastscannerprofileupdateuseajaxspider"></a>`useAjaxSpider` | [`Boolean`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -3330,7 +3330,7 @@ Input type: `DastScannerProfileUpdateInput`
 | <a id="mutationdastscannerprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastscannerprofileupdatedastscannerprofile"></a>`dastScannerProfile` | [`DastScannerProfile`](#dastscannerprofile) | Updated scanner profile. |
 | <a id="mutationdastscannerprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastscannerprofileupdateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in 14.10. |
+| <a id="mutationdastscannerprofileupdateid"></a>`id` **{warning-solid}** | [`DastScannerProfileID`](#dastscannerprofileid) | **Deprecated:** use `dastScannerProfile` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteProfileCreate`
 
@@ -3358,7 +3358,7 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofilecreatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site Profile object. |
 | <a id="mutationdastsiteprofilecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofilecreateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
+| <a id="mutationdastsiteprofilecreateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteProfileDelete`
 
@@ -3369,7 +3369,7 @@ Input type: `DastSiteProfileDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdastsiteprofiledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastsiteprofiledeletefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofiledeleteid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be deleted. |
 
 #### Fields
@@ -3390,7 +3390,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateauth"></a>`auth` | [`DastSiteProfileAuthInput`](#dastsiteprofileauthinput) | Parameters for authentication. |
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofileupdateexcludedurls"></a>`excludedUrls` | [`[String!]`](#string) | URLs to skip during an authenticated scan. |
-| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in 14.5. |
+| <a id="mutationdastsiteprofileupdatefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Full path not required to qualify Global ID. Deprecated in GitLab 14.5. |
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
@@ -3406,7 +3406,7 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdastsiteprofileupdatedastsiteprofile"></a>`dastSiteProfile` | [`DastSiteProfile`](#dastsiteprofile) | Site profile object. |
 | <a id="mutationdastsiteprofileupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdastsiteprofileupdateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in 14.10. |
+| <a id="mutationdastsiteprofileupdateid"></a>`id` **{warning-solid}** | [`DastSiteProfileID`](#dastsiteprofileid) | **Deprecated:** use `dastSiteProfile.id` field. Deprecated in GitLab 14.10. |
 
 ### `Mutation.dastSiteTokenCreate`
 
@@ -3474,8 +3474,8 @@ Input type: `DastSiteValidationRevokeInput`
 
 ### `Mutation.deleteAnnotation`
 
-NOTE:
-**Deprecated** in 16.0.
+DETAILS:
+**Deprecated** in GitLab 16.0.
 Underlying feature was removed in 16.0.
 
 Input type: `DeleteAnnotationInput`
@@ -3498,8 +3498,8 @@ Input type: `DeleteAnnotationInput`
 
 Deletes a container registry protection rule. Available only when feature flag `container_registry_protected_containers` is enabled.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `DeleteContainerRegistryProtectionRuleInput`
@@ -3523,8 +3523,8 @@ Input type: `DeleteContainerRegistryProtectionRuleInput`
 
 Deletes a protection rule for packages. Available only when feature flag `packages_protected_packages` is enabled.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `DeletePackagesProtectionRuleInput`
@@ -4408,8 +4408,8 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 
 Mutates multiple Geo registries for a given registry class.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Input type: `GeoRegistriesBulkUpdateInput`
@@ -4434,8 +4434,8 @@ Input type: `GeoRegistriesBulkUpdateInput`
 
 Mutates a Geo registry.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Input type: `GeoRegistriesUpdateInput`
@@ -4567,8 +4567,8 @@ Input type: `GroupMemberBulkUpdateInput`
 
 ### `Mutation.groupSavedReplyCreate`
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Input type: `GroupSavedReplyCreateInput`
@@ -4592,8 +4592,8 @@ Input type: `GroupSavedReplyCreateInput`
 
 ### `Mutation.groupSavedReplyDestroy`
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Input type: `GroupSavedReplyDestroyInput`
@@ -4615,8 +4615,8 @@ Input type: `GroupSavedReplyDestroyInput`
 
 ### `Mutation.groupSavedReplyUpdate`
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Input type: `GroupSavedReplyUpdateInput`
@@ -5257,8 +5257,8 @@ Input type: `IssueUnlinkAlertInput`
 
 Allows updating several properties for a set of issues. Does nothing if the `bulk_update_issues_mutation` feature flag is disabled.
 
-NOTE:
-**Introduced** in 15.9.
+DETAILS:
+**Introduced** in GitLab 15.9.
 **Status**: Experiment.
 
 Input type: `IssuesBulkUpdateInput`
@@ -5589,8 +5589,8 @@ Input type: `MarkAsSpamSnippetInput`
 
 ### `Mutation.memberRoleCreate`
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Input type: `MemberRoleCreateInput`
@@ -5616,8 +5616,8 @@ Input type: `MemberRoleCreateInput`
 
 ### `Mutation.memberRoleDelete`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `MemberRoleDeleteInput`
@@ -5943,8 +5943,8 @@ Input type: `MergeRequestUpdateApprovalRuleInput`
 
 ### `Mutation.mlModelCreate`
 
-NOTE:
-**Introduced** in 16.8.
+DETAILS:
+**Introduced** in GitLab 16.8.
 **Status**: Experiment.
 
 Input type: `MlModelCreateInput`
@@ -6163,8 +6163,8 @@ Input type: `OncallScheduleUpdateInput`
 
 ### `Mutation.organizationCreate`
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `OrganizationCreateInput`
@@ -6189,8 +6189,8 @@ Input type: `OrganizationCreateInput`
 
 ### `Mutation.organizationUpdate`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `OrganizationUpdateInput`
@@ -6396,8 +6396,8 @@ Input type: `PipelineScheduleUpdateInput`
 
 ### `Mutation.pipelineTriggerCreate`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `PipelineTriggerCreateInput`
@@ -6420,8 +6420,8 @@ Input type: `PipelineTriggerCreateInput`
 
 ### `Mutation.pipelineTriggerDelete`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `PipelineTriggerDeleteInput`
@@ -6442,8 +6442,8 @@ Input type: `PipelineTriggerDeleteInput`
 
 ### `Mutation.pipelineTriggerUpdate`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `PipelineTriggerUpdateInput`
@@ -6475,7 +6475,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectcicdsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
 | <a id="mutationprojectcicdsettingsupdateinboundjobtokenscopeenabled"></a>`inboundJobTokenScopeEnabled` | [`Boolean`](#boolean) | Indicates CI/CD job tokens generated in other projects have restricted access to this project. |
-| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to false. Deprecated in 16.0. |
+| <a id="mutationprojectcicdsettingsupdatejobtokenscopeenabled"></a>`jobTokenScopeEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** Outbound job token scope is being removed. This field can now only be set to false. Deprecated in GitLab 16.0. |
 | <a id="mutationprojectcicdsettingsupdatekeeplatestartifact"></a>`keepLatestArtifact` | [`Boolean`](#boolean) | Indicates if the latest artifact should be kept for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergepipelinesenabled"></a>`mergePipelinesEnabled` | [`Boolean`](#boolean) | Indicates if merged results pipelines are enabled for the project. |
 | <a id="mutationprojectcicdsettingsupdatemergetrainsenabled"></a>`mergeTrainsEnabled` | [`Boolean`](#boolean) | Indicates if merge trains are enabled for the project. |
@@ -6599,8 +6599,8 @@ Input type: `ProjectSetLockedInput`
 
 ### `Mutation.projectSettingsUpdate`
 
-NOTE:
-**Introduced** in 16.9.
+DETAILS:
+**Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
 Input type: `ProjectSettingsUpdateInput`
@@ -6662,8 +6662,8 @@ Input type: `ProjectSubscriptionDeleteInput`
 
 ### `Mutation.projectSyncFork`
 
-NOTE:
-**Introduced** in 15.9.
+DETAILS:
+**Introduced** in GitLab 15.9.
 **Status**: Experiment.
 
 Input type: `ProjectSyncForkInput`
@@ -6771,8 +6771,8 @@ Input type: `PromoteToEpicInput`
 
 Provisions a runner in Google Cloud.
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Input type: `ProvisionGoogleCloudRunnerInput`
@@ -6996,8 +6996,8 @@ Input type: `RepositionImageDiffNoteInput`
 
 ### `Mutation.runnerCreate`
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Input type: `RunnerCreateInput`
@@ -7054,7 +7054,7 @@ Input type: `RunnerUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationrunnerupdateaccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="mutationrunnerupdateactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `paused`. Deprecated in 14.8. |
+| <a id="mutationrunnerupdateactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** This was renamed. Please use `paused`. Deprecated in GitLab 14.8. |
 | <a id="mutationrunnerupdateassociatedprojects"></a>`associatedProjects` | [`[ProjectID!]`](#projectid) | Projects associated with the runner. Available only for project runners. |
 | <a id="mutationrunnerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnerupdatedescription"></a>`description` | [`String`](#string) | Description of the runner. |
@@ -7078,8 +7078,8 @@ Input type: `RunnerUpdateInput`
 
 ### `Mutation.runnersExportUsage`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `RunnersExportUsageInput`
@@ -7196,7 +7196,7 @@ Input type: `ScanExecutionPolicyCommitInput`
 | <a id="mutationscanexecutionpolicycommitname"></a>`name` | [`String!`](#string) | Name of the policy. If the name is null, the `name` field from `policy_yaml` is used. |
 | <a id="mutationscanexecutionpolicycommitoperationmode"></a>`operationMode` | [`MutationOperationMode!`](#mutationoperationmode) | Changes the operation mode. |
 | <a id="mutationscanexecutionpolicycommitpolicyyaml"></a>`policyYaml` | [`String!`](#string) | YAML snippet of the policy. |
-| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
+| <a id="mutationscanexecutionpolicycommitprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -7300,7 +7300,7 @@ Input type: `SecurityPolicyProjectAssignInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
+| <a id="mutationsecuritypolicyprojectassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
 | <a id="mutationsecuritypolicyprojectassignsecuritypolicyprojectid"></a>`securityPolicyProjectId` | [`ProjectID!`](#projectid) | ID of the security policy project. |
 
 #### Fields
@@ -7322,7 +7322,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectcreatefullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
+| <a id="mutationsecuritypolicyprojectcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -7344,7 +7344,7 @@ Input type: `SecurityPolicyProjectUnassignInput`
 | ---- | ---- | ----------- |
 | <a id="mutationsecuritypolicyprojectunassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritypolicyprojectunassignfullpath"></a>`fullPath` | [`String`](#string) | Full path of the project or group. |
-| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in 14.10. |
+| <a id="mutationsecuritypolicyprojectunassignprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Use `fullPath`. Deprecated in GitLab 14.10. |
 
 #### Fields
 
@@ -7377,8 +7377,8 @@ Input type: `SecurityTrainingUpdateInput`
 
 ### `Mutation.starProject`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `StarProjectInput`
@@ -7455,8 +7455,8 @@ Input type: `TerraformStateUnlockInput`
 
 ### `Mutation.timelineEventCreate`
 
-NOTE:
-**Introduced** in 15.6.
+DETAILS:
+**Introduced** in GitLab 15.6.
 **Status**: Experiment.
 
 Input type: `TimelineEventCreateInput`
@@ -7838,8 +7838,8 @@ Input type: `UpdateContainerExpirationPolicyInput`
 
 Updates a container registry protection rule to restrict access to project containers. You can prevent users without certain roles from altering containers. Available only when feature flag `container_registry_protected_containers` is enabled.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `UpdateContainerRegistryProtectionRuleInput`
@@ -8130,7 +8130,7 @@ Input type: `UpdateNoteInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatenotebody"></a>`body` | [`String`](#string) | Content of the note. |
 | <a id="mutationupdatenoteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** No longer allowed to update confidentiality of notes. Deprecated in 14.10. |
+| <a id="mutationupdatenoteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated:** No longer allowed to update confidentiality of notes. Deprecated in GitLab 14.10. |
 | <a id="mutationupdatenoteid"></a>`id` | [`NoteID!`](#noteid) | Global ID of the note to update. |
 
 #### Fields
@@ -8165,8 +8165,8 @@ Input type: `UpdatePackagesCleanupPolicyInput`
 
 Updates a package protection rule to restrict access to project packages. You can prevent users without certain permissions from altering packages. Available only when feature flag `packages_protected_packages` is enabled.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `UpdatePackagesProtectionRuleInput`
@@ -8199,7 +8199,7 @@ Input type: `UpdateRequirementInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdaterequirementclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdaterequirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
-| <a id="mutationupdaterequirementiid"></a>`iid` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use work_item_iid instead. Deprecated in 15.8. |
+| <a id="mutationupdaterequirementiid"></a>`iid` **{warning-solid}** | [`String`](#string) | **Deprecated:** Use work_item_iid instead. Deprecated in GitLab 15.8. |
 | <a id="mutationupdaterequirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Creates a test report for the requirement with the given state. |
 | <a id="mutationupdaterequirementprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path the requirement is associated with. |
 | <a id="mutationupdaterequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | State of the requirement. |
@@ -8263,8 +8263,8 @@ Input type: `UploadDeleteInput`
 
 ### `Mutation.userAchievementPrioritiesUpdate`
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Input type: `UserAchievementPrioritiesUpdateInput`
@@ -8286,8 +8286,8 @@ Input type: `UserAchievementPrioritiesUpdateInput`
 
 ### `Mutation.userAchievementsDelete`
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Input type: `UserAchievementsDeleteInput`
@@ -8309,8 +8309,8 @@ Input type: `UserAchievementsDeleteInput`
 
 ### `Mutation.userAddOnAssignmentCreate`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `UserAddOnAssignmentCreateInput`
@@ -8334,8 +8334,8 @@ Input type: `UserAddOnAssignmentCreateInput`
 
 ### `Mutation.userAddOnAssignmentRemove`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `UserAddOnAssignmentRemoveInput`
@@ -8421,8 +8421,8 @@ Input type: `UserSetNamespaceCommitEmailInput`
 
 Creates a value stream.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `ValueStreamCreateInput`
@@ -8449,8 +8449,8 @@ Input type: `ValueStreamCreateInput`
 
 Destroy a value stream.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `ValueStreamDestroyInput`
@@ -8474,8 +8474,8 @@ Input type: `ValueStreamDestroyInput`
 
 Updates a value stream.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Input type: `ValueStreamUpdateInput`
@@ -8521,8 +8521,8 @@ Input type: `VulnerabilitiesDismissInput`
 
 ### `Mutation.vulnerabilitiesRemoveAllFromProject`
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Input type: `VulnerabilitiesRemoveAllFromProjectInput`
@@ -8571,13 +8571,13 @@ Input type: `VulnerabilityCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationvulnerabilitycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationvulnerabilitycreateconfidence"></a>`confidence` **{warning-solid}** | [`VulnerabilityConfidence`](#vulnerabilityconfidence) | **Deprecated:** This field will be removed from the Vulnerability domain model. Deprecated in 15.4. |
+| <a id="mutationvulnerabilitycreateconfidence"></a>`confidence` **{warning-solid}** | [`VulnerabilityConfidence`](#vulnerabilityconfidence) | **Deprecated:** This field will be removed from the Vulnerability domain model. Deprecated in GitLab 15.4. |
 | <a id="mutationvulnerabilitycreateconfirmedat"></a>`confirmedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to confirmed (defaults to creation time if status is `confirmed`). |
 | <a id="mutationvulnerabilitycreatedescription"></a>`description` | [`String!`](#string) | Long text section that describes the vulnerability in more detail. |
 | <a id="mutationvulnerabilitycreatedetectedat"></a>`detectedAt` | [`Time`](#time) | Timestamp of when the vulnerability was first detected (defaults to creation time). |
 | <a id="mutationvulnerabilitycreatedismissedat"></a>`dismissedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to dismissed (defaults to creation time if status is `dismissed`). |
 | <a id="mutationvulnerabilitycreateidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifierInput!]!`](#vulnerabilityidentifierinput) | Array of CVE or CWE identifiers for the vulnerability. |
-| <a id="mutationvulnerabilitycreatemessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated:** message field has been removed from security reports schema. Deprecated in 16.1. |
+| <a id="mutationvulnerabilitycreatemessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated:** message field has been removed from security reports schema. Deprecated in GitLab 16.1. |
 | <a id="mutationvulnerabilitycreatename"></a>`name` | [`String!`](#string) | Name of the vulnerability. |
 | <a id="mutationvulnerabilitycreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the vulnerability to. |
 | <a id="mutationvulnerabilitycreateresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state changed to resolved (defaults to creation time if status is `resolved`). |
@@ -8718,8 +8718,8 @@ Input type: `VulnerabilityRevertToDetectedInput`
 
 Add linked items to the work item.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `WorkItemAddLinkedItemsInput`
@@ -8746,8 +8746,8 @@ Input type: `WorkItemAddLinkedItemsInput`
 
 Converts the work item to a new type.
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Input type: `WorkItemConvertInput`
@@ -8772,8 +8772,8 @@ Input type: `WorkItemConvertInput`
 
 Creates a work item.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Input type: `WorkItemCreateInput`
@@ -8784,14 +8784,14 @@ Input type: `WorkItemCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationworkitemcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
-| <a id="mutationworkitemcreatedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in 16.9. |
+| <a id="mutationworkitemcreatedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Deprecated:** use description widget instead. Deprecated in GitLab 16.9. |
 | <a id="mutationworkitemcreatedescriptionwidget"></a>`descriptionWidget` | [`WorkItemWidgetDescriptionInput`](#workitemwidgetdescriptioninput) | Input for description widget. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
 | <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
 | <a id="mutationworkitemcreatenamespacepath"></a>`namespacePath` | [`ID`](#id) | Full path of the namespace(project or group) the work item is created in. |
-| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Please use namespace_path instead. That will cover for both projects and groups. Deprecated in 15.10. |
-| <a id="mutationworkitemcreaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** **Status**: Experiment. Introduced in 16.9. |
+| <a id="mutationworkitemcreateprojectpath"></a>`projectPath` **{warning-solid}** | [`ID`](#id) | **Deprecated:** Please use namespace_path instead. That will cover for both projects and groups. Deprecated in GitLab 15.10. |
+| <a id="mutationworkitemcreaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.9. |
 | <a id="mutationworkitemcreatetitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="mutationworkitemcreateworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of a work item type. |
 
@@ -8807,8 +8807,8 @@ Input type: `WorkItemCreateInput`
 
 Creates a work item from a task in another work item's description.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Input type: `WorkItemCreateFromTaskInput`
@@ -8834,8 +8834,8 @@ Input type: `WorkItemCreateFromTaskInput`
 
 Deletes a work item.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Input type: `WorkItemDeleteInput`
@@ -8854,12 +8854,12 @@ Input type: `WorkItemDeleteInput`
 | <a id="mutationworkitemdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemdeletenamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the deleted work item belonged to. |
-| <a id="mutationworkitemdeleteproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Deprecated:** Use `namespace`. Deprecated in 16.9. |
+| <a id="mutationworkitemdeleteproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Deprecated:** Use `namespace`. Deprecated in GitLab 16.9. |
 
 ### `Mutation.workItemExport`
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Input type: `WorkItemExportInput`
@@ -8868,7 +8868,7 @@ Input type: `WorkItemExportInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in 15.9. |
+| <a id="mutationworkitemexportauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 15.9. |
 | <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemexportiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="mutationworkitemexportin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
@@ -8890,8 +8890,8 @@ Input type: `WorkItemExportInput`
 
 Remove items linked to the work item.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `WorkItemRemoveLinkedItemsInput`
@@ -8915,8 +8915,8 @@ Input type: `WorkItemRemoveLinkedItemsInput`
 
 ### `Mutation.workItemSubscribe`
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Input type: `WorkItemSubscribeInput`
@@ -8941,8 +8941,8 @@ Input type: `WorkItemSubscribeInput`
 
 Updates a work item by Global ID.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Input type: `WorkItemUpdateInput`
@@ -8967,7 +8967,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdatenoteswidget"></a>`notesWidget` | [`WorkItemWidgetNotesInput`](#workitemwidgetnotesinput) | Input for notes widget. |
 | <a id="mutationworkitemupdatenotificationswidget"></a>`notificationsWidget` | [`WorkItemWidgetNotificationsUpdateInput`](#workitemwidgetnotificationsupdateinput) | Input for notifications widget. |
 | <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
-| <a id="mutationworkitemupdaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** **Status**: Experiment. Introduced in 16.9. |
+| <a id="mutationworkitemupdaterolledupdateswidget"></a>`rolledupDatesWidget` **{warning-solid}** | [`WorkItemWidgetRolledupDatesInput`](#workitemwidgetrolledupdatesinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.9. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
@@ -14481,7 +14481,7 @@ Representation of a GitLab user.
 | <a id="achievementname"></a>`name` | [`String!`](#string) | Name of the achievement. |
 | <a id="achievementnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace of the achievement. |
 | <a id="achievementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp the achievement was last updated. |
-| <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Recipients for the achievement. |
+| <a id="achievementuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Recipients for the achievement. |
 
 ### `AddOnPurchase`
 
@@ -14511,7 +14511,7 @@ A user with add-on data.
 | <a id="addonusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="addonusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="addonuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="addonuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="addonuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="addonuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="addonusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="addonusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -14536,7 +14536,7 @@ A user with add-on data.
 | <a id="addonuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="addonuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="addonusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="addonuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="addonuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="addonuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="addonuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="addonuserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -14548,8 +14548,8 @@ A user with add-on data.
 
 Add-on purchase assignments for the user.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`UserAddOnAssignmentConnection`](#useraddonassignmentconnection).
@@ -14657,8 +14657,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -14816,7 +14816,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="addonuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="addonuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="addonuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="addonuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="addonuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AgentConfiguration`
@@ -14932,8 +14932,8 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertid"></a>`id` | [`ID!`](#id) | ID of the alert. |
 | <a id="alertmanagementalertiid"></a>`iid` | [`ID!`](#id) | Internal ID of the alert. |
 | <a id="alertmanagementalertissue"></a>`issue` | [`Issue`](#issue) | Issue attached to the alert. |
-| <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 13.10. Use issue field. |
-| <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.0. Returns no data. Underlying feature was removed in 16.0. |
+| <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in GitLab 13.10. Use issue field. |
+| <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.0. Returns no data. Underlying feature was removed in 16.0. |
 | <a id="alertmanagementalertmonitoringtool"></a>`monitoringTool` | [`String`](#string) | Monitoring tool the alert came from. |
 | <a id="alertmanagementalertprometheusalert"></a>`prometheusAlert` | [`PrometheusAlert`](#prometheusalert) | Alert condition for Prometheus. |
 | <a id="alertmanagementalertrunbook"></a>`runbook` | [`String`](#string) | Runbook for the alert as defined in alert details. |
@@ -15109,7 +15109,7 @@ Represents the approval policy.
 | <a id="approvalpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="approvalpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="approvalpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
-| <a id="approvalpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in 16.5. Use `allGroupApprovers`. |
+| <a id="approvalpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="approvalpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="approvalpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="approvalpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
@@ -15274,7 +15274,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="autocompletedusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="autocompleteduserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="autocompleteduseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="autocompleteduseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="autocompleteduseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="autocompletedusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="autocompletedusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -15298,7 +15298,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="autocompleteduserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="autocompletedusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="autocompleteduseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="autocompleteduseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="autocompleteduseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="autocompleteduserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="autocompleteduserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -15411,8 +15411,8 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -15570,7 +15570,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="autocompleteduserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="autocompleteduserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `AwardEmoji`
@@ -15804,7 +15804,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="boardepicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="boardepicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -15841,7 +15841,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="boardepicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="boardepicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="boardepicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="boardepicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="boardepicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="boardepicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="boardepicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -15926,7 +15926,7 @@ Represents a list for an issue board.
 | <a id="boardlistposition"></a>`position` | [`Int`](#int) | Position of list within the board. |
 | <a id="boardlisttitle"></a>`title` | [`String!`](#string) | Title of the list. |
 | <a id="boardlisttotalissueweight"></a>`totalIssueWeight` | [`BigInt`](#bigint) | Total weight of all issues in the list, encoded as a string. |
-| <a id="boardlisttotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.2. Use `totalIssueWeight`. |
+| <a id="boardlisttotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 16.2. Use `totalIssueWeight`. |
 
 #### Fields with arguments
 
@@ -16025,17 +16025,17 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. **Status**: Experiment. Description of the catalog resource. |
-| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. **Status**: Experiment. Icon for the catalog resource. |
-| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 15.11. **Status**: Experiment. ID of the catalog resource. |
-| <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
-| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | **Introduced** in 16.1. **Status**: Experiment. Latest version of the catalog resource. |
-| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. **Status**: Experiment. Name of the catalog resource. |
-| <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
-| <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
-| <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
-| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceComponentVerificationLevel`](#cicatalogresourcecomponentverificationlevel) | **Introduced** in 16.9. **Status**: Experiment. Verification level of the catalog resource. |
-| <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.1. **Status**: Experiment. Web path of the catalog resource. |
+| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Description of the catalog resource. |
+| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
+| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
+| <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
+| <a id="cicatalogresourcelatestversion"></a>`latestVersion` **{warning-solid}** | [`CiCatalogResourceVersion`](#cicatalogresourceversion) | **Introduced** in GitLab 16.1. **Status**: Experiment. Latest version of the catalog resource. |
+| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Name of the catalog resource. |
+| <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
+| <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
+| <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
+| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceComponentVerificationLevel`](#cicatalogresourcecomponentverificationlevel) | **Introduced** in GitLab 16.9. **Status**: Experiment. Verification level of the catalog resource. |
+| <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
 
 #### Fields with arguments
 
@@ -16043,8 +16043,8 @@ Represents the total number of issues and their weights for a particular day.
 
 Versions of the catalog resource. This field can only be resolved for one catalog resource in any single request.
 
-NOTE:
-**Introduced** in 16.2.
+DETAILS:
+**Introduced** in GitLab 16.2.
 **Status**: Experiment.
 
 Returns [`CiCatalogResourceVersionConnection`](#cicatalogresourceversionconnection).
@@ -16066,10 +16066,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcecomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in 16.7. **Status**: Experiment. ID of the component. |
-| <a id="cicatalogresourcecomponentincludepath"></a>`includePath` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Path used to include the component. |
-| <a id="cicatalogresourcecomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | **Introduced** in 16.7. **Status**: Experiment. Inputs for the component. |
-| <a id="cicatalogresourcecomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Name of the component. |
+| <a id="cicatalogresourcecomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in GitLab 16.7. **Status**: Experiment. ID of the component. |
+| <a id="cicatalogresourcecomponentincludepath"></a>`includePath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Path used to include the component. |
+| <a id="cicatalogresourcecomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | **Introduced** in GitLab 16.7. **Status**: Experiment. Inputs for the component. |
+| <a id="cicatalogresourcecomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Name of the component. |
 
 ### `CiCatalogResourceComponentInput`
 
@@ -16077,9 +16077,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcecomponentinputdefault"></a>`default` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Default value for the input. |
-| <a id="cicatalogresourcecomponentinputname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Name of the input. |
-| <a id="cicatalogresourcecomponentinputrequired"></a>`required` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.7. **Status**: Experiment. Indicates if an input is required. |
+| <a id="cicatalogresourcecomponentinputdefault"></a>`default` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Default value for the input. |
+| <a id="cicatalogresourcecomponentinputname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Name of the input. |
+| <a id="cicatalogresourcecomponentinputrequired"></a>`required` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.7. **Status**: Experiment. Indicates if an input is required. |
 
 ### `CiCatalogResourceVersion`
 
@@ -16087,15 +16087,15 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 16.7. **Status**: Experiment. User that created the version. |
-| <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in 16.7. **Status**: Experiment. Commit associated with the version. |
-| <a id="cicatalogresourceversioncomponents"></a>`components` **{warning-solid}** | [`CiCatalogResourceComponentConnection`](#cicatalogresourcecomponentconnection) | **Introduced** in 16.7. **Status**: Experiment. Components belonging to the catalog resource. |
-| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. **Status**: Experiment. Timestamp of when the version was created. |
-| <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in 16.7. **Status**: Experiment. Global ID of the version. |
-| <a id="cicatalogresourceversionname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.8. **Status**: Experiment. Name that uniquely identifies the version within the catalog resource. |
-| <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.8. **Status**: Experiment. Relative web path to the version. |
-| <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.8. **Status**: Experiment. GitLab Flavored Markdown rendering of README.md. This field can only be resolved for one version in any single request. |
-| <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in 16.7. **Status**: Experiment. Timestamp of when the version was released. |
+| <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in GitLab 16.7. **Status**: Experiment. User that created the version. |
+| <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in GitLab 16.7. **Status**: Experiment. Commit associated with the version. |
+| <a id="cicatalogresourceversioncomponents"></a>`components` **{warning-solid}** | [`CiCatalogResourceComponentConnection`](#cicatalogresourcecomponentconnection) | **Introduced** in GitLab 16.7. **Status**: Experiment. Components belonging to the catalog resource. |
+| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was created. |
+| <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in GitLab 16.7. **Status**: Experiment. Global ID of the version. |
+| <a id="cicatalogresourceversionname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Name that uniquely identifies the version within the catalog resource. |
+| <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Relative web path to the version. |
+| <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. GitLab Flavored Markdown rendering of README.md. This field can only be resolved for one version in any single request. |
+| <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was released. |
 
 ### `CiConfig`
 
@@ -16256,7 +16256,7 @@ CI/CD variables for a GitLab instance.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ciinstancevariabledescription"></a>`description` | [`String`](#string) | Description of the variable. |
-| <a id="ciinstancevariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
+| <a id="ciinstancevariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
 | <a id="ciinstancevariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="ciinstancevariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="ciinstancevariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |
@@ -16272,7 +16272,7 @@ CI/CD variables for a GitLab instance.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cijobactive"></a>`active` | [`Boolean!`](#boolean) | Indicates the job is active. |
-| <a id="cijobaifailureanalysis"></a>`aiFailureAnalysis` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.1. **Status**: Experiment. Ai generated analysis of the root cause of failure. |
+| <a id="cijobaifailureanalysis"></a>`aiFailureAnalysis` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Ai generated analysis of the root cause of failure. |
 | <a id="cijoballowfailure"></a>`allowFailure` | [`Boolean!`](#boolean) | Whether the job is allowed to fail. |
 | <a id="cijobartifacts"></a>`artifacts` | [`CiJobArtifactConnection`](#cijobartifactconnection) | Artifacts generated by the job. (see [Connections](#connections)) |
 | <a id="cijobbrowseartifactspath"></a>`browseArtifactsPath` | [`String`](#string) | URL for browsing the artifact's archive. |
@@ -16298,7 +16298,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobplaypath"></a>`playPath` | [`String`](#string) | Play path of the job. |
 | <a id="cijobplayable"></a>`playable` | [`Boolean!`](#boolean) | Indicates the job can be played. |
 | <a id="cijobpreviousstagejobs"></a>`previousStageJobs` | [`CiJobConnection`](#cijobconnection) | Jobs from the previous stage. (see [Connections](#connections)) |
-| <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` **{warning-solid}** | [`JobNeedUnionConnection`](#jobneedunionconnection) | **Deprecated** in 16.4. Replaced by previousStageJobs and needs fields. |
+| <a id="cijobpreviousstagejobsorneeds"></a>`previousStageJobsOrNeeds` **{warning-solid}** | [`JobNeedUnionConnection`](#jobneedunionconnection) | **Deprecated** in GitLab 16.4. Replaced by previousStageJobs and needs fields. |
 | <a id="cijobproject"></a>`project` | [`Project`](#project) | Project that the job belongs to. |
 | <a id="cijobqueuedat"></a>`queuedAt` | [`Time`](#time) | When the job was enqueued and marked as pending. |
 | <a id="cijobqueuedduration"></a>`queuedDuration` | [`Duration`](#duration) | How long the job was enqueued before starting. |
@@ -16307,7 +16307,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner assigned to execute the job. |
-| <a id="cijobrunnermanager"></a>`runnerManager` **{warning-solid}** | [`CiRunnerManager`](#cirunnermanager) | **Introduced** in 15.11. **Status**: Experiment. Runner manager assigned to the job. |
+| <a id="cijobrunnermanager"></a>`runnerManager` **{warning-solid}** | [`CiRunnerManager`](#cirunnermanager) | **Introduced** in GitLab 15.11. **Status**: Experiment. Runner manager assigned to the job. |
 | <a id="cijobscheduled"></a>`scheduled` | [`Boolean!`](#boolean) | Indicates the job is scheduled. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
@@ -16344,7 +16344,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allow list of groups that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
-| <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
+| <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in GitLab 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
 
 ### `CiJobTrace`
 
@@ -16354,8 +16354,8 @@ CI/CD variables for a GitLab instance.
 
 HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
 
-NOTE:
-**Introduced** in 15.11.
+DETAILS:
+**Introduced** in GitLab 15.11.
 **Status**: Experiment.
 
 Returns [`String!`](#string).
@@ -16374,11 +16374,11 @@ Representation of duration statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
-| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 15.8. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
+| <a id="cijobsdurationstatisticsp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 15.8. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
 
 ### `CiJobsStatistics`
 
@@ -16388,7 +16388,7 @@ Statistics for a group of CI jobs.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in 15.8. **Status**: Experiment. Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
+| <a id="cijobsstatisticsqueuedduration"></a>`queuedDuration` **{warning-solid}** | [`CiJobsDurationStatistics`](#cijobsdurationstatistics) | **Introduced** in GitLab 15.8. **Status**: Experiment. Statistics for amount of time that jobs were waiting to be picked up. The calculation is performed based on the most recent 100 jobs executed by the 5000 most recently created runners in context. If no filter is applied to runners, the calculation is performed based on the most recent 100 jobs globally. |
 
 ### `CiManualVariable`
 
@@ -16398,7 +16398,7 @@ CI/CD variables given to a manual job.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cimanualvariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
+| <a id="cimanualvariableenvironmentscope"></a>`environmentScope` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.3. No longer used, only available for GroupVariableType and ProjectVariableType. |
 | <a id="cimanualvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="cimanualvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="cimanualvariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
@@ -16424,7 +16424,7 @@ CI/CD variables given to a manual job.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="ciminutesprojectmonthlyusageminutes"></a>`minutes` | [`Int`](#int) | Number of compute minutes used by the project in the month. |
-| <a id="ciminutesprojectmonthlyusagename"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.6. Use `project.name`. |
+| <a id="ciminutesprojectmonthlyusagename"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.6. Use `project.name`. |
 | <a id="ciminutesprojectmonthlyusageproject"></a>`project` | [`Project`](#project) | Project having the recorded usage. |
 | <a id="ciminutesprojectmonthlyusagesharedrunnersduration"></a>`sharedRunnersDuration` | [`Int`](#int) | Total duration (in seconds) of shared runners use by the project for the month. |
 
@@ -16453,41 +16453,41 @@ CI/CD variables for a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunneraccesslevel"></a>`accessLevel` | [`CiRunnerAccessLevel!`](#cirunneraccesslevel) | Access level of the runner. |
-| <a id="cirunneractive"></a>`active` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 14.8. Use paused. |
+| <a id="cirunneractive"></a>`active` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 14.8. Use paused. |
 | <a id="cirunneradminurl"></a>`adminUrl` | [`String`](#string) | Admin URL of the runner. Only available for administrators. |
-| <a id="cirunnerarchitecturename"></a>`architectureName` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerarchitecturename"></a>`architectureName` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
 | <a id="cirunnercontactedat"></a>`contactedAt` | [`Time`](#time) | Timestamp of last contact from this runner. |
 | <a id="cirunnercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of creation of this runner. |
 | <a id="cirunnercreatedby"></a>`createdBy` | [`UserCore`](#usercore) | User that created this runner. |
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
-| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. **Status**: Experiment. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
-| <a id="cirunnerephemeralregisterurl"></a>`ephemeralRegisterUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.11. **Status**: Experiment. URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration. |
-| <a id="cirunnerexecutorname"></a>`executorName` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerephemeralauthenticationtoken"></a>`ephemeralAuthenticationToken` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Ephemeral authentication token used for runner manager registration. Only available for the creator of the runner for a limited time during registration. |
+| <a id="cirunnerephemeralregisterurl"></a>`ephemeralRegisterUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration. |
+| <a id="cirunnerexecutorname"></a>`executorName` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
 | <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
-| <a id="cirunneripaddress"></a>`ipAddress` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
-| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. **Status**: Experiment. Job execution status of the runner. |
+| <a id="cirunneripaddress"></a>`ipAddress` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in GitLab 15.7. **Status**: Experiment. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
 | <a id="cirunnermaximumtimeout"></a>`maximumTimeout` | [`Int`](#int) | Maximum timeout (in seconds) for jobs processed by the runner. |
 | <a id="cirunnerownerproject"></a>`ownerProject` | [`Project`](#project) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
-| <a id="cirunnerplatformname"></a>`platformName` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerplatformname"></a>`platformName` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
 | <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. |
 | <a id="cirunnerpublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerregisteradminurl"></a>`registerAdminUrl` | [`String`](#string) | URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators. |
-| <a id="cirunnerrevision"></a>`revision` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerrevision"></a>`revision` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |
 | <a id="cirunnerrunnertype"></a>`runnerType` | [`CiRunnerType!`](#cirunnertype) | Type of the runner. |
 | <a id="cirunnershortsha"></a>`shortSha` | [`String`](#string) | First eight characters of the runner's token used to authenticate new job requests. Used as the runner's unique ID. |
 | <a id="cirunnertaglist"></a>`tagList` | [`[String!]`](#string) | Tags associated with the runner. |
 | <a id="cirunnertokenexpiresat"></a>`tokenExpiresAt` | [`Time`](#time) | Runner token expiration time. |
-| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 14.10. **Status**: Experiment. Availability of upgrades for the runner. |
+| <a id="cirunnerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in GitLab 14.10. **Status**: Experiment. Availability of upgrades for the runner. |
 | <a id="cirunneruserpermissions"></a>`userPermissions` | [`RunnerPermissions!`](#runnerpermissions) | Permissions for the current user on the resource. |
-| <a id="cirunnerversion"></a>`version` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.2. Use field in `manager` object instead. |
+| <a id="cirunnerversion"></a>`version` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.2. Use field in `manager` object instead. |
 
 #### Fields with arguments
 
@@ -16502,7 +16502,7 @@ Returns [`Int`](#int).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerjobcountstatuses"></a>`statuses` **{warning-solid}** | [`[CiJobStatus!]`](#cijobstatus) | **Introduced** in 16.2. **Status**: Experiment. Filter jobs by status. |
+| <a id="cirunnerjobcountstatuses"></a>`statuses` **{warning-solid}** | [`[CiJobStatus!]`](#cijobstatus) | **Introduced** in GitLab 16.2. **Status**: Experiment. Filter jobs by status. |
 
 ##### `CiRunner.jobs`
 
@@ -16524,8 +16524,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Runner managers associated with the runner configuration.
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Returns [`CiRunnerManagerConnection`](#cirunnermanagerconnection).
@@ -16558,7 +16558,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cirunnerprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="cirunnerprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="cirunnerprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
-| <a id="cirunnerprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. Default sort order will change in GitLab 17.0. Specify `"id_asc"` if you require the query results to be ordered by ascending IDs. |
+| <a id="cirunnerprojectssort"></a>`sort` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.4. Default sort order will change in GitLab 17.0. Specify `"id_asc"` if you require the query results to be ordered by ascending IDs. |
 | <a id="cirunnerprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 
 ##### `CiRunner.status`
@@ -16571,7 +16571,7 @@ Returns [`CiRunnerStatus!`](#cirunnerstatus).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.0. Will be removed in 17.0. |
+| <a id="cirunnerstatuslegacymode"></a>`legacyMode` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.0. Will be removed in 17.0. |
 
 ### `CiRunnerCloudProvisioningMachineType`
 
@@ -16676,13 +16676,13 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cirunnermanagerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
 | <a id="cirunnermanagerid"></a>`id` | [`CiRunnerManagerID!`](#cirunnermanagerid) | ID of the runner manager. |
 | <a id="cirunnermanageripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner manager. |
-| <a id="cirunnermanagerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 16.3. **Status**: Experiment. Job execution status of the runner manager. |
+| <a id="cirunnermanagerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in GitLab 16.3. **Status**: Experiment. Job execution status of the runner manager. |
 | <a id="cirunnermanagerplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner manager. |
 | <a id="cirunnermanagerrevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnermanagerrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner manager. |
 | <a id="cirunnermanagerstatus"></a>`status` | [`CiRunnerStatus!`](#cirunnerstatus) | Status of the runner manager. |
 | <a id="cirunnermanagersystemid"></a>`systemId` | [`String!`](#string) | System ID associated with the runner manager. |
-| <a id="cirunnermanagerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in 16.1. **Status**: Experiment. Availability of upgrades for the runner manager. |
+| <a id="cirunnermanagerupgradestatus"></a>`upgradeStatus` **{warning-solid}** | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | **Introduced** in GitLab 16.1. **Status**: Experiment. Availability of upgrades for the runner manager. |
 | <a id="cirunnermanagerversion"></a>`version` | [`String`](#string) | Version of the runner. |
 
 ### `CiRunnerUsage`
@@ -17099,10 +17099,10 @@ Represents compared security report.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="comparedsecurityreportadded"></a>`added` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in 16.1. **Status**: Experiment. New vulnerability findings. |
+| <a id="comparedsecurityreportadded"></a>`added` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in GitLab 16.1. **Status**: Experiment. New vulnerability findings. |
 | <a id="comparedsecurityreportbasereportcreatedat"></a>`baseReportCreatedAt` | [`Time`](#time) | Time of the base report creation. |
 | <a id="comparedsecurityreportbasereportoutofdate"></a>`baseReportOutOfDate` | [`Boolean`](#boolean) | Indicates whether the base report out of date. |
-| <a id="comparedsecurityreportfixed"></a>`fixed` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in 16.1. **Status**: Experiment. Fixed vulnerability findings. |
+| <a id="comparedsecurityreportfixed"></a>`fixed` **{warning-solid}** | [`[ComparedSecurityReportFinding!]`](#comparedsecurityreportfinding) | **Introduced** in GitLab 16.1. **Status**: Experiment. Fixed vulnerability findings. |
 | <a id="comparedsecurityreportheadreportcreatedat"></a>`headReportCreatedAt` | [`Time`](#time) | Time of the base report creation. |
 
 ### `ComparedSecurityReportFinding`
@@ -17115,8 +17115,8 @@ Represents finding.
 | ---- | ---- | ----------- |
 | <a id="comparedsecurityreportfindingdescription"></a>`description` | [`String`](#string) | Description of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingfoundbypipelineiid"></a>`foundByPipelineIid` | [`String`](#string) | IID of the pipeline. |
-| <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in 16.3. **Status**: Experiment. Identifiers of the vulnerability finding. |
-| <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in 16.3. **Status**: Experiment. Location of the vulnerability finding. |
+| <a id="comparedsecurityreportfindingidentifiers"></a>`identifiers` **{warning-solid}** | [`[VulnerabilityIdentifier!]`](#vulnerabilityidentifier) | **Introduced** in GitLab 16.3. **Status**: Experiment. Identifiers of the vulnerability finding. |
+| <a id="comparedsecurityreportfindinglocation"></a>`location` **{warning-solid}** | [`VulnerabilityLocation`](#vulnerabilitylocation) | **Introduced** in GitLab 16.3. **Status**: Experiment. Location of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingscanner"></a>`scanner` | [`ComparedSecurityReportScanner`](#comparedsecurityreportscanner) | Compared report vulnerability scanner. |
 | <a id="comparedsecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
 | <a id="comparedsecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
@@ -17288,7 +17288,7 @@ A container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorycandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
+| <a id="containerrepositorycandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositoryexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositoryexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -17312,7 +17312,7 @@ Details of a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorydetailscandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
+| <a id="containerrepositorydetailscandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryPermissions` type. |
 | <a id="containerrepositorydetailscreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the container repository was created. |
 | <a id="containerrepositorydetailsexpirationpolicycleanupstatus"></a>`expirationPolicyCleanupStatus` | [`ContainerRepositoryCleanupStatus`](#containerrepositorycleanupstatus) | Tags cleanup status for the container repository. |
 | <a id="containerrepositorydetailsexpirationpolicystartedat"></a>`expirationPolicyStartedAt` | [`Time`](#time) | Timestamp when the cleanup done by the expiration policy was started on the container repository. |
@@ -17401,7 +17401,7 @@ A tag from a container repository.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerrepositorytagcandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Use `userPermissions` field. See `ContainerRepositoryTagPermissions` type. |
+| <a id="containerrepositorytagcandelete"></a>`canDelete` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Use `userPermissions` field. See `ContainerRepositoryTagPermissions` type. |
 | <a id="containerrepositorytagcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the tag was created. |
 | <a id="containerrepositorytagdigest"></a>`digest` | [`String`](#string) | Digest of the tag. |
 | <a id="containerrepositorytaglocation"></a>`location` | [`String!`](#string) | URL of the tag. |
@@ -17491,9 +17491,9 @@ The currently authenticated GitLab user.
 | <a id="currentusercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="currentusercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="currentuserdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="currentuserduochatavailable"></a>`duoChatAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.8. **Status**: Experiment. User access to AI chat feature. |
-| <a id="currentuserduocodesuggestionsavailable"></a>`duoCodeSuggestionsAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.8. **Status**: Experiment. User access to code suggestions feature. |
-| <a id="currentuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="currentuserduochatavailable"></a>`duoChatAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to AI chat feature. |
+| <a id="currentuserduocodesuggestionsavailable"></a>`duoCodeSuggestionsAvailable` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.8. **Status**: Experiment. User access to code suggestions feature. |
+| <a id="currentuseremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="currentuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="currentusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -17517,7 +17517,7 @@ The currently authenticated GitLab user.
 | <a id="currentuserstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="currentuserstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="currentusertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="currentuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="currentuseruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="currentuseruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="currentuserusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="currentuserwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -17618,8 +17618,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -17777,7 +17777,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="currentuserworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="currentuserworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="currentuserworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="currentuserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `CustomEmoji`
@@ -17929,7 +17929,7 @@ Represents a DAST Pre Scan Verification Step.
 | ---- | ---- | ----------- |
 | <a id="dastprescanverificationstepchecktype"></a>`checkType` | [`DastPreScanVerificationCheckType`](#dastprescanverificationchecktype) | Type of the pre scan verification check. |
 | <a id="dastprescanverificationsteperrors"></a>`errors` | [`[String!]`](#string) | Errors that occurred in the pre scan verification step. |
-| <a id="dastprescanverificationstepname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.10. This was renamed. Use: [`DastPreScanVerificationStep.checkType`](#dastprescanverificationstepchecktype). |
+| <a id="dastprescanverificationstepname"></a>`name` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.10. This was renamed. Use: [`DastPreScanVerificationStep.checkType`](#dastprescanverificationstepchecktype). |
 | <a id="dastprescanverificationstepsuccess"></a>`success` | [`Boolean!`](#boolean) | Whether or not the pre scan verification step has errors. |
 
 ### `DastProfile`
@@ -18004,7 +18004,7 @@ Represents a DAST scanner profile.
 | <a id="dastscannerprofilescantype"></a>`scanType` | [`DastScanTypeEnum`](#dastscantypeenum) | Indicates the type of DAST scan that will run. Either a Passive Scan or an Active Scan. |
 | <a id="dastscannerprofileshowdebugmessages"></a>`showDebugMessages` | [`Boolean!`](#boolean) | Indicates if debug messages should be included in DAST console output. True to include the debug messages. |
 | <a id="dastscannerprofilespidertimeout"></a>`spiderTimeout` | [`Int`](#int) | Maximum number of minutes allowed for the spider to traverse the site. |
-| <a id="dastscannerprofiletaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 15.8. Moved to DastProfile. |
+| <a id="dastscannerprofiletaglist"></a>`tagList` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 15.8. Moved to DastProfile. |
 | <a id="dastscannerprofiletargettimeout"></a>`targetTimeout` | [`Int`](#int) | Maximum number of seconds allowed for the site under test to respond to a request. |
 | <a id="dastscannerprofileuseajaxspider"></a>`useAjaxSpider` | [`Boolean!`](#boolean) | Indicates if the AJAX spider should be used to crawl the target site. True to run the AJAX spider in addition to the traditional spider, and false to run only the traditional spider. |
 
@@ -18302,11 +18302,11 @@ Tags for a given deployment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="descriptionversioncandelete"></a>`canDelete` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
-| <a id="descriptionversiondeletepath"></a>`deletePath` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
-| <a id="descriptionversiondeleted"></a>`deleted` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversioncandelete"></a>`canDelete` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondeletepath"></a>`deletePath` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondeleted"></a>`deleted` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
 | <a id="descriptionversiondescription"></a>`description` | [`String`](#string) | Content of the given description version. |
-| <a id="descriptionversiondiffpath"></a>`diffPath` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondiffpath"></a>`diffPath` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
 | <a id="descriptionversionid"></a>`id` | [`DescriptionVersionID!`](#descriptionversionid) | ID of the description version. |
 
 #### Fields with arguments
@@ -18630,13 +18630,13 @@ Details of the import status of a project.
 | <a id="detailedstatusaction"></a>`action` | [`StatusAction`](#statusaction) | Action information for the status. This includes method, button title, icon, path, and title. |
 | <a id="detailedstatusdetailspath"></a>`detailsPath` | [`String`](#string) | Path of the details for the status. |
 | <a id="detailedstatusfavicon"></a>`favicon` | [`String`](#string) | Favicon of the status. |
-| <a id="detailedstatusgroup"></a>`group` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `group` attribute is deprecated. Use `name` instead. |
+| <a id="detailedstatusgroup"></a>`group` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.4. The `group` attribute is deprecated. Use `name` instead. |
 | <a id="detailedstatushasdetails"></a>`hasDetails` | [`Boolean`](#boolean) | Indicates if the status has further details. |
-| <a id="detailedstatusicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `icon` attribute is deprecated. Use `name` to identify the status to display instead. |
+| <a id="detailedstatusicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.4. The `icon` attribute is deprecated. Use `name` to identify the status to display instead. |
 | <a id="detailedstatusid"></a>`id` | [`String!`](#string) | ID for a detailed status. |
 | <a id="detailedstatuslabel"></a>`label` | [`String`](#string) | Human-readable label of the status (e.g. success). |
 | <a id="detailedstatusname"></a>`name` | [`String`](#string) | Machine-readable status name (e.g. SUCCESS). |
-| <a id="detailedstatustext"></a>`text` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.4. The `text` attribute is being deprecated. Use `label` instead. |
+| <a id="detailedstatustext"></a>`text` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.4. The `text` attribute is being deprecated. Use `label` instead. |
 | <a id="detailedstatustooltip"></a>`tooltip` | [`String`](#string) | Tooltip associated with the status. |
 
 ### `DevopsAdoptionEnabledNamespace`
@@ -18799,7 +18799,7 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the current date. |
 | <a id="dorametricsenvironmenttiers"></a>`environmentTiers` | [`[DeploymentTier!]`](#deploymenttier) | Deployment tiers of the environments to return. Defaults to `[PRODUCTION]`. |
 | <a id="dorametricsinterval"></a>`interval` | [`DoraMetricBucketingInterval`](#dorametricbucketinginterval) | How the metric should be aggregated. Defaults to `DAILY`. In the case of `ALL`, the `date` field in the response will be `null`. |
-| <a id="dorametricsmetric"></a>`metric` **{warning-solid}** | [`DoraMetricType`](#dorametrictype) | **Deprecated** in 15.10. Superseded by metrics fields. See `DoraMetric` type. |
+| <a id="dorametricsmetric"></a>`metric` **{warning-solid}** | [`DoraMetricType`](#dorametrictype) | **Deprecated** in GitLab 15.10. Superseded by metrics fields. See `DoraMetric` type. |
 | <a id="dorametricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 3 months ago. |
 
 ### `DoraMetric`
@@ -18813,7 +18813,7 @@ Returns [`[DoraMetric!]`](#dorametric).
 | <a id="dorametricdeploymentfrequency"></a>`deploymentFrequency` | [`Float`](#float) | Number of deployments per day. |
 | <a id="dorametricleadtimeforchanges"></a>`leadTimeForChanges` | [`Float`](#float) | Median time to deploy a merged merge request. |
 | <a id="dorametrictimetorestoreservice"></a>`timeToRestoreService` | [`Float`](#float) | Median time to close an incident. |
-| <a id="dorametricvalue"></a>`value` **{warning-solid}** | [`Float`](#float) | **Deprecated** in 15.10. Moved to corresponding metric field. |
+| <a id="dorametricvalue"></a>`value` **{warning-solid}** | [`Float`](#float) | **Deprecated** in GitLab 15.10. Moved to corresponding metric field. |
 
 ### `DoraPerformanceScoreCount`
 
@@ -19017,7 +19017,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="epicancestorsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicancestorsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicancestorsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="epicancestorsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicancestorssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicancestorssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicancestorsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -19054,7 +19054,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="epicchildrenmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="epicchildrenmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="epicchildrennot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="epicchildrenor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="epicchildrensearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="epicchildrensort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="epicchildrenstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -19164,9 +19164,9 @@ Total weight of open and closed descendant issues.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `closedIssuesTotal`. |
+| <a id="epicdescendantweightsclosedissues"></a>`closedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 16.6. Use `closedIssuesTotal`. |
 | <a id="epicdescendantweightsclosedissuestotal"></a>`closedIssuesTotal` | [`BigInt`](#bigint) | Total weight of completed (closed) issues in this epic, including epic descendants, encoded as a string. |
-| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 16.6. Use `OpenedIssuesTotal`. |
+| <a id="epicdescendantweightsopenedissues"></a>`openedIssues` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 16.6. Use `OpenedIssuesTotal`. |
 | <a id="epicdescendantweightsopenedissuestotal"></a>`openedIssuesTotal` | [`BigInt`](#bigint) | Total weight of opened issues in this epic, including epic descendants, encoded as a string. |
 
 ### `EpicHealthStatus`
@@ -19189,7 +19189,7 @@ Relationship between an epic and an issue.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="epicissuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in 15.6. Use `alert_management_alerts`. |
+| <a id="epicissuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in GitLab 15.6. Use `alert_management_alerts`. |
 | <a id="epicissueassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="epicissueauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
 | <a id="epicissueblocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
@@ -19210,7 +19210,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="epicissuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="epicissueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
-| <a id="epicissueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
+| <a id="epicissueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.3. Use `emails_enabled`. |
 | <a id="epicissueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if the parent project or group has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="epicissueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="epicissueepicissueid"></a>`epicIssueId` | [`ID!`](#id) | ID of the epic-issue relation. |
@@ -19218,7 +19218,7 @@ Relationship between an epic and an issue.
 | <a id="epicissueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="epicissueexternalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
 | <a id="epicissuehasepic"></a>`hasEpic` | [`Boolean!`](#boolean) | Indicates if the issue belongs to an epic. Can return true and not show an associated epic when the user has no access to the epic. |
-| <a id="epicissuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. **Status**: Experiment. Indicates if the issue has a parent work item. |
+| <a id="epicissuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Indicates if the issue has a parent work item. |
 | <a id="epicissuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="epicissuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. |
 | <a id="epicissuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
@@ -19352,7 +19352,7 @@ Represents an epic board list.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistcollapsed"></a>`collapsed` | [`Boolean`](#boolean) | Indicates if this list is collapsed for this user. |
-| <a id="epiclistepicscount"></a>`epicsCount` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 14.9. This was renamed. Use: `metadata`. |
+| <a id="epiclistepicscount"></a>`epicsCount` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 14.9. This was renamed. Use: `metadata`. |
 | <a id="epiclistid"></a>`id` | [`BoardsEpicListID!`](#boardsepiclistid) | Global ID of the board list. |
 | <a id="epiclistlabel"></a>`label` | [`Label`](#label) | Label of the list. |
 | <a id="epiclistlisttype"></a>`listType` | [`String!`](#string) | Type of the list. |
@@ -19387,7 +19387,7 @@ Represents epic board list metadata.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="epiclistmetadataepicscount"></a>`epicsCount` | [`Int`](#int) | Count of epics in the list. |
-| <a id="epiclistmetadatatotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Introduced** in 14.7. **Status**: Experiment. Total weight of all issues in the list. |
+| <a id="epiclistmetadatatotalweight"></a>`totalWeight` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 14.7. **Status**: Experiment. Total weight of all issues in the list. |
 
 ### `EpicPermissions`
 
@@ -19530,7 +19530,7 @@ Represents security reports comparison for vulnerability findings.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="findingreportscomparerreport"></a>`report` **{warning-solid}** | [`ComparedSecurityReport`](#comparedsecurityreport) | **Introduced** in 16.1. **Status**: Experiment. Compared security report. |
+| <a id="findingreportscomparerreport"></a>`report` **{warning-solid}** | [`ComparedSecurityReport`](#comparedsecurityreport) | **Introduced** in GitLab 16.1. **Status**: Experiment. Compared security report. |
 | <a id="findingreportscomparerstatus"></a>`status` | [`FindingReportsComparerStatus`](#findingreportscomparerstatus) | Comparison status. |
 | <a id="findingreportscomparerstatusreason"></a>`statusReason` | [`String`](#string) | Text explaining the status. |
 
@@ -19635,8 +19635,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Find Dependency Proxy Blob registries on this Geo node.
 
-NOTE:
-**Introduced** in 15.6.
+DETAILS:
+**Introduced** in GitLab 15.6.
 **Status**: Experiment.
 
 Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
@@ -19677,8 +19677,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Find Design Management Repository registries on this Geo node.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementrepositoryregistryconnection).
@@ -20045,7 +20045,7 @@ GPG signature for a signed commit.
 | <a id="groupdependencyproxysetting"></a>`dependencyProxySetting` | [`DependencyProxySetting`](#dependencyproxysetting) | Dependency Proxy settings for the group. |
 | <a id="groupdependencyproxytotalsize"></a>`dependencyProxyTotalSize` | [`String!`](#string) | Total size of the dependency proxy cached images. |
 | <a id="groupdependencyproxytotalsizebytes"></a>`dependencyProxyTotalSizeBytes` | [`BigInt!`](#bigint) | Total size of the dependency proxy cached images in bytes, encoded as a string. |
-| <a id="groupdependencyproxytotalsizeinbytes"></a>`dependencyProxyTotalSizeInBytes` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in 16.1. Use `dependencyProxyTotalSizeBytes`. |
+| <a id="groupdependencyproxytotalsizeinbytes"></a>`dependencyProxyTotalSizeInBytes` **{warning-solid}** | [`Int!`](#int) | **Deprecated** in GitLab 16.1. Use `dependencyProxyTotalSizeBytes`. |
 | <a id="groupdescendantgroupscount"></a>`descendantGroupsCount` | [`Int!`](#int) | Count of direct descendant groups of this group. |
 | <a id="groupdescription"></a>`description` | [`String`](#string) | Description of the namespace. |
 | <a id="groupdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
@@ -20056,13 +20056,13 @@ GPG signature for a signed commit.
 | <a id="groupepicboards"></a>`epicBoards` | [`EpicBoardConnection`](#epicboardconnection) | Find epic boards. (see [Connections](#connections)) |
 | <a id="groupepicsenabled"></a>`epicsEnabled` | [`Boolean`](#boolean) | Indicates if Epics are enabled for namespace. |
 | <a id="groupexternalauditeventdestinations"></a>`externalAuditEventDestinations` | [`ExternalAuditEventDestinationConnection`](#externalauditeventdestinationconnection) | External locations that receive audit events belonging to the group. (see [Connections](#connections)) |
-| <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
+| <a id="groupflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
+| <a id="groupistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplockmathrenderinglimitsenabled"></a>`lockMathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are locked for all descendant groups. |
 | <a id="groupmathrenderinglimitsenabled"></a>`mathRenderingLimitsEnabled` | [`Boolean`](#boolean) | Indicates if math rendering limits are used for this group. |
@@ -20072,8 +20072,8 @@ GPG signature for a signed commit.
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
 | <a id="grouppath"></a>`path` | [`String!`](#string) | Path of the namespace. |
-| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in 16.6. **Status**: Experiment. A pending membership of a user within this group. |
-| <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
+| <a id="grouppendingmembers"></a>`pendingMembers` **{warning-solid}** | [`PendingGroupMemberConnection`](#pendinggroupmemberconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
+| <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
 | <a id="groupprojectscount"></a>`projectsCount` | [`Int!`](#int) | Count of direct projects in this group. |
 | <a id="grouprecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the group. Maximum size is 4. (see [Connections](#connections)) |
@@ -20087,8 +20087,8 @@ GPG signature for a signed commit.
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
-| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
-| <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. **Status**: Experiment. Timelog categories for the namespace. |
+| <a id="grouptemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
+| <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="grouptwofactorgraceperiod"></a>`twoFactorGracePeriod` | [`Int`](#int) | Time before two-factor authentication is enforced. |
@@ -20105,8 +20105,8 @@ GPG signature for a signed commit.
 
 Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
-NOTE:
-**Introduced** in 15.8.
+DETAILS:
+**Introduced** in GitLab 15.8.
 **Status**: Experiment.
 
 Returns [`AchievementConnection`](#achievementconnection).
@@ -20125,8 +20125,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
@@ -20376,8 +20376,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Visualizations of the group or associated configuration project.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
@@ -20396,8 +20396,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Customizable dashboards for the group.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
@@ -20501,7 +20501,7 @@ Returns [`Epic`](#epic).
 | <a id="groupepicmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="groupepicor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicsearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicsort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -20550,7 +20550,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupepicsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Filter epics by milestone title, computed from epic's issues. |
 | <a id="groupepicsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="groupepicsnot"></a>`not` | [`NegatedEpicFilterInput`](#negatedepicfilterinput) | Negated epic arguments. |
-| <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
+| <a id="groupepicsor"></a>`or` **{warning-solid}** | [`UnionedEpicFilterInput`](#unionedepicfilterinput) | **Introduced** in GitLab 15.9. **Status**: Experiment. List of arguments with inclusive OR. Ignored unless `or_issuable_queries` flag is enabled. |
 | <a id="groupepicssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupepicssort"></a>`sort` | [`EpicSort`](#epicsort) | List epics by sort order. |
 | <a id="groupepicsstate"></a>`state` | [`EpicState`](#epicstate) | Filter epics by state. |
@@ -20609,7 +20609,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupissuesassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported. |
-| <a id="groupissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.11. Use `assigneeUsernames`. |
+| <a id="groupissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.11. Use `assigneeUsernames`. |
 | <a id="groupissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="groupissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
@@ -20622,7 +20622,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="groupissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="groupissuesepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
-| <a id="groupissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in 15.4. Use `healthStatusFilter`. |
+| <a id="groupissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |
 | <a id="groupissueshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
 | <a id="groupissuesiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="groupissuesiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
@@ -20694,7 +20694,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="groupiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="groupiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
-| <a id="groupiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
+| <a id="groupiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
 
 ##### `Group.label`
 
@@ -20731,8 +20731,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Member roles available for the group.
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
@@ -20951,9 +20951,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="grouprunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="grouprunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="grouprunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="grouprunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="grouprunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="grouprunnersmembership"></a>`membership` | [`CiRunnerMembershipFilter`](#cirunnermembershipfilter) | Control which runners to include in the results. |
 | <a id="grouprunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="grouprunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
@@ -20962,14 +20962,14 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouprunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="grouprunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="grouprunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="grouprunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="grouprunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Group.savedReplies`
 
 Saved replies available to the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Returns [`GroupSavedReplyConnection`](#groupsavedreplyconnection).
@@ -20988,8 +20988,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Saved reply in the group. Available only when feature flag `group_saved_replies_flag` is enabled. This field can only be resolved for one group in any single request.
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Returns [`GroupSavedReply`](#groupsavedreply).
@@ -21021,8 +21021,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Scan Result Policies of the project.
 
-NOTE:
-**Deprecated** in 16.9.
+DETAILS:
+**Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
@@ -21064,8 +21064,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Aggregated usage counts within the group.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
@@ -21167,8 +21167,8 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 Find a work item by IID directly associated with the group. Returns `null` if the `namespace_level_work_items` feature flag is disabled.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`WorkItem`](#workitem).
@@ -21183,8 +21183,8 @@ Returns [`WorkItem`](#workitem).
 
 Counts of work items by state for the namespace. Returns `null` if the `namespace_level_work_items` feature flag is disabled.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
@@ -21193,11 +21193,11 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. **Status**: Experiment. Filter work items by author username. |
+| <a id="groupworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Filter work items by author username. |
 | <a id="groupworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="groupworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="groupworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
 | <a id="groupworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
@@ -21224,8 +21224,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Work items that belong to the namespace.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Returns [`WorkItemConnection`](#workitemconnection).
@@ -21238,11 +21238,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. **Status**: Experiment. Filter work items by author username. |
+| <a id="groupworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Filter work items by author username. |
 | <a id="groupworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="groupworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="groupworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
 | <a id="groupworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
@@ -21771,7 +21771,7 @@ Describes an issuable resource link for incident issues.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="issuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in 15.6. Use `alert_management_alerts`. |
+| <a id="issuealertmanagementalert"></a>`alertManagementAlert` **{warning-solid}** | [`AlertManagementAlert`](#alertmanagementalert) | **Deprecated** in GitLab 15.6. Use `alert_management_alerts`. |
 | <a id="issueassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the issue. (see [Connections](#connections)) |
 | <a id="issueauthor"></a>`author` | [`UserCore!`](#usercore) | User that created the issue. |
 | <a id="issueblocked"></a>`blocked` | [`Boolean!`](#boolean) | Indicates the issue is blocked. |
@@ -21792,14 +21792,14 @@ Describes an issuable resource link for incident issues.
 | <a id="issuediscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="issuedownvotes"></a>`downvotes` | [`Int!`](#int) | Number of downvotes the issue has received. |
 | <a id="issueduedate"></a>`dueDate` | [`Time`](#time) | Due date of the issue. |
-| <a id="issueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.3. Use `emails_enabled`. |
+| <a id="issueemailsdisabled"></a>`emailsDisabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.3. Use `emails_enabled`. |
 | <a id="issueemailsenabled"></a>`emailsEnabled` | [`Boolean!`](#boolean) | Indicates if the parent project or group has email notifications disabled: `false` if email notifications are disabled. |
 | <a id="issueepic"></a>`epic` | [`Epic`](#epic) | Epic to which this issue belongs. |
 | <a id="issueescalationpolicy"></a>`escalationPolicy` | [`EscalationPolicyType`](#escalationpolicytype) | Escalation policy associated with the issue. Available for issues which support escalation. |
 | <a id="issueescalationstatus"></a>`escalationStatus` | [`IssueEscalationStatus`](#issueescalationstatus) | Escalation status of the issue. |
 | <a id="issueexternalauthor"></a>`externalAuthor` | [`String`](#string) | Email address of non-GitLab user reporting the issue. For guests, the email address is obfuscated. |
 | <a id="issuehasepic"></a>`hasEpic` | [`Boolean!`](#boolean) | Indicates if the issue belongs to an epic. Can return true and not show an associated epic when the user has no access to the epic. |
-| <a id="issuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. **Status**: Experiment. Indicates if the issue has a parent work item. |
+| <a id="issuehasparent"></a>`hasParent` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Indicates if the issue has a parent work item. |
 | <a id="issuehealthstatus"></a>`healthStatus` | [`HealthStatus`](#healthstatus) | Current health status. |
 | <a id="issuehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates the issue is hidden because the author has been banned. |
 | <a id="issuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
@@ -22282,11 +22282,11 @@ Represents a member role.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in 16.5. **Status**: Experiment. Base access level for the custom role. |
+| <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Base access level for the custom role. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
-| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection!`](#customizablepermissionconnection) | **Introduced** in 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |
+| <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection!`](#customizablepermissionconnection) | **Introduced** in GitLab 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |
 | <a id="memberroleid"></a>`id` | [`MemberRoleID!`](#memberroleid) | ID of the member role. |
-| <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in 16.7. **Status**: Experiment. Total number of members with the custom role. |
+| <a id="memberrolememberscount"></a>`membersCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.7. **Status**: Experiment. Total number of members with the custom role. |
 | <a id="memberrolename"></a>`name` | [`String!`](#string) | Name of the member role. |
 
 ### `MergeAccessLevel`
@@ -22322,7 +22322,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestautomergestrategy"></a>`autoMergeStrategy` | [`String`](#string) | Selected auto merge strategy. |
 | <a id="mergerequestavailableautomergestrategies"></a>`availableAutoMergeStrategies` | [`[String!]`](#string) | Array of available auto merge strategies. |
 | <a id="mergerequestawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the merge request. (see [Connections](#connections)) |
-| <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in 16.5. **Status**: Experiment. Merge requests that block another merge request from merging. |
+| <a id="mergerequestblockingmergerequests"></a>`blockingMergeRequests` **{warning-solid}** | [`BlockingMergeRequests`](#blockingmergerequests) | **Introduced** in GitLab 16.5. **Status**: Experiment. Merge requests that block another merge request from merging. |
 | <a id="mergerequestcodequalityreportscomparer"></a>`codequalityReportsComparer` | [`CodequalityReportsComparer`](#codequalityreportscomparer) | Code quality reports comparison reported on the merge request. |
 | <a id="mergerequestcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on this noteable. (see [Connections](#connections)) |
 | <a id="mergerequestcommitcount"></a>`commitCount` | [`Int`](#int) | Number of commits in the merge request. |
@@ -22337,7 +22337,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="mergerequestdetailedmergestatus"></a>`detailedMergeStatus` | [`DetailedMergeStatus`](#detailedmergestatus) | Detailed merge status of the merge request. |
 | <a id="mergerequestdiffheadsha"></a>`diffHeadSha` | [`String`](#string) | Diff head SHA of the merge request. |
-| <a id="mergerequestdiffllmsummaries"></a>`diffLlmSummaries` **{warning-solid}** | [`MergeRequestDiffLlmSummaryConnection`](#mergerequestdiffllmsummaryconnection) | **Introduced** in 16.1. **Status**: Experiment. Diff summaries generated by AI. |
+| <a id="mergerequestdiffllmsummaries"></a>`diffLlmSummaries` **{warning-solid}** | [`MergeRequestDiffLlmSummaryConnection`](#mergerequestdiffllmsummaryconnection) | **Introduced** in GitLab 16.1. **Status**: Experiment. Diff summaries generated by AI. |
 | <a id="mergerequestdiffrefs"></a>`diffRefs` | [`DiffRefs`](#diffrefs) | References of the base SHA, the head SHA, and the start SHA for this merge request. |
 | <a id="mergerequestdiffstatssummary"></a>`diffStatsSummary` | [`DiffStatsSummary`](#diffstatssummary) | Summary of which files were changed in this merge request. |
 | <a id="mergerequestdiscussionlocked"></a>`discussionLocked` | [`Boolean!`](#boolean) | Indicates if comments on the merge request are locked to members only. |
@@ -22358,13 +22358,13 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestmergecommitsha"></a>`mergeCommitSha` | [`String`](#string) | SHA of the merge request commit (set once merged). |
 | <a id="mergerequestmergeerror"></a>`mergeError` | [`String`](#string) | Error message due to a merge error. |
 | <a id="mergerequestmergeongoing"></a>`mergeOngoing` | [`Boolean!`](#boolean) | Indicates if a merge is currently occurring. |
-| <a id="mergerequestmergerequestdiffs"></a>`mergeRequestDiffs` **{warning-solid}** | [`MergeRequestDiffConnection`](#mergerequestdiffconnection) | **Introduced** in 16.2. **Status**: Experiment. Diff versions of a merge request. |
-| <a id="mergerequestmergestatus"></a>`mergeStatus` **{warning-solid}** | [`String`](#string) | **Deprecated** in 14.0. This was renamed. Use: [`MergeRequest.mergeStatusEnum`](#mergerequestmergestatusenum). |
+| <a id="mergerequestmergerequestdiffs"></a>`mergeRequestDiffs` **{warning-solid}** | [`MergeRequestDiffConnection`](#mergerequestdiffconnection) | **Introduced** in GitLab 16.2. **Status**: Experiment. Diff versions of a merge request. |
+| <a id="mergerequestmergestatus"></a>`mergeStatus` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 14.0. This was renamed. Use: [`MergeRequest.mergeStatusEnum`](#mergerequestmergestatusenum). |
 | <a id="mergerequestmergestatusenum"></a>`mergeStatusEnum` | [`MergeStatus`](#mergestatus) | Merge status of the merge request. |
 | <a id="mergerequestmergetrainscount"></a>`mergeTrainsCount` | [`Int`](#int) | Number of merge requests in the merge train. |
 | <a id="mergerequestmergeuser"></a>`mergeUser` | [`UserCore`](#usercore) | User who merged this merge request or set it to auto-merge. |
 | <a id="mergerequestmergewhenpipelinesucceeds"></a>`mergeWhenPipelineSucceeds` | [`Boolean`](#boolean) | Indicates if the merge has been set to auto-merge. |
-| <a id="mergerequestmergeabilitychecks"></a>`mergeabilityChecks` **{warning-solid}** | [`[MergeRequestMergeabilityCheck!]!`](#mergerequestmergeabilitycheck) | **Introduced** in 16.5. **Status**: Experiment. Status of all mergeability checks of the merge request. |
+| <a id="mergerequestmergeabilitychecks"></a>`mergeabilityChecks` **{warning-solid}** | [`[MergeRequestMergeabilityCheck!]!`](#mergerequestmergeabilitycheck) | **Introduced** in GitLab 16.5. **Status**: Experiment. Status of all mergeability checks of the merge request. |
 | <a id="mergerequestmergeable"></a>`mergeable` | [`Boolean!`](#boolean) | Indicates if the merge request is mergeable. |
 | <a id="mergerequestmergeablediscussionsstate"></a>`mergeableDiscussionsState` | [`Boolean`](#boolean) | Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged. |
 | <a id="mergerequestmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the merge request was merged, null if not merged. |
@@ -22389,7 +22389,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
-| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in 15.4. **Status**: Experiment. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
+| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in GitLab 15.4. **Status**: Experiment. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
 | <a id="mergerequestsupportslockonmerge"></a>`supportsLockOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request supports locked labels. |
 | <a id="mergerequesttargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mergerequesttargetbranchexists"></a>`targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |
@@ -22442,8 +22442,8 @@ Returns [`[DiffStats!]`](#diffstats).
 
 Vulnerability finding reports comparison reported on the merge request.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Returns [`FindingReportsComparer`](#findingreportscomparer).
@@ -22533,7 +22533,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestassigneecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestassigneediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="mergerequestassigneeemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestassigneeemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestassigneeemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestassigneegitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -22558,7 +22558,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestassigneestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestassigneetwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestassigneeuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestassigneeuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestassigneeusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestassigneewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -22659,8 +22659,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -22818,7 +22818,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="mergerequestassigneeworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="mergerequestassigneeworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestassigneeworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestassigneeworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestassigneeworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestAuthor`
@@ -22836,7 +22836,7 @@ The author of the merge request.
 | <a id="mergerequestauthorcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestauthorcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestauthordiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="mergerequestauthoremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestauthoremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestauthoremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestauthorgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -22861,7 +22861,7 @@ The author of the merge request.
 | <a id="mergerequestauthorstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestauthorstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestauthortwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestauthoruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestauthoruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestauthorusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestauthorwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -22962,8 +22962,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -23121,7 +23121,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="mergerequestauthorworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="mergerequestauthorworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestauthorworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestauthorworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestDiff`
@@ -23202,7 +23202,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantcommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestparticipantcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestparticipantdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="mergerequestparticipantemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestparticipantemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestparticipantemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -23227,7 +23227,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestparticipantstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestparticipanttwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestparticipantuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestparticipantuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestparticipantusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestparticipantwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -23328,8 +23328,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -23487,7 +23487,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="mergerequestparticipantworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="mergerequestparticipantworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestparticipantworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestparticipantworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestparticipantworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `MergeRequestPermissions`
@@ -23541,7 +23541,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="mergerequestreviewercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="mergerequestreviewerdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="mergerequestrevieweremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="mergerequestrevieweremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="mergerequestrevieweremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestreviewergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -23566,7 +23566,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewerstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="mergerequestreviewerstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="mergerequestreviewertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="mergerequestrevieweruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="mergerequestrevieweruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="mergerequestreviewerusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="mergerequestreviewerwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -23667,8 +23667,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -23826,7 +23826,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="mergerequestreviewerworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="mergerequestreviewerworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `Metadata`
@@ -24007,20 +24007,20 @@ Product analytics events for a specific month and year.
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
+| <a id="namespaceistemporarystorageincreaseenabled"></a>`isTemporaryStorageIncreaseEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
-| <a id="namespaceproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
+| <a id="namespaceproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="namespacerepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="namespacerootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
 | <a id="namespacesecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
-| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in 16.7. Feature removal, will be completely removed in 17.0. |
-| <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. **Status**: Experiment. Timelog categories for the namespace. |
+| <a id="namespacetemporarystorageincreaseendson"></a>`temporaryStorageIncreaseEndsOn` **{warning-solid}** | [`Time`](#time) | **Deprecated** in GitLab 16.7. Feature removal, will be completely removed in 17.0. |
+| <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacevisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
@@ -24031,8 +24031,8 @@ Product analytics events for a specific month and year.
 
 Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
-NOTE:
-**Introduced** in 15.8.
+DETAILS:
+**Introduced** in GitLab 15.8.
 **Status**: Experiment.
 
 Returns [`AchievementConnection`](#achievementconnection).
@@ -24051,8 +24051,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
@@ -24162,8 +24162,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Scan Result Policies of the project.
 
-NOTE:
-**Deprecated** in 16.9.
+DETAILS:
+**Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
@@ -24249,7 +24249,7 @@ Represents the network policy.
 | <a id="noteawardemoji"></a>`awardEmoji` | [`AwardEmojiConnection`](#awardemojiconnection) | List of emoji reactions associated with the note. (see [Connections](#connections)) |
 | <a id="notebody"></a>`body` | [`String!`](#string) | Content of the note. |
 | <a id="notebodyhtml"></a>`bodyHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `note`. |
-| <a id="noteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.5. This was renamed. Use: `internal`. |
+| <a id="noteconfidential"></a>`confidential` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 15.5. This was renamed. Use: `internal`. |
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion this note is a part of. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
@@ -24337,14 +24337,14 @@ Active period time range for on-call rotation.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationavatarurl"></a>`avatarUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Avatar URL of the organization. |
-| <a id="organizationdescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Description of the organization. |
-| <a id="organizationdescriptionhtml"></a>`descriptionHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. GitLab Flavored Markdown rendering of `description`. |
-| <a id="organizationid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. **Status**: Experiment. ID of the organization. |
-| <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. **Status**: Experiment. Name of the organization. |
-| <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in 16.4. **Status**: Experiment. Users with access to the organization. |
-| <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.4. **Status**: Experiment. Path of the organization. |
-| <a id="organizationweburl"></a>`webUrl` **{warning-solid}** | [`String!`](#string) | **Introduced** in 16.6. **Status**: Experiment. Web URL of the organization. |
+| <a id="organizationavatarurl"></a>`avatarUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Avatar URL of the organization. |
+| <a id="organizationdescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Description of the organization. |
+| <a id="organizationdescriptionhtml"></a>`descriptionHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. GitLab Flavored Markdown rendering of `description`. |
+| <a id="organizationid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 16.4. **Status**: Experiment. ID of the organization. |
+| <a id="organizationname"></a>`name` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.4. **Status**: Experiment. Name of the organization. |
+| <a id="organizationorganizationusers"></a>`organizationUsers` **{warning-solid}** | [`OrganizationUserConnection!`](#organizationuserconnection) | **Introduced** in GitLab 16.4. **Status**: Experiment. Users with access to the organization. |
+| <a id="organizationpath"></a>`path` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.4. **Status**: Experiment. Path of the organization. |
+| <a id="organizationweburl"></a>`webUrl` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Web URL of the organization. |
 
 #### Fields with arguments
 
@@ -24352,8 +24352,8 @@ Active period time range for on-call rotation.
 
 Groups within this organization that the user has access to.
 
-NOTE:
-**Introduced** in 16.4.
+DETAILS:
+**Introduced** in GitLab 16.4.
 **Status**: Experiment.
 
 Returns [`GroupConnection!`](#groupconnection).
@@ -24373,8 +24373,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Projects within this organization that the user has access to.
 
-NOTE:
-**Introduced** in 16.8.
+DETAILS:
+**Introduced** in GitLab 16.8.
 **Status**: Experiment.
 
 Returns [`ProjectConnection!`](#projectconnection).
@@ -24417,9 +24417,9 @@ A user with access to the organization.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[OrganizationUserBadge!]`](#organizationuserbadge) | **Introduced** in 16.4. **Status**: Experiment. Badges describing the user within the organization. |
-| <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in 16.4. **Status**: Experiment. ID of the organization user. |
-| <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in 16.4. **Status**: Experiment. User that is associated with the organization. |
+| <a id="organizationuserbadges"></a>`badges` **{warning-solid}** | [`[OrganizationUserBadge!]`](#organizationuserbadge) | **Introduced** in GitLab 16.4. **Status**: Experiment. Badges describing the user within the organization. |
+| <a id="organizationuserid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 16.4. **Status**: Experiment. ID of the organization user. |
+| <a id="organizationuseruser"></a>`user` **{warning-solid}** | [`UserCore!`](#usercore) | **Introduced** in GitLab 16.4. **Status**: Experiment. User that is associated with the organization. |
 
 ### `OrganizationUserBadge`
 
@@ -24441,7 +24441,7 @@ Represents a package with pipelines in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="package_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
+| <a id="packagecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -24465,7 +24465,7 @@ Represents a package in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagebase_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagebasecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
+| <a id="packagebasecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagebasecreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
@@ -24526,7 +24526,7 @@ Represents a package details in the Package Registry.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagedetailstype_links"></a>`_links` | [`PackageLinks!`](#packagelinks) | Map of links to perform actions on the package. |
-| <a id="packagedetailstypecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
+| <a id="packagedetailstypecandestroy"></a>`canDestroy` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.6. Superseded by `user_permissions` field. See `Types::PermissionTypes::Package` type. |
 | <a id="packagedetailstypecomposerconfigrepositoryurl"></a>`composerConfigRepositoryUrl` | [`String`](#string) | Url of the Composer setup endpoint. |
 | <a id="packagedetailstypecomposerurl"></a>`composerUrl` | [`String`](#string) | Url of the Composer endpoint. |
 | <a id="packagedetailstypeconanurl"></a>`conanUrl` | [`String`](#string) | Url of the Conan project endpoint. |
@@ -25086,7 +25086,7 @@ Represents a pipeline schedule.
 | ---- | ---- | ----------- |
 | <a id="pipelineschedulepermissionsadminpipelineschedule"></a>`adminPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `admin_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `play_pipeline_schedule` on this resource. |
-| <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
+| <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 15.9. Use admin_pipeline_schedule permission to determine if the user can take ownership of a pipeline schedule. |
 | <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_pipeline_schedule` on this resource. |
 
 ### `PipelineScheduleVariable`
@@ -25124,7 +25124,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindinglocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="pipelinesecurityreportfindingmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
 | <a id="pipelinesecurityreportfindingproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability finding was found. |
-| <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.1. Use uuid instead. |
+| <a id="pipelinesecurityreportfindingprojectfingerprint"></a>`projectFingerprint` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.1. Use uuid instead. |
 | <a id="pipelinesecurityreportfindingremediations"></a>`remediations` | [`[VulnerabilityRemediationType!]`](#vulnerabilityremediationtype) | Remediations of the security report finding. |
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
@@ -25179,7 +25179,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | ---- | ---- | ----------- |
 | <a id="projectactualrepositorysizelimit"></a>`actualRepositorySizeLimit` | [`Float`](#float) | Size limit for the repository in bytes. |
 | <a id="projectagentconfigurations"></a>`agentConfigurations` | [`AgentConfigurationConnection`](#agentconfigurationconnection) | Agent configurations defined by the project. (see [Connections](#connections)) |
-| <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in 16.9. **Status**: Experiment. Ai Agents for the project. |
+| <a id="projectaiagents"></a>`aiAgents` **{warning-solid}** | [`AiAgentConnection`](#aiagentconnection) | **Introduced** in GitLab 16.9. **Status**: Experiment. Ai Agents for the project. |
 | <a id="projectallowmergeonskippedpipeline"></a>`allowMergeOnSkippedPipeline` | [`Boolean`](#boolean) | If `only_allow_merge_if_pipeline_succeeds` is true, indicates if merge requests of the project can also be merged with skipped jobs. |
 | <a id="projectallowsmultiplemergerequestassignees"></a>`allowsMultipleMergeRequestAssignees` | [`Boolean!`](#boolean) | Project allows assigning multiple users to a merge request. |
 | <a id="projectallowsmultiplemergerequestreviewers"></a>`allowsMultipleMergeRequestReviewers` | [`Boolean!`](#boolean) | Project allows assigning multiple reviewers to a merge request. |
@@ -25208,12 +25208,12 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
-| <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
-| <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
+| <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
+| <a id="projectflowmetrics"></a>`flowMetrics` **{warning-solid}** | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in 16.10. **Status**: Experiment. Google Cloud Artifact Registry repository. Returns `null` if `gcp_artifact_registry` feature flag is disabled. |
+| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Cloud Artifact Registry repository. Returns `null` if `gcp_artifact_registry` feature flag is disabled. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
 | <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
@@ -25221,7 +25221,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectimportstatus"></a>`importStatus` | [`String`](#string) | Status of import background job of the project. |
 | <a id="projectincidentmanagementtimelineeventtags"></a>`incidentManagementTimelineEventTags` | [`[TimelineEventTagType!]`](#timelineeventtagtype) | Timeline event tags for the project. |
-| <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
+| <a id="projectiscatalogresource"></a>`isCatalogResource` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 15.11. **Status**: Experiment. Indicates if a project is a catalog resource. |
 | <a id="projectisforked"></a>`isForked` | [`Boolean!`](#boolean) | Project is forked. |
 | <a id="projectissuesaccesslevel"></a>`issuesAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for issues access. |
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
@@ -25250,13 +25250,13 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpipelineanalytics"></a>`pipelineAnalytics` | [`PipelineAnalytics`](#pipelineanalytics) | Pipeline analytics. |
-| <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in 16.3. **Status**: Experiment. List of pipeline trigger tokens. |
+| <a id="projectpipelinetriggers"></a>`pipelineTriggers` **{warning-solid}** | [`PipelineTriggerConnection`](#pipelinetriggerconnection) | **Introduced** in GitLab 16.3. **Status**: Experiment. List of pipeline trigger tokens. |
 | <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
-| <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. **Status**: Experiment. Product Analytics instrumentation key assigned to the project. |
-| <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in 15.10. **Status**: Experiment. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
-| <a id="projectprojectplanlimits"></a>`projectPlanLimits` **{warning-solid}** | [`ProjectPlanLimits`](#projectplanlimits) | **Introduced** in 16.9. **Status**: Experiment. Plan limits for the current project. |
-| <a id="projectprotectablebranches"></a>`protectableBranches` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in 16.9. **Status**: Experiment. List of unprotected branches, ignoring any wildcard branch rules. |
+| <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Product Analytics instrumentation key assigned to the project. |
+| <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in GitLab 15.10. **Status**: Experiment. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
+| <a id="projectprojectplanlimits"></a>`projectPlanLimits` **{warning-solid}** | [`ProjectPlanLimits`](#projectplanlimits) | **Introduced** in GitLab 16.9. **Status**: Experiment. Plan limits for the current project. |
+| <a id="projectprotectablebranches"></a>`protectableBranches` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.9. **Status**: Experiment. List of unprotected branches, ignoring any wildcard branch rules. |
 | <a id="projectpublicjobs"></a>`publicJobs` | [`Boolean`](#boolean) | Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts. |
 | <a id="projectpushrules"></a>`pushRules` | [`PushRules`](#pushrules) | Project's push rules settings. |
 | <a id="projectrecentissueboards"></a>`recentIssueBoards` | [`BoardConnection`](#boardconnection) | List of recently visited boards of the project. Maximum size is 4. (see [Connections](#connections)) |
@@ -25283,11 +25283,11 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectstatistics"></a>`statistics` | [`ProjectStatistics`](#projectstatistics) | Statistics of the project. |
 | <a id="projectstatisticsdetailspaths"></a>`statisticsDetailsPaths` | [`ProjectStatisticsRedirect`](#projectstatisticsredirect) | Redirects for Statistics of the project. |
 | <a id="projectsuggestioncommitmessage"></a>`suggestionCommitMessage` | [`String`](#string) | Commit message used to apply merge request suggestions. |
-| <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.12. Use `topics`. |
+| <a id="projecttaglist"></a>`tagList` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.12. Use `topics`. |
 | <a id="projectterraformstates"></a>`terraformStates` | [`TerraformStateConnection`](#terraformstateconnection) | Terraform states associated with the project. (see [Connections](#connections)) |
-| <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in 15.3. **Status**: Experiment. Timelog categories for the project. |
+| <a id="projecttimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the project. |
 | <a id="projecttopics"></a>`topics` | [`[String!]`](#string) | List of project topics. |
-| <a id="projecttrackingkey"></a>`trackingKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.0. **Status**: Experiment. Tracking key assigned to the project. |
+| <a id="projecttrackingkey"></a>`trackingKey` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Tracking key assigned to the project. |
 | <a id="projectuseraccessauthorizedagents"></a>`userAccessAuthorizedAgents` | [`ClusterAgentAuthorizationUserAccessConnection`](#clusteragentauthorizationuseraccessconnection) | Authorized cluster agents for the project through user_access keyword. (see [Connections](#connections)) |
 | <a id="projectuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the project. |
@@ -25304,8 +25304,8 @@ Represents vulnerability finding of a security report on the pipeline.
 
 Find a specific AI Agent.
 
-NOTE:
-**Introduced** in 16.10.
+DETAILS:
+**Introduced** in GitLab 16.10.
 **Status**: Experiment.
 
 Returns [`AiAgent`](#aiagent).
@@ -25471,8 +25471,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 CI/CD config variable.
 
-NOTE:
-**Introduced** in 15.3.
+DETAILS:
+**Introduced** in GitLab 15.3.
 **Status**: Experiment.
 
 Returns [`[CiConfigVariable!]`](#ciconfigvariable).
@@ -25548,8 +25548,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Get tag names containing a given commit.
 
-NOTE:
-**Introduced** in 16.0.
+DETAILS:
+**Introduced** in GitLab 16.0.
 **Status**: Experiment.
 
 Returns [`CommitReferences`](#commitreferences).
@@ -25581,8 +25581,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Visualizations of the project or associated configuration project.
 
-NOTE:
-**Introduced** in 16.1.
+DETAILS:
+**Introduced** in GitLab 16.1.
 **Status**: Experiment.
 
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
@@ -25601,8 +25601,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Customizable dashboards for the project.
 
-NOTE:
-**Introduced** in 15.6.
+DETAILS:
+**Introduced** in GitLab 15.6.
 **Status**: Experiment.
 
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
@@ -25693,8 +25693,8 @@ Returns [`ProjectDataTransfer`](#projectdatatransfer).
 
 Software dependencies used by the project.
 
-NOTE:
-**Introduced** in 15.9.
+DETAILS:
+**Introduced** in GitLab 15.9.
 **Status**: Experiment.
 
 Returns [`DependencyConnection`](#dependencyconnection).
@@ -25761,8 +25761,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Details of the fork project compared to its upstream project.
 
-NOTE:
-**Introduced** in 15.7.
+DETAILS:
+**Introduced** in GitLab 15.7.
 **Status**: Experiment.
 
 Returns [`ForkDetails`](#forkdetails).
@@ -25906,7 +25906,7 @@ Returns [`Issue`](#issue).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectissueassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported. |
-| <a id="projectissueassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.11. Use `assigneeUsernames`. |
+| <a id="projectissueassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.11. Use `assigneeUsernames`. |
 | <a id="projectissueassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissueassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissueauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
@@ -25919,7 +25919,7 @@ Returns [`Issue`](#issue).
 | <a id="projectissuecrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissueepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissueepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
-| <a id="projectissuehealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in 15.4. Use `healthStatusFilter`. |
+| <a id="projectissuehealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |
 | <a id="projectissuehealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
 | <a id="projectissueiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="projectissueiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
@@ -25957,7 +25957,7 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectissuestatuscountsassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported. |
-| <a id="projectissuestatuscountsassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.11. Use `assigneeUsernames`. |
+| <a id="projectissuestatuscountsassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.11. Use `assigneeUsernames`. |
 | <a id="projectissuestatuscountsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissuestatuscountsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissuestatuscountsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
@@ -26009,7 +26009,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectissuesassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user assigned to the issues. Wildcard values "NONE" and "ANY" are supported. |
-| <a id="projectissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.11. Use `assigneeUsernames`. |
+| <a id="projectissuesassigneeusername"></a>`assigneeUsername` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.11. Use `assigneeUsernames`. |
 | <a id="projectissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
@@ -26022,7 +26022,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissuesepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
-| <a id="projectissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in 15.4. Use `healthStatusFilter`. |
+| <a id="projectissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |
 | <a id="projectissueshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
 | <a id="projectissuesiid"></a>`iid` | [`String`](#string) | IID of the issue. For example, "1". |
 | <a id="projectissuesiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example, `["1", "2"]`. |
@@ -26094,7 +26094,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectiterationssort"></a>`sort` | [`IterationSort`](#iterationsort) | List iterations by sort order. If unspecified, an arbitrary order (subject to change) is used. |
 | <a id="projectiterationsstate"></a>`state` | [`IterationState`](#iterationstate) | Filter iterations by state. |
 | <a id="projectiterationstimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
-| <a id="projectiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
+| <a id="projectiterationstitle"></a>`title` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 15.4. The argument will be removed in 15.4. Please use `search` and `in` fields instead. |
 
 ##### `Project.job`
 
@@ -26158,8 +26158,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Member roles available for the group.
 
-NOTE:
-**Introduced** in 16.5.
+DETAILS:
+**Introduced** in GitLab 16.5.
 **Status**: Experiment.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
@@ -26249,8 +26249,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Finds machine learning models.
 
-NOTE:
-**Introduced** in 16.8.
+DETAILS:
+**Introduced** in GitLab 16.8.
 **Status**: Experiment.
 
 Returns [`MlModelConnection`](#mlmodelconnection).
@@ -26290,8 +26290,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Network Policies of the project.
 
-NOTE:
-**Deprecated** in 14.8.
+DETAILS:
+**Deprecated** in GitLab 14.8.
 Network policies are deprecated and will be removed in GitLab 17.0. This field returns no data in GitLab 15.0 and later.
 
 Returns [`NetworkPolicyConnection`](#networkpolicyconnection).
@@ -26398,8 +26398,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Count of all events used, broken down by month.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`[MonthlyUsage!]`](#monthlyusage).
@@ -26467,8 +26467,8 @@ Returns [`Requirement`](#requirement).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
-| <a id="projectrequirementiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in 15.8. Use work_item_iids instead. |
+| <a id="projectrequirementiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iid instead. |
+| <a id="projectrequirementiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iids instead. |
 | <a id="projectrequirementlasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementsearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementsort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
@@ -26491,8 +26491,8 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementsauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementsiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
-| <a id="projectrequirementsiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in 15.8. Use work_item_iids instead. |
+| <a id="projectrequirementsiid"></a>`iid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iid instead. |
+| <a id="projectrequirementsiids"></a>`iids` **{warning-solid}** | [`[ID!]`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iids instead. |
 | <a id="projectrequirementslasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementssearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementssort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
@@ -26504,8 +26504,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Options for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
-NOTE:
-**Introduced** in 16.9.
+DETAILS:
+**Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
 Returns [`CiRunnerCloudProvisioningOptions`](#cirunnercloudprovisioningoptions).
@@ -26531,9 +26531,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 14.8. This was renamed. Use: `paused`. |
+| <a id="projectrunnersactive"></a>`active` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 14.8. This was renamed. Use: `paused`. |
 | <a id="projectrunnerscreatorid"></a>`creatorId` | [`UserID`](#userid) | Filter runners by creator ID. |
-| <a id="projectrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.7. **Status**: Experiment. Filter runners by creator username. |
+| <a id="projectrunnerscreatorusername"></a>`creatorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Filter runners by creator username. |
 | <a id="projectrunnerspaused"></a>`paused` | [`Boolean`](#boolean) | Filter runners by `paused` (true) or `active` (false) status. |
 | <a id="projectrunnerssearch"></a>`search` | [`String`](#string) | Filter by full token or partial text in description field. |
 | <a id="projectrunnerssort"></a>`sort` | [`CiRunnerSort`](#cirunnersort) | Sort order of results. |
@@ -26541,7 +26541,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrunnerstaglist"></a>`tagList` | [`[String!]`](#string) | Filter by tags associated with the runner (comma-separated or array). |
 | <a id="projectrunnerstype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Filter runners by type. |
 | <a id="projectrunnersupgradestatus"></a>`upgradeStatus` | [`CiRunnerUpgradeStatus`](#cirunnerupgradestatus) | Filter by upgrade status. |
-| <a id="projectrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
+| <a id="projectrunnersversionprefix"></a>`versionPrefix` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Filter runners by version. Runners that contain runner managers with the version at the start of the search term are returned. For example, the search term '14.' returns runner managers with versions '14.11.1' and '14.2.3'. |
 
 ##### `Project.scanExecutionPolicies`
 
@@ -26564,8 +26564,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Scan Result Policies of the project.
 
-NOTE:
-**Deprecated** in 16.9.
+DETAILS:
+**Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
@@ -26621,8 +26621,8 @@ Returns [`SentryDetailedError`](#sentrydetailederror).
 
 Project services.
 
-NOTE:
-**Deprecated** in 15.9.
+DETAILS:
+**Deprecated** in GitLab 15.9.
 A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
 
 Returns [`ServiceConnection`](#serviceconnection).
@@ -26694,8 +26694,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Visible forks of the project.
 
-NOTE:
-**Introduced** in 15.10.
+DETAILS:
+**Introduced** in GitLab 15.10.
 **Status**: Experiment.
 
 Returns [`ProjectConnection`](#projectconnection).
@@ -26787,8 +26787,8 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 Counts of work items by state for the project.
 
-NOTE:
-**Introduced** in 16.7.
+DETAILS:
+**Introduced** in GitLab 16.7.
 **Status**: Experiment.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
@@ -26797,11 +26797,11 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. **Status**: Experiment. Filter work items by author username. |
+| <a id="projectworkitemstatecountsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Filter work items by author username. |
 | <a id="projectworkitemstatecountsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="projectworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="projectworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
 | <a id="projectworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
@@ -26828,8 +26828,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Work items of the project.
 
-NOTE:
-**Introduced** in 15.1.
+DETAILS:
+**Introduced** in GitLab 15.1.
 **Status**: Experiment.
 
 Returns [`WorkItemConnection`](#workitemconnection).
@@ -26842,11 +26842,11 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.9. **Status**: Experiment. Filter work items by author username. |
+| <a id="projectworkitemsauthorusername"></a>`authorUsername` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.9. **Status**: Experiment. Filter work items by author username. |
 | <a id="projectworkitemsiid"></a>`iid` | [`String`](#string) | IID of the work item. For example, "1". |
 | <a id="projectworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]`. |
 | <a id="projectworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
-| <a id="projectworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in 15.9. Use work item IID filter instead. |
+| <a id="projectworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` **{warning-solid}** | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
 | <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
@@ -27046,13 +27046,13 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectstatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | Build artifacts size of the project in bytes. |
 | <a id="projectstatisticscommitcount"></a>`commitCount` | [`Float!`](#float) | Commit count of the project. |
 | <a id="projectstatisticscontainerregistrysize"></a>`containerRegistrySize` | [`Float`](#float) | Container Registry size of the project in bytes. |
-| <a id="projectstatisticscostfactoredbuildartifactssize"></a>`costFactoredBuildArtifactsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. Build artifacts size in bytes with any applicable cost factor for forks applied. This will equal build_artifacts_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredlfsobjectssize"></a>`costFactoredLfsObjectsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. LFS objects size in bytes with any applicable cost factor for forks applied. This will equal lfs_objects_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredpackagessize"></a>`costFactoredPackagesSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. Packages size in bytes with any applicable cost factor for forks applied. This will equal packages_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredrepositorysize"></a>`costFactoredRepositorySize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. Repository size in bytes with any applicable cost factor for forks applied. This will equal repository_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredsnippetssize"></a>`costFactoredSnippetsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. Snippets size in bytes with any applicable cost factor for forks applied. This will equal snippets_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.2. **Status**: Experiment. Storage size in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
-| <a id="projectstatisticscostfactoredwikisize"></a>`costFactoredWikiSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.6. **Status**: Experiment. Wiki size in bytes with any applicable cost factor for forks applied. This will equal wiki_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredbuildartifactssize"></a>`costFactoredBuildArtifactsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. Build artifacts size in bytes with any applicable cost factor for forks applied. This will equal build_artifacts_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredlfsobjectssize"></a>`costFactoredLfsObjectsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. LFS objects size in bytes with any applicable cost factor for forks applied. This will equal lfs_objects_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredpackagessize"></a>`costFactoredPackagesSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. Packages size in bytes with any applicable cost factor for forks applied. This will equal packages_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredrepositorysize"></a>`costFactoredRepositorySize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. Repository size in bytes with any applicable cost factor for forks applied. This will equal repository_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredsnippetssize"></a>`costFactoredSnippetsSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. Snippets size in bytes with any applicable cost factor for forks applied. This will equal snippets_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.2. **Status**: Experiment. Storage size in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
+| <a id="projectstatisticscostfactoredwikisize"></a>`costFactoredWikiSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.6. **Status**: Experiment. Wiki size in bytes with any applicable cost factor for forks applied. This will equal wiki_size if there is no applicable cost factor. |
 | <a id="projectstatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | Large File Storage (LFS) object size of the project in bytes. |
 | <a id="projectstatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size of the project in bytes. |
 | <a id="projectstatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float`](#float) | CI Pipeline artifacts size in bytes. |
@@ -27359,11 +27359,11 @@ The amount of time for a job to be picked up by a runner, in percentiles.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queueinghistorytimeseriesp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in 16.4. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriestime"></a>`time` | [`Time!`](#time) | Start of the time interval. |
 
 ### `RecentFailures`
@@ -27624,8 +27624,8 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 
 Blob blame.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Returns [`Blame`](#blame).
@@ -27678,7 +27678,7 @@ Represents a requirement.
 | <a id="requirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
 | <a id="requirementdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="requirementid"></a>`id` | [`ID!`](#id) | ID of the requirement. |
-| <a id="requirementiid"></a>`iid` **{warning-solid}** | [`ID!`](#id) | **Deprecated** in 15.8. Use work_item_iid instead. |
+| <a id="requirementiid"></a>`iid` **{warning-solid}** | [`ID!`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iid instead. |
 | <a id="requirementlasttestreportmanuallycreated"></a>`lastTestReportManuallyCreated` | [`Boolean`](#boolean) | Indicates if latest test report was created by user. |
 | <a id="requirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Latest requirement test report state. |
 | <a id="requirementproject"></a>`project` | [`Project!`](#project) | Project to which the requirement belongs. |
@@ -27741,12 +27741,12 @@ Counts of requirements by their state.
 | <a id="rootstoragestatisticsbuildartifactssize"></a>`buildArtifactsSize` | [`Float!`](#float) | CI artifacts size in bytes. |
 | <a id="rootstoragestatisticscontainerregistrysize"></a>`containerRegistrySize` | [`Float!`](#float) | Container Registry size in bytes. |
 | <a id="rootstoragestatisticscontainerregistrysizeisestimated"></a>`containerRegistrySizeIsEstimated` | [`Boolean!`](#boolean) | Indicates whether the deduplicated Container Registry size for the namespace is an estimated value or not. |
-| <a id="rootstoragestatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in 16.2. **Status**: Experiment. Total storage in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
+| <a id="rootstoragestatisticscostfactoredstoragesize"></a>`costFactoredStorageSize` **{warning-solid}** | [`Float!`](#float) | **Introduced** in GitLab 16.2. **Status**: Experiment. Total storage in bytes with any applicable cost factor for forks applied. This will equal storage_size if there is no applicable cost factor. |
 | <a id="rootstoragestatisticsdependencyproxysize"></a>`dependencyProxySize` | [`Float!`](#float) | Dependency Proxy sizes in bytes. |
 | <a id="rootstoragestatisticslfsobjectssize"></a>`lfsObjectsSize` | [`Float!`](#float) | LFS objects size in bytes. |
 | <a id="rootstoragestatisticspackagessize"></a>`packagesSize` | [`Float!`](#float) | Packages size in bytes. |
 | <a id="rootstoragestatisticspipelineartifactssize"></a>`pipelineArtifactsSize` | [`Float!`](#float) | CI pipeline artifacts size in bytes. |
-| <a id="rootstoragestatisticsregistrysizeestimated"></a>`registrySizeEstimated` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.2. Use `container_registry_size_is_estimated`. |
+| <a id="rootstoragestatisticsregistrysizeestimated"></a>`registrySizeEstimated` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.2. Use `container_registry_size_is_estimated`. |
 | <a id="rootstoragestatisticsrepositorysize"></a>`repositorySize` | [`Float!`](#float) | Git repository size in bytes. |
 | <a id="rootstoragestatisticssnippetssize"></a>`snippetsSize` | [`Float!`](#float) | Snippets size in bytes. |
 | <a id="rootstoragestatisticsstoragesize"></a>`storageSize` | [`Float!`](#float) | Total storage in bytes. |
@@ -27897,7 +27897,7 @@ Represents the scan result policy.
 | <a id="scanresultpolicydescription"></a>`description` | [`String!`](#string) | Description of the policy. |
 | <a id="scanresultpolicyeditpath"></a>`editPath` | [`String!`](#string) | URL of policy edit page. |
 | <a id="scanresultpolicyenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether this policy is enabled. |
-| <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in 16.5. Use `allGroupApprovers`. |
+| <a id="scanresultpolicygroupapprovers"></a>`groupApprovers` **{warning-solid}** | [`[Group!]`](#group) | **Deprecated** in GitLab 16.5. Use `allGroupApprovers`. |
 | <a id="scanresultpolicyname"></a>`name` | [`String!`](#string) | Name of the policy. |
 | <a id="scanresultpolicyroleapprovers"></a>`roleApprovers` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="scanresultpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
@@ -28829,7 +28829,7 @@ Core representation of a GitLab user.
 | <a id="usercorecommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="usercorecreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="usercorediscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="usercoreemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="usercoreemail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="usercoreemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usercoregitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -28853,7 +28853,7 @@ Core representation of a GitLab user.
 | <a id="usercorestate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="usercorestatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usercoretwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="usercoreuserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="usercoreuserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="usercoreusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="usercorewebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -28954,8 +28954,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -29113,7 +29113,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreworkspacesactualstates"></a>`actualStates` | [`[String!]`](#string) | Filter workspaces by actual states. |
 | <a id="usercoreworkspacesagentids"></a>`agentIds` | [`[ClustersAgentID!]`](#clustersagentid) | Filter workspaces by agent GlobalIDs. |
 | <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
-| <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in 16.7. Use actual_states instead. |
+| <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
 ### `UserMergeRequestInteraction`
@@ -29172,7 +29172,7 @@ fields relate to interactions between the two entities.
 | <a id="valuestreamid"></a>`id` | [`AnalyticsCycleAnalyticsValueStreamID!`](#analyticscycleanalyticsvaluestreamid) | ID of the value stream. |
 | <a id="valuestreamname"></a>`name` | [`String!`](#string) | Name of the value stream. |
 | <a id="valuestreamnamespace"></a>`namespace` | [`Namespace!`](#namespace) | Namespace the value stream belongs to. |
-| <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.6. **Status**: Experiment. Project the value stream belongs to, returns empty if it belongs to a group. |
+| <a id="valuestreamproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.6. **Status**: Experiment. Project the value stream belongs to, returns empty if it belongs to a group. |
 | <a id="valuestreamstages"></a>`stages` | [`[ValueStreamStage!]`](#valuestreamstage) | Value Stream stages. |
 
 ### `ValueStreamAnalytics`
@@ -29272,13 +29272,13 @@ Represents a vulnerability.
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for this vulnerability. |
-| <a id="vulnerabilityhassolutions"></a>`hasSolutions` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.3. Use `hasRemediations`. |
+| <a id="vulnerabilityhassolutions"></a>`hasSolutions` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.3. Use `hasRemediations`. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
-| <a id="vulnerabilitymessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated** in 16.1. message field has been removed from security reports schema. |
+| <a id="vulnerabilitymessage"></a>`message` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.1. message field has been removed from security reports schema. |
 | <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
@@ -29488,7 +29488,7 @@ Represents the vulnerability details named list.
 | ---- | ---- | ----------- |
 | <a id="vulnerabilitydetailnamedlistdescription"></a>`description` | [`String`](#string) | Description of the field. |
 | <a id="vulnerabilitydetailnamedlistfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
-| <a id="vulnerabilitydetailnamedlistitems"></a>`items` **{warning-solid}** | [`[VulnerabilityDetailNamedListItem!]!`](#vulnerabilitydetailnamedlistitem) | **Introduced** in 16.1. **Status**: Experiment. Named list of details. |
+| <a id="vulnerabilitydetailnamedlistitems"></a>`items` **{warning-solid}** | [`[VulnerabilityDetailNamedListItem!]!`](#vulnerabilitydetailnamedlistitem) | **Introduced** in GitLab 16.1. **Status**: Experiment. Named list of details. |
 | <a id="vulnerabilitydetailnamedlistname"></a>`name` | [`String`](#string) | Name of the field. |
 
 ### `VulnerabilityDetailNamedListItem`
@@ -29502,7 +29502,7 @@ Represents the vulnerability details named list item.
 | <a id="vulnerabilitydetailnamedlistitemdescription"></a>`description` | [`String`](#string) | Description of the field. |
 | <a id="vulnerabilitydetailnamedlistitemfieldname"></a>`fieldName` | [`String`](#string) | Name of the field. |
 | <a id="vulnerabilitydetailnamedlistitemname"></a>`name` | [`String`](#string) | Name of the field. |
-| <a id="vulnerabilitydetailnamedlistitemvalue"></a>`value` **{warning-solid}** | [`VulnerabilityDetail!`](#vulnerabilitydetail) | **Introduced** in 16.1. **Status**: Experiment. Value of the field. |
+| <a id="vulnerabilitydetailnamedlistitemvalue"></a>`value` **{warning-solid}** | [`VulnerabilityDetail!`](#vulnerabilitydetail) | **Introduced** in GitLab 16.1. **Status**: Experiment. Value of the field. |
 
 ### `VulnerabilityDetailRow`
 
@@ -29917,8 +29917,8 @@ Represents vulnerability letter grades with associated projects.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemarchived"></a>`archived` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in 16.5. **Status**: Experiment. Whether the work item belongs to an archived project. Always false for group level work items. |
-| <a id="workitemauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in 15.9. **Status**: Experiment. User that created the work item. |
+| <a id="workitemarchived"></a>`archived` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project. Always false for group level work items. |
+| <a id="workitemauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in GitLab 15.9. **Status**: Experiment. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitemconfidential"></a>`confidential` | [`Boolean!`](#boolean) | Indicates the work item is confidential. |
 | <a id="workitemcreatenoteemail"></a>`createNoteEmail` | [`String`](#string) | User specific email address for the work item. |
@@ -29928,8 +29928,8 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
 | <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
-| <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in 15.10. **Status**: Experiment. Namespace the work item belongs to. |
-| <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in 15.3. **Status**: Experiment. Project the work item belongs to. |
+| <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
+| <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |
 | <a id="workitemstate"></a>`state` | [`WorkItemState!`](#workitemstate) | State of the work item. |
 | <a id="workitemtitle"></a>`title` | [`String!`](#string) | Title of the work item. |
 | <a id="workitemtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
@@ -29991,7 +29991,7 @@ Represents total number of work items for the represented states.
 | <a id="workitemtypeiconname"></a>`iconName` | [`String`](#string) | Icon name of the work item type. |
 | <a id="workitemtypeid"></a>`id` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type. |
 | <a id="workitemtypename"></a>`name` | [`String!`](#string) | Name of the work item type. |
-| <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` **{warning-solid}** | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in 16.7. **Status**: Experiment. Available widgets for the work item type. |
+| <a id="workitemtypewidgetdefinitions"></a>`widgetDefinitions` **{warning-solid}** | [`[WorkItemWidgetDefinition!]`](#workitemwidgetdefinition) | **Introduced** in GitLab 16.7. **Status**: Experiment. Available widgets for the work item type. |
 
 ### `WorkItemWidgetAssignees`
 
@@ -30001,9 +30001,9 @@ Represents an assignees widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.allowsMultipleAssignees`](#workitemwidgetdefinitionassigneesallowsmultipleassignees). |
+| <a id="workitemwidgetassigneesallowsmultipleassignees"></a>`allowsMultipleAssignees` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.allowsMultipleAssignees`](#workitemwidgetdefinitionassigneesallowsmultipleassignees). |
 | <a id="workitemwidgetassigneesassignees"></a>`assignees` | [`UserCoreConnection`](#usercoreconnection) | Assignees of the work item. (see [Connections](#connections)) |
-| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.canInviteMembers`](#workitemwidgetdefinitionassigneescaninvitemembers). |
+| <a id="workitemwidgetassigneescaninvitemembers"></a>`canInviteMembers` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.7. Field moved to workItemType widget definition interface. Use: [`workitemWidgetDefinitionAssignees.canInviteMembers`](#workitemwidgetdefinitionassigneescaninvitemembers). |
 | <a id="workitemwidgetassigneestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetAwardEmoji`
@@ -30173,7 +30173,7 @@ Represents the labels widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetlabelsallowsscopedlabels"></a>`allowsScopedLabels` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 16.7. Field moved to workItemType widget definition interface. Use: [`WorkItemWidgetDefinitionLabels.allowsScopedLabels`](#workitemwidgetdefinitionlabelsallowsscopedlabels). |
+| <a id="workitemwidgetlabelsallowsscopedlabels"></a>`allowsScopedLabels` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in GitLab 16.7. Field moved to workItemType widget definition interface. Use: [`WorkItemWidgetDefinitionLabels.allowsScopedLabels`](#workitemwidgetdefinitionlabelsallowsscopedlabels). |
 | <a id="workitemwidgetlabelslabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetlabelstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
@@ -30196,8 +30196,8 @@ Represents the linked items widget.
 
 Linked items for the work item. Returns `null` if `linked_work_items` feature flag is disabled.
 
-NOTE:
-**Introduced** in 16.3.
+DETAILS:
+**Introduced** in GitLab 16.3.
 **Status**: Experiment.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
@@ -30297,7 +30297,7 @@ Represents a legacy requirement widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgetrequirementlegacylegacyiid"></a>`legacyIid` **{warning-solid}** | [`Int`](#int) | **Deprecated** in 15.9. Use Work Item IID instead. |
+| <a id="workitemwidgetrequirementlegacylegacyiid"></a>`legacyIid` **{warning-solid}** | [`Int`](#int) | **Deprecated** in GitLab 15.9. Use Work Item IID instead. |
 | <a id="workitemwidgetrequirementlegacytype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetRolledupDates`
@@ -30537,10 +30537,10 @@ Values for sorting alerts.
 | <a id="alertmanagementalertsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="alertmanagementalertsortupdated_time_asc"></a>`UPDATED_TIME_ASC` | Created time by ascending order. |
 | <a id="alertmanagementalertsortupdated_time_desc"></a>`UPDATED_TIME_DESC` | Created time by descending order. |
-| <a id="alertmanagementalertsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="alertmanagementalertsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="alertmanagementalertsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="alertmanagementalertsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="alertmanagementalertsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="alertmanagementalertsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="alertmanagementalertsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="alertmanagementalertsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `AlertManagementDomainFilter`
 
@@ -30549,7 +30549,7 @@ Filters the alerts based on given domain.
 | Value | Description |
 | ----- | ----------- |
 | <a id="alertmanagementdomainfilteroperations"></a>`operations` | Alerts for operations domain. |
-| <a id="alertmanagementdomainfilterthreat_monitoring"></a>`threat_monitoring` **{warning-solid}** | **Deprecated** in 15.0. Network policies are deprecated and will be removed in GitLab 16.0. |
+| <a id="alertmanagementdomainfilterthreat_monitoring"></a>`threat_monitoring` **{warning-solid}** | **Deprecated** in GitLab 15.0. Network policies are deprecated and will be removed in GitLab 16.0. |
 
 ### `AlertManagementIntegrationType`
 
@@ -30858,8 +30858,8 @@ Runner cloud provider.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in 15.7. **Status**: Experiment. Runner is idle. |
-| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in 15.7. **Status**: Experiment. Runner is executing jobs. |
+| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is idle. |
+| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is executing jobs. |
 
 ### `CiRunnerMembershipFilter`
 
@@ -30867,7 +30867,7 @@ Values for filtering runners in namespaces. The previous type name `RunnerMember
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in 15.5. **Status**: Experiment. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
+| <a id="cirunnermembershipfilterall_available"></a>`ALL_AVAILABLE` **{warning-solid}** | **Introduced** in GitLab 15.5. **Status**: Experiment. Include all runners. This list includes runners for all projects in the group and subgroups, as well as for the parent groups and instance. |
 | <a id="cirunnermembershipfilterdescendants"></a>`DESCENDANTS` | Include runners that have either a direct or inherited relationship. These runners can be specific to a project or a group. |
 | <a id="cirunnermembershipfilterdirect"></a>`DIRECT` | Include runners that have a direct relationship. |
 
@@ -30881,7 +30881,7 @@ Values for sorting runners.
 | <a id="cirunnersortcontacted_desc"></a>`CONTACTED_DESC` | Ordered by contacted_at in descending order. |
 | <a id="cirunnersortcreated_asc"></a>`CREATED_ASC` | Ordered by created_at in ascending order. |
 | <a id="cirunnersortcreated_desc"></a>`CREATED_DESC` | Ordered by created_at in descending order. |
-| <a id="cirunnersortmost_active_desc"></a>`MOST_ACTIVE_DESC` **{warning-solid}** | **Introduced** in 16.2. **Status**: Experiment. Ordered by number of running jobs in descending order (only available on Ultimate plans). |
+| <a id="cirunnersortmost_active_desc"></a>`MOST_ACTIVE_DESC` **{warning-solid}** | **Introduced** in GitLab 16.2. **Status**: Experiment. Ordered by number of running jobs in descending order (only available on Ultimate plans). |
 | <a id="cirunnersorttoken_expires_at_asc"></a>`TOKEN_EXPIRES_AT_ASC` | Ordered by token_expires_at in ascending order. |
 | <a id="cirunnersorttoken_expires_at_desc"></a>`TOKEN_EXPIRES_AT_DESC` | Ordered by token_expires_at in descending order. |
 
@@ -30889,11 +30889,11 @@ Values for sorting runners.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
+| <a id="cirunnerstatusactive"></a>`ACTIVE` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
 | <a id="cirunnerstatusnever_contacted"></a>`NEVER_CONTACTED` | Runner that has never contacted this instance. |
 | <a id="cirunnerstatusoffline"></a>`OFFLINE` | Runner that has not contacted this instance within the last 2 hours. Will be considered `STALE` if offline for more than 3 months. |
 | <a id="cirunnerstatusonline"></a>`ONLINE` | Runner that contacted this instance within the last 2 hours. |
-| <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
+| <a id="cirunnerstatuspaused"></a>`PAUSED` **{warning-solid}** | **Deprecated** in GitLab 14.6. This was renamed. Use: [`CiRunner.paused`](#cirunnerpaused). |
 | <a id="cirunnerstatusstale"></a>`STALE` | Runner that has not contacted this instance within the last 3 months. |
 
 ### `CiRunnerType`
@@ -31097,10 +31097,10 @@ Values for sorting contacts.
 | <a id="contactsortphone_desc"></a>`PHONE_DESC` | Phone in descending order. |
 | <a id="contactsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="contactsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="contactsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="contactsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="contactsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="contactsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="contactsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="contactsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="contactsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="contactsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `ContainerExpirationPolicyCadenceEnum`
 
@@ -31166,10 +31166,10 @@ Values for sorting container repositories.
 | <a id="containerrepositorysortname_desc"></a>`NAME_DESC` | Name by descending order. |
 | <a id="containerrepositorysortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="containerrepositorysortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="containerrepositorysortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="containerrepositorysortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="containerrepositorysortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="containerrepositorysortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="containerrepositorysortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="containerrepositorysortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="containerrepositorysortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="containerrepositorysortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `ContainerRepositoryStatus`
 
@@ -31511,10 +31511,10 @@ Roadmap sort values.
 | <a id="epicsorttitle_desc"></a>`TITLE_DESC` | Sort by title in descending order. |
 | <a id="epicsortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort by updated_at by ascending order. |
 | <a id="epicsortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort by updated_at by descending order. |
-| <a id="epicsortend_date_asc"></a>`end_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_ASC. |
-| <a id="epicsortend_date_desc"></a>`end_date_desc` **{warning-solid}** | **Deprecated** in 13.11. Use END_DATE_DESC. |
-| <a id="epicsortstart_date_asc"></a>`start_date_asc` **{warning-solid}** | **Deprecated** in 13.11. Use START_DATE_ASC. |
-| <a id="epicsortstart_date_desc"></a>`start_date_desc` **{warning-solid}** | **Deprecated** in 13.11. Use START_DATE_DESC. |
+| <a id="epicsortend_date_asc"></a>`end_date_asc` **{warning-solid}** | **Deprecated** in GitLab 13.11. Use END_DATE_ASC. |
+| <a id="epicsortend_date_desc"></a>`end_date_desc` **{warning-solid}** | **Deprecated** in GitLab 13.11. Use END_DATE_DESC. |
+| <a id="epicsortstart_date_asc"></a>`start_date_asc` **{warning-solid}** | **Deprecated** in GitLab 13.11. Use START_DATE_ASC. |
+| <a id="epicsortstart_date_desc"></a>`start_date_desc` **{warning-solid}** | **Deprecated** in GitLab 13.11. Use START_DATE_DESC. |
 
 ### `EpicState`
 
@@ -31834,10 +31834,10 @@ Values for sorting issues.
 | <a id="issuesortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="issuesortweight_asc"></a>`WEIGHT_ASC` | Weight by ascending order. |
 | <a id="issuesortweight_desc"></a>`WEIGHT_DESC` | Weight by descending order. |
-| <a id="issuesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="issuesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="issuesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="issuesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="issuesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="issuesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="issuesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="issuesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `IssueState`
 
@@ -31865,11 +31865,11 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="issuetypeepic"></a>`EPIC` **{warning-solid}** | **Introduced** in 16.7. **Status**: Experiment. Epic issue type. Available only when feature flag `namespace_level_work_items` is enabled. |
+| <a id="issuetypeepic"></a>`EPIC` **{warning-solid}** | **Introduced** in GitLab 16.7. **Status**: Experiment. Epic issue type. Available only when feature flag `namespace_level_work_items` is enabled. |
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
-| <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in 15.7. **Status**: Experiment. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
-| <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in 15.6. **Status**: Experiment. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
+| <a id="issuetypeobjective"></a>`OBJECTIVE` **{warning-solid}** | **Introduced** in GitLab 15.6. **Status**: Experiment. Objective issue type. Available only when feature flag `okrs_mvc` is enabled. |
 | <a id="issuetyperequirement"></a>`REQUIREMENT` | Requirement issue type. |
 | <a id="issuetypetask"></a>`TASK` | Task issue type. |
 | <a id="issuetypetest_case"></a>`TEST_CASE` | Test Case issue type. |
@@ -32045,10 +32045,10 @@ Values for sorting members.
 | <a id="membersortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="membersortuser_full_name_asc"></a>`USER_FULL_NAME_ASC` | User's full name ascending order. |
 | <a id="membersortuser_full_name_desc"></a>`USER_FULL_NAME_DESC` | User's full name descending order. |
-| <a id="membersortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="membersortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="membersortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="membersortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="membersortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="membersortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="membersortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="membersortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `MergeRequestNewState`
 
@@ -32091,10 +32091,10 @@ Values for sorting merge requests.
 | <a id="mergerequestsorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="mergerequestsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="mergerequestsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="mergerequestsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="mergerequestsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="mergerequestsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="mergerequestsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="mergerequestsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="mergerequestsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="mergerequestsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="mergerequestsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `MergeRequestState`
 
@@ -32172,10 +32172,10 @@ Values for sorting milestones.
 | <a id="milestonesortexpired_last_due_date_desc"></a>`EXPIRED_LAST_DUE_DATE_DESC` | Group milestones in this order: non-expired milestones with due dates, non-expired milestones without due dates and expired milestones then sort by due date in descending order. |
 | <a id="milestonesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="milestonesortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="milestonesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="milestonesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="milestonesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="milestonesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="milestonesortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="milestonesortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="milestonesortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="milestonesortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `MilestoneStateEnum`
 
@@ -32246,7 +32246,7 @@ Values for sorting projects.
 | <a id="namespaceprojectsortactivity_desc"></a>`ACTIVITY_DESC` | Sort by latest activity, descending order. |
 | <a id="namespaceprojectsortexcess_repo_storage_size_desc"></a>`EXCESS_REPO_STORAGE_SIZE_DESC` | Sort by excess repository storage size, descending order. |
 | <a id="namespaceprojectsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
-| <a id="namespaceprojectsortstorage"></a>`STORAGE` **{warning-solid}** | **Deprecated** in 16.9. Please use EXCESS_REPO_STORAGE_SIZE_DESC. |
+| <a id="namespaceprojectsortstorage"></a>`STORAGE` **{warning-solid}** | **Deprecated** in GitLab 16.9. Please use EXCESS_REPO_STORAGE_SIZE_DESC. |
 | <a id="namespaceprojectsortstorage_size_asc"></a>`STORAGE_SIZE_ASC` | Sort by total storage size, ascending order. |
 | <a id="namespaceprojectsortstorage_size_desc"></a>`STORAGE_SIZE_DESC` | Sort by total storage size, descending order. |
 
@@ -32312,10 +32312,10 @@ Values for sorting organizations.
 | <a id="organizationsortname_desc"></a>`NAME_DESC` | Name in descending order. |
 | <a id="organizationsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="organizationsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="organizationsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="organizationsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="organizationsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="organizationsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="organizationsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="organizationsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="organizationsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="organizationsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `PackageDependencyType`
 
@@ -32769,7 +32769,7 @@ How to format SHA strings.
 | ----- | ----------- |
 | <a id="sharedrunnerssettingdisabled_and_overridable"></a>`DISABLED_AND_OVERRIDABLE` | Sharing of runners is disabled and overridable. |
 | <a id="sharedrunnerssettingdisabled_and_unoverridable"></a>`DISABLED_AND_UNOVERRIDABLE` | Sharing of runners is disabled and unoverridable. |
-| <a id="sharedrunnerssettingdisabled_with_override"></a>`DISABLED_WITH_OVERRIDE` **{warning-solid}** | **Deprecated** in 17.0. This was renamed. Use: `disabled_and_overridable`. |
+| <a id="sharedrunnerssettingdisabled_with_override"></a>`DISABLED_WITH_OVERRIDE` **{warning-solid}** | **Deprecated** in GitLab 17.0. This was renamed. Use: `disabled_and_overridable`. |
 | <a id="sharedrunnerssettingenabled"></a>`ENABLED` | Sharing of runners is enabled. |
 
 ### `SnippetBlobActionEnum`
@@ -32793,10 +32793,10 @@ Common sort values.
 | <a id="sortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
 | <a id="sortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="sortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="sortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="sortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="sortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="sortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="sortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="sortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="sortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="sortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `SortDirectionEnum`
 
@@ -32844,10 +32844,10 @@ Category of error.
 | <a id="timeboxreporterrorreasonunsupported"></a>`UNSUPPORTED` | This type does not support timebox reports. |
 | <a id="timeboxreporterrorreasonupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="timeboxreporterrorreasonupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="timeboxreporterrorreasoncreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="timeboxreporterrorreasoncreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="timeboxreporterrorreasonupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="timeboxreporterrorreasonupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="timeboxreporterrorreasoncreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="timeboxreporterrorreasoncreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="timeboxreporterrorreasonupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="timeboxreporterrorreasonupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `TimelogSort`
 
@@ -32863,10 +32863,10 @@ Values for sorting timelogs.
 | <a id="timelogsorttime_spent_desc"></a>`TIME_SPENT_DESC` | Time spent descending order. |
 | <a id="timelogsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="timelogsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="timelogsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="timelogsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="timelogsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="timelogsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="timelogsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="timelogsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="timelogsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="timelogsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `TodoActionEnum`
 
@@ -33282,10 +33282,10 @@ Values for sorting work items.
 | <a id="workitemsorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="workitemsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="workitemsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
-| <a id="workitemsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_ASC`. |
-| <a id="workitemsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `CREATED_DESC`. |
-| <a id="workitemsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_ASC`. |
-| <a id="workitemsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in 13.5. This was renamed. Use: `UPDATED_DESC`. |
+| <a id="workitemsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="workitemsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="workitemsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="workitemsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `WorkItemState`
 
@@ -34793,7 +34793,7 @@ Implementations:
 | <a id="usercommitemail"></a>`commitEmail` | [`String`](#string) | User's default commit email. |
 | <a id="usercreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the user was created. |
 | <a id="userdiscord"></a>`discord` | [`String`](#string) | Discord ID of the user. |
-| <a id="useremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
+| <a id="useremail"></a>`email` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.7. This was renamed. Use: [`User.publicEmail`](#userpublicemail). |
 | <a id="useremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
@@ -34817,7 +34817,7 @@ Implementations:
 | <a id="userstate"></a>`state` | [`UserState!`](#userstate) | State of the user. |
 | <a id="userstatus"></a>`status` | [`UserStatus`](#userstatus) | User status. |
 | <a id="usertwitter"></a>`twitter` | [`String`](#string) | X (formerly Twitter) username of the user. |
-| <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
+| <a id="useruserachievements"></a>`userAchievements` **{warning-solid}** | [`UserAchievementConnection`](#userachievementconnection) | **Introduced** in GitLab 15.10. **Status**: Experiment. Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled. |
 | <a id="useruserpermissions"></a>`userPermissions` | [`UserPermissions!`](#userpermissions) | Permissions for the current user on the resource. |
 | <a id="userusername"></a>`username` | [`String!`](#string) | Username of the user. Unique within this instance of GitLab. |
 | <a id="userwebpath"></a>`webPath` | [`String!`](#string) | Web path of the user. |
@@ -34918,8 +34918,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 Organizations where the user has access.
 
-NOTE:
-**Introduced** in 16.6.
+DETAILS:
+**Introduced** in GitLab 16.6.
 **Status**: Experiment.
 
 Returns [`OrganizationConnection`](#organizationconnection).
@@ -35125,7 +35125,7 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aichatinputagentversionid"></a>`agentVersionId` | [`AiAgentVersionID`](#aiagentversionid) | Global ID of the agent version to answer the chat. |
 | <a id="aichatinputcontent"></a>`content` | [`String!`](#string) | Content of the message. |
-| <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** **Status**: Experiment. Introduced in 16.6. |
+| <a id="aichatinputcurrentfile"></a>`currentFile` **{warning-solid}** | [`AiCurrentFileInput`](#aicurrentfileinput) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
 | <a id="aichatinputnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace the user is acting on. |
 | <a id="aichatinputresourceid"></a>`resourceId` | [`AiModelID`](#aimodelid) | Global ID of the resource to mutate. |
 
@@ -35789,9 +35789,9 @@ A time-frame defined as a closed inclusive range of two dates.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use authorUsernames instead. Deprecated in 16.6. |
+| <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use authorUsernames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
-| <a id="unionedepicfilterinputlabelname"></a>`labelName` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use labelNames instead. Deprecated in 16.6. |
+| <a id="unionedepicfilterinputlabelname"></a>`labelName` **{warning-solid}** | [`[String!]`](#string) | **Deprecated:** Use labelNames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
 ### `UnionedIssueFilterInput`

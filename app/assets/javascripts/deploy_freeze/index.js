@@ -5,6 +5,10 @@ import createStore from './store';
 export default () => {
   const el = document.getElementById('js-deploy-freeze-table');
 
+  if (!el) {
+    return null;
+  }
+
   const { projectId, timezoneData } = el.dataset;
 
   const store = createStore({

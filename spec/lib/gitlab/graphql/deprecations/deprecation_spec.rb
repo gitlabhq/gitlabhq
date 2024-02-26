@@ -128,7 +128,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       let(:options) { { reason: :renamed, milestone: '10.10', replacement: 'X.y' } }
 
       it 'renders as reason-replacement-milestone' do
-        expect(deprecation.deprecation_reason).to eq('This was renamed. Please use `X.y`. Deprecated in 10.10.')
+        expect(deprecation.deprecation_reason).to eq('This was renamed. Please use `X.y`. Deprecated in GitLab 10.10.')
       end
     end
 
@@ -136,7 +136,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       let(:options) { { reason: :renamed, milestone: '10.10' } }
 
       it 'renders as reason-milestone' do
-        expect(deprecation.deprecation_reason).to eq('This was renamed. Deprecated in 10.10.')
+        expect(deprecation.deprecation_reason).to eq('This was renamed. Deprecated in GitLab 10.10.')
       end
     end
 
@@ -167,7 +167,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
     it 'appends milestone:reason with a leading space if there is a description' do
       desc = deprecation.edit_description('Some description.')
 
-      expect(desc).to eq('Some description. Deprecated in 10.10: This was renamed.')
+      expect(desc).to eq('Some description. Deprecated in GitLab 10.10: This was renamed.')
     end
 
     it 'returns nil if there is no description' do
@@ -179,7 +179,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
     it 'strips any leading or trailing spaces' do
       desc = deprecation.edit_description("   Some description.    \n")
 
-      expect(desc).to eq('Some description. Deprecated in 10.10: This was renamed.')
+      expect(desc).to eq('Some description. Deprecated in GitLab 10.10: This was renamed.')
     end
 
     it 'strips any leading or trailing spaces in heredoc string literals' do
@@ -190,7 +190,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
 
       desc = deprecation.edit_description(description)
 
-      expect(desc).to eq("Lorem ipsum\ndolor sit amet. Deprecated in 10.10: This was renamed.")
+      expect(desc).to eq("Lorem ipsum\ndolor sit amet. Deprecated in GitLab 10.10: This was renamed.")
     end
   end
 
@@ -208,7 +208,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
 
       context 'when the context is :inline' do
         it 'renders on one line' do
-          expectation = '**Deprecated** in 10.10. This was renamed. Use: [`X.y`](#xy).'
+          expectation = '**Deprecated** in GitLab 10.10. This was renamed. Use: [`X.y`](#xy).'
 
           expect(deprecation.markdown).to eq(expectation)
           expect(deprecation.markdown(context: :inline)).to eq(expectation)
@@ -218,8 +218,8 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       context 'when the context is :block' do
         it 'renders a warning note' do
           expectation = <<~MD.chomp
-            NOTE:
-            **Deprecated** in 10.10.
+            DETAILS:
+            **Deprecated** in GitLab 10.10.
             This was renamed.
             Use: [`X.y`](#xy).
           MD
@@ -234,7 +234,7 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
 
       context 'when the context is :inline' do
         it 'renders on one line' do
-          expectation = '**Deprecated** in 10.10. Removed.'
+          expectation = '**Deprecated** in GitLab 10.10. Removed.'
 
           expect(deprecation.markdown).to eq(expectation)
           expect(deprecation.markdown(context: :inline)).to eq(expectation)
@@ -244,8 +244,8 @@ RSpec.describe ::Gitlab::Graphql::Deprecations::Deprecation, feature_category: :
       context 'when the context is :block' do
         it 'renders a warning note' do
           expectation = <<~MD.chomp
-            NOTE:
-            **Deprecated** in 10.10.
+            DETAILS:
+            **Deprecated** in GitLab 10.10.
             Removed.
           MD
 

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require_relative '../../../../tooling/graphql/docs/renderer'
 
 RSpec.describe Tooling::Graphql::Docs::Renderer do
@@ -243,7 +244,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="deprecatedtestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Deprecated** in 101.2. Bad argument. |
+         | <a id="deprecatedtestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 101.2. Bad argument. |
         DOC
       end
 
@@ -290,8 +291,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="deprecatedtestbar"></a>`bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
-          | <a id="deprecatedtestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in 1.10. This is deprecated. |
+          | <a id="deprecatedtestbar"></a>`bar` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 1.10. This was renamed. Use: [`Query.boom`](#queryboom). |
+          | <a id="deprecatedtestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 1.10. This is deprecated. |
 
           #### Fields with arguments
 
@@ -299,8 +300,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          NOTE:
-          **Deprecated** in 1.10.
+          DETAILS:
+          **Deprecated** in GitLab 1.10.
           Do not use.
           Use: [`X.y`](#xy).
 
@@ -335,8 +336,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          NOTE:
-          **Deprecated** in 10.11.
+          DETAILS:
+          **Deprecated** in GitLab 10.11.
           This was renamed.
           Use: [`Query.foo`](#queryfoo).
 
@@ -377,7 +378,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
          | Name | Type | Description |
          | ---- | ---- | ----------- |
-         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in 101.2. **Status**: Experiment. Argument description. |
+         | <a id="alphatestfoofooarg"></a>`fooArg` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 101.2. **Status**: Experiment. Argument description. |
         DOC
       end
 
@@ -415,7 +416,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Name | Type | Description |
           | ---- | ---- | ----------- |
-          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in 1.10. **Status**: Experiment. A description. |
+          | <a id="alphatestfoo"></a>`foo` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 1.10. **Status**: Experiment. A description. |
 
           #### Fields with arguments
 
@@ -423,8 +424,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A description.
 
-          NOTE:
-          **Introduced** in 1.10.
+          DETAILS:
+          **Introduced** in GitLab 1.10.
           **Status**: Experiment.
 
           Returns [`String!`](#string).
@@ -458,8 +459,8 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           A bar.
 
-          NOTE:
-          **Introduced** in 10.11.
+          DETAILS:
+          **Introduced** in GitLab 10.11.
           **Status**: Experiment.
 
           Returns [`Int`](#int).
@@ -500,9 +501,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           | Value | Description |
           | ----- | ----------- |
-          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated** in 1.10. This is deprecated. |
+          | <a id="myenumbar"></a>`BAR` **{warning-solid}** | **Deprecated** in GitLab 1.10. This is deprecated. |
           | <a id="myenumbaz"></a>`BAZ` | A description of BAZ. |
-          | <a id="myenumboop"></a>`BOOP` **{warning-solid}** | **Deprecated** in 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
+          | <a id="myenumboop"></a>`BOOP` **{warning-solid}** | **Deprecated** in GitLab 1.10. This was renamed. Use: [`MyEnum.BAR`](#myenumbar). |
         DOC
       end
 
@@ -611,7 +612,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | ---- | ---- | ----------- |
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyprettinessfactor"></a>`prettinessFactor` | [`Float!`](#float) | How much prettier?. |
-            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` **{warning-solid}** | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in 72.34. |
+            | <a id="mutationmakeitprettypulchritude"></a>`pulchritude` **{warning-solid}** | [`Float`](#float) | **Deprecated:** This was renamed. Please use `prettinessFactor`. Deprecated in GitLab 72.34. |
 
             #### Fields
 
@@ -620,7 +621,7 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
             | <a id="mutationmakeitprettyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
             | <a id="mutationmakeitprettyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
             | <a id="mutationmakeitprettyeverything"></a>`everything` | [`String`](#string) | What we made prettier. |
-            | <a id="mutationmakeitprettyomnis"></a>`omnis` **{warning-solid}** | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in 72.34. |
+            | <a id="mutationmakeitprettyomnis"></a>`omnis` **{warning-solid}** | [`String`](#string) | **Deprecated:** This was renamed. Please use `everything`. Deprecated in GitLab 72.34. |
           DOC
         end
       end

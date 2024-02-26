@@ -79,48 +79,23 @@ RSpec.describe Gitlab::Git::WrapsGitalyErrors, feature_category: :gitaly do
       end
     end
 
-    shared_examples 'commit not found' do |message|
-      it 'wraps the commit not found error' do
-        expect { wrapped_gitaly_errors }.to raise_error do |wrapped_error|
-          expect(wrapped_error).to be_a(Gitlab::Git::Repository::CommitNotFound)
-          expect(wrapped_error.message).to eql(message)
-        end
-      end
-    end
-
     context 'when receiving GRPC::Core::StatusCodes::NOT_FOUND' do
       subject(:wrapped_gitaly_errors) { wrapper.wrapped_gitaly_errors { raise original_error } }
 
-      let(:original_error) do
-        new_detailed_error(
-          GRPC::Core::StatusCodes::NOT_FOUND,
-          'commits not found',
-          Gitaly::FindCommitsError.new(commit_error)
-        )
-      end
-
-      context 'with Gitaly::FindCommitsError contains Gitaly::AmbiguousReferenceError detail' do
-        let(:commit_error) do
-          { ambiguous_ref: Gitaly::AmbiguousReferenceError.new(reference: 'non-existing-ref') }
+      context 'with Gitaly::FindCommitsError' do
+        let(:original_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::NOT_FOUND,
+            'commits not found',
+            Gitaly::FindCommitsError.new
+          )
         end
 
-        it_behaves_like 'commit not found', 'ambiguous reference:non-existing-ref'
-      end
-
-      context 'with Gitaly::FindCommitsError contains Gitaly::BadObjectError detail' do
-        let(:commit_error) do
-          { bad_object: Gitaly::BadObjectError.new(bad_oid: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
+        it 'wraps the commit not found error' do
+          expect { wrapped_gitaly_errors }.to raise_error do |wrapped_error|
+            expect(wrapped_error).to be_a(Gitlab::Git::Repository::CommitNotFound)
+          end
         end
-
-        it_behaves_like 'commit not found', 'bad object:0b4bc9a49b562e85de7cc9e834518ea6828729b9'
-      end
-
-      context 'with Gitaly::FindCommitsError contains Gitaly::InvalidRevisionRange detail' do
-        let(:commit_error) do
-          { invalid_range: Gitaly::InvalidRevisionRange.new(range: '0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
-        end
-
-        it_behaves_like 'commit not found', 'invalid range:0b4bc9a49b562e85de7cc9e834518ea6828729b9'
       end
 
       context 'with non Gitaly::FindCommitsError' do

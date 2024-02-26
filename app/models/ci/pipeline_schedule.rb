@@ -9,6 +9,14 @@ module Ci
     include Limitable
     include EachBatch
     include BatchNullifyDependentAssociations
+    include Gitlab::Utils::StrongMemoize
+
+    VALID_REF_REGEX = %r{\A(#{Gitlab::Git::TAG_REF_PREFIX}|#{Gitlab::Git::BRANCH_REF_PREFIX}).+}
+
+    # The only way that ref can be unexpanded after #expand_short_ref runs is if the ref
+    # is ambiguous because both a branch and a tag with the name exist, or it is
+    # ambiguous because neither exists.
+    INVALID_REF_MESSAGE = 'is ambiguous'
 
     self.limit_name = 'ci_pipeline_schedules'
     self.limit_scope = :project
@@ -21,7 +29,13 @@ module Ci
 
     validates :cron, unless: :importing?, cron: true, presence: { unless: :importing? }
     validates :cron_timezone, cron_timezone: true, presence: { unless: :importing? }
-    validates :ref, presence: { unless: :importing? }
+    validates :ref, presence: { unless: :importing? },
+      format: { with: VALID_REF_REGEX,
+                allow_nil: true,
+                message: INVALID_REF_MESSAGE,
+                unless: ->(schedule) do
+                  schedule.importing || Feature.disabled?(:enforce_full_refs_for_pipeline_schedules, schedule.project)
+                end }
     validates :description, presence: true
     validates :variables, nested_attributes_duplicates: true
 
@@ -32,6 +46,8 @@ module Ci
     scope :preloaded, -> { preload(:owner, project: [:route]) }
     scope :owned_by, ->(user) { where(owner: user) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
+
+    before_validation :expand_short_ref
 
     accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -90,6 +106,22 @@ module Ci
       nullify_dependent_associations_in_batches
 
       super
+    end
+
+    private
+
+    def expand_short_ref
+      return if Feature.disabled?(:enforce_full_refs_for_pipeline_schedules, project)
+      return if ref.blank? || VALID_REF_REGEX.match?(ref) || ambiguous_ref?
+
+      # In case the ref doesn't exist default to the initial value
+      self.ref = project.repository.expand_ref(ref) || ref
+    end
+
+    def ambiguous_ref?
+      strong_memoize_with(:ambiguous_ref, ref) do
+        project.repository.ambiguous_ref?(ref)
+      end
     end
   end
 end

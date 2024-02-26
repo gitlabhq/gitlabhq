@@ -18,7 +18,7 @@ RSpec.describe Gitlab::ExceptionLogFormatter do
 
       expect(payload['exception.class']).to eq('RuntimeError')
       expect(payload['exception.message']).to eq('bad request')
-      expect(payload['exception.backtrace']).to eq(Gitlab::BacktraceCleaner.clean_backtrace(backtrace))
+      expect(payload['exception.backtrace']).to eq(Rails.backtrace_cleaner.clean(backtrace))
       expect(payload['exception.sql']).to be_nil
     end
 

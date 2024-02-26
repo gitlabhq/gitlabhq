@@ -596,6 +596,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment
     enable :read_import_error
+    enable :admin_cicd_variables
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

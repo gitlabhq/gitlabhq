@@ -2053,10 +2053,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:commits) { double }
     let(:committers) { double }
 
-    context 'when not given with_merge_commits and lazy' do
+    context 'when not given with_merge_commits' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: false, lazy: false).and_return(committers)
+        expect(commits).to receive(:committers).with(with_merge_commits: false).and_return(committers)
 
         expect(subject.committers).to eq(committers)
       end
@@ -2065,18 +2065,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when given with_merge_commits true' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: true, lazy: false).and_return(committers)
+        expect(commits).to receive(:committers).with(with_merge_commits: true).and_return(committers)
 
         expect(subject.committers(with_merge_commits: true)).to eq(committers)
-      end
-    end
-
-    context 'when given lazy true' do
-      it 'calls committers on the commits object with the expected param' do
-        expect(subject).to receive(:commits).and_return(commits)
-        expect(commits).to receive(:committers).with(with_merge_commits: false, lazy: true).and_return(committers)
-
-        expect(subject.committers(lazy: true)).to eq(committers)
       end
     end
   end

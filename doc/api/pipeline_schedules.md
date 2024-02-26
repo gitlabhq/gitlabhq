@@ -34,7 +34,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     {
         "id": 13,
         "description": "Test schedule pipeline",
-        "ref": "main",
+        "ref": "refs/heads/main",
         "cron": "* * * * *",
         "cron_timezone": "Asia/Tokyo",
         "next_run_at": "2017-05-19T13:41:00.000Z",
@@ -74,7 +74,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "main",
+    "ref": "refs/heads/main",
     "cron": "* * * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T13:41:00.000Z",
@@ -84,7 +84,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "main",
+        "ref": "refs/heads/main",
         "status": "pending"
     },
     "owner": {
@@ -168,14 +168,14 @@ Create a new pipeline schedule of a project.
 POST /projects/:id/pipeline_schedules
 ```
 
-| Attribute       | Type           | Required | Description |
-|-----------------|----------------|----------|-------------|
-| `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
-| `description`   | string         | Yes      | The description of the pipeline schedule. |
-| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `ref`           | string         | Yes      | The branch or tag name that is triggered. |
-| `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`). |
-| `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`). |
+| Attribute       | Type           | Required | Description                                                                                                                                                                                                                                                                           |
+|-----------------|----------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cron`          | string         | Yes      | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                    |
+| `description`   | string         | Yes      | The description of the pipeline schedule.                                                                                                                                                                                                                                             |
+| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                                  |
+| `ref`           | string         | Yes      | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
+| `active`        | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated (default: `true`).                                                                                                                                                               |
+| `cron_timezone` | string         | No       | The time zone supported by `ActiveSupport::TimeZone`, for example: `Pacific Time (US & Canada)` (default: `UTC`).                                                                                                                                                                     |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -187,7 +187,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 {
     "id": 14,
     "description": "Build packages",
-    "ref": "main",
+    "ref": "refs/heads/main",
     "cron": "0 1 * * 5",
     "cron_timezone": "UTC",
     "next_run_at": "2017-05-26T01:00:00.000Z",
@@ -214,15 +214,15 @@ Updates the pipeline schedule of a project. After the update is done, it is resc
 PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 ```
 
-| Attribute              | Type           | Required | Description |
-|------------------------|----------------|----------|-------------|
-| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID. |
-| `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated. |
-| `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`). |
-| `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`. |
-| `description`          | string         | No       | The description of the pipeline schedule. |
-| `ref`                  | string         | No       | The branch or tag name that is triggered. |
+| Attribute              | Type           | Required | Description                                                                                                                                                                                                                                                                                                                                   |
+|------------------------|----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                   | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding).                                                                                                                                                                                                                                                          |
+| `pipeline_schedule_id` | integer        | Yes      | The pipeline schedule ID.                                                                                                                                                                                                                                                                                                                     |
+| `active`               | boolean        | No       | The activation of pipeline schedule. If false is set, the pipeline schedule is initially deactivated.                                                                                                                                                                                                                                         |
+| `cron_timezone`        | string         | No       | The time zone supported by `ActiveSupport::TimeZone` (for example `Pacific Time (US & Canada)`), or `TZInfo::Timezone` (for example `America/Los_Angeles`).                                                                                                                                                                                   |
+| `cron`                 | string         | No       | The [cron](https://en.wikipedia.org/wiki/Cron) schedule, for example: `0 1 * * *`.                                                                                                                                                                                                                                                            |
+| `description`          | string         | No       | The description of the pipeline schedule.                                                                                                                                                                                                                                                                                                     |
+| `ref`                  | string         | No       | The branch or tag name that is triggered. Both the short (e.g. `main`) and full (e.g. `refs/heads/main` or `refs/tags/main`) ref versions are accepted. If a short version is provided, it is automatically expanded to the full ref version but, if the ref is [ambiguous](../ci/pipelines/schedules.md#ambiguous-refs), it will be rejected |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -233,7 +233,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "main",
+    "ref": "refs/heads/main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -243,7 +243,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "main",
+        "ref": "refs/heads/main",
         "status": "pending"
     },
     "owner": {
@@ -278,7 +278,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "main",
+    "ref": "refs/heads/main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -288,7 +288,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "main",
+        "ref": "refs/heads/main",
         "status": "pending"
     },
     "owner": {
@@ -323,7 +323,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 {
     "id": 13,
     "description": "Test schedule pipeline",
-    "ref": "main",
+    "ref": "refs/heads/main",
     "cron": "0 2 * * *",
     "cron_timezone": "Asia/Tokyo",
     "next_run_at": "2017-05-19T17:00:00.000Z",
@@ -333,7 +333,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
     "last_pipeline": {
         "id": 332,
         "sha": "0e788619d0b5ec17388dffb973ecd505946156db",
-        "ref": "main",
+        "ref": "refs/heads/main",
         "status": "pending"
     },
     "owner": {

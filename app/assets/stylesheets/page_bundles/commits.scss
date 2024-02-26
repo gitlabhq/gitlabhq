@@ -2,7 +2,7 @@
 
 .commits-row {
   + .commits-row {
-    border-top: 1px solid $gray-50;
+    border-top: 1px solid var(--gray-50, $gray-50);
   }
 
   + .commits-empty {
@@ -23,7 +23,7 @@
   }
 
   .title-hint-text {
-    color: $gl-text-color-secondary;
+    color: var(--gray-700, $gl-text-color-secondary);
   }
 
   .gl-filtered-search-suggestion-list.dropdown-menu {

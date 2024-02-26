@@ -17,8 +17,7 @@ Settings = GitlabSettings.load(file, Rails.env) do
     [
       gitlab.host,
       custom_port,
-      gitlab.relative_url_root,
-      '/'
+      gitlab.relative_url_root
     ].join('')
   end
 

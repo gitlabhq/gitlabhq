@@ -1,0 +1,14 @@
+@import 'mixins_and_variables_and_functions';
+
+.commit-description,
+.commit-row-description {
+  padding: $gl-padding-8 0 $gl-padding-8 $gl-padding-8;
+  margin-top: $gl-padding-8;
+  border: 0;
+  border-radius: unset;
+  background: none;
+  word-break: normal;
+  overflow-x: auto;
+  border-left: 3px solid var(--border-color, $gray-100);
+  color: var(--gray-700, $gl-text-color-secondary);
+}

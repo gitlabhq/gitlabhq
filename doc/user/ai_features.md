@@ -132,7 +132,7 @@ The summary is displayed only for you.
 
 Provide feedback on this experimental feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
 
-**Data usage**: When you use this feature, the text of public comments on the issue are sent to the large
+**Data usage**: When you use this feature, the text of all comments on the issue are sent to the large
 language model referenced above.
 
 ### Forecast deployment frequency with Value stream forecasting
@@ -217,7 +217,7 @@ language model referenced above.
 | Feature | Large Language Model |
 |---|---|
 | [Git suggestions](https://gitlab.com/gitlab-org/gitlab/-/issues/409636) | Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-chat) |
-| [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/text) |
+| [Discussion summary](#summarize-issue-discussions-with-discussion-summary) |Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Code Suggestions](project/repository/code_suggestions/index.md) | For Code Completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/docs/generative-ai/model-reference/code-completion)    For Code Generation: Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |
 | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | Anthropic [`Claude-2`](https://docs.anthropic.com/claude/reference/selecting-a-model) |

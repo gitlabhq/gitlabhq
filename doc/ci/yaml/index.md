@@ -5387,6 +5387,10 @@ In this example, the script:
 
 The following keywords are deprecated.
 
+NOTE:
+These keywords are still usable to ensure backwards compatibility,
+but could be scheduled for removal in a future major milestone.
+
 ### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
 
 Defining `image`, `services`, `cache`, `before_script`, and `after_script` globally is deprecated.

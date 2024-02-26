@@ -305,6 +305,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
     config.assets.precompile << "page_bundles/commits.css"
+    config.assets.precompile << "page_bundles/commit_description.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"

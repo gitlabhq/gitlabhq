@@ -17,6 +17,7 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
     create(:ci_pipeline_schedule_variable, key: 'bar', value: 'barvalue', pipeline_schedule: pipeline_schedule)
   end
 
+  let(:repository) { project.repository }
   let(:mutation) do
     variables = {
       id: pipeline_schedule.to_global_id.to_s,
@@ -50,6 +51,10 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
   let(:pipeline_schedule_parameters) { {} }
   let(:mutation_response) { graphql_mutation_response(:pipeline_schedule_update) }
 
+  before do
+    stub_feature_flags(enforce_full_refs_for_pipeline_schedules: false)
+  end
+
   context 'when unauthorized' do
     it_behaves_like 'a mutation on an unauthorized resource'
   end
@@ -71,6 +76,10 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
             { key: 'AAA', value: "AAA123", variableType: 'ENV_VAR' }
           ]
         }
+      end
+
+      before do
+        repository.add_branch(project.creator, 'patch-x', 'master')
       end
 
       it do
@@ -135,7 +144,30 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
           }
         end
 
-        it do
+        context 'when enforce_full_refs_for_pipeline_schedules is enabled' do
+          before do
+            stub_feature_flags(enforce_full_refs_for_pipeline_schedules: true)
+          end
+
+          it 'returns the errors' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(response).to have_gitlab_http_status(:success)
+
+            expect(mutation_response['errors'])
+              .to match_array(
+                [
+                  "Cron  is invalid syntax",
+                  "Cron timezone  is invalid syntax",
+                  "Ref can't be blank",
+                  "Description can't be blank",
+                  "Ref is ambiguous"
+                ]
+              )
+          end
+        end
+
+        it 'returns the errors' do
           post_graphql_mutation(mutation, current_user: current_user)
 
           expect(response).to have_gitlab_http_status(:success)

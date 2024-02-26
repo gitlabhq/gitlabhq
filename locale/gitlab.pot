@@ -1918,9 +1918,6 @@ msgstr ""
 msgid "AIAgents|AI Agents"
 msgstr ""
 
-msgid "AIAgents|Agent name"
-msgstr ""
-
 msgid "AIAgents|An error has occurred when saving the agent."
 msgstr ""
 
@@ -1936,7 +1933,16 @@ msgstr ""
 msgid "AIAgent|Agent"
 msgstr ""
 
+msgid "AIAgent|Agent name"
+msgstr ""
+
 msgid "AIAgent|Ask your agent"
+msgstr ""
+
+msgid "AIAgent|Create agent"
+msgstr ""
+
+msgid "AIAgent|Prompt (optional)"
 msgstr ""
 
 msgid "AIAgent|Try out your agent"
@@ -40048,9 +40054,6 @@ msgstr ""
 msgid "Promotions|You can restrict access to protected branches by choosing a role (Maintainers, Developers) as well as certain users."
 msgstr ""
 
-msgid "Prompt"
-msgstr ""
-
 msgid "Prompt users to upload SSH keys"
 msgstr ""
 
@@ -58654,13 +58657,7 @@ msgstr ""
 msgid "ciReport|Coverage fuzzing"
 msgstr ""
 
-msgid "ciReport|Create Jira issue"
-msgstr ""
-
 msgid "ciReport|Create a merge request to implement this solution, or download and apply the patch manually."
-msgstr ""
-
-msgid "ciReport|Create issue"
 msgstr ""
 
 msgid "ciReport|DAST"
@@ -58715,9 +58712,6 @@ msgid "ciReport|Full report"
 msgstr ""
 
 msgid "ciReport|Generic Report"
-msgstr ""
-
-msgid "ciReport|Investigate this vulnerability by creating an issue"
 msgstr ""
 
 msgid "ciReport|License Compliance"
@@ -60467,16 +60461,7 @@ msgstr ""
 msgid "vulnerability|Add comment & dismiss"
 msgstr ""
 
-msgid "vulnerability|Add comment and dismiss"
-msgstr ""
-
-msgid "vulnerability|Dismiss vulnerability"
-msgstr ""
-
 msgid "vulnerability|Save comment"
-msgstr ""
-
-msgid "vulnerability|Undo dismiss"
 msgstr ""
 
 msgid "vulnerability|dismissed"

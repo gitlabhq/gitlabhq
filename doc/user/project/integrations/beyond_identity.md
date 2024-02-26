@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Beyond Identity
 
 DETAILS:
-**Tier:** Free, Premium, Ultimate
+**Tier:** Premium, Ultimate
 **Offering:** SaaS, self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431433) in GitLab 16.9.

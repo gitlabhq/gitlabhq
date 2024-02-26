@@ -382,13 +382,13 @@ module Types
     field :ci_variables, Types::Ci::ProjectVariableType.connection_type,
       null: true,
       description: "List of the project's CI/CD variables.",
-      authorize: :admin_build,
+      authorize: :admin_cicd_variables,
       resolver: Resolvers::Ci::VariablesResolver
 
     field :inherited_ci_variables, Types::Ci::InheritedCiVariableType.connection_type,
       null: true,
       description: "List of CI/CD variables the project inherited from its parent group and ancestors.",
-      authorize: :admin_build,
+      authorize: :admin_cicd_variables,
       resolver: Resolvers::Ci::InheritedVariablesResolver
 
     field :ci_cd_settings, Types::Ci::CiCdSettingType,

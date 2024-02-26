@@ -1,10 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import {
-  usageQuotasTabsMetadata,
-  usageQuotasViewProvideData,
-} from 'ee_else_ce/usage_quotas/group_view_metadata';
+import { usageQuotasTabsMetadata } from 'ee_else_ce/usage_quotas/group_view_metadata';
 import UsageQuotasApp from './components/usage_quotas_app.vue';
 
 Vue.use(VueApollo);
@@ -29,7 +26,6 @@ export default () => {
     provide: {
       namespaceName,
       tabs: usageQuotasTabsMetadata.filter(Boolean),
-      ...usageQuotasViewProvideData,
     },
     render(createElement) {
       return createElement(UsageQuotasApp);

@@ -1,4 +1,11 @@
-import { GlLoadingIcon, GlTable, GlLink, GlPagination, GlModal, GlFormCheckbox } from '@gitlab/ui';
+import {
+  GlSkeletonLoader,
+  GlTable,
+  GlLink,
+  GlPagination,
+  GlModal,
+  GlFormCheckbox,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import getJobArtifactsResponse from 'test_fixtures/graphql/ci/artifacts/graphql/queries/get_job_artifacts.query.graphql.json';
@@ -38,7 +45,7 @@ describe('JobArtifactsTable component', () => {
 
   const mockToastShow = jest.fn();
 
-  const findLoadingState = () => wrapper.findComponent(GlLoadingIcon);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findTable = () => wrapper.findComponent(GlTable);
   const findDetailsRows = () => wrapper.findAllComponents(ArtifactsTableRowDetails);
   const findDetailsInRow = (i) =>
@@ -165,10 +172,11 @@ describe('JobArtifactsTable component', () => {
     });
   };
 
-  it('when loading, shows a loading state', () => {
+  it('when loading, shows a skeleton loader', () => {
     createComponent();
 
-    expect(findLoadingState().exists()).toBe(true);
+    expect(findTable().attributes('aria-busy')).toBe('true');
+    expect(findSkeletonLoader().exists()).toBe(true);
   });
 
   it('on error, shows an alert', async () => {
@@ -188,7 +196,8 @@ describe('JobArtifactsTable component', () => {
 
     await waitForPromises();
 
-    expect(findTable().exists()).toBe(true);
+    expect(findTable().attributes('aria-busy')).toBe('false');
+    expect(findSkeletonLoader().exists()).toBe(false);
   });
 
   describe('job details', () => {

@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
   let_it_be(:user) { create(:user) }
 
   let(:path) { described_class.new(address: address) }
-  let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => current_host }) }
-  let(:current_host) { 'acme.com/' }
+  let(:settings) { GitlabSettings::Options.build({ 'component_fqdn' => component_fqdn }) }
+  let(:component_fqdn) { 'acme.com' }
+  let(:fqdn_prefix) { "#{component_fqdn}/" }
 
   before do
     allow(::Settings).to receive(:gitlab_ci).and_return(settings)
@@ -55,7 +56,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             result = path.fetch_content!(current_user: user)
             expect(result.content).to eq(file_content)
             expect(result.path).to eq(file_path)
-            expect(path.host).to eq(current_host)
             expect(path.project).to eq(project)
             expect(path.sha).to eq(project.commit('master').id)
           end
@@ -138,7 +138,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
           result = path.fetch_content!(current_user: user)
           expect(result.content).to eq('image: alpine_2')
           expect(result.path).to eq('templates/secret-detection.yml')
-          expect(path.host).to eq(current_host)
           expect(path.project).to eq(project)
           expect(path.sha).to eq(latest_sha)
         end
@@ -156,7 +155,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             result = path.fetch_content!(current_user: user)
             expect(result.content).to eq('image: alpine_2')
             expect(result.path).to eq('templates/secret-detection.yml')
-            expect(path.host).to eq(current_host)
             expect(path.project).to eq(project)
             expect(path.sha).to eq(latest_sha)
           end
@@ -168,7 +166,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
         it 'returns nil', :aggregate_failures do
           expect(path.fetch_content!(current_user: user)).to be_nil
-          expect(path.host).to eq(current_host)
           expect(path.project).to eq(project)
           expect(path.sha).to be_nil
         end
@@ -176,13 +173,12 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
       context 'when current GitLab instance is installed on a relative URL' do
         let(:address) { "acme.com/gitlab/#{project_path}/secret-detection@#{version}" }
-        let(:current_host) { 'acme.com/gitlab/' }
+        let(:component_fqdn) { 'acme.com/gitlab' }
 
         it 'fetches the component content', :aggregate_failures do
           result = path.fetch_content!(current_user: user)
           expect(result.content).to eq('image: alpine_1')
           expect(result.path).to eq('templates/secret-detection.yml')
-          expect(path.host).to eq(current_host)
           expect(path.project).to eq(project)
           expect(path.sha).to eq(project.commit('master').id)
         end
@@ -216,7 +212,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
               expect(result.content).to eq('image: alpine_1')
               expect(result.path).to eq('templates/secret-detection.yml')
-              expect(path.host).to eq(current_host)
               expect(path.project).to eq(project)
             end
           end
@@ -236,7 +231,6 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
               expect(result.content).to eq('image: alpine_1')
               expect(result.path).to eq('templates/secret-detection.yml')
-              expect(path.host).to eq(current_host)
               expect(path.project).to eq(project)
             end
           end
@@ -250,11 +244,32 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
 
             expect(result.content).to eq('image: alpine_1')
             expect(result.path).to eq('templates/secret-detection.yml')
-            expect(path.host).to eq(current_host)
             expect(path.project).to eq(project)
           end
         end
       end
     end
+  end
+
+  describe '.match?' do
+    subject(:match) { described_class.match?(address) }
+
+    context 'when address is a valid path' do
+      let(:address) { "#{fqdn_prefix}group/project@master" }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when address is an invalid path' do
+      let(:address) { 'group/project@master' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '.fqdn_prefix' do
+    subject(:fqdn_prefix) { described_class.fqdn_prefix }
+
+    it { is_expected.to eq("#{component_fqdn}/") }
   end
 end

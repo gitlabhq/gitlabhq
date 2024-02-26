@@ -32,6 +32,8 @@ class MergeRequestDiffCommit < ApplicationRecord
   attribute :trailers, :ind_jsonb
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
+  scope :with_users, -> { preload(:commit_author, :committer) }
+
   # A list of keys of which their values need to be trimmed before they can be
   # inserted into the merge_request_diff_commit_users table.
   TRIM_USER_KEYS =

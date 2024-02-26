@@ -10,14 +10,15 @@ module Gitlab
         LATEST_VERSION_KEYWORD = '~latest'
 
         def self.match?(address)
-          address.include?('@') && address.start_with?(Settings.gitlab_ci['component_fqdn'])
+          address.include?('@') && address.start_with?(fqdn_prefix)
         end
 
-        attr_reader :host
+        def self.fqdn_prefix
+          "#{Settings.gitlab_ci['component_fqdn']}/"
+        end
 
         def initialize(address:)
           @full_path, @version = address.to_s.split('@', 2)
-          @host = Settings.gitlab_ci['component_fqdn']
         end
 
         def fetch_content!(current_user:)
@@ -74,7 +75,7 @@ module Gitlab
         end
 
         def instance_path
-          @full_path.delete_prefix(host)
+          @full_path.delete_prefix(self.class.fqdn_prefix)
         end
 
         def extract_component_name(project_path)

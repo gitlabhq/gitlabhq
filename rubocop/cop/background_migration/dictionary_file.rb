@@ -51,6 +51,10 @@ module RuboCop
           add_offense(node, message: format(MSG[error_code], msg_params))
         end
 
+        def external_dependency_checksum
+          RuboCop::BatchedBackgroundMigrationsDictionary.checksum
+        end
+
         private
 
         def valid_url?(url)

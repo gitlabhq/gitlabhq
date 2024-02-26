@@ -1,4 +1,6 @@
 @import 'mixins_and_variables_and_functions';
+@import 'page_bundles/commits';
+@import 'page_bundles/commit_description';
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;

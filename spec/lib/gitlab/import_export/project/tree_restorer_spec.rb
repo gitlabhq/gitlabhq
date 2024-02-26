@@ -447,7 +447,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, feature_category: :i
 
           aggregate_failures do
             expect(pipeline_schedule.description).to eq('Schedule Description')
-            expect(pipeline_schedule.ref).to eq('master')
+            expect(pipeline_schedule.ref).to eq('refs/heads/master')
             expect(pipeline_schedule.cron).to eq('0 4 * * 0')
             expect(pipeline_schedule.cron_timezone).to eq('UTC')
             expect(pipeline_schedule.active).to eq(false)
