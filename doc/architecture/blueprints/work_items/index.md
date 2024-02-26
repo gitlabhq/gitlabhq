@@ -86,6 +86,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
 | WorkItemWidgetLock | Lock/Unlock a work item | |`Reporter`|No|
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgetcolor) | Set color of a work item. **Note:** Color is currently available only for epics. | |`Reporter`|No|
 
 #### Widget availability (updating)
 
@@ -108,6 +109,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | ❓ | ❓ | ❓ | ❓ | ❓ |
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ❌ | ❌ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | 🔍 | ✅ | ✅ | ❌ | ❌ |
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ✅ | ❌ | ❌ | ❌ | ❌ |
 
 ##### Legend
 

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, self-managed, GitLab Dedicated. GitLab Duo Pro required.
 
 NOTE:
-GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/releases/2024/01/18/gitlab-16-8-released/) and newer. Earlier GitLab versions not supported.
+GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/releases/2024/01/18/gitlab-16-8-released/) and later. Earlier GitLab versions are not supported.
 
 > - [Introduced support for Google Vertex AI Codey APIs](https://gitlab.com/groups/gitlab-org/-/epics/10562) in GitLab 16.1.
 > - [Removed support for GitLab native model](https://gitlab.com/groups/gitlab-org/-/epics/10752) in GitLab 16.2.

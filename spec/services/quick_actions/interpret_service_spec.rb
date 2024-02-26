@@ -2279,18 +2279,6 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:content) { '/request_changes' }
 
-      context "when `mr_request_changes` feature flag is disabled" do
-        before do
-          stub_feature_flags(mr_request_changes: false)
-        end
-
-        it 'does not call MergeRequests::UpdateReviewerStateService' do
-          expect(MergeRequests::UpdateReviewerStateService).not_to receive(:new)
-
-          service.execute(content, merge_request)
-        end
-      end
-
       context "when the user is a reviewer" do
         before do
           create(:merge_request_reviewer, merge_request: merge_request, reviewer: current_user)

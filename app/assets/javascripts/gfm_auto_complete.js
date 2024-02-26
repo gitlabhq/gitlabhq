@@ -277,8 +277,6 @@ class GfmAutoComplete {
 
   // eslint-disable-next-line class-methods-use-this
   setSubmitReviewStates($input) {
-    if (!window.gon.features?.mrRequestChanges) return;
-
     const REVIEW_STATES = {
       reviewed: {
         header: __('Comment'),

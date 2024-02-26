@@ -4,7 +4,6 @@ import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { splitIntoChunks } from '~/vue_shared/components/source_viewer/workers/highlight_utils';
 import highlightMixin from '~/repository/mixins/highlight_mixin';
-import LineHighlighter from '~/blob/line_highlighter';
 import waitForPromises from 'helpers/wait_for_promises';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { TEXT_FILE_TYPE } from '~/repository/constants';
@@ -15,8 +14,6 @@ import {
 } from '~/vue_shared/components/source_viewer/constants';
 import Tracking from '~/tracking';
 
-const lineHighlighter = new LineHighlighter();
-jest.mock('~/blob/line_highlighter', () => jest.fn().mockReturnValue({ highlightHash: jest.fn() }));
 jest.mock('~/vue_shared/components/source_viewer/workers/highlight_utils', () => ({
   splitIntoChunks: jest.fn().mockResolvedValue([]),
 }));
@@ -27,7 +24,8 @@ const onErrorMock = jest.fn();
 
 describe('HighlightMixin', () => {
   let wrapper;
-  const hash = '#L50';
+  let dummyComponent;
+  const hash = '#L50-100';
   const contentArray = Array.from({ length: 140 }, () => 'newline'); // simulate 140 lines of code
   const rawTextBlob = contentArray.join('\n');
   const languageMock = 'json';
@@ -38,12 +36,17 @@ describe('HighlightMixin', () => {
   ) => {
     const simpleViewer = { fileType };
 
-    const dummyComponent = {
+    dummyComponent = {
       mixins: [highlightMixin],
       inject: {
         highlightWorker: { default: workerMock },
       },
-      template: '<div>{{chunks[0]?.highlightedContent}}</div>',
+      template: `<div>
+          <div v-for="(chunk, index) in chunks">
+            {{chunk.highlightedContent}}
+            highlighted({{index}}): {{chunk.isHighlighted}}
+          </div>
+        </div>`,
       created() {
         this.initHighlightWorker(
           { rawTextBlob, simpleViewer, language, fileType, externalStorageUrl, rawPath },
@@ -101,16 +104,19 @@ describe('HighlightMixin', () => {
   });
 
   describe('worker message handling', () => {
-    const CHUNK_MOCK = { startingFrom: 0, totalLines: 70, highlightedContent: 'some content' };
+    const highlightedContent = 'some content';
+    const CHUNK_1_MOCK = { startingFrom: 0, totalLines: 70, highlightedContent };
+    const CHUNK_2_MOCK = { startingFrom: 71, totalLines: 70, highlightedContent };
 
-    beforeEach(() => workerMock.onmessage({ data: [CHUNK_MOCK] }));
+    beforeEach(() => workerMock.onmessage({ data: [CHUNK_1_MOCK, CHUNK_2_MOCK] }));
 
     it('updates the chunks data', () => {
-      expect(wrapper.text()).toBe(CHUNK_MOCK.highlightedContent);
+      expect(wrapper.text()).toContain(CHUNK_1_MOCK.highlightedContent);
     });
 
-    it('highlights hash', () => {
-      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    it('ensures the hash gets highlighted by setting isHighlighted to true on chunks that fall in the range of the hash', () => {
+      expect(wrapper.text()).toContain('highlighted(0): true');
+      expect(wrapper.text()).toContain('highlighted(1): true');
     });
 
     describe('when order of events are incorrect', () => {
@@ -123,7 +129,7 @@ describe('HighlightMixin', () => {
 
         await nextTick();
 
-        expect(wrapper.text()).toBe(chunk1.highlightedContent);
+        expect(wrapper.text()).toContain(chunk1.highlightedContent);
       });
     });
   });

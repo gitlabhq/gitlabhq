@@ -45,7 +45,6 @@ module DraftNotes
       capture_diff_note_positions(created_notes)
       keep_around_commits(created_notes)
       draft_notes.delete_all
-      set_reviewed
       notification_service.async.new_review(review)
       MergeRequests::ResolvedDiscussionNotificationService.new(project: project, current_user: current_user).execute(merge_request)
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
@@ -60,8 +59,7 @@ module DraftNotes
       note_params = draft.publish_params.merge(skip_keep_around_commits: skip_keep_around_commits)
       note = Notes::CreateService.new(draft.project, draft.author, note_params).execute(
         skip_capture_diff_note_position: skip_capture_diff_note_position,
-        skip_merge_status_trigger: skip_merge_status_trigger,
-        skip_set_reviewed: true
+        skip_merge_status_trigger: skip_merge_status_trigger
       )
 
       set_discussion_resolve_status(note, draft)
@@ -78,12 +76,6 @@ module DraftNotes
       else
         discussion.unresolve!
       end
-    end
-
-    def set_reviewed
-      return if Feature.enabled?(:mr_request_changes, current_user)
-
-      ::MergeRequests::UpdateReviewerStateService.new(project: project, current_user: current_user).execute(merge_request, "reviewed")
     end
 
     def capture_diff_note_positions(notes)

@@ -44,7 +44,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
-    push_frontend_feature_flag(:mr_request_changes, current_user)
     push_frontend_feature_flag(:merge_blocked_component, current_user)
     push_frontend_feature_flag(:mention_autocomplete_backend_filtering, project)
     push_frontend_feature_flag(:pinned_file, project)

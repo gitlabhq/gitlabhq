@@ -174,18 +174,16 @@ module Gitlab
 
           result = DraftNotes::PublishService.new(quick_action_target, current_user).execute
 
-          if Feature.enabled?(:mr_request_changes, current_user)
-            reviewer_state = state.strip.presence
+          reviewer_state = state.strip.presence
 
-            if reviewer_state === 'approve'
-              ::MergeRequests::ApprovalService
-                .new(project: quick_action_target.project, current_user: current_user)
-                .execute(quick_action_target)
-            elsif MergeRequestReviewer.states.key?(reviewer_state)
-              ::MergeRequests::UpdateReviewerStateService
-                .new(project: quick_action_target.project, current_user: current_user)
-                .execute(quick_action_target, reviewer_state)
-            end
+          if reviewer_state === 'approve'
+            ::MergeRequests::ApprovalService
+              .new(project: quick_action_target.project, current_user: current_user)
+              .execute(quick_action_target)
+          elsif MergeRequestReviewer.states.key?(reviewer_state)
+            ::MergeRequests::UpdateReviewerStateService
+              .new(project: quick_action_target.project, current_user: current_user)
+              .execute(quick_action_target, reviewer_state)
           end
 
           @execution_message[:submit_review] = if result[:status] == :success
@@ -199,8 +197,7 @@ module Gitlab
         explanation { _('Request changes to the current merge request.') }
         types MergeRequest
         condition do
-          Feature.enabled?(:mr_request_changes, current_user) &&
-            quick_action_target.persisted? &&
+          quick_action_target.persisted? &&
             quick_action_target.find_reviewer(current_user)
         end
         command :request_changes do

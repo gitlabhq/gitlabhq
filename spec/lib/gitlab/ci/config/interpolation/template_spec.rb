@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :pipeline_composition do
   subject { described_class.new(YAML.safe_load(config), ctx) }
@@ -13,16 +13,18 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
 
     $[[ inputs.key ]]:
       name: $[[ inputs.key ]]
-      script: my-value
+      parallel: $[[ inputs.parallel ]]
+      allow_failure: $[[ inputs.allow_failure ]]
+      script: 'echo "This job makes $[[ inputs.parallel ]] jobs for the $[[ inputs.env ]] env"'
     CFG
   end
 
   let(:ctx) do
-    { inputs: { env: 'dev', key: 'abc' } }
+    { inputs: { allow_failure: true, env: 'dev', key: 'abc', parallel: 6 } }
   end
 
   it 'collects interpolation blocks' do
-    expect(subject.size).to eq 2
+    expect(subject.size).to eq 4
   end
 
   it 'interpolates the values properly' do
@@ -33,8 +35,30 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Template, feature_category: :p
 
     abc:
       name: abc
-      script: my-value
+      parallel: 6
+      allow_failure: true
+      script: 'echo "This job makes 6 jobs for the dev env"'
     RESULT
+  end
+
+  context 'when ci_fix_input_types is disabled' do
+    before do
+      stub_feature_flags(ci_fix_input_types: false)
+    end
+
+    it 'interpolates all values as strings' do
+      expect(subject.interpolated).to eq YAML.safe_load <<~RESULT
+      test:
+        spec:
+          env: dev
+
+      abc:
+        name: abc
+        parallel: '6'
+        allow_failure: 'true'
+        script: 'echo "This job makes 6 jobs for the dev env"'
+      RESULT
+    end
   end
 
   context 'when interpolation can not be performed' do

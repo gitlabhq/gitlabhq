@@ -19,7 +19,7 @@ RSpec.describe 'Maintainer deletes protected tag', :js, feature_category: :sourc
     it 'deletes the tag' do
       expect(page).to have_content "#{tag_name} protected"
 
-      page.within('[data-testid="tag-row"]', text: tag_name) do
+      within_testid('tag-row', text: tag_name) do
         click_button('Delete tag')
       end
 

@@ -53,7 +53,7 @@ The backend service must validate this token and any scopes it carries when rece
 ```ruby
 include API::Helpers::CloudConnector
 
-token = ::CloudConnector::AccessService.new.access_token([:new_feature_scope], gitlab_realm)
+token = ::CloudConnector::AccessService.new.access_token([:new_feature_scope])
 
 Gitlab::HTTP.post(
   "https://cloud.gitlab.com/foo/new_feature_endpoint",

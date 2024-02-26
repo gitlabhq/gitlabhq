@@ -1,11 +1,11 @@
 - render_standard_signin = admin_mode ? allow_admin_mode_password_authentication_for_web? : password_authentication_enabled_for_web?
 
-= gl_tabs_nav({ class: 'gl-mx-n5 gl-my-5 nav-tabs nav-links new-session-tabs' }) do
+= gl_tabs_nav({ class: 'gl-mx-n5 gl-my-5 nav-justified', id: 'js-signin-tabs' }) do
   - if crowd_enabled?
-    = gl_tab_link_to _('Crowd'), '#crowd', { class: active_when(form_based_auth_provider_has_active_class?(:crowd)), data: { toggle: 'tab' } }
+    = gl_tab_link_to _('Crowd'), '#crowd', { item_active: form_based_auth_provider_has_active_class?(:crowd), data: { toggle: 'tab' } }
 
   - ldap_servers.each_with_index do |server, i|
-    = gl_tab_link_to server['label'], "##{server['provider_name']}", { class: active_when(i == 0 && form_based_auth_provider_has_active_class?(:ldapmain)), data: { toggle: 'tab', testid: 'ldap-tab' } }
+    = gl_tab_link_to server['label'], "##{server['provider_name']}", { item_active: i == 0 && form_based_auth_provider_has_active_class?(:ldapmain), data: { toggle: 'tab', testid: 'ldap-tab' } }
 
   = render_if_exists 'devise/shared/tab_smartcard'
 

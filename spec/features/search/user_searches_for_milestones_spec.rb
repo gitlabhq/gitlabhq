@@ -23,7 +23,7 @@ RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_lim
   it 'shows scopes when there is no search term' do
     submit_dashboard_search('')
 
-    page.within('[data-testid="search-filter"]') do
+    within_testid('search-filter') do
       expect(page).to have_selector('[data-testid="nav-item"]', minimum: 5)
     end
   end
@@ -40,11 +40,11 @@ RSpec.describe 'User searches for milestones', :js, :clean_gitlab_redis_rate_lim
 
   context 'when on a project page' do
     it 'finds a milestone' do
-      find('[data-testid="project-filter"]').click
+      find_by_testid('project-filter').click
 
       wait_for_requests
 
-      page.within('[data-testid="project-filter"]') do
+      within_testid('project-filter') do
         select_listbox_item project.name
       end
 

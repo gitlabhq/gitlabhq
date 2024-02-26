@@ -93,18 +93,6 @@ RSpec.describe MergeRequests::RequestReviewService, feature_category: :code_revi
 
         service.execute(merge_request, user)
       end
-
-      describe 'mr_request_changes feature flag is disabled' do
-        before do
-          stub_feature_flags(mr_request_changes: false)
-        end
-
-        it 'does not call MergeRequests::RemoveApprovalService' do
-          expect(MergeRequests::RemoveApprovalService).not_to receive(:new)
-
-          service.execute(merge_request, user)
-        end
-      end
     end
   end
 end

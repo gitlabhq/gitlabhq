@@ -1,0 +1,46 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+fragment MergeRequestFragment on MergeRequest {
+  id
+  iid
+  createdAt
+  downvotes
+  state
+  title
+  updatedAt
+  upvotes
+  userDiscussionsCount @include(if: $isSignedIn)
+  webUrl
+  assignees @skip(if: $hideUsers) {
+    nodes {
+      ...User
+    }
+  }
+  author @skip(if: $hideUsers) {
+    ...User
+  }
+  labels {
+    nodes {
+      id
+      color
+      title
+      description
+    }
+  }
+  milestone {
+    id
+    dueDate
+    startDate
+    webPath
+    title
+  }
+  headPipeline {
+    id
+    detailedStatus {
+      id
+      icon
+      text
+      detailsPath
+    }
+  }
+}

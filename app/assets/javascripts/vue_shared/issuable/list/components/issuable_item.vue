@@ -192,6 +192,17 @@ export default {
     issuableNotesLink() {
       return setUrlFragment(this.webUrl, 'notes');
     },
+    statusBadgeVariant() {
+      if (this.isMergeRequest && this.isClosed) {
+        return 'danger';
+      }
+
+      return 'info';
+    },
+    isMergeRequest() {
+      // eslint-disable-next-line no-underscore-dangle
+      return this.issuable.__typename === 'MergeRequest';
+    },
   },
   methods: {
     hasSlotContents(slotName) {
@@ -368,7 +379,7 @@ export default {
       <ul v-if="showIssuableMeta" class="controls">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status">
-          <gl-badge v-if="isNotOpen" size="sm" variant="info">
+          <gl-badge v-if="isNotOpen" size="sm" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>

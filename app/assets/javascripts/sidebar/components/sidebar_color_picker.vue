@@ -15,6 +15,11 @@ export default {
       required: false,
       default: '',
     },
+    autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     suggestedColors() {
@@ -71,6 +76,7 @@ export default {
       />
       <gl-form-input
         v-model.trim="selectedColor"
+        :autofocus="autofocus"
         class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
         :placeholder="__('Use custom color #FF0000')"
         data-testid="selected-color-text"

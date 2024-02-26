@@ -20,7 +20,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
     it 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
-      container = page.find('[data-testid="tag-row"]', text: 'v1.1.0')
+      container = find_by_testid('tag-row', text: 'v1.1.0')
       delete_tag container
 
       expect(page).not_to have_content 'v1.1.0'
@@ -30,7 +30,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
       it 'can not delete protected tags' do
         expect(page).to have_content 'v1.1.1'
 
-        container = page.find('[data-testid="tag-row"]', text: 'v1.1.1')
+        container = find_by_testid('tag-row', text: 'v1.1.1')
         expect(container).to have_button('Only a project maintainer or owner can delete a protected tag',
           disabled: true)
       end
@@ -59,7 +59,7 @@ RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_mana
     end
 
     it 'shows the error message' do
-      container = page.find('[data-testid="tag-row"]', text: 'v1.1.0')
+      container = find_by_testid('tag-row', text: 'v1.1.0')
       delete_tag container
 
       expect(page).to have_content('Do not delete tags')

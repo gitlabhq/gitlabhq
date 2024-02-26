@@ -137,7 +137,7 @@ gem 'grape', '~> 2.0.0', feature_category: :api
 gem 'grape-entity', '~> 0.10.0', feature_category: :api
 gem 'grape-swagger', '~> 2.0.1', group: [:development, :test], feature_category: :api
 gem 'grape-swagger-entity', '~> 0.5.1', group: [:development, :test], feature_category: :api
-gem 'grape-path-helpers', '~> 2.0.0', feature_category: :api
+gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
@@ -412,11 +412,11 @@ group :development do
 
   gem 'listen', '~> 3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'ruby-lsp', "~> 0.13.3", require: false, feature_category: :tooling
+  gem 'ruby-lsp', "~> 0.14.2", require: false, feature_category: :tooling
 
-  gem 'ruby-lsp-rails', "~> 0.2.8", feature_category: :tooling
+  gem 'ruby-lsp-rails', "~> 0.3.0", feature_category: :tooling
 
-  gem 'ruby-lsp-rspec', "~> 0.1.8", require: false, feature_category: :tooling
+  gem 'ruby-lsp-rspec', "~> 0.1.10", require: false, feature_category: :tooling
 end
 
 group :development, :test do
@@ -577,7 +577,7 @@ gem 'gitlab-experiment', '~> 0.9.1', feature_category: :shared
 
 # Structured logging
 gem 'lograge', '~> 0.5' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'grape_logging', '~> 1.8', feature_category: :api
+gem 'grape_logging', '~> 1.8', '>= 1.8.4', feature_category: :api
 
 # DNS Lookup
 gem 'gitlab-net-dns', '~> 0.9.2' # rubocop:todo Gemfile/MissingFeatureCategory

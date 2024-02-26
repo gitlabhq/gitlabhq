@@ -24,7 +24,7 @@ module UserLoginHelper
   end
 
   def ensure_one_active_tab
-    expect(page).to have_selector('ul.new-session-tabs > li > a.active', count: 1)
+    expect(page).to have_selector('#js-signin-tabs > li > a.active', count: 1)
   end
 
   def ensure_one_active_pane

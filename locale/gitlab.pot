@@ -2833,7 +2833,7 @@ msgstr ""
 msgid "Add a reply"
 msgstr ""
 
-msgid "Add a suffix to Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
+msgid "Add a suffix to Service Desk email address. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Add a table"
@@ -5095,9 +5095,6 @@ msgstr ""
 msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
-msgid "An error occurred while approving, please try again."
-msgstr ""
-
 msgid "An error occurred while checking group path. Please refresh and try again."
 msgstr ""
 
@@ -5236,6 +5233,9 @@ msgstr ""
 msgid "An error occurred while getting issue counts"
 msgstr ""
 
+msgid "An error occurred while getting merge request counts"
+msgstr ""
+
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
@@ -5264,6 +5264,9 @@ msgid "An error occurred while loading group members."
 msgstr ""
 
 msgid "An error occurred while loading issues"
+msgstr ""
+
+msgid "An error occurred while loading merge requests"
 msgstr ""
 
 msgid "An error occurred while loading merge requests."
@@ -6425,9 +6428,6 @@ msgid "Approve a pending member"
 msgid_plural "Approve %d pending members"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Approve merge request"
-msgstr ""
 
 msgid "Approve the current merge request."
 msgstr ""
@@ -21269,7 +21269,16 @@ msgstr ""
 msgid "Filter by merge requests that are currently closed and unmerged."
 msgstr ""
 
+msgid "Filter by merge requests that are currently closed."
+msgstr ""
+
 msgid "Filter by merge requests that are currently merged."
+msgstr ""
+
+msgid "Filter by merge requests that are currently opened."
+msgstr ""
+
+msgid "Filter by merge requests that are merged."
 msgstr ""
 
 msgid "Filter by milestone name"
@@ -31031,9 +31040,6 @@ msgid "MergeRequests|started a thread on an outdated change in commit %{linkStar
 msgstr ""
 
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
-msgstr ""
-
-msgid "MergeRequest|Approved by @%{username}"
 msgstr ""
 
 msgid "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page."
@@ -46718,6 +46724,9 @@ msgstr ""
 msgid "Show all issues."
 msgstr ""
 
+msgid "Show all merge requests."
+msgstr ""
+
 msgid "Show all milestones"
 msgstr ""
 
@@ -51888,7 +51897,7 @@ msgstr ""
 msgid "To access this domain create a new DNS record"
 msgstr ""
 
-msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
+msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."

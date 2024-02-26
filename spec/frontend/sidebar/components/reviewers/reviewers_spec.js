@@ -16,6 +16,7 @@ const usersMock = (id = 1) => ({
     canUpdate: true,
     reviewed: true,
     approved: false,
+    reviewState: 'UNREVIEWED',
   },
 });
 

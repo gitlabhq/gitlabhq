@@ -272,11 +272,11 @@ export default {
           <template v-if="hasProjectKeySupport" #description>
             <gl-sprintf
               :message="
-                __('Add a suffix to Service Desk email address. %{linkStart}Learn more.%{linkEnd}')
+                __('Add a suffix to Service Desk email address. %{linkStart}Learn more%{linkEnd}.')
               "
             >
               <template #link="{ content }">
-                <gl-link :href="emailSuffixHelpUrl" target="_blank">{{ content }} </gl-link>
+                <gl-link :href="emailSuffixHelpUrl" target="_blank">{{ content }}</gl-link>
               </template>
             </gl-sprintf>
           </template>
@@ -285,14 +285,14 @@ export default {
               <gl-sprintf
                 :message="
                   __(
-                    'To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}',
+                    'To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more%{linkEnd}.',
                   )
                 "
               >
                 <template #link="{ content }">
-                  <gl-link :href="serviceDeskEmailAddressHelpUrl" target="_blank"
-                    >{{ content }}
-                  </gl-link>
+                  <gl-link :href="serviceDeskEmailAddressHelpUrl" target="_blank">{{
+                    content
+                  }}</gl-link>
                 </template>
               </gl-sprintf>
             </span>

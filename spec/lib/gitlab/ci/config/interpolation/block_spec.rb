@@ -109,4 +109,16 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Block, feature_category: :pipe
       end
     end
   end
+
+  describe '#to_s' do
+    it 'returns the interpolation block' do
+      expect(subject.to_s).to eq(block)
+    end
+  end
+
+  describe '#length' do
+    it 'returns the length of the interpolation block' do
+      expect(subject.length).to eq(block.length)
+    end
+  end
 end

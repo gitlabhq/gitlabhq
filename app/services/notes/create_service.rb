@@ -4,7 +4,7 @@ module Notes
   class CreateService < ::Notes::BaseService
     include IncidentManagement::UsageData
 
-    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false, skip_set_reviewed: false)
+    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
       note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
@@ -40,8 +40,7 @@ module Notes
           when_saved(
             note,
             skip_capture_diff_note_position: skip_capture_diff_note_position,
-            skip_merge_status_trigger: skip_merge_status_trigger,
-            skip_set_reviewed: skip_set_reviewed
+            skip_merge_status_trigger: skip_merge_status_trigger
           )
         end
       end
@@ -83,8 +82,7 @@ module Notes
     end
 
     def when_saved(
-      note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false,
-      skip_set_reviewed: false)
+      note, skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
       todo_service.new_note(note, current_user)
       clear_noteable_diffs_cache(note)
       Suggestions::CreateService.new(note).execute
@@ -92,8 +90,6 @@ module Notes
       track_event(note, current_user)
 
       if note.for_merge_request? && note.start_of_discussion?
-        set_reviewed(note) unless skip_set_reviewed
-
         if !skip_capture_diff_note_position && note.diff_note?
           Discussions::CaptureDiffNotePositionService.new(note.noteable, note.diff_file&.paths).execute(note.discussion)
         end
@@ -223,13 +219,6 @@ module Notes
 
     def track_note_creation_visual_review(note)
       Gitlab::Tracking.event('Notes::CreateService', 'execute', **tracking_data_for(note))
-    end
-
-    def set_reviewed(note)
-      return if Feature.enabled?(:mr_request_changes, current_user)
-
-      ::MergeRequests::UpdateReviewerStateService.new(project: project, current_user: current_user)
-        .execute(note.noteable, "reviewed")
     end
   end
 end

@@ -32,30 +32,6 @@
   }
 }
 
-.new-session-tabs {
-  display: flex;
-  border-color: transparent;
-
-  .nav-item {
-    flex: 1;
-    text-align: center;
-    border-bottom: 1px solid $gray-100;
-  }
-
-  .nav-link {
-    width: 100%;
-    font-size: 18px !important;
-    
-    &.active {
-      cursor: default;
-
-      .gl-dark & {
-      background-color: var(--gray-100);
-      }
-    }
-  }
-}
-
 .devise-errors {
   @include devise-errors;
 }

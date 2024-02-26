@@ -26,8 +26,8 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]')
-                                  .skipping :'heading-order' # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+                                  .skipping :'heading-order'
     end
 
     it 'shows active tab on sidebar' do

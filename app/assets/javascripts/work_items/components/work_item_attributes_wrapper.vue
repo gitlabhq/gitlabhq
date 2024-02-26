@@ -59,6 +59,8 @@ export default {
       import('ee_component/work_items/components/work_item_health_status_inline.vue'),
     WorkItemColorInline: () =>
       import('ee_component/work_items/components/work_item_color_inline.vue'),
+    WorkItemColorWithEdit: () =>
+      import('ee_component/work_items/components/work_item_color_with_edit.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -306,6 +308,22 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
+    <template v-if="workItemColor">
+      <work-item-color-with-edit
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-mb-5"
+        :work-item="workItem"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+      <work-item-color-inline
+        v-else
+        class="gl-mb-5"
+        :work-item="workItem"
+        :can-update="canUpdate"
+        @error="$emit('error', $event)"
+      />
+    </template>
     <template v-if="workItemHierarchy">
       <work-item-parent
         v-if="glFeatures.workItemsMvc2"
@@ -326,13 +344,6 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <work-item-color-inline
-      v-if="workItemColor"
-      class="gl-mb-5"
-      :work-item="workItem"
-      :can-update="canUpdate"
-      @error="$emit('error', $event)"
-    />
     <work-item-time-tracking
       v-if="workItemTimeTracking && glFeatures.workItemsMvc2"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"

@@ -19,25 +19,25 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
     it 'shows group projects' do
       visit search_path
 
-      find('[data-testid="group-filter"]').click
+      find_by_testid('group-filter').click
 
       wait_for_requests
 
-      page.within('[data-testid="group-filter"]') do
+      within_testid('group-filter') do
         select_listbox_item group.name
       end
 
-      expect(find('[data-testid="group-filter"]')).to have_content(group.name)
+      expect(find_by_testid('group-filter')).to have_content(group.name)
 
-      find('[data-testid="project-filter"]').click
+      find_by_testid('project-filter').click
 
       wait_for_requests
 
-      page.within('[data-testid="project-filter"]') do
+      within_testid('project-filter') do
         select_listbox_item group_project.name
       end
 
-      expect(find('[data-testid="project-filter"]')).to have_content(group_project.name)
+      expect(find_by_testid('project-filter')).to have_content(group_project.name)
     end
 
     context 'when the group filter is set' do
@@ -47,11 +47,11 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
       describe 'clear filter button' do
         it 'removes Group and Project filters' do
-          page.within '[data-testid="group-filter"]' do
+          within_testid 'group-filter' do
             toggle_listbox
             wait_for_requests
 
-            find('[data-testid="listbox-reset-button"]').click
+            find_by_testid('listbox-reset-button').click
 
             wait_for_requests
 
@@ -68,15 +68,15 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
     it 'shows a project' do
       visit search_path
 
-      find('[data-testid="project-filter"]').click
+      find_by_testid('project-filter').click
 
       wait_for_requests
 
-      page.within('[data-testid="project-filter"]') do
+      within_testid('project-filter') do
         select_listbox_item project.name
       end
 
-      expect(find('[data-testid="project-filter"]')).to have_content(project.name)
+      expect(find_by_testid('project-filter')).to have_content(project.name)
     end
 
     context 'when the project filter is set' do
@@ -88,11 +88,11 @@ RSpec.describe 'User uses search filters', :js, feature_category: :global_search
 
       describe 'clear filter button' do
         it 'removes Project filters' do
-          page.within '[data-testid="project-filter"]' do
+          within_testid 'project-filter' do
             toggle_listbox
             wait_for_requests
 
-            find('[data-testid="listbox-reset-button"]').click
+            find_by_testid('listbox-reset-button').click
 
             wait_for_requests
 

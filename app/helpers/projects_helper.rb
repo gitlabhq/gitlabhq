@@ -698,6 +698,10 @@ module ProjectsHelper
     IssuesFinder.new(current_user, project_id: project.id).execute
   end
 
+  def project_merge_requests(project)
+    MergeRequestsFinder.new(current_user, project_id: project.id).execute
+  end
+
   def restricted_levels
     return [] if current_user.can_admin_all_resources?
 

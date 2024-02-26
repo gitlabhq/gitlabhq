@@ -16,7 +16,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
             'echo "Building with clang and optimization level 3"',
             'echo "1.0.0"'
           ],
-          parallel: '2'
+          parallel: 2
         },
         'my-job-test': {
           stage: 'build',
@@ -24,7 +24,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Loader, feature_category: :pipeline_c
             'echo "Testing with pytest"',
             'if [ true == true ]; then echo "Coverage is enabled"; fi'
           ],
-          allow_failure: 'false'
+          allow_failure: false
         },
         'my-job-deploy': {
           stage: 'build',

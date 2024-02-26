@@ -4,7 +4,7 @@ key_path: object_store.uploads.object_store.provider
 description: What Object Storage provider has been configured for Uploads
 product_section: enablement
 product_stage: enablement
-product_group: application_performance
+product_group: cloud_connector
 value_type: string
 status: active
 time_frame: none

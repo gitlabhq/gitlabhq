@@ -317,6 +317,17 @@ module MergeRequestsHelper
   def review_bar_data(_merge_request, _user)
     { new_comment_template_path: profile_comment_templates_path }
   end
+
+  def project_merge_requests_list_data(project, current_user)
+    {
+      full_path: project.full_path,
+      has_any_merge_requests: project_merge_requests(project).exists?.to_s,
+      initial_sort: current_user&.user_preference&.issues_sort,
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
+      is_signed_in: current_user.present?.to_s
+    }
+  end
 end
 
 MergeRequestsHelper.prepend_mod_with('MergeRequestsHelper')

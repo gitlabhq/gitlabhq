@@ -14,7 +14,7 @@ RSpec.describe 'Merge request > User sees revert modal', :js, :sidekiq_might_not
 
       wait_for_requests
 
-      page.within('[data-testid="modal-commit"]') do
+      within_testid('modal-commit') do
         expect(page).to have_content 'Revert this merge request'
       end
     end

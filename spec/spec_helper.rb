@@ -335,6 +335,10 @@ RSpec.configure do |config|
       # We are temporarily keeping it in place while we confirm some assumptions
       # https://gitlab.com/gitlab-org/gitlab/-/issues/440667
       stub_feature_flags(ci_text_interpolation: false)
+
+      # The Vue version of the merge request list app is missing a lot of information
+      # disabling this for now whilst we work on it across multiple merge requests
+      stub_feature_flags(vue_merge_request_list: false)
     else
       unstub_all_feature_flags
     end

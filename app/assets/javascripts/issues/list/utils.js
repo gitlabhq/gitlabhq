@@ -87,7 +87,8 @@ export const getSortOptions = ({
   hasBlockedIssuesFeature,
   hasIssuableHealthStatusFeature,
   hasIssueWeightsFeature,
-}) => {
+  hasManualSort = true,
+} = {}) => {
   const sortOptions = [
     {
       id: 1,
@@ -153,7 +154,7 @@ export const getSortOptions = ({
         descending: LABEL_PRIORITY_DESC,
       },
     },
-    {
+    hasManualSort && {
       id: 9,
       title: __('Manual'),
       sortDirection: {
@@ -204,7 +205,7 @@ export const getSortOptions = ({
     });
   }
 
-  return sortOptions;
+  return sortOptions.filter((x) => x);
 };
 
 const tokenTypes = Object.keys(filtersMap);

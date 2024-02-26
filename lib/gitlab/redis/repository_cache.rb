@@ -14,7 +14,7 @@ module Gitlab
 
         def cache_store
           @cache_store ||= RepositoryCacheStore.new(
-            redis: pool,
+            redis: multistore_pool,
             pool: false,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: Cache::CACHE_NAMESPACE,
