@@ -206,7 +206,7 @@ GitLab 16.8.
   - For [a whole instance](../../../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects).
   - For [specific groups](../index.md#specify-who-can-add-projects-to-a-group).
 
-## Prepare user accounts
+### User accounts
 
 To ensure GitLab maps users and their contributions correctly:
 

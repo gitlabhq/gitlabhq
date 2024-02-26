@@ -292,7 +292,7 @@ Some of those benefits could also be seen as downsides and maybe not the right c
 
 ##### High level proposal
 
-<img src="diagrams/sharding_proposal_2023-08.drawio.png" height="600">
+<img src="diagrams/sharding_proposal_2023-08.drawio.png" height="600" alt="">
 
 1. Zoekt nodes are started with 3 additional arguments: its own address, shard name, and GitLab URL.
 1. We'd like to keep shard name separate so that one will be able to migrate a shard to a different address.

@@ -338,30 +338,30 @@ scope.
 
 ### Stage 1 - Deprecations
 
-| Component        | Milestone | Changes |
-|------------------|----------:|---------|
-| GitLab Rails app | `15.6` | Deprecate `POST /api/v4/runners` endpoint for `17.0`. This hinges on a [proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/373774) to allow deprecating REST API endpoints for security reasons. |
-| GitLab Runner    | `15.6` | Add deprecation notice for `register` command for `17.0`. |
-| GitLab Runner Helm Chart | `15.6` | Add deprecation notice for `runnerRegistrationToken` command for `17.0`. |
-| GitLab Runner Operator | `15.6` | Add deprecation notice for `runner-registration-token` command for `17.0`. |
-| GitLab Runner / GitLab Rails app | `15.7` | Add deprecation notice for registration token reset for `17.0`. |
+| Component                        | Milestone | Changes |
+|----------------------------------|----------:|---------|
+| GitLab Rails app                 |    `15.6` | Deprecate `POST /api/v4/runners` endpoint for `17.0`. This hinges on a [proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/373774) to allow deprecating REST API endpoints for security reasons. |
+| GitLab Runner                    |    `15.6` | Add deprecation notice for `register` command for `17.0`. |
+| GitLab Runner Helm Chart         |    `15.6` | Add deprecation notice for `runnerRegistrationToken` command for `17.0`. |
+| GitLab Runner Operator           |    `15.6` | Add deprecation notice for `runner-registration-token` command for `17.0`. |
+| GitLab Runner / GitLab Rails app |    `15.7` | Add deprecation notice for registration token reset for `17.0`. |
 
 ### Stage 2 - Prepare `gitlab-runner` for `system_id`
 
-| Component        | Milestone | Changes |
-|------------------|----------:|---------|
-| GitLab Runner    | `15.7` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
-| GitLab Runner    | `15.9` | Log unique system ID in the build logs. |
-| GitLab Runner    | `15.9` | Label Prometheus metrics with unique system ID. |
-| GitLab Runner    | `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
+| Component     | Milestone | Changes |
+|---------------|----------:|---------|
+| GitLab Runner |    `15.7` | Ensure a sidecar TOML file exists with a `system_id` value.<br/>Log new system ID values with `INFO` level as they get assigned. |
+| GitLab Runner |    `15.9` | Log unique system ID in the build logs. |
+| GitLab Runner |    `15.9` | Label Prometheus metrics with unique system ID. |
+| GitLab Runner |    `15.8` | Prepare `register` command to fail if runner server-side configuration options are passed together with a new `glrt-` token. |
 
 ### Stage 2a - Prepare GitLab Runner Helm Chart and GitLab Runner Operator
 
-| Component        | Milestone | Issue | Changes |
-|------------------|----------:|-------|---------|
-| GitLab Runner Helm Chart | `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
-| GitLab Runner Operator | `%15.10` | Update the Runner Operator to support registration with the authentication token. |
-| GitLab Runner Helm Chart | `%16.2` | Add `systemID` to Runner Helm Chart. |
+| Component                | Milestone | Changes |
+|--------------------------|----------:|---------|
+| GitLab Runner Helm Chart |  `%15.10` | Update the Runner Helm Chart to support registration with the authentication token. |
+| GitLab Runner Operator   |  `%15.10` | Update the Runner Operator to support registration with the authentication token. |
+| GitLab Runner Helm Chart |   `%16.2` | Add `systemID` to Runner Helm Chart. |
 
 ### Stage 3 - Database changes
 

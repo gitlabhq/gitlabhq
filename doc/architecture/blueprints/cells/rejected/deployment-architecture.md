@@ -14,7 +14,7 @@ of GitLab.com and contrasts it with the expected Cells architecture.
 
 ## 1. Before Cells - Monolithic architecture
 
-<img src="diagrams/deployment-before-cells.drawio.png" width="800">
+<img src="diagrams/deployment-before-cells.drawio.png" width="800" alt="">
 
 The diagram represents simplified GitLab.com deployment components before the introduction of a Cells architecture.
 This diagram intentionally omits some services that are not relevant for the architecture overview (Cloudflare, Consul, PgBouncers, ...).
@@ -41,7 +41,7 @@ The dependent services:
 
 ## 2. Development Cells - Adapting application to Cellular architecture
 
-<img src="diagrams/deployment-development-cells.drawio.png" width="800">
+<img src="diagrams/deployment-development-cells.drawio.png" width="800" alt="">
 
 The purpose of **Development Cells** is to model a production-like architecture to test and validate the changes introduced.
 This could be achieved with testing Cells on top of the [Reference Architectures](../../../../administration/reference_architectures/index.md).
@@ -57,7 +57,7 @@ The differences compared to [Before Cells](#1-before-cells---monolithic-architec
 
 ## 3. Initial Cells deployment - Transforming monolithic architecture to Cells architecture
 
-<img src="diagrams/deployment-initial-cells.drawio.png" width="800">
+<img src="diagrams/deployment-initial-cells.drawio.png" width="800" alt="">
 
 The differences compared to [Development Cells](#2-development-cells---adapting-application-to-cellular-architecture) are:
 
@@ -83,7 +83,7 @@ The differences compared to [Development Cells](#2-development-cells---adapting-
 
 ## 4. Hybrid Cells deployment - Initial complete Cells architecture
 
-<img src="diagrams/deployment-hybrid-cells.drawio.png" width="800">
+<img src="diagrams/deployment-hybrid-cells.drawio.png" width="800" alt="">
 
 The differences compared to [Initial Cells deployment](#3-initial-cells-deployment---transforming-monolithic-architecture-to-cells-architecture) are:
 
@@ -95,7 +95,7 @@ The differences compared to [Initial Cells deployment](#3-initial-cells-deployme
 
 ## 5. Target Cells - Fully isolated Cells architecture
 
-<img src="diagrams/deployment-target-cells.drawio.png" width="800">
+<img src="diagrams/deployment-target-cells.drawio.png" width="800" alt="">
 
 The differences compared to [Hybrid Cells deployment](#4-hybrid-cells-deployment---initial-complete-cells-architecture) are:
 
@@ -110,10 +110,10 @@ with scaling the service, its location (cluster-wide or Cell-local), and impact 
 
 ### Cluster-wide services
 
-| Service                        | Type         | Uses                            | Description                                                                                         |
-| ------------------------------ | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Service                        | Type         | Uses                            | Description |
+|--------------------------------|--------------|---------------------------------|-------------|
 | **Routing Service**            | GitLab-built | Cluster-wide Data Provider      | A general purpose routing service that can redirect requests from all GitLab SaaS domains to the Cell |
-| **Cluster-wide Data Provider** | GitLab-built | PostgreSQL, Redis, Event Queue? | Provide user profile and routing information to all clustered services                              |
+| **Cluster-wide Data Provider** | GitLab-built | PostgreSQL, Redis, Event Queue? | Provide user profile and routing information to all clustered services |
 
 As per the architecture, the above services are required to be run cluster-wide:
 
@@ -121,36 +121,36 @@ As per the architecture, the above services are required to be run cluster-wide:
 
 ### Cell-local services
 
-| Service                        | Type         | Uses                            | Description                                                                                         |
-| ------------------------------ | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Redis Cluster**            | Managed service | Disk storage                        | No problem                                                        | Redis is used to hold user sessions, application caches, or Sidekiq queues. Most of that data is only applicable to Cells. |
-| **GitLab Runners Manager**   | Managed service | API, uses Google Cloud VM Instances | No problem                                                        | Significant changes required to API and execution of CI jobs                                                              |
+| Service                    | Type            | Uses                                | Migrate from cluster-wide to Cell | Description |
+|----------------------------|-----------------|-------------------------------------|-----------------------------------|-------------|
+| **Redis Cluster**          | Managed service | Disk storage                        | No problem                        | Redis is used to hold user sessions, application caches, or Sidekiq queues. Most of that data is only applicable to Cells. |
+| **GitLab Runners Manager** | Managed service | API, uses Google Cloud VM Instances | No problem                        | Significant changes required to API and execution of CI jobs |
 
 As per the architecture, the above services are required to be run Cell-local:
 
 - The consumer data held by the Cell-local services needs to be migratable to another Cell.
-- The compute generated by the service is substatial, and it is strongly desired to reduce impact of [single Cell failure](../goals.md#high-resilience-to-a-single-cell-failure).
+- The compute generated by the service is substantial, and it is strongly desired to reduce impact of [single Cell failure](../goals.md#high-resilience-to-a-single-cell-failure).
 - It is complex to run the service cluster-wide from the Cells architecture perspective.
 
 ### Hybrid Services
 
-| Service             |                 | Uses                            | Migrate from cluster-wide to Cell                                       | Description                                                                              |
-| ------------------- | --------------- | ------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| **GitLab Pages**    | GitLab-built    | Routing Service, Rails API      | No problem                                                              | Serving CI generated pages under `.gitlab.io` or custom domains                          |
-| **GitLab Registry** | GitLab-built    | Object Storage, PostgreSQL      | Non-trivial data migration in case of split                             | Service to provide GitLab container registry                                             |
+| Service             | Type            | Uses                            | Migrate from cluster-wide to Cell                                       | Description |
+|---------------------|-----------------|---------------------------------|-------------------------------------------------------------------------|-------------|
+| **GitLab Pages**    | GitLab-built    | Routing Service, Rails API      | No problem                                                              | Serving CI generated pages under `.gitlab.io` or custom domains |
+| **GitLab Registry** | GitLab-built    | Object Storage, PostgreSQL      | Non-trivial data migration in case of split                             | Service to provide GitLab container registry |
 | **Gitaly Cluster**  | GitLab-built    | Disk storage, PostgreSQL        | No problem: Built-in migration routines to balance Gitaly nodes         | Gitaly holds Git repository data. Many Gitaly clusters can be configured in application. |
-| **Elasticsearch**   | Managed service | Many nodes required by sharding | Time-consuming: Rebuild cluster from scratch                            | Search across all projects                                                               |
-| **Object Storage**  | Managed service |                                 | Not straightforward: Rather hard to selectively migrate between buckets | Holds all user and CI uploaded files that is served by GitLab                            |
+| **Elasticsearch**   | Managed service | Many nodes required by sharding | Time-consuming: Rebuild cluster from scratch                            | Search across all projects |
+| **Object Storage**  | Managed service |                                 | Not straightforward: Rather hard to selectively migrate between buckets | Holds all user and CI uploaded files that is served by GitLab |
 
 As per the architecture, the above services are allowed to be run either cluster-wide or Cell-local:
 
 - The ability to run hybrid services cluster-wide might reduce the amount of work to migrate data between Cells due to some services being shared.
 - The hybrid services that are run cluster-wide might negatively impact Cell availability and resiliency due to increased impact caused by [single Cell failure](../goals.md#high-resilience-to-a-single-cell-failure).
 
-| Service                        | Type         | Uses                            | Description                                                                                         |
-| ------------------------------ | ------------ | ------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Elasticsearch**   | Managed service | Many nodes requires by sharding | Time-consuming: Rebuild cluster from scratch                            | Search across all projects                                                               |
-| **Object Storage**  | Managed service |                                 | Not straightforward: Rather hard to selectively migrate between buckets | Holds all user and CI uploaded files that is served by GitLab                            |
+| Service            | Type            | Uses                            | Migrate from cluster-wide to Cell                                       | Description |
+|--------------------|-----------------|---------------------------------|-------------------------------------------------------------------------|-------------|
+| **Elasticsearch**  | Managed service | Many nodes requires by sharding | Time-consuming: Rebuild cluster from scratch                            | Search across all projects |
+| **Object Storage** | Managed service |                                 | Not straightforward: Rather hard to selectively migrate between buckets | Holds all user and CI uploaded files that is served by GitLab |
 
 As per the architecture, the above services are allowed to be run either cluster-wide or Cell-local:
 

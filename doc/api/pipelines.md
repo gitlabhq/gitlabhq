@@ -35,7 +35,7 @@ GET /projects/:id/pipelines
 | Attribute        | Type           | Required | Description |
 |------------------|----------------|----------|-------------|
 | `id`             | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
-| `name`           | string         | No       | Return pipelines with the specified name. Introduced in GitLab 15.11, not available by default. |
+| `name`           | string         | No       | Return pipelines with the specified name. |
 | `order_by`       | string         | No       | Order pipelines by `id`, `status`, `ref`, `updated_at` or `user_id` (default: `id`) |
 | `ref`            | string         | No       | The ref of pipelines |
 | `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |

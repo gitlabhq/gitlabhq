@@ -18,7 +18,7 @@ Read more about what an Organization is in [Organization](index.md).
 
 ## What?
 
-<img src="diagrams/organization-isolation.drawio.png" width="800">
+<img src="diagrams/organization-isolation.drawio.png" width="800" alt="">
 
 All Cell-local data and functionality in GitLab (all data except the few
 things that need to exist on all Cells in the cluster) must be isolated.
@@ -32,7 +32,7 @@ A few examples of things that would be disallowed by Organization Isolation are:
 
 ## Why?
 
-<img src="diagrams/organization-isolation-broken.drawio.png" width="800">
+<img src="diagrams/organization-isolation-broken.drawio.png" width="800" alt="">
 
 [GitLab Cells](../cells/index.md) depend on using the Organization as the sharding key, which will allow us to shard data between different Cells.
 Initially, when we start rolling out Organizations, we will be working with a single Cell `Cell 1`.

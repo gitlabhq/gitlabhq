@@ -29,6 +29,8 @@ With GitLab Ultimate, Secret Detection results are also processed so you can:
 - Review them in the security dashboard.
 - [Automatically respond](automatic_response.md) to leaks in public repositories.
 
+A secret detected during a secret detection scan remains in the [vulnerability report](../vulnerability_report/index.md) as "Still detected" even after the secret is removed from the scanned file. This is because a secret remains in the Git repository's history. To address a detected secret, remediate the leak, then triage the vulnerability.
+
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For an interactive reading and how-to demo of this Secret Detection documentation see:
 
 - [How to enable secret detection in GitLab Application Security Part 1/2](https://youtu.be/dbMxeO6nJCE?feature=shared)
