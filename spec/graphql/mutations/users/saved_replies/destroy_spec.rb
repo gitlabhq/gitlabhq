@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::SavedReplies::Destroy do
+RSpec.describe Mutations::Users::SavedReplies::Destroy, feature_category: :code_review_workflow do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:saved_reply) { create(:saved_reply, user: current_user) }
 
@@ -19,12 +19,12 @@ RSpec.describe Mutations::SavedReplies::Destroy do
       end
 
       it 'raises Gitlab::Graphql::Errors::ResourceNotAvailable' do
-        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
+        expect { resolve }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
 
     context 'when service successfully deletes the saved reply' do
-      it { expect(subject[:errors]).to be_empty }
+      it { expect(resolve[:errors]).to be_empty }
     end
   end
 end

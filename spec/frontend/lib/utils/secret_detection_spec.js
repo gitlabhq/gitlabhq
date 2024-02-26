@@ -37,6 +37,7 @@ describe('containsSensitiveToken', () => {
       'curl "https://gitlab.example.com/api/v4/groups/33/scim/identities" --header "PRIVATE-TOKEN: glsoat-cgyKc1k_AsnEpmP-5fRL',
       'CI_JOB_TOKEN=glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL',
       'Use this secret job token: glcbt-1_cgyKc1k_AsnEpmP-5fRL',
+      'token: glffct-cgyKc1k_AsnEpmP-5fRL',
     ];
 
     it.each(sensitiveMessages)('returns true for message: %s', (message) => {

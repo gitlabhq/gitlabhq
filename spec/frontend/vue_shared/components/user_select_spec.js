@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import searchUsersQuery from '~/graphql_shared/queries/project_autocomplete_users.query.graphql';
+import searchUsersQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import searchUsersQueryOnMR from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import { TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';

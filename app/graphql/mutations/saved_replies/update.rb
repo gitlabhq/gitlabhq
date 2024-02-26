@@ -3,13 +3,7 @@
 module Mutations
   module SavedReplies
     class Update < Base
-      graphql_name 'SavedReplyUpdate'
-
       authorize :update_saved_replies
-
-      argument :id, Types::GlobalIDType[::Users::SavedReply],
-               required: true,
-               description: copy_field_description(::Types::Users::SavedReplyType, :id)
 
       argument :name, GraphQL::Types::String,
                required: true,

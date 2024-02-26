@@ -2,6 +2,11 @@
 
 module Integrations
   class HangoutsChat < BaseChatNotification
+    # Enum value of the messageReplyOption query parameter that indicates that messages should be created as replies to
+    # the specified threads if possible and start new threads otherwise
+    # https://developers.google.com/workspace/chat/api/reference/rest/v1/spaces.messages/create#messagereplyoption
+    REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD = 'REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD'
+
     field :webhook,
       section: SECTION_TYPE_CONNECTION,
       help: 'https://chat.googleapis.com/v1/spaces…',
@@ -22,7 +27,7 @@ module Integrations
     end
 
     def self.description
-      'Send notifications from GitLab to a room in Google Chat.'
+      'Send notifications from GitLab to a space in Google Chat.'
     end
 
     def self.to_param
@@ -34,8 +39,8 @@ module Integrations
         Rails.application.routes.url_helpers.help_page_url('user/project/integrations/hangouts_chat'),
         target: '_blank', rel: 'noopener noreferrer')
       format(
-        s_('Before enabling this integration, create a webhook for the room in Google Chat where you want to receive ' \
-           'notifications from this project. %{docs_link}').html_safe, docs_link: docs_link.html_safe)
+        s_('Before enabling this integration, create a webhook for the space in Google Chat where you want to ' \
+           'receive notifications from this project. %{docs_link}').html_safe, docs_link: docs_link.html_safe)
     end
 
     def default_channel_placeholder; end
@@ -49,10 +54,10 @@ module Integrations
     def notify(message, _opts)
       url = webhook.dup
 
-      key = parse_thread_key(message)
-      url = Gitlab::Utils.add_url_parameters(url, { threadKey: key }) if key
+      url = Gitlab::Utils.add_url_parameters(url, { messageReplyOption: REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD })
 
-      payload = { text: parse_simple_text_message(message) }
+      key = parse_thread_key(message)
+      payload = { text: parse_simple_text_message(message), thread: { threadKey: key }.compact }.compact_blank!
 
       Gitlab::HTTP.post(
         url,

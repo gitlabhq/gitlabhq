@@ -16,6 +16,7 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
   let(:chat_integration) { described_class.new }
   let(:webhook_url) { 'https://example.gitlab.com/' }
   let(:webhook_url_regex) { /\A#{webhook_url}.*/ }
+  let(:query_params) { { messageReplyOption: Integrations::HangoutsChat::REPLY_MESSAGE_FALLBACK_TO_NEW_THREAD } }
 
   describe "#execute" do
     let_it_be(:user) { create(:user) }
@@ -37,10 +38,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key for push events" do
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/push .*?/) }
+
         expect(chat_integration.execute(push_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /push .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -53,7 +57,10 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
         expect(chat_integration.execute(issues_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /issue #{project.full_name}##{issue.iid}/ }))
+          .with(
+            body: hash_including(thread: { threadKey: "issue #{project.full_name}##{issue.iid}" }),
+            query: hash_including(query_params)
+          )
           .once
       end
     end
@@ -66,7 +73,10 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
         expect(chat_integration.execute(merge_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /merge request #{project.full_name}!#{merge_request.iid}/ }))
+          .with(
+            body: hash_including(thread: { threadKey: "merge request #{project.full_name}!#{merge_request.iid}" }),
+            query: hash_including(query_params)
+          )
           .once
       end
     end
@@ -77,10 +87,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       end
 
       it "adds thread key for wiki page events" do
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/wiki_page .*?/) }
+
         expect(chat_integration.execute(wiki_page_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /wiki_page .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -93,10 +106,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       let(:pipeline_sample_data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       it "adds thread key for pipeline events" do
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/pipeline .*?/) }
+
         expect(chat_integration.execute(pipeline_sample_data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /pipeline .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -130,10 +146,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       it "adds thread key" do
         data = Gitlab::DataBuilder::Note.build(commit_note, user)
 
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/commit .*?/) }
+
         expect(chat_integration.execute(data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /commit .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -146,10 +165,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       it "adds thread key" do
         data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
 
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/merge request .*?/) }
+
         expect(chat_integration.execute(data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /merge request .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -162,10 +184,13 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       it "adds thread key" do
         data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/issue .*?/) }
+
         expect(chat_integration.execute(data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /issue .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
@@ -178,12 +203,19 @@ RSpec.describe Integrations::HangoutsChat, feature_category: :integrations do
       it "adds thread key" do
         data = Gitlab::DataBuilder::Note.build(snippet_note, user)
 
+        WebMock.stub_request(:post, webhook_url_regex)
+          .with { |request| expect(thread_key_from_request(request)).to match(/snippet .*?/) }
+
         expect(chat_integration.execute(data)).to be(true)
 
         expect(WebMock).to have_requested(:post, webhook_url)
-          .with(query: hash_including({ "threadKey" => /snippet .*?/ }))
+          .with(query: hash_including(query_params))
           .once
       end
     end
+  end
+
+  def thread_key_from_request(request)
+    Gitlab::Json.parse(request.body).dig('thread', 'threadKey')
   end
 end

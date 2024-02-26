@@ -232,8 +232,7 @@ module Gitlab
           name ||= auth_hash.name
           email ||= auth_hash.email
 
-          valid_username = ::Namespace.clean_path(username)
-          valid_username = Gitlab::Utils::Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
+          valid_username = sanitize_username(username)
 
           {
             name: name.strip.presence || valid_username,
@@ -243,6 +242,15 @@ module Gitlab
             password_confirmation: auth_hash.password,
             password_automatically_set: true
           }
+        end
+
+        def sanitize_username(username)
+          if Feature.enabled?(:extra_slug_path_sanitization)
+            ExternalUsernameSanitizer.new(username).sanitize
+          else
+            valid_username = ::Namespace.clean_path(username)
+            Gitlab::Utils::Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
+          end
         end
 
         def sync_profile_from_provider?

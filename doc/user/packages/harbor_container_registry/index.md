@@ -4,7 +4,7 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Harbor Registry
+# Harbor registry
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -12,9 +12,9 @@ DETAILS:
 
 You can integrate the [Harbor container registry](../../../user/project/integrations/harbor.md) into GitLab and use Harbor as the container registry for your GitLab project to store images.
 
-## View the Harbor Registry
+## View the Harbor registry
 
-You can view the Harbor Registry for a project or group.
+You can view the Harbor registry for a project or group.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Operate > Harbor Registry**.
@@ -28,9 +28,9 @@ the group level.
 NOTE:
 Default settings for the Harbor integration at the project level are inherited from the group level.
 
-## Use images from the Harbor Registry
+## Use images from the Harbor registry
 
-To download and run a Harbor image hosted in the GitLab Harbor Registry:
+To download and run a Harbor image hosted in the GitLab Harbor registry:
 
 1. Copy the link to your container image:
     1. On the left sidebar, select **Search or go to** and find your project or group.
@@ -54,9 +54,9 @@ You can also copy the tag URL and use it to pull the corresponding artifact.
 
 ## Build and push images by using commands
 
-To build and push to the Harbor Registry:
+To build and push to the Harbor registry:
 
-1. Authenticate with the Harbor Registry.
+1. Authenticate with the Harbor registry.
 1. Run the command to build or push.
 
 To view these commands:
@@ -65,9 +65,9 @@ To view these commands:
 1. Select **Operate > Harbor Registry**.
 1. Select **CLI Commands**.
 
-## Disable the Harbor Registry for a project
+## Disable the Harbor registry for a project
 
-To remove the Harbor Registry for a project:
+To remove the Harbor registry for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Settings > Integrations**.

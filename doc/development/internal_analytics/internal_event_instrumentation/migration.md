@@ -137,7 +137,8 @@ To start using Internal Events Tracking, follow these steps:
     ```
 
    Use `project.id` or `namespace.id` instead of `user.id` if your metric is counting something other than unique users.
-1. Call `InternalEvents.tract_event` instead of `HLLRedisCounter.track_event`:
+1. Remove the `options` section from both metric definition files.
+1. Call `InternalEvents.track_event` instead of `HLLRedisCounter.track_event`:
 
     ```diff
     - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)

@@ -279,8 +279,11 @@ to clean up orphaned artifacts.
 
 ### Migrating from object storage to local storage
 
-To migrate back to local storage, you must
-[selectively disable the artifacts storage](object_storage.md#disable-object-storage-for-specific-features).
+To migrate artifacts back to local storage:
+
+1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
+1. [Selectively disable the artifacts' storage](object_storage.md#disable-object-storage-for-specific-features) in `gitlab.rb`.
+1. [Reconfigure GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ## Expiring artifacts
 

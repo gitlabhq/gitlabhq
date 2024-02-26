@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 require 'tty/prompt/test'
 require_relative '../../../scripts/internal_events/cli'
-require_relative '../../support/helpers/wait_helpers'
 
 RSpec.describe Cli, feature_category: :service_ping do
   include WaitHelpers

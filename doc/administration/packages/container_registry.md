@@ -10,6 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
+NOTE:
+The [next-generation container registry](container_registry_metadata_database.md)
+is now available for upgrade and testing on self-managed instances as a beta feature.
+This upgraded registry supports online garbage collection, and has significant performance
+and reliability improvements.
+
 With the GitLab container registry, every project can have its
 own space to store Docker images.
 

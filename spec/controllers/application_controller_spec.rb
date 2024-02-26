@@ -862,6 +862,7 @@ RSpec.describe ApplicationController, feature_category: :shared do
       get :index
 
       expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response.body).to eq(Gitlab::Auth::IpBlocked.new.message)
     end
   end
 

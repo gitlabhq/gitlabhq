@@ -19,12 +19,20 @@ module Mutations
         def resolve(**args)
           project = authorized_find!(args[:project_path])
 
-          model = ::Ml::CreateModelService.new(project, args[:name], current_user, args[:description]).execute
+          service_response = ::Ml::CreateModelService.new(project, args[:name], current_user,
+            args[:description]).execute
 
-          {
-            model: model.persisted? ? model : nil,
-            errors: errors_on_object(model)
-          }
+          if service_response.success?
+            {
+              model: service_response.payload,
+              errors: []
+            }
+          else
+            {
+              model: nil,
+              errors: service_response.errors
+            }
+          end
         end
       end
     end

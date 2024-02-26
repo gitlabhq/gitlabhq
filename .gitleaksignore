@@ -3,3 +3,4 @@ spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:34
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:35
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:38
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:39
+spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:40

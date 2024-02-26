@@ -3,11 +3,11 @@ stage: Package
 group: Container Registry
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
-# Harbor Registry
+# Harbor registry
 
-## Enable Harbor Registry
+## Enable Harbor registry
 
-To enable the Harbor Registry, you must configure the Harbor integration for your group or project.
+To enable the Harbor registry, you must configure the Harbor integration for your group or project.
 The Harbor configuration requires four fields: `url`, `project_name`, `username` and `password`.
 
 | Field | Description |
@@ -17,7 +17,7 @@ The Harbor configuration requires four fields: `url`, `project_name`, `username`
 | `username` | The username used to log in to the Harbor instance. |
 | `password` | The password used to log in to the Harbor instance. |
 
-You can use [GitLab CI/CD predefined variables](../../ci/variables/index.md) along with the following Harbor Registry variables to request data from the Harbor instance.
+You can use [GitLab CI/CD predefined variables](../../ci/variables/index.md) along with the following Harbor registry variables to request data from the Harbor instance.
 
 | Variable | Description |
 | --- | --- |
@@ -82,15 +82,15 @@ The `lib/gitlab/harbor` directory contains the Harbor client, which sends API re
 
 ```mermaid
 sequenceDiagram
-    Client->>+GitLab: Request Harbor Registry
+    Client->>+GitLab: Request Harbor registry
     GitLab->>+Harbor instance: Request repositories data via API
     Harbor instance->>+GitLab: Repositories data
     GitLab->>+Client: Return repositories data
-    Client->>+GitLab: Request Harbor Registry artifacts
+    Client->>+GitLab: Request Harbor registry artifacts
     GitLab->>+Harbor instance: Request artifacts data via API
     Harbor instance->>+GitLab: Artifacts data
     GitLab->>+Client: Return artifacts data
-    Client->>+GitLab: Request Harbor Registry tags
+    Client->>+GitLab: Request Harbor registry tags
     GitLab->>+Harbor instance: Request tags data via API
     Harbor instance->>+GitLab: Tags data
     GitLab->>+Client: Return tags data
@@ -98,7 +98,7 @@ sequenceDiagram
 
 ## Policy
 
-The`read_harbor_registry` policy for groups and projects is used to control whether users have access to Harbor Registry.
+The`read_harbor_registry` policy for groups and projects is used to control whether users have access to Harbor registry.
 This policy is enabled for every user with the Reporter role and above.
 
 ## Frontend Development

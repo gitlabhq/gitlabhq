@@ -138,6 +138,7 @@ export default {
     },
     onListboxHide() {
       this.isEditing = false;
+      this.$emit('dropdownHidden');
       if (this.multiSelect && this.isDirty) {
         this.$emit('updateValue', this.localSelectedItem);
       }

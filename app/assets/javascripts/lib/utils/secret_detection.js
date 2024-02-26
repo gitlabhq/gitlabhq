@@ -40,6 +40,10 @@ export const containsSensitiveToken = (message) => {
       name: 'GitLab CI Build (Job) Token',
       regex: `glcbt-[0-9a-zA-Z]{1,5}_[0-9a-zA-Z_-]{20}`,
     },
+    {
+      name: 'GitLab Feature Flags Client Token',
+      regex: `glffct-[0-9a-zA-Z_-]{20}`,
+    },
   ];
 
   for (const rule of sensitiveDataPatterns) {

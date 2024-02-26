@@ -16,6 +16,20 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
   subject(:create_model) { described_class.new(project, name, user, description, metadata).execute }
 
   describe '#execute' do
+    subject(:model_payload) { create_model.payload }
+
+    context 'when model name is not supplied' do
+      let(:name) { nil }
+      let(:project) { existing_model.project }
+
+      it 'returns a model with errors', :aggregate_failures do
+        expect { create_model }.not_to change { Ml::Model.count }
+        expect(create_model).to be_error
+        expect(Gitlab::InternalEvents).not_to have_received(:track_event)
+        expect(create_model.message).to include("Name can't be blank")
+      end
+    end
+
     context 'when model name does not exist in the project' do
       let(:name) { 'new_model' }
       let(:project) { existing_model.project }
@@ -27,7 +41,8 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
           { project: project, user: user }
         )
 
-        expect(create_model.name).to eq(name)
+        expect(model_payload.name).to eq('new_model')
+        expect(model_payload.default_experiment.name).to eq('[model]new_model')
       end
     end
 
@@ -42,7 +57,7 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
           { project: project, user: user }
         )
 
-        expect(create_model.name).to eq(name)
+        expect(model_payload.name).to eq(name)
       end
     end
 
@@ -51,9 +66,10 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
       let(:project) { existing_model.project }
 
       it 'returns a model with errors', :aggregate_failures do
-        expect(create_model).not_to be_persisted
+        expect { create_model }.not_to change { Ml::Model.count }
+        expect(create_model).to be_error
         expect(Gitlab::InternalEvents).not_to have_received(:track_event)
-        expect(create_model.errors.full_messages).to eq(["Name has already been taken"])
+        expect(create_model.message).to eq(["Name should be unique in the project"])
       end
     end
 
@@ -65,8 +81,8 @@ RSpec.describe ::Ml::CreateModelService, feature_category: :mlops do
       it 'creates metadata records', :aggregate_failures do
         expect { create_model }.to change { Ml::Model.count }.by(1)
 
-        expect(create_model.name).to eq(name)
-        expect(create_model.metadata.count).to be 2
+        expect(model_payload.name).to eq(name)
+        expect(model_payload.metadata.count).to be 2
       end
     end
 

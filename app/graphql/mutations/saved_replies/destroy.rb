@@ -3,13 +3,7 @@
 module Mutations
   module SavedReplies
     class Destroy < Base
-      graphql_name 'SavedReplyDestroy'
-
       authorize :destroy_saved_replies
-
-      argument :id, Types::GlobalIDType[::Users::SavedReply],
-               required: true,
-               description: copy_field_description(::Types::Users::SavedReplyType, :id)
 
       def resolve(id:)
         saved_reply = authorized_find!(id: id)

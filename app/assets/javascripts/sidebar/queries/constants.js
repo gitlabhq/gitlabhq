@@ -1,5 +1,5 @@
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
-import userAutocompleteQuery from '~/graphql_shared/queries/project_autocomplete_users.query.graphql';
+import userAutocompleteQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import userAutocompleteWithMRPermissionsQuery from '~/graphql_shared/queries/project_autocomplete_users_with_mr_permissions.query.graphql';
 import issuableDatesUpdatedSubscription from '~/graphql_shared/subscriptions/work_item_dates.subscription.graphql';
 import {

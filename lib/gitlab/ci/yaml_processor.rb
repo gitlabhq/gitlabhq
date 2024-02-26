@@ -77,6 +77,7 @@ module Gitlab
         validate_job_needs!(name, job)
         validate_dynamic_child_pipeline_dependencies!(name, job)
         validate_job_environment!(name, job)
+        validate_job_identity!(name, job)
       end
 
       def validate_job_stage!(name, job)
@@ -187,6 +188,31 @@ module Gitlab
 
         unless on_stop_job[:environment][:action] == 'stop'
           error!("#{name} job: on_stop job #{on_stop} needs to have action stop defined")
+        end
+      end
+
+      def validate_job_identity!(name, job)
+        return if job[:identity].blank?
+
+        unless ::Gitlab::Saas.feature_available?(:google_cloud_support)
+          error!("#{name} job: #{s_('GoogleCloudPlatformService|The google_cloud_support feature is not available')}")
+        end
+
+        unless ::Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?(
+          :ci_yaml_support_for_identity_provider, type: :beta
+        )
+          error!("#{name} job: ci_yaml_support_for_identity_provider feature flag is not enabled for this project")
+        end
+
+        integration = project.google_cloud_platform_workload_identity_federation_integration
+        if integration.nil?
+          error!("#{name} job: #{s_('GoogleCloudPlatformService|The Google Cloud Identity and Access Management ' \
+                                    'integration is not configured for this project')}")
+        end
+
+        unless integration.active?
+          error!("#{name} job: #{s_('GoogleCloudPlatformService|The Google Cloud Identity and Access Management ' \
+                                    'integration is not enabled for this project')}")
         end
       end
 

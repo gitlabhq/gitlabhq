@@ -67,6 +67,9 @@ groups are in the same GitLab instance. Transferring groups is a faster and more
 - In GitLab 16.1 and earlier, you should **not** use direct transfer with
   [scheduled scan execution policies](../../../user/application_security/policies/scan-execution-policies.md).
 - For a list of other known issues, see [epic 6629](https://gitlab.com/groups/gitlab-org/-/epics/6629).
+- Because of [issue 438422](https://gitlab.com/gitlab-org/gitlab/-/issues/438422), you might see the
+  `DiffNote::NoteDiffFileCreationError` error. When this error occurs, the diff of a note on a merge request's diff
+  is missing, but the note and the merge request are still imported.
 
 ## Estimating migration duration
 

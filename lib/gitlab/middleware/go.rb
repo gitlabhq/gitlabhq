@@ -18,7 +18,7 @@ module Gitlab
         request = ActionDispatch::Request.new(env)
 
         render_go_doc(request) || @app.call(env)
-      rescue Gitlab::Auth::IpBlocked
+      rescue Gitlab::Auth::IpBlocked => e
         Gitlab::AuthLogger.error(
           message: 'Rack_Attack',
           status: 403,
@@ -27,7 +27,7 @@ module Gitlab
           request_method: request.request_method,
           path: request.fullpath
         )
-        Rack::Response.new('', 403).finish
+        Rack::Response.new(e.message, 403).finish
       rescue Gitlab::Auth::MissingPersonalAccessTokenError
         Rack::Response.new('', 401).finish
       end
