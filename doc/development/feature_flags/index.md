@@ -731,12 +731,25 @@ We want to avoid introducing a changelog when features are not accessible by an 
   Use the flowchart to determine the changelog entry type.
 
   ```mermaid
-  graph LR
-      A[flag: default off] -->|'added' / 'changed' / 'fixed' / '...'| B(flag: default on)
-      B -->|'other'| C(remove flag, keep new code)
-      B -->|'removed' / 'changed'| D(remove flag, keep old code)
-      A -->|'added' / 'changed' / 'fixed' / '...'| C
-      A -->|no changelog| D
+  flowchart LR
+    FDOFF(Flag is currently\n`default: off`)
+    FDON(Flag is currently\n`default: on`)
+    CDO{Change to\n`default: on`}
+    ACF(added / changed / fixed / '...')
+    RF{Remove flag}
+    RF2{Remove flag}
+    NC(No changelog)
+    RC(removed / changed)
+    OTHER(other)
+
+    FDOFF -->CDO-->ACF
+    FDOFF -->RF
+    RF-->|Keep new code?| ACF
+    RF-->|Keep old code?| NC
+
+    FDON -->RF2
+    RF2-->|Keep old code?| RC
+    RF2-->|Keep new code?| OTHER
   ```
 
 - The changelog for a feature flag should describe the feature and not the

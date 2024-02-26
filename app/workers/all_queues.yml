@@ -3450,6 +3450,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_process_auto_merge_from_event
+  :worker_name: MergeRequests::ProcessAutoMergeFromEventWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow

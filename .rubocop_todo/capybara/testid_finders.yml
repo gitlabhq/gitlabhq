@@ -1,18 +1,8 @@
 ---
 Capybara/TestidFinders:
   Exclude:
-    - 'spec/features/merge_request/user_interacts_with_batched_mr_diffs_spec.rb'
     - 'spec/features/projects/settings/registry_settings_cleanup_tags_spec.rb'
     - 'spec/features/projects/settings/registry_settings_spec.rb'
-    - 'spec/features/projects/show/user_sees_collaboration_links_spec.rb'
-    - 'spec/features/projects/sub_group_issuables_spec.rb'
-    - 'spec/features/projects/terraform_spec.rb'
-    - 'spec/features/projects/tree/create_directory_spec.rb'
-    - 'spec/features/projects/tree/create_file_spec.rb'
-    - 'spec/features/projects/work_items/work_item_children_spec.rb'
-    - 'spec/features/projects/work_items/work_item_spec.rb'
-    - 'spec/features/protected_branches_spec.rb'
-    - 'spec/features/runners_spec.rb'
     - 'spec/features/search/user_searches_for_code_spec.rb'
     - 'spec/features/search/user_searches_for_issues_spec.rb'
     - 'spec/features/search/user_searches_for_merge_requests_spec.rb'

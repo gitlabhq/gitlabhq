@@ -53,7 +53,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
       it 'user sees the project runner' do
         visit project_runners_path(project)
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           expect(page).to have_content(project_runner.display_name)
         end
 
@@ -65,19 +65,19 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
       it 'user can pause and resume the project runner' do
         visit project_runners_path(project)
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           expect(page).to have_link('Pause')
         end
 
         click_on 'Pause'
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           expect(page).to have_link('Resume')
         end
 
         click_on 'Resume'
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           expect(page).to have_link('Pause')
         end
       end
@@ -85,7 +85,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
       it 'user removes an activated project runner if this is last project for that runners' do
         visit project_runners_path(project)
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           click_on 'Remove runner'
         end
 
@@ -100,7 +100,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         it 'user edits the runner to be protected' do
           visit project_runners_path(project)
 
-          within '[data-testid="assigned_project_runners"]' do
+          within_testid 'assigned_project_runners' do
             first('[data-testid="edit-runner-link"]').click
           end
 
@@ -120,7 +120,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
           it 'user edits runner not to run untagged jobs' do
             visit project_runners_path(project)
 
-            within '[data-testid="assigned_project_runners"]' do
+            within_testid 'assigned_project_runners' do
               first('[data-testid="edit-runner-link"]').click
             end
 
@@ -140,7 +140,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         it 'user sees CI/CD setting page' do
           visit project_runners_path(project)
 
-          within '[data-testid="available-shared-runners"]' do
+          within_testid 'available-shared-runners' do
             expect(page).to have_content(shared_runner.display_name)
           end
         end
@@ -151,7 +151,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
           it 'shows the runner count' do
             visit project_runners_path(project)
 
-            within '[data-testid="available-shared-runners"]' do
+            within_testid 'available-shared-runners' do
               expect(page).to have_content format(_('Available instance runners: %{count}'), { count: 2 })
             end
           end
@@ -161,7 +161,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
 
             visit project_runners_path(project)
 
-            within '[data-testid="available-shared-runners"]' do
+            within_testid 'available-shared-runners' do
               expect(find('.pagination')).not_to be_nil
             end
           end
@@ -192,17 +192,17 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
       it 'user enables and disables a project runner' do
         visit project_runners_path(project)
 
-        within '[data-testid="available_project_runners"]' do
+        within_testid 'available_project_runners' do
           click_on 'Enable for this project'
         end
 
-        expect(page.find('[data-testid="assigned_project_runners"]')).to have_content(project_runner.display_name)
+        expect(find_by_testid('assigned_project_runners')).to have_content(project_runner.display_name)
 
-        within '[data-testid="assigned_project_runners"]' do
+        within_testid 'assigned_project_runners' do
           click_on 'Disable for this project'
         end
 
-        expect(page.find('[data-testid="available_project_runners"]')).to have_content(project_runner.display_name)
+        expect(find_by_testid('available_project_runners')).to have_content(project_runner.display_name)
       end
     end
 
@@ -218,7 +218,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         it 'user sees shared runners description' do
           visit project_runners_path(project)
 
-          page.within("[data-testid='shared-runners-description']") do
+          within_testid('shared-runners-description') do
             expect(page).not_to have_content('The same shared runner executes code from multiple projects')
             expect(page).to have_content(shared_runners_html)
           end
@@ -235,7 +235,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         it 'user sees no link' do
           visit project_runners_path(project)
 
-          page.within("[data-testid='shared-runners-description']") do
+          within_testid('shared-runners-description') do
             expect(page).to have_content('link')
             expect(page).not_to have_link('link')
           end
@@ -252,7 +252,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         it 'user sees image safely' do
           visit project_runners_path(project)
 
-          page.within("[data-testid='shared-runners-description']") do
+          within_testid('shared-runners-description') do
             expect(page).to have_css('img')
             expect(page).not_to have_css('img[onerror]')
           end
@@ -384,7 +384,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
             it 'shows the runner count' do
               visit project_runners_path(project)
 
-              within '[data-testid="group-runners"]' do
+              within_testid 'group-runners' do
                 expect(page).to have_content format(_('Available group runners: %{runners}'), { runners: 2 })
               end
             end
@@ -394,7 +394,7 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
 
               visit project_runners_path(project)
 
-              within '[data-testid="group-runners"]' do
+              within_testid 'group-runners' do
                 expect(find('.pagination')).not_to be_nil
               end
             end

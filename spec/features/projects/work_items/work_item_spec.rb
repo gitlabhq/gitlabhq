@@ -27,13 +27,13 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'shows project issues link in breadcrumbs' do
-      within('[data-testid="breadcrumb-links"]') do
+      within_testid('breadcrumb-links') do
         expect(page).to have_link('Issues', href: project_issues_path(project))
       end
     end
 
     it 'uses IID path in breadcrumbs' do
-      within('[data-testid="breadcrumb-current-link"]') do
+      within_testid('breadcrumb-current-link') do
         expect(page).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
@@ -52,14 +52,14 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
       it 'reassigns to another user',
         quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        find('[data-testid="work-item-assignees-input"]').fill_in(with: user.username)
+        find_by_testid('work-item-assignees-input').fill_in(with: user.username)
         wait_for_requests
 
         send_keys(:enter)
         find("body").click
         wait_for_requests
 
-        find('[data-testid="work-item-assignees-input"]').fill_in(with: user2.username)
+        find_by_testid('work-item-assignees-input').fill_in(with: user2.username)
         wait_for_requests
 
         send_keys(:enter)
@@ -80,7 +80,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
       it 'reassigns to another user',
         quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
-        within('[data-testid="work-item-assignees-with-edit"]') do
+        within_testid('work-item-assignees-with-edit') do
           click_button 'Edit'
         end
 
@@ -88,7 +88,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
         wait_for_requests
 
-        within('[data-testid="work-item-assignees-with-edit"]') do
+        within_testid('work-item-assignees-with-edit') do
           click_button 'Edit'
         end
 
@@ -167,13 +167,13 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
 
       it 'disabled the assignees input field' do
-        within('[data-testid="work-item-assignees-input"]') do
+        within_testid('work-item-assignees-input') do
           expect(page).to have_field(type: 'text', disabled: true)
         end
       end
 
       it 'disables the labels input field' do
-        within('[data-testid="work-item-labels-input"]') do
+        within_testid('work-item-labels-input') do
           expect(page).to have_field(type: 'text', disabled: true)
         end
       end
@@ -188,13 +188,13 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
 
       it 'hides the assignees edit button' do
-        within('[data-testid="work-item-assignees-with-edit"]') do
+        within_testid('work-item-assignees-with-edit') do
           expect(page).not_to have_button('Edit')
         end
       end
 
       it 'hides the labels edit button' do
-        within('[data-testid="work-item-labels-with-edit"]') do
+        within_testid('work-item-labels-with-edit') do
           expect(page).not_to have_button('Edit')
         end
       end

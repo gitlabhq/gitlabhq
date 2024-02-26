@@ -63,14 +63,14 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
 
           expect(page).to have_content(additional_state.name)
 
-          find("[data-testid='terraform-state-actions-#{additional_state.name}']").click
-          find("[data-testid='terraform-state-remove']").click
+          find_by_testid("terraform-state-actions-#{additional_state.name}").click
+          find_by_testid('terraform-state-remove').click
           fill_in "terraform-state-remove-input-#{additional_state.name}", with: additional_state.name
           click_button 'Remove'
 
           expect(page).to have_content("#{additional_state.name} successfully removed")
 
-          find("[data-testid='remove-icon']").hover
+          find_by_testid('remove-icon').hover
           expect(page).to have_content("Deletion in progress")
 
           additional_state.reload
@@ -84,7 +84,7 @@ RSpec.describe 'Terraform', :js, feature_category: :package_registry do
 
           expect(page).to have_content(terraform_state.name)
 
-          page.within("[data-testid='terraform-state-actions-#{terraform_state.name}']") do
+          within_testid("terraform-state-actions-#{terraform_state.name}") do
             click_button class: 'gl-dropdown-toggle'
             click_button 'Copy Terraform init command'
           end
