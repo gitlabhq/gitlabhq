@@ -20,7 +20,7 @@ GitLab can check your application for security vulnerabilities including:
 For an overview of GitLab application security, see [Shifting Security Left](https://www.youtube.com/watch?v=XnYstHObqlA&t).
 
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
-<!-- Demo published on 2023-02-23 -->
+<!-- Demo published on 2023-01-15 -->
 
 Statistics and details on vulnerabilities are included in the merge request. Providing
 actionable information _before_ changes are merged enables you to be proactive.
@@ -184,14 +184,14 @@ the instructions for
 
 ### Use security scanning tools with merge request pipelines
 
-From GitLab 16.0 and later, all `stable` security templates support merge request pipelines.
-
-From GitLab 15.11 and earlier, the application security jobs were configured to run for branch pipelines only.
-To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md) on these versions,
+By default, the application security jobs are configured to run for branch pipelines only.
+To use them with [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md),
 you must reference the [`latest` templates](../../development/cicd/templates.md).
 
 The latest version of the template may include breaking changes. Use the stable template unless you
 need a feature provided only in the latest template.
+
+All `latest` security templates support merge request pipelines.
 
 For example, to run both SAST and Dependency Scanning, the following template is used:
 

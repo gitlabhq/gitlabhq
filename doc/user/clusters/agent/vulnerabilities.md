@@ -13,6 +13,10 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6346) in GitLab 14.8.
 > - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/368828) the starboard directive in GitLab 15.4. The starboard directive is scheduled for removal in GitLab 16.0.
 
+## Supported architectures
+
+Operational Container Scanning runs only on `linux/amd64` architecture due to a limitation of the [Trivy wrapper](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) image used for the scanning. To track support for `linux/amd64` see [issue 442804](https://gitlab.com/gitlab-org/gitlab/-/issues/442804).
+
 ## Enable operational container scanning
 
 You can use operational container scanning (OCS) to scan container images in your cluster for security vulnerabilities.

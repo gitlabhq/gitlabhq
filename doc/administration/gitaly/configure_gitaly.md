@@ -1130,7 +1130,7 @@ Configure the `cat-file` cache in the [Gitaly configuration file](reference.md).
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../feature_flags.md) named `gitaly_gpg_signing`.
-On GitLab.com, this feature is not available.
+On GitLab.com, this feature is available.
 
 By default, Gitaly doesn't sign commits made using GitLab UI. For example, commits made using:
 
@@ -1170,7 +1170,7 @@ Configure Gitaly to sign commits made with the GitLab UI in one of two ways:
    ```
 
 1. On the Gitaly nodes, copy the key into `/etc/gitlab/gitaly/`.
-1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['gpg_signing_key_path']`:
+1. Edit `/etc/gitlab/gitlab.rb` and configure `gitaly['git']['signing_key']`:
 
    ```ruby
    gitaly['configuration'] = {
