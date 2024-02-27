@@ -248,6 +248,7 @@ RSpec.describe User, feature_category: :user_profile do
       it { expect(user.preferred_language).to eq(Gitlab::CurrentSettings.default_preferred_language) }
       it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
       it { expect(user.color_scheme_id).to eq(Gitlab::CurrentSettings.default_syntax_highlighting_theme) }
+      it { expect(user.color_mode_id).to eq(Gitlab::ColorModes::APPLICATION_DEFAULT) }
     end
 
     describe '#user_detail' do
@@ -1559,6 +1560,40 @@ RSpec.describe User, feature_category: :user_profile do
         expect(user.email).to eq secondary.email
         expect(user.unconfirmed_email).to eq nil
         expect(user.confirmed?).to be_truthy
+      end
+    end
+
+    describe '#set_color_mode_id' do
+      context 'when theme_id is changed to 11' do
+        let_it_be(:user) { create(:user, theme_id: 5) }
+
+        it 'sets color_mode_id to 2' do
+          user.theme_id = 11
+          user.save!
+          expect(user.attributes["color_mode_id"]).to eq 2
+        end
+      end
+
+      context 'when theme_id changed to a value other than 11' do
+        let_it_be(:user) { create(:user, theme_id: 11) }
+
+        it 'sets color_mode_id to 1' do
+          user.theme_id = 5
+          user.save!
+          expect(user.attributes["color_mode_id"]).to eq 1
+        end
+      end
+    end
+
+    describe '#set_theme_id' do
+      context 'when color_mode_id is changed to 2' do
+        let_it_be(:user) { create(:user, theme_id: 5) }
+
+        it 'sets theme_id to 2' do
+          user.color_mode_id = 2
+          user.save!
+          expect(user.attributes["theme_id"]).to eq 11
+        end
       end
     end
   end
@@ -8368,6 +8403,24 @@ RSpec.describe User, feature_category: :user_profile do
       let_it_be(:user) { create(:user) }
 
       it { is_expected.to eq false }
+    end
+  end
+
+  describe 'color_mode_id' do
+    context 'when theme_id is 11' do
+      let(:user) { build(:user, theme_id: 11) }
+
+      it 'returns 2' do
+        expect(user.color_mode_id).to eq(2)
+      end
+    end
+
+    context 'when theme_id is not 11' do
+      let(:user) { build(:user, theme_id: 5) }
+
+      it 'returns the value of color_mode_id' do
+        expect(user.color_mode_id).to eq(1)
+      end
     end
   end
 end

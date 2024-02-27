@@ -31,10 +31,10 @@ in your GitLab instance. This means the project creator (usually the user that
 started the import process) is set as the author. A reference, however, is kept
 on the issue about the original Gitea author.
 
-## Known issue
+## Known issues
 
-Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
-in their path must be renamed for all items to be imported correctly.
+- Because of [issue 434175](https://gitlab.com/gitlab-org/gitlab/-/issues/434175), projects with a dot
+  in their path must be renamed for all items to be imported correctly.
 
 ## Prerequisites
 
@@ -48,11 +48,10 @@ in their path must be renamed for all items to be imported correctly.
 
 ## Import your Gitea repositories
 
-The importer page is visible when you create a new project.
+The Gitea importer page is visible when you create a new project. To begin a Gitea import:
 
-Select the **Gitea** link to start the import authorization process.
-
-![New Gitea project import](img/import_projects_from_gitea_new_import.png)
+1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New project/repository**.
+1. Select **Gitea** to start the import authorization process.
 
 ### Authorize access to your repositories using a personal access token
 
@@ -87,8 +86,4 @@ You also can:
 - In the upper-left corner, select **Import all projects** to import all of your Gitea projects at once.
 - Filter projects by name. If a filter is applied, **Import all projects**
   imports only selected projects.
-
-![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
-
-You can also choose a different name for the project and a different namespace,
-if you have the privileges to do so.
+- Choose a different name for the project and a different namespace if you have the privileges to do so.

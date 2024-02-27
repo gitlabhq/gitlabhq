@@ -90,6 +90,7 @@ class User < MainClusterwide::ApplicationRecord
   attribute :preferred_language, default: -> { Gitlab::CurrentSettings.default_preferred_language }
   attribute :theme_id, default: -> { gitlab_config.default_theme }
   attribute :color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
+  attribute :color_mode_id, default: -> { Gitlab::ColorModes::APPLICATION_DEFAULT }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -337,7 +338,8 @@ class User < MainClusterwide::ApplicationRecord
 
   validates :theme_id, allow_nil: true, inclusion: { in: Gitlab::Themes.valid_ids,
                                                      message: ->(*) { _("%{placeholder} is not a valid theme") % { placeholder: '%{value}' } } }
-
+  validates :color_mode_id, allow_nil: true, inclusion: { in: Gitlab::ColorModes.valid_ids,
+                                                          message: ->(*) { _("%{placeholder} is not a valid color mode") % { placeholder: '%{value}' } } }
   validates :color_scheme_id, allow_nil: true, inclusion: { in: Gitlab::ColorSchemes.valid_ids,
                                                             message: ->(*) { _("%{placeholder} is not a valid color scheme") % { placeholder: '%{value}' } } }
   validates :hide_no_ssh_key, allow_nil: false, inclusion: { in: [true, false] }
@@ -354,6 +356,8 @@ class User < MainClusterwide::ApplicationRecord
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   before_save :ensure_namespace_correct # in case validation is skipped
+  before_save :set_color_mode_id, if: :theme_id_changed?
+  before_save :set_theme_id, if: :color_mode_id_changed?
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -1394,6 +1398,24 @@ class User < MainClusterwide::ApplicationRecord
     read_attribute(:last_name) || begin
       name.split(' ').drop(1).join(' ') unless name.blank?
     end
+  end
+
+  def set_color_mode_id
+    self.color_mode_id = if theme_id == 11
+                           Gitlab::ColorModes::APPLICATION_DARK
+                         else
+                           Gitlab::ColorModes::APPLICATION_DEFAULT
+                         end
+  end
+
+  def set_theme_id
+    self.theme_id = 11 if color_mode_id == Gitlab::ColorModes::APPLICATION_DARK
+  end
+
+  def color_mode_id
+    return Gitlab::ColorModes::APPLICATION_DARK if theme_id == 11
+
+    read_attribute(:color_mode_id)
   end
 
   def projects_limit_left

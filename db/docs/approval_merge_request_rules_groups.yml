@@ -3,7 +3,7 @@ table_name: approval_merge_request_rules_groups
 classes:
 - ApprovalRules::ApprovalMergeRequestRulesGroup
 feature_categories:
-- source_code_management
+- code_review_workflow
 description: Keeps connection between group and a merge request approval rule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'

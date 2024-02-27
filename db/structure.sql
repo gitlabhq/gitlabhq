@@ -317,6 +317,7 @@ CREATE TABLE users (
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,
     onboarding_in_progress boolean DEFAULT false NOT NULL,
+    color_mode_id smallint DEFAULT 1 NOT NULL,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
     CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
@@ -11639,7 +11640,6 @@ CREATE TABLE namespace_settings (
     emails_enabled boolean DEFAULT true NOT NULL,
     code_suggestions boolean DEFAULT false NOT NULL,
     experiment_features_enabled boolean DEFAULT false NOT NULL,
-    third_party_ai_features_enabled boolean DEFAULT true NOT NULL,
     default_branch_protection_defaults jsonb DEFAULT '{}'::jsonb NOT NULL,
     service_access_tokens_expiration_enforced boolean DEFAULT true NOT NULL,
     product_analytics_enabled boolean DEFAULT false NOT NULL,
@@ -23879,8 +23879,6 @@ CREATE UNIQUE INDEX index_approval_project_rules_users_1 ON approval_project_rul
 
 CREATE INDEX index_approval_project_rules_users_2 ON approval_project_rules_users USING btree (user_id);
 
-CREATE INDEX index_approval_project_rules_users_on_approval_project_rule_id ON approval_project_rules_users USING btree (approval_project_rule_id);
-
 CREATE UNIQUE INDEX index_approval_rule_name_for_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name) WHERE ((rule_type = 2) AND (section IS NULL));
 
 CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id, name, section) WHERE (rule_type = 2);
@@ -23888,8 +23886,6 @@ CREATE UNIQUE INDEX index_approval_rule_name_for_sectional_code_owners_rule_type
 CREATE INDEX index_approval_rule_on_protected_environment_id ON protected_environment_approval_rules USING btree (protected_environment_id);
 
 CREATE INDEX index_approval_rules_code_owners_rule_type ON approval_merge_request_rules USING btree (merge_request_id) WHERE (rule_type = 2);
-
-CREATE INDEX index_approvals_on_merge_request_id ON approvals USING btree (merge_request_id);
 
 CREATE INDEX index_approvals_on_merge_request_id_and_created_at ON approvals USING btree (merge_request_id, created_at);
 
@@ -26249,8 +26245,6 @@ CREATE UNIQUE INDEX index_project_repositories_on_disk_path ON project_repositor
 
 CREATE UNIQUE INDEX index_project_repositories_on_project_id ON project_repositories USING btree (project_id);
 
-CREATE INDEX index_project_repositories_on_shard_id ON project_repositories USING btree (shard_id);
-
 CREATE INDEX index_project_repositories_on_shard_id_and_project_id ON project_repositories USING btree (shard_id, project_id);
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
@@ -26448,8 +26442,6 @@ CREATE INDEX index_protected_tag_create_access_levels_on_deploy_key_id ON protec
 CREATE INDEX index_protected_tag_create_access_levels_on_group_id ON protected_tag_create_access_levels USING btree (group_id);
 
 CREATE INDEX index_protected_tag_create_access_levels_on_user_id ON protected_tag_create_access_levels USING btree (user_id);
-
-CREATE INDEX index_protected_tags_on_project_id ON protected_tags USING btree (project_id);
 
 CREATE UNIQUE INDEX index_protected_tags_on_project_id_and_name ON protected_tags USING btree (project_id, name);
 
@@ -27458,6 +27450,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE INDEX temp_index_on_notes_with_null_noteable_type ON notes USING btree (id) WHERE (noteable_type IS NULL);
+
+CREATE INDEX temp_index_on_users_where_dark_theme ON users USING btree (id) WHERE (theme_id = 11);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
 

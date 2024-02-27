@@ -20,8 +20,8 @@ installation.
 
 ## CI/CD
 
-- [Set up runners](https://docs.gitlab.com/runner/): Set up one or more GitLab
-  Runners, the agents that are responsible for all of the GitLab CI/CD features.
+- [Set up runners](https://docs.gitlab.com/runner/): Set up one or more
+  runners, the agents that are responsible for running CI/CD jobs.
 - [GitLab Pages](../administration/pages/index.md): Configure GitLab Pages to
   allow hosting of static sites.
 - [GitLab Registry](../administration/packages/container_registry.md): Set up the

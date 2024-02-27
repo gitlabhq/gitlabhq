@@ -113,7 +113,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('{.git,.lefthook,.ruby-lsp}/**/*') +
       Dir.glob('{file_hooks,log}/**/*') +
       Dir.glob('{metrics_server,sidekiq_cluster}/*') +
-      Dir.glob('{spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('{{,ee/}spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
       Dir.glob('*.md') +
       Dir.glob('changelogs/*') +
       Dir.glob('doc/.{markdownlint,vale}/**/*') +

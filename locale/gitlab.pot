@@ -1012,6 +1012,9 @@ msgstr ""
 msgid "%{percent}%{percentSymbol} complete"
 msgstr ""
 
+msgid "%{placeholder} is not a valid color mode"
+msgstr ""
+
 msgid "%{placeholder} is not a valid color scheme"
 msgstr ""
 
@@ -12276,6 +12279,12 @@ msgid "Collector hostname"
 msgstr ""
 
 msgid "Color"
+msgstr ""
+
+msgid "ColorMode|Dark (alpha)"
+msgstr ""
+
+msgid "ColorMode|Light"
 msgstr ""
 
 msgid "ColorWidget|An error occurred while updating color."

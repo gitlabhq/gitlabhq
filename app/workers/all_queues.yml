@@ -806,7 +806,7 @@
   :tags: []
 - :name: cronjob:projects_inactive_projects_deletion_cron
   :worker_name: Projects::InactiveProjectsDeletionCronWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3767,7 +3767,7 @@
   :tags: []
 - :name: projects_inactive_projects_deletion_notification
   :worker_name: Projects::InactiveProjectsDeletionNotificationWorker
-  :feature_category: :compliance_management
+  :feature_category: :groups_and_projects
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

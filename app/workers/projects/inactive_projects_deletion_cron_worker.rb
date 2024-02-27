@@ -8,7 +8,7 @@ module Projects
 
     idempotent!
     data_consistency :always
-    feature_category :compliance_management
+    feature_category :groups_and_projects
     urgency :low
 
     # This cron worker is executed at an interval of 10 minutes.

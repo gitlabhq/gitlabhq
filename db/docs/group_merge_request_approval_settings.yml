@@ -3,7 +3,7 @@ table_name: group_merge_request_approval_settings
 classes:
 - GroupMergeRequestApprovalSetting
 feature_categories:
-- source_code_management
+- security_policy_management
 description: Keeps merge request approval settings per group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50256
 milestone: '13.8'

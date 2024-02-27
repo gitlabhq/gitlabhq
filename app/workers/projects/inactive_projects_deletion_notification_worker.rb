@@ -8,7 +8,7 @@ module Projects
     idempotent!
     data_consistency :sticky
     sidekiq_options retry: 3
-    feature_category :compliance_management
+    feature_category :groups_and_projects
 
     def perform(project_id, deletion_date)
       return if Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).notified?

@@ -1246,6 +1246,7 @@ class MergeRequest < ApplicationRecord
   # skip_draft_check
   # skip_approved_check
   # skip_blocked_check
+  # skip_external_status_check
   def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
     return false unless mergeable_state?(**mergeable_state_check_params)
 
@@ -1284,6 +1285,7 @@ class MergeRequest < ApplicationRecord
   # skip_draft_check
   # skip_approved_check
   # skip_blocked_check
+  # skip_external_status_check
   def mergeable_state?(**mergeable_state_check_params)
     additional_checks = execute_merge_checks(
       self.class.mergeable_state_checks,

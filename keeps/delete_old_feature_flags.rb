@@ -6,6 +6,7 @@ require 'cgi'
 require_relative '../config/environment'
 require_relative 'helpers/groups'
 require_relative 'helpers/milestones'
+require_relative 'helpers/git_diff_parser'
 
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will locate any featrure flag definition file
@@ -52,6 +53,12 @@ module Keeps
       change.title = "Delete the `#{feature_flag.name}` feature flag"
       change.identifiers = [self.class.name.demodulize, feature_flag.name]
 
+      FileUtils.rm(feature_flag.path)
+
+      change.changed_files = [feature_flag.path]
+
+      apply_patch_and_cleanup(feature_flag, change)
+
       # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
       change.description = <<~MARKDOWN
       This feature flag was introduced in #{feature_flag.milestone}, which is more than #{CUTOFF_MILESTONE_OLD} milestones ago.
@@ -62,7 +69,7 @@ module Keeps
 
       #{feature_flag_default_enabled_note(feature_flag.default_enabled)}
 
-      <details><summary>Mentions of the feature flag (click to expand)</summary>
+      <details><summary>Remaining mentions of the feature flag (click to expand)</summary>
 
       ```
       #{feature_flag_grep(feature_flag.name)}
@@ -70,18 +77,14 @@ module Keeps
 
       </details>
 
-      It is likely that this MR will still need some changes to remove references to the feature flag in the code.
-      At the moment the `gitlab-housekeeper` is not capable of removing references but we'll be adding that functionality next.
+      It is possible that this MR will still need some changes to remove references to the feature flag in the code.
+      At the moment the `gitlab-housekeeper` is not always capable of removing all references so you must check the diff and pipeline failures to confirm if there are any issues.
       It is the responsibility of ~"#{feature_flag.group}" to push those changes to this branch.
       If they are already removing this feature flag in another merge request then they can just close this merge request.
 
       You can also see the status of the rollout by checking #{feature_flag_rollout_issue_url(feature_flag)} and #{format(FEATURE_FLAG_LOG_ISSUES_URL, feature_flag_name: feature_flag.name)}.
       MARKDOWN
       # rubocop:enable Gitlab/DocUrl
-
-      FileUtils.rm(feature_flag.path)
-
-      change.changed_files = [feature_flag.path]
 
       change.labels = [
         'maintenance::removal',
@@ -125,6 +128,34 @@ module Keeps
         '--',
         *(GREP_IGNORE.map { |path| ":^#{path}" })
       )
+    rescue ::Gitlab::Housekeeper::Shell::Error
+      # git grep returns error status if nothing is found
+    end
+
+    def apply_patch_and_cleanup(feature_flag, change)
+      return unless patch_exists?(feature_flag)
+
+      change.changed_files << patch_path(feature_flag)
+      change.changed_files += extract_changed_files_from_patch(feature_flag)
+
+      apply_patch(feature_flag)
+      FileUtils.rm(patch_path(feature_flag))
+    end
+
+    def patch_exists?(feature_flag)
+      File.file?(patch_path(feature_flag))
+    end
+
+    def apply_patch(feature_flag)
+      Gitlab::Housekeeper::Shell.execute('git', 'apply', patch_path(feature_flag))
+    end
+
+    def patch_path(feature_flag)
+      feature_flag.path.sub(/.yml$/, '.patch')
+    end
+
+    def extract_changed_files_from_patch(feature_flag)
+      git_diff_parser_helper.all_changed_files(File.read(patch_path(feature_flag)))
     end
 
     def feature_flag_rollout_issue_url(feature_flag)
@@ -173,6 +204,10 @@ module Keeps
 
     def milestones_helper
       @milestones_helper ||= ::Keeps::Helpers::Milestones.new
+    end
+
+    def git_diff_parser_helper
+      @git_diff_parser_helper ||= ::Keeps::Helpers::GitDiffParser.new
     end
   end
 end

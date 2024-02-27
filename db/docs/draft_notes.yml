@@ -4,7 +4,6 @@ classes:
 - DraftNote
 feature_categories:
 - code_review_workflow
-- source_code_management
 description: Notes created during the review of an MR that are not yet published
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/4213
 milestone: '11.4'

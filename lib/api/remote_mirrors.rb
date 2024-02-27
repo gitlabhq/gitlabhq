@@ -61,6 +61,8 @@ module API
       params do
         requires :url, type: String, desc: 'The URL for a remote mirror', documentation: { example: 'https://*****:*****@example.com/gitlab/example.git' }
         optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: false }
+        optional :auth_method, type: String, desc: 'Determines the mirror authentication method',
+                               values: %w[ssh_public_key password]
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
                                        documentation: { example: false }
         use :mirror_branches_setting
@@ -89,6 +91,7 @@ module API
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
         optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: true }
+        optional :auth_method, type: String, desc: 'Determines the mirror authentication method'
         optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
                                        documentation: { example: false }
         use :mirror_branches_setting

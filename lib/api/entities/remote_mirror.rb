@@ -13,6 +13,7 @@ module API
       expose :last_error, documentation: { type: 'integer', example: 'The remote mirror URL is invalid.' }
       expose :only_protected_branches, documentation: { type: 'boolean' }
       expose :keep_divergent_refs, documentation: { type: 'boolean' }
+      expose :auth_method, documentation: { type: 'string', example: 'password' }
     end
   end
 end

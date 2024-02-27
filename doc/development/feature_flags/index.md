@@ -374,6 +374,22 @@ Feature flags **must** be used in the MR that introduces them. Not doing so caus
 [broken master](https://handbook.gitlab.com/handbook/engineering/workflow/#broken-master) scenario due
 to the `rspec:feature-flags` job that only runs on the `master` branch.
 
+### Optionally add a `.patch` file for automated removal of feature flags
+
+The [`gitlab-housekeeper`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) is able to automatically remove your feature flag code for you using the [`DeleteOldFeatureFlags` keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/keeps/delete_old_feature_flags.rb). The tool will run periodically and automatically clean up old feature flags from the code.
+
+For this tool to automatically remove the usages of the feature flag in your code you can add a `.patch` file alongside your feature flag YAML file. The file should be exactly the same name except using the `.patch` extension instead of the `.yml` extension.
+
+For example you can create a patch file for `config/feature_flags/beta/my_feature_flag.yml` using the following steps:
+
+1. Edit the code locally to remove the feature flag `my_feature_flag` usage assuming that the feature flag is already enabled and we are rolling forward
+1. Run `git diff > config/feature_flags/beta/my_feature_flag.patch`
+1. Undo the changes to the files where you removed the feature flag usage
+1. Commit this file `config/feature_flags/beta/my_feature_flag.patch` file to the branch where you are adding the feature flag
+
+Then in future the `gitlab-housekeeper` will automatically clean up your
+feature flag for you by applying this patch.
+
 ## List all the feature flags
 
 To [use ChatOps](../../ci/chatops/index.md) to output all the feature flags in an environment to Slack, you can use the `run feature list`
