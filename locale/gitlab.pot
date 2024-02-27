@@ -30466,6 +30466,12 @@ msgstr ""
 msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
+msgid "MemberRole|Create a custom role with specific abilities by starting with a base role and adding custom permissions. %{linkStart}Learn more about custom roles.%{linkEnd}"
+msgstr ""
+
+msgid "MemberRole|Create custom roles"
+msgstr ""
+
 msgid "MemberRole|Create new role"
 msgstr ""
 

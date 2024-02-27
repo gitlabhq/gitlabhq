@@ -355,6 +355,58 @@ To cancel a downstream pipeline that is still running, select **Cancel** (**{can
 - From the downstream pipeline's details page.
 - On the pipeline's card in the pipeline graph view.
 
+### Auto-cancel the parent pipeline from a downstream pipeline
+
+You can configure a child pipeline to [auto-cancel](../yaml/index.md#workflowauto_cancelon_job_failure)
+as soon as one of its jobs fail.
+
+The parent pipeline only auto-cancels when a job in the child pipeline fails if:
+
+- The parent pipeline is also set up to auto-cancel on job failure.
+- The trigger job is configured with [`strategy: depend`](../yaml/index.md#triggerstrategy).
+
+For example:
+
+- Content of `.gitlab-ci.yml`:
+
+  ```yaml
+  workflow:
+    auto_cancel:
+      on_job_failure: all
+
+  trigger_job:
+    trigger:
+      include: child-pipeline.yml
+      strategy: depend
+
+  job3:
+    script:
+      - sleep 120
+  ```
+
+- Content of `child-pipeline.yml`
+
+  ```yaml
+  # Contents of child-pipeline.yml
+  workflow:
+    auto_cancel:
+      on_job_failure: all
+
+  job1:
+    script: sleep 60
+
+  job2:
+    script:
+      - sleep 30
+      - exit 1
+  ```
+
+In this example:
+
+1. The parent pipeline triggers the child pipeline and `job3` at the same time
+1. `job2` from the child pipeline fails and the child pipeline is canceled, stopping `job1` as well
+1. The child pipeline has been cancelled so the parent pipeline is auto-canceled
+
 ### Mirror the status of a downstream pipeline in the trigger job
 
 You can mirror the status of the downstream pipeline in the trigger job

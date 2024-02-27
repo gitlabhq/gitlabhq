@@ -535,6 +535,53 @@ In this example:
 - When a new commit is pushed to a branch, GitLab creates a new pipeline and `job1` and `job2` start.
 - If a new commit is pushed to the branch before the jobs complete, only `job1` is canceled.
 
+#### `workflow:auto_cancel:on_job_failure`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To enable the feature, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`.
+On GitLab.com, this feature is not available.
+
+Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
+
+**Possible inputs**:
+
+- `all`: Cancel the pipeline and all running jobs as soon as one job fails.
+- `none`: Do not auto-cancel any jobs.
+
+**Example of `workflow:auto_cancel:on_job_failure`**:
+
+```yaml
+stages: [stage_a, stage_b]
+
+workflow:
+  auto_cancel:
+    on_job_failure: all
+
+job1:
+  stage: stage_a
+  script: sleep 60
+
+job2:
+  stage: stage_a
+  script:
+    - sleep 30
+    - exit 1
+
+job3:
+  stage: stage_b
+  script:
+    - sleep 30
+```
+
+In this example, if `job2` fails, `job1` is cancelled if it is still running and `job3` does not start.
+
+**Related topics:**
+
+- [Auto-cancel the parent pipeline from a downstream pipeline](../pipelines/downstream_pipelines.md#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline)
+
 #### `workflow:name`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
