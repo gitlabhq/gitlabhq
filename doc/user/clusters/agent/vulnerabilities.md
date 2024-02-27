@@ -15,7 +15,7 @@ DETAILS:
 
 ## Supported architectures
 
-Operational Container Scanning runs only on `linux/amd64` architecture due to a limitation of the [Trivy wrapper](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) image used for the scanning. To track support for `linux/amd64` see [issue 442804](https://gitlab.com/gitlab-org/gitlab/-/issues/442804).
+Operational Container Scanning runs only on `linux/amd64` architecture due to a limitation of the [Trivy wrapper](https://gitlab.com/gitlab-org/security-products/analyzers/trivy-k8s-wrapper) image used for the scanning. To track support for `linux/arm64` see [issue 442804](https://gitlab.com/gitlab-org/gitlab/-/issues/442804).
 
 ## Enable operational container scanning
 

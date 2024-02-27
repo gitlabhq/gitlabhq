@@ -91,7 +91,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
       within_testid 'pipeline-details-header' do
         expect(page).to have_content("For #{pipeline.ref}")
-        expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+        expect(page).to have_content("#{pipeline.statuses.count} jobs")
         expect(page).to have_link(pipeline.ref,
           href: project_commits_path(pipeline.project, pipeline.ref))
       end
@@ -666,7 +666,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         visit_pipeline
 
         within_testid 'pipeline-details-header' do
-          expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+          expect(page).to have_content("#{pipeline.statuses.count} jobs")
           expect(page).to have_content("Related merge request !#{merge_request.iid} " \
                                        "to merge #{merge_request.source_branch}")
           expect(page).to have_link("!#{merge_request.iid}",
@@ -700,7 +700,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the pipeline information', :sidekiq_might_not_need_inline do
           within_testid 'pipeline-details-header' do
-            expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+            expect(page).to have_content("#{pipeline.statuses.count} jobs")
             expect(page).to have_content("Related merge request !#{merge_request.iid} " \
                                          "to merge #{merge_request.source_branch}")
             expect(page).to have_link("!#{merge_request.iid}",
@@ -737,7 +737,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         visit_pipeline
 
         within_testid 'pipeline-details-header' do
-          expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+          expect(page).to have_content("#{pipeline.statuses.count} jobs")
           expect(page).to have_content("Related merge request !#{merge_request.iid} " \
                                        "to merge #{merge_request.source_branch} " \
                                        "into #{merge_request.target_branch}")
@@ -774,7 +774,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
 
         it 'shows the pipeline information', :sidekiq_might_not_need_inline do
           within_testid 'pipeline-details-header' do
-            expect(page).to have_content("#{pipeline.statuses.count} Jobs")
+            expect(page).to have_content("#{pipeline.statuses.count} jobs")
             expect(page).to have_content("Related merge request !#{merge_request.iid} " \
                                        "to merge #{merge_request.source_branch} " \
                                        "into #{merge_request.target_branch}")

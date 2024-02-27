@@ -6,7 +6,13 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 
 import { updateHistory } from '~/lib/utils/url_utility';
-import { PARAM_KEY_PLATFORM, DEFAULT_PLATFORM, WINDOWS_PLATFORM } from '~/ci/runner/constants';
+import {
+  PARAM_KEY_PLATFORM,
+  DEFAULT_PLATFORM,
+  WINDOWS_PLATFORM,
+  GOOGLE_CLOUD_PLATFORM,
+} from '~/ci/runner/constants';
+import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
 import ProjectRegisterRunnerApp from '~/ci/runner/project_register_runner/project_register_runner_app.vue';
 import RegistrationInstructions from '~/ci/runner/components/registration/registration_instructions.vue';
 import PlatformsDrawer from '~/ci/runner/components/registration/platforms_drawer.vue';
@@ -23,15 +29,22 @@ jest.mock('~/lib/utils/url_utility', () => ({
 describe('ProjectRegisterRunnerApp', () => {
   let wrapper;
 
+  const findCloudRegistrationInstructions = () =>
+    wrapper.findComponent(GoogleCloudRegistrationInstructions);
   const findRegistrationInstructions = () => wrapper.findComponent(RegistrationInstructions);
   const findPlatformsDrawer = () => wrapper.findComponent(PlatformsDrawer);
   const findBtn = () => wrapper.findComponent(GlButton);
 
-  const createComponent = () => {
+  const createComponent = (googleCloudRunnerProvisioning = false) => {
     wrapper = shallowMountExtended(ProjectRegisterRunnerApp, {
       propsData: {
         runnerId: mockRunnerId,
         runnersPath: mockRunnersPath,
+      },
+      provide: {
+        glFeatures: {
+          googleCloudRunnerProvisioning,
+        },
       },
     });
   };
@@ -114,6 +127,30 @@ describe('ProjectRegisterRunnerApp', () => {
 
       it('updates the registration instructions', () => {
         expect(findRegistrationInstructions().props('platform')).toBe(WINDOWS_PLATFORM);
+      });
+    });
+  });
+
+  describe('Google cloud', () => {
+    describe('flag enabled', () => {
+      beforeEach(() => {
+        setWindowLocation(`?${PARAM_KEY_PLATFORM}=${GOOGLE_CLOUD_PLATFORM}`);
+
+        createComponent(true);
+      });
+
+      it('shows google cloud registration instructions', () => {
+        expect(findCloudRegistrationInstructions().exists()).toBe(true);
+        expect(findRegistrationInstructions().exists()).toBe(false);
+      });
+    });
+
+    describe('flag disabled', () => {
+      it('does not show google cloud registration instructions', () => {
+        createComponent();
+
+        expect(findCloudRegistrationInstructions().exists()).toBe(false);
+        expect(findRegistrationInstructions().exists()).toBe(true);
       });
     });
   });

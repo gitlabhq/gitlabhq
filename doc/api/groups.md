@@ -1660,7 +1660,7 @@ Group audit events can be accessed via the [Group Audit Events API](audit_events
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1684,7 +1684,7 @@ List, add, and delete LDAP group links.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Lists LDAP group links.
 
@@ -1700,7 +1700,7 @@ GET /groups/:id/ldap_group_links
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1723,7 +1723,7 @@ To define the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
 
@@ -1752,7 +1752,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 

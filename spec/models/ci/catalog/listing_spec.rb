@@ -106,7 +106,7 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
       context 'when there is no sort parameter' do
         let_it_be(:sort) { nil }
 
-        it 'contains catalog resource sorted by star_count descending' do
+        it 'contains catalog resources sorted by star_count descending' do
           is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
         end
       end
@@ -156,6 +156,14 @@ RSpec.describe Ci::Catalog::Listing, feature_category: :pipeline_composition do
 
         it 'contains catalog resources sorted by latest_released_at descending with nulls last' do
           is_expected.to eq([private_namespace_resource, public_resource_b, public_resource_a, internal_resource])
+        end
+      end
+
+      context 'when the sort is star_count ascending' do
+        let_it_be(:sort) { :star_count_asc }
+
+        it 'contains catalog resource sorted by star_count ascending' do
+          is_expected.to eq([internal_resource, public_resource_a, public_resource_b, private_namespace_resource])
         end
       end
     end

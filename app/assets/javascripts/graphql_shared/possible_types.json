@@ -58,6 +58,9 @@
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"
   ],
+  "GoogleCloudArtifactRegistryArtifactDetails": [
+    "GoogleCloudArtifactRegistryDockerImageDetails"
+  ],
   "GoogleCloudLoggingConfigurationInterface": [
     "GoogleCloudLoggingConfigurationType",
     "InstanceGoogleCloudLoggingConfigurationType"

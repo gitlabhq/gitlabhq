@@ -10670,6 +10670,7 @@ CREATE TABLE member_roles (
     remove_project boolean DEFAULT false NOT NULL,
     admin_terraform_state boolean DEFAULT false NOT NULL,
     admin_cicd_variables boolean DEFAULT false NOT NULL,
+    occupies_seat boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
@@ -25490,6 +25491,8 @@ CREATE INDEX index_member_approval_on_requested_by_id ON member_approvals USING 
 CREATE INDEX index_member_approval_on_reviewed_by_id ON member_approvals USING btree (reviewed_by_id);
 
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
+
+CREATE INDEX index_member_roles_on_occupies_seat ON member_roles USING btree (occupies_seat);
 
 CREATE INDEX index_members_on_access_level ON members USING btree (access_level);
 

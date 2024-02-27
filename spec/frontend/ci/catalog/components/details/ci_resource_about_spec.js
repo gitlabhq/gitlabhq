@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceAbout from '~/ci/catalog/components/details/ci_resource_about.vue';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('CiResourceAbout', () => {
   let wrapper;
@@ -33,9 +33,7 @@ describe('CiResourceAbout', () => {
   const findMergeRequestCount = () =>
     wrapper.findByText(`${defaultProps.openMergeRequestsCount} merge requests`);
   const findLastRelease = () =>
-    wrapper.findByText(
-      `Last release at ${formatDate(defaultProps.latestVersion.createdAt, 'yyyy-mm-dd')}`,
-    );
+    wrapper.findByText(`Released ${getTimeago().format(defaultProps.latestVersion.createdAt)}`);
   const findAllLoadingItems = () => wrapper.findAllByTestId('skeleton-loading-line');
 
   // Shared data items are items which gets their data from the index page query.

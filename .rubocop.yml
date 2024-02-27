@@ -497,6 +497,24 @@ BackgroundMigration/DictionaryFile:
   Include:
     - 'db/post_migrate/*.rb'
 
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/442751
+Gitlab/AvoidCurrentOrganization:
+  Enabled: true
+  Exclude:
+    - 'app/controllers/**/*'
+    - 'ee/app/controllers/**/*'
+    - 'app/helpers/**/*'
+    - 'ee/app/helpers/**/*'
+    - 'app/views/**/*'
+    - 'ee/app/views/**/*'
+    - 'lib/api/**/*'
+    - 'ee/lib/api/**/*'
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+    - 'lib/gitlab/middleware/organizations/current.rb'
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 # See https://gitlab.com/groups/gitlab-org/-/epics/7374
 Gitlab/AvoidGitlabInstanceChecks:
   Enabled: true

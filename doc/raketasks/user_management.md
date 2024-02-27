@@ -190,7 +190,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142189) in GitLab 16.9.
 
-The Rake task for bulk user assignment is available in GitLab 16.9 and later. For GitLab 16.8, use the script [`bulk_user_assignment.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/duo_pro/bulk_user_assignment.rb) instead.
+The Rake task for bulk user assignment is available in GitLab 16.9 and later. For GitLab 16.8, use the script [`bulk_user_assignment.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/gitlab_subscriptions/duo_pro/bulk_user_assignment.rb) instead.
 
 To perform bulk user assignment for GitLab Duo Pro, you can use the following Rake task:
 

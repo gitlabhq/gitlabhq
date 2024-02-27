@@ -7,18 +7,8 @@ import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
-import RunnerCloudConnectionForm from '~/ci/runner/components/runner_cloud_connection_form.vue';
-import RunnerCloudExecutionEnvironment from '~/ci/runner/components/runner_cloud_execution_environment.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import {
-  DEFAULT_PLATFORM,
-  GOOGLE_CLOUD_PLATFORM,
-  GOOGLE_CLOUD_SETUP_START,
-  GOOGLE_CLOUD_SETUP_END,
-  GROUP_TYPE,
-  PARAM_KEY_PLATFORM,
-  I18N_CREATE_ERROR,
-} from '../constants';
+import { DEFAULT_PLATFORM, GROUP_TYPE, PARAM_KEY_PLATFORM, I18N_CREATE_ERROR } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
@@ -27,9 +17,7 @@ export default {
     RegistrationCompatibilityAlert,
     RunnerGoogleCloudOption,
     RunnerPlatformsRadioGroup,
-    RunnerCloudConnectionForm,
     RunnerCreateForm,
-    RunnerCloudExecutionEnvironment,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -41,27 +29,11 @@ export default {
   data() {
     return {
       platform: DEFAULT_PLATFORM,
-      googleCloudStage: GOOGLE_CLOUD_SETUP_START,
-      cloudConnectionDetails: {},
     };
   },
   computed: {
     googleCloudProvisioningEnabled() {
       return this.glFeatures.googleCloudRunnerProvisioning;
-    },
-    showCloudForm() {
-      return (
-        this.platform === GOOGLE_CLOUD_PLATFORM &&
-        this.googleCloudStage === GOOGLE_CLOUD_SETUP_START &&
-        this.googleCloudProvisioningEnabled
-      );
-    },
-    showCloudFormEnd() {
-      return (
-        this.platform === GOOGLE_CLOUD_PLATFORM &&
-        this.googleCloudStage === GOOGLE_CLOUD_SETUP_END &&
-        this.googleCloudProvisioningEnabled
-      );
     },
   },
   methods: {
@@ -108,14 +80,6 @@ export default {
     onError(error) {
       createAlert({ message: error.message });
     },
-    onContinueGoogleCloud(cloudConnection) {
-      // Store the variables from the start of the form
-      this.cloudConnectionDetails = cloudConnection;
-      this.googleCloudStage = GOOGLE_CLOUD_SETUP_END;
-    },
-    onPrevious() {
-      this.googleCloudStage = GOOGLE_CLOUD_SETUP_START;
-    },
   },
   GROUP_TYPE,
 };
@@ -149,18 +113,7 @@ export default {
 
     <hr aria-hidden="true" />
 
-    <runner-cloud-connection-form v-if="showCloudForm" @continue="onContinueGoogleCloud" />
-
-    <runner-cloud-execution-environment
-      v-else-if="showCloudFormEnd"
-      :runner-type="$options.GROUP_TYPE"
-      :group-id="groupId"
-      @submit="createRunner"
-      @previous="onPrevious"
-    />
-
     <runner-create-form
-      v-else
       :runner-type="$options.GROUP_TYPE"
       :group-id="groupId"
       @saved="onSaved"

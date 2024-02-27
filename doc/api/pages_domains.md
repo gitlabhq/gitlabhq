@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 
 Endpoints for connecting custom domains and TLS certificates in [GitLab Pages](https://about.gitlab.com/stages-devops-lifecycle/pages/).
 

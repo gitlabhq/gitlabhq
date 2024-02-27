@@ -74,6 +74,26 @@ module API
         present paginate(inbound_projects), with: Entities::BasicProjectDetails
       end
 
+      desc 'Fetch project groups allowlist for CI_JOB_TOKEN access settings.' do
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        success status: 200, model: Entities::BasicProjectDetails
+        tags %w[projects_job_token_scope]
+      end
+      params do
+        use :pagination
+      end
+      get ':id/job_token_scope/groups_allowlist' do
+        authorize_admin_project
+
+        groups_allowlist = ::Ci::JobToken::Scope.new(user_project).groups
+
+        present paginate(groups_allowlist), with: Entities::BasicGroupDetails
+      end
+
       desc 'Add target project to allowlist.' do
         failure [
           { code: 400, message: 'Bad Request' },
@@ -112,6 +132,87 @@ module API
         break bad_request!(result[:message]) if result.error?
 
         present result.payload[:project_link], with: Entities::ProjectScopeLink
+      end
+
+      desc 'Add target group to allowlist.' do
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        success status: 201, model: Entities::BasicGroupDetails
+        tags %w[projects_job_token_scope]
+      end
+      params do
+        requires :id,
+          allow_blank: false,
+          desc: 'ID of user project',
+          documentation: { example: 1 },
+          type: Integer
+
+        requires :target_group_id,
+          allow_blank: false,
+          desc: 'ID of target group',
+          documentation: { example: 2 },
+          type: Integer
+      end
+      post ':id/job_token_scope/groups_allowlist' do
+        authorize_admin_project
+
+        target_group_id = declared_params(include_missing: false).fetch(:target_group_id)
+        target_group = Group.find_by_id(target_group_id)
+        break not_found!("target_group_id not found") if target_group.blank?
+
+        result = ::Ci::JobTokenScope::AddGroupService
+            .new(user_project, current_user)
+            .execute(target_group)
+
+        break bad_request!(result[:message]) if result.error?
+
+        present result.payload[:group_link], with: Entities::GroupScopeLink
+      end
+
+      desc 'Delete target group from allowlist.' do
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        success code: 204
+        tags %w[projects_job_token_scope]
+      end
+      params do
+        requires :id,
+          allow_blank: false,
+          desc: 'ID of user project',
+          documentation: { example: 1 },
+          type: Integer
+
+        requires :target_group_id,
+          allow_blank: false,
+          desc: 'ID of the group to be removed from the allowlist',
+          documentation: { example: 2 },
+          type: Integer
+      end
+      delete ':id/job_token_scope/groups_allowlist/:target_group_id' do
+        target_group_id = declared_params(include_missing: false).fetch(:target_group_id)
+        target_group = Group.find_by_id(target_group_id)
+        break not_found!("target_group_id not found") if target_group.blank?
+
+        result = ::Ci::JobTokenScope::RemoveGroupService
+          .new(user_project, current_user)
+          .execute(target_group)
+
+        if result.success?
+          no_content!
+        elsif result.reason == :insufficient_permissions
+          forbidden!(result.message)
+        else
+          bad_request!(result.message)
+        end
       end
 
       desc 'Delete project from allowlist.' do

@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { n__, s__, sprintf } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -39,14 +39,10 @@ export default {
     },
   },
   computed: {
-    hasVersion() {
-      return this.latestVersion;
-    },
     lastReleaseText() {
-      if (this.hasVersion) {
-        return sprintf(this.$options.i18n.lastRelease, {
-          date: this.createdAt,
-        });
+      if (this.latestVersion?.createdAt) {
+        const timeAgo = getTimeago().format(this.latestVersion.createdAt);
+        return sprintf(this.$options.i18n.lastRelease, { timeAgo });
       }
 
       return this.$options.i18n.lastReleaseMissing;
@@ -56,9 +52,6 @@ export default {
     },
     openMergeRequestText() {
       return n__('%d merge request', '%d merge requests', this.openMergeRequestsCount);
-    },
-    createdAt() {
-      return this.hasVersion && formatDate(this.latestVersion.createdAt, 'yyyy-mm-dd');
     },
     projectInfoItems() {
       return [
@@ -90,7 +83,7 @@ export default {
   },
   i18n: {
     projectLink: s__('CiCatalog|Go to the project'),
-    lastRelease: s__('CiCatalog|Last release at %{date}'),
+    lastRelease: s__('CiCatalog|Released %{timeAgo}'),
     lastReleaseMissing: s__('CiCatalog|No release available'),
   },
 };

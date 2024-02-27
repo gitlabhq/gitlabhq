@@ -386,6 +386,26 @@ Whether Gitpod is enabled in application settings.
 
 Returns [`Boolean`](#boolean).
 
+### `Query.googleCloudArtifactRegistryRepositoryArtifact`
+
+Details about an artifact in the Google Cloud Artifact Registry.
+
+DETAILS:
+**Introduced** in GitLab 16.10.
+**Status**: Experiment.
+
+Returns [`GoogleCloudArtifactRegistryArtifactDetails`](#googlecloudartifactregistryartifactdetails).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querygooglecloudartifactregistryrepositoryartifactgooglecloudprojectid"></a>`googleCloudProjectId` | [`String!`](#string) | ID of the Google Cloud project. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactimage"></a>`image` | [`String!`](#string) | Name of the image in the Google Cloud Artifact Registry. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactlocation"></a>`location` | [`String!`](#string) | Location of the Artifact Registry repository. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
+
 ### `Query.group`
 
 Find a group.
@@ -19932,20 +19952,35 @@ Represents a docker artifact of Google Cloud Artifact Registry.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="googlecloudartifactregistrydockerimageartifactregistryimageurl"></a>`artifactRegistryImageUrl` | [`String!`](#string) | Google Cloud URL to access the image. |
-| <a id="googlecloudartifactregistrydockerimagebuildtime"></a>`buildTime` | [`Time`](#time) | Time when the image was built. |
 | <a id="googlecloudartifactregistrydockerimagedigest"></a>`digest` | [`String!`](#string) | Image's digest. |
 | <a id="googlecloudartifactregistrydockerimageimage"></a>`image` | [`String!`](#string) | Image's name. |
-| <a id="googlecloudartifactregistrydockerimageimagesizebytes"></a>`imageSizeBytes` | [`String`](#string) | Calculated size of the image. |
-| <a id="googlecloudartifactregistrydockerimagelocation"></a>`location` | [`String!`](#string) | Location of the Artifact Registry repository. |
-| <a id="googlecloudartifactregistrydockerimagemediatype"></a>`mediaType` | [`String`](#string) | Media type of the image. |
 | <a id="googlecloudartifactregistrydockerimagename"></a>`name` | [`String!`](#string) | Unique image name. |
-| <a id="googlecloudartifactregistrydockerimageprojectid"></a>`projectId` | [`String!`](#string) | ID of the Google Cloud project. |
-| <a id="googlecloudartifactregistrydockerimagerepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
 | <a id="googlecloudartifactregistrydockerimagetags"></a>`tags` | [`[String!]`](#string) | Tags attached to the image. |
 | <a id="googlecloudartifactregistrydockerimageupdatetime"></a>`updateTime` | [`Time`](#time) | Time when the image was last updated. |
 | <a id="googlecloudartifactregistrydockerimageuploadtime"></a>`uploadTime` | [`Time`](#time) | Time when the image was uploaded. |
-| <a id="googlecloudartifactregistrydockerimageuri"></a>`uri` | [`String!`](#string) | Google Cloud URI to access the image. |
+
+### `GoogleCloudArtifactRegistryDockerImageDetails`
+
+Represents details about docker artifact of Google Cloud Artifact Registry.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="googlecloudartifactregistrydockerimagedetailsartifactregistryimageurl"></a>`artifactRegistryImageUrl` | [`String!`](#string) | Google Cloud URL to access the image. |
+| <a id="googlecloudartifactregistrydockerimagedetailsbuildtime"></a>`buildTime` | [`Time`](#time) | Time when the image was built. |
+| <a id="googlecloudartifactregistrydockerimagedetailsdigest"></a>`digest` | [`String!`](#string) | Image's digest. |
+| <a id="googlecloudartifactregistrydockerimagedetailsimage"></a>`image` | [`String!`](#string) | Image's name. |
+| <a id="googlecloudartifactregistrydockerimagedetailsimagesizebytes"></a>`imageSizeBytes` | [`String`](#string) | Calculated size of the image. |
+| <a id="googlecloudartifactregistrydockerimagedetailslocation"></a>`location` | [`String!`](#string) | Location of the Artifact Registry repository. |
+| <a id="googlecloudartifactregistrydockerimagedetailsmediatype"></a>`mediaType` | [`String`](#string) | Media type of the image. |
+| <a id="googlecloudartifactregistrydockerimagedetailsname"></a>`name` | [`String!`](#string) | Unique image name. |
+| <a id="googlecloudartifactregistrydockerimagedetailsprojectid"></a>`projectId` | [`String!`](#string) | ID of the Google Cloud project. |
+| <a id="googlecloudartifactregistrydockerimagedetailsrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
+| <a id="googlecloudartifactregistrydockerimagedetailstags"></a>`tags` | [`[String!]`](#string) | Tags attached to the image. |
+| <a id="googlecloudartifactregistrydockerimagedetailsupdatetime"></a>`updateTime` | [`Time`](#time) | Time when the image was last updated. |
+| <a id="googlecloudartifactregistrydockerimagedetailsuploadtime"></a>`uploadTime` | [`Time`](#time) | Time when the image was uploaded. |
+| <a id="googlecloudartifactregistrydockerimagedetailsuri"></a>`uri` | [`String!`](#string) | Google Cloud URI to access the image. |
 
 ### `GoogleCloudArtifactRegistryRepository`
 
@@ -30710,6 +30745,8 @@ Values for sorting catalog resources.
 | <a id="cicatalogresourcesortlatest_released_at_desc"></a>`LATEST_RELEASED_AT_DESC` | Latest release date by descending order. |
 | <a id="cicatalogresourcesortname_asc"></a>`NAME_ASC` | Name by ascending order. |
 | <a id="cicatalogresourcesortname_desc"></a>`NAME_DESC` | Name by descending order. |
+| <a id="cicatalogresourcesortstar_count_asc"></a>`STAR_COUNT_ASC` | Star count by ascending order. |
+| <a id="cicatalogresourcesortstar_count_desc"></a>`STAR_COUNT_DESC` | Star count by descending order. |
 
 ### `CiCatalogResourceVersionSort`
 
@@ -31008,6 +31045,7 @@ Name of the check for the compliance standard.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="compliancestandardsadherencechecknameat_least_one_non_author_approval"></a>`AT_LEAST_ONE_NON_AUTHOR_APPROVAL` | At least one non author approval. |
 | <a id="compliancestandardsadherencechecknameat_least_two_approvals"></a>`AT_LEAST_TWO_APPROVALS` | At least two approvals. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_committers"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_COMMITTERS` | Prevent approval by merge request committers. |
@@ -31019,6 +31057,7 @@ Name of the compliance standard.
 | Value | Description |
 | ----- | ----------- |
 | <a id="compliancestandardsadherencestandardgitlab"></a>`GITLAB` | Gitlab. |
+| <a id="compliancestandardsadherencestandardsoc2"></a>`SOC2` | Soc2. |
 
 ### `ComplianceStandardsAdherenceStatus`
 
@@ -34281,6 +34320,14 @@ A base type of Google Cloud Artifact Registry artifacts.
 One of:
 
 - [`GoogleCloudArtifactRegistryDockerImage`](#googlecloudartifactregistrydockerimage)
+
+#### `GoogleCloudArtifactRegistryArtifactDetails`
+
+Details type of Google Cloud Artifact Registry artifacts.
+
+One of:
+
+- [`GoogleCloudArtifactRegistryDockerImageDetails`](#googlecloudartifactregistrydockerimagedetails)
 
 #### `Issuable`
 

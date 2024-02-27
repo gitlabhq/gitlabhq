@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 
 Two-factor authentication (2FA) provides an additional level of security to your GitLab account. For others to access
 your account, they would need your username and password _and_ access to your second factor of authentication.
@@ -231,6 +231,9 @@ On your GitLab server:
    For self-compiled installations, [restart GitLab](../../../administration/restart_gitlab.md#self-compiled-installations).
 
 ### Enable one-time password using FortiToken Cloud
+
+DETAILS:
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/212313) in GitLab 13.7 [with a flag](../../../administration/feature_flags.md) named `forti_token_cloud`. Disabled by default.
 
@@ -488,7 +491,7 @@ a GitLab global administrator disable 2FA for your account:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - Take care that 2FA keeps working after [restoring a GitLab backup](../../../administration/backup_restore/index.md).
 - To ensure 2FA authorizes correctly with a time-based one-time password (TOTP) server, synchronize your GitLab

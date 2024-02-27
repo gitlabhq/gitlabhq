@@ -197,13 +197,11 @@
   - 1
 - - compliance_management_standards_adherence_export_mailer
   - 1
+- - compliance_management_standards_base
+  - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals
   - 1
 - - compliance_management_standards_gitlab_at_least_two_approvals_group
-  - 1
-- - compliance_management_standards_gitlab_base
-  - 1
-- - compliance_management_standards_gitlab_group_base
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_author
   - 1
@@ -213,7 +211,13 @@
   - 1
 - - compliance_management_standards_gitlab_prevent_approval_by_committer_group
   - 1
+- - compliance_management_standards_group_base
+  - 1
 - - compliance_management_standards_refresh
+  - 1
+- - compliance_management_standards_soc2_at_least_one_non_author_approval
+  - 1
+- - compliance_management_standards_soc2_at_least_one_non_author_approval_group
   - 1
 - - compliance_management_update_default_framework
   - 1
@@ -776,6 +780,8 @@
 - - vulnerability_exports_export
   - 1
 - - vulnerability_exports_export_deletion
+  - 1
+- - vulnerability_external_issue_links_update_vulnerability_read
   - 1
 - - web_hook
   - 1

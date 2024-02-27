@@ -2,25 +2,14 @@
   "type": "object",
   "required": [
     "name",
-    "uri",
     "tags",
-    "imageSizeBytes",
     "uploadTime",
-    "mediaType",
-    "buildTime",
     "updateTime",
-    "projectId",
-    "location",
-    "repository",
     "image",
-    "digest",
-    "artifactRegistryImageUrl"
+    "digest"
   ],
   "properties": {
     "name": {
-      "type": "string"
-    },
-    "uri": {
       "type": "string"
     },
     "tags": {
@@ -29,25 +18,7 @@
         "type": "string"
       }
     },
-    "imageSizeBytes": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "uploadTime": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "mediaType": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "buildTime": {
       "type": [
         "string",
         "null"
@@ -59,22 +30,10 @@
         "null"
       ]
     },
-    "projectId": {
-      "type": "string"
-    },
-    "location": {
-      "type": "string"
-    },
-    "repository": {
-      "type": "string"
-    },
     "image": {
       "type": "string"
     },
     "digest": {
-      "type": "string"
-    },
-    "artifactRegistryUrl": {
       "type": "string"
     }
   }
