@@ -96,7 +96,7 @@ To enable container scanning in your pipeline, you need the following:
 ## Configuration
 
 To enable container scanning, add the
-[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Container-Scanning.gitlab-ci.yml)
 to your `.gitlab-ci.yml` file:
 
 ```yaml

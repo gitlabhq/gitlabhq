@@ -13,7 +13,7 @@ RSpec.shared_examples 'search timeouts' do |scope|
     end
 
     it 'renders timeout information' do
-      expect(page).to have_content('Your search timed out')
+      expect(page).to have_content('Your search has timed out')
     end
 
     it 'sets tab count to 0' do

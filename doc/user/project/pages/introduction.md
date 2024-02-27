@@ -322,6 +322,17 @@ A 404 can also be related to incorrect permissions. If [Pages Access Control](pa
 navigates to the Pages URL and receives a 404 response, it is possible that the user does not have permission to view the site.
 To fix this, verify that the user is a member of the project.
 
+### Broken relative links
+
+GitLab Pages supports extensionless URLs. However, due to the problem
+described in [issue #354](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/354),
+if an extensionless URL ends in a forward slash (`/`), it breaks any relative links on the page.
+
+To work around this issue:
+
+- Ensure any URLs pointing to your Pages site have extensions, or do not include a trailing slash.
+- If possible, use only absolute URLs on your site.
+
 ### Cannot play media content on Safari
 
 Safari requires the web server to support the [Range request header](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/CreatingVideoforSafarioniPhone/CreatingVideoforSafarioniPhone.html#//apple_ref/doc/uid/TP40006514-SW6) to play your media content. For GitLab Pages to serve

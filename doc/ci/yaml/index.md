@@ -164,10 +164,16 @@ The time limit to resolve all files is 30 seconds.
 
 **Possible inputs**: The `include` subkeys:
 
+- [`include:component`](#includecomponent)
 - [`include:local`](#includelocal)
 - [`include:project`](#includeproject)
 - [`include:remote`](#includeremote)
 - [`include:template`](#includetemplate)
+
+And optionally:
+
+- [`include:inputs`](#includeinputs)
+- [`include:rules`](includes.md#use-rules-with-include)
 
 **Additional details**:
 

@@ -118,14 +118,14 @@ To enable Code Quality, either:
 - Enable [Auto DevOps](../../topics/autodevops/index.md), which includes
   [Auto Code Quality](../../topics/autodevops/stages.md#auto-code-quality).
 
-- Include the Code Quality template in your
+- Include the [Code Quality template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml) in your
   `.gitlab-ci.yml` file.
 
   Example:
 
   ```yaml
      include:
-     - template: Code-Quality.gitlab-ci.yml
+     - template: Jobs/Code-Quality.gitlab-ci.yml
   ```
 
   Code Quality now runs in pipelines.
@@ -205,7 +205,7 @@ To use private runners:
 
    ```yaml
    include:
-     - template: Code-Quality.gitlab-ci.yml
+     - template: Jobs/Code-Quality.gitlab-ci.yml
 
    code_quality:
      services:            # Shut off Docker-in-Docker
@@ -275,7 +275,7 @@ To output the Code Quality report in HTML format, add another job to your templa
 
 ```yaml
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 
 code_quality_html:
   extends: code_quality
@@ -299,7 +299,7 @@ widget, pipeline report, or changes view.
 
 ```yaml
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 
 code_quality:
   variables:
@@ -322,7 +322,7 @@ For example:
 
 ```yaml
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 
 code_quality:
   rules:
@@ -357,7 +357,7 @@ The following variables can address all of the required image pulls:
 
 ```yaml
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 
 code_quality:
   variables:
@@ -431,7 +431,7 @@ For example:
 
 ```yaml
 include:
-  - template: Code-Quality.gitlab-ci.yml
+  - template: Jobs/Code-Quality.gitlab-ci.yml
 
 code_quality:
   variables:

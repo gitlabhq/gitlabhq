@@ -1699,7 +1699,7 @@ The Markdown for tier badges should look like the following:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 > - [Introduced](<link-to-issue>) in GitLab 16.3.
@@ -1708,17 +1708,16 @@ DETAILS:
 
 For offering, use any combination of these words, in this order, separated by commas:
 
-- SaaS
-- Self-managed (lowercase when not the first item)
+- GitLab.com
+- Self-managed
+- GitLab Dedicated
 
 For example:
 
-- SaaS
-- SaaS, self-managed
+- GitLab.com
+- GitLab.com, Self-managed
 - Self-managed
-
-NOTE:
-SaaS will be changing to GitLab.com and we will be adding GitLab Dedicated. We will update this page when the change occurs.
+- Self-managed, GitLab Dedicated
 
 For tier, choose one:
 

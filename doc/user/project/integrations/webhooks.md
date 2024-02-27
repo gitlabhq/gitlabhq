@@ -119,13 +119,14 @@ You can set a custom payload template in the webhook configuration. The request 
 with the data for the current event. The template must render as valid JSON.
 
 You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
-for a deployment event. For example:
+for a deployment event. To access properties nested in objects, specify the path segments separated with `.`. For example:
 
 Given this custom payload template:
 
 ```json
 {
-  "event": "{{object_kind}}"
+  "event": "{{object_kind}}",
+  "project_name": "{{project.name}}"
 }
 ```
 
@@ -133,7 +134,8 @@ You'll have this request payload that combines the template with a `push` event:
 
 ```json
 {
-  "event": "push"
+  "event": "push",
+  "project_name": "Example"
 }
 ```
 

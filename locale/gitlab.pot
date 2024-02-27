@@ -40877,9 +40877,6 @@ msgstr ""
 msgid "References should be in the form of path/to/project!merge_request_id"
 msgstr ""
 
-msgid "Refine your search criteria (select a %{strong_open}group%{strong_close} and %{strong_open}project%{strong_close} when possible)"
-msgstr ""
-
 msgid "Refresh the page and try again."
 msgstr ""
 
@@ -44166,10 +44163,10 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
-msgid "SearchError|A search query problem has occurred"
+msgid "SearchError|%{search_syntax_link_start}What is the supported syntax%{search_syntax_link_end}?"
 msgstr ""
 
-msgid "SearchError|Learn more about %{search_syntax_link_start} Zoekt search syntax%{search_syntax_link_end}."
+msgid "SearchError|A problem has occurred"
 msgstr ""
 
 msgid "SearchError|To resolve the problem, check the query syntax and try again."
@@ -52022,7 +52019,7 @@ msgstr ""
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your top-level group to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
 msgstr ""
 
-msgid "To resolve this, try to:"
+msgid "To resolve the problem, refine your search criteria. Select a group or project or use double quotes for multiple keywords (for example, %{code_open}\"your search\"%{code_close})."
 msgstr ""
 
 msgid "To run CI/CD pipelines with JetBrains TeamCity, input the GitLab project details in the TeamCity project Version Control Settings."
@@ -53977,9 +53974,6 @@ msgid "Use cURL"
 msgstr ""
 
 msgid "Use custom color #FF0000"
-msgstr ""
-
-msgid "Use double quotes for multiple keywords, such as %{code_open}\"your search\"%{code_close}"
 msgstr ""
 
 msgid "Use hashed storage"
@@ -58158,7 +58152,7 @@ msgstr ""
 msgid "Your search didn't match any commits. Try a different query."
 msgstr ""
 
-msgid "Your search timed out"
+msgid "Your search has timed out"
 msgstr ""
 
 msgid "Your sign-in page is %{url}."

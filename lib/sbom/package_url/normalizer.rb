@@ -3,6 +3,9 @@
 module Sbom
   class PackageUrl
     class Normalizer
+      # Based on https://peps.python.org/pep-0503/#normalized-names
+      PYPI_REGEX = /[-_\.]+/
+
       def initialize(type:, text:)
         @type = type
         @text = text
@@ -40,7 +43,7 @@ module Sbom
       end
 
       def normalize_pypi
-        downcase.tr('_', '-')
+        downcase.gsub(PYPI_REGEX, '-')
       end
     end
   end
