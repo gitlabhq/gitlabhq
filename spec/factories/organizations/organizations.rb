@@ -10,6 +10,8 @@ FactoryBot.define do
     trait :default do
       id { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
       name { 'Default' }
+      visibility_level { Organizations::Organization::PUBLIC }
+
       initialize_with do
         # Ensure we only use one default organization
         default_org = Organizations::Organization

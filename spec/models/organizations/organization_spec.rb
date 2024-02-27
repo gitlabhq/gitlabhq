@@ -116,6 +116,43 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '#visibility_level_field' do
+    it { expect(organization.visibility_level_field).to eq(:visibility_level) }
+  end
+
+  describe '#visibility_level' do
+    subject { organization.visibility_level }
+
+    context 'with default' do
+      it { is_expected.to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+
+    context 'with visibility possibilities' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:attribute_name, :value, :result) do
+        :visibility        | 'public'                         | Gitlab::VisibilityLevel::PUBLIC
+        :visibility_level  | Gitlab::VisibilityLevel::PUBLIC  | Gitlab::VisibilityLevel::PUBLIC
+        'visibility'       | 'public'                         | Gitlab::VisibilityLevel::PUBLIC
+        'visibility_level' | Gitlab::VisibilityLevel::PUBLIC  | Gitlab::VisibilityLevel::PUBLIC
+        :visibility        | 'private'                        | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | Gitlab::VisibilityLevel::PRIVATE | Gitlab::VisibilityLevel::PRIVATE
+        'visibility'       | 'private'                        | Gitlab::VisibilityLevel::PRIVATE
+        'visibility_level' | Gitlab::VisibilityLevel::PRIVATE | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | 12345                            | Gitlab::VisibilityLevel::PRIVATE
+        :visibility_level  | 'bogus'                          | Gitlab::VisibilityLevel::PRIVATE
+      end
+
+      with_them do
+        it 'sets the visibility level' do
+          org = described_class.new(attribute_name => value)
+
+          expect(org.visibility_level).to eq(result)
+        end
+      end
+    end
+  end
+
   describe '#destroy!' do
     context 'when trying to delete the default organization' do
       it 'raises an error' do

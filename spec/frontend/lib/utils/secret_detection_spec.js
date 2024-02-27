@@ -14,7 +14,7 @@ describe('containsSensitiveToken', () => {
       '1234567890',
       '!@#$%^&*()_+',
       'https://example.com',
-      'Some tokens are prefixed with glpat- or glcbt-, for example.',
+      'Some tokens are prefixed with glpat-, glcbt- or glrt- for example.',
       'glpat-FAKE',
     ];
 
@@ -38,6 +38,7 @@ describe('containsSensitiveToken', () => {
       'CI_JOB_TOKEN=glcbt-FFFF_cgyKc1k_AsnEpmP-5fRL',
       'Use this secret job token: glcbt-1_cgyKc1k_AsnEpmP-5fRL',
       'token: glffct-cgyKc1k_AsnEpmP-5fRL',
+      'Here is the runner token for this job:glrt-abc123_x-yzABCDEF01234',
     ];
 
     it.each(sensitiveMessages)('returns true for message: %s', (message) => {

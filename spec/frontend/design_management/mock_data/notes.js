@@ -30,6 +30,35 @@ const DISCUSSION_2 = {
   },
 };
 
+export const DISCUSSION_3 = {
+  id: 'discussion-id-3',
+  notes: {
+    nodes: [
+      {
+        id: 'note-id-4',
+        index: 2,
+        position: {
+          height: 50,
+          width: 50,
+          x: 35,
+          y: 25,
+        },
+        author: {
+          name: 'Smith',
+          webUrl: 'link-to-smith-profile',
+        },
+        awardEmoji: mockAwardEmoji,
+        createdAt: '2020-05-09T07:10:45Z',
+        userPermissions: {
+          adminNote: true,
+          awardEmoji: true,
+        },
+        resolved: false,
+      },
+    ],
+  },
+};
+
 export default [
   {
     ...DISCUSSION_1.notes[0],

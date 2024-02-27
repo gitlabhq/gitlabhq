@@ -18,6 +18,7 @@ RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_c
 
         expect(default_org.name).to eq('Default')
         expect(default_org.path).to eq('default')
+        expect(default_org).to be_public
       end
     end
 

@@ -28926,9 +28926,6 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-msgid "Last reply by"
-msgstr ""
-
 msgid "Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages."
 msgstr ""
 
@@ -60142,11 +60139,6 @@ msgstr ""
 
 msgid "rendered diff"
 msgstr ""
-
-msgid "reply"
-msgid_plural "replies"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "reply should have same confidentiality as top-level note"
 msgstr ""

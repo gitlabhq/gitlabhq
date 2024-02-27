@@ -229,7 +229,6 @@ export default {
     <gl-empty-state
       v-else-if="shouldRenderErrorState"
       :svg-path="errorStateSvgPath"
-      :svg-height="null"
       :title="
         s__(`Pipelines|There was an error fetching the pipelines.
         Try again in a few moments or contact your support team.`)

@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import NO_PIPELINES_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-pipeline-md.svg?url';
-import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/pipelines_failed.svg?url';
+import ERROR_STATE_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-job-failed-md.svg?url';
 import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -410,7 +410,6 @@ export default {
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.error"
         :svg-path="$options.errorStateSvgPath"
-        :svg-height="null"
         :title="s__('Pipelines|There was an error fetching the pipelines.')"
         :description="s__('Pipelines|Try again in a few moments or contact your support team.')"
       />
@@ -418,7 +417,6 @@ export default {
       <gl-empty-state
         v-else-if="stateToRender === $options.stateMap.emptyTab"
         :svg-path="$options.noPipelinesSvgPath"
-        :svg-height="150"
         :title="emptyTabMessage"
       />
 

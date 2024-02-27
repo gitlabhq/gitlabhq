@@ -11,8 +11,8 @@ module Gitlab
 
           def illustration
             {
-              image: 'illustrations/manual_action.svg',
-              size: 'svg-content svg-394',
+              image: 'illustrations/empty-state/empty-job-manual-md.svg',
+              size: '',
               title: _('This job requires a manual action'),
               content: illustration_content
             }

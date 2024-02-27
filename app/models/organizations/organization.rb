@@ -3,6 +3,7 @@
 module Organizations
   class Organization < MainClusterwide::ApplicationRecord
     include Gitlab::SQL::Pattern
+    include Gitlab::VisibilityLevel
 
     DEFAULT_ORGANIZATION_ID = 1
 
@@ -47,6 +48,11 @@ module Organizations
 
     def self.default?(id)
       id == DEFAULT_ORGANIZATION_ID
+    end
+
+    # Required for Gitlab::VisibilityLevel module
+    def visibility_level_field
+      :visibility_level
     end
 
     def organization_detail

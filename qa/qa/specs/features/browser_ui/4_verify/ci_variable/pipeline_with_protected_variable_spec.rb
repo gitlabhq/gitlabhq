@@ -43,6 +43,10 @@ module QA
       end
 
       it 'exposes variable on protected branch', :reliable,
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419506',
+          type: :investigating
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348005' do
         create_protected_branch
 

@@ -12146,6 +12146,7 @@ CREATE TABLE organizations (
     updated_at timestamp with time zone NOT NULL,
     name text DEFAULT ''::text NOT NULL,
     path text NOT NULL,
+    visibility_level smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0b4296b5ea CHECK ((char_length(path) <= 255)),
     CONSTRAINT check_d130d769e0 CHECK ((char_length(name) <= 255))
 );

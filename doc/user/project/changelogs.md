@@ -145,7 +145,6 @@ Category sections are generated using a template. The default template:
 - [{{ title }}]({{ commit.reference }})\
 {% if author.credit %} by {{ author.reference }}{% end %}\
 {% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
-{% if commit.trailers.Issue %} ([issue]({{ commit.trailers.Issue }})){% end %}
 
 {% end %}
 
@@ -274,6 +273,26 @@ In an entry, the following variables are available (here `foo.bar` means that
   `gitlab-org/gitlab@0a4cdd86ab31748ba6dac0f69a8653f206e5cfc7`.
 - `commit.trailers`: an object containing all the Git trailers that were present
   in the commit body.
+
+  These trailers can be referenced using `commit.trailers.<name>`. For example, assuming the following commit:
+
+  ```plaintext
+  Add some impressive new feature
+
+  Changelog: added
+  Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/1234
+  Status: important
+  ```
+
+  The `Changelog`, `Issue` and `Status` trailers can be accessed in the template as follows:
+
+  ```yaml
+  {% each entries %}
+  {% if commit.trailers.Issue %} ([link to issue]({{ commit.trailers.Issue }})){% end %}
+  {% if commit.trailers.Status %}Status: {{ commit.trailers.Status }}{% end %}
+  {% end %}
+  ```
+
 - `merge_request.reference`: a reference to the merge request that first
   introduced the change (for example, `gitlab-org/gitlab!50063`).
 - `title`: the title of the changelog entry (this is the commit title).

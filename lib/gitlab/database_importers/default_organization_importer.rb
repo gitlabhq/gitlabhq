@@ -11,7 +11,8 @@ module Gitlab
         Organizations::Organization.create!(
           id: Organizations::Organization::DEFAULT_ORGANIZATION_ID,
           name: 'Default',
-          path: 'default'
+          path: 'default',
+          visibility_level: Organizations::Organization::PUBLIC
         )
       end
     end

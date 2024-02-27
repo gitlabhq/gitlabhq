@@ -136,16 +136,14 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
     &.expanded {
       border-bottom: 1px solid var(--border-color, $border-color);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
 
     .toggle-comments-button:focus {
       text-decoration: none;
       color: var(--blue-600, $blue-600);
     }
-  }
-
-  .design-note-pin {
-    margin-left: 9px;
   }
 
   .design-discussion {
@@ -155,7 +153,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       content: '';
       border-left: 1px solid var(--gray-100, $gray-100);
       position: absolute;
-      left: 22px;
+      left: 12px;
       top: -17px;
       height: 17px;
     }

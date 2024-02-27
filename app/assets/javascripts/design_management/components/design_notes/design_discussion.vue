@@ -146,13 +146,13 @@ export default {
       return this.discussion.notes.slice(1);
     },
     areRepliesShown() {
-      return !this.discussion.resolved || !this.areRepliesCollapsed;
+      return !this.areRepliesCollapsed;
     },
     resolveIconName() {
       return this.discussion.resolved ? 'check-circle-filled' : 'check-circle';
     },
     isRepliesWidgetVisible() {
-      return this.discussion.resolved && this.discussionReplies.length > 0;
+      return this.discussionReplies.length > 0;
     },
     isReplyPlaceholderVisible() {
       return this.areRepliesShown || !this.discussionReplies.length;
