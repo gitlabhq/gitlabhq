@@ -7,6 +7,7 @@ module Gitlab
       self.primary_key = :seq_name
 
       scope :by_table_name, ->(table_name) { where(table_name: table_name) }
+      scope :by_col_name, ->(col_name) { where(col_name: col_name) }
     end
   end
 end
