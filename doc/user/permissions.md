@@ -340,11 +340,11 @@ The following table lists group permissions available for each role:
 | Enable/disable a dependency proxy                                                       |       |          |           | ✓          | ✓     |       |
 | Enable/disable package request forwarding                                               |       |          |           | ✓          | ✓     |       |
 | Fork project into a group                                                               |       |          |           | ✓          | ✓     |       |
-| List group deploy tokens                                                                |       |          |           | ✓          | ✓     |       |
 | Manage [group approval rules](project/merge_requests/approvals/settings.md) (group settings) |  |          |           | ✓          | ✓     |       |
 | Manage [group push rules](group/access_and_permissions.md#group-push-rules)             |       |          |           | ✓          | ✓     |       |
 | View group runners                                                                      |       |          |           | ✓          | ✓     |       |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |       |
+| List group deploy tokens                                                                |       |          |           |            | ✓     |       |
 | Change group visibility level                                                           |       |          |           |            | ✓     |       |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |       |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |       |

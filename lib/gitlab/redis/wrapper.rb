@@ -20,7 +20,7 @@ module Gitlab
       CommandExecutionError = Class.new(StandardError)
 
       class << self
-        delegate :params, :url, :store, :encrypted_secrets, :redis_client_params, to: :new
+        delegate :params, :url, :store, :encrypted_secrets, to: :new
 
         def with
           pool.with { |redis| yield redis }
@@ -90,7 +90,17 @@ module Gitlab
         end
 
         def redis
-          ::Redis.new(params)
+          init_redis(params)
+        end
+
+        private
+
+        def init_redis(config)
+          if config[:nodes].present?
+            ::Redis::Cluster.new(config.merge({ concurrency: { model: :none } }))
+          else
+            ::Redis.new(config)
+          end
         end
       end
 
@@ -99,13 +109,8 @@ module Gitlab
       end
 
       def params
-        redis_store_options
-      end
-
-      # redis_client_params modifies redis_store_options to be compatible with redis-client
-      # TODO: when redis-rb is updated to v5, there is no need to support 2 types of config format
-      def redis_client_params
         options = redis_store_options
+        options[:command_builder] = CommandBuilder
 
         # avoid passing classes into options as Sidekiq scrubs the options with Marshal.dump + Marshal.load
         # ref https://github.com/sidekiq/sidekiq/blob/v7.1.6/lib/sidekiq/redis_connection.rb#L37
@@ -114,14 +119,14 @@ module Gitlab
         # we use strings to look up Gitlab::Instrumentation::Redis.storage_hash as a bypass
         options[:custom] = { instrumentation_class: self.class.store_name }
 
-        # TODO: add support for cluster when upgrading to redis-rb v5.y.z we do not need cluster support
-        # as Sidekiq workload should not and does not run in a Redis Cluster
-        # support to be added in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134862
         if options[:sentinels]
           # name is required in RedisClient::SentinelConfig
           # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/sentinel_config.rb#L17
           options[:name] = options[:host]
           options.except(:scheme, :instrumentation_class, :host, :port)
+        elsif options[:cluster]
+          options[:nodes] = options[:cluster].map { |c| c.except(:scheme) }
+          options.except(:scheme, :instrumentation_class, :cluster)
         else
           # remove disallowed keys as seen in
           # https://github.com/redis-rb/redis-client/blob/1ab081c1d0e47df5d55e011c9390c70b2eef6731/lib/redis_client/config.rb#L21
@@ -134,7 +139,7 @@ module Gitlab
       end
 
       def db
-        redis_store_options[:db]
+        redis_store_options[:db] || 0
       end
 
       def sentinels
@@ -156,7 +161,7 @@ module Gitlab
       end
 
       def store(extras = {})
-        ::Redis::Store::Factory.create(redis_store_options.merge(extras))
+        ::Redis::Store::Factory.create(params.merge(extras))
       end
 
       def encrypted_secrets
@@ -182,7 +187,11 @@ module Gitlab
         final_config = parse_extra_config(decrypted_config)
 
         result = if final_config[:cluster].present?
-                   final_config[:db] = 0 # Redis Cluster only supports db 0
+                   final_config[:cluster] = final_config[:cluster].map do |node|
+                     next node unless node.is_a?(String)
+
+                     ::Redis::Store::Factory.extract_host_options_from_uri(node)
+                   end
                    final_config
                  else
                    parse_redis_url(final_config)

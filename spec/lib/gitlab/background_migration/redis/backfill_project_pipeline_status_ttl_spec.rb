@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::Redis::BackfillProjectPipelineStatusTtl,
   :clean_gitlab_redis_cache, feature_category: :redis do
-  let(:redis) { ::Redis.new(::Gitlab::Redis::Cache.params) }
+  let(:redis) { ::Gitlab::Redis::Cache.redis }
   let(:keys) { ["cache:gitlab:project:1:pipeline_status", "cache:gitlab:project:2:pipeline_status"] }
   let(:invalid_keys) { ["cache:gitlab:project:pipeline_status:1", "cache:gitlab:project:pipeline_status:2"] }
 

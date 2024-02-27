@@ -3698,7 +3698,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/import_export/uploads_manager_spec.rb'
     - 'spec/lib/gitlab/import_export/version_checker_spec.rb'
     - 'spec/lib/gitlab/import_sources_spec.rb'
-    - 'spec/lib/gitlab/instrumentation/redis_interceptor_spec.rb'
     - 'spec/lib/gitlab/issuable_metadata_spec.rb'
     - 'spec/lib/gitlab/issues/rebalancing/state_spec.rb'
     - 'spec/lib/gitlab/jira/dvcs_spec.rb'

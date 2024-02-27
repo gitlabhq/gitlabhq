@@ -288,8 +288,9 @@ gem 'js_regex', '~> 3.8' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'device_detector' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis
-gem 'redis', '~> 4.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'redis-namespace', '~> 1.10.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'redis-namespace', '~> 1.10.0', feature_category: :redis
+gem 'redis', '~> 5.0.0', feature_category: :redis
+gem 'redis-clustering', '~> 5.0.0', feature_category: :redis
 gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis session store

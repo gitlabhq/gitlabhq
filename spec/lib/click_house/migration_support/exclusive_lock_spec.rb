@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :database do
   include ExclusiveLeaseHelpers
 
+  let(:worker_id) { 1 }
+
   let(:worker_class) do
     # This worker will be active longer than the ClickHouse worker TTL
     Class.new do
@@ -81,7 +83,7 @@ RSpec.describe ClickHouse::MigrationSupport::ExclusiveLock, feature_category: :d
       end
 
       around do |example|
-        described_class.register_running_worker(worker_class, anything) do
+        described_class.register_running_worker(worker_class, worker_id) do
           example.run
         end
       end

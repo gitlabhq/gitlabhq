@@ -311,7 +311,9 @@ class IssuableBaseService < ::BaseContainerService
     GraphqlTriggers.issuable_description_updated(issuable)
   end
 
-  def update(issuable)
+  def update(issuable) # rubocop:disable Metrics/AbcSize -- remove with the FF `use_primary_for_update_computations`
+    ::Gitlab::Database::LoadBalancing::Session.current.use_primary! if Feature.enabled?(:use_primary_for_update_computations, issuable.try(:resource_parent))
+
     old_associations = associations_before_update(issuable)
 
     initialize_callbacks!(issuable)

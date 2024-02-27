@@ -100,7 +100,7 @@ module Gitlab
         def refresh_keys_expiration
           with_redis do |redis|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              Gitlab::Redis::CrossSlot::Pipeline.new(redis).pipelined do |pipeline|
+              redis.pipelined do |pipeline|
                 pipeline.expire(issue_ids_key, REDIS_EXPIRY_TIME)
                 pipeline.expire(current_index_key, REDIS_EXPIRY_TIME)
                 pipeline.expire(current_project_key, REDIS_EXPIRY_TIME)

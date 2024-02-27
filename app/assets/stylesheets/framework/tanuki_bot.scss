@@ -1,0 +1,6 @@
+@import 'framework/variables';
+@import 'framework/variables_overrides';
+
+#duo-chat {
+  z-index: #{$zindex-modal-backdrop - 1};
+}

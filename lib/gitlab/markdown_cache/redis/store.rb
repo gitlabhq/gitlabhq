@@ -11,7 +11,7 @@ module Gitlab
 
           data = Gitlab::Redis::Cache.with do |r|
             Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
-              Gitlab::Redis::CrossSlot::Pipeline.new(r).pipelined do |pipeline|
+              r.pipelined do |pipeline|
                 subjects.each do |subject|
                   new(subject).read(pipeline)
                 end
