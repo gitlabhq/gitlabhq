@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Use the Import API to import repositories from GitHub or Bitbucket Server.
 
@@ -58,7 +58,7 @@ curl --request POST \
       "single_endpoint_notes_import": true,
       "attachments_import": true,
       "collaborators_import": true
-    },
+    }
 }'
 ```
 

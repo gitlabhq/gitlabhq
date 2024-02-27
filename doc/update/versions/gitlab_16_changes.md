@@ -84,7 +84,7 @@ planned for release in 16.9.1.
 
 - Backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). But due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
-  - Affected releases: 15.11.x - 16.8.x 
+  - Affected releases: 15.11.x - 16.8.x
   - Fixed in: 16.9
 
 ### Geo installations

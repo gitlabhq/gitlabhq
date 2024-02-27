@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > Feature flag `pick_into_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/324154) in GitLab 14.0.
 

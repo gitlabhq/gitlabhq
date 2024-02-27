@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 The [logs](#read-the-logs) provide insight into what DAST is doing and expecting during the authentication process. For more detailed
 information, configure the [authentication report](#configure-the-authentication-report).

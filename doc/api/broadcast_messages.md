@@ -24,7 +24,7 @@ As of GitLab 12.8, GET requests do not require authentication. All other broadca
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 List all broadcast messages.
 
@@ -61,7 +61,7 @@ Example response:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Get a specific broadcast message.
 

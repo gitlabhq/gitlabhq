@@ -10,7 +10,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When your team starts a new project, they need a workflow that balances efficiency
 with appropriate reviews. In GitLab, you can create user groups, combine those
@@ -215,7 +215,9 @@ file types. Approval rules direct merge requests to those reviewers.
 Here, you will set up an approval rule that uses the information in your new CODEOWNERS
 file and adds protection for release branches:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
 1. Create a rule named `Enforce CODEOWNERS`.
@@ -251,7 +253,9 @@ into the release branch.
 Rather than create protections for a branch at a time, configure wildcard branch rules
 to protect multiple branches:
 
-1. On the left sidebar, select **Settings > Repository**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
 1. To require everyone to submit merge requests, rather than pushing commits directly:
@@ -273,7 +277,9 @@ Your rules are now in place, even though no `1.*` branches exist yet:
 
 Now that all branch protections in place, you're ready to create your 1.0.0 release branch:
 
-1. On the left sidebar, select **Code > Branches**.
+1. On the left sidebar, select **Search or go to** and
+   search for `Excelsior`. Select the project named `Excelsior`.
+1. Select **Code > Branches**.
 1. In the upper-right corner, select **New branch**. Name it `1.0.0`.
 1. Select **Create branch**.
 

@@ -9,7 +9,7 @@ description: "How to revert commits or merge requests in a GitLab project."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can revert individual commits or an entire merge request in GitLab.
 When you revert a commit in Git, you create a new commit that reverses all actions

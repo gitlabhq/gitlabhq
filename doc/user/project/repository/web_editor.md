@@ -9,7 +9,7 @@ description: "Use the Web Editor to create, upload, and edit text files directly
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use the Web Editor to make changes to a single file directly from the GitLab UI.
 To make changes to multiple files, see [Web IDE](../web_ide/index.md).

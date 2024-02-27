@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 <!-- vale gitlab.FutureTense = NO -->
 
@@ -80,7 +80,7 @@ handbook published with [GitLab Pages](../../user/project/pages/index.md).
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Next, you'll create labels to add to ideas to represent the status workflow.
 

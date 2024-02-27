@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can purchase subscription add-ons to give users in your organization access to more GitLab features.
 Subscription add-ons are purchased as additional seats in your subscription.

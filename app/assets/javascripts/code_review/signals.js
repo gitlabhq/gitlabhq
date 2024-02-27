@@ -46,6 +46,8 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
           preparationSubscriber.unsubscribe();
         }
       });
+    } else if (window.gon?.features?.mergeRequestDiffGeneratedSubscription) {
+      signaler.$emit(EVT_MR_DIFF_GENERATED, currentStatus.data.project.mergeRequest);
     }
   }
 }
@@ -53,7 +55,7 @@ async function observeMergeRequestFinishingPreparation({ apollo, signaler }) {
 function observeMergeRequestDiffGenerated({ apollo, signaler }) {
   const tabCount = document.querySelector('.js-changes-tab-count');
 
-  if (!tabCount) return;
+  if (!tabCount || tabCount?.textContent !== '-') return;
 
   const susbription = apollo.subscribe({
     query: diffGeneratedSubscription,
@@ -62,9 +64,10 @@ function observeMergeRequestDiffGenerated({ apollo, signaler }) {
     },
   });
 
-  susbription.subscribe(({ data: { mergeRequestDiffGenerated } }) => {
+  const subscriber = susbription.subscribe(({ data: { mergeRequestDiffGenerated } }) => {
     if (mergeRequestDiffGenerated) {
       signaler.$emit(EVT_MR_DIFF_GENERATED, mergeRequestDiffGenerated);
+      subscriber.unsubscribe();
     }
   });
 }

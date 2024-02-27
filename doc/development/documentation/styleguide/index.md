@@ -2012,7 +2012,7 @@ Use the following template to add information to the page.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 This page contains upgrade information for minor and patch versions of GitLab X. Review these instructions for:
 

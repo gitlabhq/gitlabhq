@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import AccessibilityWidget from '~/vue_merge_request_widget/extensions/accessibility/index.vue';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
@@ -31,7 +32,9 @@ describe('Accessibility widget', () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(api, 'trackRedisCounterEvent').mockImplementation(() => {});
     mock = new MockAdapter(axios);
+    jest.spyOn(api, 'trackRedisCounterEvent').mockImplementation(() => {});
   });
 
   afterEach(() => {

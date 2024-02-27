@@ -111,6 +111,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_level_ai_beta_features_enabled: false,
         instance_level_code_suggestions_enabled: false,
         invisible_captcha_enabled: false,
@@ -233,6 +234,7 @@ module ApplicationSettingImplementation
         unique_ips_limit_per_user: 10,
         unique_ips_limit_time_window: 3600,
         usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+        usage_ping_features_enabled: false,
         usage_stats_set_by_user_id: nil,
         user_default_external: false,
         user_default_internal_regex: nil,
@@ -515,13 +517,20 @@ module ApplicationSettingImplementation
     Settings.gitlab.usage_ping_enabled
   end
 
-  def usage_ping_features_enabled?
-    usage_ping_enabled? && usage_ping_features_enabled
+  def usage_ping_features_enabled
+    return false unless usage_ping_enabled? && super
+
+    return include_optional_metrics_in_service_ping if Gitlab.ee?
+
+    true
   end
+
+  alias_method :usage_ping_features_enabled?, :usage_ping_features_enabled
 
   def usage_ping_enabled
     usage_ping_can_be_configured? && super
   end
+
   alias_method :usage_ping_enabled?, :usage_ping_enabled
 
   def allowed_key_types

@@ -23,7 +23,7 @@ storage usage will be calculated across the entire namespace and project storage
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can view the following statistics for storage usage in projects and namespaces:
 

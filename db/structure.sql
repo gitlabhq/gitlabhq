@@ -4106,6 +4106,7 @@ CREATE TABLE application_settings (
     lock_toggle_security_policy_custom_ci boolean DEFAULT false NOT NULL,
     toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
     lock_toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
+    include_optional_metrics_in_service_ping boolean DEFAULT true NOT NULL,
     rate_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
     elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     enable_member_promotion_management boolean DEFAULT false NOT NULL,

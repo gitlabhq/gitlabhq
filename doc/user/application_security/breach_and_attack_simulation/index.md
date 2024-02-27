@@ -10,7 +10,7 @@ info: Breach and Attack Simulation is a GitLab Incubation Engineering program. N
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 WARNING:

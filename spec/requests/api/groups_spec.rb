@@ -2251,9 +2251,11 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         maintainer_group.add_maintainer(user)
         owner_group_1.add_owner(user)
         owner_group_2.add_owner(user)
-        create(:group_group_link, :owner,
-               shared_with_group: owner_group_1,
-               shared_group: shared_with_group_where_direct_owner_as_owner
+        create(
+          :group_group_link,
+          :owner,
+          shared_with_group: owner_group_1,
+          shared_group: shared_with_group_where_direct_owner_as_owner
         )
       end
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - The ability to authenticate with a CI/CD job token [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49750) in GitLab 13.12 [with a flag](../administration/feature_flags.md) named `ci_job_token_scope`. Disabled by default.
 > - CI/CD job token authentication [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/300821) in GitLab 16.8. Feature flag `ci_job_token_scope` removed.

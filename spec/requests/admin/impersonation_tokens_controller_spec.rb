@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode,
-feature_category: :system_access do
+RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature_category: :system_access do
   let(:admin) { create(:admin) }
   let!(:user) { create(:user) }
 

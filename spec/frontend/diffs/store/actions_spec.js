@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import api from '~/api';
 import Cookies from '~/lib/utils/cookies';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -1444,6 +1445,7 @@ describe('DiffsStoreActions', () => {
     let putSpy;
 
     beforeEach(() => {
+      jest.spyOn(api, 'trackRedisHllUserEvent').mockImplementation(() => {});
       putSpy = jest.spyOn(axios, 'put');
 
       mock.onPut(endpointUpdateUser).reply(HTTP_STATUS_OK, {});

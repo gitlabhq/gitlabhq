@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you add a cryptographic signature to your commit, you provide extra assurance that a commit
 originated from you, rather than an impersonator. If GitLab can verify a commit

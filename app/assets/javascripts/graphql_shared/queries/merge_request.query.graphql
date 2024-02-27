@@ -3,6 +3,9 @@ query mergeRequestId($projectPath: ID!, $iid: String!) {
     id
     mergeRequest(iid: $iid) {
       id
+      diffStatsSummary {
+        fileCount
+      }
       preparedAt
     }
   }

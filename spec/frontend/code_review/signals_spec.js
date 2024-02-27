@@ -161,6 +161,7 @@ describe('~/code_review', () => {
       const apollo = {};
       let apolloSubscribeSpy;
       let subscribeSpy;
+      let unsubscribeSpy;
       let nextSpy;
       let observable;
       let emitSpy;
@@ -169,15 +170,20 @@ describe('~/code_review', () => {
       beforeEach(() => {
         apolloSubscribeSpy = jest.fn();
         subscribeSpy = jest.fn();
+        unsubscribeSpy = jest.fn();
         nextSpy = jest.fn();
         observable = {
           next: nextSpy,
-          subscribe: subscribeSpy.mockReturnValue(),
+          subscribe: subscribeSpy.mockReturnValue({
+            unsubscribe: unsubscribeSpy,
+          }),
         };
         emitSpy = jest.spyOn(diffsEventHub, '$emit');
         nextSpy.mockImplementation((data) => behavior?.(data));
         subscribeSpy.mockImplementation((handler) => {
           behavior = handler;
+
+          return { unsubscribe: unsubscribeSpy };
         });
 
         apolloSubscribeSpy.mockReturnValue(observable);
@@ -198,7 +204,7 @@ describe('~/code_review', () => {
 
       describe('with mergeRequestDiffGeneratedSubscription feature flag enabled', () => {
         beforeEach(() => {
-          setHTMLFixture('<div class="js-changes-tab-count" data-gid="1"></div>');
+          setHTMLFixture('<div class="js-changes-tab-count" data-gid="1">-</div>');
 
           window.gon.features = {
             mergeRequestDiffGeneratedSubscription: true,
@@ -233,6 +239,14 @@ describe('~/code_review', () => {
           observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
 
           expect(emitSpy).toHaveBeenCalledWith(EVT_MR_DIFF_GENERATED, { totalCount: 1 });
+        });
+
+        it('unsubscribes from subscription', async () => {
+          await start(callArgs);
+
+          observable.next({ data: { mergeRequestDiffGenerated: { totalCount: 1 } } });
+
+          expect(unsubscribeSpy).toHaveBeenCalled();
         });
       });
     });

@@ -29,48 +29,39 @@ RSpec.describe 'getting user information', feature_category: :user_management do
     let_it_be(:unauthorized_user) { create(:user) }
 
     let_it_be(:assigned_mr) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_a, assignees: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_a, assignees: [user])
     end
 
     let_it_be(:assigned_mr_b) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_b, assignees: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_b, assignees: [user])
     end
 
     let_it_be(:assigned_mr_c) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_b, assignees: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_b, assignees: [user])
     end
 
     let_it_be(:authored_mr) do
-      create(:merge_request, :unique_branches,
-             source_project: project_a, author: user)
+      create(:merge_request, :unique_branches, source_project: project_a, author: user)
     end
 
     let_it_be(:authored_mr_b) do
-      create(:merge_request, :unique_branches,
-             source_project: project_b, author: user)
+      create(:merge_request, :unique_branches, source_project: project_b, author: user)
     end
 
     let_it_be(:authored_mr_c) do
-      create(:merge_request, :unique_branches,
-             source_project: project_b, author: user)
+      create(:merge_request, :unique_branches, source_project: project_b, author: user)
     end
 
     let_it_be(:reviewed_mr) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_a, reviewers: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_a, reviewers: [user])
     end
 
     let_it_be(:reviewed_mr_b) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_b, reviewers: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_b, reviewers: [user])
     end
 
     let_it_be(:reviewed_mr_c) do
-      create(:merge_request, :unique_branches, :unique_author,
-             source_project: project_b, reviewers: [user])
+      create(:merge_request, :unique_branches, :unique_author, source_project: project_b, reviewers: [user])
     end
 
     let(:current_user) { authorised_user }

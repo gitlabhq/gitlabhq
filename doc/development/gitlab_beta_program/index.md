@@ -30,4 +30,4 @@ The GitLab Beta Program is not operational yet. This page is in draft & in prepa
 | Name                                                                              | Status     | Enrolled at   | Removed at   |
 |-----------------------------------------------------------------------------------|------------|---------------| -------------|
 |                                                                                   |            |               |              |
---> 
+-->

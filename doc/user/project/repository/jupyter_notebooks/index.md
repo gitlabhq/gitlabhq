@@ -7,7 +7,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Jupyter Notebook](https://jupyter.org/) (previously, IPython Notebook) files are used for
 interactive computing in many fields. They contain a complete record of the

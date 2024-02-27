@@ -886,10 +886,6 @@ const Api = {
   },
 
   trackRedisCounterEvent(event) {
-    if (!gon.features?.usageDataApi) {
-      return null;
-    }
-
     const url = Api.buildUrl(this.serviceDataIncrementCounterPath);
     const headers = {
       'Content-Type': 'application/json',
@@ -899,7 +895,7 @@ const Api = {
   },
 
   trackRedisHllUserEvent(event) {
-    if (!gon.current_user_id || !gon.features?.usageDataApi) {
+    if (!gon.current_user_id) {
       return null;
     }
 
@@ -912,7 +908,7 @@ const Api = {
   },
 
   trackInternalEvent(event) {
-    if (!gon.current_user_id || !gon.features?.usageDataApi) {
+    if (!gon.current_user_id) {
       return null;
     }
     const url = Api.buildUrl(this.serviceDataInternalEventPath);

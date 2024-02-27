@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can use [container scanning](../../user/application_security/container_scanning/index.md) to check for vulnerabilities
 in container images stored in the [container registry](../../user/packages/container_registry/index.md).

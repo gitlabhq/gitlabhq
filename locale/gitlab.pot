@@ -3550,6 +3550,9 @@ msgstr ""
 msgid "AdminSettings|For a list of included Registration Features, see %{link_start}the documentation%{link_end}."
 msgstr ""
 
+msgid "AdminSettings|For more information, see %{link_start}the documentation%{link_end}."
+msgstr ""
+
 msgid "AdminSettings|Git abuse rate limit"
 msgstr ""
 
@@ -3590,6 +3593,9 @@ msgid "AdminSettings|Improve non-code indexing throughput by enqueuing Sidekiq j
 msgstr ""
 
 msgid "AdminSettings|Inactive project deletion"
+msgstr ""
+
+msgid "AdminSettings|Include optional data in Service Ping."
 msgstr ""
 
 msgid "AdminSettings|Instance runners details"
@@ -3793,6 +3799,9 @@ msgstr ""
 msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
 msgstr ""
 
+msgid "AdminSettings|To enable Registration Features, first enable optional data in Service Ping."
+msgstr ""
+
 msgid "AdminSettings|To help improve GitLab and its user experience, GitLab periodically collects usage information. %{link_start}What information is shared with GitLab Inc.?%{link_end}"
 msgstr ""
 
@@ -3811,7 +3820,10 @@ msgstr ""
 msgid "AdminSettings|When to delete inactive projects"
 msgstr ""
 
-msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
+msgid "AdminSettings|You can enable Registration Features because Service Ping is enabled."
+msgstr ""
+
+msgid "AdminSettings|You can enable Registration Features because optional data in Service Ping is enabled."
 msgstr ""
 
 msgid "AdminSettings|You can't delete projects before the warning email is sent."
@@ -6115,6 +6127,12 @@ msgstr ""
 msgid "ApplicationSettings|Text shown after a user signs up. Markdown enabled."
 msgstr ""
 
+msgid "ApplicationSettings|To enable Registration Features, first enable Service Ping."
+msgstr ""
+
+msgid "ApplicationSettings|To enable Registration Features, first enable optional data in Service Ping."
+msgstr ""
+
 msgid "ApplicationSettings|Upload denylist file"
 msgstr ""
 
@@ -6137,6 +6155,12 @@ msgid "ApplicationSettings|When enabled, new passwords must contain at least one
 msgstr ""
 
 msgid "ApplicationSettings|When enabled, new passwords must contain at least one uppercase letter (A-Z)."
+msgstr ""
+
+msgid "ApplicationSettings|You can enable Registration Features because Service Ping is enabled."
+msgstr ""
+
+msgid "ApplicationSettings|You can enable Registration Features because optional data in Service Ping is enabled."
 msgstr ""
 
 msgid "ApplicationSettings|domain.com"
@@ -26131,6 +26155,9 @@ msgstr ""
 msgid "Incident|Timeline text..."
 msgstr ""
 
+msgid "Include additional optional data in Service Ping. To enable optional data, first enable Service Ping."
+msgstr ""
+
 msgid "Include author name in notification email body"
 msgstr ""
 
@@ -33890,6 +33917,9 @@ msgstr ""
 msgid "ObservabilityLogs|Warning"
 msgstr ""
 
+msgid "ObservabilityMetrics|Cancel"
+msgstr ""
+
 msgid "ObservabilityMetrics|Date"
 msgstr ""
 
@@ -33914,10 +33944,16 @@ msgstr ""
 msgid "ObservabilityMetrics|Metrics"
 msgstr ""
 
+msgid "ObservabilityMetrics|Metrics search has been cancelled."
+msgstr ""
+
 msgid "ObservabilityMetrics|Name"
 msgstr ""
 
 msgid "ObservabilityMetrics|No data found for the selected metric."
+msgstr ""
+
+msgid "ObservabilityMetrics|Search"
 msgstr ""
 
 msgid "ObservabilityMetrics|Search metrics starting with..."
@@ -51936,9 +51972,6 @@ msgstr ""
 msgid "To edit the pipeline configuration, you must go to the project or external site that hosts the file."
 msgstr ""
 
-msgid "To enable Registration Features, first enable Service Ping."
-msgstr ""
-
 msgid "To ensure %{project_link} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
 msgstr ""
 
@@ -57282,9 +57315,6 @@ msgid "You can create new ones at your Personal Access Tokens settings %{pat_lin
 msgstr ""
 
 msgid "You can easily contribute to them by requesting to join these groups."
-msgstr ""
-
-msgid "You can enable Registration Features because Service Ping is enabled. To continue using Registration Features in the future, you will also need to register with GitLab via a new cloud licensing service."
 msgstr ""
 
 msgid "You can enable group access token creation in %{link_start}group settings%{link_end}."

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can configure the settings for [merge request approvals](index.md) to
 ensure the approval rules meet your use case. You can also configure
@@ -20,7 +20,8 @@ those rules are applied as a merge request moves toward completion.
 
 To view or edit merge request approval settings:
 
-1. Go to your project and select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. Expand **Approvals**.
 
 ### Approval settings
@@ -46,11 +47,10 @@ These settings limit who can approve merge requests:
 
 ## Prevent approval by author
 
-> - Moved to GitLab Premium in 13.9.
-
 By default, the author of a merge request cannot approve it. To change this setting:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Prevent approval by author** checkbox.
 1. Select **Save changes**.
@@ -67,7 +67,6 @@ this setting, unless you configure one of these options:
 
 ## Prevent approvals by users who add commits
 
-> - Moved to GitLab Premium in 13.9.
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127744) added in GitLab 16.3 to also include merge commits in this check.
 > - [Feature flag `keep_merge_commits_for_approvals`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131778) removed in GitLab 16.5. This check now includes merge commits.
 
@@ -132,9 +131,10 @@ You can force potential approvers to first authenticate with either:
 - SAML.
 
 This permission enables an electronic signature for approvals, such as the one defined by
-[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3)). This
+[Code of Federal Regulations (CFR) Part 11](https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfcfr/CFRSearch.cfm?CFRPart=11&showFR=1&subpartNode=21:1.0.1.1.8.3). This
 setting is only available on top-level groups. For more information, see [Settings cascading](#settings-cascading).
 
+1. On the left sidebar, select **Search or go to** and find your project.
 1. Enable password authentication and SAML authentication. For more information on:
    - Password authentication, see
      [sign-in restrictions documentation](../../../../administration/settings/sign_in_restrictions.md#password-authentication-enabled).
@@ -148,17 +148,18 @@ setting is only available on top-level groups. For more information, see [Settin
 
 ## Remove all approvals when commits are added to the source branch
 
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 By default, an approval on a merge request is removed when you add more changes
 after the approval. In GitLab Premium and Ultimate tiers, to keep existing approvals
 after more changes are added to the merge request:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    clear the **Remove all approvals** checkbox.
-
-   NOTE:
-   This setting is not available in GitLab Free.
-
 1. Select **Save changes**.
 
 Approvals aren't removed when a merge request is [rebased from the UI](../methods/index.md#rebasing-in-semi-linear-merge-methods)
@@ -176,7 +177,8 @@ Prerequisites:
 
 To do this:
 
-1. On the left sidebar, select **Settings > Merge requests**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
    select **Remove approvals by Code Owners if their files changed**.
 1. Select **Save changes**.

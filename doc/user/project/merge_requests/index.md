@@ -9,7 +9,7 @@ description: "Propose, review, and collaborate on changes to a project."
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch.
 
@@ -169,7 +169,7 @@ The merge request is added to the user's assigned merge request list.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - Moved to GitLab Premium in 13.9.
 

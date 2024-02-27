@@ -1,4 +1,6 @@
-import initSetHelperText from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
+import initSetHelperText, {
+  initOptionMetricsState,
+} from '~/pages/admin/application_settings/metrics_and_profiling/usage_statistics';
 import PayloadPreviewer from '~/pages/admin/application_settings/payload_previewer';
 
 export default () => {
@@ -8,3 +10,4 @@ export default () => {
 };
 
 initSetHelperText();
+initOptionMetricsState();

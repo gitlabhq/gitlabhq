@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS, self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 GitLab vulnerability analyzers attempt to return vulnerability severity level values whenever
 possible. The following is a list of available GitLab vulnerability severity levels, ranked from

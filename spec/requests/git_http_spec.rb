@@ -457,11 +457,13 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
               before do
                 canonical_project.add_maintainer(user)
-                create(:merge_request,
-                       source_project: project,
-                       target_project: canonical_project,
-                       source_branch: 'fixes',
-                       allow_collaboration: true)
+                create(
+                  :merge_request,
+                  source_project: project,
+                  target_project: canonical_project,
+                  source_branch: 'fixes',
+                  allow_collaboration: true
+                )
               end
 
               it_behaves_like 'pushes are allowed'
@@ -1098,11 +1100,13 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
               before do
                 canonical_project.add_maintainer(user)
-                create(:merge_request,
-                       source_project: project,
-                       target_project: canonical_project,
-                       source_branch: 'fixes',
-                       allow_collaboration: true)
+                create(
+                  :merge_request,
+                  source_project: project,
+                  target_project: canonical_project,
+                  source_branch: 'fixes',
+                  allow_collaboration: true
+                )
               end
 
               it_behaves_like 'pushes are allowed'

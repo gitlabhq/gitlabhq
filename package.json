@@ -37,8 +37,6 @@
     "lint:stylelint:staged": "scripts/frontend/execute-on-staged-files.sh stylelint '(css|scss)' -q",
     "lint:stylelint:staged:fix": "yarn run lint:stylelint:staged --fix",
     "markdownlint": "markdownlint --config .markdownlint.yml",
-    "markdownlint:no-trailing-spaces": "markdownlint --config doc/.markdownlint/markdownlint-no-trailing-spaces.yml",
-    "markdownlint:no-trailing-spaces:fix": "yarn run markdownlint:no-trailing-spaces --fix",
     "preinstall": "node ./scripts/frontend/preinstall.mjs",
     "postinstall": "node ./scripts/frontend/postinstall.js",
     "storybook:install": "yarn --cwd ./storybook install",

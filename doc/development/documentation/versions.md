@@ -123,7 +123,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** SaaS, self-managed
+   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
@@ -151,7 +151,7 @@ To deprecate a page or topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** SaaS, self-managed
+   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    WARNING:
    This feature was [deprecated](<link-to-issue>) in GitLab 14.8
@@ -190,7 +190,7 @@ To remove a page:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** SaaS, self-managed
+   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
@@ -219,7 +219,7 @@ To remove a topic:
 
    DETAILS:
    **Tier:** Premium, Ultimate
-   **Offering:** SaaS, self-managed
+   **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    This feature was [deprecated](<link-to-issue>) in GitLab X.Y
    and [removed](<link-to-issue>) in X.Y.
