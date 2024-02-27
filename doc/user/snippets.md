@@ -228,7 +228,7 @@ which can encourage user collaboration.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators on self-managed GitLab instances can mark snippets as spam.
 

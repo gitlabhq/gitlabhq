@@ -156,7 +156,7 @@ Auto DevOps pipeline for any project that belongs to that group:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To enable Auto DevOps by default for all projects, you can enable it at the instance level.
 You can still disable Auto DevOps for each group and project

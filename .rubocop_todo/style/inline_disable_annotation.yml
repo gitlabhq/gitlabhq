@@ -2075,7 +2075,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/services/security/token_revocation_service_spec.rb'
     - 'ee/spec/spec_helper.rb'
     - 'ee/spec/support/helpers/duo_chat_fixture_helpers.rb'
-    - 'ee/spec/support/matchers/locked_schema.rb'
     - 'ee/spec/support/shared_contexts/graphql/geo/registries_shared_context.rb'
     - 'ee/spec/support/shared_contexts/saas_registration_settings_context.rb'
     - 'ee/spec/support/shared_contexts/saas_trial_settings_context.rb'

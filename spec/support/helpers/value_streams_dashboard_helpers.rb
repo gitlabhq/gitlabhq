@@ -39,4 +39,16 @@ module ValueStreamsDashboardHelpers
   def dashboard_list_item_testid
     "[data-testid='dashboard-list-item']"
   end
+
+  def create_custom_yaml_config(user, pointer_project, yaml_fixture_path)
+    repository_file_path = '.gitlab/analytics/dashboards/value_streams/value_streams.yaml'
+
+    pointer_project.repository.create_file(
+      user,
+      repository_file_path,
+      File.read(yaml_fixture_path),
+      message: "commit #{repository_file_path}",
+      branch_name: 'master'
+    )
+  end
 end

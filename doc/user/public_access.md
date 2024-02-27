@@ -39,7 +39,7 @@ However, the name and path of the private group are masked, and the users' membe
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 For internal projects, **any authenticated user**, including users with the Guest role, can:
 
@@ -119,7 +119,7 @@ Prerequisites:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators can restrict which visibility levels users can choose when they create a project or a snippet.
 This setting can help prevent users from publicly exposing their repositories by accident.

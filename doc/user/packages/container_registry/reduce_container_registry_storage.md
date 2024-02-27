@@ -23,7 +23,7 @@ to automatically manage your container registry usage.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5523) in GitLab 15.7
 

@@ -2170,7 +2170,6 @@ Layout/LineLength:
     - 'ee/spec/support/helpers/vulnerability_helpers.rb'
     - 'ee/spec/support/license_scanning_reports/license_scanning_report_helper.rb'
     - 'ee/spec/support/matchers/ee/epic_aggregate_matchers.rb'
-    - 'ee/spec/support/matchers/locked_schema.rb'
     - 'ee/spec/support/protected_tags/access_control_shared_examples.rb'
     - 'ee/spec/support/shared_contexts/lib/gitlab/insights/reducers/reducers_shared_contexts.rb'
     - 'ee/spec/support/shared_contexts/push_rules_checks_shared_context.rb'

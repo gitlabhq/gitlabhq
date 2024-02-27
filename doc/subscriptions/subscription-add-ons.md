@@ -69,7 +69,7 @@ Administrators of self-managed instances can also assign users by using a [Rake 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 

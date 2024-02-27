@@ -27,7 +27,7 @@ If you are [using and enforcing SSO](../user/group/saml_sso/index.md#sso-enforce
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Administrators can enforce 2FA for all users in two different ways:
 
@@ -61,7 +61,7 @@ For more information, see the [list of settings that can be accessed through API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/427549) in GitLab 16.8.
 
@@ -143,7 +143,7 @@ enabled, 2FA is **not** required for those individually added members.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can disable 2FA for a single user or all users.
 

@@ -109,7 +109,7 @@ name and permissions. If the deploy key is enabled in more than one project, you
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 

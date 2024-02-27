@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 GitLab SaaS is the GitLab software-as-a-service offering, which is available at GitLab.com.
 You don't need to install anything to use GitLab SaaS, you only need to

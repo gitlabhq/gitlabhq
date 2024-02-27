@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 With [Geo proxying for secondary sites](index.md), you can provide GitLab users
 with a single URL that automatically uses the Geo site closest to them.

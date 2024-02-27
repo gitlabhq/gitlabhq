@@ -68,7 +68,7 @@ To-do items aren't affected by [GitLab notification email settings](profile/noti
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 <!-- When the feature flag is removed, integrate this topic into the one above. -->
 

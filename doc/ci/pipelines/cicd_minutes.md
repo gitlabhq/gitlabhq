@@ -145,7 +145,7 @@ is sorted in descending order of compute usage.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If you're using GitLab SaaS, you can purchase additional packs of compute minutes.
 These additional compute minutes:
@@ -172,7 +172,7 @@ You can find pricing for additional compute minutes on the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -195,7 +195,7 @@ namespace.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Prerequisites:
 
@@ -377,7 +377,7 @@ See our [pipeline efficiency guide](pipeline_efficiency.md) for more details.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 An administrator can reset the compute usage for a namespace for the current month.
 

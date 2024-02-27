@@ -55,7 +55,7 @@ To remove the Kubernetes cluster integration:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 

@@ -403,7 +403,7 @@ line of your Apache configuration to ensure your page slugs render correctly.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 WARNING:
 This operation deletes all data in the wiki.

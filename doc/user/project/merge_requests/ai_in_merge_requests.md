@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 **Status**: Experiment
 
 AI-assisted features in merge requests are designed to provide contextually relevant information during the lifecycle of a merge request.

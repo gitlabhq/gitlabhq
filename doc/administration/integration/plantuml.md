@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 With the [PlantUML](https://plantuml.com) integration, you can create diagrams in snippets, wikis, and repositories.
 This integration is enabled on GitLab.com for all SaaS users and does not require any additional configuration.

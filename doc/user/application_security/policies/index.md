@@ -124,7 +124,7 @@ of duties requires more granular permission configuration.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 To enforce policies against subgroups and projects, create a subgroup to contain the SPPs, separate
 to the subgroups containing the projects. Using separate subgroups allows for separation of duties,
@@ -167,7 +167,7 @@ The high-level workflow for enforcing policies across multiple subgroups:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To enforce policies against multiple groups, create a group to contain the SPPs, separate to the
 groups containing the projects. Using separate groups allows for separation of duties, with the SPP

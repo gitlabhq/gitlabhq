@@ -802,7 +802,7 @@ curl --header "PRIVATE-TOKEN: $GITLAB_LOCAL_TOKEN" \
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -1133,7 +1133,7 @@ Users of [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) also se
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The 100 results limit can break integrations developed using GitLab 12.4 and earlier.
 
@@ -1660,7 +1660,7 @@ Group audit events can be accessed via the [Group Audit Events API](audit_events
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Syncs the group with its linked LDAP group. Only available to group owners and administrators.
 
@@ -1684,7 +1684,7 @@ List, add, and delete LDAP group links.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Lists LDAP group links.
 
@@ -1700,7 +1700,7 @@ GET /groups/:id/ldap_group_links
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Adds an LDAP group link using a CN or filter. Adding a group link by filter is only supported in the Premium tier and above.
 
@@ -1723,7 +1723,7 @@ To define the LDAP group link, provide either a `cn` or a `filter`, but not both
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Deletes an LDAP group link. Deprecated. Scheduled for removal in a future release.
 
@@ -1752,7 +1752,7 @@ DELETE /groups/:id/ldap_group_links/:provider/:cn
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Deletes an LDAP group link using a CN or filter. Deleting by filter is only supported in the Premium tier and above.
 

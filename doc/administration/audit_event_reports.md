@@ -73,7 +73,7 @@ Project audit events can also be accessed using the [Project Audit Events API](.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
@@ -105,7 +105,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
@@ -154,7 +154,7 @@ All items are sorted by `created_at` in ascending order.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
 > - Impersonation session events included in group audit events in GitLab 14.8.

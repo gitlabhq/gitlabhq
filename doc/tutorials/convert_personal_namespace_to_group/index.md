@@ -8,7 +8,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 If you've started out on GitLab with a personal [namespace](../../user/namespace/index.md), but now find
 that you've outgrown its capabilities and its limitations hinder the collaboration on your projects,

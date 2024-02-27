@@ -68,7 +68,7 @@ Files with many changes are collapsed to improve performance. GitLab displays th
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To disable it,

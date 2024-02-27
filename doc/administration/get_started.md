@@ -9,7 +9,7 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Get started with GitLab administration. Configure your organization and its authentication, then secure, monitor,
 and back up GitLab.
@@ -189,7 +189,7 @@ It is common for a VM snapshot to require you to power down the server.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Geo provides local, read-only instances of your GitLab instances.
 

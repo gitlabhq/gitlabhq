@@ -42802,6 +42802,9 @@ msgstr ""
 msgid "Runners|Google Cloud project ID"
 msgstr ""
 
+msgid "Runners|Google Cloud provisioning is disabled for this project"
+msgstr ""
+
 msgid "Runners|Group"
 msgstr ""
 
@@ -43253,7 +43256,13 @@ msgstr ""
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
+msgid "Runners|The deployment name is invalid"
+msgstr ""
+
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
+msgstr ""
+
+msgid "Runners|The runner authentication token is invalid"
 msgstr ""
 
 msgid "Runners|The runner will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
@@ -43265,6 +43274,12 @@ msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs w
 msgstr ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."
+msgstr ""
+
+msgid "Runners|The user is not allowed to create a runner"
+msgstr ""
+
+msgid "Runners|The user is not allowed to provision a cloud runner"
 msgstr ""
 
 msgid "Runners|There are no recent runner failures for your instance runners. Error messages will populate here if runners fail."

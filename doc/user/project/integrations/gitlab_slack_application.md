@@ -44,7 +44,7 @@ To install the GitLab for Slack app from project integration settings:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 On GitLab.com, you can also install the GitLab for Slack app from the
 [Slack App Directory](https://slack-platform.slack.com/apps/A676ADMV5-gitlab).

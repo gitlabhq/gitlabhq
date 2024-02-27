@@ -12,7 +12,7 @@ This runbook is an [Experiment](../../../../policy/experiment-beta-support.md#ex
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 ## Geo planned failover for a multi-node configuration
 

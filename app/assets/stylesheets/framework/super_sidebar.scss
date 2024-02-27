@@ -146,7 +146,7 @@ $command-palette-spacing: px-to-rem(14px);
 .ui-light-blue {
   @include super-sidebar-theme(
     $background: $theme-light-blue-10,
-    $user-bar-background: $theme-light-blue-700,
+    $user-bar-background: $theme-light-blue-800,
     $user-bar-button-color: $theme-light-blue-50,
     $user-bar-button-icon-color: $theme-light-blue-100,
     $context-header: $theme-light-blue-900,
@@ -158,7 +158,7 @@ $command-palette-spacing: px-to-rem(14px);
 .ui-light-green {
   @include super-sidebar-theme(
     $background: $theme-green-10,
-    $user-bar-background: $theme-green-700,
+    $user-bar-background: $theme-green-800,
     $user-bar-button-color: $theme-green-50,
     $user-bar-button-icon-color: $theme-green-100,
     $context-header: $theme-green-900,

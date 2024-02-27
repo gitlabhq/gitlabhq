@@ -45,7 +45,7 @@ With the Gitpod integration enabled for your GitLab instance, to enable it for y
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 For self-managed GitLab instances, a GitLab administrator must:
 

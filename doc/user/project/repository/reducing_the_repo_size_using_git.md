@@ -333,7 +333,7 @@ To expedite this process, see the
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Occasionally the Sidekiq process can fail to export a project, for example if
 it is terminated during execution.

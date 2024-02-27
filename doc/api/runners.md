@@ -115,7 +115,7 @@ Example response:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Get a list of all runners in the GitLab instance (project and shared). Access
 is restricted to users with administrator access.

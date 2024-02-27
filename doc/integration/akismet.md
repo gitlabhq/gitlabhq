@@ -30,7 +30,7 @@ GitLab SaaS (GitLab.com), where its configuration and management are handled by 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To use Akismet:
 
@@ -51,7 +51,7 @@ To use Akismet:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To better differentiate between spam and ham, you can train the Akismet
 filter whenever there is a false positive or false negative.

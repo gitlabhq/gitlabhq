@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 `ssh-keygen` allows users to create RSA keys with as few as 768 bits, which
 falls well below recommendations from certain standards groups (such as the US

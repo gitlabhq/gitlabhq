@@ -531,7 +531,7 @@ on the SAST customize rulesets page.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 An offline environment has limited, restricted, or intermittent access to external resources through
 the internet. For self-managed GitLab instances in such an environment, Secret Detection requires

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 It's possible to upgrade to a newer major, minor, or patch version of GitLab
 without having to take your GitLab instance offline. However, for this to work
@@ -333,7 +333,7 @@ setting `gitlab_rails['auto_migrate'] = false` in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Package upgrades may involve version updates to the bundled Redis service. On
 instances using [Redis for scaling](../administration/redis/index.md),
@@ -436,7 +436,7 @@ procedure.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 WARNING:
 You can only upgrade one minor release at a time.
@@ -557,7 +557,7 @@ setting `gitlab_rails['auto_migrate'] = false` in
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 WARNING:
 You can only upgrade one minor release at a time. You also must first start with the Gitaly cluster, updating Gitaly one node one at a time. This will ensure access to the Git repositories for the remainder of the upgrade process.

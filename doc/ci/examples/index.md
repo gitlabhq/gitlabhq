@@ -106,7 +106,7 @@ to [the templates list](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/g
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can add custom examples and templates to your self-managed GitLab instance.
 Your GitLab administrator can [designate an instance template repository](../../administration/settings/instance_template_repository.md)

@@ -64,7 +64,7 @@ syntax highlighting files and diffs. For more information, see
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - Ability to configure custom merge drivers through GitLab introduced in GitLab 15.10.
 

@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'renders usage overview metrics' do |default_dashboard = true|
+RSpec.shared_examples 'renders usage overview metrics' do
   let(:usage_overview) { find_by_testid('panel-usage-overview') }
 
   it 'renders the metrics panel' do
     expect(usage_overview).to be_visible
-
-    if default_dashboard
-      expect(usage_overview).to have_content format(_("Usage overview for %{name} group"), name: group.name)
-    end
+    expect(usage_overview).to have_content format(_("Usage overview for %{name} group"), name: group.name)
   end
 
   it 'renders each of the available metrics' do
@@ -19,6 +16,14 @@ RSpec.shared_examples 'renders usage overview metrics' do |default_dashboard = t
 
       expect(metric_titles).to match_array usage_metrics
     end
+  end
+end
+
+RSpec.shared_examples 'does not render usage overview metrics' do
+  let(:usage_overview_testid) { "[data-testid='panel-usage-overview']" }
+
+  it 'does not render the usage overview panel' do
+    expect(page).not_to have_selector usage_overview_testid
   end
 end
 
@@ -42,6 +47,7 @@ RSpec.shared_examples 'renders metrics comparison table' do
 
   it 'renders the metrics comparison visualization' do
     expect(metric_table).to be_visible
+    expect(metric_table).to have_content format(_("Metrics comparison for %{name} group"), name: group_name)
   end
 
   it "renders the available metrics" do
@@ -92,11 +98,19 @@ RSpec.shared_examples 'VSD renders as an analytics dashboard' do
   end
 end
 
+RSpec.shared_examples 'renders contributor count' do
+  let(:contributor_count) { find_by_testid('dora-chart-metric-contributor-count') }
+
+  it 'renders the contributor count metric' do
+    expect(contributor_count).to be_visible
+  end
+end
+
 RSpec.shared_examples 'does not render contributor count' do
   let(:contributor_count_testid) { "[data-testid='dora-chart-metric-contributor-count']" }
 
   it 'does not render the contributor count metric' do
-    expect(metric_table).not_to have_selector contributor_count_testid
+    expect(page).not_to have_selector contributor_count_testid
   end
 end
 

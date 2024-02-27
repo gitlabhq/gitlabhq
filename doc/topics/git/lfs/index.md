@@ -22,7 +22,7 @@ In the repository view, files tracked by Git LFS display an **LFS** badge next t
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To install Git LFS on your self-managed GitLab server, see
 [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md).

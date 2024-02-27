@@ -110,7 +110,7 @@ When the SCIM app changes:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Changing the SAML or SCIM configuration or provider can cause the following problems:
 
@@ -146,7 +146,7 @@ To resolve this issue, you can do either of the following:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 GitLab.com administrators can search for SCIM requests in the `api_json.log` using the `pubsub-rails-inf-gprd-*` index in
 [Kibana](https://handbook.gitlab.com/handbook/support/workflows/kibana/#using-kibana). Use the following filters based

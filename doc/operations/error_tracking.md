@@ -36,7 +36,7 @@ For error tracking to work, you need:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 This guide provides you with basics of setting up error tracking for your project, using examples from different languages.
 

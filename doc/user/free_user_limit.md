@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 A five-user limit applies to newly created top-level namespaces with
 private visibility on GitLab SaaS. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.

@@ -27,7 +27,7 @@ Use the suggestions/recommendations mentioned in this guide at your own risk.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 This scenario refers to security events where sensitive authentication or authorization information has been exposed to the Internet due to misconfigurations or human errors. Such information might include:
 
@@ -59,7 +59,7 @@ Security incidents related to credentials exposure can vary in severity from low
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 - Review the available [audit events](../administration/audit_events.md) for your group or namespace.
 - Adversaries may attempt to create tokens, SSH keys, or user accounts to maintain persistence. Look for [audit events](../administration/audit_event_streaming/audit_event_types.md) related to these activities.
@@ -70,7 +70,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 #### Response
 
@@ -86,7 +86,7 @@ If you suspect that a user account or bot account has been compromised, you shou
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Review the [audit events](../administration/audit_events.md) available to you to identify any suspicious account behavior. For example:
 
@@ -175,7 +175,7 @@ If you suspect that your GitLab instance has been compromised, you should:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Review [system access audit events](../administration/audit_event_types.md#system-access) to determine any changes related to system settings, user permissions and user login events.
 
@@ -205,7 +205,7 @@ If you suspect unauthorized modifications to project settings, consider taking t
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 - Audit logs can be filtered based on the `target_type` field. Based on the security incident context, apply a filter to this field to narrow down the scope.
 - Look for specific audit events of [compliance management](../administration/audit_event_types.md#compliance-management) and [audit events of groups and projects](../administration/audit_event_types.md#groups-and-projects).

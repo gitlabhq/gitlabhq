@@ -35,7 +35,7 @@ you can choose to enable Sourcegraph [through your user preferences](#enable-sou
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Before you can enable Sourcegraph code intelligence in GitLab you must:
 configure a Sourcegraph instance with your GitLab instance as an external service.
@@ -44,7 +44,7 @@ configure a Sourcegraph instance with your GitLab instance as an external servic
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
 

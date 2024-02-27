@@ -292,7 +292,7 @@ the three characters, such as `my-package`, `my_package`, and `my....package`.
 
 ## Using `requirements.txt`
 
-If you want pip to access your private registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
+If you want pip to access your public registry, add the `--extra-index-url` parameter along with the URL for your registry to your `requirements.txt` file.
 
 ```plaintext
 --extra-index-url https://gitlab.example.com/api/v4/projects/<project_id>/packages/pypi/simple

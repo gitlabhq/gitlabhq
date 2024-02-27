@@ -39,7 +39,7 @@ On GitLab.com, there is a seven day delay between a user deleting their own acco
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 As an administrator, to delete a user account:
 

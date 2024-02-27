@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can customize some of the content in emails sent from your GitLab instance.
 
@@ -20,7 +20,7 @@ The logo in the header of some emails can be customized, see the [logo customiza
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 By default, GitLab overrides the email address in notification emails with the email address
 of the issue, merge request, or comment author. Enable this setting to include the author's email
@@ -38,7 +38,7 @@ To include the author's email address in the email body:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 GitLab can send email in multipart format (HTML and plain text) or plain text only.
 
@@ -54,7 +54,7 @@ To enable multipart email:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/22560) in GitLab 11.5.
 
@@ -78,7 +78,7 @@ recognized by GitLab. This can directly conflict with certain [Push rules](../..
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can add additional text at the bottom of any email that GitLab sends. This additional text
 can be used for legal, auditing, or compliance reasons, for example.
@@ -107,7 +107,7 @@ To disable these notifications:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355964) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `deactivation_email_additional_text`. Disabled by default.
 > - [Enabled on self-managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111882) in GitLab 15.9.

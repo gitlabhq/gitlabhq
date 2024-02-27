@@ -214,7 +214,7 @@ The following time units are available:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 In GitLab self-managed instances, you can limit the display of time units to hours.
 To do so:

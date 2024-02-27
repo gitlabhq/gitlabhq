@@ -112,7 +112,7 @@ your merge request template with their values:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can set a description template at the **instance level** for issues
 and merge requests by using an [instance template repository](../../administration/settings/instance_template_repository.md).

@@ -278,7 +278,7 @@ After you lock the membership for a group:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Group syncing allows LDAP groups to be mapped to GitLab groups. This provides more control over per-group user management. To configure group syncing, edit the `group_base` **DN** (`'OU=Global Groups,OU=GitLab INT,DC=GitLab,DC=org'`). This **OU** contains all groups that are associated with GitLab groups.
 
@@ -305,7 +305,7 @@ You can use a workaround to [manage project access through LDAP groups](../proje
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via CN:
 
@@ -323,7 +323,7 @@ To create group links via CN:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create group links via filter:
 
@@ -337,7 +337,7 @@ To create group links via filter:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 

@@ -93,7 +93,7 @@ At any time, you can revoke a personal access token.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 
@@ -195,7 +195,7 @@ You can now create personal access tokens for a service account user with no exp
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can create a predetermined personal access token
 as part of your tests or automation.
@@ -239,7 +239,7 @@ sudo gitlab-rails runner "token = User.find_by_username('automation-bot').person
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 You can programmatically revoke a personal access token
 as part of your tests or automation.
@@ -275,7 +275,7 @@ sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here12
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To clone a repository when SSH is disabled, clone it using a personal access token by running the following command:
 
@@ -304,7 +304,7 @@ Remember this if you set up an automation pipeline that depends on authenticatio
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If a personal access token is revoked accidentally by any method, administrators can unrevoke that token. By default, a daily job deletes revoked tokens at 1:00 AM system time.
 

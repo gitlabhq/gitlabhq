@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 This documentation only discusses Geo-specific SSO considerations and configuration. For more information on general authentication, see [GitLab authentication and authorization](../../auth/index.md).
 

@@ -75,7 +75,7 @@ To create a new application for a group:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To create an application for your GitLab instance:
 

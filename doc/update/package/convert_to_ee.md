@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 To convert an existing GitLab Community Edition (CE) server installed using the Omnibus GitLab
 packages to GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) (EE), you install the EE

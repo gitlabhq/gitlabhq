@@ -135,7 +135,7 @@ To move an issue:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 #### From the issues list
 
@@ -332,7 +332,7 @@ Merge requests and commits in this project can still close another project's iss
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Prerequisites:
 

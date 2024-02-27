@@ -17,7 +17,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 Use this API to retrieve instance audit events.
 

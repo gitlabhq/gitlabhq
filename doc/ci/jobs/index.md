@@ -504,7 +504,7 @@ The configuration can be added to:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 If a job using [`resource_group`](../yaml/index.md#resource_group) gets stuck, a
 GitLab administrator can try run the following commands from the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session):

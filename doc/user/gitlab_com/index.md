@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 This page contains information about the settings that are used on GitLab.com, available to
 [GitLab SaaS](https://about.gitlab.com/pricing/) customers.
@@ -118,7 +118,7 @@ are included when cloning.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 After May 08, 2023, all groups have delayed deletion enabled by default.
 
@@ -130,7 +130,7 @@ If you are on the Free tier, your groups are immediately deleted, and you will n
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 After May 08, 2023, all groups have delayed project deletion enabled by default.
 

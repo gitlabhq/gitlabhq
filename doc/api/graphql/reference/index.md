@@ -6783,11 +6783,11 @@ Input type: `ProvisionGoogleCloudRunnerInput`
 | ---- | ---- | ----------- |
 | <a id="mutationprovisiongooglecloudrunnerclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprovisiongooglecloudrunnerdryrun"></a>`dryRun` | [`Boolean`](#boolean) | If true, returns the Terraform script without executing it. Defaults to false. True is currently not supported. |
+| <a id="mutationprovisiongooglecloudrunnerephemeralmachinetype"></a>`ephemeralMachineType` | [`GoogleCloudMachineType!`](#googlecloudmachinetype) | Name of the machine type to use for running jobs. |
 | <a id="mutationprovisiongooglecloudrunnerprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningmachinetype"></a>`provisioningMachineType` | [`String!`](#string) | Name of the machine type to use for provisioning the runner. |
 | <a id="mutationprovisiongooglecloudrunnerprovisioningprojectid"></a>`provisioningProjectId` | [`String!`](#string) | Identifier of the project where the runner is provisioned. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningregion"></a>`provisioningRegion` | [`String!`](#string) | Name of the region to provision the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningzone"></a>`provisioningZone` | [`String!`](#string) | Name of the zone to provision the runner in. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningregion"></a>`provisioningRegion` | [`GoogleCloudRegion!`](#googlecloudregion) | Name of the region to provision the runner in. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningzone"></a>`provisioningZone` | [`GoogleCloudZone!`](#googlecloudzone) | Name of the zone to provision the runner in. |
 | <a id="mutationprovisiongooglecloudrunnerrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
 
 #### Fields
@@ -33803,6 +33803,18 @@ An example of a global identifier is `"gid://gitlab/User/1"`.
 `1` is the record id as per the id in the db table.
 
 Global identifiers are encoded as strings.
+
+### `GoogleCloudMachineType`
+
+Represents a Google Cloud Compute machine type.
+
+### `GoogleCloudRegion`
+
+Represents a Google Cloud Compute region.
+
+### `GoogleCloudZone`
+
+Represents a Google Cloud Compute zone.
 
 ### `GroupID`
 

@@ -234,7 +234,7 @@ An administrator can make this option the default in the project's settings.
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - Chained merge requests [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/323329) to automatically rebase on the new target branch in GitLab 16.9.
 
@@ -413,7 +413,7 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 DETAILs:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
 > - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.

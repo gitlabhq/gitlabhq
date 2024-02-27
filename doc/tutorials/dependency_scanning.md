@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** SaaS
+**Offering:** GitLab.com
 
 Dependency Scanning can automatically find security vulnerabilities in your software dependencies
 while you're developing and testing your applications. For example, dependency scanning lets you

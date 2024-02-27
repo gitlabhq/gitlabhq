@@ -16,8 +16,8 @@ When your team starts a new project, they need a workflow that balances efficien
 with appropriate reviews. In GitLab, you can create user groups, combine those
 groups with branch protections, and then enforce those protections with approval rules.
 
-This tutorial sets up protections for Excelsior Project's `1.x` and `1.x.x`
-release branches, and creates a minimal approval workflow for the project:
+This tutorial sets up protections for the `1.x` and `1.x.x` release branches of an
+example project named "Excelsior", and creates a minimal approval workflow for the project:
 
 1. [Create the `engineering` group](#create-the-engineering-group)
 1. [Create subgroups in `engineering`](#create-subgroups-in-engineering)
