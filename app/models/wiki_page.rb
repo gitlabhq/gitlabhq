@@ -381,7 +381,7 @@ class WikiPage
       return false
     end
 
-    @page = wiki.find_page(title).page
+    @page = wiki.find_page(::Wiki.sluggified_title(title)).page
     set_attributes
 
     true

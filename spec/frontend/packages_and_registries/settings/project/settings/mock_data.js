@@ -150,3 +150,18 @@ export const deletePackagesProtectionRuleMutationPayload = ({
     },
   },
 });
+
+export const updatePackagesProtectionRuleMutationPayload = ({
+  packageProtectionRule = {
+    ...packagesProtectionRulesData[0],
+    pushProtectedUpToAccessLevel: 'OWNER',
+  },
+  errors = [],
+} = {}) => ({
+  data: {
+    updatePackagesProtectionRule: {
+      packageProtectionRule,
+      errors,
+    },
+  },
+});

@@ -49,6 +49,31 @@ RSpec.describe Resolvers::Ci::JobTokenScopeResolver, feature_category: :continuo
       end
     end
 
+    context 'when projects list counter is requested' do
+      let!(:link) { create(:ci_job_token_project_scope_link, source_project: project) }
+
+      before do
+        project.add_member(current_user, :maintainer)
+      end
+
+      it 'resolves projects count' do
+        expect(resolve_scope.inbound_projects_count).to eq(1)
+      end
+    end
+
+    context 'when groups list counter is requested' do
+      let_it_be(:group) { create(:group, :private) }
+      let!(:group_scope_link) { create(:ci_job_token_group_scope_link, source_project: project, target_group: group) }
+
+      before do
+        project.add_member(current_user, :maintainer)
+      end
+
+      it 'resolves groups count' do
+        expect(resolve_scope.groups_count).to eq(1)
+      end
+    end
+
     context 'when groups list is requested' do
       let_it_be(:group) { create(:group, :private) }
       let!(:group_scope_link) { create(:ci_job_token_group_scope_link, source_project: project, target_group: group) }

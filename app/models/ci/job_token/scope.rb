@@ -39,8 +39,16 @@ module Ci
         inbound_allowlist.projects
       end
 
+      def inbound_projects_count
+        inbound_projects.count
+      end
+
       def groups
         inbound_allowlist.groups
+      end
+
+      def groups_count
+        groups.count
       end
 
       private

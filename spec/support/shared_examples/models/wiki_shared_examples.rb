@@ -195,10 +195,22 @@ RSpec.shared_examples 'wiki model' do
       let(:wiki_pages) { subject.list_pages }
 
       before do
-        # The order is intentional
+        # The creation order below is intentional because we would like to test the sorting behavior as well.
+        # The sorting is performed based on the page's path.
         subject.create_page('index2', 'This is an index2')
-        subject.create_page('index', 'This is an index')
-        subject.create_page('index3', 'This is an index3')
+        subject.create_page('index1', 'This is an index1')
+        subject.create_page('index 2', 'This is an index 2 with spaces only in the title')
+        subject.create_page('index 1', 'This is an index 1 with spaces only in the title')
+        subject.repository.create_file(
+          user, "index 2.md", "This is an index 2 with spaces in both the title and the path",
+          branch_name: subject.default_branch,
+          message: "created page index 2"
+        )
+        subject.repository.create_file(
+          user, "index 1.md", "This is an index 1 with spaces in both the title and the path",
+          branch_name: subject.default_branch,
+          message: "created page index 1"
+        )
       end
 
       it 'returns an array of WikiPage instances' do
@@ -213,55 +225,63 @@ RSpec.shared_examples 'wiki model' do
       end
 
       it 'returns all pages by default' do
-        expect(wiki_pages.count).to eq(3)
+        expect(wiki_pages.count).to eq(6)
       end
 
       context 'with limit option' do
         it 'returns limited set of pages' do
           expect(
-            subject.list_pages(limit: 1).map(&:title)
-          ).to eql(%w[index])
+            subject.list_pages(limit: 1).map(&:path)
+          ).to eql(["index 1.md"])
         end
 
         it 'returns all set of pages if limit is more than the total pages' do
-          expect(subject.list_pages(limit: 4).count).to eq(3)
+          expect(subject.list_pages(limit: 7).count).to eq(6)
         end
 
         it 'returns all set of pages if limit is 0' do
-          expect(subject.list_pages(limit: 0).count).to eq(3)
+          expect(subject.list_pages(limit: 0).count).to eq(6)
         end
       end
 
       context 'with offset option' do
         it 'returns offset-ed set of pages' do
           expect(
-            subject.list_pages(offset: 1).map(&:title)
-          ).to eq(%w[index2 index3])
-
+            subject.list_pages(offset: 1).map(&:path)
+          ).to eq(["index 2.md", "index-1.md", "index-2.md", "index1.md", "index2.md"])
           expect(
-            subject.list_pages(offset: 2).map(&:title)
-          ).to eq(["index3"])
-          expect(subject.list_pages(offset: 3).count).to eq(0)
-          expect(subject.list_pages(offset: 4).count).to eq(0)
+            subject.list_pages(offset: 2).map(&:path)
+          ).to eq(["index-1.md", "index-2.md", "index1.md", "index2.md"])
+          expect(
+            subject.list_pages(offset: 3).map(&:path)
+          ).to eq(["index-2.md", "index1.md", "index2.md"])
+          expect(
+            subject.list_pages(offset: 4).map(&:path)
+          ).to eq(["index1.md", "index2.md"])
+          expect(
+            subject.list_pages(offset: 5).map(&:path)
+          ).to eq(["index2.md"])
+          expect(subject.list_pages(offset: 6).count).to eq(0)
+          expect(subject.list_pages(offset: 7).count).to eq(0)
         end
 
         it 'returns all set of pages if offset is 0' do
-          expect(subject.list_pages(offset: 0).count).to eq(3)
+          expect(subject.list_pages(offset: 0).count).to eq(6)
         end
 
         it 'can combines with limit' do
           expect(
-            subject.list_pages(offset: 1, limit: 1).map(&:title)
-          ).to eq(["index2"])
+            subject.list_pages(offset: 1, limit: 1).map(&:path)
+          ).to eq(["index 2.md"])
         end
       end
 
       context 'with sorting options' do
         it 'returns pages sorted by title by default' do
-          pages = %w[index index2 index3]
+          pages = ["index 1.md", "index 2.md", "index-1.md", "index-2.md", "index1.md", "index2.md"]
 
-          expect(subject.list_pages.map(&:title)).to eq(pages)
-          expect(subject.list_pages(direction: 'desc').map(&:title)).to eq(pages.reverse)
+          expect(subject.list_pages.map(&:path)).to eq(pages)
+          expect(subject.list_pages(direction: 'desc').map(&:path)).to eq(pages.reverse)
         end
       end
 
@@ -269,9 +289,16 @@ RSpec.shared_examples 'wiki model' do
         let(:pages) { subject.list_pages(load_content: true) }
 
         it 'loads WikiPage content' do
-          expect(pages.first.content).to eq('This is an index')
-          expect(pages.second.content).to eq('This is an index2')
-          expect(pages.third.content).to eq('This is an index3')
+          contents = [
+            "This is an index 1 with spaces in both the title and the path",
+            "This is an index 2 with spaces in both the title and the path",
+            "This is an index 1 with spaces only in the title",
+            "This is an index 2 with spaces only in the title",
+            "This is an index1",
+            "This is an index2"
+          ]
+
+          expect(pages.map(&:content)).to eq(contents)
         end
       end
     end
@@ -344,6 +371,30 @@ RSpec.shared_examples 'wiki model' do
         page = subject.find_page('index page')
 
         expect(page).to be_a WikiPage
+      end
+
+      # The repository can contain files that were not generated by Gollum Wiki
+      # and these files can contain spaces in the path.
+      context 'pages with spaces in the path' do
+        before do
+          subject.repository.create_file(
+            user, "page with spaces in the path.md", "This is an awesome Gollum Wiki",
+            branch_name: subject.default_branch,
+            message: "created page with spaces in the path"
+          )
+        end
+
+        it 'can find a page by title' do
+          page = subject.find_page('page with spaces in the path')
+
+          expect(page.title).to eq('page with spaces in the path')
+        end
+
+        it 'cannot find a page by slug' do
+          page = subject.find_page('page-with-spaces-in-the-path')
+
+          expect(page).to be_nil
+        end
       end
 
       context 'pages with multibyte-character title' do
@@ -618,6 +669,17 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.error_message).to match(/Duplicate page:/)
       end
 
+      it 'cannot create two pages with the same title, even if the existing file has no sluggified path' do
+        subject.repository.create_file(
+          user, "page with spaces in the path.md", "page created outside of Gollum Wiki",
+          branch_name: subject.default_branch,
+          message: "created page with spaces in the path"
+        )
+        subject.create_page('page with spaces in the path', 'page created by Gollum Wiki')
+
+        expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
       it 'returns false if a page exists already in the repository', :aggregate_failures do
         subject.create_page('test page', 'content')
 
@@ -700,9 +762,19 @@ RSpec.shared_examples 'wiki model' do
       end
 
       with_them do
-        specify do
-          allow(subject.repository).to receive(:ls_files).and_return(existing_repo_files)
+        before do
+          subject.create_wiki_repository # Make sure the wiki repo exists
 
+          existing_repo_files.each do |path|
+            subject.repository.create_file(
+              user, path, 'content',
+              branch_name: subject.default_branch,
+              message: "Add #{new_file}"
+            )
+          end
+        end
+
+        specify do
           expect(subject.create_page(new_file, 'content', format)).to eq success
         end
       end
@@ -807,6 +879,42 @@ RSpec.shared_examples 'wiki model' do
       include_context 'extended examples'
     end
 
+    context 'when sluggified paths already exist in the repository' do
+      before do
+        subject.repository.create_file(
+          user, "folder with spaces.md", "folder created outside of Gollum Wiki",
+          branch_name: subject.default_branch,
+          message: "created folder with spaces in the path"
+        )
+        subject.repository.create_file(
+          user, "folder with spaces/page with spaces in the path.md", "page created outside of Gollum Wiki",
+          branch_name: subject.default_branch,
+          message: "created page with spaces in the path"
+        )
+      end
+
+      it 'the page path is sluggified' do
+        pages_before_update = subject.list_pages
+        expect(pages_before_update.map(&:title)).to match_array([
+          "folder with spaces", "page with spaces in the path"
+        ])
+        expect(pages_before_update.map(&:path)).to match_array([
+          "folder with spaces.md", "folder with spaces/page with spaces in the path.md"
+        ])
+
+        page = subject.find_page("folder with spaces/page with spaces in the path")
+        expect(subject.update_page(page.page, content: 'new content', format: :markdown)).to eq true
+
+        pages_after_update = subject.list_pages
+        expect(pages_after_update.map(&:title)).to match_array([
+          "folder with spaces", "page with spaces in the path"
+        ])
+        expect(pages_after_update.map(&:path)).to match_array([
+          "folder with spaces.md", "folder-with-spaces/page-with-spaces-in-the-path.md"
+        ])
+      end
+    end
+
     context 'when format is invalid' do
       let!(:page) { create(:wiki_page, wiki: subject, title: 'test page') }
 
@@ -836,7 +944,7 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
           .to eq(false)
         expect(subject.error_message)
-          .to match("Duplicate page: A page with that title already exists")
+          .to match("Duplicate page: A page with that title already exists in the file test-page.md")
       end
     end
 
@@ -997,13 +1105,6 @@ RSpec.shared_examples 'wiki model' do
 
       it do
         expect(described_class.preview_slug(title, file_extension)).to eq(expected_slug)
-      end
-
-      it 'matches the slug generated by gitaly' do
-        skip('Gitaly cannot generate a slug for an empty title') unless title.present?
-
-        gitaly_slug = subject.list_pages.first.slug
-        expect(described_class.preview_slug(title, file_extension)).to eq(gitaly_slug)
       end
     end
   end

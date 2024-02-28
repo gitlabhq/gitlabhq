@@ -6805,7 +6805,7 @@ Input type: `ProvisionGoogleCloudRunnerInput`
 | <a id="mutationprovisiongooglecloudrunnerdryrun"></a>`dryRun` | [`Boolean`](#boolean) | If true, returns the Terraform script without executing it. Defaults to false. True is currently not supported. |
 | <a id="mutationprovisiongooglecloudrunnerephemeralmachinetype"></a>`ephemeralMachineType` | [`GoogleCloudMachineType!`](#googlecloudmachinetype) | Name of the machine type to use for running jobs. |
 | <a id="mutationprovisiongooglecloudrunnerprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningprojectid"></a>`provisioningProjectId` | [`String!`](#string) | Identifier of the project where the runner is provisioned. |
+| <a id="mutationprovisiongooglecloudrunnerprovisioningprojectid"></a>`provisioningProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the project where the runner is provisioned. |
 | <a id="mutationprovisiongooglecloudrunnerprovisioningregion"></a>`provisioningRegion` | [`GoogleCloudRegion!`](#googlecloudregion) | Name of the region to provision the runner in. |
 | <a id="mutationprovisiongooglecloudrunnerprovisioningzone"></a>`provisioningZone` | [`GoogleCloudZone!`](#googlecloudzone) | Name of the zone to provision the runner in. |
 | <a id="mutationprovisiongooglecloudrunnerrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
@@ -16387,8 +16387,10 @@ CI/CD variables for a GitLab instance.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allow list of groups that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
-| <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that can access the current project through its CI Job tokens. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypegroupsallowlist"></a>`groupsAllowlist` | [`GroupConnection!`](#groupconnection) | Allowlist of groups that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypegroupsallowlistcount"></a>`groupsAllowlistCount` | [`Int!`](#int) | Count of groups that can access the current project by authenticating with a CI/CD job token. The count does not include subgroups. |
+| <a id="cijobtokenscopetypeinboundallowlist"></a>`inboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allowlist of projects that can access the current project by authenticating with a CI/CD job token. (see [Connections](#connections)) |
+| <a id="cijobtokenscopetypeinboundallowlistcount"></a>`inboundAllowlistCount` | [`Int!`](#int) | Count of projects that can access the current project by authenticating with a CI/CD job token. The count does not include nested projects. |
 | <a id="cijobtokenscopetypeoutboundallowlist"></a>`outboundAllowlist` | [`ProjectConnection!`](#projectconnection) | Allow list of projects that are accessible using the current project's CI Job tokens. (see [Connections](#connections)) |
 | <a id="cijobtokenscopetypeprojects"></a>`projects` **{warning-solid}** | [`ProjectConnection!`](#projectconnection) | **Deprecated** in GitLab 15.9. The `projects` attribute is being deprecated. Use `outbound_allowlist`. |
 
@@ -26575,7 +26577,7 @@ Returns [`CiRunnerCloudProvisioningOptions`](#cirunnercloudprovisioningoptions).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectrunnercloudprovisioningoptionscloudprojectid"></a>`cloudProjectId` | [`String!`](#string) | Identifier of the cloud project. |
+| <a id="projectrunnercloudprovisioningoptionscloudprojectid"></a>`cloudProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the cloud project. |
 | <a id="projectrunnercloudprovisioningoptionsprovider"></a>`provider` | [`CiRunnerCloudProvider!`](#cirunnercloudprovider) | Identifier of the cloud provider. |
 
 ##### `Project.runners`
@@ -33886,6 +33888,10 @@ Global identifiers are encoded as strings.
 ### `GoogleCloudMachineType`
 
 Represents a Google Cloud Compute machine type.
+
+### `GoogleCloudProject`
+
+Represents a Google Cloud Compute project.
 
 ### `GoogleCloudRegion`
 

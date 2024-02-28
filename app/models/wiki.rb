@@ -216,10 +216,10 @@ class Wiki
 
     pages = paths.map do |path|
       page = Gitlab::Git::WikiPage.new(
-        url_path: sluggified_title(strip_extension(path)),
+        url_path: strip_extension(path),
         title: canonicalize_filename(path),
         format: find_page_format(path),
-        path: sluggified_title(path),
+        path: path,
         raw_data: '',
         name: canonicalize_filename(path),
         historical: false
@@ -255,16 +255,17 @@ class Wiki
     path = find_matched_file(title, version)
     return if path.blank?
 
+    path = Gitlab::EncodingHelper.encode_utf8_no_detect(path)
     blob_options = load_content ? {} : { limit: 0 }
     blob = repository.blob_at(version, path, **blob_options)
     commit = repository.commit(blob.commit_id)
     format = find_page_format(path)
 
     page = Gitlab::Git::WikiPage.new(
-      url_path: sluggified_title(strip_extension(path)),
+      url_path: strip_extension(path),
       title: canonicalize_filename(path),
       format: format,
-      path: sluggified_title(path),
+      path: path,
       raw_data: blob.data,
       name: canonicalize_filename(path),
       historical: version == default_branch ? false : check_page_historical(path, commit),
@@ -288,7 +289,12 @@ class Wiki
 
   def create_page(title, content, format = :markdown, message = nil)
     with_valid_format(format) do |default_extension|
-      next duplicated_page_error if file_exists_by_regex?(title)
+      sanitized_path = sluggified_full_path(title, default_extension)
+      # cannot create two pages with:
+      # - the same title but different format
+      # - the same title but different capitalization
+      # - the same title, different capitalization, and different format
+      next duplicated_page_error(sanitized_path) if file_exists_by_regex?(title)
 
       capture_git_error(:created) do
         create_wiki_repository unless repository_exists?
@@ -299,7 +305,7 @@ class Wiki
 
         true
       rescue Gitlab::Git::Index::IndexError
-        duplicated_page_error
+        duplicated_page_error(sanitized_path)
       end
     end
   end
@@ -315,9 +321,10 @@ class Wiki
 
       capture_git_error(:updated) do
         create_wiki_repository unless repository_exists?
+        sanitized_path = sluggified_full_path(title, extension)
         repository.update_file(
           user,
-          sluggified_full_path(title, extension),
+          sanitized_path,
           content,
           previous_path: page.path,
           **multi_commit_options(:updated, message, title))
@@ -331,7 +338,7 @@ class Wiki
 
         true
       rescue Gitlab::Git::Index::IndexError
-        duplicated_page_error
+        duplicated_page_error(sanitized_path)
       end
     end
   end
@@ -467,14 +474,14 @@ class Wiki
   def file_exists_by_regex?(title)
     return false unless repository_exists?
 
-    escaped_title = Regexp.escape(sluggified_title(title))
-    regex = Regexp.new("^#{escaped_title}\.#{ALLOWED_EXTENSIONS_REGEX}$", 'i')
-
-    repository.ls_files(default_branch).any? { |s| s =~ regex }
+    find_matched_file(title, default_branch).present?
   end
 
-  def duplicated_page_error
-    @error_message = _("Duplicate page: A page with that title already exists")
+  def duplicated_page_error(file)
+    @error_message = format(
+      _("Duplicate page: A page with that title already exists in the file %{file}"),
+      file: file)
+
     false
   end
 
@@ -491,15 +498,18 @@ class Wiki
   end
 
   def find_matched_file(title, version)
-    escaped_path = RE2::Regexp.escape(sluggified_title(title))
+    find_file_by_title(title, version) ||
+      find_file_by_title(sluggified_title(title), version)
+  end
+
+  def find_file_by_title(title, version)
+    escaped_path = RE2::Regexp.escape(title)
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
     matched_files = capture_git_error(:find) do
       repository.search_files_by_regexp(path_regexp, version, limit: 1)
     end
-    return if matched_files.blank?
-
-    Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)
+    matched_files.first
   end
 
   def find_page_format(path)

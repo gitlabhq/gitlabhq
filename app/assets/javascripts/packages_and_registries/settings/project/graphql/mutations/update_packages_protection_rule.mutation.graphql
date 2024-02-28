@@ -1,0 +1,10 @@
+mutation updatePackagesProtectionRule($input: UpdatePackagesProtectionRuleInput!) {
+  updatePackagesProtectionRule(input: $input) {
+    packageProtectionRule {
+      id
+      packageType
+      packageNamePattern
+    }
+    errors
+  }
+}

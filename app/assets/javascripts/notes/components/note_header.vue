@@ -2,7 +2,7 @@
 import { GlIcon, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
@@ -96,7 +96,15 @@ export default {
     noteTimestampLink() {
       if (this.noteUrl) return this.noteUrl;
 
-      return this.noteId ? `#note_${getIdFromGraphQLId(this.noteId)}` : undefined;
+      if (this.noteId) {
+        let { noteId } = this;
+
+        if (isGid(noteId)) noteId = getIdFromGraphQLId(noteId);
+
+        return `#note_${noteId}`;
+      }
+
+      return undefined;
     },
     hasAuthor() {
       return this.author && Object.keys(this.author).length;

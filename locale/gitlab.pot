@@ -18505,7 +18505,7 @@ msgstr ""
 msgid "DuoProTrial|We just need some additional information to activate your trial."
 msgstr ""
 
-msgid "Duplicate page: A page with that title already exists"
+msgid "Duplicate page: A page with that title already exists in the file %{file}"
 msgstr ""
 
 msgid "Duration"
@@ -35441,6 +35441,9 @@ msgstr ""
 msgid "PackageRegistry|Package protection rule deleted."
 msgstr ""
 
+msgid "PackageRegistry|Package protection rule updated."
+msgstr ""
+
 msgid "PackageRegistry|Package protection rules"
 msgstr ""
 
@@ -35883,6 +35886,9 @@ msgid "Pending owner action"
 msgstr ""
 
 msgid "Pending sync…"
+msgstr ""
+
+msgid "PendingMembers|There are no pending members left to approve. High five!"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."

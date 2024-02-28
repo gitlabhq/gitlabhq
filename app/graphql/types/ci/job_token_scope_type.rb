@@ -26,14 +26,32 @@ module Types
       field :inbound_allowlist,
             Types::ProjectType.connection_type,
             null: false,
-            description: "Allow list of projects that can access the current project through its CI Job tokens.",
+            description: "Allowlist of projects that can access the current project " \
+                         "by authenticating with a CI/CD job token.",
             method: :inbound_projects
 
       field :groups_allowlist,
             Types::GroupType.connection_type,
             null: false,
-            description: "Allow list of groups that can access the current project through its CI Job tokens.",
+            description: "Allowlist of groups that can access the current project " \
+                         "by authenticating with a CI/CD job token.",
             method: :groups
+
+      field :inbound_allowlist_count,
+            GraphQL::Types::Int,
+            null: false,
+            description: "Count of projects that can access the current project " \
+                         "by authenticating with a CI/CD job token. " \
+                         "The count does not include nested projects.",
+            method: :inbound_projects_count
+
+      field :groups_allowlist_count,
+            GraphQL::Types::Int,
+            null: false,
+            description: "Count of groups that can access the current project " \
+                         "by authenticating with a CI/CD job token. " \
+                         "The count does not include subgroups.",
+            method: :groups_count
     end
   end
   # rubocop: enable Graphql/AuthorizeTypes

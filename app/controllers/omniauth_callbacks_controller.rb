@@ -15,7 +15,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   after_action :verify_known_sign_in
 
   protect_from_forgery except: [:failure] + AuthHelper.saml_providers, with: :exception, prepend: true
-  before_action :log_saml_response, only: [:saml]
 
   feature_category :system_access
 
@@ -40,7 +39,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # the number of failed sign in attempts
   def failure
     update_login_counter_metric(failed_strategy.name, 'failed')
-    log_saml_response if params['SAMLResponse']
 
     if params[:username].present? && AuthHelper.form_based_provider?(failed_strategy.name)
       user = User.find_by_login(params[:username])
@@ -358,10 +356,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     else
       session.delete(:provider_2FA)
     end
-  end
-
-  def log_saml_response
-    Gitlab::AuthLogger.info(payload_type: 'saml_response', saml_response: ParameterFilters::SamlResponse.filter(params['SAMLResponse'].dup))
   end
 end
 

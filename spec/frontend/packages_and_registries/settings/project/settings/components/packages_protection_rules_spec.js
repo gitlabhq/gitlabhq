@@ -1,5 +1,4 @@
 import { GlLoadingIcon, GlKeysetPagination, GlModal } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
@@ -11,10 +10,12 @@ import PackagesProtectionRuleForm from '~/packages_and_registries/settings/proje
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
+import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import {
   packagesProtectionRuleQueryPayload,
   packagesProtectionRulesData,
   deletePackagesProtectionRuleMutationPayload,
+  updatePackagesProtectionRuleMutationPayload,
 } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -41,7 +42,7 @@ describe('Packages protection rules project settings', () => {
   const findAlert = () => wrapper.findByRole('alert');
   const findModal = () => wrapper.findComponent(GlModal);
 
-  const mountComponent = (mountFn = shallowMount, provide = defaultProvidedValues, config) => {
+  const mountComponent = (mountFn = mountExtended, provide = defaultProvidedValues, config) => {
     wrapper = mountFn(PackagesProtectionRules, {
       stubs: {
         SettingsBlock,
@@ -56,7 +57,7 @@ describe('Packages protection rules project settings', () => {
   };
 
   const createComponent = ({
-    mountFn = shallowMount,
+    mountFn = mountExtended,
     provide = defaultProvidedValues,
     packagesProtectionRuleQueryResolver = jest
       .fn()
@@ -64,11 +65,15 @@ describe('Packages protection rules project settings', () => {
     deletePackagesProtectionRuleMutationResolver = jest
       .fn()
       .mockResolvedValue(deletePackagesProtectionRuleMutationPayload()),
+    updatePackagesProtectionRuleMutationResolver = jest
+      .fn()
+      .mockResolvedValue(updatePackagesProtectionRuleMutationPayload()),
     config = {},
   } = {}) => {
     const requestHandlers = [
       [packagesProtectionRuleQuery, packagesProtectionRuleQueryResolver],
       [deletePackagesProtectionRuleMutation, deletePackagesProtectionRuleMutationResolver],
+      [updatePackagesProtectionRuleMutation, updatePackagesProtectionRuleMutationResolver],
     ];
 
     fakeApollo = createMockApollo(requestHandlers);
@@ -80,7 +85,7 @@ describe('Packages protection rules project settings', () => {
   };
 
   it('renders the setting block with table', async () => {
-    createComponent({ mountFn: mountExtended });
+    createComponent();
 
     await waitForPromises();
 
@@ -90,7 +95,7 @@ describe('Packages protection rules project settings', () => {
 
   describe('table "package protection rules"', () => {
     it('renders table with packages protection rules', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
 
       await waitForPromises();
 
@@ -106,7 +111,7 @@ describe('Packages protection rules project settings', () => {
     });
 
     it('displays table in busy state and shows loading icon inside table', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
 
       expect(findTableLoadingIcon().exists()).toBe(true);
       expect(findTableLoadingIcon().attributes('aria-label')).toBe('Loading');
@@ -134,7 +139,7 @@ describe('Packages protection rules project settings', () => {
       const findPagination = () => wrapper.findComponent(GlKeysetPagination);
 
       it('renders pagination', async () => {
-        createComponent({ mountFn: mountExtended });
+        createComponent();
 
         await waitForPromises();
 
@@ -181,7 +186,7 @@ describe('Packages protection rules project settings', () => {
           extendedWrapper(findPagination()).findByRole('button', { name: 'Previous' });
 
         beforeEach(async () => {
-          createComponent({ mountFn: mountExtended, packagesProtectionRuleQueryResolver });
+          createComponent({ packagesProtectionRuleQueryResolver });
 
           await waitForPromises();
 
@@ -220,7 +225,7 @@ describe('Packages protection rules project settings', () => {
           extendedWrapper(findPagination()).findByRole('button', { name: 'Next' });
 
         beforeEach(async () => {
-          createComponent({ mountFn: mountExtended, packagesProtectionRuleQueryResolver });
+          createComponent({ packagesProtectionRuleQueryResolver });
 
           await waitForPromises();
 
@@ -240,10 +245,164 @@ describe('Packages protection rules project settings', () => {
       });
     });
 
-    describe('table rows', () => {
+    describe('column "Push protected up to access level" with selectbox (combobox)', () => {
+      const findComboboxInTableRow = (i) =>
+        extendedWrapper(
+          findTableRow(i).findByRole('combobox', { name: /push protected up to access level/i }),
+        );
+
+      it('contains combobox with respective access level', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(findComboboxInTableRow(0).isVisible()).toBe(true);
+        expect(findComboboxInTableRow(0).attributes('disabled')).toBeUndefined();
+        expect(findComboboxInTableRow(0).element.value).toBe(
+          packagesProtectionRulesData[0].pushProtectedUpToAccessLevel,
+        );
+      });
+
+      it('contains combobox with allowed access levels', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        ['Developer', 'Maintainer', 'Owner'].forEach((optionName) => {
+          const selectOption = findComboboxInTableRow(0).findByRole('option', { name: optionName });
+          expect(selectOption.exists()).toBe(true);
+        });
+      });
+
+      describe('when value changes', () => {
+        const accessLevelValueOwner = 'OWNER';
+        const accessLevelValueMaintainer = 'MAINTAINER';
+        const accessLevelValueDeveloper = 'DEVELOPER';
+
+        it('only changes the value of the selectbox in the same row', async () => {
+          createComponent();
+
+          await waitForPromises();
+
+          expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueMaintainer);
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+          expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
+
+          expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
+          await findComboboxInTableRow(1).setValue(accessLevelValueDeveloper);
+          expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueDeveloper);
+
+          expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
+        });
+
+        it('sends graphql mutation', async () => {
+          const updatePackagesProtectionRuleMutationResolver = jest
+            .fn()
+            .mockResolvedValue(updatePackagesProtectionRuleMutationPayload());
+
+          createComponent({ updatePackagesProtectionRuleMutationResolver });
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledTimes(1);
+          expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledWith({
+            input: {
+              id: packagesProtectionRulesData[0].id,
+              pushProtectedUpToAccessLevel: accessLevelValueOwner,
+            },
+          });
+        });
+
+        it('disables only the changed selectbox and keeps other selectboxes in other table rows active when graphql mutation is in progress', async () => {
+          createComponent();
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
+          expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+
+          await waitForPromises();
+
+          expect(findComboboxInTableRow(0).props('disabled')).toBe(false);
+          expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+        });
+
+        it('disables selectbox (and other interactive elements in table row) when graphql mutation is in progress', async () => {
+          createComponent();
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          expect(findComboboxInTableRow(0).props('disabled')).toBe(true);
+          expect(findTableRowButtonDelete(0).props('disabled')).toBe(true);
+
+          await waitForPromises();
+
+          expect(findComboboxInTableRow(1).props('disabled')).toBe(false);
+          expect(findTableRowButtonDelete(1).props('disabled')).toBe(false);
+        });
+
+        it('handles erroneous graphql mutation', async () => {
+          const updatePackagesProtectionRuleMutationResolver = jest
+            .fn()
+            .mockRejectedValue(new Error('error'));
+
+          createComponent({ updatePackagesProtectionRuleMutationResolver });
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          await waitForPromises();
+
+          expect(findAlert().isVisible()).toBe(true);
+          expect(findAlert().text()).toBe('error');
+        });
+
+        it('handles graphql mutation with error response', async () => {
+          const serverErrorMessage = 'Server error message';
+          const updatePackagesProtectionRuleMutationResolver = jest.fn().mockResolvedValue(
+            updatePackagesProtectionRuleMutationPayload({
+              packageProtectionRule: null,
+              errors: [serverErrorMessage],
+            }),
+          );
+
+          createComponent({ updatePackagesProtectionRuleMutationResolver });
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          await waitForPromises();
+
+          expect(findAlert().isVisible()).toBe(true);
+          expect(findAlert().text()).toBe(serverErrorMessage);
+        });
+
+        it('shows a toast with success message', async () => {
+          createComponent();
+
+          await waitForPromises();
+
+          await findComboboxInTableRow(0).setValue(accessLevelValueOwner);
+
+          await waitForPromises();
+
+          expect($toast.show).toHaveBeenCalledWith('Package protection rule updated.');
+        });
+      });
+    });
+
+    describe('column "Actions"', () => {
       describe('button "Delete"', () => {
         it('exists in table', async () => {
-          createComponent({ mountFn: mountExtended });
+          createComponent();
 
           await waitForPromises();
 
@@ -251,8 +410,8 @@ describe('Packages protection rules project settings', () => {
         });
 
         describe('when button is clicked', () => {
-          it('binds confirmation modal', async () => {
-            createComponent({ mountFn: mountExtended });
+          it('binds modal "confirmation for delete action"', async () => {
+            createComponent();
 
             await waitForPromises();
 
@@ -271,17 +430,14 @@ describe('Packages protection rules project settings', () => {
     });
   });
 
-  describe('modal "confirmation"', () => {
+  describe('modal "confirmation for delete action"', () => {
     const createComponentAndClickButtonDeleteInTableRow = async ({
       tableRowIndex = 0,
       deletePackagesProtectionRuleMutationResolver = jest
         .fn()
         .mockResolvedValue(deletePackagesProtectionRuleMutationPayload()),
     } = {}) => {
-      createComponent({
-        mountFn: mountExtended,
-        deletePackagesProtectionRuleMutationResolver,
-      });
+      createComponent({ deletePackagesProtectionRuleMutationResolver });
 
       await waitForPromises();
 
@@ -369,7 +525,6 @@ describe('Packages protection rules project settings', () => {
           .mockResolvedValue(packagesProtectionRuleQueryPayload());
 
         createComponent({
-          mountFn: mountExtended,
           packagesProtectionRuleQueryResolver,
           deletePackagesProtectionRuleMutationResolver,
         });
@@ -399,34 +554,34 @@ describe('Packages protection rules project settings', () => {
     });
   });
 
-  it('does not initially render package protection form', async () => {
-    createComponent({ mountFn: mountExtended });
-
-    await waitForPromises();
-
-    expect(findAddProtectionRuleButton().isVisible()).toBe(true);
-    expect(findProtectionRuleForm().exists()).toBe(false);
-  });
-
   describe('button "Add protection rule"', () => {
     it('button exists', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
 
       await waitForPromises();
 
       expect(findAddProtectionRuleButton().isVisible()).toBe(true);
     });
 
+    it('does not initially render form "add package protection"', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(findAddProtectionRuleButton().isVisible()).toBe(true);
+      expect(findProtectionRuleForm().exists()).toBe(false);
+    });
+
     describe('when button is clicked', () => {
       beforeEach(async () => {
-        createComponent({ mountFn: mountExtended });
+        createComponent();
 
         await waitForPromises();
 
         await findAddProtectionRuleButton().trigger('click');
       });
 
-      it('renders package protection form', () => {
+      it('renders form "add package protection"', () => {
         expect(findProtectionRuleForm().isVisible()).toBe(true);
       });
 
@@ -444,7 +599,7 @@ describe('Packages protection rules project settings', () => {
         .fn()
         .mockResolvedValue(packagesProtectionRuleQueryPayload());
 
-      createComponent({ packagesProtectionRuleQueryResolver, mountFn: mountExtended });
+      createComponent({ packagesProtectionRuleQueryResolver });
 
       await waitForPromises();
 
@@ -476,7 +631,6 @@ describe('Packages protection rules project settings', () => {
     it('renders alert and dismisses it correctly', async () => {
       const alertErrorMessage = 'Error message';
       createComponent({
-        mountFn: mountExtended,
         config: {
           data() {
             return {

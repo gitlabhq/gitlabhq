@@ -65,7 +65,10 @@ The steps required are:
 
    1. Ensure $ATTRIBUTE value is being set at the application level.
       1. If the attribute has a default value, add the default value to the model so the default value is set for new records.
-      1. Update all places in the code where the attribute is being set to `nil`, if any, for new and existing records.
+      1. Update all places in the code where the attribute would be set to `nil`, if any, for new and existing records. Note that
+         using ActiveRecord callbacks such as `before_save` and `before_validation` may not be sufficient, as some processes
+         skip these callbacks. `update_column`, `update_columns`, and bulk operations such as `insert_all` and `update_all` are some
+         examples of methods to look out for.
    1. Add a post-deployment migration to fix the existing records.
 
      NOTE:

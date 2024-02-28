@@ -196,6 +196,21 @@ describe('NoteHeader component', () => {
       expect(findTimestamp().exists()).toBe(false);
     });
 
+    it('generates correct link for alphanumeric noteId', () => {
+      createComponent({
+        createdAt: new Date().toISOString(),
+        noteId: 'afccb75d1ce204bd6f96c3a58dfb4be906b14a6e',
+      });
+      expect(findTimestampLink().attributes('href')).toBe(
+        '#note_afccb75d1ce204bd6f96c3a58dfb4be906b14a6e',
+      );
+    });
+
+    it('generates correct link for GraphQL GID', () => {
+      createComponent({ createdAt: new Date().toISOString(), noteId: 'gid://gitlab/Note/123' });
+      expect(findTimestampLink().attributes('href')).toBe('#note_123');
+    });
+
     it('shows timestamp as plain text if a noteId was not provided', () => {
       createComponent({ createdAt: new Date().toISOString() });
       expect(findTimestampLink().exists()).toBe(false);
