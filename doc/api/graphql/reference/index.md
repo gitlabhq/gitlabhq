@@ -8991,6 +8991,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
+| <a id="mutationworkitemupdatetimetrackingwidget"></a>`timeTrackingWidget` | [`WorkItemWidgetTimeTrackingInput`](#workitemwidgettimetrackinginput) | Input for time tracking widget. |
 | <a id="mutationworkitemupdatetitle"></a>`title` | [`String`](#string) | Title of the work item. |
 | <a id="mutationworkitemupdateweightwidget"></a>`weightWidget` | [`WorkItemWidgetWeightInput`](#workitemwidgetweightinput) | Input for weight widget. |
 
@@ -14343,6 +14344,31 @@ The edge type for [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
+
+#### `WorkItemTimelogConnection`
+
+The connection type for [`WorkItemTimelog`](#workitemtimelog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtimelogconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="workitemtimelogconnectionedges"></a>`edges` | [`[WorkItemTimelogEdge]`](#workitemtimelogedge) | A list of edges. |
+| <a id="workitemtimelogconnectionnodes"></a>`nodes` | [`[WorkItemTimelog]`](#workitemtimelog) | A list of nodes. |
+| <a id="workitemtimelogconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+| <a id="workitemtimelogconnectiontotalspenttime"></a>`totalSpentTime` | [`BigInt!`](#bigint) | Total time spent in seconds. |
+
+#### `WorkItemTimelogEdge`
+
+The edge type for [`WorkItemTimelog`](#workitemtimelog).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtimelogedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemtimelogedgenode"></a>`node` | [`WorkItemTimelog`](#workitemtimelog) | The item at the end of the edge. |
 
 #### `WorkItemTypeConnection`
 
@@ -30017,6 +30043,20 @@ Represents total number of work items for the represented states.
 | <a id="workitemstatecountstypeclosed"></a>`closed` | [`Int`](#int) | Number of work items with state CLOSED for the project or group. |
 | <a id="workitemstatecountstypeopened"></a>`opened` | [`Int`](#int) | Number of work items with state OPENED for the project or group. |
 
+### `WorkItemTimelog`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemtimelogid"></a>`id` | [`ID!`](#id) | Internal ID of the timelog. |
+| <a id="workitemtimelognote"></a>`note` | [`Note`](#note) | Note where the quick action was executed to add the logged time. |
+| <a id="workitemtimelogspentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time tracked was spent at. |
+| <a id="workitemtimelogsummary"></a>`summary` | [`String`](#string) | Summary of how the time was spent. |
+| <a id="workitemtimelogtimespent"></a>`timeSpent` | [`Int!`](#int) | Time spent displayed in seconds. |
+| <a id="workitemtimeloguser"></a>`user` | [`UserCore!`](#usercore) | User that logged the time. |
+| <a id="workitemtimeloguserpermissions"></a>`userPermissions` | [`TimelogPermissions!`](#timelogpermissions) | Permissions for the current user on the resource. |
+
 ### `WorkItemType`
 
 #### Fields
@@ -30397,9 +30437,9 @@ Represents a time tracking widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemwidgettimetrackingtimeestimate"></a>`timeEstimate` | [`Int!`](#int) | Time estimate of the work item. |
-| <a id="workitemwidgettimetrackingtimelogs"></a>`timelogs` | [`TimelogConnection!`](#timelogconnection) | Timelogs on the work item. (see [Connections](#connections)) |
-| <a id="workitemwidgettimetrackingtotaltimespent"></a>`totalTimeSpent` | [`Int!`](#int) | Total time (in seconds) reported as spent on the work item. |
+| <a id="workitemwidgettimetrackingtimeestimate"></a>`timeEstimate` | [`Int`](#int) | Time estimate of the work item. |
+| <a id="workitemwidgettimetrackingtimelogs"></a>`timelogs` | [`WorkItemTimelogConnection`](#workitemtimelogconnection) | Timelogs on the work item. (see [Connections](#connections)) |
+| <a id="workitemwidgettimetrackingtotaltimespent"></a>`totalTimeSpent` | [`Int`](#int) | Total time (in seconds) reported as spent on the work item. |
 | <a id="workitemwidgettimetrackingtype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetWeight`
@@ -32526,8 +32566,8 @@ Pipeline security report finding sort values.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="pipelinesecurityreportfindingsortseverity_asc"></a>`SEVERITY_ASC` | Severity in ascending order. |
-| <a id="pipelinesecurityreportfindingsortseverity_desc"></a>`SEVERITY_DESC` | Severity in descending order. |
+| <a id="pipelinesecurityreportfindingsortseverity_asc"></a>`severity_asc` | Severity in ascending order. |
+| <a id="pipelinesecurityreportfindingsortseverity_desc"></a>`severity_desc` | Severity in descending order. |
 
 ### `PipelineStatusEnum`
 
@@ -36082,6 +36122,25 @@ Attributes for value stream stage.
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetstartandduedateupdateinputduedate"></a>`dueDate` | [`Date`](#date) | Due date for the work item. |
 | <a id="workitemwidgetstartandduedateupdateinputstartdate"></a>`startDate` | [`Date`](#date) | Start date for the work item. |
+
+### `WorkItemWidgetTimeTrackingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettimetrackinginputtimeestimate"></a>`timeEstimate` | [`String`](#string) | Time estimate for the work item in human readable format. For example: 1h 30m. |
+| <a id="workitemwidgettimetrackinginputtimelog"></a>`timelog` | [`WorkItemWidgetTimeTrackingTimelogInput`](#workitemwidgettimetrackingtimeloginput) | Timelog data for time spent on the work item. |
+
+### `WorkItemWidgetTimeTrackingTimelogInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgettimetrackingtimeloginputspentat"></a>`spentAt` | [`Time`](#time) | Timestamp of when the time tracked was spent at, if not provided would be set to current timestamp. |
+| <a id="workitemwidgettimetrackingtimeloginputsummary"></a>`summary` | [`String`](#string) | Summary of how the time was spent. |
+| <a id="workitemwidgettimetrackingtimeloginputtimespent"></a>`timeSpent` | [`String!`](#string) | Amount of time spent in human readable format. For example: 1h 30m. |
 
 ### `WorkItemWidgetWeightInput`
 

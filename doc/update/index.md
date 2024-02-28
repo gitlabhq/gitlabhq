@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Upgrading GitLab is a relatively straightforward process, but the complexity
 can increase based on the installation method you have used, how old your
@@ -123,7 +123,7 @@ To address the above two scenarios, it is advised to do the following prior to u
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 This section is only applicable if you have enabled the [Elasticsearch integration](../integration/advanced_search/elasticsearch.md).
 Major releases require all [advanced search migrations](../integration/advanced_search/elasticsearch.md#advanced-search-migrations)

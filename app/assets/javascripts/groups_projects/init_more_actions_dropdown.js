@@ -17,6 +17,8 @@ export default function InitMoreActionsDropdown() {
     withdrawPath,
     withdrawConfirmMessage,
     requestAccessPath,
+    canEdit,
+    editPath,
   } = el.dataset;
 
   return new Vue({
@@ -30,6 +32,8 @@ export default function InitMoreActionsDropdown() {
       withdrawPath,
       withdrawConfirmMessage,
       requestAccessPath,
+      canEdit: parseBoolean(canEdit),
+      editPath,
     },
     render: (createElement) => createElement(MoreActionsDropdown),
   });

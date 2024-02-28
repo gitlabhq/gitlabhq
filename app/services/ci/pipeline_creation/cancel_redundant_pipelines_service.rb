@@ -67,7 +67,7 @@ module Ci
       def parent_and_child_pipelines(ids)
         Ci::Pipeline.object_hierarchy(parent_auto_cancelable_pipelines(ids), project_condition: :same)
           .base_and_descendants
-          .alive_or_scheduled
+          .cancelable
       end
 
       def auto_cancel_pipelines(pipeline_ids)

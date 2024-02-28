@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 **Status:** Experiment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Enabled by default in 16.9

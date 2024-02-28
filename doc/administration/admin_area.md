@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 The Admin Area provides a web UI to manage and configure features of GitLab
 self-managed instances. If you are an administrator, to access the Admin Area:
@@ -150,7 +150,7 @@ the identities being used for an account.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1772) in GitLab 13.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/292436) in GitLab 13.9.
@@ -478,7 +478,7 @@ The content of each log file is listed in chronological order. To minimize perfo
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 

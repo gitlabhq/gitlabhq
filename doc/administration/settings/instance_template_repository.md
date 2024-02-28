@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Improved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52360) to behave like group-level templates in GitLab 13.9.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/321247) in GitLab 14.0.

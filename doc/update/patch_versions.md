@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 ## Select Version to Install
 
@@ -107,7 +107,7 @@ sudo -u git -H make
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
 

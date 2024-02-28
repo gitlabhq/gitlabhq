@@ -36,22 +36,27 @@ Some features are still in development. View details about [support for each sta
 
 ## Enable AI/ML features
 
-- Experiment and Beta features
-  - All features categorized as
-    [Experiment features](../policy/experiment-beta-support.md#experiment) or
-    [Beta features](../policy/experiment-beta-support.md#beta)
-    require that this setting is enabled at the group level.
-  - Their usage is subject to the
-    [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-  - Experiment and Beta features are disabled by default.
-  - This setting is available to Ultimate groups on SaaS and can be set by a user
-    who has the Owner role in the group.
-  - View [how to enable this setting](group/manage.md#enable-experiment-and-beta-features).
+For features listed as Experiment and Beta:
+
+- These features are disabled by default.
+- To enable, a user with the Owner role for the group must [turn on this setting](group/manage.md#enable-experiment-and-beta-features).
+  On GitLab.com, this setting is available for Ultimate subscriptions only.
+- These features are subject to the
+  [Testing Terms of Use](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+
+For all self-managed features:
+
+- Your firewalls and HTTP proxy servers must allow outbound connections
+  to `cloud.gitlab.com`. To use an HTTP proxy, both `gitLab _workhorse` and `gitLab_rails` must have the necessary
+  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+
+For other features:
+
 - [Code Suggestions](project/repository/code_suggestions/index.md) is enabled when you purchase the
   GitLab Duo Pro add-on and assign seats to users.
 - [Chat](gitlab_duo_chat.md)
   - View [how to enable for self-managed](gitlab_duo_chat.md#for-self-managed-users).
-  - View [how to enable for SaaS](gitlab_duo_chat.md#for-saas-users).
+  - View [how to enable for GitLab.com](gitlab_duo_chat.md#for-saas-users).
 
 ## Experimental AI features and how to use them
 

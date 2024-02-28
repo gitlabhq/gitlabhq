@@ -333,7 +333,8 @@ To renew your subscription:
 1. Review your renewal details and complete the payment process.
 1. Select **Confirm purchase**.
 
-Your updated subscription is applied to your namespace on the renewal period start date. It may take up to one day for the renewal to be processed.
+Your updated subscription is applied to your namespace. The renewal period start date
+is displayed on the group Billing page under **Next subscription term start date**. 
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page.
 If you have difficulty during the renewal process, contact the [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.

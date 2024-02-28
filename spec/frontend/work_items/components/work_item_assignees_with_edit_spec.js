@@ -112,6 +112,12 @@ describe('WorkItemAssigneesWithEdit component', () => {
 
       expect(wrapper.emitted('error')).toEqual([[i18n.fetchError]]);
     });
+
+    it('passes the correct props to clear search text on item select', () => {
+      createComponent();
+
+      expect(findSidebarDropdownWidget().props('clearSearchOnItemSelect')).toBe(true);
+    });
   });
 
   describe('when assigning to current user', () => {

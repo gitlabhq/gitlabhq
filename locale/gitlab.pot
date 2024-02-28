@@ -532,6 +532,9 @@ msgstr ""
 msgid "%{address} is an invalid IP address range"
 msgstr ""
 
+msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
+msgstr ""
+
 msgid "%{author_link} cloned %{original_issue} to %{new_issue}."
 msgstr ""
 
@@ -15291,7 +15294,7 @@ msgstr ""
 msgid "Customize your pipeline configuration."
 msgstr ""
 
-msgid "Cycle Time"
+msgid "Cycle time"
 msgstr ""
 
 msgid "CycleAnalyticsEvent|%{label_reference} label was added to the issue"
@@ -23802,6 +23805,9 @@ msgstr ""
 msgid "GroupPage|Group ID: %{id}"
 msgstr ""
 
+msgid "GroupPage|Group settings"
+msgstr ""
+
 msgid "GroupRoadmap|%{dateWord} – No end date"
 msgstr ""
 
@@ -29030,9 +29036,6 @@ msgstr ""
 msgid "Layout|Fluid"
 msgstr ""
 
-msgid "Lead Time"
-msgstr ""
-
 msgid "Lead Time for Changes"
 msgstr ""
 
@@ -32594,9 +32597,7 @@ msgid "New Identity"
 msgstr ""
 
 msgid "New Issue"
-msgid_plural "New Issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr ""
 
 msgid "New Jira import"
 msgstr ""
@@ -32695,7 +32696,9 @@ msgid "New incident has been created"
 msgstr ""
 
 msgid "New issue"
-msgstr ""
+msgid_plural "New issues"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "New issue title"
 msgstr ""
@@ -33931,6 +33934,9 @@ msgstr ""
 msgid "ObservabilityLogs|Warning"
 msgstr ""
 
+msgid "ObservabilityMetrics|Attributes"
+msgstr ""
+
 msgid "ObservabilityMetrics|Cancel"
 msgstr ""
 
@@ -33976,22 +33982,22 @@ msgstr ""
 msgid "ObservabilityMetrics|Select attributes"
 msgstr ""
 
+msgid "ObservabilityMetrics|Select function"
+msgstr ""
+
+msgid "ObservabilityMetrics|Selected attributes"
+msgstr ""
+
 msgid "ObservabilityMetrics|Type"
 msgstr ""
 
 msgid "ObservabilityMetrics|Value"
 msgstr ""
 
-msgid "ObservabilityMetrics|all"
-msgstr ""
-
 msgid "ObservabilityMetrics|is like"
 msgstr ""
 
 msgid "ObservabilityMetrics|is not like"
-msgstr ""
-
-msgid "ObservabilityMetrics|multiple"
 msgstr ""
 
 msgid "Observability|Enable"

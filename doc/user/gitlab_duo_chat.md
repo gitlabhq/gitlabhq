@@ -181,8 +181,12 @@ Learn about [data usage when using GitLab Duo Chat](ai_features.md#data-usage).
 
 Prerequisites:
 
-- You are using GitLab version 16.8 or later.
+- You have GitLab version 16.8 or later.
 - The Premium or Ultimate license is activated in your GitLab instance by using [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
+- Your firewalls and HTTP proxy servers allow outbound connections
+  to `cloud.gitlab.com`. To use an HTTP proxy, both
+  `gitLab _workhorse` and `gitLab_rails` have the necessary
+  [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - All of the users in your instance have the latest version of their IDE extension.
 - You are an administrator.
 

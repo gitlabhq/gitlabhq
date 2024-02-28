@@ -95,7 +95,7 @@ describe('ValueStreamMetrics', () => {
 
         it('with a filter function, will call the function with the metrics data', async () => {
           const filteredData = [
-            { identifier: 'issues', value: '3', title: 'New Issues', description: 'foo' },
+            { identifier: 'issues', value: '3', title: 'New issues', description: 'foo' },
           ];
           mockFilterFn = jest.fn(() => filteredData);
 

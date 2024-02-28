@@ -230,9 +230,10 @@ export default {
     :item-value="itemValues"
     :update-in-progress="updateInProgress"
     :toggle-dropdown-text="dropdownText"
-    :header-text="__('Select label')"
+    :header-text="__('Select labels')"
     :reset-button-label="__('Clear')"
     :multi-select="true"
+    clear-search-on-item-select
     data-testid="work-item-labels-with-edit"
     @dropdownShown="onDropdownShown"
     @searchStarted="search"

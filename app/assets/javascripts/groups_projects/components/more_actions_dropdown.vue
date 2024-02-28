@@ -29,6 +29,8 @@ export default {
     'withdrawPath',
     'withdrawConfirmMessage',
     'requestAccessPath',
+    'canEdit',
+    'editPath',
   ],
   computed: {
     namespaceType() {
@@ -36,6 +38,9 @@ export default {
     },
     hasPath() {
       return this.leavePath || this.withdrawPath || this.requestAccessPath;
+    },
+    settingsTitle() {
+      return this.isGroup ? this.$options.i18n.groupSettings : this.$options.i18n.projectSettings;
     },
     leaveTitle() {
       return this.isGroup
@@ -99,6 +104,15 @@ export default {
         },
       };
     },
+    settingsItem() {
+      return {
+        text: this.settingsTitle,
+        href: this.editPath,
+        extraAttrs: {
+          'data-testid': `settings-${this.namespaceType}-link`,
+        },
+      };
+    },
   },
   i18n: {
     actionsLabel: __('Actions'),
@@ -110,6 +124,8 @@ export default {
     requestAccessTitle: __('Request Access'),
     groupCopyTitle: s__('GroupPage|Copy group ID: %{id}'),
     projectCopyTitle: s__('ProjectPage|Copy project ID: %{id}'),
+    projectSettings: s__('ProjectPage|Project settings'),
+    groupSettings: s__('GroupPage|Group settings'),
   },
 };
 </script>
@@ -153,6 +169,7 @@ export default {
       :item="copyIdItem"
       :data-clipboard-text="groupOrProjectId"
     />
+    <gl-disclosure-dropdown-item v-if="canEdit" :item="settingsItem" />
 
     <gl-disclosure-dropdown-group v-if="hasPath" bordered>
       <gl-disclosure-dropdown-item v-if="leavePath" ref="leaveItem" :item="leaveItem" />

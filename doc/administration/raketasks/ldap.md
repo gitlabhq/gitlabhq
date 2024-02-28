@@ -42,7 +42,7 @@ rake gitlab:ldap:check[50]
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/14735) in GitLab 12.2.
 

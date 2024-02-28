@@ -39,7 +39,7 @@ RSpec.describe Gitlab::CycleAnalytics::StageSummary, feature_category: :devops_r
 
       it 'returns the localized title' do
         Gitlab::I18n.with_locale(:ru) do
-          expect(subject[:title]).to eq(n_('New Issue', 'New Issues', 1))
+          expect(subject[:title]).to eq(n_('New issue', 'New issues', 1))
         end
       end
     end

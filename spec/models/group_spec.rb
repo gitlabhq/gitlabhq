@@ -1306,6 +1306,37 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
       it { is_expected.to match_array(groups) }
     end
+
+    describe 'descendants_with_shared_with_groups' do
+      subject { described_class.descendants_with_shared_with_groups(parent_group) }
+
+      let_it_be(:grand_parent_group) { create(:group, :public) }
+      let_it_be(:parent_group) { create(:group, :public, parent: grand_parent_group) }
+      let_it_be(:subgroup) { create(:group, :public, parent: parent_group) }
+      let_it_be(:subsubgroup) { create(:group, :public, parent: subgroup) }
+
+      let_it_be(:shared_to_group) { create(:group, :public) }
+      let_it_be(:shared_to_sub_group) { create(:group, :public) }
+
+      context 'when parent group is nil' do
+        let(:parent_group) { nil }
+
+        it { is_expected.to match_array([]) }
+      end
+
+      context 'when parent group is present and there are shared groups' do
+        before do
+          parent_group.shared_with_groups << shared_to_group
+          subgroup.shared_with_groups << shared_to_sub_group
+        end
+
+        it { is_expected.to match_array([subgroup, subsubgroup, shared_to_group]) }
+      end
+
+      context 'when parent group is present and there are no shared groups' do
+        it { is_expected.to match_array([subgroup, subsubgroup]) }
+      end
+    end
   end
 
   describe '#to_reference' do

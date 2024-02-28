@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78373) in GitLab 14.7 [with a flag](../feature_flags.md) named `rate_limit_gitlab_shell`. Available by default without a feature flag from 15.8.
 

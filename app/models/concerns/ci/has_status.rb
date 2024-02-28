@@ -90,7 +90,6 @@ module Ci
       scope :manual, -> { with_status(:manual) }
       scope :scheduled, -> { with_status(:scheduled) }
       scope :alive, -> { with_status(*ALIVE_STATUSES) }
-      scope :alive_or_scheduled, -> { with_status(*klass::CANCELABLE_STATUSES) }
       scope :created_or_pending, -> { with_status(:created, :pending) }
       scope :running_or_pending, -> { with_status(:running, :pending) }
       scope :finished, -> { with_status(:success, :failed, :canceled) }

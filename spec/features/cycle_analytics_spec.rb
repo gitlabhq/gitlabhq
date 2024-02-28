@@ -99,7 +99,7 @@ RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_ma
         aggregate_failures 'with relevant values' do
           expect(metrics_tiles).to have_content('Commit')
           expect(metrics_tiles).to have_content('Deploy')
-          expect(metrics_tiles).to have_content('New Issue')
+          expect(metrics_tiles).to have_content('New issue')
         end
       end
 

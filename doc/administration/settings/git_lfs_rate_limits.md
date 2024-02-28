@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 [Git LFS (Large File Storage)](../../topics/git/lfs/index.md) is a Git extension
 for handling large files. If you use Git LFS in your repository, common Git operations

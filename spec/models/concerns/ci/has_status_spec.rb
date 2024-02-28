@@ -296,18 +296,6 @@ RSpec.describe Ci::HasStatus, feature_category: :continuous_integration do
       end
     end
 
-    describe '.alive_or_scheduled' do
-      subject { CommitStatus.alive_or_scheduled }
-
-      %i[running pending waiting_for_callback waiting_for_resource preparing created scheduled].each do |status|
-        it_behaves_like 'containing the job', status
-      end
-
-      %i[failed success canceled skipped].each do |status|
-        it_behaves_like 'not containing the job', status
-      end
-    end
-
     describe '.created_or_pending' do
       subject { CommitStatus.created_or_pending }
 

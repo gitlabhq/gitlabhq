@@ -16,6 +16,9 @@
 #     filter_group_ids: array of integers - only include groups from the specified list of ids
 #     include_parent_descendants: boolean (defaults to false) - includes descendant groups when
 #                                 filtering by parent. The parent param must be present.
+#     include_parent_shared_groups: boolean (defaults to false) - includes shared groups of a parent group
+#                                 when filtering by parent.
+#                                 Both parent and include_parent_descendants params must be present.
 #     include_ancestors: boolean (defaults to true)
 #     organization: Scope the groups to the Organizations::Organization
 #
@@ -118,17 +121,27 @@ class GroupsFinder < UnionFinder
     groups.in_organization(organization)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_parent(groups)
     return groups unless params[:parent]
 
-    if params.fetch(:include_parent_descendants, false)
-      groups.id_in(params[:parent].descendants)
+    if include_parent_descendants?
+      by_parent_descendants(groups, params[:parent])
     else
-      groups.where(parent: params[:parent])
+      by_parent_children(groups, params[:parent])
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_parent_descendants(groups, parent)
+    if include_parent_shared_groups?
+      groups.descendants_with_shared_with_groups(parent)
+    else
+      groups.id_in(parent.descendants)
+    end
+  end
+
+  def by_parent_children(groups, parent)
+    groups.by_parent(parent)
+  end
 
   def filter_group_ids(groups)
     return groups unless params[:filter_group_ids]
@@ -152,6 +165,14 @@ class GroupsFinder < UnionFinder
     return groups.order_id_desc unless params[:sort]
 
     groups.sort_by_attribute(params[:sort])
+  end
+
+  def include_parent_shared_groups?
+    params.fetch(:include_parent_shared_groups, false)
+  end
+
+  def include_parent_descendants?
+    params.fetch(:include_parent_descendants, false)
   end
 
   def min_access_level?

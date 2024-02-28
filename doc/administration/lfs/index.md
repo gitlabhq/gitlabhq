@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 This page contains information about configuring Git LFS in self-managed GitLab instances.
 For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).

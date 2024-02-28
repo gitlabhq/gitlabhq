@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Make sure you view this upgrade guide from the branch (version) of GitLab you
 would like to install (for example, `16.0`). You can select the required version of documentation in the dropdown list in the upper-right corner of GitLab documentation page.

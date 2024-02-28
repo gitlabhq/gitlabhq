@@ -81,7 +81,7 @@ Gitaly
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20501) in GitLab 12.6.
 > - Moved to GitLab Premium in 13.9.

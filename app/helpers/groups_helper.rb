@@ -218,6 +218,14 @@ module GroupsHelper
 
     return dropdown_data unless current_user
 
+    if source.is_a?(Group)
+      dropdown_data[:can_edit] = can?(current_user, :admin_group, source).to_s
+      dropdown_data[:edit_path] = edit_group_path(source)
+    else
+      dropdown_data[:can_edit] = can?(current_user, :admin_project, source).to_s
+      dropdown_data[:edit_path] = edit_project_path(source)
+    end
+
     if can?(current_user, :"destroy_#{model_name}_member", source.members.find_by(user_id: current_user.id)) # rubocop: disable CodeReuse/ActiveRecord -- we need to fetch it
       dropdown_data[:leave_path] = polymorphic_path([:leave, source, :members])
       dropdown_data[:leave_confirm_message] = leave_confirmation_message(source)

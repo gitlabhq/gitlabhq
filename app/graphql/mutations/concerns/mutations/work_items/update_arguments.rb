@@ -52,6 +52,10 @@ module Mutations
                  ::Types::WorkItems::Widgets::NotesInputType,
                  required: false,
                  description: 'Input for notes widget.'
+        argument :time_tracking_widget,
+                 ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingInputType,
+                 required: false,
+                 description: 'Input for time tracking widget.'
       end
     end
   end

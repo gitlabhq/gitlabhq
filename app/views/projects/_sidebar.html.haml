@@ -3,15 +3,7 @@
 
 %aside.project-page-sidebar
   .project-page-sidebar-block.home-panel-home-desc.gl-py-4.gl-border-b.gl-border-gray-50{ class: 'gl-pt-2!' }
-    .gl-display-flex.gl-justify-content-space-between
-      %h2.gl-font-base.gl-font-weight-bold.gl-reset-line-height.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
-      -# Project settings
-      - if can?(current_user, :admin_project, @project)
-        = render Pajamas::ButtonComponent.new(href: edit_project_path(@project),
-          category: :tertiary,
-          icon: 'settings',
-          size: :small,
-          button_options: { class: 'has-tooltip gl-ml-2 gl-sm-mr-3', title: s_('ProjectPage|Project settings'), 'aria-label' => s_('ProjectPage|Project settings'), 'data-testid': 'project-settings-button' })
+    %h2.gl-font-base.gl-font-weight-bold.gl-reset-line-height.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Project information')
     -# Project description
     - if @project.description.present?
       .home-panel-description.text-break

@@ -239,6 +239,27 @@ class Group < Namespace
       .where(group_group_links: { shared_group_id: group.self_and_ancestors })
   end
 
+  # Returns all groups that are shared with the given group (see :shared_with_group)
+  # and all descendents of the given group
+  # returns none if the given group is nil
+  scope :descendants_with_shared_with_groups, -> (group) do
+    return none if group.nil?
+
+    descendants_query = group.descendants.select(:id)
+    # since we're only interested in ids, we query GroupGroupLink directly instead of using :shared_with_group
+    # to avoid an extra JOIN in the resulting query
+    shared_groups_query = GroupGroupLink
+      .where(shared_group_id: group.id)
+      .select('shared_with_group_id AS id')
+
+    combined_query = Group
+      .from_union(descendants_query, shared_groups_query, alias_as: :combined)
+      .unscope(where: :type)
+      .select(:id)
+
+    id_in(combined_query)
+  end
+
   # WARNING: This method should never be used on its own
   # please do make sure the number of rows you are filtering is small
   # enough for this query

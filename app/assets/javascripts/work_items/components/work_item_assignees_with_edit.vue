@@ -238,6 +238,7 @@ export default {
     :header-text="headerText"
     :update-in-progress="updateInProgress"
     :reset-button-label="__('Clear')"
+    clear-search-on-item-select
     data-testid="work-item-assignees-with-edit"
     @dropdownShown="onDropdownShown"
     @searchStarted="setSearchKey"

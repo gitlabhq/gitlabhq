@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 This page contains upgrade information for minor and patch versions of GitLab 14.
 Ensure you review these instructions for:
@@ -118,7 +118,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - **Do not** upgrade to GitLab 14.9.0. Instead, use 14.9.1 or later.
 
@@ -215,7 +215,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
   When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
@@ -241,7 +241,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - LFS objects import and mirror issue in GitLab 14.6.0 to 14.7.2.
   When Geo is enabled, LFS objects fail to be saved for imported or mirrored projects.
@@ -329,7 +329,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -358,7 +358,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.4.0 through 14.4.2](#1440) that can affect
   Geo and other features that rely on cronjobs. We recommend upgrading to GitLab 14.4.3 or later.
@@ -413,7 +413,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -584,7 +584,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -689,7 +689,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - There is [an issue in GitLab 14.2 through 14.7](https://gitlab.com/gitlab-org/gitlab/-/issues/299819#note_822629467)
   that affects Geo when the GitLab-managed object storage replication is used, causing blob object types to fail synchronization.
@@ -772,7 +772,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - We found an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336013) where the container registry replication
   wasn't fully working if you used multi-arch images. In case of a multi-arch image, only the primary architecture
@@ -933,7 +933,7 @@ Other issues:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 - We found an issue where [Primary sites cannot be removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/338231).
 

@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 You can use GitLab as a client application with [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)
 as an OmniAuth provider.
@@ -940,7 +940,7 @@ based on group membership, configure GitLab to identify:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Your IdP must pass group information to GitLab in the OIDC response. To use this
 response to assign users as auditors based on group membership, configure GitLab to identify:

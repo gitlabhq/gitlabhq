@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 GitLab comes with its own application performance measuring system as of GitLab
 8.4, called "GitLab Performance Monitoring". GitLab Performance Monitoring is available in both the

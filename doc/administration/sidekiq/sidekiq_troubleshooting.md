@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Sidekiq is the background job processor GitLab uses to asynchronously run
 tasks. When things go wrong it can be difficult to troubleshoot. These

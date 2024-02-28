@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    clearSearchOnItemSelect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -131,6 +136,13 @@ export default {
       } else {
         this.isDirty = true;
         this.$emit('updateSelected', this.localSelectedItem);
+        this.clearSearch();
+      }
+    },
+    clearSearch() {
+      if (this.clearSearchOnItemSelect) {
+        this.setSearchKey('');
+        this.$refs.listbox.$refs.searchBox.clearInput();
       }
     },
     onListboxShown() {
@@ -185,6 +197,7 @@ export default {
       </div>
       <gl-collapsible-listbox
         :id="inputId"
+        ref="listbox"
         :multiple="multiSelect"
         block
         searchable

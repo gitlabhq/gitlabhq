@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - The **Stats** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271551) in GitLab 13.9.
 > - The **Memory** field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330736) in GitLab 14.0.

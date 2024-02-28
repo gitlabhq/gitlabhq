@@ -141,7 +141,7 @@ describe('WorkItemLabelsWithEdit component', () => {
       dropdownName: 'label',
       updateInProgress: false,
       toggleDropdownText: 'No labels',
-      headerText: 'Select label',
+      headerText: 'Select labels',
       resetButtonLabel: 'Clear',
       multiSelect: true,
       itemValue: [],
@@ -219,6 +219,12 @@ describe('WorkItemLabelsWithEdit component', () => {
     await waitForPromises();
 
     expect(wrapper.emitted('error')).toEqual([[I18N_WORK_ITEM_ERROR_FETCHING_LABELS]]);
+  });
+
+  it('passes the correct props to clear search text on item select', () => {
+    createComponent();
+
+    expect(findWorkItemSidebarDropdownWidget().props('clearSearchOnItemSelect')).toBe(true);
   });
 
   it('update labels when labels are added', async () => {

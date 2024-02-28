@@ -480,7 +480,7 @@ you must do so in an `attributes` hash.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 These LDAP sync configuration settings are optional, excluding `group_base` which
 required when `external_groups` is configured:
@@ -496,7 +496,7 @@ required when `external_groups` is configured:
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 If you have users on multiple LDAP servers, you can configure GitLab to use them. To add additional LDAP servers:
 

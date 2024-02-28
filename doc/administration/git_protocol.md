@@ -9,7 +9,7 @@ description: "Set and configure Git protocol v2"
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Re-enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/27828) in GitLab 12.8.
 

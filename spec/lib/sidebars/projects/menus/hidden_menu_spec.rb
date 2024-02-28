@@ -67,7 +67,7 @@ RSpec.describe Sidebars::Projects::Menus::HiddenMenu, feature_category: :navigat
       it_behaves_like 'access rights checks'
     end
 
-    describe 'New Issue' do
+    describe 'New issue' do
       let(:item_id) { :new_issue }
 
       it_behaves_like 'access rights checks'

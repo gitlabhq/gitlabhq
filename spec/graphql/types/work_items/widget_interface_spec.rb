@@ -28,7 +28,7 @@ RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planni
       WorkItems::Widgets::StartAndDueDate  | Types::WorkItems::Widgets::StartAndDueDateType
       WorkItems::Widgets::Milestone        | Types::WorkItems::Widgets::MilestoneType
       WorkItems::Widgets::Participants     | Types::WorkItems::Widgets::ParticipantsType
-      WorkItems::Widgets::TimeTracking     | Types::WorkItems::Widgets::TimeTrackingType
+      WorkItems::Widgets::TimeTracking     | Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
       WorkItems::Widgets::Designs          | Types::WorkItems::Widgets::DesignsType
     end
 

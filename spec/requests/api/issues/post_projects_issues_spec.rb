@@ -290,7 +290,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid
             }
         end
@@ -302,7 +302,7 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
         before do
           post api("/projects/#{project.id}/issues", user),
             params: {
-              title: 'New Issue',
+              title: 'New issue',
               merge_request_to_resolve_discussions_of: merge_request.iid,
               discussion_to_resolve: discussion.id
             }

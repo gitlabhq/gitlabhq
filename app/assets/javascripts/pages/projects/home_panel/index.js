@@ -33,6 +33,8 @@ const initHomePanel = () => {
     requestAccessPath,
     withdrawConfirmMessage,
     withdrawPath,
+    canEdit,
+    editPath,
 
     // Fork component
     canCreateFork,
@@ -75,6 +77,8 @@ const initHomePanel = () => {
       requestAccessPath,
       withdrawConfirmMessage,
       withdrawPath,
+      canEdit,
+      editPath,
 
       // Fork component
       canCreateFork: parseBoolean(canCreateFork),

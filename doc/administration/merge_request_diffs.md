@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies
