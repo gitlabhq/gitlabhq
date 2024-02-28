@@ -1,18 +1,7 @@
-query getK8sDashboardJobs($configuration: LocalConfiguration) {
+#import "./workload_item.fragment.graphql"
+
+query getK8sDashboardJobs($configuration: K8sDashboardConfig) {
   k8sJobs(configuration: $configuration) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-      labels
-      annotations
-    }
-    status {
-      failed
-      succeeded
-    }
-    spec {
-      completions
-    }
+    ...WorkloadItem
   }
 }

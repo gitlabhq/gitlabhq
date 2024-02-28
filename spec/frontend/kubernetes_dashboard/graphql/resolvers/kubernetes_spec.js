@@ -33,7 +33,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     mockResolvers = resolvers;
   });
 
-  describe('k8sPods', () => {
+  describe('k8sDashboardPods', () => {
     const client = { writeQuery: jest.fn() };
 
     const mockWatcher = WatchApi.prototype;
@@ -65,7 +65,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should request all pods from the cluster_client library and watch the events', async () => {
-        const pods = await mockResolvers.Query.k8sPods(
+        const pods = await mockResolvers.Query.k8sDashboardPods(
           null,
           {
             configuration,
@@ -80,12 +80,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should update cache with the new data when received from the library', async () => {
-        await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
+        await mockResolvers.Query.k8sDashboardPods(
+          null,
+          { configuration, namespace: '' },
+          { client },
+        );
 
         expect(client.writeQuery).toHaveBeenCalledWith({
           query: k8sDashboardPodsQuery,
           variables: { configuration, namespace: '' },
-          data: { k8sPods: [] },
+          data: { k8sDashboardPods: [] },
         });
       });
     });
@@ -99,7 +103,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }),
       );
 
-      await mockResolvers.Query.k8sPods(null, { configuration }, { client });
+      await mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client });
 
       expect(mockPodsListWatcherFn).not.toHaveBeenCalled();
     });
@@ -110,7 +114,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sPods(null, { configuration }, { client }),
+        mockResolvers.Query.k8sDashboardPods(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });
@@ -627,7 +631,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
 
-  describe('k8sServices', () => {
+  describe('k8sDashboardServices', () => {
     const client = { writeQuery: jest.fn() };
 
     const mockWatcher = WatchApi.prototype;
@@ -659,7 +663,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should request all Services from the cluster_client library and watch the events', async () => {
-        const Services = await mockResolvers.Query.k8sServices(
+        const Services = await mockResolvers.Query.k8sDashboardServices(
           null,
           {
             configuration,
@@ -674,12 +678,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should update cache with the new data when received from the library', async () => {
-        await mockResolvers.Query.k8sServices(null, { configuration, namespace: '' }, { client });
+        await mockResolvers.Query.k8sDashboardServices(
+          null,
+          { configuration, namespace: '' },
+          { client },
+        );
 
         expect(client.writeQuery).toHaveBeenCalledWith({
           query: k8sDashboardServicesQuery,
           variables: { configuration, namespace: '' },
-          data: { k8sServices: [] },
+          data: { k8sDashboardServices: [] },
         });
       });
     });
@@ -693,7 +701,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }),
       );
 
-      await mockResolvers.Query.k8sServices(null, { configuration }, { client });
+      await mockResolvers.Query.k8sDashboardServices(null, { configuration }, { client });
 
       expect(mockServicesListWatcherFn).not.toHaveBeenCalled();
     });
@@ -704,7 +712,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sServices(null, { configuration }, { client }),
+        mockResolvers.Query.k8sDashboardServices(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

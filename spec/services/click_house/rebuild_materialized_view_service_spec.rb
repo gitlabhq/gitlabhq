@@ -64,7 +64,7 @@ RSpec.describe ClickHouse::RebuildMaterializedViewService, :click_house, feature
     SQL
 
     table_query = <<~SQL
-      SELECT view_definition FROM information_schema.tables
+      SELECT table_name FROM information_schema.tables
       WHERE table_name = 'tmp_contributions' AND
       table_schema = '#{connection.database_name}'
     SQL

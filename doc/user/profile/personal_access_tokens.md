@@ -27,7 +27,8 @@ The ability to create personal access tokens without expiry was [deprecated](htt
 
 Personal access tokens are:
 
-- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) is enabled.
+- Required when [two-factor authentication (2FA)](account/two_factor_authentication.md) or
+  [SAML](../../integration/saml.md#password-generation-for-users-created-through-saml) is enabled.
 - Used with a GitLab username to authenticate with GitLab features that require usernames. For example,
   [GitLab-managed Terraform state backend](../infrastructure/iac/terraform_state.md#use-your-gitlab-backend-as-a-remote-data-source)
   and [Docker container registry](../packages/container_registry/authenticate_with_container_registry.md),

@@ -14,89 +14,14 @@ export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => 
 };
 
 export const mapWorkloadItem = (item) => {
-  if (item.metadata) {
-    const metadata = {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    };
-    return { status: item.status, spec: item.spec, metadata };
-  }
-  return { status: item.status, spec: item.spec };
-};
-
-export const mapSetItem = (item) => {
-  const status = {
-    ...item.status,
-    readyReplicas: item.status?.readyReplicas || null,
-  };
-
-  const metadata =
-    {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    } || null;
-
-  const spec = item.spec || null;
-
-  return { status, metadata, spec };
-};
-
-export const mapJobItem = (item) => {
+  const status = item.status || {};
+  const spec = item.spec || {};
   const metadata = {
     ...item.metadata,
     annotations: item.metadata?.annotations || {},
     labels: item.metadata?.labels || {},
   };
-
-  const status = {
-    failed: item.status?.failed || 0,
-    succeeded: item.status?.succeeded || 0,
-  };
-
-  return {
-    status,
-    metadata,
-    spec: item.spec,
-  };
-};
-
-export const mapServicesItems = (item) => {
-  const { type, clusterIP, externalIP, ports } = item.spec;
-
-  return {
-    metadata: {
-      ...item.metadata,
-      annotations: item.metadata?.annotations || {},
-      labels: item.metadata?.labels || {},
-    },
-    spec: {
-      type,
-      clusterIP: clusterIP || '-',
-      externalIP: externalIP || '-',
-      ports,
-    },
-  };
-};
-
-export const mapCronJobItem = (item) => {
-  const metadata = {
-    ...item.metadata,
-    annotations: item.metadata?.annotations || {},
-    labels: item.metadata?.labels || {},
-  };
-
-  const status = {
-    active: item.status?.active || 0,
-    lastScheduleTime: item.status?.lastScheduleTime || null,
-  };
-
-  return {
-    status,
-    metadata,
-    spec: item.spec,
-  };
+  return { status, spec, metadata, __typename: 'LocalWorkloadItem' };
 };
 
 export const watchWorkloadItems = ({
@@ -106,7 +31,6 @@ export const watchWorkloadItems = ({
   namespace,
   watchPath,
   queryField,
-  mapFn = mapWorkloadItem,
 }) => {
   const config = new Configuration(configuration);
   const watcherApi = new WatchApi(config);
@@ -117,7 +41,7 @@ export const watchWorkloadItems = ({
       let result = [];
 
       watcher.on(EVENT_DATA, (data) => {
-        result = data.map(mapFn);
+        result = data.map(mapWorkloadItem);
 
         client.writeQuery({
           query,
@@ -138,6 +62,7 @@ export const getK8sPods = ({
   namespace = '',
   enableWatch = false,
   mapFn = mapWorkloadItem,
+  queryField = 'k8sPods',
 }) => {
   const config = new Configuration(configuration);
 
@@ -156,7 +81,7 @@ export const getK8sPods = ({
           configuration,
           namespace,
           watchPath,
-          queryField: 'k8sPods',
+          queryField,
         });
       }
 

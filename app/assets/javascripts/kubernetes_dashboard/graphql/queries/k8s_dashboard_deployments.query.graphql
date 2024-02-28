@@ -1,14 +1,7 @@
-query getK8sDashboardDeployments($configuration: LocalConfiguration) {
+#import "./workload_item.fragment.graphql"
+
+query getK8sDashboardDeployments($configuration: K8sDashboardConfig) {
   k8sDeployments(configuration: $configuration) @client {
-    metadata {
-      name
-      namespace
-      creationTimestamp
-      labels
-      annotations
-    }
-    status {
-      conditions
-    }
+    ...WorkloadItem
   }
 }

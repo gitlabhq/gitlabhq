@@ -33884,6 +33884,9 @@ msgstr ""
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr ""
 
+msgid "ObservabilityLogs|Attributes"
+msgstr ""
+
 msgid "ObservabilityLogs|Check again"
 msgstr ""
 
@@ -33914,7 +33917,13 @@ msgstr ""
 msgid "ObservabilityLogs|Message"
 msgstr ""
 
+msgid "ObservabilityLogs|Metadata"
+msgstr ""
+
 msgid "ObservabilityLogs|No logs to display."
+msgstr ""
+
+msgid "ObservabilityLogs|Resource attributes"
 msgstr ""
 
 msgid "ObservabilityLogs|Service"

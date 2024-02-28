@@ -2987,7 +2987,7 @@ GitLab [generates and sets passwords for users created through SAML](../security
 Users authenticated with SSO or SAML must not use a password for Git operations
 over HTTPS. These users can instead:
 
-- Set up a [personal access token](../user/profile/personal_access_tokens.md).
+- Set up a [personal](../user/profile/personal_access_tokens.md), [project](../user/project/settings/project_access_tokens.md), or [group](../user/group/settings/group_access_tokens.md) access token.
 - Use an [OAuth credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
 ## Link SAML identity for an existing user

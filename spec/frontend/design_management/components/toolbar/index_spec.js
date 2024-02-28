@@ -9,7 +9,7 @@ import permissionsQuery from 'shared_queries/design_management/design_permission
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import DesignTodoButton from '~/design_management/components/design_todo_button.vue';
 import Toolbar from '~/design_management/components/toolbar/index.vue';
-import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
+import CloseButton from '~/design_management/components/toolbar/close_button.vue';
 import { getPermissionsQueryResponse } from '../../mock_data/apollo_mock';
 import design from '../../mock_data/design';
 
@@ -17,21 +17,14 @@ Vue.use(VueRouter);
 Vue.use(VueApollo);
 const router = new VueRouter();
 
-const RouterLinkStub = {
-  props: {
-    to: {
-      type: Object,
-    },
-  },
-  render(createElement) {
-    return createElement('a', {}, this.$slots.default);
-  },
-};
-
 describe('Design management toolbar component', () => {
   let wrapper;
 
-  function createComponent(isLoading = false, createDesign = true, props) {
+  function createComponent(isLoading = false, createDesign = true, props, isLoggedIn = true) {
+    if (isLoggedIn) {
+      window.gon.current_user_id = 1;
+    }
+
     const updatedAt = new Date();
     updatedAt.setHours(updatedAt.getHours() - 1);
 
@@ -56,9 +49,6 @@ describe('Design management toolbar component', () => {
         image: '/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d',
         ...props,
       },
-      stubs: {
-        'router-link': RouterLinkStub,
-      },
     });
   }
 
@@ -70,18 +60,19 @@ describe('Design management toolbar component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
-  it('links back to designs list', async () => {
+  it('renders issue title', async () => {
     createComponent();
 
     await waitForPromises();
-    const link = wrapper.find('a');
 
-    expect(link.props('to')).toEqual({
-      name: DESIGNS_ROUTE_NAME,
-      query: {
-        version: undefined,
-      },
-    });
+    expect(wrapper.find('h2').text()).toContain(design.issue.title);
+  });
+
+  it('renders close button', async () => {
+    createComponent();
+
+    await waitForPromises();
+    expect(wrapper.findComponent(CloseButton).exists()).toBe(true);
   });
 
   it('renders delete button on latest designs version with logged in user', async () => {
@@ -112,6 +103,14 @@ describe('Design management toolbar component', () => {
     createComponent();
 
     expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(true);
+  });
+
+  it('does not render To-Do button when user is not logged in', async () => {
+    createComponent(false, false, {}, false);
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(DesignTodoButton).exists()).toBe(false);
   });
 
   it('emits `delete` event on deleteButton `delete-selected-designs` event', async () => {

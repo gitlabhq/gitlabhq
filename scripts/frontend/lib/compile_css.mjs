@@ -1,7 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { env } from 'node:process';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
@@ -223,26 +222,7 @@ export async function compileAllStyles({ shouldWatch = false }) {
   return fileWatcher;
 }
 
-// Mirroring gems/gitlab-utils/lib/gitlab/utils.rb
-function shouldUseNewPipeline(defaultValue = true) {
-  if ([true, false, 0, 1].includes(env?.USE_NEW_CSS_PIPELINE)) {
-    return env.USE_NEW_CSS_PIPELINE;
-  }
-
-  if (/^(true|t|yes|y|1|on)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`)) {
-    return true;
-  }
-  if (/^(false|f|no|n|0|off)$/i.test(`${env.USE_NEW_CSS_PIPELINE}`)) {
-    return false;
-  }
-
-  return defaultValue;
-}
-
 export function viteCSSCompilerPlugin({ shouldWatch = true }) {
-  if (!shouldUseNewPipeline()) {
-    return null;
-  }
   let fileWatcher = null;
   return {
     name: 'gitlab-css-compiler',
@@ -256,9 +236,6 @@ export function viteCSSCompilerPlugin({ shouldWatch = true }) {
 }
 
 export function simplePluginForNodemon({ shouldWatch = true }) {
-  if (!shouldUseNewPipeline()) {
-    return null;
-  }
   let fileWatcher = null;
   return {
     async start() {

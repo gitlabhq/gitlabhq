@@ -24,7 +24,7 @@ RSpec.describe ClickHouse::SyncStrategies::EventSyncStrategy, feature_category: 
         expected_records = [
           hash_including('id' => project_event2.id, 'path' => "#{group.id}/#{project.project_namespace.id}/",
             'target_type' => 'Issue'),
-          hash_including('id' => event_without_parent.id, 'path' => '', 'target_type' => ''),
+          hash_including('id' => event_without_parent.id, 'path' => '0/', 'target_type' => ''),
           hash_including('id' => group_event.id, 'path' => "#{group.id}/", 'target_type' => ''),
           hash_including('id' => project_event1.id, 'path' => "#{group.id}/#{project.project_namespace.id}/",
             'target_type' => 'Issue')

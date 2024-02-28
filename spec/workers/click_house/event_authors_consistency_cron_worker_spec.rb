@@ -59,12 +59,12 @@ RSpec.describe ClickHouse::EventAuthorsConsistencyCronWorker, feature_category: 
 
     context 'when the previous job was not finished' do
       it 'continues the processing from the cursor' do
-        ClickHouse::SyncCursor.update_cursor_for(:event_authors_consistency_check, deleted_user_id1)
+        ClickHouse::SyncCursor.update_cursor_for(:event_authors_consistency_check, deleted_user_id2)
 
         worker.perform
 
         # the previous records should remain
-        expect(leftover_author_ids).to contain_exactly(user1.id, user2.id)
+        expect(leftover_author_ids).to contain_exactly(user1.id, user2.id, deleted_user_id1)
       end
     end
 

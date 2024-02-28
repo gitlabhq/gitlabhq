@@ -38,18 +38,29 @@ RSpec.describe Ci::Sources::Pipeline, feature_category: :continuous_integration 
   end
 
   describe 'partitioning', :ci_partitionable do
-    include Ci::PartitioningHelpers
+    let!(:child_pipeline) { create(:ci_pipeline) }
+    let!(:parent_pipeline) { create(:ci_pipeline, upstream_of: child_pipeline) }
 
-    let(:new_pipeline) { create(:ci_pipeline) }
-    let(:source_pipeline) { create(:ci_sources_pipeline, pipeline: new_pipeline) }
+    let(:current_partition) { ci_testing_partition_id_for_check_constraints }
+    let(:older_partition) { ci_testing_partition_id_for_check_constraints - 1 }
 
-    before do
-      stub_current_partition_id(ci_testing_partition_id_for_check_constraints)
-    end
+    subject(:sources_pipeline) { child_pipeline.source_pipeline }
 
     it 'assigns partition_id and source_partition_id from pipeline and source_job', :aggregate_failures do
-      expect(source_pipeline.partition_id).to eq(ci_testing_partition_id_for_check_constraints)
-      expect(source_pipeline.source_partition_id).to eq(ci_testing_partition_id_for_check_constraints)
+      expect(sources_pipeline.partition_id).to eq(current_partition)
+      expect(sources_pipeline.source_partition_id).to eq(current_partition)
+    end
+
+    context 'when the upstream pipeline is from an older partition' do
+      let!(:parent_pipeline) { create(:ci_pipeline, partition_id: older_partition, upstream_of: child_pipeline) }
+
+      it 'assigns partition_id from the current partition' do
+        expect(sources_pipeline.partition_id).to eq(current_partition)
+      end
+
+      it 'assigns source_partition_id to the older partition of the source pipeline' do
+        expect(sources_pipeline.source_partition_id).to eq(older_partition)
+      end
     end
   end
 end

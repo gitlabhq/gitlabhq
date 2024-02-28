@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import typeDefs from '~/environments/graphql/typedefs.graphql';
+import typeDefs from './typedefs.graphql';
 import k8sPodsQuery from './queries/k8s_dashboard_pods.query.graphql';
 import k8sDeploymentsQuery from './queries/k8s_dashboard_deployments.query.graphql';
 import k8sStatefulSetsQuery from './queries/k8s_dashboard_stateful_sets.query.graphql';
@@ -24,105 +24,46 @@ export const apolloProvider = () => {
     labels: null,
     annotations: null,
   };
+  const data = { nodes: { metadata, status: {}, spec: {} } };
 
   cache.writeQuery({
     query: k8sPodsQuery,
-    data: {
-      metadata,
-      spec: {},
-      status: {
-        phase: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sDeploymentsQuery,
-    data: {
-      metadata,
-      status: {
-        conditions: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sStatefulSetsQuery,
-    data: {
-      metadata,
-      status: {
-        readyReplicas: null,
-      },
-      spec: {
-        replicas: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sReplicaSetsQuery,
-    data: {
-      metadata,
-      status: {
-        readyReplicas: null,
-      },
-      spec: {
-        replicas: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sDaemonSetsQuery,
-    data: {
-      metadata,
-      status: {
-        numberMisscheduled: null,
-        numberReady: null,
-        desiredNumberScheduled: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sJobsQuery,
-    data: {
-      metadata,
-      status: {
-        failed: null,
-        succeeded: null,
-      },
-      spec: {
-        completions: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sCronJobsQuery,
-    data: {
-      metadata,
-      status: {
-        active: null,
-        lastScheduleTime: null,
-      },
-      spec: {
-        suspend: null,
-      },
-    },
+    data,
   });
 
   cache.writeQuery({
     query: k8sServicesQuery,
-    data: {
-      metadata,
-      spec: {
-        type: null,
-        clusterIP: null,
-        externalIP: null,
-        ports: null,
-      },
-    },
+    data,
   });
 
   return new VueApollo({

@@ -2,12 +2,14 @@
 <script>
 import { GlButton, GlIcon, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, s__, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { DESIGNS_ROUTE_NAME } from '../../router/constants';
 import DeleteButton from '../delete_button.vue';
 import DesignTodoButton from '../design_todo_button.vue';
 import DesignNavigation from './design_navigation.vue';
+import CloseButton from './close_button.vue';
 
 export default {
   i18n: {
@@ -20,6 +22,7 @@ export default {
     DesignNavigation,
     DeleteButton,
     DesignTodoButton,
+    CloseButton,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -77,6 +80,7 @@ export default {
   },
   data() {
     return {
+      isLoggedIn: isLoggedIn(),
       permissions: {
         createDesign: false,
       },
@@ -104,6 +108,9 @@ export default {
     canDeleteDesign() {
       return this.permissions.createDesign;
     },
+    issueTitle() {
+      return this.design.issue.title;
+    },
   },
   DESIGNS_ROUTE_NAME,
 };
@@ -111,48 +118,52 @@ export default {
 
 <template>
   <header
-    class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-bg-white gl-py-4 gl-pl-5 gl-border-b js-design-header"
+    class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-md-align-items-center gl-justify-content-space-between gl-max-w-full gl-bg-white gl-py-4 gl-pl-5 gl-border-b js-design-header"
   >
-    <div class="gl-display-flex gl-align-items-center">
-      <div class="gl-overflow-hidden gl-display-flex gl-align-items-center">
+    <div
+      class="gl-display-flex gl-flex-direction-row gl-align-items-center gl-mb-3 gl-md-mb-0 gl-overflow-hidden"
+    >
+      <div class="gl-overflow-hidden gl-display-flex gl-mr-3">
         <gl-skeleton-loader v-if="isLoading" :lines="1" />
-        <h2 v-else class="gl-m-0 str-truncated-100 gl-font-base">{{ filename }}</h2>
+        <h2 v-else class="gl-display-flex gl-overflow-hidden gl-m-0 gl-font-base">
+          <span class="gl-text-truncate gl-text-gray-900 gl-text-decoration-none">
+            {{ issueTitle }}
+          </span>
+          <gl-icon name="chevron-right" class="gl-text-gray-200" />
+          <span class="gl-text-truncate gl-font-weight-normal">{{ filename }}</span>
+        </h2>
         <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
       </div>
+      <close-button class="gl-md-display-none gl-ml-auto" />
     </div>
-    <design-navigation :id="id" class="gl-ml-auto gl-flex-shrink-0" />
-    <design-todo-button :design="design" class="gl-mr-3" @error="$emit('todoError', $event)" />
-    <gl-button
-      v-gl-tooltip.bottom
-      :href="image"
-      icon="download"
-      :title="$options.i18n.downloadButtonLabel"
-      :aria-label="$options.i18n.downloadButtonLabel"
-    />
-    <delete-button
-      v-if="isLatestVersion && canDeleteDesign"
-      v-gl-tooltip.bottom
-      class="gl-ml-3"
-      :is-deleting="isDeleting"
-      button-variant="default"
-      button-icon="archive"
-      button-category="secondary"
-      :title="s__('DesignManagement|Archive design')"
-      @delete-selected-designs="$emit('delete')"
-    />
-    <div class="gl-ml-5 gl-border-l">
-      <router-link
-        :to="{
-          name: $options.DESIGNS_ROUTE_NAME,
-          query: $route.query,
-        }"
-        :aria-label="s__('DesignManagement|Go back to designs')"
-        data-testid="close-design"
-        class="btn btn-default-tertiary gl-display-flex gl-align-items-center gl-justify-content-center text-plain gl-p-3 gl-mx-3 gl-border-0"
-        tag="button"
-      >
-        <gl-icon name="close" />
-      </router-link>
+    <div class="gl-display-flex gl-md-flex-direction-row gl-flex-shrink-0 gl-md-ml-auto gl-mr-5">
+      <design-todo-button
+        v-if="isLoggedIn"
+        :design="design"
+        class="gl-mr-3 gl-ml-0 gl-md-ml-3"
+        @error="$emit('todoError', $event)"
+      />
+      <gl-button
+        v-gl-tooltip.bottom
+        :href="image"
+        icon="download"
+        :title="$options.i18n.downloadButtonLabel"
+        :aria-label="$options.i18n.downloadButtonLabel"
+        :class="{ 'gl-mr-6': !isLoggedIn }"
+      />
+      <delete-button
+        v-if="isLatestVersion && canDeleteDesign"
+        v-gl-tooltip.bottom
+        class="gl-ml-3 gl-mr-6"
+        :is-deleting="isDeleting"
+        button-variant="default"
+        button-icon="archive"
+        button-category="secondary"
+        :title="s__('DesignManagement|Archive design')"
+        @delete-selected-designs="$emit('delete')"
+      />
+      <design-navigation :id="id" class="gl-ml-auto" />
     </div>
+    <close-button class="gl-display-none gl-md-display-flex" />
   </header>
 </template>

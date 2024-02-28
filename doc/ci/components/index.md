@@ -328,7 +328,7 @@ For example:
 ```yaml
 include:
   # include the component located in the current project from the current SHA
-  - component: $CI_SERVER_HOST/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
+  - component: $CI_COMPONENT_FQDN/$CI_PROJECT_PATH/my-component@$CI_COMMIT_SHA
     inputs:
       stage: build
 
@@ -473,7 +473,7 @@ For example, to create a component with `stage` configuration that can be define
   stages: [verify, deploy]
 
   include:
-    - component: gitlab.com/gitlab-org/ruby-test@1.0
+    - component: $CI_COMPONENT_FQDN/gitlab-org/ruby-test@1.0
       inputs:
         stage: verify
   ```
@@ -506,7 +506,7 @@ For example, use `inputs` instead of variables to configure a scanner's output f
 
   ```yaml
   include:
-    - component: gitlab.example.com/my-scanner@1.0
+    - component: $CI_COMPONENT_FQDN/my-scanner@1.0
       inputs:
         scanner-output: yaml
   ```

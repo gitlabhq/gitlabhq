@@ -37,18 +37,8 @@ exports[`Design management design index page renders design index 1`] = `
         <div
           class="gl-h-full gl-pt-0 image-notes"
         >
-          <h2
-            class="gl-font-weight-bold gl-mt-4"
-          >
-            My precious issue
-          </h2>
-          <a
-            class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
-            href="full-issue-url"
-          >
-            ull-issue-path
-          </a>
           <description-form-stub
+            class="gl-mt-4"
             design="[object Object]"
             designvariables="[object Object]"
             markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"
@@ -156,18 +146,8 @@ exports[`Design management design index page with error GlAlert is rendered in c
         <div
           class="gl-h-full gl-pt-0 image-notes"
         >
-          <h2
-            class="gl-font-weight-bold gl-mt-4"
-          >
-            My precious issue
-          </h2>
-          <a
-            class="gl-display-block gl-mb-6 gl-text-decoration-none gl-text-gray-400"
-            href="full-issue-url"
-          >
-            ull-issue-path
-          </a>
           <description-form-stub
+            class="gl-mt-4"
             design="[object Object]"
             designvariables="[object Object]"
             markdownpreviewpath="/project-path/preview_markdown?target_type=Issue"

@@ -8,6 +8,7 @@ const runningPod = {
     annotations: { annotation: 'text', another: 'text' },
   },
   spec: { restartPolicy: 'Never', terminationGracePeriodSeconds: 30 },
+  __typename: 'LocalWorkloadItem',
 };
 const pendingPod = {
   status: { phase: 'Pending' },
@@ -19,6 +20,7 @@ const pendingPod = {
     annotations: { annotation: 'text', another: 'text' },
   },
   spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const succeededPod = {
   status: { phase: 'Succeeded' },
@@ -30,6 +32,7 @@ const succeededPod = {
     annotations: {},
   },
   spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const failedPod = {
   status: { phase: 'Failed' },
@@ -41,6 +44,7 @@ const failedPod = {
     annotations: {},
   },
   spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sPodsMock = [runningPod, runningPod, pendingPod, succeededPod, failedPod, failedPod];
@@ -143,6 +147,8 @@ const pendingDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const readyDeployment = {
   status: {
@@ -158,6 +164,8 @@ const readyDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 const failedDeployment = {
   status: {
@@ -173,6 +181,8 @@ const failedDeployment = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sDeploymentsMock = [
@@ -246,6 +256,7 @@ const readyStatefulSet = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 const failedStatefulSet = {
   status: { readyReplicas: 1 },
@@ -257,6 +268,7 @@ const failedStatefulSet = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const k8sStatefulSetsMock = [readyStatefulSet, readyStatefulSet, failedStatefulSet];
@@ -317,6 +329,8 @@ const readyDaemonSet = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedDaemonSet = {
@@ -328,6 +342,8 @@ const failedDaemonSet = {
     labels: {},
     annotations: {},
   },
+  spec: {},
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockDaemonSetsStats = [
@@ -374,6 +390,7 @@ const completedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedJob = {
@@ -386,6 +403,7 @@ const failedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const anotherFailedJob = {
@@ -398,6 +416,7 @@ const anotherFailedJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockJobsStats = [
@@ -453,6 +472,7 @@ const readyCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const suspendedCronJob = {
@@ -465,6 +485,7 @@ const suspendedCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 const failedCronJob = {
@@ -477,6 +498,7 @@ const failedCronJob = {
     labels: {},
     annotations: {},
   },
+  __typename: 'LocalWorkloadItem',
 };
 
 export const mockCronJobsStats = [
@@ -548,6 +570,8 @@ export const k8sServicesMock = [
       externalIP: '-',
       type: 'ClusterIP',
     },
+    status: {},
+    __typename: 'LocalWorkloadItem',
   },
   {
     metadata: {
@@ -580,6 +604,8 @@ export const k8sServicesMock = [
       externalIP: '-',
       type: 'NodePort',
     },
+    status: {},
+    __typename: 'LocalWorkloadItem',
   },
 ];
 

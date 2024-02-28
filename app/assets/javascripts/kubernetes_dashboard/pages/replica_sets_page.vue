@@ -22,13 +22,15 @@ export default {
         return (
           data?.k8sReplicaSets?.map((replicaSet) => {
             return {
-              name: replicaSet.metadata?.name,
-              namespace: replicaSet.metadata?.namespace,
+              name: replicaSet.metadata.name,
+              namespace: replicaSet.metadata.namespace,
               status: calculateStatefulSetStatus(replicaSet),
-              age: getAge(replicaSet.metadata?.creationTimestamp),
-              labels: replicaSet.metadata?.labels,
-              annotations: replicaSet.metadata?.annotations,
+              age: getAge(replicaSet.metadata.creationTimestamp),
+              labels: replicaSet.metadata.labels,
+              annotations: replicaSet.metadata.annotations,
               kind: s__('KubernetesDashboard|ReplicaSet'),
+              spec: replicaSet.spec,
+              fullStatus: replicaSet.status,
             };
           }) || []
         );

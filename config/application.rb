@@ -255,19 +255,6 @@ module Gitlab
     config.active_record.has_many_inversing = false
     config.active_record.belongs_to_required_by_default = false
 
-    # Switch between cssbundling-rails and sassc-rails conditionally
-    # To activate cssbundling-rails you can set `USE_NEW_CSS_PIPELINE=1`
-    # For more context, see: https://gitlab.com/gitlab-org/gitlab/-/issues/438278
-    # Need to be loaded before initializers
-    config.before_configuration do
-      if Gitlab::Utils.to_boolean(ENV["USE_NEW_CSS_PIPELINE"], default: true)
-        require 'cssbundling-rails'
-      else
-        require 'fileutils'
-        require 'sassc-rails'
-      end
-    end
-
     # Enable the asset pipeline
     config.assets.enabled = true
 
@@ -624,11 +611,8 @@ module Gitlab
     end
 
     # Add `app/assets/builds` as the highest precedence to find assets
-    # This is required if cssbundling-rails is used, but should not affect sassc-rails. it would be empty
-    if defined?(Cssbundling)
-      initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
-        app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
-      end
+    initializer :add_cssbundling_output_dir, after: :prefer_specialized_assets do |app|
+      app.config.assets.paths.unshift("#{config.root}/app/assets/builds")
     end
 
     # We run the contents of active_record.clear_active_connections again

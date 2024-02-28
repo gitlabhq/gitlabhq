@@ -52,7 +52,6 @@ module Tasks
         puts "Generating the SHA256 hash for #{asset_files.size} Webpack-related assets..." if verbose
 
         assets_sha256 = asset_files.map { |asset_file| Digest::SHA256.file(asset_file).hexdigest }.join
-        assets_sha256 += ENV.fetch('USE_NEW_CSS_PIPELINE', 'true')
 
         Digest::SHA256.hexdigest(assets_sha256).tap { |sha256| puts "=> SHA256 generated in #{Time.now - start_time}: #{sha256}" if verbose }
       end
@@ -113,7 +112,7 @@ namespace :gitlab do
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
         Gitlab::TaskHelpers.invoke_and_time_task('gettext:compile')
         # Skip Yarn Install when using Cssbundling
-        Rake::Task["css:install"].clear if defined?(Cssbundling)
+        Rake::Task["css:install"].clear
         Gitlab::TaskHelpers.invoke_and_time_task('rake:assets:precompile')
 
         log_path = ENV['WEBPACK_COMPILE_LOG_PATH']

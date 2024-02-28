@@ -44,7 +44,7 @@ module Gitlab
         private
 
         def existing_sequence(table_name, col_name)
-          @existing_sequence ||= Gitlab::Database::PostgresSequence
+          Gitlab::Database::PostgresSequence
             .by_table_name(table_name)
             .by_col_name(col_name)
             .to_a

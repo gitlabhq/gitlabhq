@@ -51,6 +51,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_TAG_MESSAGE`           | Pipeline    | 15.5   | all    | The commit tag message. Available only in pipelines for tags. |
 | `CI_COMMIT_TIMESTAMP`             | Pipeline    | 13.4   | all    | The timestamp of the commit in the [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. For example, `2022-01-31T16:47:55Z`. [UTC by default](../../administration/timezone.md). |
 | `CI_COMMIT_TITLE`                 | Pipeline    | 10.8   | all    | The title of the commit. The full first line of the message. |
+| `CI_COMPONENT_FQDN`               | Pipeline    | 16.10  | all    | The Fully Qualified Domain Name of the instance. For example `gitlab.example.com:8080`. |
 | `CI_CONCURRENT_ID`                | Jobs only   | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`        | Jobs only   | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                  | Pipeline    | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |

@@ -52,7 +52,7 @@ RSpec.describe 'ClickHouse::Client', :click_house, feature_category: :database d
 
       describe 'RSpec hooks' do
         it 'ensures that tables are empty' do
-          results = ClickHouse::Client.select('SELECT * FROM FINAL events', :main)
+          results = ClickHouse::Client.select('SELECT * FROM events FINAL', :main)
           expect(results).to be_empty
         end
 

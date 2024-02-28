@@ -137,19 +137,12 @@ export default {
   <design-disclosure :open="true">
     <template #default>
       <div class="image-notes gl-h-full gl-pt-0" @click.self="handleSidebarClick">
-        <h2 class="gl-font-weight-bold gl-mt-4">
-          {{ issue.title }}
-        </h2>
-        <a
-          class="gl-text-gray-400 gl-text-decoration-none gl-mb-6 gl-display-block"
-          :href="issue.webUrl"
-          >{{ issue.webPath }}</a
-        >
         <description-form
           v-if="!isLoading"
           :design="design"
           :design-variables="designVariables"
           :markdown-preview-path="markdownPreviewPath"
+          class="gl-mt-4"
         />
         <participants
           :participants="discussionParticipants"
