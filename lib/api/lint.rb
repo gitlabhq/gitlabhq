@@ -31,6 +31,8 @@ module API
       get ':id/ci/lint', urgency: :low do
         authorize_read_code!
 
+        not_found! 'Repository' if user_project.empty_repo?
+
         content_ref = params[:content_ref] || params[:sha] || user_project.repository.root_ref_sha
         dry_run_ref = params[:dry_run_ref] || params[:ref] || user_project.default_branch
 

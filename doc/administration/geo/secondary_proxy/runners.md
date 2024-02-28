@@ -11,27 +11,9 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7 [with a flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. Enabled by default in 16.9
-
-FLAG:
-On self-managed GitLab, by default this feature is enabled.
-To disable it, an administrator can [disable the feature flag](../../feature_flags.md) named `geo_proxy_check_pipeline_refs`. On GitLab.com, this feature is not available.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415179) in GitLab 16.7. Enabled by default in 16.9
 
 With [Geo proxying for secondary sites](index.md), it is possible to register a `gitlab-runner` with a secondary site. This offloads load from the primary instance.
-
-## Enable or disable secondary runners
-
-To enable secondary runners, SSH into a Rails node on the **primary** Geo site and run:
-
-```ruby
-sudo gitlab-rails runner 'Feature.enable(:geo_proxy_check_pipeline_refs)'
-```
-
-To disable secondary runners, SSH into a Rails node on the **primary** Geo site and run:
-
-```ruby
-sudo gitlab-rails runner `Feature.disable(:geo_proxy_check_pipeline_refs)`
-```
 
 ## Use secondary runners with a Location Aware public URL (Unified URL)
 

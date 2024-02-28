@@ -14,6 +14,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_columns %i[delayed_project_removal lock_delayed_project_removal delayed_group_deletion], remove_with: '16.10', remove_after: '2024-03-22'
+  ignore_column :instance_level_code_suggestions_enabled, remove_with: '17.0', remove_after: '2024-04-22' # See https://gitlab.com/gitlab-org/gitlab/-/issues/440636
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -673,10 +674,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   validates :sentry_clientside_traces_sample_rate,
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1, message: N_('must be a value between 0 and 1') }
-
-  validates :instance_level_code_suggestions_enabled,
-    allow_nil: false,
-    inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   validates :package_registry_allow_anyone_to_pull_option,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }

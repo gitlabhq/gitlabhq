@@ -1,3 +1,10 @@
 development:
   unique_cookie_key_postfix: true
   cookie_key: _gitlab_session
+  session_cookie_token_prefix: ""
+
+test:
+  session_cookie_token_prefix: ""
+
+production:
+  session_cookie_token_prefix: ""

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 
 A five-user limit applies to newly created top-level namespaces with
-private visibility on GitLab SaaS. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.
+private visibility on GitLab.com. For existing namespaces created before December 28, 2022, the limit was applied on June 13, 2023.
 
 When the five-user limit is applied, top-level private namespaces
 exceeding the user limit are placed in a read-only state. These
@@ -19,7 +19,7 @@ namespaces cannot write new data to repositories, Git Large File
 Storage (LFS), packages, or registries. For the full list of restricted
 actions, see [Read-only namespaces](read_only_namespaces.md).
 
-In the Free tier of GitLab SaaS, user limits do not apply to users in:
+In the Free tier of GitLab.com, user limits do not apply to users in:
 
 - Public top-level groups
 - Paid tiers
@@ -87,7 +87,7 @@ with a Free subscription exceeds the user limit, their namespace becomes [read-o
 
 To avoid user limits on groups with Free subscriptions, you can
 include them in your organization's subscription. To check if a group is included in the subscription,
-[view the group's subscription details](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription).
+[view the group's subscription details](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription).
 If the group is on the Free tier, it is not included in your organization's subscription.
 
 To include the group in your Paid subscription, [transfer the group](../user/group/manage.md#transfer-a-group) to your organization's
@@ -117,7 +117,7 @@ Users that are not part of the top-level namespace require additional seats to r
 
 ## Increase the five-user limit
 
-On the Free tier on GitLab SaaS, you cannot increase the limit of five users on top-level groups with private visibility.
+On the Free tier on GitLab.com, you cannot increase the limit of five users on top-level groups with private visibility.
 
 For larger teams, you should upgrade to the Premium or Ultimate tier, which
 has no user limits and offers more features to increase team productivity. To experience the

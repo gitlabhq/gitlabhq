@@ -4,15 +4,16 @@
 
 = event_user_info(event)
 
-.event-title.d-flex.gl-flex-wrap
+.event-title.gl-display-flex.gl-flex-wrap
   = inline_event_icon(event)
-  %span.event-type.d-inline-block.gl-mr-2.pushed{ class: user_profile_activity_classes }= event.push_activity_description
-  - unless event.batch_push?
-    %span.gl-mr-2.text-truncate
-      - commits_link = project_commits_path(project, event.ref_name)
-      = link_to_if event.linked_to_reference?, event.ref_name, commits_link, class: 'ref-name'
+  .event-title-block.gl-display-inline-block.gl-mr-2
+    %span.event-type.pushed{ class: user_profile_activity_classes }= event.push_activity_description
+    - unless event.batch_push?
+      %span.text-truncate
+        - commits_link = project_commits_path(project, event.ref_name)
+        = link_to_if event.linked_to_reference?, event.ref_name, commits_link, class: 'ref-name'
 
-  = render "events/event_scope", event: event
+    = render "events/event_scope", event: event
 
 - if event.push_with_commits?
   .event-body

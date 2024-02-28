@@ -4,7 +4,10 @@ require 'spec_helper'
 
 RSpec.describe API::Lint, feature_category: :pipeline_composition do
   describe 'GET /projects/:id/ci/lint' do
-    subject(:ci_lint) { get api("/projects/#{project.id}/ci/lint", api_user), params: { content_ref: content_ref, dry_run: dry_run, include_jobs: include_jobs } }
+    subject(:ci_lint) do
+      get api("/projects/#{project.id}/ci/lint", api_user),
+        params: { content_ref: content_ref, dry_run: dry_run, include_jobs: include_jobs }
+    end
 
     let(:project) { create(:project, :repository) }
     let(:content_ref) { nil }
@@ -174,6 +177,26 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['errors']).to match_array(['Please provide content of .gitlab-ci.yml'])
+        end
+      end
+
+      context 'when repository is empty' do
+        let(:project) { create(:project_empty_repo) }
+
+        it 'returns 404 response' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when repository does not exist' do
+        let(:project) { create(:project) }
+
+        it 'returns 404 response' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 

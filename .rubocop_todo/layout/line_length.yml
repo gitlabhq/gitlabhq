@@ -3373,7 +3373,6 @@ Layout/LineLength:
     - 'spec/initializers/mail_encoding_patch_spec.rb'
     - 'spec/initializers/pages_storage_check_spec.rb'
     - 'spec/initializers/secret_token_spec.rb'
-    - 'spec/initializers/session_store_spec.rb'
     - 'spec/initializers/settings_spec.rb'
     - 'spec/lib/api/entities/ci/pipeline_spec.rb'
     - 'spec/lib/api/entities/project_import_status_spec.rb'

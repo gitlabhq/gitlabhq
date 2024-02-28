@@ -34,7 +34,7 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Sync deployments    | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync feature flags  | **{dotted-circle}** No | **{check-circle}** Yes |
 | Sync interval       | Up to 60 minutes       | Real time              |
-| Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab SaaS only) |
+| Create branches     | **{dotted-circle}** No | **{check-circle}** Yes (GitLab.com only) |
 | Create merge request from branch | **{check-circle}** Yes | **{check-circle}** Yes |
 | Create branch from Jira issue | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66032) in GitLab 14.2) |
 

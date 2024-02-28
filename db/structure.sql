@@ -14822,6 +14822,24 @@ CREATE SEQUENCE remote_development_agent_configs_id_seq
 
 ALTER SEQUENCE remote_development_agent_configs_id_seq OWNED BY remote_development_agent_configs.id;
 
+CREATE TABLE remote_development_namespace_cluster_agent_mappings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint NOT NULL,
+    cluster_agent_id bigint NOT NULL,
+    creator_id bigint
+);
+
+CREATE SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE remote_development_namespace_cluster_agent_mappings_id_seq OWNED BY remote_development_namespace_cluster_agent_mappings.id;
+
 CREATE TABLE remote_mirrors (
     id integer NOT NULL,
     project_id integer,
@@ -19280,6 +19298,8 @@ ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq':
 
 ALTER TABLE ONLY remote_development_agent_configs ALTER COLUMN id SET DEFAULT nextval('remote_development_agent_configs_id_seq'::regclass);
 
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings ALTER COLUMN id SET DEFAULT nextval('remote_development_namespace_cluster_agent_mappings_id_seq'::regclass);
+
 ALTER TABLE ONLY remote_mirrors ALTER COLUMN id SET DEFAULT nextval('remote_mirrors_id_seq'::regclass);
 
 ALTER TABLE ONLY required_code_owners_sections ALTER COLUMN id SET DEFAULT nextval('required_code_owners_sections_id_seq'::regclass);
@@ -21752,6 +21772,9 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY remote_development_agent_configs
     ADD CONSTRAINT remote_development_agent_configs_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT remote_development_namespace_cluster_agent_mappings_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY remote_mirrors
     ADD CONSTRAINT remote_mirrors_pkey PRIMARY KEY (id);
 
@@ -23438,6 +23461,10 @@ CREATE INDEX i_dast_profiles_tags_on_scanner_profiles_id ON dast_profiles_tags U
 
 CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
 
+CREATE INDEX i_namespace_cluster_agent_mappings_on_cluster_agent_id ON remote_development_namespace_cluster_agent_mappings USING btree (cluster_agent_id);
+
+CREATE INDEX i_namespace_cluster_agent_mappings_on_creator_id ON remote_development_namespace_cluster_agent_mappings USING btree (creator_id);
+
 CREATE UNIQUE INDEX i_packages_unique_project_id_package_type_package_name_pattern ON packages_protection_rules USING btree (project_id, package_type, package_name_pattern);
 
 CREATE INDEX i_pkgs_deb_file_meta_on_updated_at_package_file_id_when_unknown ON packages_debian_file_metadata USING btree (updated_at, package_file_id) WHERE (file_type = 1);
@@ -24726,7 +24753,7 @@ CREATE INDEX index_deployment_approvals_on_approval_rule_id ON deployment_approv
 
 CREATE INDEX index_deployment_approvals_on_created_at_and_id ON deployment_approvals USING btree (created_at, id);
 
-CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_id_and_user_id ON deployment_approvals USING btree (deployment_id, user_id);
+CREATE UNIQUE INDEX index_deployment_approvals_on_deployment_user_approval_rule ON deployment_approvals USING btree (deployment_id, user_id, approval_rule_id);
 
 CREATE INDEX index_deployment_approvals_on_user_id ON deployment_approvals USING btree (user_id);
 
@@ -27574,6 +27601,8 @@ CREATE UNIQUE INDEX unique_merge_request_metrics_by_merge_request_id ON merge_re
 
 CREATE INDEX unique_ml_model_versions_on_model_id_and_id ON ml_model_versions USING btree (model_id, id DESC);
 
+CREATE UNIQUE INDEX unique_namespace_cluster_agent_mappings_for_agent_association ON remote_development_namespace_cluster_agent_mappings USING btree (namespace_id, cluster_agent_id);
+
 CREATE UNIQUE INDEX unique_organizations_on_path_case_insensitive ON organizations USING btree (lower(path));
 
 CREATE UNIQUE INDEX unique_packages_project_id_and_name_and_version_when_debian ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 9) AND (status <> 4));
@@ -29295,6 +29324,9 @@ ALTER TABLE ONLY approval_group_rules_protected_branches
 ALTER TABLE ONLY issue_customer_relations_contacts
     ADD CONSTRAINT fk_0c0037f723 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_0c483ecb9d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_0c83baaa5f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -29315,6 +29347,9 @@ ALTER TABLE ONLY project_pages_metadata
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_1383c72212 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -30095,6 +30130,9 @@ ALTER TABLE ONLY ci_sources_pipelines
 
 ALTER TABLE ONLY packages_maven_metadata
     ADD CONSTRAINT fk_be88aed360 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
+    ADD CONSTRAINT fk_be8e9c740f FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
@@ -32285,6 +32323,9 @@ ALTER TABLE issue_search_data
 
 ALTER TABLE issue_search_data
     ADD CONSTRAINT issue_search_data_project_id_fkey FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT tmp_fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY user_follow_users
     ADD CONSTRAINT user_follow_users_followee_id_fkey FOREIGN KEY (followee_id) REFERENCES users(id) ON DELETE CASCADE;

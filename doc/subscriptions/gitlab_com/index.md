@@ -5,14 +5,17 @@ description: Seat usage, compute minutes, storage limits, renewal info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab SaaS subscription
+# GitLab.com subscription
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-GitLab SaaS is the GitLab software-as-a-service offering, which is available at GitLab.com.
-You don't need to install anything to use GitLab SaaS, you only need to
+NOTE:
+The GitLab SaaS subscription is being renamed to GitLab.com. During this transition, you might see references to GitLab SaaS and GitLab.com in the UI and documentation.
+
+GitLab.com is the GitLab multi-tenant software-as-a-service (SaaS) offering.
+You don't need to install anything to use GitLab.com, you only need to
 [sign up](https://gitlab.com/users/sign_up). When you sign up, you choose:
 
 - [A subscription](https://about.gitlab.com/pricing/).
@@ -23,17 +26,17 @@ The subscription determines which features are available for your private projec
 Qualifying open source projects also get 50,000 compute minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
-## Obtain a GitLab SaaS subscription
+## Obtain a GitLab.com subscription
 
-A GitLab SaaS subscription applies to a top-level group.
+A GitLab.com subscription applies to a top-level group.
 Members of every subgroup and project in the group:
 
 - Can use the features of the subscription.
 - Consume seats in the subscription.
 
-To subscribe to GitLab SaaS:
+To subscribe to GitLab.com:
 
-1. View the [GitLab SaaS feature comparison](https://about.gitlab.com/pricing/feature-comparison/)
+1. View the [GitLab.com feature comparison](https://about.gitlab.com/pricing/feature-comparison/)
    and decide which tier you want.
 1. Create a user account for yourself by using the
    [sign up page](https://gitlab.com/users/sign_up).
@@ -44,13 +47,13 @@ To subscribe to GitLab SaaS:
 1. On the left sidebar, select **Settings > Billing** and choose a tier.
 1. Fill out the form to complete your purchase.
 
-## View your GitLab SaaS subscription
+## View your GitLab.com subscription
 
 Prerequisites:
 
 - You must have the Owner role for the group.
 
-To see the status of your GitLab SaaS subscription:
+To see the status of your GitLab.com subscription:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
@@ -68,7 +71,7 @@ The following information is displayed:
 
 ## How seat usage is determined
 
-A GitLab SaaS subscription uses a concurrent (_seat_) model. You pay for a
+A GitLab.com subscription uses a concurrent (_seat_) model. You pay for a
 subscription according to the maximum number of users assigned to the top-level group or its children during the billing period. You can
 add and remove users during the subscription period without incurring additional charges, as long as the total users
 at any given time doesn't exceed the subscription count. If the total users exceeds your subscription count, you will incur an overage
@@ -176,7 +179,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
-The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab SaaS.
+The user must not be assigned any other role, anywhere in the instance or in the namespace for GitLab.com.
 
 - If your project is private or internal, a user with the Guest role has
   [a set of permissions](../../user/permissions.md#project-members-permissions).
@@ -282,7 +285,7 @@ You cannot transfer:
 - A subscription with a Premium or Ultimate plan to a namespace which already has a Premium or Ultimate plan.
 - A subscription with code suggestions to a namespace which already has a subscriptions with code suggestions.
 
-## Upgrade your GitLab SaaS subscription tier
+## Upgrade your GitLab.com subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
 
@@ -303,12 +306,12 @@ continue to use free features.
 
 To resume paid feature functionality, purchase a new subscription.
 
-## Renew your GitLab SaaS subscription
+## Renew your GitLab.com subscription
 
 To renew your subscription:
 
 1. [Prepare for renewal by reviewing your account.](#prepare-for-renewal-by-reviewing-your-account)
-1. [Renew your GitLab SaaS subscription.](#renew-or-change-a-gitlab-saas-subscription)
+1. [Renew your GitLab.com subscription.](#renew-your-gitlabcom-subscription)
 
 ### Prepare for renewal by reviewing your account
 
@@ -320,7 +323,7 @@ Before you renew your subscription:
 1. Scroll down to the **Company information** section to verify or update the invoice contact details.
 1. In GitLab, review your list of user accounts and [remove inactive or unwanted users](#remove-users-from-your-subscription).
 
-### Renew or change a GitLab SaaS subscription
+### Renew or change a GitLab.com subscription
 
 Starting 30 days before a subscription expires, GitLab notifies group owners
 of the date of expiry with a banner in the GitLab user interface.
@@ -334,13 +337,13 @@ To renew your subscription:
 1. Select **Confirm purchase**.
 
 Your updated subscription is applied to your namespace. The renewal period start date
-is displayed on the group Billing page under **Next subscription term start date**. 
+is displayed on the group Billing page under **Next subscription term start date**.
 
 An invoice is generated for the renewal and available for viewing or download on the [View invoices](https://customers.gitlab.com/receipts) page.
 If you have difficulty during the renewal process, contact the [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293) for assistance.
 
 For details on upgrading your subscription tier, see
-[Upgrade your GitLab SaaS subscription tier](#upgrade-your-gitlab-saas-subscription-tier).
+[Upgrade your GitLab.com subscription tier](#upgrade-your-gitlabcom-subscription-tier).
 
 ### Automatic subscription renewal
 
@@ -374,7 +377,7 @@ If you have difficulty during the renewal process, contact the
 There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
 1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
-1. [Manually renew](#renew-or-change-a-gitlab-saas-subscription) within 15 days of subscription renewal date, and specify the desired seat quantity.
+1. [Manually renew](#renew-or-change-a-gitlabcom-subscription) within 15 days of subscription renewal date, and specify the desired seat quantity.
 1. Work with the Sales team to renew your subscription.
 
 ## Add or change the contacts for your subscription
@@ -430,7 +433,7 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 
 #### For your personal namespace
 
-1. Sign in to GitLab SaaS.
+1. Sign in to GitLab.com.
 1. From either your personal homepage or the group's page, go to **Settings > Usage Quotas**.
 1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
@@ -443,7 +446,7 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 1. Select the **Privacy Policy** and **Terms of Service** checkbox.
 1. Select **Buy subscription**.
 1. Sign out of the Customers Portal.
-1. Switch back to the GitLab SaaS tab and refresh the page.
+1. Switch back to the GitLab.com tab and refresh the page.
 
 The **Purchased storage available** total is incremented by the amount purchased. The read-only
 state for all projects is removed, and their excess usage is deducted from the additional storage.
@@ -452,12 +455,12 @@ state for all projects is removed, and their excess usage is deducted from the a
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5789) in GitLab 14.6.
 
-If you're using GitLab SaaS, you can purchase additional storage so your
+If you're using GitLab.com, you can purchase additional storage so your
 pipelines aren't blocked after you have used all your storage from your
 main quota. You can find pricing for additional storage on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).
 
-To purchase additional storage for your group on GitLab SaaS:
+To purchase additional storage for your group on GitLab.com:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.

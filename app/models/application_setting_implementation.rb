@@ -113,7 +113,6 @@ module ApplicationSettingImplementation
         import_sources: Settings.gitlab['import_sources'],
         include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
         instance_level_ai_beta_features_enabled: false,
-        instance_level_code_suggestions_enabled: false,
         invisible_captcha_enabled: false,
         issues_create_limit: 300,
         jira_connect_application_key: nil,

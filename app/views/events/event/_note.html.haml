@@ -4,17 +4,18 @@
 
 = event_user_info(event)
 
-.event-title.d-flex.gl-flex-wrap
+.event-title.gl-display-flex.gl-flex-wrap
   = inline_event_icon(event)
-  %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name + user_profile_activity_classes }
-    = event.action_name
-  = event_note_title_html(event)
-  - title = note_target_title(event.target)
-  - if title.present?
-    %span.event-target-title.gl-text-overflow-ellipsis.gl-overflow-hidden.gl-mr-2{ dir: "auto" }
-      = "&quot;".html_safe + title + "&quot".html_safe
+  .event-title-block.gl-display-inline-block.gl-mr-2
+    %span.event-type{ class: event.action_name + user_profile_activity_classes }
+      = event.action_name
+    %span= event_note_title_html(event)
+    - title = note_target_title(event.target)
+    - if title.present?
+      %span.event-target-title.gl-text-overflow-ellipsis.gl-overflow-hidden{ dir: "auto" }
+        = "&quot;".html_safe + title + "&quot".html_safe
 
-  = render "events/event_scope", event: event
+    = render "events/event_scope", event: event
 
 .event-body
   .event-note

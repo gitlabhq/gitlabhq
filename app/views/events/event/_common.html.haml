@@ -2,19 +2,21 @@
 
 = event_user_info(event)
 
-.event-title.d-flex.flex-wrap
+.event-title.gl-display-flex.gl-flex-wrap
   = inline_event_icon(event)
-  - if event.target
-    %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name + user_profile_activity_classes }
-      = localized_action_name(event)
-    %span.event-target-type.gl-mr-2{ class: user_profile_activity_classes }= event.target_type_name
-    = link_to event_target_path(event), class: 'has-tooltip event-target-link gl-mr-2', title: event.target_title do
-      = event.target.reference_link_text
-    - unless event.milestone?
-      %span.event-target-title.gl-text-overflow-ellipsis.gl-overflow-hidden.gl-mr-2{ dir: "auto" }
-        = "&quot;".html_safe + event.target.title + "&quot".html_safe
-  - else
-    %span.event-type.d-inline-block.gl-mr-2{ class: event.action_name }
-      = event_action_name(event)
+  .event-title-block.gl-display-inline-block.gl-mr-2
+    - if event.target
+      %span.event-type{ class: event.action_name + user_profile_activity_classes }
+        = localized_action_name(event)
+      %span.event-target-type{ class: user_profile_activity_classes }
+        = event.target_type_name
+      = link_to event_target_path(event), class: 'has-tooltip event-target-link', title: event.target_title do
+        = event.target.reference_link_text
+      - unless event.milestone?
+        %span.event-target-title.gl-text-overflow-ellipsis.gl-overflow-hidden{ dir: "auto" }
+          = "&quot;".html_safe + event.target.title + "&quot".html_safe
+    - else
+      %span.event-type.gl-display-inline-block{ class: event.action_name }
+        = event_action_name(event)
 
-  = render "events/event_scope", event: event if event.resource_parent.present?
+    = render "events/event_scope", event: event if event.resource_parent.present?

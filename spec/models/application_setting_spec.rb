@@ -332,8 +332,6 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
     it { is_expected.to validate_inclusion_of(:remember_me_enabled).in_array([true, false]) }
 
-    it { is_expected.to validate_inclusion_of(:instance_level_code_suggestions_enabled).in_array([true, false]) }
-
     it { is_expected.to validate_inclusion_of(:package_registry_allow_anyone_to_pull_option).in_array([true, false]) }
 
     it { is_expected.to allow_value([true, false]).for(:math_rendering_limits_enabled) }

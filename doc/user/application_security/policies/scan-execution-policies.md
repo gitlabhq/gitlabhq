@@ -384,6 +384,10 @@ Note the following:
 - `custom` scans are being executed for triggered rules only.
 - Jobs variables from `custom` scans take precedence over the project's CI/CD configuration.
 - Users triggering a pipeline must have at least read access to CI files specified in the `ci_configuration_path` or included in the CI/CD configuration.
+- It is not possible to define custom stages using the `stages` keyword in a custom scan action. Instead three default stages will be added to the pipeline:
+  - `.pipeline-policy-pre`at the beginning of the pipeline, before the `.pre` stage.
+  - `.pipeline-policy-test` after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
+  - `.pipeline-policy-post` at the very end of the pipeline, after the .post stage.
 
 #### Example security policies project
 

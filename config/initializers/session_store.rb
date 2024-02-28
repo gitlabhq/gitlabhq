@@ -13,10 +13,12 @@ rescue StandardError
 end
 
 raw_config = if File.exist?(Rails.root.join('config/session_store.yml'))
-               Rails.application.config_for(:session_store)
+               Rails.application.config_for(:session_store) || {}
              else
                {}
              end
+
+session_cookie_token_prefix = raw_config.fetch(:session_cookie_token_prefix, "")
 
 cookie_key = if Rails.env.development?
                cookie_key_prefix = raw_config.fetch(:cookie_key, "_gitlab_session")
@@ -33,14 +35,15 @@ cookie_key = if Rails.env.development?
 
 Rails.application.configure do
   config.session_store(
-    :redis_store, # Using the cookie_store would enable session replay attacks.
+    Gitlab::Sessions::RedisStore, # Using the cookie_store would enable session replay attacks
     redis_server: Gitlab::Redis::Sessions.params.merge(namespace: Gitlab::Redis::Sessions::SESSION_NAMESPACE),
     key: cookie_key,
     secure: Gitlab.config.gitlab.https,
     httponly: true,
     expires_in: Settings.gitlab['session_expire_delay'] * 60,
-    path: Rails.application.config.relative_url_root.presence || '/'
+    path: Rails.application.config.relative_url_root.presence || '/',
+    session_cookie_token_prefix: session_cookie_token_prefix
   )
 
-  config.middleware.insert_after ActionDispatch::Session::RedisStore, Gitlab::Middleware::UnauthenticatedSessionExpiry
+  config.middleware.insert_after Gitlab::Sessions::RedisStore, Gitlab::Middleware::UnauthenticatedSessionExpiry
 end

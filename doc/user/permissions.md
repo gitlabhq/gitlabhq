@@ -178,7 +178,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Edit project badges                                                                                                                                         |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Edit project settings                                                                                                                                       |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>[Export project](project/settings/import_export.md)                                                                                                         |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md)                                                                                   |       |          |           | ✓          | ✓     | Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
+| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md)                                                                                   |       |          |           | ✓          | ✓     | Project access tokens are supported for self-managed instances on Free and above. They are also supported on GitLab.com Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                         |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Rename project                                                                                                                                              |       |          |           | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                                         |       |          |           | ✓          | ✓     | When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
@@ -363,7 +363,7 @@ The following table lists group permissions available for each role:
 | [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |       |
 | Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |       |
 | Share (invite) groups with groups                                                       |       |          |           |            | ✓     |       |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) |       |          |           |            | ✓     | Does not apply to subgroups |
+| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription) |       |          |           |            | ✓     | Does not apply to subgroups |
 | View 2FA status of members                                                              |       |          |           |            | ✓     |       |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓     | Does not apply to subgroups |
 
@@ -388,7 +388,7 @@ DETAILS:
 Users with the Minimal Access role do not:
 
 - Automatically have access to projects and subgroups in that root group.
-- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab SaaS namespace.
+- Count as licensed seats on self-managed Ultimate subscriptions or any GitLab.com subscriptions, provided the user has no other role anywhere in the instance or in the GitLab.com namespace.
 
 Owners must explicitly add these users to the specific subgroups and
 projects.

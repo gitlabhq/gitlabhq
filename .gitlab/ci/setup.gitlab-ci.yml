@@ -57,6 +57,18 @@ clone-gitlab-repo:
       - '*'
     expire_in: '12 hours'
 
+master-pipeline-status:
+  extends:
+    - .default-retry
+    - .setup:rules:check-default-pipeline-status
+  stage: sync
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+  before_script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - scripts/check_default_pipeline_status.rb
+
 gitlab_git_test:
   extends:
     - .predictive-job
