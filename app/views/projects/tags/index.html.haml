@@ -1,42 +1,44 @@
 - page_title s_('TagsPage|Tags')
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
+- show_header = @tags.any? || @search.present?
 
-.flex-list
-  .top-area.adjust
-    .nav-text.row-main-content
-      = s_('TagsPage|Tags give the ability to mark specific points in history as being important')
+- if show_header
+  .flex-list
+    .top-area.adjust
+      .nav-text.row-main-content
+      .nav-controls.gl-my-3
+        #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort), sort_options: tags_sort_options_hash.to_json } }
+        = link_button_to nil, project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'has-tooltip gl-ml-auto', icon: 'rss'
+        - if can?(current_user, :admin_tag, @project)
+          = link_button_to new_project_tag_path(@project), data: { testid: "new-tag-button" }, variant: :confirm do
+            = s_('TagsPage|New tag')
 
-    .nav-controls
-      #js-tags-sort-dropdown{ data: { filter_tags_path: filter_tags_path(search: @search, sort: @sort), sort_options: tags_sort_options_hash.to_json } }
-      = link_button_to nil, project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'has-tooltip gl-ml-auto', icon: 'rss'
-      - if can?(current_user, :admin_tag, @project)
-        = link_button_to new_project_tag_path(@project), data: { testid: "new-tag-button" }, variant: :confirm do
-          = s_('TagsPage|New tag')
+    = render_if_exists 'projects/commits/mirror_status'
 
-  = render_if_exists 'projects/commits/mirror_status'
+    - if @tags_loading_error
+      = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tags')
 
-  - if @tags_loading_error
-    = render 'shared/errors/gitaly_unavailable', reason: s_('TagsPage|Unable to load tags')
-
-  .tags
     - if @tags.any?
-      %ul.flex-list.content-list
-        = render partial: 'tag', collection: @tags
+      .tags
+        %ul.flex-list.content-list
+          = render partial: 'tag', collection: @tags
+        = paginate @tags, theme: 'gitlab'
+    - elsif @search.present?
+      = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-search-md.svg',
+        title: s_('TagsPage|Sorry, your filter produced no results'),
+        empty_state_options: { data: { testid: 'empty-search-result' } })
 
-      = paginate @tags, theme: 'gitlab'
+  - if can?(current_user, :admin_tag, @project)
+    .js-delete-tag-modal
 
-    - else
-      .nothing-here-block
-        - if @search.present?
-          = s_('TagsPage|Sorry, your filter produced no results.')
-        - else
-          = s_('TagsPage|Repository has no tags yet.')
-          %br
-          %small
-            = s_('TagsPage|Use git tag command to add a new one:')
-            %br
-            %span.monospace git tag -a v1.4 -m 'version 1.4'
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
+    title: s_('TagsPage|Repository has no tags yet'),
+    primary_button_text: s_('TagsPage|New tag'),
+    primary_button_link: new_project_tag_path(@project),
+    empty_state_options: { data: { testid: 'empty-state-tags' } }) do |c|
 
-- if can?(current_user, :admin_tag, @project)
-  .js-delete-tag-modal
+    - c.with_description do
+      %p= s_('TagsPage|Tags give the ability to mark specific points in history as being important.')
+      %p= s_("TagsPage|Create a new tag using the %{code_start}git tag%{code_end} command. For example, %{code_start}git tag -a v1.4 -m 'version 1.4'%{code_end}").html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe }

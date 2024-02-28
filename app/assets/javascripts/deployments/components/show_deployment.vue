@@ -15,6 +15,7 @@ export default {
     DeploymentAside,
     DeploymentApprovals: () =>
       import('ee_component/deployments/components/deployment_approvals.vue'),
+    DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
   },
   inject: ['projectPath', 'deploymentIid', 'environmentName'],
   apollo: {
@@ -85,6 +86,11 @@ export default {
           :approval-summary="deployment.approvalSummary"
           :deployment="deployment"
           class="gl-mt-8 gl-w-90p"
+        />
+        <deployment-timeline
+          v-if="hasApprovalSummary"
+          :approval-summary="deployment.approvalSummary"
+          class="gl-w-90p"
         />
       </div>
       <deployment-aside

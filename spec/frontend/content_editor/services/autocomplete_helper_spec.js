@@ -199,4 +199,17 @@ describe('AutocompleteHelper', () => {
       ).toMatchSnapshot();
     },
   );
+
+  it('loads default datasources if not passed', () => {
+    gl.GfmAutoComplete = {
+      dataSources: {
+        members: '/gitlab-org/gitlab-test/-/autocomplete_sources/members',
+      },
+    };
+    autocompleteHelper = new AutocompleteHelper({});
+
+    expect(autocompleteHelper.dataSourceUrls.members).toBe(
+      '/gitlab-org/gitlab-test/-/autocomplete_sources/members',
+    );
+  });
 });

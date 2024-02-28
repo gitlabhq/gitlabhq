@@ -17381,7 +17381,13 @@ msgstr ""
 msgid "Deployment|Add approval comment"
 msgstr ""
 
+msgid "Deployment|Approval Comments"
+msgstr ""
+
 msgid "Deployment|Approve deployment"
+msgstr ""
+
+msgid "Deployment|Approved"
 msgstr ""
 
 msgid "Deployment|Branch"
@@ -17436,6 +17442,9 @@ msgid "Deployment|Open URL"
 msgstr ""
 
 msgid "Deployment|Reject"
+msgstr ""
+
+msgid "Deployment|Rejected"
 msgstr ""
 
 msgid "Deployment|Related Tags"
@@ -23419,25 +23428,19 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Connect Google Cloud Workload Identity Federation to GitLab."
+msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Example: %{code_open}my-sample-project-191923%{code_close}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Google Cloud Artifact Registry"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Google Cloud Identity and Access Management"
+msgid "GoogleCloudPlatformService|Google Cloud IAM"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Google Cloud project ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project ID for the Workload Identity Federation."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project number"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
@@ -23446,10 +23449,25 @@ msgstr ""
 msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Pool ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Project ID"
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Project number"
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Project number of the Workload Identity Pool."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Project with the Artifact Registry repository."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Provider ID"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Repository location"
@@ -37130,9 +37148,6 @@ msgstr ""
 msgid "Please accept the Terms of Service before continuing."
 msgstr ""
 
-msgid "Please add a comment in the text area above"
-msgstr ""
-
 msgid "Please check the configuration file for this chart"
 msgstr ""
 
@@ -42436,9 +42451,6 @@ msgid "Root cause analysis is a feature that analyzes your logs to determine why
 msgstr ""
 
 msgid "Ruby"
-msgstr ""
-
-msgid "Rule"
 msgstr ""
 
 msgid "Rule name is already taken."
@@ -49310,6 +49322,9 @@ msgstr ""
 msgid "TagsPage|Cancel, keep tag"
 msgstr ""
 
+msgid "TagsPage|Create a new tag using the %{code_start}git tag%{code_end} command. For example, %{code_start}git tag -a v1.4 -m 'version 1.4'%{code_end}"
+msgstr ""
+
 msgid "TagsPage|Create release"
 msgstr ""
 
@@ -49364,22 +49379,19 @@ msgstr ""
 msgid "TagsPage|Please type the following to confirm:"
 msgstr ""
 
-msgid "TagsPage|Repository has no tags yet."
+msgid "TagsPage|Repository has no tags yet"
 msgstr ""
 
-msgid "TagsPage|Sorry, your filter produced no results."
+msgid "TagsPage|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "TagsPage|Tags"
 msgstr ""
 
-msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
+msgid "TagsPage|Tags give the ability to mark specific points in history as being important."
 msgstr ""
 
 msgid "TagsPage|Unable to load tags"
-msgstr ""
-
-msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
 msgid "TagsPage|Yes, delete protected tag"
@@ -60523,18 +60535,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "vulnerability|Add a comment"
-msgstr ""
-
-msgid "vulnerability|Add a comment or reason for dismissal"
-msgstr ""
-
-msgid "vulnerability|Add comment"
-msgstr ""
-
-msgid "vulnerability|Add comment & dismiss"
-msgstr ""
-
-msgid "vulnerability|Save comment"
 msgstr ""
 
 msgid "vulnerability|dismissed"

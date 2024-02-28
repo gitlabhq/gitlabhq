@@ -82,7 +82,10 @@ module API
           params: project_finder_params,
           options: finder_options
         ).execute
-        projects = reorder_projects_with_similarity_order_support(group, projects)
+
+        order_by = params[:order_by]
+        projects = reorder_projects_with_order_support(projects, group, order_by)
+
         paginate(projects)
       end
 
@@ -148,10 +151,15 @@ module API
         accepted!
       end
 
-      def reorder_projects_with_similarity_order_support(group, projects)
-        return handle_similarity_order(group, projects) if params[:order_by] == 'similarity'
-
-        reorder_projects(projects)
+      def reorder_projects_with_order_support(projects, group, order_by)
+        case order_by
+        when 'similarity'
+          handle_similarity_order(group, projects)
+        when 'star_count'
+          handle_star_count_order(group, projects)
+        else
+          reorder_projects(projects)
+        end
       end
 
       def order_groups(groups)
@@ -176,6 +184,12 @@ module API
           order_options['id'] ||= params[:sort] || 'asc'
           projects.reorder(order_options)
         end
+      end
+
+      def handle_star_count_order(group, projects)
+        order_options = { star_count: params[:sort] == 'asc' ? :asc : :desc }
+        order_options['id'] ||= params[:sort]
+        projects.reorder(order_options)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -307,7 +321,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity],
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity star_count],
                             default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'
@@ -349,7 +363,7 @@ module API
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
-        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at],
+        optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at star_count],
                             default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return projects sorted in ascending and descending order'

@@ -22,27 +22,50 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
+```plaintext
+POST /code_suggestions/completions
+```
+
 NOTE:
 This endpoint rate-limits each user to 60 requests per 1-minute window.
 
 Use the AI abstraction layer to generate code completions.
 
-```plaintext
-POST /code_suggestions/completions
-```
+Requests to this endpoint are proxied to the
+[AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/api.md).
 
-Requests to this endpoint are proxied directly to the [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions). The documentation for the endpoint is currently the SSoT for named parameters.
+Parameters:
+
+| Attribute      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `current_file` | hash    | yes      | Attributes of file for which code suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
+| `intent`       | string  | no       | The intent of the completion request. Options: `completion` or `generation`. |
+| `stream`       | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
+| `project_path` | string  | no       | The path of the project. |
+
+### File attributes
+
+The `current_file` attribute accepts the following strings:
+
+- `file_name` - The name of the file. Required.
+- `content_above_cursor` - The content of the file above the current cursor position. Required.
+- `content_below_cursor` - The content of the file below the current cursor position. Optional.
+
+Example request:
 
 ```shell
 curl --request POST \
   --header "Authorization: Bearer <YOUR_ACCESS_TOKEN>" \
-  --data "<JSON_BODY>" \
+  --data '{
+      "current_file": {
+        "file_name": "car.py",
+        "content_above_cursor": "class Car:\n    def __init__(self):\n        self.is_running = False\n        self.speed = 0\n    def increase_speed(self, increment):",
+        "content_below_cursor": ""
+      },
+      "intent": "completion"
+    }' \
   --url "https://gitlab.example.com/api/v4/code_suggestions/completions"
 ```
-
-Example body:
-
-The [model gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#completions) is the SSoT for parameters.
 
 Example response:
 

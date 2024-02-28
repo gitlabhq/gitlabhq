@@ -83,6 +83,12 @@ describe('Source Viewer component', () => {
     expect(LineHighlighter).toHaveBeenCalled();
   });
 
+  describe('when mounted', () => {
+    it('should highlight the hash', () => {
+      expect(lineHighlighter.highlightHash).toHaveBeenCalledWith(hash);
+    });
+  });
+
   describe('event tracking', () => {
     it('fires a tracking event when the component is created', () => {
       const eventData = { label: EVENT_LABEL_VIEWER, property: LANGUAGE_MOCK };

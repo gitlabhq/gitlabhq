@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Dedicated
+**Offering:** GitLab Dedicated
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 

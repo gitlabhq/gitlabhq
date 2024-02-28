@@ -14,7 +14,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path)) }
   let_it_be(:group2) { create(:group, :private) }
   let_it_be(:project1) { create(:project, namespace: group1) }
-  let_it_be(:project2) { create(:project, namespace: group2) }
+  let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
@@ -1247,6 +1247,48 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'with star_count ordering' do
+        let_it_be(:group_with_projects) { create(:group) }
+        let_it_be(:project_1) { create(:project, name: 'Project Test', path: 'project-test', group: group_with_projects) }
+        let_it_be(:project_2) { create(:project, name: 'Test Project', path: 'test-project', group: group_with_projects, star_count: 10) }
+        let_it_be(:project_3) { create(:project, name: 'Test', path: 'test', group: group_with_projects, star_count: 5) }
+
+        let(:params) { { order_by: 'star_count', search: 'test' } }
+
+        subject { get api("/groups/#{group_with_projects.id}/projects", user1), params: params }
+
+        before do
+          group_with_projects.add_owner(user1)
+        end
+
+        it 'returns items based ordered by star_count', :aggregate_failures do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 10, "name" => "Test Project" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 0, "name" => "Project Test" }
+          ])
+        end
+
+        it 'returns items based ordered by star_count in ascending order', :aggregate_failures do
+          params[:sort] = 'asc'
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+          expect(filtered_response).to eq([
+            { "star_count" => 0, "name" => "Project Test" },
+            { "star_count" => 5, "name" => "Test" },
+            { "star_count" => 10, "name" => "Test Project" }
+          ])
+        end
+      end
+
       it "returns the group's projects with simple representation", :aggregate_failures do
         get api("/groups/#{group1.id}/projects", user1), params: { simple: true }
 
@@ -1440,7 +1482,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
   describe "GET /groups/:id/projects/shared" do
     let!(:project4) do
-      create(:project, namespace: group2, path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      create(:project, namespace: group2, name: 'test project', path: 'test_project', visibility_level: Gitlab::VisibilityLevel::PRIVATE, star_count: 5)
     end
 
     let(:path) { "/groups/#{group1.id}/projects/shared" }
@@ -1508,6 +1550,30 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         expect(json_response).to be_an(Array)
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(project4.id)
+      end
+
+      it 'returns the shared projects in the group ordered by star count', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 5, "name" => "test project" },
+          { "star_count" => 0, "name" => "testing" }
+        ])
+      end
+
+      it 'returns the shared projects in the group ordered by star count in ascending order', :aggregate_failures do
+        get api(path, user1), params: { order_by: 'star_count', search: 'test', sort: 'asc' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        filtered_response = json_response.map { |h| h.slice('star_count', 'name') }
+        expect(filtered_response).to eq([
+          { "star_count" => 0, "name" => "testing" },
+          { "star_count" => 5, "name" => "test project" }
+        ])
       end
 
       it 'does not return the projects owned by the group', :aggregate_failures do

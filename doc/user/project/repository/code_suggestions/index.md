@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, self-managed, GitLab Dedicated. GitLab Duo Pro required.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated. GitLab Duo Pro required.
 
 NOTE:
 GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/releases/2024/01/18/gitlab-16-8-released/) and later. Earlier GitLab versions are not supported.

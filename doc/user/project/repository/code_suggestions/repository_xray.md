@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, self-managed
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12060) in GitLab 16.7.
 
