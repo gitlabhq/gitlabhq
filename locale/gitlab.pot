@@ -1673,11 +1673,6 @@ msgid_plural "%{merge_requests} open merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "1 pipeline"
-msgid_plural "%d pipelines"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "1 role"
 msgid_plural "%d roles"
 msgstr[0] ""
@@ -7047,7 +7042,7 @@ msgstr ""
 msgid "AuditStreams|Add a new secret access key"
 msgstr ""
 
-msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems."
+msgid "AuditStreams|Add an HTTP endpoint to manage audit logs in third-party systems. This is great for keeping everything in one place."
 msgstr ""
 
 msgid "AuditStreams|Add another custom header"
@@ -7174,9 +7169,6 @@ msgid "AuditStreams|Streams"
 msgstr ""
 
 msgid "AuditStreams|This could include sensitive information. Make sure you trust the destination endpoint."
-msgstr ""
-
-msgid "AuditStreams|This is great for keeping everything one place."
 msgstr ""
 
 msgid "AuditStreams|Use the AWS console to view the secret access key. To change the secret access key, replace it with a new secret access key."
@@ -36163,22 +36155,19 @@ msgstr ""
 msgid "PipelineCharts|CI/CD Analytics"
 msgstr ""
 
-msgid "PipelineCharts|Failed:"
+msgid "PipelineCharts|Failed pipelines"
 msgstr ""
 
-msgid "PipelineCharts|Overall statistics"
+msgid "PipelineCharts|Success ratio"
 msgstr ""
 
-msgid "PipelineCharts|Success ratio:"
-msgstr ""
-
-msgid "PipelineCharts|Successful:"
+msgid "PipelineCharts|Successful pipelines"
 msgstr ""
 
 msgid "PipelineCharts|There was an error parsing the data for the charts."
 msgstr ""
 
-msgid "PipelineCharts|Total:"
+msgid "PipelineCharts|Total pipelines"
 msgstr ""
 
 msgid "PipelineEditorFileTree|Configuration files added with the include keyword"
@@ -36965,6 +36954,9 @@ msgid "Pipeline|Run pipeline"
 msgstr ""
 
 msgid "Pipeline|Running"
+msgstr ""
+
+msgid "Pipeline|See details"
 msgstr ""
 
 msgid "Pipeline|Skipped"

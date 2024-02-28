@@ -7,24 +7,9 @@ module IssuesHelper
     can?(current_user, :admin_issue, @group || @project)
   end
 
-  def issue_css_classes(issue)
-    classes = ["issue"]
-    classes << "closed" if issue.closed?
-    classes << "gl-cursor-grab" if @sort == 'relative_position'
-    classes.join(' ')
-  end
-
   def show_timeline_view_toggle?(issue)
     # Overridden in EE
     false
-  end
-
-  def issue_manual_ordering_class
-    is_sorting_by_relative_position = @sort == 'relative_position'
-
-    if is_sorting_by_relative_position && !issue_repositioning_disabled?
-      "manual-ordering"
-    end
   end
 
   def issue_repositioning_disabled?
@@ -41,12 +26,6 @@ module IssuesHelper
 
   def issue_hidden?(issue)
     issue.hidden?
-  end
-
-  def hidden_issue_icon(issue)
-    return unless issue_hidden?(issue)
-
-    hidden_resource_icon(issue)
   end
 
   def award_user_list(awards, current_user, limit: 10)

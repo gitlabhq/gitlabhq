@@ -31,6 +31,34 @@ For example:
 If it is important that a documentation update is present in that month's release,
 merge it as early as possible.
 
+## Page mapping
+
+Requests to `/help` can be [redirected](../../administration/settings/help_page.md#redirect-help-pages). If redirection
+is turned off, `/help` maps requests for help pages to specific files in the `doc`
+directory. For example:
+
+- Requested URLs: `<gdk_instance>/help/topics/plan_and_track.md`, `<gdk_instance>/help/topics/plan_and_track.html`
+  and `<gdk_instance>/help/topics/plan_and_track`.
+- Mapping: `doc/topics/plan_and_track.md`.
+
+### `_index.md` files
+
+> - Support for `_index.md` files [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144419) in GitLab 16.10.
+
+The Hugo static site generator makes use of `_index.md` files. To allow for index pages to be
+named either `index.md` or `_index.md` in `/help`, GitLab maps requests for `index.md`, `index.html`, or `index`:
+
+- To `index.md` if the file exists at the requested location.
+- Otherwise, to `_index.md`.
+
+For example:
+
+- Requested URLs: `<gdk_instance>/help/user/index.md`, `<gdk_instance>/help/user/index.html`, and
+  `<gdk_instance>/help/user/index`.
+- Mapping:
+  - `doc/user/index.md` if it exists.
+  - Otherwise, to `doc/user/_index.md`.
+
 ## Linking to `/help`
 
 When you're building a new feature, you may need to link to the documentation

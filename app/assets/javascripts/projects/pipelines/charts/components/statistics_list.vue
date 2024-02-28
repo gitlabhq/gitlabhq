@@ -1,13 +1,15 @@
 <script>
 import { GlLink } from '@gitlab/ui';
+import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
-import { s__, n__, formatNumber } from '~/locale';
+import { s__, formatNumber } from '~/locale';
 
 const defaultPrecision = 2;
 
 export default {
   components: {
     GlLink,
+    GlSingleStat,
   },
   inject: {
     failedPipelinesLink: {
@@ -19,6 +21,11 @@ export default {
       type: Object,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     statistics() {
@@ -26,37 +33,50 @@ export default {
 
       return [
         {
-          title: s__('PipelineCharts|Total:'),
-          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.total)),
+          label: s__('PipelineCharts|Total pipelines'),
+          identifier: 'total-pipelines',
+          value: formatNumber(this.counts.total),
         },
         {
-          title: s__('PipelineCharts|Successful:'),
-          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.success)),
-        },
-        {
-          title: s__('PipelineCharts|Failed:'),
-          value: n__('1 pipeline', '%d pipelines', formatNumber(this.counts.failed)),
-          link: this.failedPipelinesLink,
-        },
-        {
-          title: s__('PipelineCharts|Success ratio:'),
+          label: s__('PipelineCharts|Success ratio'),
+          identifier: 'success-ratio',
           value: formatPercent(this.counts.successRatio, defaultPrecision),
         },
+        {
+          label: s__('PipelineCharts|Successful pipelines'),
+          identifier: 'successful-pipelines',
+          value: formatNumber(this.counts.success),
+        },
+        {
+          label: s__('PipelineCharts|Failed pipelines'),
+          identifier: 'failed-pipelines',
+          value: formatNumber(this.counts.failed),
+          link: this.failedPipelinesLink,
+        },
       ];
+    },
+  },
+  methods: {
+    shouldDisplayLink(statistic) {
+      return statistic.link && statistic.value !== 0;
     },
   },
 };
 </script>
 <template>
-  <ul>
-    <template v-for="({ title, value, link }, index) in statistics">
-      <li :key="index">
-        <span>{{ title }}</span>
-        <gl-link v-if="link" :href="link">
-          {{ value }}
-        </gl-link>
-        <strong v-else>{{ value }}</strong>
-      </li>
-    </template>
-  </ul>
+  <div class="gl-display-flex gl-flex-wrap gl-gap-6 gl-mb-6">
+    <div v-for="statistic in statistics" :key="statistic.label">
+      <gl-single-stat
+        :id="statistic.identifier"
+        :value="`${statistic.value}`"
+        :title="statistic.label"
+        :unit="statistic.unit || ''"
+        :should-animate="true"
+        use-delimiters
+      />
+      <gl-link v-if="shouldDisplayLink(statistic)" class="gl-p-2" :href="statistic.link">{{
+        s__('Pipeline|See details')
+      }}</gl-link>
+    </div>
+  </div>
 </template>

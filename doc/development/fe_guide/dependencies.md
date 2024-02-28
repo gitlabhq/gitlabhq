@@ -29,7 +29,7 @@ See the main [Dependencies](../dependencies.md) page for general information abo
 ### Blocked dependencies
 
 We discourage installing some dependencies in [GitLab repository](https://gitlab.com/gitlab-org/gitlab) because they can create conflicts in the dependency tree.
-Blocked dependencies are declared in the `blockDependencies` property of the GitLab [`package.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
+Blocked dependencies are declared in the `blockedDependencies` property of the GitLab [`package.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/package.json).
 
 ## Dependency notes
 

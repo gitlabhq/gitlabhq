@@ -334,28 +334,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#issue_manual_ordering_class' do
-    context 'when sorting by relative position' do
-      before do
-        assign(:sort, 'relative_position')
-      end
-
-      it 'returns manual ordering class' do
-        expect(helper.issue_manual_ordering_class).to eq('manual-ordering')
-      end
-
-      context 'when manual sorting disabled' do
-        before do
-          allow(helper).to receive(:issue_repositioning_disabled?).and_return(true)
-        end
-
-        it 'returns nil' do
-          expect(helper.issue_manual_ordering_class).to eq(nil)
-        end
-      end
-    end
-  end
-
   describe '#issue_repositioning_disabled?' do
     let_it_be(:group) { create(:group) }
     let_it_be(:project) { create(:project, group: group) }
@@ -408,31 +386,6 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
     context 'when issue is not hidden' do
       it 'returns `false`' do
         expect(helper.issue_hidden?(issue)).to eq(false)
-      end
-    end
-  end
-
-  describe '#hidden_issue_icon' do
-    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
-
-    before do
-      allow(helper).to receive(:hidden_resource_icon).with(resource).and_return(mock_svg)
-    end
-
-    context 'when issue is hidden' do
-      let_it_be(:banned_user) { build(:user, :banned) }
-      let_it_be(:resource) { build(:issue, author: banned_user) }
-
-      it 'returns icon with tooltip' do
-        expect(helper.hidden_issue_icon(resource)).to eq(mock_svg)
-      end
-    end
-
-    context 'when issue is not hidden' do
-      let_it_be(:resource) { issue }
-
-      it 'returns `nil`' do
-        expect(helper.hidden_issue_icon(resource)).to be_nil
       end
     end
   end

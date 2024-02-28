@@ -61,7 +61,7 @@ RSpec.describe ProjectPresenter do
           allow(presenter).to receive(:can?).with(nil, :download_code, project).and_return(false)
           allow(presenter).to receive(:can?).with(nil, :read_issue, project).and_call_original
 
-          expect(presenter.default_view).to eq('projects/issues/issues')
+          expect(presenter.default_view).to eq('projects/issues')
         end
 
         it 'returns activity if user can read neither wiki nor issues' do
@@ -163,7 +163,7 @@ RSpec.describe ProjectPresenter do
           allow(presenter).to receive(:can?).with(user, :read_issue, project).and_return(true)
           allow(presenter).to receive(:can?).with(user, :read_wiki, project).and_return(false)
 
-          expect(presenter.default_view).to eq('projects/issues/issues')
+          expect(presenter.default_view).to eq('projects/issues')
         end
       end
 

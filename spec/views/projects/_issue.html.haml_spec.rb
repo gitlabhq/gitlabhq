@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/issues/service_desk/_issue.html.haml', feature_category: :service_desk do
+RSpec.describe 'projects/_issue.html.haml', feature_category: :service_desk do
   before do
     assign(:project, issue.project)
     assign(:issuable_meta_data, {
       issue.id => Gitlab::IssuableMetadata::IssuableMeta.new(1, 1, 1, 1)
     })
 
-    render partial: 'projects/issues/service_desk/issue', locals: { issue: issue }
+    render partial: 'projects/issue', locals: { issue: issue }
   end
 
   describe 'timestamp', :freeze_time do

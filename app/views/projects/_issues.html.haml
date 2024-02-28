@@ -1,7 +1,7 @@
 = render 'shared/alerts/positioning_disabled' if @sort == 'relative_position'
 
 %ul.content-list.issues-list.issuable-list{ class: issue_manual_ordering_class }
-  = render partial: 'projects/issues/service_desk/issue', collection: @issues
+  = render partial: 'projects/issue', collection: @issues
   - if @issues.blank?
     - empty_state_path = local_assigns.fetch(:empty_state_path, 'shared/empty_states/issues')
     = render empty_state_path

@@ -309,7 +309,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
           get :show, params: { namespace_id: project.namespace, id: project }
 
-          expect(response).to render_template('projects/issues/_issues')
+          expect(response).to render_template('projects/_issues')
           expect(assigns(:issuable_meta_data)).not_to be_nil
         end
 

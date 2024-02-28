@@ -578,6 +578,25 @@ module ProjectsHelper
     end
   end
 
+  def hidden_issue_icon(issue)
+    return unless issue_hidden?(issue)
+
+    hidden_resource_icon(issue)
+  end
+
+  def issue_css_classes(issue)
+    classes = ["issue"]
+    classes << "closed" if issue.closed?
+    classes << "gl-cursor-grab" if @sort == 'relative_position'
+    classes.join(' ')
+  end
+
+  def issue_manual_ordering_class
+    return unless @sort == 'relative_position' && !issue_repositioning_disabled?
+
+    'manual-ordering'
+  end
+
   private
 
   def can_admin_project_clusters?(project)
@@ -691,7 +710,7 @@ module ProjectsHelper
   end
 
   def project_child_container_class(view_path)
-    view_path == "projects/issues/issues" ? "gl-mt-3" : "project-show-#{view_path}"
+    view_path == "projects/issues" ? "gl-mt-3" : "project-show-#{view_path}"
   end
 
   def project_issues(project)

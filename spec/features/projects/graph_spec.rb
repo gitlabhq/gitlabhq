@@ -95,7 +95,7 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
     end
 
     it 'renders CI graphs' do
-      expect(page).to have_content 'Overall'
+      expect(page).to have_content 'CI/CD Analytics'
       expect(page).to have_content 'Last week'
       expect(page).to have_content 'Last month'
       expect(page).to have_content 'Last year'

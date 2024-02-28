@@ -89,7 +89,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end
@@ -510,7 +510,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'
     elsif can?(current_user, :read_issue, project)
-      'projects/issues/issues'
+      'projects/issues'
     else
       'activity'
     end
