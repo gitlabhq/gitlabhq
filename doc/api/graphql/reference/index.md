@@ -6787,37 +6787,6 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
-### `Mutation.provisionGoogleCloudRunner`
-
-Provisions a runner in Google Cloud.
-
-DETAILS:
-**Introduced** in GitLab 16.10.
-**Status**: Experiment.
-
-Input type: `ProvisionGoogleCloudRunnerInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationprovisiongooglecloudrunnerclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprovisiongooglecloudrunnerdryrun"></a>`dryRun` | [`Boolean`](#boolean) | If true, returns the Terraform script without executing it. Defaults to false. True is currently not supported. |
-| <a id="mutationprovisiongooglecloudrunnerephemeralmachinetype"></a>`ephemeralMachineType` | [`GoogleCloudMachineType!`](#googlecloudmachinetype) | Name of the machine type to use for running jobs. |
-| <a id="mutationprovisiongooglecloudrunnerprojectpath"></a>`projectPath` | [`ID!`](#id) | Project to create the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningprojectid"></a>`provisioningProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the project where the runner is provisioned. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningregion"></a>`provisioningRegion` | [`GoogleCloudRegion!`](#googlecloudregion) | Name of the region to provision the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningzone"></a>`provisioningZone` | [`GoogleCloudZone!`](#googlecloudzone) | Name of the zone to provision the runner in. |
-| <a id="mutationprovisiongooglecloudrunnerrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="mutationprovisiongooglecloudrunnerclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprovisiongooglecloudrunnererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationprovisiongooglecloudrunnerprovisioningsteps"></a>`provisioningSteps` | [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep) | Steps used to provision the runner. |
-
 ### `Mutation.refreshStandardsAdherenceChecks`
 
 Input type: `RefreshStandardsAdherenceChecksInput`
@@ -16080,6 +16049,7 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
 | <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
+| <a id="cicatalogresourcestarrerspath"></a>`starrersPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. Relative path to the starrers page for the catalog resource project. |
 | <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceComponentVerificationLevel`](#cicatalogresourcecomponentverificationlevel) | **Introduced** in GitLab 16.9. **Status**: Experiment. Verification level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
 
@@ -16630,8 +16600,8 @@ Machine type used for runner cloud provisioning.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnercloudprovisioningmachinetypedescription"></a>`description` | [`String`](#string) | Description of the machine type. |
-| <a id="cirunnercloudprovisioningmachinetypename"></a>`name` | [`String`](#string) | Name of the machine type. |
-| <a id="cirunnercloudprovisioningmachinetypezone"></a>`zone` | [`String`](#string) | Zone of the machine type. |
+| <a id="cirunnercloudprovisioningmachinetypename"></a>`name` | [`GoogleCloudMachineType`](#googlecloudmachinetype) | Name of the machine type. |
+| <a id="cirunnercloudprovisioningmachinetypezone"></a>`zone` | [`GoogleCloudZone`](#googlecloudzone) | Zone of the machine type. |
 
 ### `CiRunnerCloudProvisioningRegion`
 
@@ -16642,7 +16612,7 @@ Region used for runner cloud provisioning.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnercloudprovisioningregiondescription"></a>`description` | [`String`](#string) | Description of the region. |
-| <a id="cirunnercloudprovisioningregionname"></a>`name` | [`String`](#string) | Name of the region. |
+| <a id="cirunnercloudprovisioningregionname"></a>`name` | [`GoogleCloudRegion`](#googlecloudregion) | Name of the region. |
 
 ### `CiRunnerCloudProvisioningStep`
 
@@ -16665,22 +16635,22 @@ Zone used for runner cloud provisioning.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cirunnercloudprovisioningzonedescription"></a>`description` | [`String`](#string) | Description of the zone. |
-| <a id="cirunnercloudprovisioningzonename"></a>`name` | [`String`](#string) | Name of the zone. |
+| <a id="cirunnercloudprovisioningzonename"></a>`name` | [`GoogleCloudZone`](#googlecloudzone) | Name of the zone. |
 
-### `CiRunnerGoogleCloudProvisioningOptions`
+### `CiRunnerGoogleCloudProvisioning`
 
-Options for runner Google Cloud provisioning.
+Information used for runner Google Cloud provisioning.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnergooglecloudprovisioningoptionsprojectsetupshellscript"></a>`projectSetupShellScript` | [`String`](#string) | Instructions for setting up a Google Cloud project. |
-| <a id="cirunnergooglecloudprovisioningoptionsregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
+| <a id="cirunnergooglecloudprovisioningprojectsetupshellscript"></a>`projectSetupShellScript` | [`String`](#string) | Instructions for setting up a Google Cloud project. |
+| <a id="cirunnergooglecloudprovisioningregions"></a>`regions` | [`CiRunnerCloudProvisioningRegionConnection`](#cirunnercloudprovisioningregionconnection) | Regions available for provisioning a runner. (see [Connections](#connections)) |
 
 #### Fields with arguments
 
-##### `CiRunnerGoogleCloudProvisioningOptions.machineTypes`
+##### `CiRunnerGoogleCloudProvisioning.machineTypes`
 
 Machine types available for provisioning a runner.
 
@@ -16694,9 +16664,24 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnergooglecloudprovisioningoptionsmachinetypeszone"></a>`zone` | [`String!`](#string) | Zone to retrieve machine types for. |
+| <a id="cirunnergooglecloudprovisioningmachinetypeszone"></a>`zone` | [`GoogleCloudZone!`](#googlecloudzone) | Zone to retrieve machine types for. |
 
-##### `CiRunnerGoogleCloudProvisioningOptions.zones`
+##### `CiRunnerGoogleCloudProvisioning.provisioningSteps`
+
+Steps used to provision a runner in the cloud.
+
+Returns [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cirunnergooglecloudprovisioningprovisioningstepsephemeralmachinetype"></a>`ephemeralMachineType` | [`GoogleCloudMachineType!`](#googlecloudmachinetype) | Name of the machine type to use for running jobs. |
+| <a id="cirunnergooglecloudprovisioningprovisioningstepsregion"></a>`region` | [`GoogleCloudRegion!`](#googlecloudregion) | Name of the region to provision the runner in. |
+| <a id="cirunnergooglecloudprovisioningprovisioningstepsrunnertoken"></a>`runnerToken` | [`String`](#string) | Authentication token of the runner. |
+| <a id="cirunnergooglecloudprovisioningprovisioningstepszone"></a>`zone` | [`GoogleCloudZone!`](#googlecloudzone) | Name of the zone to provision the runner in. |
+
+##### `CiRunnerGoogleCloudProvisioning.zones`
 
 Zones available for provisioning a runner.
 
@@ -16710,7 +16695,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cirunnergooglecloudprovisioningoptionszonesregion"></a>`region` | [`String`](#string) | Region to retrieve zones for. Returns all zones if not specified. |
+| <a id="cirunnergooglecloudprovisioningzonesregion"></a>`region` | [`GoogleCloudRegion`](#googlecloudregion) | Region to retrieve zones for. Returns all zones if not specified. |
 
 ### `CiRunnerManager`
 
@@ -26563,22 +26548,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectrequirementsworkitemiid"></a>`workItemIid` | [`ID`](#id) | IID of the requirement work item, for example, "1". |
 | <a id="projectrequirementsworkitemiids"></a>`workItemIids` | [`[ID!]`](#id) | List of IIDs of requirement work items, for example, `[1, 2]`. |
 
-##### `Project.runnerCloudProvisioningOptions`
+##### `Project.runnerCloudProvisioning`
 
-Options for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_runner_provisioning` feature flag is disabled, or the GitLab instance is not a SaaS instance.
 
 DETAILS:
 **Introduced** in GitLab 16.9.
 **Status**: Experiment.
 
-Returns [`CiRunnerCloudProvisioningOptions`](#cirunnercloudprovisioningoptions).
+Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectrunnercloudprovisioningoptionscloudprojectid"></a>`cloudProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the cloud project. |
-| <a id="projectrunnercloudprovisioningoptionsprovider"></a>`provider` | [`CiRunnerCloudProvider!`](#cirunnercloudprovider) | Identifier of the cloud provider. |
+| <a id="projectrunnercloudprovisioningcloudprojectid"></a>`cloudProjectId` | [`GoogleCloudProject!`](#googlecloudproject) | Identifier of the cloud project. |
+| <a id="projectrunnercloudprovisioningprovider"></a>`provider` | [`CiRunnerCloudProvider!`](#cirunnercloudprovider) | Identifier of the cloud provider. |
 
 ##### `Project.runners`
 
@@ -32100,6 +32085,7 @@ Member role permission.
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
+| <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. |
 | <a id="memberrolepermissionremove_project"></a>`REMOVE_PROJECT` | Allows deletion of projects. |
 
 ### `MemberRolesOrderBy`
@@ -34343,13 +34329,13 @@ abstract types.
 
 ### Unions
 
-#### `CiRunnerCloudProvisioningOptions`
+#### `CiRunnerCloudProvisioning`
 
-Options for runner cloud provisioning.
+Information used in runner cloud provisioning.
 
 One of:
 
-- [`CiRunnerGoogleCloudProvisioningOptions`](#cirunnergooglecloudprovisioningoptions)
+- [`CiRunnerGoogleCloudProvisioning`](#cirunnergooglecloudprovisioning)
 
 #### `DependencyLinkMetadata`
 

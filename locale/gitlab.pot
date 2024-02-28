@@ -1029,6 +1029,9 @@ msgstr ""
 msgid "%{policy_link} (notifying after %{elapsed_time} minutes unless %{status})"
 msgstr ""
 
+msgid "%{projectLength} %{projects}:"
+msgstr ""
+
 msgid "%{project_name}"
 msgstr ""
 
@@ -14485,6 +14488,9 @@ msgstr ""
 msgid "Could not upload your designs as one or more files uploaded are not supported."
 msgstr ""
 
+msgid "Couldn't add issue due to an internal error."
+msgstr ""
+
 msgid "Couldn't assign policy to project or group"
 msgstr ""
 
@@ -22775,13 +22781,13 @@ msgstr ""
 msgid "Gitea import"
 msgstr ""
 
+msgid "GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories."
+msgstr ""
+
 msgid "GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to."
 msgstr ""
 
 msgid "GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from."
-msgstr ""
-
-msgid "GithubImporter|%{code_start}repo.org%{code_end} (optional): Used to import collaborators from GitHub repositories."
 msgstr ""
 
 msgid "GithubImporter|%{noteable_type} comment %{note_id}"
@@ -22865,6 +22871,9 @@ msgstr ""
 msgid "GithubImport|Create and provide your GitHub %{link_start}personal access token%{link_end}. You must select the following scopes:"
 msgstr ""
 
+msgid "GithubImport|Fine-grained personal access tokens are not officially supported. It is recommended to use a classic token instead."
+msgstr ""
+
 msgid "GithubImport|Import failed due to a GitHub error: %{original} (HTTP %{code})"
 msgstr ""
 
@@ -22881,6 +22890,15 @@ msgid "GithubImport|To import GitHub repositories, you must first authorize GitL
 msgstr ""
 
 msgid "GithubImport|You are not allowed to import projects in this namespace."
+msgstr ""
+
+msgid "GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."
+msgstr ""
+
+msgid "GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{repo}' scope, and with the '%{read_org}' scope if importing collaborators."
+msgstr ""
+
+msgid "GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{scope}' scope."
 msgstr ""
 
 msgid "GithubIntegration|Create a %{token_link_start}personal access token%{token_link_end} with %{status_html} access granted and paste it here."
@@ -23365,6 +23383,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Configure in settings"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Copy digest"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Copy image URI"
 msgstr ""
 
@@ -23395,7 +23416,7 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Open in Google Cloud"
 msgstr ""
 
-msgid "GoogleArtifactRegistry|Project"
+msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Project ID: %{projectId}"
@@ -25707,6 +25728,9 @@ msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
 msgid "ImportProjects|Update of imported projects with realtime changes failed"
+msgstr ""
+
+msgid "ImportProjects|Your fine-grained personal access token may not support collaborator import. Please use a classic token with %{codeStart}read:org%{codeEnd} scope to import collaborators. See the %{linkStart}documentation%{linkEnd} for further details."
 msgstr ""
 
 msgid "Imported requirements"
@@ -42635,6 +42659,9 @@ msgstr ""
 msgid "Runners|An upgrade is recommended for this runner"
 msgstr ""
 
+msgid "Runners|Apply the Terraform script"
+msgstr ""
+
 msgid "Runners|Arch/Platform"
 msgstr ""
 
@@ -43194,6 +43221,9 @@ msgid "Runners|Running Jobs"
 msgstr ""
 
 msgid "Runners|Runs untagged jobs"
+msgstr ""
+
+msgid "Runners|Save the Terraform script to a file"
 msgstr ""
 
 msgid "Runners|Search description..."
@@ -44707,6 +44737,11 @@ msgstr ""
 msgid "SecurityOrchestration|%{licenses} and %{lastLicense}"
 msgstr ""
 
+msgid "SecurityOrchestration|%{projects} which has compliance framework:"
+msgid_plural "SecurityOrchestration|%{projects} which have compliance framework:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SecurityOrchestration|%{scanners}"
 msgstr ""
 
@@ -45205,9 +45240,6 @@ msgid "SecurityOrchestration|This %{namespaceType} does not contain any security
 msgstr ""
 
 msgid "SecurityOrchestration|This %{namespaceType} is not linked to a security policy project"
-msgstr ""
-
-msgid "SecurityOrchestration|This applies to %{projects} associated with following compliance frameworks:"
 msgstr ""
 
 msgid "SecurityOrchestration|This applies to following compliance frameworks:"

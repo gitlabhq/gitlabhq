@@ -131,7 +131,7 @@ rewrite the URL.
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flag](../../../administration/pages/index.md#use-environment-variables) named `FF_ENABLE_DOMAIN_REDIRECT`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 To create a domain-level redirect, add a domain-level path (beginning with `http://`
 or `https://`) to either:

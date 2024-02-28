@@ -2562,7 +2562,6 @@ RSpec/ContextWording:
     - 'spec/services/ide/terminal_config_service_spec.rb'
     - 'spec/services/import/bitbucket_server_service_spec.rb'
     - 'spec/services/import/fogbugz_service_spec.rb'
-    - 'spec/services/import/github_service_spec.rb'
     - 'spec/services/import/gitlab_projects/file_acquisition_strategies/remote_file_s3_spec.rb'
     - 'spec/services/import/gitlab_projects/file_acquisition_strategies/remote_file_spec.rb'
     - 'spec/services/incident_management/incidents/create_service_spec.rb'

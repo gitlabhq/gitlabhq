@@ -9,6 +9,7 @@
 = render 'import/githubish_status',
   provider: 'github', paginatable: true,
   default_namespace: @namespace,
+  is_fine_grained_token: @fine_grained.to_s,
   cancel_path: cancel_import_github_path,
   details_path: details_import_github_path,
   status_import_github_group_path: status_import_github_group_path(format: :json),

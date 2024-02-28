@@ -124,7 +124,7 @@ The protected branch displays in the list of protected branches.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 
@@ -132,7 +132,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can
 [enable the feature flag](../../administration/feature_flags.md)
-named `group_protected_branches`. On GitLab.com, this feature is not available.
+named `group_protected_branches`. On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Group owners can create protected branches for a group. These settings are inherited
 by all projects in the group and can't be overridden by project settings. If a

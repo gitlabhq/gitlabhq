@@ -130,6 +130,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     users_star_projects: %w[user_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
+    vulnerability_occurrences: %w[initial_pipeline_id latest_pipeline_id], # loose FK will be added in https://gitlab.com/gitlab-org/gitlab/-/work_items/44328f4
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon
     dependency_list_exports: %w[pipeline_id], # foreign key is not added as ci_pipeline table is in different db
     vulnerability_reads: %w[cluster_agent_id],

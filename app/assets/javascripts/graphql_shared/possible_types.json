@@ -11,8 +11,8 @@
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
   ],
-  "CiRunnerCloudProvisioningOptions": [
-    "CiRunnerGoogleCloudProvisioningOptions"
+  "CiRunnerCloudProvisioning": [
+    "CiRunnerGoogleCloudProvisioning"
   ],
   "CiVariable": [
     "CiGroupVariable",

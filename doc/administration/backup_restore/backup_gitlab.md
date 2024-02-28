@@ -613,7 +613,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create GITLAB_BACKUP_MAX_CONCURREN
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../feature_flags.md) named `incremental_repository_backup`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 NOTE:
 Only repositories support incremental backups. Therefore, if you use `INCREMENTAL=yes`, the task

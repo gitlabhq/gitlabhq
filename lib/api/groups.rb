@@ -305,7 +305,7 @@ module API
       end
       delete ":id", feature_category: :groups_and_projects, urgency: :low do
         group = find_group!(params[:id])
-        authorize! :admin_group, group
+        authorize! :remove_group, group
         check_subscription! group
 
         delete_group(group)

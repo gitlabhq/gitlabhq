@@ -193,7 +193,7 @@ DETAILS:
 > - It's deployed behind a feature flag, disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. This feature is not ready for production use. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [2FA for Git over SSH operations](../../security/two_factor_authentication.md#2fa-for-git-over-ssh-operations).
 
 GitLab administrators can choose to customize the session duration (in minutes) for Git operations when 2FA is enabled. The default is 15 and this can be set to a value between 1 and 10080.
 
@@ -314,7 +314,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423302) in GitLab 16.7 [with a flag](../feature_flags.md) named `ui_for_organizations`. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `ui_for_organizations`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 By default, users can create organizations. GitLab administrators can prevent users from creating organizations.
 

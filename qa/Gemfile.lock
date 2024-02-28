@@ -224,8 +224,9 @@ GEM
     parallel (1.24.0)
     parallel_tests (4.4.0)
       parallel
-    parser (3.2.2.1)
+    parser (3.3.0.5)
       ast (~> 2.4.1)
+      racc
     proc_to_ast (0.1.0)
       coderay
       parser

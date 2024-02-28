@@ -106,7 +106,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 Prerequisites:
@@ -200,7 +200,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 This configuration is the minimum setup for GitLab Pages. It is the base for all
@@ -289,7 +289,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 Prerequisites:

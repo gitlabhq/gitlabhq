@@ -171,7 +171,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 Use the [`pages.path_prefix`](../../../ci/yaml/index.md#pagespagespath_prefix) CI/CD option to configure a prefix for the GitLab Pages URL. A prefix allows you
 to differentiate between multiple GitLab Pages deployments.

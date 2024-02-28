@@ -41,6 +41,7 @@ These requirements are documented in the `Required permission` column in the fol
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`archive_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134998) |  | Allows archiving of projects. | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/425957) | `archive_project` | GitLab [16.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139260) |
+| [`remove_group`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145166) |  | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/425962) |  |  |
 | [`remove_project`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) |  | Allows deletion of projects. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/425959) |  |  |
 
 ## Infrastructure as code

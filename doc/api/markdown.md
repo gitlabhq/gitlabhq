@@ -22,7 +22,7 @@ FLAG:
 On self-managed GitLab, by default this feature is enabled and authentication is required.
 To remove the requirement to authenticate, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `authenticate_markdown_api`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 All API calls to the Markdown API must be [authenticated](rest/index.md#authentication).
 

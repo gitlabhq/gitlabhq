@@ -33,7 +33,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can enable the feature flag named `example_flag`.
-On GitLab.com, this feature is not available. This feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 Use this new feature when you need to do this new thing.
 

@@ -473,7 +473,7 @@ To delete a compliance framework from the compliance projects report:
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature an administrator to [disable the feature flag](../../../administration/feature_flags.md) named
-`compliance_framework_report_ui`. On GitLab.com, this feature is available.
+`compliance_framework_report_ui`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 

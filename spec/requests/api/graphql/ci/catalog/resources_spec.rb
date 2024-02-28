@@ -48,6 +48,7 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
             verificationLevel
             latestReleasedAt
             starCount
+            starrersPath
           }
         }
       }
@@ -83,10 +84,11 @@ RSpec.describe 'Query.ciCatalogResources', feature_category: :pipeline_compositi
       a_graphql_entity_for(
         resource1, :name, :description,
         icon: project1.avatar_path,
-        webPath: "/#{project1.full_path}",
-        verificationLevel: "UNVERIFIED",
+        latestReleasedAt: resource1.latest_released_at,
         starCount: project1.star_count,
-        latestReleasedAt: resource1.latest_released_at
+        starrersPath: Gitlab::Routing.url_helpers.project_starrers_path(project1),
+        verificationLevel: 'UNVERIFIED',
+        webPath: "/#{project1.full_path}"
       ),
       a_graphql_entity_for(public_resource)
     )

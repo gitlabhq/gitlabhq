@@ -35,8 +35,7 @@ add one when you create an environment.
 
 Prerequisites:
 
-- The agent for Kubernetes must be shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
-- Self-managed only. KAS is running on the GitLab subdomain. For example, `kas.example.com` and `example.com`.
+- A GitLab agent for Kubernetes is [configured](../../user/clusters/agent/install/index.md) and shared with the environment's project, or its parent group, using the [`user_access`](../../user/clusters/agent/user_access.md) keyword.
 
 ::Tabs
 

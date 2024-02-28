@@ -17,6 +17,10 @@ class ProjectImportEntity < ProjectEntity
     project.import_failures.last&.exception_message
   end
 
+  expose :import_warning, if: ->(_, options) { options[:warning] } do |_, options|
+    options[:warning]
+  end
+
   # Only for GitHub importer where we pass client through
   expose :relation_type do |project, options|
     next nil if options[:client].nil?

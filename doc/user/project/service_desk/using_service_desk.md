@@ -153,7 +153,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Use the quick action `/convert_to_ticket external-issue-author@example.com` to convert any regular issue
 into a Service Desk ticket. This assigns the provided email address as the external author of the ticket

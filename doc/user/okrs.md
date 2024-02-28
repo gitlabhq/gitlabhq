@@ -352,7 +352,7 @@ To reorder them, drag them around.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `okr_checkin_reminders`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 Schedule check-in reminders to remind your team to provide status updates on the key results you care
@@ -489,7 +489,7 @@ system note in the OKR's comments, for example:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_beta`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 You can prevent public comments in an OKR.
@@ -514,7 +514,7 @@ If an OKR is closed with a locked discussion, then you cannot reopen it until th
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 When enabled, OKRs use a two-column layout, similar to issues.
@@ -531,7 +531,7 @@ or assignees, on the right.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Linked items are a bi-directional relationship and appear in a block below
 the Child objectives and key results. You can link an objective, key result, or a task in the same project with each other.

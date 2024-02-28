@@ -201,7 +201,7 @@ To disable 2FA for all users even when forced 2FA is disabled, use the following
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/270554) in GitLab 13.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/299088) from GitLab Free to GitLab Premium in 13.9.
@@ -209,7 +209,7 @@ DETAILS:
 > - Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. The feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 You can enforce 2FA for [Git over SSH operations](../development/gitlab_shell/features.md#git-operations). However, you should use
 [ED25519_SK](../user/ssh.md#ed25519_sk-ssh-keys) or [ECDSA_SK](../user/ssh.md#ecdsa_sk-ssh-keys) SSH keys instead. 2FA is enforced for Git operations only, and internal commands such as [`personal_access_token`](../development/gitlab_shell/features.md#personal-access-token) are excluded.

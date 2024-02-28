@@ -68,13 +68,13 @@ Files with many changes are collapsed to improve performance. GitLab displays th
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To disable it,
 an administrator can [disable the feature flag](../../../administration/feature_flags.md)
 named `collapse_generated_diff_files`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
 several common types of generated files. These files are collapsed by default, because

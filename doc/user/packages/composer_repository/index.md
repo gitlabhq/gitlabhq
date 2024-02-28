@@ -345,7 +345,7 @@ You can install from source by pulling the Git repository directly. To do so, ei
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature per project, an administrator can
 [disable the feature flag](../../../administration/feature_flags.md) named `composer_use_ssh_source_urls`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 When you install from source, the `composer` configures an
 access to the project's Git repository.

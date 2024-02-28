@@ -115,7 +115,7 @@ export default {
         <slot name="right-actions"></slot>
       </div>
     </div>
-    <p>
+    <p v-if="infoMessages.length">
       <span
         v-for="(message, index) in infoMessages"
         :key="index"

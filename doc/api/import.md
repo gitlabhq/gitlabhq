@@ -46,7 +46,7 @@ POST /import/github
 curl --request POST \
   --url "https://gitlab.example.com/api/v4/import/github" \
   --header "content-type: application/json" \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Authorization: Bearer <your_access_token>" \
   --data '{
     "personal_access_token": "aBc123abC12aBc123abC12abC123+_A/c123",
     "repo_id": "12345",
@@ -79,7 +79,14 @@ Example response:
     "id": 27,
     "name": "my-repo",
     "full_path": "/root/my-repo",
-    "full_name": "Administrator / my-repo"
+    "full_name": "Administrator / my-repo",
+    "refs_url": "/root/my-repo/refs",
+    "import_source": "my-github/repo",
+    "import_status": "scheduled",
+    "human_import_status_name": "scheduled",
+    "provider_link": "/my-github/repo",
+    "relation_type": null,
+    "import_warning": null
 }
 ```
 

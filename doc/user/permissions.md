@@ -332,7 +332,7 @@ The following table lists group permissions available for each role:
 | Use [security dashboard](application_security/security_dashboard/index.md)              |       |          | ✓         | ✓          | ✓     |       |
 | View group Audit Events                                                                 |       |          | ✓         | ✓          | ✓     | Developers and Maintainers can only view events based on their individual actions. |
 | Delete [group wiki](project/wiki/group.md) pages                                        |       |          | ✓         | ✓          | ✓     |       |
-| Create subgroup                                                                         |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role are [allowed to create subgroups](group/subgroups/index.md#change-who-can-create-subgroups).
+| Create subgroup                                                                         |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role are [allowed to create subgroups](group/subgroups/index.md#change-who-can-create-subgroups). |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages) |  |  |  | ✓ | ✓ |       |
 | Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)         |  |  |  | ✓ | ✓ |       |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |       |

@@ -2,6 +2,10 @@
 
 module Gitlab
   module GithubImport
+    def self.fine_grained_token?(token)
+      token&.start_with?('github_pat')
+    end
+
     def self.refmap
       [:heads, :tags, '+refs/pull/*/head:refs/merge-requests/*/head']
     end

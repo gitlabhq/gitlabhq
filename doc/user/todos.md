@@ -68,7 +68,7 @@ To-do items aren't affected by [GitLab notification email settings](profile/noti
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 
 <!-- When the feature flag is removed, integrate this topic into the one above. -->
 
@@ -79,7 +79,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user,
 an administrator can [enable the feature flag](../administration/feature_flags.md) named `multiple_todos`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 When you enable this feature:

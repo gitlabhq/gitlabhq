@@ -73,7 +73,7 @@ A `FLAG` note renders on the GitLab documentation site as:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `example_flag`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 ### Self-managed GitLab availability information
@@ -94,9 +94,9 @@ This feature is not ready for production use.
 
 | If the feature is...                        | Use this text |
 |---------------------------------------------|---------------|
-| Available                                   | `On GitLab.com, this feature is available.` |
+| Available                                   | `On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.` |
 | Available to GitLab.com administrators only | `On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.` |
-| Unavailable                                 | `On GitLab.com, this feature is not available.`|
+| Unavailable                                 | `On GitLab.com and GitLab Dedicated, this feature is not available.`|
 
 ### Optional information
 

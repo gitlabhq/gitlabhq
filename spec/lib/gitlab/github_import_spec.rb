@@ -125,4 +125,11 @@ RSpec.describe Gitlab::GithubImport, feature_category: :importers do
       end
     end
   end
+
+  describe '.fine_grained_token?' do
+    it 'detects a fine-grained token' do
+      expect(described_class.fine_grained_token?('github_pat_235234')).to eq(true)
+      expect(described_class.fine_grained_token?('gh_235234ab234234')).to eq(false)
+    end
+  end
 end

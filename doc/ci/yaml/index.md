@@ -542,7 +542,7 @@ In this example:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To enable the feature, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 Use `workflow:auto_cancel:on_job_failure` to configure which jobs should be cancelled as soon as one job fails.
 
@@ -2501,7 +2501,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md).
 
 FLAG:
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 Use `identity` to authenticate with third party services using identity federation.
@@ -3391,7 +3391,7 @@ as an artifact and published with GitLab Pages.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
@@ -3399,7 +3399,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
 an administrator can [enable the feature flag](../../administration/feature_flags.md) named
-`pages_multiple_versions_setting`. On GitLab.com, this feature is not available. This feature is not ready for production use.
+`pages_multiple_versions_setting`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
 
 Use `pages.path_prefix` to configure a path prefix for [multiple deployments](../../user/project/pages/index.md#create-multiple-deployments) of GitLab Pages.
 

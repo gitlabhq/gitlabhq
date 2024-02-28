@@ -54,6 +54,10 @@ module Types
           description: 'Number of times the catalog resource has been starred.',
           alpha: { milestone: '16.1' }
 
+        field :starrers_path, GraphQL::Types::String, null: true,
+          description: 'Relative path to the starrers page for the catalog resource project.',
+          alpha: { milestone: '16.10' }
+
         def open_issues_count
           BatchLoader::GraphQL.wrap(object.project.open_issues_count)
         end
@@ -80,6 +84,10 @@ module Types
         def readme_html_resolver
           markdown_context = context.to_h.dup.merge(project: object.project)
           ::MarkupHelper.markdown(object.project.repository.readme&.data, markdown_context)
+        end
+
+        def starrers_path
+          Gitlab::Routing.url_helpers.project_starrers_path(object.project)
         end
       end
       # rubocop: enable Graphql/AuthorizeTypes

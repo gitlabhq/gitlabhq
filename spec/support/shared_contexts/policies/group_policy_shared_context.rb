@@ -80,6 +80,8 @@ RSpec.shared_context 'GroupPolicy context' do
       destroy_issue
       admin_member_access_request
       update_git_access_protocol
+      remove_group
+      view_edit_page
     ]
   end
 

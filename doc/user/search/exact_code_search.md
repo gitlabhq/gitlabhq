@@ -8,7 +8,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
@@ -16,7 +16,7 @@ DETAILS:
 FLAG:
 On self-managed GitLab, by default this feature is not available.
 To make it available, an administrator can [enable the feature flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`.
-On GitLab.com, this feature is available. The feature is not ready for production use.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available. The feature is not ready for production use.
 
 WARNING:
 This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
@@ -42,7 +42,7 @@ searches.
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `zoekt_search_api`.
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available. The feature is not ready for production use.
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 

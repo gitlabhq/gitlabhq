@@ -39,7 +39,7 @@
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to connect to.'), code_pair)
         - else
           %li= safe_format(s_('GithubImporter|%{code_start}repo%{code_end}: Used to display a list of your public and private repositories that are available to import from.'), code_pair)
-          %li= safe_format(s_('GithubImporter|%{code_start}repo.org%{code_end} (optional): Used to import collaborators from GitHub repositories.'), code_pair)
+          %li= safe_format(s_('GithubImporter|%{code_start}read:org%{code_end} (optional): Used to import collaborators from GitHub repositories.'), code_pair)
 
   = render_if_exists 'import/github/ci_cd_only'
 

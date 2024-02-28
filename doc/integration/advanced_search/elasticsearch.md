@@ -401,7 +401,7 @@ from the Elasticsearch index as expected.
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `search_index_all_projects`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 When you select the **Limit the amount of namespace and project data to index** checkbox:
 

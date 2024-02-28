@@ -4106,7 +4106,6 @@ CREATE TABLE application_settings (
     lock_toggle_security_policy_custom_ci boolean DEFAULT false NOT NULL,
     toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
     lock_toggle_security_policies_policy_scope boolean DEFAULT false NOT NULL,
-    include_optional_metrics_in_service_ping boolean DEFAULT true NOT NULL,
     rate_limits jsonb DEFAULT '{}'::jsonb NOT NULL,
     elasticsearch_max_code_indexing_concurrency integer DEFAULT 30 NOT NULL,
     enable_member_promotion_management boolean DEFAULT false NOT NULL,
@@ -4120,6 +4119,7 @@ CREATE TABLE application_settings (
     lock_duo_features_enabled boolean DEFAULT false NOT NULL,
     asciidoc_max_includes smallint DEFAULT 32 NOT NULL,
     clickhouse jsonb DEFAULT '{}'::jsonb NOT NULL,
+    include_optional_metrics_in_service_ping boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -10670,6 +10670,7 @@ CREATE TABLE member_roles (
     remove_project boolean DEFAULT false NOT NULL,
     admin_terraform_state boolean DEFAULT false NOT NULL,
     admin_cicd_variables boolean DEFAULT false NOT NULL,
+    remove_group boolean DEFAULT false NOT NULL,
     occupies_seat boolean DEFAULT false NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
@@ -17293,6 +17294,8 @@ CREATE TABLE vulnerability_occurrences (
     location jsonb,
     detection_method smallint DEFAULT 0 NOT NULL,
     uuid uuid DEFAULT '00000000-0000-0000-0000-000000000000'::uuid NOT NULL,
+    initial_pipeline_id bigint,
+    latest_pipeline_id bigint,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))

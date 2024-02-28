@@ -90,7 +90,7 @@ The following items are changed when they are imported:
 FLAG:
 On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the

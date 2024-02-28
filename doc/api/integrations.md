@@ -710,7 +710,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 [GitGuardian](https://www.gitguardian.com/) is a cybersecurity service that detects sensitive data such as API keys
 and passwords in source code repositories.
@@ -900,7 +900,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `gcp_artifact_registry`. Disabled by default.
 
 FLAG:
-On GitLab.com, this feature is not available. The feature is not ready for production use.
+On GitLab.com and GitLab Dedicated, this feature is not available. The feature is not ready for production use.
 
 ### Set up Google Cloud Artifact Registry
 
@@ -942,7 +942,7 @@ GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_workload_identity_federation`. Disabled by default.
 
 FLAG:
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
 ### Set up Google Cloud Identity and Access Management

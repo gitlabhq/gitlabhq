@@ -22,7 +22,7 @@ To temporarily grant Git access to your projects, you can use SSH certificates.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
 
 FLAG:
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Prerequisites:
 
@@ -69,7 +69,7 @@ The user certificates can only be used to access the projects within the top-lev
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
 
 FLAG:
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 You can enforce usage of SSH certificates and forbid users from authenticating using SSH
 keys and access tokens.

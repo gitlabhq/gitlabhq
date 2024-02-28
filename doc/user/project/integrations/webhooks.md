@@ -113,7 +113,7 @@ You can define URL variables directly using the REST API.
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can
 [disable the feature flag](../../../administration/feature_flags.md) named `custom_webhook_template`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 You can set a custom payload template in the webhook configuration. The request body is rendered from the template
 with the data for the current event. The template must render as valid JSON.
@@ -175,7 +175,7 @@ For GitLab self-managed, an administrator can [change the webhook timeout limit]
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 Project or group webhooks that fail four consecutive times are disabled automatically.
 

@@ -21,12 +21,16 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     }
   end
 
+  let(:scopes) { ['repo', 'read:org'] }
   let(:client) { Gitlab::GithubImport::Client.new(token) }
   let(:project_double) { instance_double(Project, persisted?: true) }
 
   subject(:github_importer) { described_class.new(client, user, params) }
 
   before do
+    allow(client).to receive_message_chain(:octokit, :rate_limit, :limit)
+    allow(client).to receive_message_chain(:octokit, :rate_limit, :remaining).and_return(100)
+    allow(client).to receive_message_chain(:octokit, :scopes).and_return(scopes)
     allow(Gitlab::GithubImport::Settings).to receive(:new).with(project_double).and_return(settings)
     allow(settings)
       .to receive(:write)
@@ -38,7 +42,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       )
   end
 
-  context 'do not raise an exception on input error' do
+  context 'with an input error' do
     let(:exception) { Octokit::ClientError.new(status: 404, body: 'Not Found') }
 
     before do
@@ -76,11 +80,12 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     expect { subject.execute(access_params, :github) }.to raise_error(exception)
   end
 
-  context 'repository size validation' do
+  context 'when validating repository size' do
     let(:repository_double) { { name: 'repository', size: 99 } }
 
     before do
       allow(subject).to receive(:authorized?).and_return(true)
+      allow(subject).to receive(:validate_scopes).and_return(nil)
       expect(client).to receive(:repository).and_return(repository_double)
 
       allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
@@ -115,7 +120,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         params[:target_namespace] = group.full_path
       end
 
-      it 'succeeds when the repository is smaller than the limit' do
+      it 'succeeds if the repository is smaller than the limit' do
         expect(subject.execute(access_params, :github)).to include(status: :success)
         expect(settings)
           .to have_received(:write)
@@ -134,7 +139,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         )
       end
 
-      it 'returns error when the repository is larger than the limit' do
+      it 'returns error if the repository is larger than the limit' do
         repository_double[:size] = 101
 
         expect(subject.execute(access_params, :github)).to include(
@@ -152,7 +157,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       end
 
       context 'when application size limit is defined' do
-        it 'succeeds when the repository is smaller than the limit' do
+        it 'succeeds if the repository is smaller than the limit' do
           expect(subject.execute(access_params, :github)).to include(status: :success)
           expect(settings)
             .to have_received(:write)
@@ -171,7 +176,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
           )
         end
 
-        it 'returns error when the repository is larger than the limit' do
+        it 'returns error if the repository is larger than the limit' do
           repository_double[:size] = 101
 
           expect(subject.execute(access_params, :github)).to include(
@@ -266,6 +271,113 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
   end
 
+  context 'when using personal access tokens' do
+    let(:repository_double) { { name: 'repository', size: 99 } }
+
+    before do
+      allow(subject).to receive(:authorized?).and_return(true)
+
+      allow_next_instance_of(Gitlab::LegacyGithubImport::ProjectCreator) do |creator|
+        allow(creator).to receive(:execute).and_return(project_double)
+      end
+    end
+
+    context 'when the caller is not a github import' do
+      let(:repository_double) do
+        {
+          name: 'vim',
+          description: 'test',
+          full_name: 'test/vim',
+          clone_url: 'http://repo.com/repo/repo.git',
+          private: false,
+          has_wiki?: false
+        }
+      end
+
+      before do
+        allow(subject).to receive(:repo).and_return(repository_double)
+      end
+
+      it 'does not validate scopes' do
+        expect(subject).not_to receive(:validate_scopes)
+
+        subject.execute(access_params, :gitea)
+      end
+    end
+
+    context 'when a fine-grained access token is used' do
+      let(:access_params) { { github_access_token: 'github_pat' } }
+
+      before do
+        allow(subject).to receive(:repo).and_return(repository_double)
+      end
+
+      it 'does not validate scopes' do
+        expect(subject).not_to receive(:validate_scopes)
+
+        subject.execute(access_params, :github)
+      end
+
+      it 'logs the event and returns a warning message' do
+        expect(Gitlab::Import::Logger).to receive(:info).with({
+          message: 'Fine grained GitHub personal access token used.'
+        }).and_call_original
+
+        expect(subject.execute(access_params, :github))
+          .to include(fine_grained_access_token_warning)
+      end
+    end
+
+    context 'when the collaborator import option is true' do
+      let(:optional_stages) { { collaborators_import: true } }
+      let(:scopes) { ['repo', 'read:user'] }
+
+      it 'returns an error if the scope is not adequate' do
+        expect(subject.execute(access_params, :github)).to include(collab_import_scope_error)
+      end
+    end
+
+    context 'when the collaborator import option is false' do
+      let(:optional_stages) { { collaborators_import: false } }
+
+      context 'with minimum scope token' do
+        let(:scopes) { ['repo', 'read:user'] }
+
+        it 'does not raise a validation error' do
+          allow(subject).to receive(:repo).and_return(repository_double)
+
+          expect(subject).to receive(:validate_scopes).and_return(nil)
+
+          subject.execute(access_params, :github)
+        end
+      end
+
+      context 'without minimum scope token' do
+        let(:scopes) { ['read:user'] }
+
+        it 'returns a mimimum scope error' do
+          expect(subject.execute(access_params, :github)).to include(minimum_scope_error)
+        end
+      end
+    end
+
+    context 'when validating empty scopes' do
+      let(:scopes) { [] }
+
+      it 'returns a minimum scope error' do
+        expect(subject.execute(access_params, :github)).to include(minimum_scope_error)
+      end
+    end
+
+    context 'when validating minimum scope' do
+      let(:scopes) { ['write:packages'] }
+
+      it 'returns an error if the scope is not adequate' do
+        expect(subject.execute(access_params, :github)).to include(minimum_scope_error)
+      end
+    end
+  end
+
   context 'when import source is disabled' do
     let(:repository_double) do
       {
@@ -308,9 +420,9 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         allow(github_importer).to receive(:url).and_return(url)
 
         expect(Gitlab::Import::Logger).to receive(:error).with({
-                                                                 message: message,
-                                                                 error: error
-                                                               }).and_call_original
+          message: message,
+          error: error
+        }).and_call_original
         expect(github_importer.execute(access_params, :github)).to include(blocked_url_error(url))
       end
     end
@@ -360,6 +472,33 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         repository_name: repository_name,
         repository_size: ActiveSupport::NumberHelper.number_to_human_size(repository_size),
         limit: ActiveSupport::NumberHelper.number_to_human_size(limit))
+    }
+  end
+
+  def minimum_scope_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: "Your GitHub access token does not have the correct scope to import. " \
+               "Please use a token with the 'repo' scope."
+    }
+  end
+
+  def collab_import_scope_error
+    {
+      status: :error,
+      http_status: :unprocessable_entity,
+      message: "Your GitHub access token does not have the correct scope to import collaborators. " \
+               "Please use a token with the 'read:org' scope."
+    }
+  end
+
+  def fine_grained_access_token_warning
+    {
+      status: :success,
+      project: project_double,
+      warning: "Fine-grained personal access tokens are not officially supported. " \
+               "It is recommended to use a classic token instead."
     }
   end
 

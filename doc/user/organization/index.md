@@ -11,7 +11,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 FLAG:
 This feature is not ready for production use.
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ui_for_organizations`.
-On GitLab.com, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is not available.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

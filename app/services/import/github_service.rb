@@ -5,6 +5,9 @@ module Import
     include ActiveSupport::NumberHelper
     include Gitlab::Utils::StrongMemoize
 
+    MINIMUM_IMPORT_SCOPE = 'repo'
+    COLLAB_IMPORT_SCOPES = %w[admin:org read:org].freeze
+
     attr_accessor :client
     attr_reader :params, :current_user
 
@@ -12,12 +15,26 @@ module Import
       context_error = validate_context
       return context_error if context_error
 
+      if provider == :github # we skip scope validation for Gitea importer calls
+
+        if Gitlab::GithubImport.fine_grained_token?(access_params[:github_access_token])
+          Gitlab::GithubImport::Logger.info(
+            message: 'Fine grained GitHub personal access token used.'
+          )
+          warning = s_('GithubImport|Fine-grained personal access tokens are not officially supported. ' \
+                       'It is recommended to use a classic token instead.')
+        else
+          scope_error = validate_scopes
+          return scope_error if scope_error
+        end
+      end
+
       project = create_project(access_params, provider)
       track_access_level('github')
 
       if project.persisted?
         store_import_settings(project)
-        success(project)
+        success(project, warning: warning)
       elsif project.errors[:import_source_disabled].present?
         error(project.errors[:import_source_disabled], :forbidden)
       else
@@ -98,6 +115,20 @@ module Import
     end
 
     private
+
+    def validate_scopes
+      scopes = client.octokit.scopes
+
+      unless scopes.include?(MINIMUM_IMPORT_SCOPE)
+        return log_and_return_error('Invalid Scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import. Please use a token with the '%{scope}' scope."), scope: 'repo'), :unprocessable_entity)
+      end
+
+      collaborators_import = params.dig(:optional_stages, :collaborators_import) || false # if not set, default to false to skip collaborator import validation
+
+      return if collaborators_import == false || scopes.intersect?(COLLAB_IMPORT_SCOPES)
+
+      log_and_return_error('Invalid scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."), scope: 'read:org'), :unprocessable_entity)
+    end
 
     def validate_context
       if blocked_url?

@@ -67,7 +67,7 @@ author can either retry any failed jobs, or push new commits to fix the failure:
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 16.5 [with two flags](../../../administration/feature_flags.md) named `merge_when_checks_pass` and `additional_merge_when_checks_ready`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/412995) in GitLab 16.9.
@@ -76,7 +76,7 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To enable the feature,
 an administrator can [enable the feature flags](../../../administration/feature_flags.md)
 named `merge_when_checks_pass` and `additional_merge_when_checks_ready`.
-On GitLab.com, this feature is available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 In GitLab 16.9 and later, **Merge when checks pass** adds more checks to the auto-merge
 process. When set to auto-merge, all of these checks must pass for a merge request to merge:

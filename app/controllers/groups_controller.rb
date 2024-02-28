@@ -21,7 +21,9 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :projects, :transfer, :export, :download_export]
+  before_action :authorize_view_edit_page!, only: :edit
+  before_action :authorize_remove_group!, only: :destroy
   before_action :authorize_create_group!, only: [:new]
   before_action :load_recaptcha, only: [:new], if: -> { captcha_required? }
 

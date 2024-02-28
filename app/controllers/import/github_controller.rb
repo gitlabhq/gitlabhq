@@ -15,6 +15,7 @@ class Import::GithubController < Import::BaseController
 
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
   rescue_from Octokit::TooManyRequests, with: :provider_rate_limit
+  rescue_from Octokit::Forbidden, with: :provider_scope_validation_error
   rescue_from Gitlab::GithubImport::RateLimitError, with: :rate_limit_threshold_exceeded
 
   delegate :client, to: :client_proxy, private: true
@@ -49,8 +50,8 @@ class Import::GithubController < Import::BaseController
   end
 
   def status
-    # Request repos to display error page if provider token is invalid
-    # Improving in https://gitlab.com/gitlab-org/gitlab-foss/issues/55585
+    @fine_grained = Gitlab::GithubImport.fine_grained_token?(session[access_token_key])
+
     client_repos
 
     respond_to do |format|
@@ -204,6 +205,8 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_repos
+    # Request repos to display error page if provider token is invalid
+    # Improving in https://gitlab.com/gitlab-org/gitlab-foss/issues/55585
     client_repos_response[:repos]
   end
 
@@ -248,6 +251,17 @@ class Import::GithubController < Import::BaseController
     session[access_token_key] = nil
     redirect_to new_import_url,
       alert: _("GitHub API rate limit exceeded. Try again after %{reset_time}") % { reset_time: reset_time }
+  end
+
+  def provider_scope_validation_error
+    session[access_token_key] = nil
+    redirect_to new_import_url,
+      alert: format(
+        s_("GithubImport|Your GitHub access token does not have the correct scope to import. " \
+           "Please use a token with the '%{repo}' scope, and with the '%{read_org}' scope " \
+           "if importing collaborators."),
+        repo: 'repo', read_org: 'read:org'
+      )
   end
 
   def auth_state_key
