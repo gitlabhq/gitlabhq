@@ -3,10 +3,12 @@ description: Schema for all Cell-local tables, ex. namespaces, projects, etc.
 allow_cross_joins:
   - gitlab_shared
   - gitlab_main
+  - gitlab_main_clusterwide
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
   - gitlab_main
+  - gitlab_main_clusterwide
 allow_cross_foreign_keys:
   - gitlab_main
 cell_local: true

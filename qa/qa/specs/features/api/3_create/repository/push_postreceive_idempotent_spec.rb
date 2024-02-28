@@ -12,7 +12,7 @@ module QA
         project&.remove_via_api!
       end
 
-      it 'pushes and creates a single push event three times', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347680' do
+      it 'pushes and creates a single push event three times', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347680' do
         verify_single_event_per_push(repeat: 3)
       end
 
