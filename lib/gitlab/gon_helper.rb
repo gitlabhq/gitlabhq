@@ -36,6 +36,7 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
+      gon.organization_http_header_name = ::Organizations::ORGANIZATION_HTTP_HEADER
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')

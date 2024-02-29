@@ -1,0 +1,8 @@
+included_patterns:
+  - "**/*.rb"
+
+excluded_patterns:
+  - "**/spec/**/*"
+  - qa/qa/specs/features/**/*
+  - vendor/**/*
+  - ".bundle/**/*"

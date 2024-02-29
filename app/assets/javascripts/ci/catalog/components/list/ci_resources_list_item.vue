@@ -32,6 +32,12 @@ export default {
     authorName() {
       return this.latestVersion.author.name;
     },
+    authorUsername() {
+      return this.latestVersion.author.username;
+    },
+    authorId() {
+      return getIdFromGraphQLId(this.latestVersion.author.id);
+    },
     authorProfileUrl() {
       return this.latestVersion.author.webUrl;
     },
@@ -162,7 +168,14 @@ export default {
                 </span>
               </template>
               <template #author>
-                <gl-link :href="authorProfileUrl" data-testid="user-link">
+                <gl-link
+                  :data-name="authorName"
+                  :data-user-id="authorId"
+                  :data-username="authorUsername"
+                  data-testid="user-link"
+                  :href="authorProfileUrl"
+                  class="js-user-link"
+                >
                   <span>{{ authorName }}</span>
                 </gl-link>
               </template>

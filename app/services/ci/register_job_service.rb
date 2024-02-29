@@ -129,14 +129,12 @@ module Ci
         builds = queue.builds_with_any_tags(builds)
       end
 
-      build_ids = retrieve_queue(-> { queue.execute(builds) })
+      build_and_partition_ids = retrieve_queue(-> { queue.execute(builds) })
 
-      @metrics.observe_queue_size(-> { build_ids.size }, @runner.runner_type)
+      @metrics.observe_queue_size(-> { build_and_partition_ids.size }, @runner.runner_type)
 
-      if Feature.enabled?(:use_partition_id_for_register_job_service, Feature.current_request)
-        build_ids.each { |build_id, partition_id| yield Ci::Build.find_by!(partition_id: partition_id, id: build_id) }
-      else
-        build_ids.each { |build_id| yield Ci::Build.find(build_id) }
+      build_and_partition_ids.each do |build_id, partition_id|
+        yield Ci::Build.find_by!(partition_id: partition_id, id: build_id)
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord

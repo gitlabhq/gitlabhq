@@ -17,6 +17,7 @@ qa_pipelines["package-and-test-pipeline.yml"]="package-and-test/main.gitlab-ci.y
 qa_pipelines["package-and-test-nightly-pipeline.yml"]="package-and-test-nightly/main.gitlab-ci.yml"
 qa_pipelines["review-app-pipeline.yml"]="review-apps/main.gitlab-ci.yml"
 qa_pipelines["test-on-gdk-pipeline.yml"]="test-on-gdk/main.gitlab-ci.yml"
+qa_pipelines["test-on-cng-pipeline.yml"]="test-on-cng/main.gitlab-ci.yml"
 
 if [ "$QA_SKIP_ALL_TESTS" == "true" ]; then
   skip_pipeline=".gitlab/ci/_skip.yml"

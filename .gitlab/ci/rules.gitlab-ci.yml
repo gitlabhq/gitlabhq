@@ -418,6 +418,7 @@
 .qa-patterns: &qa-patterns
   - ".dockerignore"
   - "{,jh/}qa/**/*"
+  - ".gitlab/ci/{package-and-test,qa-common,test-on-cng,test-on-gdk}/*"
 
 # Frontend view patterns + .qa-patterns
 .frontend-qa-patterns: &frontend-qa-patterns
@@ -1724,6 +1725,13 @@
       when: never
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
+
+.qa:rules:e2e:test-on-cng:
+  rules:
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: [*if-default-branch-schedule-nightly, *qa-e2e-test-schedule-variables]
+    - <<: *if-merge-request
+      changes: *qa-patterns
 
 .qa:rules:package-and-test-nightly:
   rules:

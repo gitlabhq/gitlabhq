@@ -12,8 +12,8 @@
       = render Pajamas::ButtonComponent.new(category: :tertiary,
         button_options: { title: _('Add reaction'), class: 'btn-icon note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip', data: { position: 'right', container: 'body' }, 'aria-label': _('Add reaction') }) do
         = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral gl-button-icon gl-icon')
-        = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon gl-left-3!')
-        = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon gl-left-3! ')
+        = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
+        = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3 ')
 
   - if note_editable
     .note-actions-item.gl-ml-0

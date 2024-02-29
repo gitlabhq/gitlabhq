@@ -3,25 +3,39 @@
 module Gitlab
   module Middleware
     module Organizations
+      # Logic of setting the Current.organization:
+      #   - Request header value from injection on frontend
+      #   - TODO: Request header from injection from routing layer
+      #     see ideas in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144811#note_1784126192
       class Current
         def initialize(app)
           @app = app
         end
 
         def call(env)
-          # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/437541 to enhance the finder:
-          #   - Separate logged in vs not logged in user(perhaps using session)
-          #   - Authenticated:
-          #     - Request header
-          #     - Rails session value to drive the finder
-          #     - First organization current user is a user of
-          #   - Unauthenticated:
-          #     - default organization
+          @request = Rack::Request.new(env)
+
           if Feature.enabled?(:current_organization_middleware, type: :gitlab_com_derisk)
-            ::Current.organization = ::Organizations::Organization.default_organization
+            ::Current.organization = calculated_organization
           end
 
           @app.call(env)
+        end
+
+        private
+
+        POSITIVE_INTEGER_REGEX = %r{\A[1-9]\d*\z}
+
+        def calculated_organization
+          find_from_header
+        end
+
+        def find_from_header
+          header_organization_id = @request.get_header(::Organizations::ORGANIZATION_HTTP_HEADER)
+
+          return unless header_organization_id.to_s.match?(POSITIVE_INTEGER_REGEX) # don't do unnecessary query
+
+          ::Organizations::Organization.find_by_id(header_organization_id)
         end
       end
     end

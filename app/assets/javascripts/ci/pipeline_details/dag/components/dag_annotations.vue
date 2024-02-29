@@ -31,7 +31,7 @@ export default {
         'gl-flex-direction-column',
         'gl-fixed',
         'gl-right-1',
-        'gl-top-66vh',
+        'gl-deprecated-top-66vh',
         'gl-w-max-content',
         'gl-px-5',
         'gl-py-4',

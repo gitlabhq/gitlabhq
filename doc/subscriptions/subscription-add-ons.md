@@ -51,10 +51,9 @@ Prerequisites:
 
 #### Configure network and proxy settings
 
-For self-managed instances, you must also ensure that your firewalls and HTTP proxy servers
-allow outbound connections to `cloud.gitlab.com`.
-
-To use an HTTP proxy, ensure that both `gitLab _workhorse` and `gitLab_rails` set the necessary
+For self-managed instances, you must update your firewalls and HTTP proxy servers
+to allow outbound connections to `https://cloud.gitlab.com:443`.
+To use an HTTP/S proxy, set the `gitLab_workhorse` and `gitLab_rails`
 [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html).
 
 ### Assign seats in bulk

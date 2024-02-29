@@ -1905,7 +1905,7 @@ DEPENDENCIES
   fog-local (~> 0.8)
   fugit (~> 1.8.1)
   fuubar (~> 2.2.0)
-  gettext (~> 3.3)
+  gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.11.0)
   gitaly (~> 16.9.1)
   gitlab-backup-cli!

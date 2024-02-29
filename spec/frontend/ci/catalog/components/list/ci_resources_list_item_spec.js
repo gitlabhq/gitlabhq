@@ -33,7 +33,7 @@ describe('CiResourcesListItem', () => {
     },
   };
   const release = {
-    author: { name: 'author', webUrl: '/user/1' },
+    author: { id: 'author-id', name: 'author', username: 'author-username', webUrl: '/user/1' },
     createdAt: Date.now(),
     name: '1.0.0',
   };
@@ -150,6 +150,20 @@ describe('CiResourcesListItem', () => {
       it('renders the user link', () => {
         expect(findUserLink().exists()).toBe(true);
         expect(findUserLink().attributes('href')).toBe(release.author.webUrl);
+      });
+
+      it('the user link has the correct attributes', () => {
+        expect(findUserLink().attributes()).toEqual({
+          'data-name': release.author.name,
+          'data-username': release.author.username,
+          'data-testid': 'user-link',
+          href: release.author.webUrl,
+          class: 'js-user-link',
+        });
+      });
+
+      it('the user link renders the author name', () => {
+        expect(findUserLink().text()).toBe(release.author.name);
       });
 
       it('renders the time since the resource was released', () => {

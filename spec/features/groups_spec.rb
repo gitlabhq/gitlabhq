@@ -37,16 +37,27 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
       end
 
       context 'with current organization setting in middleware' do
-        it 'sets the organization to the default organization' do
-          default_organization = create(:organization, :default)
+        let_it_be(:another_organization) { create(:organization) }
 
-          fill_in 'Group name', with: 'test-group'
-          click_button 'Create group'
+        before_all do
+          create(:organization, :default)
+        end
 
-          group = Group.find_by(name: 'test-group')
+        context 'for setting from the header' do
+          it 'sets the organization to another organization', :feature do
+            fill_in 'Group name', with: 'test-group'
 
-          expect(group.organization).to eq(default_organization)
-          expect(page).to have_current_path(group_path(group), ignore_query: true)
+            inspect_requests(
+              inject_headers: { ::Organizations::ORGANIZATION_HTTP_HEADER.sub(/^HTTP_/, '') => another_organization.id }
+            ) do
+              click_button 'Create group'
+            end
+
+            group = Group.find_by(name: 'test-group')
+
+            expect(group.organization).to eq(another_organization)
+            expect(page).to have_current_path(group_path(group), ignore_query: true)
+          end
         end
       end
     end

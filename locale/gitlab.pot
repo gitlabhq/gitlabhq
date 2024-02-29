@@ -3574,6 +3574,9 @@ msgstr ""
 msgid "AdminSettings|I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)."
 msgstr ""
 
+msgid "AdminSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
+msgstr ""
+
 msgid "AdminSettings|If no unit is written, it defaults to seconds. For example, these are all equivalent: %{oneDayInSeconds}, %{oneDayInHoursHumanReadable}, or %{oneDayHumanReadable}. Minimum value is two hours. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -23467,6 +23470,18 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Google Cloud project ID"
 msgstr ""
 
+msgid "GoogleCloudPlatformService|Google Cloud project ID for the Workload Identity Federation."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Google Cloud project number for the Workload Identity Federation."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
+msgstr ""
+
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
 msgstr ""
 
@@ -37949,7 +37964,7 @@ msgstr ""
 msgid "ProductAnalytics|Product analytics onboarding"
 msgstr ""
 
-msgid "ProductAnalytics|Product analytics usage is calculated based on the total number of events received from projects within the group. Contact your account manager if you need additional event quota. %{linkStart}Learn more%{linkEnd}."
+msgid "ProductAnalytics|Product analytics usage is calculated based on the total number of events received from projects within the group. Contact your account manager if you need additional event quota. %{usageQuotaLinkStart}Learn more%{usageQuotaLinkEnd}. If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{dataRetentionLinkStart}Learn more about data retention policy%{dataRetentionLinkEnd}."
 msgstr ""
 
 msgid "ProductAnalytics|Projects"
@@ -37997,7 +38012,7 @@ msgstr ""
 msgid "ProductAnalytics|The connection string for your Snowplow configurator instance."
 msgstr ""
 
-msgid "ProductAnalytics|The host to send all tracking events to"
+msgid "ProductAnalytics|The receiver of tracking events"
 msgstr ""
 
 msgid "ProductAnalytics|The sender of tracking events"
@@ -39074,9 +39089,6 @@ msgstr ""
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
 msgstr ""
 
-msgid "ProjectSettings|All your dashboard data sources."
-msgstr ""
-
 msgid "ProjectSettings|Allow"
 msgstr ""
 
@@ -39132,6 +39144,9 @@ msgid "ProjectSettings|Collector host"
 msgstr ""
 
 msgid "ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release."
+msgstr ""
+
+msgid "ProjectSettings|Configure %{link_start}data sources%{link_end} to be used for your dashboards."
 msgstr ""
 
 msgid "ProjectSettings|Configure your infrastructure."
@@ -39240,6 +39255,9 @@ msgid "ProjectSettings|Housekeeping, export, archive, change path, transfer, and
 msgstr ""
 
 msgid "ProjectSettings|How do they differ?"
+msgstr ""
+
+msgid "ProjectSettings|If GitLab manages your cluster, then GitLab retains your analytics data for 1 year. %{link_start}Learn more about data retention policy%{link_end}."
 msgstr ""
 
 msgid "ProjectSettings|If merge trains are enabled, merging is only possible if the branch can be rebased without conflicts."
@@ -39414,6 +39432,9 @@ msgid "ProjectSettings|Select the project containing Analytics Dashboards config
 msgstr ""
 
 msgid "ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests."
+msgstr ""
+
+msgid "ProjectSettings|Set up your project to receive events that are used for %{link_start}product analytics%{link_end}."
 msgstr ""
 
 msgid "ProjectSettings|Share code with others outside the project."
@@ -48132,13 +48153,7 @@ msgstr ""
 msgid "Stack trace"
 msgstr ""
 
-msgid "Stacktrace snippet"
-msgstr ""
-
 msgid "Stage"
-msgstr ""
-
-msgid "Stage:"
 msgstr ""
 
 msgid "Standard"
@@ -55518,9 +55533,6 @@ msgstr ""
 msgid "Vulnerability|Activity"
 msgstr ""
 
-msgid "Vulnerability|Actual Response"
-msgstr ""
-
 msgid "Vulnerability|Actual received response is the one received when this fault was detected"
 msgstr ""
 
@@ -55542,9 +55554,6 @@ msgstr ""
 msgid "Vulnerability|CVSS v3"
 msgstr ""
 
-msgid "Vulnerability|Class"
-msgstr ""
-
 msgid "Vulnerability|Cluster"
 msgstr ""
 
@@ -55557,16 +55566,7 @@ msgstr ""
 msgid "Vulnerability|Could not load prompt."
 msgstr ""
 
-msgid "Vulnerability|Crash address"
-msgstr ""
-
 msgid "Vulnerability|Crash address:"
-msgstr ""
-
-msgid "Vulnerability|Crash state"
-msgstr ""
-
-msgid "Vulnerability|Crash type"
 msgstr ""
 
 msgid "Vulnerability|Crash type:"
@@ -55585,9 +55585,6 @@ msgid "Vulnerability|Detected"
 msgstr ""
 
 msgid "Vulnerability|Detection method"
-msgstr ""
-
-msgid "Vulnerability|Download"
 msgstr ""
 
 msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."
@@ -55614,9 +55611,6 @@ msgstr ""
 msgid "Vulnerability|False positive detected"
 msgstr ""
 
-msgid "Vulnerability|File"
-msgstr ""
-
 msgid "Vulnerability|File:"
 msgstr ""
 
@@ -55641,9 +55635,6 @@ msgstr ""
 msgid "Vulnerability|Identifiers"
 msgstr ""
 
-msgid "Vulnerability|Image"
-msgstr ""
-
 msgid "Vulnerability|Image:"
 msgstr ""
 
@@ -55656,16 +55647,7 @@ msgstr ""
 msgid "Vulnerability|Location"
 msgstr ""
 
-msgid "Vulnerability|Method"
-msgstr ""
-
-msgid "Vulnerability|Namespace"
-msgstr ""
-
 msgid "Vulnerability|Namespace:"
-msgstr ""
-
-msgid "Vulnerability|Project"
 msgstr ""
 
 msgid "Vulnerability|Project:"
@@ -55680,16 +55662,10 @@ msgstr ""
 msgid "Vulnerability|Reproduction Assets"
 msgstr ""
 
-msgid "Vulnerability|Request"
-msgstr ""
-
 msgid "Vulnerability|Request/Response"
 msgstr ""
 
 msgid "Vulnerability|Response generated by AI"
-msgstr ""
-
-msgid "Vulnerability|Scanner Provider"
 msgstr ""
 
 msgid "Vulnerability|Scanner:"
@@ -55746,9 +55722,6 @@ msgstr ""
 msgid "Vulnerability|This is a beta feature that uses AI to explain the vulnerability and provide recommendations. Use this feature with caution as we continue to iterate. Please provide your feedback and ideas in %{linkStart}this issue%{linkEnd}."
 msgstr ""
 
-msgid "Vulnerability|Tool"
-msgstr ""
-
 msgid "Vulnerability|Tool:"
 msgstr ""
 
@@ -55759,9 +55732,6 @@ msgid "Vulnerability|Training not available for this vulnerability."
 msgstr ""
 
 msgid "Vulnerability|URL:"
-msgstr ""
-
-msgid "Vulnerability|Unmodified Response"
 msgstr ""
 
 msgid "Vulnerability|Unmodified response:"

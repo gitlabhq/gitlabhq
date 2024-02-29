@@ -25,7 +25,7 @@ export default {
     errorMessage: __('Something went wrong on our end.'),
     loadingText: __('Loading...'),
     mergeTrainMessage: s__('Pipeline|Merge train pipeline jobs can not be retried'),
-    stage: __('Stage:'),
+    stage: __('Stage'),
     viewStageLabel: __('View Stage: %{title}'),
   },
   components: {
@@ -133,8 +133,13 @@ export default {
       <div
         class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-font-sm gl-font-weight-bold gl-line-height-1"
       >
-        <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
-        <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
+        <template v-if="isLoading">
+          <span>{{ $options.i18n.stage }}</span>
+        </template>
+        <template v-else>
+          <span class="gl-mr-1">{{ $options.i18n.stage }}:</span>
+          <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
+        </template>
       </div>
     </template>
 
@@ -150,6 +155,7 @@ export default {
       v-else
       class="mini-pipeline-graph-dropdown-menu gl-overflow-y-auto gl-m-0 gl-p-0"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
+      @click.stop
     >
       <legacy-job-item
         v-for="job in dropdownContent"

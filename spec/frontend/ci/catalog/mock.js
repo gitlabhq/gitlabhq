@@ -366,7 +366,7 @@ export const catalogSharedDataMock = {
         name: '1.0.0',
         path: 'path/to/release',
         createdAt: Date.now(),
-        author: { id: 1, webUrl: 'profile/1', name: 'username' },
+        author: { id: 1, webUrl: 'profile/1', name: 'name', username: 'username' },
       },
       webPath: '/path/to/project',
     },

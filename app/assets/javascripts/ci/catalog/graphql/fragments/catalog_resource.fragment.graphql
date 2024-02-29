@@ -19,6 +19,7 @@ fragment CatalogResourceFields on CiCatalogResource {
     author {
       id
       name
+      username
       webUrl
     }
   }

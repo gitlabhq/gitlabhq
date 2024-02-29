@@ -18,6 +18,6 @@
       .award-menu-holder.js-award-holder
         = render Pajamas::ButtonComponent.new(button_options: { class: 'award-control has-tooltip js-add-award btn-icon gl-relative', data: { title: _('Add reaction') }, aria: { label: _('Add reaction') } }) do
           = sprite_icon('slight-smile', css_class: 'award-control-icon-neutral gl-button-icon gl-icon')
-          = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon gl-left-3!')
-          = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon gl-left-3!')
+          = sprite_icon('smiley', css_class: 'award-control-icon-positive gl-button-icon gl-icon !gl-left-3')
+          = sprite_icon('smile', css_class: 'award-control-icon-super-positive gl-button-icon gl-icon !gl-left-3')
     = yield

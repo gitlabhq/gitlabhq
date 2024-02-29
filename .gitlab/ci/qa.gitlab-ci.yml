@@ -208,6 +208,20 @@ e2e:test-on-gdk:
     SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
     GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
 
+e2e:test-on-cng:
+  extends:
+    - .e2e-trigger-base
+    - .qa:rules:e2e:test-on-cng
+  stage: qa
+  needs:
+    - build-assets-image
+    - e2e-test-pipeline-generate
+  variables:
+    QA_RUN_TYPE: e2e-test-on-cng
+    PIPELINE_NAME: E2E CNG
+    DYNAMIC_PIPELINE_YML: test-on-cng-pipeline.yml
+    SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
+
 e2e:code-suggestions-eval:
   extends:
     - .qa:rules:code-suggestions-eval

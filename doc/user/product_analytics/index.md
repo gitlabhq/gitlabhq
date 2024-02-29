@@ -101,6 +101,12 @@ Prerequisites:
 1. Expand **Configure** and enter the configuration values.
 1. Select **Save changes**.
 
+### Data retention
+
+If GitLab manages your product analytics instance, then your analytics data will be retained for 1 year.
+
+You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).
+
 ## Onboard a GitLab project
 
 Onboarding a GitLab project means preparing it to receive events that are used for product analytics.

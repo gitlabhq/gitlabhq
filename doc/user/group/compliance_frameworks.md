@@ -25,17 +25,17 @@ Compliance frameworks are created on top-level groups. Group owners can create, 
 
 You can create, edit, or delete a compliance framework from a compliance framework report. For more information, see:
 
-- [Create a new compliance framework](../../user/compliance/compliance_center/index.md#create-a-new-compliance-framework-1).
-- [Edit a compliance framework](../../user/compliance/compliance_center/index.md#edit-a-compliance-framework-1).
-- [Delete a compliance framework](../../user/compliance/compliance_center/index.md#delete-a-compliance-framework-1).
+- [Create a new compliance framework](../../user/compliance/compliance_center/compliance_frameworks_report.md#create-a-new-compliance-framework).
+- [Edit a compliance framework](../../user/compliance/compliance_center/compliance_frameworks_report.md#edit-a-compliance-framework).
+- [Delete a compliance framework](../../user/compliance/compliance_center/compliance_frameworks_report.md#delete-a-compliance-framework).
 
 ### From compliance projects report
 
 You can create, edit, or delete a compliance framework from a compliance projects report. For more information, see:
 
-- [Create a new compliance framework](../../user/compliance/compliance_center/index.md#create-a-new-compliance-framework).
-- [Edit a compliance framework](../../user/compliance/compliance_center/index.md#edit-a-compliance-framework).
-- [Delete a compliance framework](../../user/compliance/compliance_center/index.md#delete-a-compliance-framework).
+- [Create a new compliance framework](../../user/compliance/compliance_center/compliance_projects_report.md#create-a-new-compliance-framework).
+- [Edit a compliance framework](../../user/compliance/compliance_center/compliance_projects_report.md#edit-a-compliance-framework).
+- [Delete a compliance framework](../../user/compliance/compliance_center/compliance_projects_report.md#delete-a-compliance-framework).
 
 ### From group settings
 
@@ -59,7 +59,7 @@ Frameworks cannot be added to projects in personal namespaces.
 ### From compliance projects report
 
 To assign a compliance framework to a project, apply the compliance framework through the
-[Compliance projects report](../../user/compliance/compliance_center/index.md#apply-a-compliance-framework-to-projects-in-a-group).
+[Compliance projects report](../../user/compliance/compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
 
 ### From group settings
 
@@ -99,7 +99,7 @@ Prerequisites:
 
 #### From compliance center
 
-To set as default (or remove the default) from [compliance projects report](../../user/compliance/compliance_center/index.md#compliance-projects-report):
+To set as default (or remove the default) from [compliance projects report](../../user/compliance/compliance_center/compliance_projects_report.md#compliance-projects-report):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -108,7 +108,7 @@ To set as default (or remove the default) from [compliance projects report](../.
 1. Select **Set as default**.
 1. Select **Save changes**.
 
-To set as default (or remove the default) from [compliance framework report](../../user/compliance/compliance_center/index.md#compliance-frameworks-report):
+To set as default (or remove the default) from [compliance framework report](../../user/compliance/compliance_center/compliance_frameworks_report.md#compliance-frameworks-report):
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
@@ -179,7 +179,7 @@ Prerequisites:
 ### From compliance projects report
 
 To remove a compliance framework from one or multiple project in a group, remove the compliance framework through the
-[Compliance projects report](../../user/compliance/compliance_center/index.md#remove-a-compliance-framework-from-projects-in-a-group).
+[Compliance projects report](../../user/compliance/compliance_center/compliance_projects_report.md#remove-a-compliance-framework-from-projects-in-a-group).
 
 ### From group settings
 

@@ -378,7 +378,10 @@ gem 'thrift', '>= 0.16.0' # rubocop:todo Gemfile/MissingFeatureCategory
 # I18n
 gem 'rails-i18n', '~> 7.0', feature_category: :internationalization
 gem 'gettext_i18n_rails', '~> 1.11.0', feature_category: :internationalization
-gem 'gettext', '~> 3.3', require: false, group: [:development, :test], feature_category: :internationalization
+gem 'gettext', '~> 3.4', '>= 3.4.9',
+  require: false,
+  group: [:development, :test],
+  feature_category: :internationalization
 
 gem 'batch-loader', '~> 2.0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 

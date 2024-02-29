@@ -65,16 +65,16 @@ describe('Sidebar participant component', () => {
         expect(findIcon().exists()).toBe(true);
       });
 
-      it('does not apply `gl-left-6!` class to an icon if participant is not selected', () => {
+      it('does not apply `!gl-left-6` class to an icon if participant is not selected', () => {
         createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: false });
 
-        expect(findIcon().classes('gl-left-6!')).toBe(false);
+        expect(findIcon().classes('!gl-left-6')).toBe(false);
       });
 
-      it('applies `gl-left-6!` class to an icon if participant is selected', () => {
+      it('applies `!gl-left-6` class to an icon if participant is selected', () => {
         createComponent({ issuableType: TYPE_MERGE_REQUEST, canMerge: false, selected: true });
 
-        expect(findIcon().classes('gl-left-6!')).toBe(true);
+        expect(findIcon().classes('!gl-left-6')).toBe(true);
       });
     });
 
