@@ -46,15 +46,22 @@ which you can customize to meet the specific needs of each project.
 
 ### Create a workspace
 
+> - **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
+> - **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
+
 To create a workspace:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
 1. Select **Workspaces**.
 1. Select **New workspace**.
-1. From the **Select project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
-1. From the **Select cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
-1. In **Time before automatic termination**, enter the number of hours until the workspace automatically terminates.
+1. From the **Project** dropdown list, [select a project with a `.devfile.yaml` file](#prerequisites).
+1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
+1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
+   GitLab uses to create the workspace.
+1. In **Devfile location**, enter the path to the devfile you use to configure the workspace.
+   If your devfile is not in the root directory of your project, specify a relative path.
+1. In **Workspace automatically terminates after**, enter the number of hours until the workspace automatically terminates.
    This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
 1. Select **Create workspace**.
 

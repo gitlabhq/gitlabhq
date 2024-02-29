@@ -15,7 +15,6 @@ import {
 } from '~/integrations/constants';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
 import csrf from '~/lib/utils/csrf';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
 import DynamicField from './dynamic_field.vue';
@@ -39,7 +38,6 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [glFeatureFlagsMixin()],
   inject: {
     helpHtml: {
       default: '',

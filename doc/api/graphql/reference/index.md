@@ -30462,23 +30462,24 @@ Represents a remote development workspace.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workspaceactualstate"></a>`actualState` | [`String!`](#string) | Actual state of the workspace. |
-| <a id="workspaceclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Kubernetes Agent associated with the workspace. |
-| <a id="workspacecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of workspace creation. |
-| <a id="workspacedeploymentresourceversion"></a>`deploymentResourceVersion` | [`Int`](#int) | ResourceVersion of the Deployment resource for the workspace. |
+| <a id="workspaceclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Kubernetes agent associated with the workspace. |
+| <a id="workspacecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workspace was created. |
+| <a id="workspacedeploymentresourceversion"></a>`deploymentResourceVersion` | [`Int`](#int) | Version of the deployment resource for the workspace. |
 | <a id="workspacedesiredstate"></a>`desiredState` | [`String!`](#string) | Desired state of the workspace. |
-| <a id="workspacedesiredstateupdatedat"></a>`desiredStateUpdatedAt` | [`Time!`](#time) | Timestamp of last update to desired state. |
+| <a id="workspacedesiredstateupdatedat"></a>`desiredStateUpdatedAt` | [`Time!`](#time) | Timestamp of the last update to the desired state. |
 | <a id="workspacedevfile"></a>`devfile` | [`String!`](#string) | Source YAML of the devfile used to configure the workspace. |
-| <a id="workspacedevfilepath"></a>`devfilePath` | [`String!`](#string) | Project repo git path containing the devfile used to configure the workspace. |
-| <a id="workspacedevfileref"></a>`devfileRef` | [`String!`](#string) | Project repo git ref containing the devfile used to configure the workspace. |
+| <a id="workspacedevfilepath"></a>`devfilePath` | [`String!`](#string) | Path to the devfile used to configure the workspace. |
+| <a id="workspacedevfileref"></a>`devfileRef` | [`String!`](#string) | Git reference that contains the devfile used to configure the workspace. |
+| <a id="workspacedevfileweburl"></a>`devfileWebUrl` | [`String!`](#string) | Web URL of the devfile used to configure the workspace. |
 | <a id="workspaceeditor"></a>`editor` | [`String!`](#string) | Editor used to configure the workspace. Must match a configured template. |
 | <a id="workspaceid"></a>`id` | [`RemoteDevelopmentWorkspaceID!`](#remotedevelopmentworkspaceid) | Global ID of the workspace. |
-| <a id="workspacemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Maximum hours the workspace can exist before it is automatically terminated. |
+| <a id="workspacemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Number of hours until the workspace automatically terminates. |
 | <a id="workspacename"></a>`name` | [`String!`](#string) | Name of the workspace in Kubernetes. |
 | <a id="workspacenamespace"></a>`namespace` | [`String!`](#string) | Namespace of the workspace in Kubernetes. |
 | <a id="workspaceprocesseddevfile"></a>`processedDevfile` | [`String!`](#string) | Processed YAML of the devfile used to configure the workspace. |
-| <a id="workspaceprojectid"></a>`projectId` | [`ID!`](#id) | ID of the Project providing the Devfile for the workspace. |
-| <a id="workspacerespondedtoagentat"></a>`respondedToAgentAt` | [`Time`](#time) | Timestamp of last response sent to GA4K for the workspace. |
-| <a id="workspaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of last update to any mutable workspace property. |
+| <a id="workspaceprojectid"></a>`projectId` | [`ID!`](#id) | ID of the project that contains the devfile for the workspace. |
+| <a id="workspacerespondedtoagentat"></a>`respondedToAgentAt` | [`Time`](#time) | Timestamp of the last response sent to the GitLab agent for Kubernetes for the workspace. |
+| <a id="workspaceupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable workspace property. |
 | <a id="workspaceurl"></a>`url` | [`String!`](#string) | URL of the workspace. |
 | <a id="workspaceuser"></a>`user` | [`UserCore!`](#usercore) | Owner of the workspace. |
 

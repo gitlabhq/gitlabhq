@@ -3,6 +3,7 @@
 module Integrations
   class DroneCi < BaseCi
     include HasWebHook
+    include HasAvatar
     include PushDataValidations
     include ReactivelyCached
     prepend EnableSslVerification
@@ -121,6 +122,10 @@ module Integrations
     def enable_ssl_verification
       original_value = Gitlab::Utils.to_boolean(properties['enable_ssl_verification'])
       original_value.nil? ? (new_record? || url_is_saas?) : original_value
+    end
+
+    def attribution_notice
+      'Drone CI icon and logo by Harness Inc. are licensed under CC NC-ND 4.0.'
     end
 
     private

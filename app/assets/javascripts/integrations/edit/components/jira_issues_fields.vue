@@ -3,6 +3,7 @@ import { GlFormGroup, GlFormCheckbox, GlFormInput } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { s__, __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'JiraIssuesFields',
@@ -13,6 +14,7 @@ export default {
     JiraIssueCreationVulnerabilities: () =>
       import('ee_component/integrations/edit/components/jira_issue_creation_vulnerabilities.vue'),
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     showJiraIssuesIntegration: {
       type: Boolean,
@@ -54,13 +56,20 @@ export default {
     return {
       enableJiraIssues: this.initialEnableJiraIssues,
       projectKey: this.initialProjectKey,
+      projectKeys: null,
     };
   },
   computed: {
     ...mapGetters(['isInheriting']),
+
+    multipleProjectKeys() {
+      return this.glFeatures.jiraMultipleProjectKeys;
+    },
+
     checkboxDisabled() {
       return !this.showJiraIssuesIntegration || this.isInheriting;
     },
+
     validProjectKey() {
       return !this.enableJiraIssues || Boolean(this.projectKey) || !this.isValidated;
     },
@@ -95,6 +104,21 @@ export default {
     </gl-form-checkbox>
 
     <div v-if="enableJiraIssues" class="gl-pl-6 gl-mt-3">
+      <gl-form-group
+        v-if="multipleProjectKeys"
+        :label="s__('JiraService|Jira project keys')"
+        label-for="service_project_keys"
+        class="gl-max-w-26"
+      >
+        <gl-form-input
+          id="service_project_keys"
+          v-model="projectKeys"
+          name="service[project_keys]"
+          :placeholder="s__('JiraService|For example, AB,CD')"
+          :readonly="isInheriting"
+        />
+      </gl-form-group>
+
       <gl-form-group
         :label="$options.i18n.projectKeyLabel"
         label-for="service_project_key"

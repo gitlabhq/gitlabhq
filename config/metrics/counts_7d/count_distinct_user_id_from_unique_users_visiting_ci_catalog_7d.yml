@@ -19,9 +19,6 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - unique_users_visiting_ci_catalog
 events:
   - name: unique_users_visiting_ci_catalog
     unique: user.id

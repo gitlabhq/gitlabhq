@@ -6,75 +6,61 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Tutorial: Make a GitLab contribution
 
-Anyone can contribute to the development of GitLab.
+Everyone can contribute to the development of GitLab.
+You can contribute new features, changes to code or processes, typo fixes,
+or updates to language in the interface.
 
-Maybe you want to add functionality that you feel is missing.
-Or maybe you noticed some UI text that you want to improve.
-
-This tutorial will walk you through the process of updating UI text
-and related files using Gitpod or the GitLab Development Kit on the GitLab community fork.
-You can follow this example to familiarize yourself with the process.
-
-NOTE:
-Join the [GitLab Discord server](https://discord.gg/gitlab), where GitLab team
-members and the wider community are ready and waiting to answer your questions
-and ensure [everyone can contribute](https://handbook.gitlab.com/handbook/company/mission/).
+This tutorial walks you through the contribution process with an example of updating UI text and related files.
+You can follow this tutorial to familiarize yourself with the contribution process.
 
 ## Before you begin
 
-- If you don't already have a GitLab account [create a new one](https://gitlab.com/users/sign_up).
-  Confirm you can successfully [sign in](https://gitlab.com/users/sign_in).
-- [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access),
-  a set of forks mirrored from GitLab repositories in order to improve the contributor experience.
-  - For more information, read the [community forks blog post](https://about.gitlab.com/blog/2023/04/04/gitlab-community-forks/).
-  - The access request will be manually verified and should take no more than a few hours.
-  - If you use a local development environment, you can start making changes locally before your access is granted.
-    You must have access to the community fork to push your changes to it.
+1. If you don't already have a GitLab account [create a new one](https://gitlab.com/users/sign_up).
+   Confirm you can successfully [sign in](https://gitlab.com/users/sign_in).
+1. [Request access to the community forks](https://gitlab.com/groups/gitlab-community/community-members/-/group_members/request_access),
+   a set of forks mirrored from GitLab repositories in order to improve the contributor experience.
+   - For more information, read the [community forks blog post](https://about.gitlab.com/blog/2023/04/04/gitlab-community-forks/).
+   - The access request will be manually verified and should take no more than a few hours.
+   - If you use a local development environment, you can start making changes locally while you wait
+     for the team to confirm your access.
+     You must have access to the community fork to push your changes to it.
+1. We recommend you join the [GitLab Discord server](https://discord.gg/gitlab), where GitLab team
+   members and the wider community are ready and waiting to answer your questions and offer support
+   for making contributions.
 
 ## Choose how you want to contribute
 
-The three methods outlined in this tutorial cover:
+To get started, select the development option that works best for you:
 
-- Quick Change: Use the Web IDE to submit a quick code change from your browser.
-- GitLab Development Kit (GDK)
-  - Local development environment.
-  - It's just like an installation of self-managed GitLab. It includes sample projects you
-    can use to test functionality, and it gives you access to administrator functionality.
-- Gitpod - Most contributors should use this option.
-  - Remote development environment that runs the GDK remotely, regardless of your local hardware,
+- [**Web IDE**](contribute-web-ide.md) - Make a quick change from your browser.
+
+  Use the Web IDE to change code or fix a typo and create a merge request from your browser.
+
+  - No configuration or installation required.
+  - Available within a few seconds.
+
+- [**Gitpod**](configure-dev-env-gitpod.md) - Most contributors should use this option.
+  - In-browser remote development environment that runs regardless of your local hardware,
     operating system, or software.
   - Make and preview remote changes in your local browser.
+  - Takes a few minutes to set up and is fully ready in thirty minutes.
 
-The steps for each method vary in time and effort.
-You should choose the one that fits your needs.
+- GitLab Development Kit (GDK) and GDK-in-a-box - Fully local development.
 
-::Tabs
+  GDK is a local development environment that includes an installation of self-managed GitLab,
+  sample projects, and administrator access with which you can test functionality.
+  These options rely on local hardware and may be resource intensive.
 
-:::TabTitle Quick Change - Remote IDE. No preview.
+  - [**GDK-in-a-box**](configure-dev-env-gdk-in-a-box.md): Recommended for local development.
 
-Use the [Web IDE](../../../user/project/web_ide/index.md) to adjust code or language from your browser.
+    Download and run a pre-configured virtual machine image that contains the GDK, then connect to it with VS Code.
 
-1. [Change the code](contribute-web-ide.md)
-1. [Create a merge request](mr-review.md)
+    - Minimal configuration required.
+    - After the 10 GB image has downloaded, GDK-in-a-box is ready in a few minutes.
 
-:::TabTitle Gitpod - Remote IDE, environment, and preview.
+  - [**Standalone GDK**](configure-dev-env-gdk.md): Install the GDK and its dependencies.
 
-Use Gitpod to make changes from your browser to a remote GitLab environment.
+    Install the GDK for a fully local development environment.
 
-Gitpod takes a few minutes to set up and is fully ready in thirty minutes.
-
-1. [Configure the remote development environment](configure-dev-env-gitpod.md)
-1. [Change the code](contribute-gitpod.md)
-1. [Create a merge request](mr-review.md)
-
-:::TabTitle GDK - Local environment and preview.
-
-A local development environment and full installation of self-managed GitLab, complete with sample projects.
-
-GDK takes an hour to set up, depending on your local hardware.
-
-1. [Configure the development environment](configure-dev-env-gdk.md)
-1. [Change the code](contribute-gdk.md)
-1. [Create a merge request](mr-review.md)
-
-::EndTabs
+    - Some configuration required.
+    - May take up to two hours to install and configure.

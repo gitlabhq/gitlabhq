@@ -1002,6 +1002,9 @@ msgstr ""
 msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
 msgstr ""
 
+msgid "%{path} on %{ref}"
+msgstr ""
+
 msgid "%{percentageUsed}%% used"
 msgstr ""
 
@@ -17730,6 +17733,9 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
+msgid "Devfile"
+msgstr ""
+
 msgid "Device name"
 msgstr ""
 
@@ -28061,6 +28067,9 @@ msgstr ""
 msgid "JiraService|For example, AB"
 msgstr ""
 
+msgid "JiraService|For example, AB,CD"
+msgstr ""
+
 msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
 msgstr ""
 
@@ -28098,6 +28107,9 @@ msgid "JiraService|Jira personal access token (Jira Data Center and Jira Server 
 msgstr ""
 
 msgid "JiraService|Jira project key"
+msgstr ""
+
+msgid "JiraService|Jira project keys"
 msgstr ""
 
 msgid "JiraService|Leave blank to use your current configuration"
@@ -56975,10 +56987,16 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
+msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
+msgstr ""
+
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
 msgstr ""
 
 msgid "Workspaces|Cancel"
+msgstr ""
+
+msgid "Workspaces|Cluster agent"
 msgstr ""
 
 msgid "Workspaces|Could not load workspaces"
@@ -56999,6 +57017,9 @@ msgstr ""
 msgid "Workspaces|Develop anywhere"
 msgstr ""
 
+msgid "Workspaces|Devfile location"
+msgstr ""
+
 msgid "Workspaces|Error"
 msgstr ""
 
@@ -57011,10 +57032,25 @@ msgstr ""
 msgid "Workspaces|Failed to update workspace"
 msgstr ""
 
+msgid "Workspaces|Git reference"
+msgstr ""
+
 msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
 msgstr ""
 
+msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."
+msgstr ""
+
+msgid "Workspaces|Learn more."
+msgstr ""
+
 msgid "Workspaces|New workspace"
+msgstr ""
+
+msgid "Workspaces|Path to devfile"
+msgstr ""
+
+msgid "Workspaces|Project"
 msgstr ""
 
 msgid "Workspaces|Restart"
@@ -57024,15 +57060,6 @@ msgid "Workspaces|Restarting"
 msgstr ""
 
 msgid "Workspaces|Running"
-msgstr ""
-
-msgid "Workspaces|Select cluster agent"
-msgstr ""
-
-msgid "Workspaces|Select default editor"
-msgstr ""
-
-msgid "Workspaces|Select project"
 msgstr ""
 
 msgid "Workspaces|Start"
@@ -57059,7 +57086,7 @@ msgstr ""
 msgid "Workspaces|Terminating"
 msgstr ""
 
-msgid "Workspaces|Time before automatic termination"
+msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
 msgstr ""
 
 msgid "Workspaces|To create a workspace for this project, an administrator must %{linkStart}configure a cluster agent%{linkEnd} for the project's group."
@@ -57072,6 +57099,12 @@ msgid "Workspaces|Unable to load current workspaces. Please try again or contact
 msgstr ""
 
 msgid "Workspaces|Unknown state"
+msgstr ""
+
+msgid "Workspaces|What is a devfile?"
+msgstr ""
+
+msgid "Workspaces|Workspace automatically terminates after"
 msgstr ""
 
 msgid "Workspaces|Workspaces"
