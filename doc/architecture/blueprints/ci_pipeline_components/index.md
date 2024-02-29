@@ -95,15 +95,13 @@ This section defines some terms that are used throughout this document. With the
 identifying abstract concepts and are subject to changes as we refine the design by discovering new insights.
 
 - **Component** Is the generic term for a reusable unit of pipeline configuration. The component can be a template (usable via the `include` syntax) or a [step](../gitlab_steps/index.md).
-- **Components repository** is a GitLab repository that contains 1 or more components.
-- **Project** is the GitLab project attached to a single components repository.
-- **Catalog resource** is the generic term for a single item displayed in the catalog. A components repository is a catalog resource.
-- **Catalog** is a collection of resources like components repositories.
-- **Version** is a specific revision of the catalog resource. It maps to a project release and
-  allows components to be pinned to a specific revision.
+- **Component project** is a GitLab project that contains 1 or more components. Since a component project can be listed in the Catalog
+  we also refer to this as a **catalog resource** in the codebase.
+- **Catalog** is a collection of component projects.
+- **Version** is a component project release that is published in the Catalog.
+- **Publishing** is the act of listing a component project release in the Catalog.
 - **Step** is a type of component that contains a collection of instructions for job execution.
 - **Template** is a type of component that contains a snippet of CI/CD configuration that can be [included](../../../ci/yaml/includes.md) in a project's pipeline configuration.
-- **Publishing** is the act of listing a version of the resource (for example, a project release) on the Catalog.
 
 ## CI component
 

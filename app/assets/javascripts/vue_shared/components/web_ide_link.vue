@@ -343,9 +343,8 @@ export default {
 </script>
 
 <template>
-  <div :class="cssClasses">
+  <div v-if="hasActions" :class="cssClasses">
     <gl-disclosure-dropdown
-      v-if="hasActions"
       :variant="isBlob ? 'confirm' : 'default'"
       :category="isBlob ? 'primary' : 'secondary'"
       :toggle-text="$options.i18n.toggleText"

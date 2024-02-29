@@ -1,6 +1,6 @@
 import { GlButton } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignScaler from '~/design_management/components/design_scaler.vue';
 
 describe('Design management design scaler component', () => {
@@ -8,15 +8,15 @@ describe('Design management design scaler component', () => {
 
   const getButtons = () => wrapper.findAllComponents(GlButton);
   const getDecreaseScaleButton = () => getButtons().at(0);
-  const getResetScaleButton = () => getButtons().at(1);
-  const getIncreaseScaleButton = () => getButtons().at(2);
+  const getIncreaseScaleButton = () => getButtons().at(1);
+  const getScaleValue = () => wrapper.findByTestId('scale-value');
 
   const setScale = (scale) => wrapper.vm.setScale(scale);
 
   const createComponent = () => {
-    wrapper = shallowMount(DesignScaler, {
+    wrapper = shallowMountExtended(DesignScaler, {
       propsData: {
-        maxScale: 2,
+        maxScale: 1.5,
       },
     });
   };
@@ -25,27 +25,26 @@ describe('Design management design scaler component', () => {
     createComponent();
   });
 
+  it('renders the scale value', () => {
+    expect(getScaleValue().exists()).toBe(true);
+    expect(getScaleValue().text()).toBe('100%');
+  });
+
   describe('when `scale` value is greater than 1', () => {
     beforeEach(async () => {
-      setScale(1.6);
-      await nextTick();
+      // Mimic exact behaviour of zoom scaling
+      // incrementing first and then decrementing
+      await getIncreaseScaleButton().vm.$emit('click');
     });
 
-    it('emits @scale event when "reset" button clicked', () => {
-      getResetScaleButton().vm.$emit('click');
+    it('emits @scale event when "decrement" button clicked', async () => {
+      expect(wrapper.emitted('scale')).toEqual([[1.1]]);
+      expect(getScaleValue().text()).toBe('111%');
+
+      await getDecreaseScaleButton().vm.$emit('click');
+
       expect(wrapper.emitted('scale')[1]).toEqual([1]);
-    });
-
-    it('emits @scale event when "decrement" button clicked', () => {
-      getDecreaseScaleButton().vm.$emit('click');
-      expect(wrapper.emitted('scale')[1]).toEqual([1.4]);
-    });
-
-    it('enables the "reset" button', () => {
-      const resetButton = getResetScaleButton();
-
-      expect(resetButton.exists()).toBe(true);
-      expect(resetButton.props('disabled')).toBe(false);
+      expect(getScaleValue().text()).toBe('100%');
     });
 
     it('enables the "decrement" button', () => {
@@ -56,9 +55,13 @@ describe('Design management design scaler component', () => {
     });
   });
 
-  it('emits @scale event when "plus" button clicked', () => {
-    getIncreaseScaleButton().vm.$emit('click');
-    expect(wrapper.emitted('scale')).toEqual([[1.2]]);
+  it('emits @scale event when "plus" button clicked', async () => {
+    expect(getScaleValue().text()).toBe('100%');
+
+    await getIncreaseScaleButton().vm.$emit('click');
+
+    expect(wrapper.emitted('scale')).toEqual([[1.1]]);
+    expect(getScaleValue().text()).toBe('111%');
   });
 
   it('computes & increments correct stepSize based on maxScale', async () => {
@@ -74,13 +77,6 @@ describe('Design management design scaler component', () => {
   });
 
   describe('when `scale` value is 1', () => {
-    it('disables the "reset" button', () => {
-      const resetButton = getResetScaleButton();
-
-      expect(resetButton.exists()).toBe(true);
-      expect(resetButton.props('disabled')).toBe(true);
-    });
-
     it('disables the "decrement" button', () => {
       const decrementButton = getDecreaseScaleButton();
 

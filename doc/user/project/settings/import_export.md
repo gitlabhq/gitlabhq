@@ -42,7 +42,7 @@ To ensure GitLab maps users and their contributions correctly:
 - The owner of the project's top-level group should export the project so that the information of all members (direct
   and inherited) with access to the project can be included in the exported file. Project maintainers and owners can
   initiate the project export. However, only direct members of a project are then exported.
-- An administrator must perform the import with an administrator access token.
+- An administrator must perform the import.
 - Required users must exist on the destination GitLab instance. An administrator can create confirmed users either in
   bulk in a Rails console or one by one in the UI.
 - Users must [set a public email in their profiles](../../profile/index.md#set-your-public-email) on the source GitLab

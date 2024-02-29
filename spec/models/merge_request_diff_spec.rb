@@ -96,6 +96,26 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     end
   end
 
+  describe '.by_head_commit_sha' do
+    subject(:by_head_commit_sha) { described_class.by_commit_sha(sha) }
+
+    context "with given sha equal to the diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.head_commit_sha }
+
+      it 'returns the merge request diff' do
+        expect(by_head_commit_sha).to eq([diff_with_commits])
+      end
+    end
+
+    context "with given sha not equal to any diff's head_commit_sha" do
+      let(:sha) { diff_with_commits.base_commit_sha }
+
+      it 'returns an empty result' do
+        expect(by_head_commit_sha).to be_empty
+      end
+    end
+  end
+
   describe '.by_commit_sha' do
     subject(:by_commit_sha) { described_class.by_commit_sha(sha) }
 

@@ -134,6 +134,21 @@ module Gitlab
           Array(@project_ids)
         end
 
+        def resource_paths
+          helpers = ActionController::Base.helpers
+
+          {}.tap do |paths|
+            paths[:empty_state_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
+            paths[:no_data_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
+            paths[:no_access_svg_path] = helpers.image_path("illustrations/empty-state/empty-access-md.svg")
+
+            if project
+              paths[:milestones_path] = url_helpers.project_milestones_path(project, format: :json)
+              paths[:labels_path] = url_helpers.project_labels_path(project, format: :json)
+            end
+          end
+        end
+
         private
 
         delegate :url_helpers, to: Gitlab::Routing
@@ -147,21 +162,6 @@ module Gitlab
             request_path: url_helpers.project_cycle_analytics_path(project),
             full_path: project.full_path
           }
-        end
-
-        def resource_paths
-          helpers = ActionController::Base.helpers
-
-          {}.tap do |paths|
-            paths[:empty_state_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
-            paths[:no_data_svg_path] = helpers.image_path("illustrations/empty-state/empty-dashboard-md.svg")
-            paths[:no_access_svg_path] = helpers.image_path("illustrations/analytics/no-access.svg")
-
-            if project
-              paths[:milestones_path] = url_helpers.project_milestones_path(project, format: :json)
-              paths[:labels_path] = url_helpers.project_labels_path(project, format: :json)
-            end
-          end
         end
 
         # FOSS version doesn't use the aggregated VSA backend

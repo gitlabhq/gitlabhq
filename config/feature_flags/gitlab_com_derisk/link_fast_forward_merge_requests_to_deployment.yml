@@ -1,0 +1,9 @@
+---
+name: link_fast_forward_merge_requests_to_deployment
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384104
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145211
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442377
+milestone: '16.10'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

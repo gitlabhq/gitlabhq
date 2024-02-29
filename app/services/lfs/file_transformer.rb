@@ -22,11 +22,12 @@ module Lfs
   class FileTransformer
     attr_reader :project, :repository, :repository_type, :branch_name
 
-    def initialize(project, repository, branch_name)
+    def initialize(project, repository, branch_name, start_branch_name: nil)
       @project = project
       @repository = repository
       @repository_type = repository.repo_type.name
       @branch_name = branch_name
+      @start_branch_name = start_branch_name
     end
 
     def new_file(file_path, file_content, encoding: nil, detect_content_type: false)
@@ -43,6 +44,10 @@ module Lfs
       end
     end
 
+    def branch_to_base_off
+      @branch_to_base_off ||= (start_branch_name || branch_name)
+    end
+
     class Result
       attr_reader :content, :encoding
 
@@ -54,12 +59,14 @@ module Lfs
 
     private
 
+    attr_reader :start_branch_name
+
     def lfs_file?(file_path)
       cached_attributes.attributes(file_path)['filter'] == 'lfs'
     end
 
     def cached_attributes
-      @cached_attributes ||= repository.attributes_at(branch_name)
+      @cached_attributes ||= repository.attributes_at(branch_to_base_off)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

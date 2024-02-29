@@ -42,12 +42,10 @@ RSpec.describe Lfs::FileTransformer, feature_category: :source_code_management d
       end
 
       it 'reuses cached gitattributes' do
-        second_file = 'another_file.lfs'
-
         expect(repository.raw).to receive(:blob_at).with(branch_name, '.gitattributes').once
 
         subject.new_file(file_path, file_content)
-        subject.new_file(second_file, file_content)
+        subject.new_file('another_file.lfs', file_content)
       end
 
       it "creates an LfsObject with the file's content" do
@@ -222,6 +220,59 @@ RSpec.describe Lfs::FileTransformer, feature_category: :source_code_management d
           end
         end
       end
+
+      # This can happen when uploading a file via the UI where it will create
+      # a new branch when sitting on the default branch.
+      context 'when start_branch_name is provided' do
+        subject(:with_start_branch_name) do
+          described_class.new(project, repository, branch_name, start_branch_name: start_branch_name)
+        end
+
+        context "and is the same as branch_name" do
+          let(:start_branch_name) { branch_name }
+
+          it 'stores the file as an LFS object' do
+            with_start_branch_name.new_file(file_path, file_content)
+
+            expect(LfsObject.last.file.read).to eq file_content
+          end
+        end
+
+        context "when the branch doesn't yet exist" do
+          let(:branch_name) { project.default_branch }
+          let(:start_branch_name) { 'lfs' }
+
+          it 'stores the file as an LFS object' do
+            subject.new_file(file_path, file_content)
+            expect(LfsObject.last.file.read).to eq file_content
+
+            new_file_content = 'More test file content'
+            with_start_branch_name.new_file('another_file.lfs', new_file_content)
+            expect(LfsObject.last.file.read).to eq new_file_content
+          end
+        end
+      end
+    end
+  end
+
+  describe '#branch_to_base_off' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:start_branch_name, :branch_name, :expected_branch_to_base_off) do
+      nil    | nil    | nil
+      'main' | nil    | 'main'
+      nil    | 'main' | 'main'
+      'main' | 'main' | 'main'
+      'new'  | 'main' | 'new'
+      'old'  | 'new'  | 'old'
+    end
+
+    with_them do
+      subject do
+        described_class.new(project, repository, branch_name, start_branch_name: start_branch_name).branch_to_base_off
+      end
+
+      it { is_expected.to eq(expected_branch_to_base_off) }
     end
   end
 end

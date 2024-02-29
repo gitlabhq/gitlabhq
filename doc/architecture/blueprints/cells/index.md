@@ -422,6 +422,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 ## Decision log
 
 - [ADR-001: Routing Technology using Cloudflare Workers](decisions/001_routing_technology.md)
+- [ADR-002: One GCP Project per Cell](decisions/002_gcp_project_boundary.md)
 
 ## Links
 

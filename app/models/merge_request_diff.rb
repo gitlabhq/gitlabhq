@@ -64,6 +64,7 @@ class MergeRequestDiff < ApplicationRecord
 
   scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
+  scope :by_head_commit_sha, ->(sha) { where(head_commit_sha: sha) }
   scope :by_commit_sha, ->(sha) do
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
   end
