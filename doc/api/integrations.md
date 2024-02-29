@@ -914,9 +914,6 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `workload_identity_pool_project_number` | string | true | Project number of the Workload Identity Pool. |
-| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
-| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
 | `artifact_registry_project_id` | string | true | ID of the Google Cloud project. |
 | `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |

@@ -160,7 +160,7 @@ describe('WorkItemAssigneesWithEdit component', () => {
       expect(findSidebarDropdownWidget().props('loading')).toBe(true);
     });
 
-    it('shows the iterations in dropdown when the items have finished fetching', async () => {
+    it('shows the assignees in dropdown when the items have finished fetching', async () => {
       showDropdown();
 
       await waitForPromises();

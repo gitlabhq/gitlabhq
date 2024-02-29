@@ -13,18 +13,13 @@ const apolloProvider = new VueApollo({
 export default () => {
   const el = document.querySelector('#js-usage-quotas-view');
 
-  if (!el) {
-    return false;
-  }
-
-  const { namespaceName } = el.dataset;
+  if (!el) return false;
 
   return new Vue({
     el,
     name: 'UsageQuotasView',
     apolloProvider,
     provide: {
-      namespaceName,
       tabs: usageQuotasTabsMetadata.filter(Boolean),
     },
     render(createElement) {

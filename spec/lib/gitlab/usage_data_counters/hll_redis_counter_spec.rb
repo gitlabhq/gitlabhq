@@ -23,16 +23,26 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   end
 
   describe '.known_events' do
-    let(:ce_event) { { "name" => "ce_event" } }
-    let(:removed_ce_event) { { "name" => "removed_ce_event" } }
+    let(:ce_event) { { name: "ce_event" } }
+    let(:ce_event2) { { name: "ce_event2" } }
+    let(:removed_ce_event) { { name: "removed_ce_event" } }
     let(:metric_definition) do
       Gitlab::Usage::MetricDefinition.new('ce_metric',
         {
           key_path: 'ce_metric_weekly',
           status: 'active',
           options: {
-            events: [ce_event['name']]
+            events: [ce_event[:name]]
           }
+        })
+    end
+
+    let(:metric_definition2) do
+      Gitlab::Usage::MetricDefinition.new('ce_metric2',
+        {
+          key_path: 'ce_metric_weekly2',
+          status: 'active',
+          events: [ce_event2.merge(unique: 'user')]
         })
     end
 
@@ -42,17 +52,23 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           key_path: 'removed_ce_metric_weekly',
           status: 'removed',
           options: {
-            events: [removed_ce_event['name']]
+            events: [removed_ce_event[:name]]
           }
         })
     end
 
     before do
-      allow(Gitlab::Usage::MetricDefinition).to receive(:all).and_return([metric_definition, removed_metric_definition])
+      allow(Gitlab::Usage::MetricDefinition).to receive(:all).and_return(
+        [metric_definition, metric_definition2, removed_metric_definition]
+      )
     end
 
     it 'returns ce events' do
       expect(described_class.known_events).to include(ce_event)
+    end
+
+    it 'works for events without :options' do
+      expect(described_class.known_events).to include(ce_event2)
     end
 
     it 'does not return removed events' do

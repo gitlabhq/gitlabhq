@@ -138,7 +138,7 @@ RSpec.describe HelpController do
       end
     end
 
-    context 'when requesting help index' do
+    context 'when requesting help index (underscore prefix test)' do
       subject { get :index }
 
       before do
@@ -162,6 +162,33 @@ RSpec.describe HelpController do
 
           expect(subject).to be_successful
           expect(assigns[:help_index]).to eq '_index.md content'
+        end
+      end
+    end
+
+    context 'when requesting help index (frontmatter test)' do
+      subject { get :index }
+
+      before do
+        stub_application_setting(help_page_documentation_base_url: '')
+        stub_doc_file_read(content: content)
+      end
+
+      context 'and the doc/index.md file has the level 1 heading in frontmatter' do
+        let(:content) { "---\ntitle: Test heading\n---\n\nTest content" }
+
+        it 'returns content with title in Markdown' do
+          expect(subject).to be_successful
+          expect(assigns[:help_index]).to eq "# Test heading\n\nTest content"
+        end
+      end
+
+      context 'and the doc/index.md file has the level 1 heading in Markdown' do
+        let(:content) { "# Test heading\n\nTest content" }
+
+        it 'returns content with title in Markdown' do
+          expect(subject).to be_successful
+          expect(assigns[:help_index]).to eq "# Test heading\n\nTest content"
         end
       end
     end
@@ -345,6 +372,33 @@ RSpec.describe HelpController do
 
           expect(subject).to be_successful
           expect(assigns[:markdown]).to eq '_index.md content'
+        end
+      end
+    end
+
+    context 'when requesting content' do
+      subject { get :show, params: { path: 'install/install_methods' }, format: :md }
+
+      before do
+        stub_application_setting(help_page_documentation_base_url: '')
+        stub_doc_file_read(content: content, file_name: 'install/install_methods.md')
+      end
+
+      context 'and the Markdown file has the level 1 heading in frontmatter' do
+        let(:content) { "---\ntitle: Test heading\n---\n\nTest content" }
+
+        it 'returns content with the level 1 heading in Markdown' do
+          expect(subject).to be_successful
+          expect(assigns[:markdown]).to eq "# Test heading\n\nTest content"
+        end
+      end
+
+      context 'and the Markdown file has the level 1 heading in Markdown' do
+        let(:content) { "# Test heading\n\nTest content" }
+
+        it 'returns content with the level 1 heading in Markdown' do
+          expect(subject).to be_successful
+          expect(assigns[:markdown]).to eq "# Test heading\n\nTest content"
         end
       end
     end

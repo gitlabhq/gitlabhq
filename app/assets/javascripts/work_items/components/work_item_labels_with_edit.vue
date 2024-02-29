@@ -1,5 +1,6 @@
 <script>
 import { GlLabel } from '@gitlab/ui';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { difference } from 'lodash';
 import { __, n__ } from '~/locale';
 import WorkItemSidebarDropdownWidgetWithEdit from '~/work_items/components/shared/work_item_sidebar_dropdown_widget_with_edit.vue';
@@ -82,8 +83,16 @@ export default {
     isLoadingLabels() {
       return this.$apollo.queries.searchLabels.loading;
     },
+    visibleLabels() {
+      if (this.searchTerm) {
+        return fuzzaldrinPlus.filter(this.searchLabels, this.searchTerm, {
+          key: ['title'],
+        });
+      }
+      return this.searchLabels;
+    },
     labelsList() {
-      return this.searchLabels?.map(({ id, title, color }) => ({
+      return this.visibleLabels?.map(({ id, title, color }) => ({
         value: id,
         text: title,
         color,

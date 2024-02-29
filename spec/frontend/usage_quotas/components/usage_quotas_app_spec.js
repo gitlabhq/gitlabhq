@@ -1,7 +1,6 @@
-import { GlSprintf } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import UsageQuotasApp from '~/usage_quotas/components/usage_quotas_app.vue';
-import { USAGE_QUOTAS_TITLE } from '~/usage_quotas/constants';
 import { defaultProvide } from '../mock_data';
 
 describe('UsageQuotasApp', () => {
@@ -13,9 +12,6 @@ describe('UsageQuotasApp', () => {
         ...defaultProvide,
         ...provide,
       },
-      stubs: {
-        GlSprintf,
-      },
     });
   };
 
@@ -23,13 +19,13 @@ describe('UsageQuotasApp', () => {
     createComponent();
   });
 
-  const findSubTitle = () => wrapper.findByTestId('usage-quotas-page-subtitle');
+  const findGlAlert = () => wrapper.findComponent(GlAlert);
 
-  it('renders the view title', () => {
-    expect(wrapper.text()).toContain(USAGE_QUOTAS_TITLE);
-  });
-
-  it('renders the view subtitle', () => {
-    expect(findSubTitle().text()).toContain(defaultProvide.namespaceName);
+  describe('when tabs array is empty', () => {
+    it('shows error alert', () => {
+      expect(findGlAlert().text()).toContain(
+        'Something went wrong while loading Usage Quotas Tabs',
+      );
+    });
   });
 });

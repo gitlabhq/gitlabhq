@@ -694,8 +694,8 @@ export default {
       }
     },
   },
-  howToMergeDocsPath: helpPagePath('user/project/merge_requests/reviews/index.md', {
-    anchor: 'checkout-merge-requests-locally-through-the-head-ref',
+  howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
+    anchor: 'check-out-merge-requests-locally-through-the-head-ref',
   }),
 };
 </script>

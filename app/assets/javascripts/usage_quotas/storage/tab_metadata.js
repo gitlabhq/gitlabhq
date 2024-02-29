@@ -6,7 +6,7 @@ import { parseProvideData } from 'ee_else_ce/usage_quotas/storage/utils';
 import { STORAGE_TAB_METADATA_EL_SELECTOR } from '../constants';
 import NamespaceStorageApp from './components/namespace_storage_app.vue';
 
-export const getStorageTabMetadata = ({ includeEl = false, customApolloProvider = false } = {}) => {
+export const getStorageTabMetadata = ({ includeEl = false, customApolloProvider = null } = {}) => {
   let apolloProvider;
   const el = document.querySelector(STORAGE_TAB_METADATA_EL_SELECTOR);
 
@@ -24,6 +24,7 @@ export const getStorageTabMetadata = ({ includeEl = false, customApolloProvider 
 
   const storageTabMetadata = {
     title: __('Storage'),
+    hash: '#storage-quota-tab',
     component: {
       name: 'NamespaceStorageTab',
       provide: parseProvideData(el),

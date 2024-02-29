@@ -14500,6 +14500,9 @@ msgstr ""
 msgid "Couldn't create link due to an internal error."
 msgstr ""
 
+msgid "Couldn't delete link due to an internal error."
+msgstr ""
+
 msgid "Couldn't fetch the pinned file."
 msgstr ""
 
@@ -23467,12 +23470,6 @@ msgstr ""
 msgid "GoogleCloudPlatformService|Google Cloud project ID"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool provider."
-msgstr ""
-
-msgid "GoogleCloudPlatformService|ID of the Workload Identity Pool."
-msgstr ""
-
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
 msgstr ""
 
@@ -23483,9 +23480,6 @@ msgid "GoogleCloudPlatformService|Project ID"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Project number"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Project number of the Workload Identity Pool."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Project with the Artifact Registry repository."
@@ -23513,15 +23507,6 @@ msgid "GoogleCloudPlatformService|The google_cloud_support feature is not availa
 msgstr ""
 
 msgid "GoogleCloudPlatformService|To improve security, use a dedicated project for resources, separate from CI/CD and identity management projects. %{link_start}Where’s my project ID? %{icon}%{link_end}"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Workload Identity Pool ID"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Workload Identity Pool project number"
-msgstr ""
-
-msgid "GoogleCloudPlatformService|Workload Identity Pool provider ID"
 msgstr ""
 
 msgid "GoogleCloud|Cancel"
@@ -30188,9 +30173,6 @@ msgid "Max Value"
 msgstr ""
 
 msgid "Max authenticated Git LFS requests per period per user"
-msgstr ""
-
-msgid "Max file size is 200 KiB."
 msgstr ""
 
 msgid "Max role"
@@ -38445,6 +38427,9 @@ msgid "Profiles|Tell us about yourself in fewer than 250 characters."
 msgstr ""
 
 msgid "Profiles|The ability to update your name has been disabled by your administrator."
+msgstr ""
+
+msgid "Profiles|The ideal image size is 192 x 192 pixels."
 msgstr ""
 
 msgid "Profiles|The maximum file size allowed is 200KB."
@@ -53831,6 +53816,9 @@ msgstr ""
 msgid "UsageQuota|Learn more about usage quotas."
 msgstr ""
 
+msgid "UsageQuota|Loading Usage Quotas tabs"
+msgstr ""
+
 msgid "UsageQuota|Local proxy used for frequently-accessed upstream Docker images."
 msgstr ""
 
@@ -53976,9 +53964,6 @@ msgid "UsageQuota|Usage by month"
 msgstr ""
 
 msgid "UsageQuota|Usage by project"
-msgstr ""
-
-msgid "UsageQuota|Usage of group resources across the projects in the %{namespaceName} group"
 msgstr ""
 
 msgid "UsageQuota|Usage of group resources across the projects in the %{strong_start}%{group_name}%{strong_end} group"

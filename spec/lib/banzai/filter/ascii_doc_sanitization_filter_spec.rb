@@ -22,26 +22,31 @@ RSpec.describe Banzai::Filter::AsciiDocSanitizationFilter, feature_category: :wi
     expect(result).to eq(%(<p><a id="user-content-cross-references"></a>A link to another location within an AsciiDoc document.</p>))
   end
 
-  it 'preserves user-content- prefixed ids on div (blocks)' do
-    html_content = <<~HTML
-      <div id="user-content-open-block" class="openblock">
-        <div class="content">
-          <div class="paragraph">
-            <p>This is an open block</p>
+  context 'with blocks' do
+    %w[openblock sidebarblock exampleblock].each do |block|
+      it "preserves user-content- prefixed ids on div (#{block})" do
+        html_content = <<~HTML
+          <div id="user-content-#{block}" class="#{block}">
+            <div class="content">
+              <div class="paragraph">
+                <p>This is a #{block} block</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    HTML
-    output = <<~SANITIZED_HTML
-      <div id="user-content-open-block">
-        <div>
-          <div>
-            <p>This is an open block</p>
+        HTML
+
+        output = <<~SANITIZED_HTML
+          <div id="user-content-#{block}" class="#{block}">
+            <div>
+              <div>
+                <p>This is a #{block} block</p>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    SANITIZED_HTML
-    expect(filter(html_content).to_html).to eq(output)
+        SANITIZED_HTML
+        expect(filter(html_content).to_html).to eq(output)
+      end
+    end
   end
 
   it 'preserves section anchor ids' do

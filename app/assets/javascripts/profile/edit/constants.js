@@ -14,6 +14,7 @@ export const avatarI18n = {
   chooseFile: s__('Profiles|Choose file...'),
   noFileChosen: s__('Profiles|No file chosen.'),
   maximumFileSize: s__('Profiles|The maximum file size allowed is 200KB.'),
+  imageDimensions: s__('Profiles|The ideal image size is 192 x 192 pixels.'),
   removeAvatar: s__('Profiles|Remove avatar'),
   removeAvatarConfirmation: s__('Profiles|Avatar will be removed. Are you sure?'),
   cropAvatarTitle: s__('Profiles|Position and size your new avatar'),

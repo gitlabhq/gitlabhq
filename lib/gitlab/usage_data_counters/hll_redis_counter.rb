@@ -117,7 +117,7 @@ module Gitlab
           events = Gitlab::Usage::MetricDefinition.all.map do |d|
             next unless d.available?
 
-            d.attributes[:options] && d.attributes[:options][:events]
+            d.events.keys
           end.flatten.compact.uniq
 
           events.map do |e|

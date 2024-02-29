@@ -57,6 +57,48 @@ It is encouraged to fill out as many of `user`, `namespace` and `project` as pos
 
 If a `project` but no `namespace` is provided, the `project.namespace` is used as the `namespace` for the event.
 
+#### Additional properties
+
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties (2 string and 1 numeric attribute).
+
+Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
+
+```ruby
+Gitlab::InternalEvents.track_event(
+  "i_code_review_user_apply_suggestion",
+  user: user,
+  additional_properties: {
+    user_role: 'admin',
+    import_count: 20
+  }
+)
+```
+
+Passing `additional_properties` with custom names requires mapping them to the `label` (string), `property` (string) and `value`(numeric) types. This can be done by adding the mapping information into the event definition file, for example:
+
+```yaml
+additional_properties:
+  user_role:
+    external_key: label
+  import_count:
+    external_key: value
+```
+
+The mapped external keys will also be the names of columns under which the data will eventually be stored in [Snowflake](../index.md#snowflake).
+
+It is also possible to pass `additional_properties` without mapping them to custom keys. When using the attributes this way, we only allow the default attribute names: `label`, `property` and `value`. Here's an example call that doesn't require setting up the mapping:
+
+```ruby
+Gitlab::InternalEvents.track_event(
+  "i_code_review_user_apply_suggestion",
+  user: user,
+  additional_properties: {
+    label: 'admin',
+    value: 20
+  }
+)
+```
+
 #### Controller and API helpers
 
 There is a helper module `ProductAnalyticsTracking` for controllers you can use to track internal events for particular controller actions by calling `#track_internal_event`:

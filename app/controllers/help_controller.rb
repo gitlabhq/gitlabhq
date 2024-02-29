@@ -74,7 +74,16 @@ class HelpController < ApplicationController
   # Remove YAML frontmatter so that it doesn't look weird
   helper_method :get_markdown_without_frontmatter
   def get_markdown_without_frontmatter(path)
-    File.read(path).gsub(YAML_FRONT_MATTER_REGEXP, '')
+    markdown = File.read(path)
+    markdown_title_matches = markdown.match(/^title: (?<title>.+)$/)
+
+    without_frontmatter = markdown.sub(YAML_FRONT_MATTER_REGEXP, '')
+
+    if markdown_title_matches
+      "# #{markdown_title_matches[:title]}\n\n#{without_frontmatter}"
+    else
+      without_frontmatter
+    end
   end
 
   def redirect_to_documentation_website?

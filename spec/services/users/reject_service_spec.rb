@@ -59,7 +59,8 @@ RSpec.describe Users::RejectService, feature_category: :user_management do
 
           expect(Gitlab::AppLogger).to have_received(:info).with(
             message: "User instance access request rejected",
-            user: user.username.to_s,
+            username: user.username.to_s,
+            user_id: user.id,
             email: user.email.to_s,
             rejected_by: current_user.username.to_s,
             ip_address: current_user.current_sign_in_ip.to_s

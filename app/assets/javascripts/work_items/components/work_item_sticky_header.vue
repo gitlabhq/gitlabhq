@@ -124,6 +124,7 @@ export default {
             :can-delete="canDelete"
             :can-update="canUpdate"
             :is-confidential="workItem.confidential"
+            :is-discussion-locked="isDiscussionLocked"
             :is-parent-confidential="parentWorkItemConfidentiality"
             :work-item-reference="workItem.reference"
             :work-item-create-note-email="workItem.createNoteEmail"

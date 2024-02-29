@@ -54,6 +54,16 @@ export default {
       required: false,
       default: false,
     },
+    participants: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    workItemAuthor: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -63,6 +73,7 @@ export default {
       users: [],
       currentUser: null,
       updateInProgress: false,
+      localUsers: [],
     };
   },
   apollo: {
@@ -83,6 +94,14 @@ export default {
       update(data) {
         return this.isGroup ? data.groupWorkspace?.users : data.workspace?.users;
       },
+      result({ data }) {
+        if (!data) {
+          // when data is not available, skip the update
+          return;
+        }
+        const users = this.isGroup ? data?.groupWorkspace?.users : data?.workspace?.users;
+        this.localUsers = unionBy(this.localUsers, users, 'id');
+      },
       error() {
         this.$emit('error', i18n.fetchError);
       },
@@ -92,15 +111,18 @@ export default {
     },
   },
   computed: {
-    searchUsers() {
-      return this.users.map((user) => ({
-        ...user,
-        value: user.id,
-        text: user.name,
-      }));
+    shouldShowParticipants() {
+      return this.searchKey === '';
     },
-    pageInfo() {
-      return this.users.pageInfo;
+    searchUsers() {
+      const allUsers = this.shouldShowParticipants
+        ? unionBy(this.users, this.participants, 'id')
+        : this.users;
+      return allUsers.map((user) => ({
+        ...user,
+        value: user?.id,
+        text: user?.name,
+      }));
     },
     tracking() {
       return {
@@ -111,9 +133,6 @@ export default {
     },
     isLoadingUsers() {
       return this.$apollo.queries.users.loading;
-    },
-    hasNextPage() {
-      return this.pageInfo?.hasNextPage;
     },
     selectedAssigneeIds() {
       return this.allowsMultipleAssignees ? this.localAssigneeIds : this.localAssigneeIds[0];
@@ -136,7 +155,12 @@ export default {
       return this.allowsMultipleAssignees ? __('Select assignees') : __('Select assignee');
     },
     filteredAssignees() {
-      return unionBy(this.assignees, this.searchUsers, 'id');
+      // assignees are the ones already assigned to the work item detail
+      // search users are the ones returned by the autocomplete query which can never be more than 20 , context
+      // https://gitlab.com/gitlab-org/gitlab/-/issues/417757#note_1480434390
+      // we need the previous results of users after resetting the search since we want to show the name of thes user out of the 20 results searched as well
+      // participants are the ones which have sometime commented on the work item, same logic as legacy issues
+      return unionBy(this.assignees, this.searchUsers, this.participants, this.localUsers, 'id');
     },
     localAssignees() {
       return (

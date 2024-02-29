@@ -20,7 +20,7 @@ If you are already tracking events in Snowplow, you can also start collecting me
 
 The event triggered by Internal Events has some special properties compared to previously tracking with Snowplow directly:
 
-1. The `label`, `property` and `value` attributes are not used within Internal Events and are always empty.
+1. The `label`, `property` and `value` attributes are not used within frontend Internal Events and are always empty.
 1. The `category` is automatically set to the location where the event happened. For Frontend events it is the page name and for Backend events it is a class name. If the page name or class name is not used, the default value of `"InternalEventTracking"` will be used.
 
 Make sure that you are okay with this change before you migrate and dashboards are changed accordingly.
@@ -37,8 +37,10 @@ Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace,
 The code above can be replaced by this:
 
 ```ruby
-Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, project: project, user: user)
+Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
 ```
+
+The `label`, `property` and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
 
 In addition, you have to create definitions for the metrics that you would like to track.
 

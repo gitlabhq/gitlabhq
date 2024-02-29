@@ -122,6 +122,12 @@ export default {
     workItemColor() {
       return this.isWidgetPresent(WIDGET_TYPE_COLOR);
     },
+    workItemParticipantNodes() {
+      return this.workItemParticipants?.participants?.nodes ?? [];
+    },
+    workItemAuthor() {
+      return this.workItem?.author;
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -141,6 +147,8 @@ export default {
         :full-path="fullPath"
         :work-item-id="workItem.id"
         :assignees="workItemAssignees.assignees.nodes"
+        :participants="workItemParticipantNodes"
+        :work-item-author="workItemAuthor"
         :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"

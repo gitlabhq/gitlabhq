@@ -5,6 +5,7 @@ class DeployKey < Key
   include IgnorableColumns
   include PolicyActor
   include Presentable
+  include Gitlab::SQL::Pattern
 
   self.allow_legacy_sti_class = true
 
