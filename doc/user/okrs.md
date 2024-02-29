@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
 
@@ -18,6 +18,7 @@ For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-or
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project, an administrator can [enable the featured flag](../administration/feature_flags.md) named `okrs_mvc`.
 On GitLab.com, by default this feature is not available, but can be configured by GitLab.com administrators.
+On GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 [Objectives and key results](https://en.wikipedia.org/wiki/OKR) (OKRs) are a framework for setting

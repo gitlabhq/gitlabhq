@@ -173,6 +173,23 @@ A follow-up to the question `Write a Ruby function that prints 'Hello, World!' w
 To use this feature, at least one group you're a member of must
 have the [experiment and beta features setting](group/manage.md#enable-experiment-and-beta-features) enabled.
 
+You can ask questions about resources that belong only to groups where this setting is enabled.
+
+#### Troubleshoot Chat access
+
+If you have access to chat responses you did not expect, you might be part of
+a group that has the **Use Experiment and Beta features** setting enabled.
+Review the list of your groups and verify which ones you have access to.
+
+GitLab.com administrators can verify your access by running this snippet in the Rails console:
+
+```ruby
+u = User.find_by_username($USERNAME)
+u.member_namespaces.namespace_settings_with_ai_features_enabled.with_ai_supported_plan(:ai_chat)
+```
+
+You can ask specific questions about group resources (like "summarize this issue") when this feature is enabled.
+
 ### For self-managed users
 
 NOTE:

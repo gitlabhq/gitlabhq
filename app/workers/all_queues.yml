@@ -318,6 +318,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_stuck_builds_drop_canceling
+  :worker_name: Ci::StuckBuilds::DropCancelingWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_stuck_builds_drop_running
   :worker_name: Ci::StuckBuilds::DropRunningWorker
   :feature_category: :continuous_integration

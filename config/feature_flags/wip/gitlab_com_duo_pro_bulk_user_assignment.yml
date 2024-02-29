@@ -1,5 +1,5 @@
 ---
-name: enable_bulk_add_on_assignment
+name: gitlab_com_duo_pro_bulk_user_assignment
 feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11463
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144941
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421729

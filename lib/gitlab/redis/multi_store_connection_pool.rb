@@ -7,7 +7,7 @@ module Gitlab
       # before yielding the block.
       def with
         super do |conn|
-          next yield conn unless conn.is_a?(Gitlab::Redis::MultiStore)
+          next yield conn unless conn.respond_to?(:with_borrowed_connection)
 
           conn.with_borrowed_connection do
             yield conn

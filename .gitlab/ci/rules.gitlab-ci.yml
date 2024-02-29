@@ -1217,6 +1217,8 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - <<: *if-merge-request-labels-run-all-jest
+      when: never
 
 .frontend:rules:compile-production-assets:
   rules:
@@ -1334,16 +1336,16 @@
     - <<: *if-fork-merge-request
       when: never
     - if: '$ENABLE_JEST == "true"'
+    - <<: *if-automated-merge-request
+      changes: *code-backstage-patterns
+    - <<: *if-security-merge-request
+      changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
-      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
-    - <<: *if-automated-merge-request
-      changes: *code-backstage-patterns
-    - <<: *if-security-merge-request
-      changes: *code-backstage-patterns
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-default-refs
@@ -1354,15 +1356,13 @@
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
     - !reference [".frontend:rules:predictive-default-rules", rules]
-    - <<: *if-merge-request-labels-run-all-jest
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
       when: never
     - <<: *if-merge-request
-      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"] # When this file is modified, we run full Jest jobs
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -1372,8 +1372,6 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:predictive-default-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
-      when: never
-    - <<: *if-merge-request-labels-run-all-jest
       when: never
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns

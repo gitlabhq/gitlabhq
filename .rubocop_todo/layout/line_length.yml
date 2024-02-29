@@ -1576,7 +1576,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/auth/saml/user_spec.rb'
     - 'ee/spec/lib/gitlab/checks/diff_check_spec.rb'
     - 'ee/spec/lib/gitlab/ci/config/entry/job_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/config/security_orchestration_policies/processor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/cost_factor_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/license_compliance/license_scanning_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/security/cluster_image_scanning_spec.rb'

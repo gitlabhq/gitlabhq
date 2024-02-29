@@ -49354,9 +49354,6 @@ msgstr ""
 msgid "TagsPage|Cancel, keep tag"
 msgstr ""
 
-msgid "TagsPage|Create a new tag using the %{code_start}git tag%{code_end} command. For example, %{code_start}git tag -a v1.4 -m 'version 1.4'%{code_end}"
-msgstr ""
-
 msgid "TagsPage|Create release"
 msgstr ""
 
@@ -49411,19 +49408,22 @@ msgstr ""
 msgid "TagsPage|Please type the following to confirm:"
 msgstr ""
 
-msgid "TagsPage|Repository has no tags yet"
+msgid "TagsPage|Repository has no tags yet."
 msgstr ""
 
-msgid "TagsPage|Sorry, your filter produced no results"
+msgid "TagsPage|Sorry, your filter produced no results."
 msgstr ""
 
 msgid "TagsPage|Tags"
 msgstr ""
 
-msgid "TagsPage|Tags give the ability to mark specific points in history as being important."
+msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
 msgstr ""
 
 msgid "TagsPage|Unable to load tags"
+msgstr ""
+
+msgid "TagsPage|Use git tag command to add a new one:"
 msgstr ""
 
 msgid "TagsPage|Yes, delete protected tag"
