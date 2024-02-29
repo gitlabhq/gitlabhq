@@ -3,16 +3,27 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be(:private_organization) { create(:organization) }
+  let_it_be(:public_organization) { create(:organization, :public) }
   let_it_be(:current_user) { create :user }
+  let_it_be(:organization) { private_organization }
 
   subject(:policy) { described_class.new(current_user, organization) }
 
   context 'when the user is anonymous' do
     let_it_be(:current_user) { nil }
 
-    it { is_expected.to be_allowed(:read_organization) }
     it { is_expected.to be_disallowed(:admin_organization) }
+
+    context 'when the organization is private' do
+      it { is_expected.to be_disallowed(:read_organization) }
+    end
+
+    context 'when the organization is public' do
+      let(:organization) { public_organization }
+
+      it { is_expected.to be_allowed(:read_organization) }
+    end
   end
 
   context 'when the user is an admin' do
@@ -27,7 +38,16 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
 
     context 'when admin mode is disabled' do
       it { is_expected.to be_disallowed(:admin_organization) }
-      it { is_expected.to be_allowed(:read_organization) }
+
+      context 'when the organization is private' do
+        it { is_expected.to be_disallowed(:read_organization) }
+      end
+
+      context 'when the organization is public' do
+        let_it_be(:organization) { public_organization }
+
+        it { is_expected.to be_allowed(:read_organization) }
+      end
     end
   end
 
@@ -57,8 +77,15 @@ RSpec.describe Organizations::OrganizationPolicy, feature_category: :cell do
     it { is_expected.to be_disallowed(:admin_organization) }
     it { is_expected.to be_disallowed(:create_group) }
     it { is_expected.to be_disallowed(:read_organization_user) }
-    # All organizations are currently public, and hence they are allowed to be read
-    # even if the user is not a part of the organization.
-    it { is_expected.to be_allowed(:read_organization) }
+
+    context 'when the organization is private' do
+      it { is_expected.to be_disallowed(:read_organization) }
+    end
+
+    context 'when the organization is public' do
+      let_it_be(:organization) { public_organization }
+
+      it { is_expected.to be_allowed(:read_organization) }
+    end
   end
 end

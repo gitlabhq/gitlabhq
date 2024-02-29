@@ -165,6 +165,32 @@ RSpec.describe 'getting merge request information nested in a project', feature_
         )
       end
     end
+
+    context 'when a path includes a non UTF-8 character' do
+      let_it_be(:diff_stats) do
+        diff_stat = Gitaly::DiffStats.new(
+          additions: 10,
+          deletions: 15,
+          path: (+'romualdatchadé.yml').force_encoding(Encoding::ASCII_8BIT)
+        )
+
+        Gitlab::Git::DiffStatsCollection.new([diff_stat])
+      end
+
+      before do
+        allow_any_instance_of(MergeRequest).to receive(:diff_stats).and_return(diff_stats) # rubocop:disable RSpec/AnyInstanceOf -- Targeting simply next_instance isn't sufficient
+
+        post_graphql(query, current_user: current_user)
+      end
+
+      it 'does not raise an error' do
+        expect(graphql_errors).to be_nil
+      end
+
+      it 'returns the expected UTF-8 path' do
+        expect(merge_request_graphql_data['diffStats']).to include(a_hash_including('path' => 'romualdatchadé.yml'))
+      end
+    end
   end
 
   it 'includes correct mergedAt value when merged' do

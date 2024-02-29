@@ -2060,10 +2060,22 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       context 'when user is not an organization user' do
-        it 'does not create the group' do
-          post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+        context 'when organization is public' do
+          let_it_be(:organization) { create(:organization, :public) }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when organization is private' do
+          it 'does not create the group' do
+            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 

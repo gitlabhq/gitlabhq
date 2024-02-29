@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import { debounce } from 'lodash';
 import actionCable from '~/actioncable_consumer';
 import Api from '~/api';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -144,6 +145,10 @@ export const initPolling = ({ state, dispatch, getters, commit }) => {
 
   dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
 
+  const debouncedFetchUpdatedNotes = debounce(() => {
+    dispatch('fetchUpdatedNotes');
+  }, constants.FETCH_UPDATED_NOTES_DEBOUNCE_TIMEOUT);
+
   actionCable.subscriptions.create(
     {
       channel: 'Noteable::NotesChannel',
@@ -158,7 +163,7 @@ export const initPolling = ({ state, dispatch, getters, commit }) => {
       },
       received(data) {
         if (data.event === 'updated') {
-          dispatch('fetchUpdatedNotes');
+          debouncedFetchUpdatedNotes();
         }
       },
     },

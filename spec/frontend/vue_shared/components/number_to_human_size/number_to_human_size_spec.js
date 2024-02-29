@@ -31,6 +31,16 @@ describe('NumberToHumanSize', () => {
     expect(wrapper.text()).toBe(expectedValue);
   });
 
+  it('handles localisation fo numbers', () => {
+    const value = 1024 + 254;
+    const fractionDigits = 2;
+    const locale = ['it'];
+    createComponent({ value, fractionDigits, locale });
+
+    const expectedValue = numberToHumanSize(value, fractionDigits, locale);
+    expect(wrapper.text()).toBe(expectedValue);
+  });
+
   describe('plain-zero', () => {
     it('hides label for zero values', () => {
       createComponent({ value: 0, plainZero: true });

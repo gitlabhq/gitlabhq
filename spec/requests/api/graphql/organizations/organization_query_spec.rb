@@ -33,10 +33,22 @@ RSpec.describe 'getting organization information', feature_category: :cell do
   context 'when the user does not have access to the organization' do
     let(:current_user) { create(:user) }
 
-    it 'returns the organization as all organizations are public' do
-      request_organization
+    context 'when organization is private' do
+      it 'returns no organization' do
+        request_organization
 
-      expect(graphql_data_at(:organization, :id)).to eq(organization.to_global_id.to_s)
+        expect(graphql_data_at(:organization, :id)).to be_nil
+      end
+    end
+
+    context 'when organization is public' do
+      let_it_be(:organization) { create(:organization, :public) }
+
+      it 'only returns the public organization' do
+        request_organization
+
+        expect(graphql_data_at(:organization, :id)).to eq(organization.to_global_id.to_s)
+      end
     end
   end
 

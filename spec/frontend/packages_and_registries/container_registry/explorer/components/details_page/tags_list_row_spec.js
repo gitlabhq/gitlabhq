@@ -201,7 +201,7 @@ describe('tags list row', () => {
     it('when totalSize is giantic', () => {
       mountComponent({ ...defaultProps, tag: { ...tag, totalSize: '1099511627776', layers: 2 } });
 
-      expect(findSize().text()).toMatchInterpolatedText('1024.00 GiB · 2 layers');
+      expect(findSize().text()).toMatchInterpolatedText('1,024.00 GiB · 2 layers');
     });
 
     it('when totalSize is missing', () => {

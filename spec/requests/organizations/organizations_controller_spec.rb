@@ -83,7 +83,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :cell d
 
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
-      it_behaves_like 'organization - successful response'
+      it_behaves_like 'organization - not found response'
       it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
     end
 

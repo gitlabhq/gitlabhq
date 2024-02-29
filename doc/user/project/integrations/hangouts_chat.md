@@ -10,22 +10,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You can configure your project to send notifications from GitLab to a
-space of your choice in [Google Chat](https://chat.google.com/) (formerly Google
-Hangouts).
+You can configure your project in GitLab to send notifications to a
+space of your choice in [Google Chat](https://chat.google.com/).
 
-## Integration workflow
-
-To enable this integration, you must first create a webhook for the space in
-Google Chat where you want to receive the notifications from your project.
-
-After that, enable the integration in GitLab and choose the events you want to
-be notified about in your Google Chat space.
-
-For every selected event in your project, GitLab acts like a bot sending
-notifications to Google Chat:
-
-![Google Chat integration illustration](img/google_chat_integration_v13_11.png)
+In GitLab 16.10 and later, threaded notifications are enabled by default
+in Google Chat for the same GitLab object (for example, an issue or merge request).
+For more information, see [issue 438452](https://gitlab.com/gitlab-org/gitlab/-/issues/438452).
 
 ## Enable the integration in Google Chat
 
@@ -39,7 +29,8 @@ To enable the integration in Google Chat:
 1. Select **Save**.
 1. Copy the webhook URL.
 
-For further details, see [the Google Chat documentation for configuring webhooks](https://developers.google.com/chat/how-tos/webhooks).
+For more information, see the
+[Google Chat documentation for webhooks](https://developers.google.com/chat/how-tos/webhooks).
 
 ## Enable the integration in GitLab
 

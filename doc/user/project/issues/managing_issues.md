@@ -484,6 +484,27 @@ To filter the list of issues:
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
    `AND`.
 
+### Filter by title or description
+
+To filter the list issues for text in a title or description:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. Above the list of issues, in the **Search or filter results...** box, enter the searched phrase.
+1. In the dropdown list that appears, select **Search for this text**.
+1. Select the text box again, and in the dropdown list that appers, select **Search Within**, and then either **Titles** or **Descriptions**.
+1. Press <kbd>Enter</kbd> or select the search icon (**{search}**).
+
+Filtering issues uses [PostgreSQL full text search](https://www.postgresql.org/docs/current/textsearch-intro.html)
+to match meaningful and significant words to answer a query.
+
+For example, if you search for `I am securing information for M&A`,
+GitLab can return results with `securing`, `secured`,
+or `information` in the title or description.
+However, GitLab won't match the sentence or the words `I`, `am` or `M&A` exactly,
+as they aren't deemed lexically meaningful or significant.
+It's a limitation of PostgreSQL full text search.
+
 ### Filter with the OR operator
 
 > - OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.

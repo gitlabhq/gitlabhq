@@ -388,7 +388,7 @@ Returns [`Boolean`](#boolean).
 
 ### `Query.googleCloudArtifactRegistryRepositoryArtifact`
 
-Details about an artifact in the Google Cloud Artifact Registry.
+Details about an artifact in the Google Artifact Registry.
 
 DETAILS:
 **Introduced** in GitLab 16.10.
@@ -401,10 +401,10 @@ Returns [`GoogleCloudArtifactRegistryArtifactDetails`](#googlecloudartifactregis
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querygooglecloudartifactregistryrepositoryartifactgooglecloudprojectid"></a>`googleCloudProjectId` | [`String!`](#string) | ID of the Google Cloud project. |
-| <a id="querygooglecloudartifactregistryrepositoryartifactimage"></a>`image` | [`String!`](#string) | Name of the image in the Google Cloud Artifact Registry. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactimage"></a>`image` | [`String!`](#string) | Name of the image in the Google Artifact Registry. |
 | <a id="querygooglecloudartifactregistryrepositoryartifactlocation"></a>`location` | [`String!`](#string) | Location of the Artifact Registry repository. |
 | <a id="querygooglecloudartifactregistryrepositoryartifactprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
-| <a id="querygooglecloudartifactregistryrepositoryartifactrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
+| <a id="querygooglecloudartifactregistryrepositoryartifactrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Artifact Registry. |
 
 ### `Query.group`
 
@@ -19959,7 +19959,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `GoogleCloudArtifactRegistryDockerImage`
 
-Represents a docker artifact of Google Cloud Artifact Registry.
+Represents a docker artifact of Google Artifact Registry.
 
 #### Fields
 
@@ -19974,7 +19974,7 @@ Represents a docker artifact of Google Cloud Artifact Registry.
 
 ### `GoogleCloudArtifactRegistryDockerImageDetails`
 
-Represents details about docker artifact of Google Cloud Artifact Registry.
+Represents details about docker artifact of Google Artifact Registry.
 
 #### Fields
 
@@ -19989,7 +19989,7 @@ Represents details about docker artifact of Google Cloud Artifact Registry.
 | <a id="googlecloudartifactregistrydockerimagedetailsmediatype"></a>`mediaType` | [`String`](#string) | Media type of the image. |
 | <a id="googlecloudartifactregistrydockerimagedetailsname"></a>`name` | [`String!`](#string) | Unique image name. |
 | <a id="googlecloudartifactregistrydockerimagedetailsprojectid"></a>`projectId` | [`String!`](#string) | ID of the Google Cloud project. |
-| <a id="googlecloudartifactregistrydockerimagedetailsrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
+| <a id="googlecloudartifactregistrydockerimagedetailsrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Artifact Registry. |
 | <a id="googlecloudartifactregistrydockerimagedetailstags"></a>`tags` | [`[String!]`](#string) | Tags attached to the image. |
 | <a id="googlecloudartifactregistrydockerimagedetailsupdatetime"></a>`updateTime` | [`Time`](#time) | Time when the image was last updated. |
 | <a id="googlecloudartifactregistrydockerimagedetailsuploadtime"></a>`uploadTime` | [`Time`](#time) | Time when the image was uploaded. |
@@ -19997,7 +19997,7 @@ Represents details about docker artifact of Google Cloud Artifact Registry.
 
 ### `GoogleCloudArtifactRegistryRepository`
 
-Represents a repository of Google Cloud Artifact Registry.
+Represents a repository of Google Artifact Registry.
 
 #### Fields
 
@@ -20005,13 +20005,13 @@ Represents a repository of Google Cloud Artifact Registry.
 | ---- | ---- | ----------- |
 | <a id="googlecloudartifactregistryrepositoryartifactregistryrepositoryurl"></a>`artifactRegistryRepositoryUrl` | [`String!`](#string) | Google Cloud URL to access the repository. |
 | <a id="googlecloudartifactregistryrepositoryprojectid"></a>`projectId` | [`String!`](#string) | ID of the Google Cloud project. |
-| <a id="googlecloudartifactregistryrepositoryrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Cloud Artifact Registry. |
+| <a id="googlecloudartifactregistryrepositoryrepository"></a>`repository` | [`String!`](#string) | Repository on the Google Artifact Registry. |
 
 #### Fields with arguments
 
 ##### `GoogleCloudArtifactRegistryRepository.artifacts`
 
-Google Cloud Artifact Registry repository artifacts. Returns `null` if `gcp_artifact_registry` feature flag is disabled or GitLab.com feature is unavailable.
+Google Artifact Registry repository artifacts. Returns `null` if `gcp_artifact_registry` feature flag is disabled or GitLab.com feature is unavailable.
 
 Returns [`GoogleCloudArtifactRegistryArtifactConnection`](#googlecloudartifactregistryartifactconnection).
 
@@ -25261,7 +25261,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Cloud Artifact Registry repository. Returns `null` if `gcp_artifact_registry` feature flag is disabled. |
+| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if `gcp_artifact_registry` feature flag is disabled. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
 | <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
@@ -34347,7 +34347,7 @@ One of:
 
 #### `GoogleCloudArtifactRegistryArtifact`
 
-A base type of Google Cloud Artifact Registry artifacts.
+A base type of Google Artifact Registry artifacts.
 
 One of:
 
@@ -34355,7 +34355,7 @@ One of:
 
 #### `GoogleCloudArtifactRegistryArtifactDetails`
 
-Details type of Google Cloud Artifact Registry artifacts.
+Details type of Google Artifact Registry artifacts.
 
 One of:
 

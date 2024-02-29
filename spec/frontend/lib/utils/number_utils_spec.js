@@ -81,23 +81,31 @@ describe('Number Utils', () => {
 
   describe('numberToHumanSizeSplit', () => {
     it('should return bytes', () => {
-      expect(numberToHumanSizeSplit(654)).toEqual(['654', 'B']);
-      expect(numberToHumanSizeSplit(-654)).toEqual(['-654', 'B']);
+      expect(numberToHumanSizeSplit({ size: 654 })).toEqual(['654', 'B']);
+      expect(numberToHumanSizeSplit({ size: -654 })).toEqual(['-654', 'B']);
     });
 
     it('should return KiB', () => {
-      expect(numberToHumanSizeSplit(1079)).toEqual(['1.05', 'KiB']);
-      expect(numberToHumanSizeSplit(-1079)).toEqual(['-1.05', 'KiB']);
+      expect(numberToHumanSizeSplit({ size: 1079 })).toEqual(['1.05', 'KiB']);
+      expect(numberToHumanSizeSplit({ size: -1079 })).toEqual(['-1.05', 'KiB']);
     });
 
     it('should return MiB', () => {
-      expect(numberToHumanSizeSplit(10485764)).toEqual(['10.00', 'MiB']);
-      expect(numberToHumanSizeSplit(-10485764)).toEqual(['-10.00', 'MiB']);
+      expect(numberToHumanSizeSplit({ size: 10485764 })).toEqual(['10.00', 'MiB']);
+      expect(numberToHumanSizeSplit({ size: -10485764 })).toEqual(['-10.00', 'MiB']);
     });
 
     it('should return GiB', () => {
-      expect(numberToHumanSizeSplit(10737418240)).toEqual(['10.00', 'GiB']);
-      expect(numberToHumanSizeSplit(-10737418240)).toEqual(['-10.00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: 10737418240 })).toEqual(['10.00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: -10737418240 })).toEqual(['-10.00', 'GiB']);
+    });
+
+    it('should localize the delimiter', () => {
+      expect(numberToHumanSizeSplit({ size: 10737418240, locale: 'fr' })).toEqual(['10,00', 'GiB']);
+      expect(numberToHumanSizeSplit({ size: 10737418240 * 1000, locale: 'it' })).toEqual([
+        '10.000,00',
+        'GiB',
+      ]);
     });
   });
 

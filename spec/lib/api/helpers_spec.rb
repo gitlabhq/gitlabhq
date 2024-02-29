@@ -407,7 +407,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
   end
 
   describe '#find_organization!' do
-    let_it_be(:organization) { create(:organization) }
     let_it_be(:user) { create(:user) }
 
     before do
@@ -415,17 +414,53 @@ RSpec.describe API::Helpers, feature_category: :shared do
       allow(helper).to receive(:initial_current_user).and_return(user)
     end
 
-    context 'when user is authenticated' do
-      it 'returns requested organization' do
-        expect(helper.find_organization!(organization.id)).to eq(organization)
+    context 'when organization is public' do
+      let_it_be(:public_organization) { create(:organization, :public) }
+
+      context 'when user is authenticated' do
+        it 'returns requested organization' do
+          expect(helper.find_organization!(public_organization.id)).to eq(public_organization)
+        end
+      end
+
+      context 'when user is not authenticated' do
+        let(:user) { nil }
+
+        it 'returns requested organization' do
+          expect(helper.find_organization!(public_organization.id)).to eq(public_organization)
+        end
       end
     end
 
-    context 'when user is not authenticated' do
-      let(:user) { nil }
+    context 'when organization is private' do
+      let_it_be(:private_organization) { create(:organization) }
 
-      it 'returns requested organization' do
-        expect(helper.find_organization!(organization.id)).to eq(organization)
+      context 'when user is authenticated' do
+        context 'when user is part of the organization' do
+          before_all do
+            create(:organization_user, user: user, organization: private_organization)
+          end
+
+          it 'returns requested organization' do
+            expect(helper.find_organization!(private_organization.id)).to eq(private_organization)
+          end
+        end
+
+        context 'when user is not part of the organization' do
+          it 'returns nil' do
+            expect(helper).to receive(:render_api_error!).with('404 Organization Not Found', 404)
+            expect(helper.find_organization!(private_organization)).to be_nil
+          end
+        end
+      end
+
+      context 'when user is not authenticated' do
+        let(:user) { nil }
+
+        it 'returns nil' do
+          expect(helper).to receive(:render_api_error!).with('404 Organization Not Found', 404)
+          expect(helper.find_organization!(private_organization)).to be_nil
+        end
       end
     end
 

@@ -891,7 +891,7 @@ Get the Google Chat integration settings for a project.
 GET /projects/:id/integrations/hangouts-chat
 ```
 
-## Google Cloud Artifact Registry
+## Google Artifact Registry
 
 DETAILS:
 **Offering:** GitLab.com
@@ -902,9 +902,9 @@ DETAILS:
 FLAG:
 On GitLab.com and GitLab Dedicated, this feature is not available. The feature is not ready for production use.
 
-### Set up Google Cloud Artifact Registry
+### Set up Google Artifact Registry
 
-Set up the Google Cloud Artifact Registry integration for a project.
+Set up the Google Artifact Registry integration for a project.
 
 ```plaintext
 PUT /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -918,17 +918,17 @@ Parameters:
 | `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
 
-### Disable Google Cloud Artifact Registry
+### Disable Google Artifact Registry
 
-Disable the Google Cloud Artifact Registry integration for a project. Integration settings are reset.
+Disable the Google Artifact Registry integration for a project. Integration settings are reset.
 
 ```plaintext
 DELETE /projects/:id/integrations/google-cloud-platform-artifact-registry
 ```
 
-### Get Google Cloud Artifact Registry settings
+### Get Google Artifact Registry settings
 
-Get the Google Cloud Artifact Registry integration settings for a project.
+Get the Google Artifact Registry integration settings for a project.
 
 ```plaintext
 GET /projects/:id/integrations/google-cloud-platform-artifact-registry
@@ -967,9 +967,9 @@ Disable the Google Cloud Identity and Access Management integration for a projec
 DELETE /projects/:id/integrations/google-cloud-platform-workload-identity-federation
 ```
 
-### Get Google Cloud Artifact Identity and Access Management
+### Get Google Cloud Identity and Access Management
 
-Get the settings for the Google Cloud Artifact Identity and Access Management for a project.
+Get the settings for the Google Cloud Identity and Access Management for a project.
 
 ```plaintext
 GET /projects/:id/integration/google-cloud-platform-workload-identity-federation

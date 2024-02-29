@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { sprintf } from '~/locale';
+import { getPreferredLocales, sprintf } from '~/locale';
 import { updateRepositorySize } from '~/api/projects_api';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import SectionedPercentageBar from '~/usage_quotas/components/sectioned_percentage_bar.vue';
@@ -66,7 +66,7 @@ export default {
     },
     totalUsage() {
       if (!this.isStatisticsEmpty) {
-        return numberToHumanSize(this.project?.statistics?.storageSize, 1);
+        return numberToHumanSize(this.project?.statistics?.storageSize, 1, getPreferredLocales());
       }
 
       return TOTAL_USAGE_DEFAULT_TEXT;

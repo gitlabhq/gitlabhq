@@ -42,6 +42,8 @@ The FY25 targets before cell architecture are:
 | **Zonal**    | 0 minutes                     | 0 minutes                      |
 | **Regional** | 48 hours                      | 0 minutes                      |
 
+**Note**: While the RPO values are targets, they cannot be met exactly due to the limitations of regional bucket replication and replication lag of Gitaly and PostgreSQL.
+
 ## Current Recovery Time Objective (RTO) and Recovery Point Objective (RPO) for Zonal Recovery
 
 We have not yet simulated a full zonal outage on GitLab.com.

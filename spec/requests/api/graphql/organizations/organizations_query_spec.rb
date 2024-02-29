@@ -18,7 +18,9 @@ RSpec.describe 'getting organizations information', feature_category: :cell do
     FIELDS
   end
 
-  before_all { create_list(:organization, 3) }
+  let_it_be(:private_organization) { create(:organization) }
+
+  before_all { create_list(:organization, 3, :public) }
 
   subject(:request_organization) { post_graphql(query, current_user: current_user) }
 
@@ -46,7 +48,10 @@ RSpec.describe 'getting organizations information', feature_category: :cell do
 
       let(:first_param) { 2 }
       let(:data_path) { [:organizations] }
-      let(:all_records) { Organizations::Organization.order(id: :desc).map { |o| global_id_of(o).to_s } }
+      let(:all_records) do
+        Organizations::Organization
+          .where.not(id: private_organization).order(id: :desc).map { |o| global_id_of(o).to_s }
+      end
     end
 
     def pagination_query(params)

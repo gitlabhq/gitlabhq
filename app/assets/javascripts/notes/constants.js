@@ -28,6 +28,8 @@ export const DESC = 'desc';
 
 export const DISCUSSION_FETCH_TIMEOUT = 750;
 
+export const FETCH_UPDATED_NOTES_DEBOUNCE_TIMEOUT = 750;
+
 export const NOTEABLE_TYPE_MAPPING = {
   Issue: ISSUE_NOTEABLE_TYPE,
   MergeRequest: MERGE_REQUEST_NOTEABLE_TYPE,

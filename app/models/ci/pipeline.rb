@@ -1418,7 +1418,7 @@ module Ci
 
     def include_manual_to_pipeline_completion_enabled?
       strong_memoize(:include_manual_to_pipeline_completion_enabled) do
-        ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :gitlab_com_derisk)
+        ::Feature.enabled?(:include_manual_to_pipeline_completion, self.project, type: :beta)
       end
     end
 

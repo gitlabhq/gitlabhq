@@ -23452,16 +23452,13 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Virtual size"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Connect Google Cloud Artifact Registry to GitLab."
-msgstr ""
-
 msgid "GoogleCloudPlatformService|Example: %{code_open}314053285323%{code_close}"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Example: %{code_open}my-sample-project-191923%{code_close}"
 msgstr ""
 
-msgid "GoogleCloudPlatformService|Google Cloud Artifact Registry"
+msgid "GoogleCloudPlatformService|Google Artifact Registry"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Google Cloud IAM"
@@ -23471,6 +23468,9 @@ msgid "GoogleCloudPlatformService|Google Cloud project ID"
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Manage permissions for Google Cloud resources with Identity and Access Management (IAM)."
+msgstr ""
+
+msgid "GoogleCloudPlatformService|Manage your artifacts in Google Artifact Registry."
 msgstr ""
 
 msgid "GoogleCloudPlatformService|Pool ID"

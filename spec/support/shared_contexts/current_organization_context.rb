@@ -5,8 +5,12 @@
 RSpec.shared_context 'with current_organization setting', shared_context: :metadata do # rubocop:disable RSpec/SharedGroupsMetadata -- We are actually using this for easy metadata setting
   let_it_be(:current_organization, reload: true) { create(:organization, name: 'Current Organization') }
 
-  around do |example|
-    Current.set(organization: current_organization) { example.run }
+  before do
+    Current.organization = current_organization
+  end
+
+  after do
+    Current.reset
   end
 end
 
