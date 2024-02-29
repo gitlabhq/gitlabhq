@@ -124,7 +124,7 @@ The protected branch displays in the list of protected branches.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 

@@ -22,13 +22,21 @@ module AutoMerge
 
     def cancel(merge_request)
       super do
-        SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, project, current_user)
+        if block_given?
+          yield
+        else
+          SystemNoteService.cancel_merge_when_pipeline_succeeds(merge_request, project, current_user)
+        end
       end
     end
 
     def abort(merge_request, reason)
       super do
-        SystemNoteService.abort_merge_when_pipeline_succeeds(merge_request, project, current_user, reason)
+        if block_given?
+          yield
+        else
+          SystemNoteService.abort_merge_when_pipeline_succeeds(merge_request, project, current_user, reason)
+        end
       end
     end
 

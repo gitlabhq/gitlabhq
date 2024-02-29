@@ -75,7 +75,7 @@ You can leave the file blank for now, and [configure it](#configure-your-agent) 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347240) in GitLab 14.9, the agent can be registered without creating an agent configuration file.
 
 FLAG:
-In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
+In GitLab 14.10, a [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
 
 Prerequisites:
 

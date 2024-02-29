@@ -793,6 +793,10 @@
   - 1
 - - work_items_import_work_items_csv
   - 1
+- - work_items_rolledup_dates_update_parent_rolledup_dates_event_handler
+  - 1
+- - work_items_rolledup_dates_update_rolledup_dates
+  - 1
 - - work_items_update_parent_objectives_progress
   - 1
 - - work_items_validate_epic_work_item_sync

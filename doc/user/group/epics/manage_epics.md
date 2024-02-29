@@ -67,6 +67,7 @@ The parent epic's start date then reflects this change and propagates upwards to
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per group, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `epic_color_highlight`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+On GitLab Dedicated, this feature is not available.
 The feature is not ready for production use.
 
 When you create or edit an epic, you can select its color.

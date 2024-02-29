@@ -102,7 +102,7 @@ in a safe place.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com, this
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_authenticator`. On GitLab.com and GitLab Dedicated, this
 feature is not available.
 
 You can use FortiAuthenticator as a one-time password (OTP) provider in GitLab. Users must:
@@ -239,7 +239,7 @@ DETAILS:
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per user, an administrator can
-[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com, this
+[enable the feature flag](../../../administration/feature_flags.md) named `forti_token_cloud`. On GitLab.com and GitLab Dedicated, this
 feature is not available. The feature is not ready for production use.
 
 You can use FortiToken Cloud as a one-time password (OTP) provider in GitLab. Users must:

@@ -137,11 +137,11 @@ On this page, you can:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88279) in GitLab 15.1 with a flag named `branch_rules`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.10.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363170) in GitLab 15.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../../feature_flags.md) named `branch_rules`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 Branches in your repository can be [protected](../../protected_branches.md) in multiple ways. You can:
 

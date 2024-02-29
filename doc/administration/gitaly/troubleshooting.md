@@ -509,7 +509,7 @@ go tool trace heap.bin
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md)
-named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
+named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
 
 You can profile Git operations that Gitaly performs by sending additional information about Git operations to Gitaly logs. With this information, users have more insight
 for performance optimization, debugging, and general telemetry collection. For more information, see the [Git Trace2 API reference](https://git-scm.com/docs/api-trace2).

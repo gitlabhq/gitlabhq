@@ -73,7 +73,7 @@ The contributor count metric is available only on GitLab.com at the group-level.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`.
+On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. On GitLab Dedicated, this feature is available.
 
 The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 

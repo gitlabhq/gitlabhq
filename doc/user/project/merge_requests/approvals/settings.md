@@ -123,7 +123,7 @@ When this field is changed, it can affect all open merge requests depending on t
 
 FLAG:
 On self-managed GitLab, by default requiring re-authentication by using SAML authentication is available. To hide the feature, an administrator can
-[disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+[disable the feature flag](../../../../administration/feature_flags.md) named `ff_require_saml_auth_to_approve`. On GitLab.com and GitLab Dedicated, this feature is available.
 
 You can force potential approvers to first authenticate with either:
 

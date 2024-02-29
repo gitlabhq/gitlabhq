@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Convert Markdown content to HTML.
 
@@ -22,7 +22,7 @@ FLAG:
 On self-managed GitLab, by default this feature is enabled and authentication is required.
 To remove the requirement to authenticate, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `authenticate_markdown_api`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On GitLab.com, this feature is available. On GitLab Dedicated, this feature is available.
 
 All API calls to the Markdown API must be [authenticated](rest/index.md#authentication).
 

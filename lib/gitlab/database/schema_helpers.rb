@@ -17,7 +17,7 @@ module Gitlab
       end
 
       def function_exists?(name)
-        connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
+        !!connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
       end
 
       def create_trigger(table_name, name, function_name, fires:)

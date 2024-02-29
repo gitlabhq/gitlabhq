@@ -493,7 +493,7 @@ To filter the list of issues:
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On GitLab.com and GitLab Dedicated, this feature is available.
 
 When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of issues](#filter-the-list-of-issues) by:

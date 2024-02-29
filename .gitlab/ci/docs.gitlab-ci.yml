@@ -1,3 +1,15 @@
+include:
+  - component: gitlab.com/gitlab-org/technical-writing-group/markdown-link-check/lychee@0.2.0
+    inputs:
+      job-name: docs-lint links
+      job-stage: lint
+      lychee-version: "0.14.3"
+
+# Override rules for markdown-link-check CI/CD component
+docs-lint links:
+  extends:
+    - .docs:rules:docs-lint
+
 .review-docs:
   extends:
     - .default-retry
@@ -38,23 +50,6 @@ review-docs-cleanup:
     action: stop
   script:
     - ./scripts/trigger-build.rb docs cleanup
-
-docs-lint links:
-  extends:
-    - .docs:rules:docs-lint
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-html:alpine-3.18-ruby-3.2.2-08fa6df8
-  stage: lint
-  needs: []
-  script:
-    # Prepare docs for build
-    # The path must be 'ee/' because we have hardcoded links relying on it
-    # https://gitlab.com/gitlab-org/gitlab-docs/-/blob/887850752fc0e72856da6632db132f005ba77f16/content/index.erb#L44-63
-    - mv doc/ /tmp/gitlab-docs/content/ee
-    - cd /tmp/gitlab-docs
-    # Build HTML from Markdown
-    - make compile
-    # Check the internal links and anchors (in parallel)
-    - "parallel time bundle exec nanoc check ::: internal_links internal_anchors"
 
 .docs-markdown-lint-image:
   # When updating the image version here, update it in /scripts/lint-doc.sh too.

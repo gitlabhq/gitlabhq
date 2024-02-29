@@ -201,6 +201,15 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
           end
         end
       end
+
+      it "publishes WorkItems::WorkItemCreatedEvent" do
+        expect { service_result }
+          .to change { WorkItem.count }.by(1)
+            .and publish_event(WorkItems::WorkItemCreatedEvent).with(
+              id: kind_of(Numeric),
+              namespace_id: kind_of(Numeric)
+            )
+      end
     end
   end
 

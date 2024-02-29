@@ -42,7 +42,7 @@ searches.
 FLAG:
 On self-managed GitLab, by default this feature is available.
 To hide the feature, an administrator can [disable the feature flag](../../administration/feature_flags.md) named `zoekt_search_api`.
-On GitLab.com and GitLab Dedicated, this feature is not available. The feature is not ready for production use.
+On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 By default, the Zoekt search API is disabled on GitLab.com to avoid breaking changes.
 

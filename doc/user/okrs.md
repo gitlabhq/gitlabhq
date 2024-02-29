@@ -532,7 +532,7 @@ or assignees, on the right.
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `linked_work_items`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+On GitLab.com and GitLab dedicated, this feature is available.
 
 Linked items are a bi-directional relationship and appear in a block below
 the Child objectives and key results. You can link an objective, key result, or a task in the same project with each other.

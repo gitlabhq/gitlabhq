@@ -160,6 +160,21 @@ module SystemNoteService
     ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
 
+  # Called when 'merge when checks pass' is executed
+  def merge_when_checks_pass(noteable, project, author, sha)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).merge_when_checks_pass(sha)
+  end
+
+  # Called when 'auto merge' is canceled
+  def cancel_auto_merge(noteable, project, author)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).cancel_auto_merge
+  end
+
+  # Called when 'auto merge' is aborted
+  def abort_auto_merge(noteable, project, author, reason)
+    ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).abort_auto_merge(reason)
+  end
+
   # Called when 'merge when pipeline succeeds' is executed
   def merge_when_pipeline_succeeds(noteable, project, author, sha)
     ::SystemNotes::MergeRequestsService.new(noteable: noteable, project: project, author: author).merge_when_pipeline_succeeds(sha)
