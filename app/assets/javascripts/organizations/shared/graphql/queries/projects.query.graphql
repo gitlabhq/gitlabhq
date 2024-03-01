@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/organizations/shared/graphql/fragments/project.fragment.graphql"
 
 query getOrganizationProjects(
   $id: OrganizationsOrganizationID!
@@ -11,32 +12,7 @@ query getOrganizationProjects(
     id
     projects(first: $first, last: $last, before: $before, after: $after) {
       nodes {
-        id
-        nameWithNamespace
-        webUrl
-        topics
-        forksCount
-        avatarUrl
-        starCount
-        visibility
-        openMergeRequestsCount
-        openIssuesCount
-        descriptionHtml
-        mergeRequestsAccessLevel {
-          stringValue
-        }
-        issuesAccessLevel {
-          stringValue
-        }
-        forkingAccessLevel {
-          stringValue
-        }
-        userPermissions {
-          removeProject
-        }
-        maxAccessLevel {
-          integerValue
-        }
+        ...Project
       }
       pageInfo {
         ...PageInfo

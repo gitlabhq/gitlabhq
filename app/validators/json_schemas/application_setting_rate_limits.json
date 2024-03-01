@@ -12,7 +12,7 @@
     "downstream_pipeline_trigger_limit_per_project_user_sha": {
       "type": "integer",
       "minimum": 0,
-      "description": "Maximum number of downstream pipelines triggered in a project per user"
+      "description": "Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
     }
   }
 }

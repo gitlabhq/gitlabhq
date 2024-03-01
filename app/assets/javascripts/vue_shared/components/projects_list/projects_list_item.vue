@@ -32,6 +32,7 @@ export default {
     forks: __('Forks'),
     issues: __('Issues'),
     mergeRequests: __('Merge requests'),
+    pendingDeletion: __('Pending deletion'),
     archived: __('Archived'),
     topics: __('Topics'),
     topicsPopoverTargetText: __('+ %{count} more'),
@@ -201,6 +202,26 @@ export default {
     isActionDeleteLoading() {
       return this.project.actionLoadingStates[ACTION_DELETE];
     },
+    isPendingDeletion() {
+      return Boolean(this.project.markedForDeletionOn);
+    },
+    inactiveBadge() {
+      if (this.isPendingDeletion) {
+        return {
+          variant: 'warning',
+          text: this.$options.i18n.pendingDeletion,
+        };
+      }
+
+      if (this.project.archived) {
+        return {
+          variant: 'info',
+          text: this.$options.i18n.archived,
+        };
+      }
+
+      return null;
+    },
   },
   methods: {
     topicPath(topic) {
@@ -332,9 +353,13 @@ export default {
         :class="showProjectIcon ? 'gl-pl-12' : 'gl-pl-10'"
       >
         <div class="gl-display-flex gl-align-items-center gl-gap-x-3 gl-md-h-9">
-          <gl-badge v-if="project.archived" variant="warning">{{
-            $options.i18n.archived
-          }}</gl-badge>
+          <gl-badge
+            v-if="inactiveBadge"
+            :variant="inactiveBadge.variant"
+            size="sm"
+            data-testid="inactive-badge"
+            >{{ inactiveBadge.text }}</gl-badge
+          >
           <gl-link
             v-gl-tooltip="$options.i18n.stars"
             :href="starsHref"

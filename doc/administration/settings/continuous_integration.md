@@ -205,16 +205,17 @@ The default is `150`.
 1. Change the value of **Maximum includes**.
 1. Select **Save changes** for the changes to take effect.
 
-## Maximum downstream pipelines triggered per project
+## Maximum downstream pipeline trigger rate
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10 [with feature flag](../feature_flags.md) named `ci_rate_limit_downstream_pipelines`. Disabled by default.
 
-The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) per project per user can be set at the instance level.
+The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
+(for a given project, user, and commit) can be set at the instance level.
 The default is `0` (no restriction).
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > CI/CD**.
-1. Change the value of **Maximum downstream pipelines triggered in a project per user**.
+1. Change the value of **Maximum downstream pipeline trigger rate**.
 1. Select **Save changes** for the changes to take effect.
 
 ## Default CI/CD configuration file

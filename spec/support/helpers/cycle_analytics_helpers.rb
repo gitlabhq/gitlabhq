@@ -73,7 +73,7 @@ module CycleAnalyticsHelpers
 
   def create_custom_value_stream(custom_value_stream_name)
     toggle_value_stream_dropdown
-    page.find_button(_('Create new Value Stream')).click
+    page.find_button(_('New Value Stream')).click
 
     add_custom_stage_to_form
     save_value_stream(custom_value_stream_name)

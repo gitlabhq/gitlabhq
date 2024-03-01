@@ -685,7 +685,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/packages/create_package_service.rb'
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'app/services/packages/debian/generate_distribution_service.rb'
-    - 'app/services/packages/npm/create_package_service.rb'
     - 'app/services/packages/nuget/create_dependency_service.rb'
     - 'app/services/packages/nuget/extract_remote_metadata_file_service.rb'
     - 'app/services/packages/nuget/process_package_file_service.rb'

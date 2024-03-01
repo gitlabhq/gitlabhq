@@ -1,4 +1,8 @@
 - if @page&.persisted?
   - if can?(current_user, :create_wiki, @wiki.container)
-    = link_button_to wiki_path(@wiki, action: :new), role: "button", data: { testid: 'new-page-button' }, variant: :confirm, category: :secondary do
-      = s_("Wiki|New page")
+    - if @page.template?
+      = link_button_to wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), icon: 'plus' do
+        = s_("Wiki|New template")
+    - else
+      = link_button_to wiki_path(@wiki, action: :new), role: "button", data: { testid: 'new-page-button' }, variant: :confirm, category: :secondary do
+        = s_("Wiki|New page")

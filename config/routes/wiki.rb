@@ -4,6 +4,7 @@ scope(controller: :wikis) do
   scope(path: 'wikis', as: :wikis) do
     get :git_access
     get :pages
+    get :templates
     get :new
     get '/', to: redirect { |params, request| "#{request.path}/home" }
     post '/', to: 'wikis#create'
@@ -16,6 +17,7 @@ scope(controller: :wikis) do
     get :edit
     get :history
     get :diff
+    get :raw
     post :preview_markdown
     get '/', action: :show
     put '/', action: :update

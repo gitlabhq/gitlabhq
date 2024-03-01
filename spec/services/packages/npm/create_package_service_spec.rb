@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_registry do
   let(:service) { described_class.new(project, user, params) }
 
-  subject { service.execute }
+  subject(:execute_service) { service.execute }
 
   describe '#execute' do
     include ExclusiveLeaseHelpers
@@ -108,7 +109,10 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
             params[:versions][version].except(*::Packages::Npm::CreatePackageService::PACKAGE_JSON_NOT_ALLOWED_FIELDS)
           end
 
-          let(:expected_size) { ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size }
+          let(:expected_size) do
+            ('a' * (::Packages::Npm::Metadatum::MIN_PACKAGE_JSON_FIELD_SIZE_FOR_ERROR_TRACKING - 1)).size
+          end
+
           # Only the five largest fields should be passed to error tracking
           let(:expected_field_sizes) do
             {
@@ -168,7 +172,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
-    context 'scoped package' do
+    context 'when scoped package' do
       it_behaves_like 'returning a success service response'
       it_behaves_like 'valid package'
     end
@@ -180,21 +184,21 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       it_behaves_like 'valid package'
     end
 
-    context 'scoped package not following the naming convention' do
+    context 'when scoped package not following the naming convention' do
       let(:package_name) { '@any-scope/package' }
 
       it_behaves_like 'returning a success service response'
       it_behaves_like 'valid package'
     end
 
-    context 'unscoped package' do
+    context 'when unscoped package' do
       let(:package_name) { 'unscoped-package' }
 
       it_behaves_like 'returning a success service response'
       it_behaves_like 'valid package'
     end
 
-    context 'package already exists' do
+    context 'when package already exists' do
       let(:package_name) { "@#{namespace.path}/my_package" }
       let!(:existing_package) { create(:npm_package, project: project, name: package_name, version: '1.0.1') }
 
@@ -202,13 +206,13 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         it { is_expected.to have_attributes reason: :package_already_exists }
       end
 
-      context 'marked as pending_destruction' do
+      context 'when marked as pending_destruction' do
         before do
           existing_package.pending_destruction!
         end
 
         it 'creates a new package' do
-          expect { subject }
+          expect { execute_service }
             .to change { Packages::Package.count }.by(1)
             .and change { Packages::Package.npm.count }.by(1)
             .and change { Packages::Tag.count }.by(1)
@@ -236,7 +240,15 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       context 'when file size is faked by setting the attachment length param to a lower size' do
-        let(:params) { super().deep_merge!({ _attachments: { "#{package_name}-#{version}.tgz" => { data: encoded_package_data, length: 1 } } }) }
+        let(:params) do
+          super().deep_merge!(
+            _attachments: {
+              "#{package_name}-#{version}.tgz" => {
+                data: encoded_package_data,
+                length: 1
+              }
+            })
+        end
 
         # TODO (technical debt): Extract the package size calculation outside the service and add separate specs for it.
         # Right now we have several contexts here to test the calculation's different scenarios.
@@ -276,7 +288,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       with_them do
-        it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid) }
+        it { expect { execute_service }.to raise_error(ActiveRecord::RecordInvalid) }
       end
     end
 
@@ -300,7 +312,12 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       with_them do
-        it { expect { subject }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Version #{Gitlab::Regex.semver_regex_message}") }
+        it 'raises an error "ActiveRecord::RecordInvalid"' do
+          expect { execute_service }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            "Validation failed: Version #{Gitlab::Regex.semver_regex_message}"
+          )
+        end
       end
     end
 
@@ -315,7 +332,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     it 'obtains a lease to create a new package' do
       expect_to_obtain_exclusive_lease(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
 
-      subject
+      execute_service
     end
 
     context 'when the lease is already taken' do
@@ -323,13 +340,16 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         stub_exclusive_lease_taken(lease_key, timeout: described_class::DEFAULT_LEASE_TIMEOUT)
       end
 
-      it_behaves_like 'returning an error service response', message: 'Could not obtain package lease. Please try again.' do
+      it_behaves_like 'returning an error service response',
+        message: 'Could not obtain package lease. Please try again.' do
         it { is_expected.to have_attributes reason: :package_lease_taken }
       end
     end
 
     context 'when feature flag :packages_protected_packages disabled' do
-      let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, package_type: :npm, project: project) }
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :npm, project: project)
+      end
 
       before do
         stub_feature_flags(packages_protected_packages: false)
@@ -349,7 +369,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
         with_them do
           before do
-            package_protection_rule.update!(package_name_pattern: package_name_pattern, push_protected_up_to_access_level: push_protected_up_to_access_level)
+            package_protection_rule.update!(package_name_pattern: package_name_pattern,
+              push_protected_up_to_access_level: push_protected_up_to_access_level)
           end
 
           it_behaves_like 'valid package'
@@ -360,7 +381,10 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
     context 'with package protection rule for different roles and package_name_patterns' do
       using RSpec::Parameterized::TableSyntax
 
-      let_it_be_with_reload(:package_protection_rule) { create(:package_protection_rule, package_type: :npm, project: project) }
+      let_it_be_with_reload(:package_protection_rule) do
+        create(:package_protection_rule, package_type: :npm, project: project)
+      end
+
       let_it_be(:project_developer) { create(:user).tap { |u| project.add_developer(u) } }
       let_it_be(:project_maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
 
@@ -394,7 +418,8 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       with_them do
         before do
-          package_protection_rule.update!(package_name_pattern: package_name_pattern, push_protected_up_to_access_level: push_protected_up_to_access_level)
+          package_protection_rule.update!(package_name_pattern: package_name_pattern,
+            push_protected_up_to_access_level: push_protected_up_to_access_level)
         end
 
         it_behaves_like params[:shared_examples_name]

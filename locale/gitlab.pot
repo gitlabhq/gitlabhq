@@ -3625,7 +3625,7 @@ msgstr ""
 msgid "AdminSettings|Limit the amount of namespace and project data to index"
 msgstr ""
 
-msgid "AdminSettings|Maximum downstream pipelines triggered in a project per user"
+msgid "AdminSettings|Maximum downstream pipeline trigger rate"
 msgstr ""
 
 msgid "AdminSettings|Maximum duration of a session for Git operations when 2FA is enabled."
@@ -3787,7 +3787,7 @@ msgstr ""
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
 msgstr ""
 
-msgid "AdminSettings|The maximum number of downstream pipelines triggered in a project per user."
+msgid "AdminSettings|The maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit)."
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
@@ -6208,6 +6208,9 @@ msgid "Apply this approval rule to all branches or a specific protected branch."
 msgstr ""
 
 msgid "Applying"
+msgstr ""
+
+msgid "Applying a template will replace the existing content. Any changes you have made will be lost."
 msgstr ""
 
 msgid "Applying a template will replace the existing issue description. Any changes you have made will be lost."
@@ -14446,10 +14449,16 @@ msgstr ""
 msgid "Could not create wiki page"
 msgstr ""
 
+msgid "Could not create wiki template"
+msgstr ""
+
 msgid "Could not delete chat nickname %{chat_name}."
 msgstr ""
 
 msgid "Could not delete wiki page"
+msgstr ""
+
+msgid "Could not delete wiki template"
 msgstr ""
 
 msgid "Could not draw the lines for job relationships"
@@ -14504,6 +14513,9 @@ msgid "Could not save configuration. Please refresh the page, or try again later
 msgstr ""
 
 msgid "Could not update wiki page"
+msgstr ""
+
+msgid "Could not update wiki template"
 msgstr ""
 
 msgid "Could not upload your designs as one or more files uploaded are not supported."
@@ -14863,9 +14875,6 @@ msgstr ""
 msgid "CreateValueStreamForm|Create from no template"
 msgstr ""
 
-msgid "CreateValueStreamForm|Create new Value Stream"
-msgstr ""
-
 msgid "CreateValueStreamForm|Create value stream"
 msgstr ""
 
@@ -14906,6 +14915,9 @@ msgid "CreateValueStreamForm|Minimum length %{minLength} characters"
 msgstr ""
 
 msgid "CreateValueStreamForm|Name is required"
+msgstr ""
+
+msgid "CreateValueStreamForm|New Value Stream"
 msgstr ""
 
 msgid "CreateValueStreamForm|New stage"
@@ -18740,6 +18752,9 @@ msgid "Edit single file"
 msgstr ""
 
 msgid "Edit table"
+msgstr ""
+
+msgid "Edit template"
 msgstr ""
 
 msgid "Edit this file only."
@@ -33046,6 +33061,9 @@ msgstr ""
 msgid "No matching results for \"%{query}\""
 msgstr ""
 
+msgid "No matching templates"
+msgstr ""
+
 msgid "No matching work item found."
 msgstr ""
 
@@ -44349,6 +44367,9 @@ msgstr ""
 msgid "Search settings"
 msgstr ""
 
+msgid "Search templates"
+msgstr ""
+
 msgid "Search users"
 msgstr ""
 
@@ -49606,6 +49627,9 @@ msgid "Template"
 msgstr ""
 
 msgid "Template to append to all Service Desk issues"
+msgstr ""
+
+msgid "Template: %{title}"
 msgstr ""
 
 msgid "TemplateRepository|Create common files more quickly, and standardize their format."
@@ -56499,10 +56523,19 @@ msgstr ""
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
 msgstr ""
 
+msgid "WikiPageConfirmDelete|Are you sure you want to delete this template?"
+msgstr ""
+
 msgid "WikiPageConfirmDelete|Delete page"
 msgstr ""
 
-msgid "WikiPageConfirmDelete|Delete page %{pageTitle}?"
+msgid "WikiPageConfirmDelete|Delete page \"%{pageTitle}\"?"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete template"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete template \"%{pageTitle}\"?"
 msgstr ""
 
 msgid "WikiPageConflictMessage|Someone edited the page the same time you did. Please check out %{wikiLinkStart}the page%{wikiLinkEnd} and make sure your changes will not unintentionally remove theirs."
@@ -56523,6 +56556,12 @@ msgstr ""
 msgid "WikiPage|Create page"
 msgstr ""
 
+msgid "WikiPage|Create template"
+msgstr ""
+
+msgid "WikiPage|Create template %{pageTitle}"
+msgstr ""
+
 msgid "WikiPage|Format"
 msgstr ""
 
@@ -56533,6 +56572,9 @@ msgid "WikiPage|Page title"
 msgstr ""
 
 msgid "WikiPage|Save changes"
+msgstr ""
+
+msgid "WikiPage|Template title"
 msgstr ""
 
 msgid "WikiPage|Tip: You can move this page by adding the path to the beginning of the title."
@@ -56550,16 +56592,31 @@ msgstr ""
 msgid "WikiPage|Update %{pageTitle}"
 msgstr ""
 
+msgid "WikiPage|Update template %{pageTitle}"
+msgstr ""
+
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
 msgid "Wiki|Edit Page"
 msgstr ""
 
+msgid "Wiki|Edit Template"
+msgstr ""
+
 msgid "Wiki|New Page"
 msgstr ""
 
+msgid "Wiki|New Template"
+msgstr ""
+
 msgid "Wiki|New page"
+msgstr ""
+
+msgid "Wiki|New template"
+msgstr ""
+
+msgid "Wiki|No templates found"
 msgstr ""
 
 msgid "Wiki|Page history"
@@ -56571,6 +56628,15 @@ msgstr ""
 msgid "Wiki|Pages"
 msgstr ""
 
+msgid "Wiki|Template history"
+msgstr ""
+
+msgid "Wiki|Template version"
+msgstr ""
+
+msgid "Wiki|Templates"
+msgstr ""
+
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
@@ -56578,6 +56644,9 @@ msgid "Wiki|View All Pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"
+msgstr ""
+
+msgid "Wiki|Wiki Templates"
 msgstr ""
 
 msgid "Will be created"
@@ -60633,6 +60702,9 @@ msgid "wiki page"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
+msgstr ""
+
+msgid "with Admin Mode"
 msgstr ""
 
 msgid "with expiry changing from %{old_expiry} to %{new_expiry}"

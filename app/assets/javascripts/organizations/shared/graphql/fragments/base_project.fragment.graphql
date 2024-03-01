@@ -1,0 +1,29 @@
+fragment BaseProject on Project {
+  id
+  archived
+  nameWithNamespace
+  webUrl
+  topics
+  forksCount
+  avatarUrl
+  starCount
+  visibility
+  openMergeRequestsCount
+  openIssuesCount
+  descriptionHtml
+  mergeRequestsAccessLevel {
+    stringValue
+  }
+  issuesAccessLevel {
+    stringValue
+  }
+  forkingAccessLevel {
+    stringValue
+  }
+  userPermissions {
+    removeProject
+  }
+  maxAccessLevel {
+    integerValue
+  }
+}

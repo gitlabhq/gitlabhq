@@ -339,6 +339,19 @@ By default, new users can create top-level groups. GitLab administrators can pre
 1. Expand **Account and limit**.
 1. Clear the **Allow new users to create top-level groups** checkbox.
 
+## Prevent non-members from creating projects and groups
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8
+
+By default, users with the Guest role can create projects and groups.
+GitLab administrators can prevent this behavior:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Clear the **Allow users with up to Guest role to create groups and personal projects** checkbox.
+1. Select **Save changes**.
+
 ## Set profiles of new users to private by default
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
@@ -349,6 +362,7 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Select the **Make new users' profiles private by default** checkbox.
+1. Select **Save changes**.
 
 ## Prevent users from deleting their accounts
 

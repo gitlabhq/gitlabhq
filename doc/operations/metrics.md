@@ -8,15 +8,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** Self-managed
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `observability_metrics`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
 The feature is not ready for production use.
 
 Metrics provide insight about the operational health of monitored systems.

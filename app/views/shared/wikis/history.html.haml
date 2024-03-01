@@ -15,7 +15,7 @@
     %table.table.wiki-history
       %thead
         %tr
-          %th= s_('Wiki|Page version')
+          %th= @page.template? ? s_('Wiki|Template version') : s_('Wiki|Page version')
           %th= _('Author')
           %th= _('Changes')
           %th= _('Last updated')

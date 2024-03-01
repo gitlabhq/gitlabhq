@@ -77,6 +77,7 @@ class Wiki
 
   HOMEPAGE = 'home'
   SIDEBAR = '_sidebar'
+  TEMPLATES_DIR = 'templates'
 
   TITLE_ORDER = 'title'
   CREATED_AT_ORDER = 'created_at'
@@ -237,6 +238,9 @@ class Wiki
     pages = list_pages(**options.merge(limit: limit + 1))
     limited = pages.size > limit
     pages = pages.first(limit) if limited
+
+    # remove page from list if path starts with templates
+    pages.reject! { |page| page.path.start_with?(TEMPLATES_DIR) }
 
     [WikiDirectory.group_pages(pages), limited]
   end

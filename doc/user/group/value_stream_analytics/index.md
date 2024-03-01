@@ -425,7 +425,7 @@ create custom stages in addition to those provided in the default template.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Analyze > Value Stream analytics**.
-1. Select **Create new Value Stream**.
+1. Select **New Value Stream**.
 1. Enter a name for the value stream.
 1. Select **Create from default template**.
 1. Customize the default stages:

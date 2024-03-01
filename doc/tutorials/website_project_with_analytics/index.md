@@ -103,7 +103,7 @@ to go from an idea to production, and identify inefficiencies in the development
 To get started, create a value stream in the `My website` project:
 
 1. Select **Analyze > Value Stream Analytics**.
-1. Select **Create new Value Stream**.
+1. Select **New Value Stream**.
 1. Enter a name for the value stream, for example `My website value stream`.
 1. Select **Create from default template**.
 1. To add a custom stage, select **Add another stage**.

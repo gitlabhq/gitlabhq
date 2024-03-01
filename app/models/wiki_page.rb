@@ -172,6 +172,10 @@ class WikiPage
     last_version&.sha
   end
 
+  def template?
+    slug.start_with?(Wiki::TEMPLATES_DIR)
+  end
+
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?

@@ -734,7 +734,7 @@ For example:
 
 When you add a footnote, do not re-sort the existing tags in the table.
 
-For the footnotes below the table, use **Footnotes:** followed by an ordered list.
+For the footnotes below the table, use `**Footnotes:**` followed by an ordered list.
 
 For example:
 

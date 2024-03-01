@@ -18,7 +18,8 @@ Feature flags help reduce risk, allowing you to do controlled testing, and separ
 delivery from customer launch.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an example of feature flags in action, see [Feature Flags configuration, instrumentation and use](https://www.youtube.com/watch?v=ViA6suScxkE).
+For an example of feature flags in action, see [Eliminating risk with feature flags](https://www.youtube.com/watch?v=U9WqoK9froI).
+<!-- Video published on 2024-02-01 -->
 
 For a click-through demo, see [Feature Flags](https://go.gitlab.com/YKuzLt).
 <!-- Demo published on 2023-07-13 -->

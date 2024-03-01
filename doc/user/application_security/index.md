@@ -210,19 +210,50 @@ Latest templates can receive breaking changes in any release.
 For more information about template versioning, see the
 [CI/CD documentation](../../development/cicd/templates.md#latest-version).
 
-## Default behavior of GitLab security scanning tools
+## Security scanning
 
-### Secure jobs in your pipeline
+For security scans that run in a CI/CD pipeline, the results are determined by:
 
-If you add the security scanning jobs as described in [Security scanning with Auto DevOps](#security-scanning-with-auto-devops) or [Security scanning without Auto DevOps](#security-scanning-without-auto-devops) to your `.gitlab-ci.yml` each added [security scanning tool](#application-coverage) behave as described below.
+- Which security scanning jobs run in the pipeline.
+- Each job's status.
+- Each job's output.
 
-For each compatible analyzer, a job is created in the `test`, `dast` or `fuzz` stage of your pipeline and runs on the next new branch pipeline.
-Features such as the [Security Dashboard](security_dashboard/index.md), [Vulnerability Report](vulnerability_report/index.md), and [Dependency List](dependency_list/index.md)
-that rely on this scan data only show results from pipelines on the default branch, only if all jobs are finished, including manual ones. One tool might use many analyzers.
+### Security jobs in your pipeline
 
-Our language and package manager specific jobs attempt to assess which analyzers they should run for your project so that you can do less configuration.
+The security scanning jobs that run in a CI/CD pipeline are determined by the following criteria:
 
-If you want to override this to increase the pipeline speed, you may choose which analyzers to exclude if you know they are not applicable (languages or package managers not contained in your project) by following variable customization directions for that specific tool.
+1. Inclusion of security scanning templates
+
+   The selection of security scanning jobs is first determined by which templates are included.
+   Templates can be included by using AutoDevOps, a scan execution policy, or the
+   `.gitlab-ci.yml` configuration file.
+
+1. Evaluation of rules
+
+   Each template has defined [rules](../../ci/yaml/index.md#rules) which determine if the analyzer
+   is run.
+
+   For example, the Secret Detection template includes the following rule. This rule states that
+   secret detection should be run in branch pipelines. In the case of a merge request pipeline,
+   secret detection is not run.
+
+   ```yaml
+   rules:
+     - if: $CI_COMMIT_BRANCH
+   ```
+
+1. Analyzer logic
+
+   If the template's rules dictate that the job is to be run, a job is created in the pipeline stage
+   specified in the template. However, each analyzer has its own logic which determines if the
+   analyzer itself is to be run.
+
+   For example, if dependency scanning doesn't detect supported files at the default depth, the
+   analyzer is not run and no artifacts are output.
+
+After completing successfully, each job outputs artifacts. These artifacts are processed and the
+results are available in GitLab. Results are shown only if all jobs are finished, including manual
+ones. Additionally for some features, results are shown only if the pipeline runs on the default branch.
 
 ### Secure job status
 

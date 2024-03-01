@@ -1,14 +1,16 @@
 import { nextTick } from 'vue';
-import { GlAlert, GlButton, GlFormInput, GlFormGroup } from '@gitlab/ui';
+import { GlAlert, GlButton, GlFormInput, GlFormGroup, GlCollapsibleListbox } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { mockTracking } from 'helpers/tracking_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import WikiForm from '~/pages/shared/wikis/components/wiki_form.vue';
+import WikiTemplate from '~/pages/shared/wikis/components/wiki_template.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { WIKI_FORMAT_LABEL, WIKI_FORMAT_UPDATED_ACTION } from '~/pages/shared/wikis/constants';
 import { DRAWIO_ORIGIN } from 'spec/test_constants';
+import { mockLocation, restoreLocation } from '../test_utils';
 
 jest.mock('~/emoji');
 jest.mock('~/lib/graphql');
@@ -27,6 +29,7 @@ describe('WikiForm', () => {
   const findCancelButton = () => wrapper.findByTestId('wiki-cancel-button');
   const findTitleHelpLink = () => wrapper.findByText('Learn more.');
   const findMarkdownHelpLink = () => wrapper.findByTestId('wiki-markdown-help-link');
+  const findTemplatesDropdown = () => wrapper.findComponent(WikiTemplate);
 
   const setFormat = (value) => {
     const format = findFormat();
@@ -71,10 +74,12 @@ describe('WikiForm', () => {
     pageInfo,
     glFeatures = { wikiSwitchBetweenContentEditorRawMarkdown: false },
     provide = { drawioUrl: null },
+    templates = [],
   } = {}) {
     wrapper = extendedWrapper(
       mountFn(WikiForm, {
         provide: {
+          templates,
           formatOptions,
           glFeatures,
           pageInfo: {
@@ -132,6 +137,112 @@ describe('WikiForm', () => {
     });
   });
 
+  it('empties the title field if random_title=true is set in the URL', () => {
+    mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/new?random_title=true');
+
+    createWrapper({ persisted: true, mountFn: mount });
+
+    expect(findTitle().element.value).toBe('');
+
+    restoreLocation();
+  });
+
+  describe('when wiki page is a template', () => {
+    beforeEach(() => {
+      mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/templates/abc');
+    });
+
+    afterEach(() => {
+      restoreLocation();
+    });
+
+    it('makes sure commit message includes "Create template" for a new page', async () => {
+      createWrapper({ persisted: false, mountFn: mount });
+
+      await findTitle().setValue('my page');
+
+      expect(findMessage().element.value).toBe('Create template my page');
+    });
+
+    it('makes sure commit message includes "Update template" for an existing page', async () => {
+      createWrapper({ persisted: true, mountFn: mount });
+
+      await findTitle().setValue('my page');
+
+      expect(findMessage().element.value).toBe('Update template my page');
+    });
+
+    it('does not show any help text for title', () => {
+      createWrapper({ persisted: true });
+
+      expect(wrapper.text()).not.toContain(
+        'You can move this page by adding the path to the beginning of the title.',
+      );
+      expect(wrapper.text()).not.toContain(
+        'You can specify the full path for the new file. We will automatically create any missing directories.',
+      );
+    });
+
+    it('does not show templates dropdown', () => {
+      createWrapper({ persisted: true });
+
+      expect(findTemplatesDropdown().exists()).toBe(false);
+    });
+
+    it('shows placeholder for title field', () => {
+      createWrapper({ persisted: true });
+
+      expect(findTitle().attributes('placeholder')).toBe('Template title');
+    });
+
+    it('disables file attachments', () => {
+      createWrapper({ persisted: true });
+
+      expect(findMarkdownEditor().props('disableAttachments')).toBe(true);
+    });
+  });
+
+  describe('templates dropdown', () => {
+    const templates = [
+      { title: 'Markdown template 1', format: 'markdown', path: '/project/path/-/wikis/template1' },
+      { title: 'Markdown template 2', format: 'markdown', path: '/project/path/-/wikis/template2' },
+      { title: 'Rdoc template', format: 'rdoc', path: '/project/path/-/wikis/template3' },
+      { title: 'Asciidoc template', format: 'asciidoc', path: '/project/path/-/wikis/template4' },
+      { title: 'Org template', format: 'org', path: '/project/path/-/wikis/template5' },
+    ];
+
+    it('shows the dropdown when page is not a template', () => {
+      createWrapper({ templates, mountFn: mount });
+
+      expect(findTemplatesDropdown().exists()).toBe(true);
+    });
+
+    it('does not show templates dropdown if no templates to show', () => {
+      createWrapper({ mountFn: mount });
+
+      expect(findTemplatesDropdown().exists()).toBe(false);
+    });
+
+    it.each`
+      format        | visibleTemplates
+      ${'markdown'} | ${['Markdown template 1', 'Markdown template 2']}
+      ${'rdoc'}     | ${['Rdoc template']}
+      ${'asciidoc'} | ${['Asciidoc template']}
+      ${'org'}      | ${['Org template']}
+    `('shows appropriate templates for format $format', async ({ format, visibleTemplates }) => {
+      createWrapper({ templates, mountFn: mount });
+
+      await setFormat(format);
+
+      expect(
+        findTemplatesDropdown()
+          .findComponent(GlCollapsibleListbox)
+          .props('items')
+          .map(({ text }) => text),
+      ).toEqual(visibleTemplates);
+    });
+  });
+
   it.each`
     title                | persisted | message
     ${'my page'}         | ${false}  | ${'Create my page'}
@@ -173,8 +284,6 @@ describe('WikiForm', () => {
     createWrapper({ mountFn: mount });
 
     await setFormat(format);
-
-    nextTick();
 
     expect(findMarkdownEditor().vm.$attrs['enable-preview']).toBe(enabled);
   });

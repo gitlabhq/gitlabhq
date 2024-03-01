@@ -3346,7 +3346,6 @@ RSpec/NamedSubject:
     - 'spec/services/packages/maven/metadata/create_versions_xml_service_spec.rb'
     - 'spec/services/packages/ml_model/find_or_create_package_service_spec.rb'
     - 'spec/services/packages/npm/create_metadata_cache_service_spec.rb'
-    - 'spec/services/packages/npm/create_package_service_spec.rb'
     - 'spec/services/packages/npm/create_tag_service_spec.rb'
     - 'spec/services/packages/npm/generate_metadata_service_spec.rb'
     - 'spec/services/packages/nuget/create_dependency_service_spec.rb'

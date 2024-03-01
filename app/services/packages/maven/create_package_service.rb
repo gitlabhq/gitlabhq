@@ -6,7 +6,7 @@ module Packages
         app_group, _, app_name = params[:name].rpartition('/')
         app_group.tr!('/', '.')
 
-        create_package!(:maven,
+        package = create_package!(:maven,
           maven_metadatum_attributes: {
             path: params[:path],
             app_group: app_group,
@@ -14,6 +14,10 @@ module Packages
             app_version: params[:version]
           }
         )
+
+        ServiceResponse.success(payload: { package: package })
+      rescue ActiveRecord::RecordInvalid => e
+        ServiceResponse.error(message: e.message, reason: :invalid_parameter)
       end
     end
   end

@@ -406,7 +406,8 @@ on `ssh` command options, see the `man` pages for both `ssh` and `ssh_config`.
 
 ## View your account's SSH keys
 
-1. Sign in to GitLab.
+To view the SSH keys for your account:
+
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys**.
@@ -420,7 +421,15 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
   - Permitted usage types.
 - The time a key was last used.
 
-Select **Remove** to permanently delete an SSH key.
+## Delete an SSH key
+
+To permanently delete an SSH key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **SSH Keys**.
+1. Next to the key you want to delete, select **Remove** (**{remove}**).
+1. Select **Delete**.
 
 ## Use different accounts on a single GitLab instance
 

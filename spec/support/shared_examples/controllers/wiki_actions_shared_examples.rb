@@ -274,14 +274,6 @@ RSpec.shared_examples 'wiki controller actions' do
         it 'builds a new wiki page with the id as the title' do
           expect(assigns(:page).title).to eq(id)
         end
-
-        context 'when a random_title param is present' do
-          let(:random_title) { true }
-
-          it 'builds a new wiki page with no title' do
-            expect(assigns(:page).title).to be_empty
-          end
-        end
       end
 
       context 'when the user cannot create pages' do

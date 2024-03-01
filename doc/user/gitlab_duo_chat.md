@@ -66,7 +66,7 @@ You can ask questions about how GitLab works. Things like:
 
 NOTE:
 This feature is not currently supported in self-managed instances.
-See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11600) for more infomation.
+See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11600) for more information.
 
 ### Ask about a specific issue
 
@@ -87,7 +87,7 @@ You can ask about a specific GitLab issue. For example:
 You can ask about a specific GitLab epic. For example:
 
 - `Generate a summary for the epic identified via this link: <link to your epic>`
-- `Generate a concise summary of the opened epic.`
+- When you are viewing an epic in GitLab, you can ask `Generate a concise summary of the opened epic.`
 - `What are the unique use cases raised by commenters in <link to your epic>?`
 
 ### Ask about code
@@ -99,12 +99,30 @@ You can also ask GitLab Duo Chat to generate code:
 
 - `Write a Ruby function that prints 'Hello, World!' when called.`
 - `Develop a JavaScript program that simulates a two-player Tic-Tac-Toe game. Provide both game logic and user interface, if applicable.`
+- `Create a regular expression for parsing IPv4 and IPv6 addresses in Python.`
+- `Generate code for parsing a syslog log file in Java. Use regular expressions when possible, and store the results in a hash map.`
+- `Create a product-consumer example with threads and shared memory in C++. Use atomic locks when possible.`
+- `Generate Rust code for high performance gRPC calls. Provide a source code example for a server and client.`
 
 And you can ask GitLab Duo Chat to explain code:
 
 - `Provide a clear explanation of the given Ruby code: def sum(a, b) a + b end. Describe what this code does and how it works.`
 
 Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to explain the selected code in your editor.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
+### Ask about errors
+
+Programming languages that require compiling the source code may throw cryptic error messages. Similarly, a script or a web application could throw a stack trace. You can ask GitLab Duo Chat by prefixing the copied error message with, for example, `Please explain this error message:`. Add the specific context, like the programming language.
+
+- `Explain this error message in Java: Int and system cannot be resolved to a type`
+- `Explain when this C function would cause a segmentation fault: sqlite3_prepare_v2()`
+- `Explain what would cause this error in Python: ValueError: invalid literal for int()`
+- `Why is "this" undefined in VueJS? Provide common error cases, and explain how to avoid them.`
+- `How to debug a Ruby on Rails stacktrace? Share common strategies and an example exception.`
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Ask about CI/CD
 
@@ -114,6 +132,19 @@ Alternatively, you can use the [`/explain` command](#explain-code-in-the-ide) to
 You can ask GitLab Duo Chat to create a CI/CD configuration:
 
 - `Create a .gitlab-ci.yml configuration file for testing and building a Ruby on Rails application in a GitLab CI/CD pipeline.`
+- `Create a CI/CD configuration for building and linting a Python application.`
+- `Create a CI/CD configuration to build and test Rust code.`
+- `Create a CI/CD configuration for C++. Use gcc as compiler, and cmake as build tool.`
+- `Create a CI/CD configuration for VueJS. Use npm, and add SAST security scanning.`
+- `Generate a security scanning pipeline configuration, optimized for Java.`
+
+You can also ask to explain specific job errors by copy-pasting the error message, prefixed with `Please explain this CI/CD job error message, in the context of <language>:`:
+
+- `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
+
+Alternatively, you can use [root cause analysis in CI/CD](ai_features.md#root-cause-analysis).
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Explain code in the IDE
 
@@ -127,6 +158,16 @@ This feature is available in VS Code and the Web IDE only.
 You can also add additional instructions to be considered, for example: `/explain the performance`
 See [Use GitLab Duo Chat in VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
 
+- `/explain focus on the algorithm`
+- `/explain the performance gains or losses using this code`
+- `/explain the object inheritance` (classes, object-oriented)
+- `/explain why a static variable is used here` (C++)
+- `/explain how this function would cause a segmentation fault` (C)
+- `/explain how concurrency works in this context` (Go)
+- `/explain how the request reaches the client` (REST API, database)
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ### Refactor code in the IDE
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for SaaS in GitLab 16.7.
@@ -138,11 +179,16 @@ This feature is available in VS Code and the Web IDE only.
 `/refactor` is a special command to generate a refactoring suggestion for the selected code in your editor.
 You can include additional instructions to be considered. For example:
 
-- Use a specific coding pattern, for example `/refactor with ActiveRecord`.
+- Use a specific coding pattern, for example `/refactor with ActiveRecord` or `/refactor into a class providing static functions`.
 - Use a specific library, for example `/refactor using mysql`.
+- Use a specific function/algorithm, for example `/refactor into a stringstream with multiple lines` in C++.
 - Refactor to a different programming language, for example `/refactor to TypeScript`.
+- Focus on performance, for example `/refactor improving performance`.
+- Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
 
 See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ### Write tests in the IDE
 
@@ -156,6 +202,13 @@ This feature is available in VS Code and the Web IDE only.
 You can also add additional instructions to be considered, for example: `/tests using the Boost.Test framework`
 See [Use GitLab Duo Chat in the VS Code](#use-gitlab-duo-chat-in-vs-code) for more information.
 
+- Use a specific test framework, for example `/tests using the Boost.test framework` (C++) or `/tests using Jest` (JavaScript).
+- Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
+- Focus on performance, for example `/tests focus on performance`.
+- Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
+
 ### Ask follow up questions
 
 You can ask follow-up questions to delve deeper into the topic or task at hand.
@@ -165,6 +218,12 @@ whether it's for further clarification, elaboration, or additional assistance.
 A follow-up to the question `Write a Ruby function that prints 'Hello, World!' when called` could be:
 
 - `Can you also explain how I can call and execute this Ruby function in a typical Ruby environment, such as the command line?`
+
+A follow-up to the question `How to start a C# project?` could be:
+
+- `Can you also please explain how to add a .gitignore and .gitlab-ci.yml file for C#?`
+
+For more practical examples, see the [GitLab Duo examples](gitlab_duo_examples.md).
 
 ## Enable GitLab Duo Chat
 
@@ -308,7 +367,7 @@ When you use one of the slash commands you can also add additional instructions 
 
 To disable GitLab Duo Chat in VS Code:
 
-1. Go to **Settings > Extensions > GitLab Workflow (GitLab VSCode Extension)**.
+1. Go to **Settings > Extensions > GitLab Workflow (GitLab VS Code Extension)**.
 1. Clear the **Enable GitLab Duo Chat assistant** checkbox.
 
 ## Give feedback

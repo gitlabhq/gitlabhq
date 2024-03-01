@@ -29,6 +29,8 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     shared_examples 'create package' do
       it { expect { subject }.to change { Packages::Package.count }.by(1) }
 
+      it_behaves_like 'returning a success service response'
+
       it 'sets the proper name and version', :aggregate_failures do
         pkg = subject.payload[:package]
 
@@ -47,9 +49,8 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     shared_examples 'returning an error' do |with_message: ''|
       it { expect { subject }.not_to change { project.package_files.count } }
 
-      it 'returns an error', :aggregate_failures do
-        expect(subject.payload).to be_empty
-        expect(subject.errors).to include(with_message)
+      it_behaves_like 'returning an error service response', message: with_message do
+        it { expect(subject.payload).to be_empty }
       end
     end
 
@@ -131,7 +132,10 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
     end
 
     context 'when package duplicates are not allowed' do
-      let_it_be_with_refind(:package_settings) { create(:namespace_package_setting, :group, maven_duplicates_allowed: false) }
+      let_it_be_with_refind(:package_settings) do
+        create(:namespace_package_setting, :group, maven_duplicates_allowed: false)
+      end
+
       let_it_be_with_refind(:group) { package_settings.namespace }
       let_it_be_with_refind(:project) { create(:project, group: group) }
 
@@ -203,6 +207,15 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { super().merge(file_name: 'a' * (described_class::MAX_FILE_NAME_LENGTH + 1)) }
 
       it_behaves_like 'returning an error', with_message: 'File name is too long'
+    end
+
+    context 'with invalid params causing the erroneous service response' do
+      let(:params) { super().merge(path: '/') }
+
+      it_behaves_like 'returning an error',
+        with_message: "Validation failed: Maven metadatum app group can't be blank, " \
+                      "Maven metadatum app group is invalid, Maven metadatum app name can't be blank, " \
+                      "Maven metadatum app name is invalid, Name can't be blank, Name is invalid"
     end
   end
 end

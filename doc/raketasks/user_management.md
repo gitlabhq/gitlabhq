@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 GitLab provides Rake tasks for managing users. Administrators can also use the Admin Area to
 [manage users](../administration/admin_area.md#administering-users).

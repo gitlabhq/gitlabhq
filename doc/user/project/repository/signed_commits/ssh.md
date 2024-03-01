@@ -156,12 +156,16 @@ If an SSH key becomes compromised, revoke it. Revoking a key changes both future
 - Past commits signed by this key are marked as unverified.
 - Future commits signed by this key are marked as unverified.
 
+Revoking an SSH key removes it from your account.
+SSH keys that are only used for authentication do not have the option to be revoked.
+
 To revoke an SSH key:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **SSH Keys** (**{key}**).
-1. Select **Revoke** next to the SSH key you want to delete.
+1. Next to the SSH key you want to revoke, select **Revoke**.
+1. Optional. [Delete the SSH key.](../../../ssh.md#delete-an-ssh-key)
 
 ## Related topics
 

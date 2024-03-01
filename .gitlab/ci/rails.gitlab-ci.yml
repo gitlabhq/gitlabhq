@@ -503,10 +503,6 @@ rspec:coverage:
       optional: true
     - job: rspec:artifact-collector ee remainder
       optional: true
-    # Memory jobs
-    - job: memory-on-boot
-      optional: true
-      artifacts: false
   script:
     - run_timed_command "bundle exec scripts/merge-simplecov"
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'

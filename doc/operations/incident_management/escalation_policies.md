@@ -46,6 +46,8 @@ When configuring an escalation rule, you can designate who to page:
 When a notification is sent to a user through an on-call schedule or directly, a system note listing
 the paged users is created on the alert.
 
+The time specified for an escalation rule must be between 0 and 1440 minutes.
+
 ## Edit an escalation policy
 
 To update an escalation policy:

@@ -53,6 +53,7 @@ describe('ProjectsListItem', () => {
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findListActions = () => wrapper.findComponent(ListActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('access-level-badge');
+  const findInactiveBadge = () => wrapper.findByTestId('inactive-badge');
 
   beforeEach(() => {
     uniqueId.mockImplementation(jest.requireActual('lodash/uniqueId'));
@@ -132,24 +133,41 @@ describe('ProjectsListItem', () => {
     });
   });
 
-  describe('if project is archived', () => {
-    beforeEach(() => {
-      createComponent({
-        propsData: {
-          project: {
-            ...project,
-            archived: true,
+  describe('project is marked as inactive', () => {
+    describe('archived', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            project: {
+              ...project,
+              archived: true,
+            },
           },
-        },
+        });
+      });
+
+      it('renders badge correctly', () => {
+        expect(findInactiveBadge().props('variant')).toBe('info');
+        expect(findInactiveBadge().text()).toBe('Archived');
       });
     });
 
-    it('renders the archived badge', () => {
-      expect(
-        wrapper
-          .findAllComponents(GlBadge)
-          .wrappers.find((badge) => badge.text() === ProjectsListItem.i18n.archived),
-      ).not.toBeUndefined();
+    describe('pending deletion', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: {
+            project: {
+              ...project,
+              markedForDeletionOn: '2024-01-01',
+            },
+          },
+        });
+      });
+
+      it('renders badge correctly', () => {
+        expect(findInactiveBadge().props('variant')).toBe('warning');
+        expect(findInactiveBadge().text()).toBe('Pending deletion');
+      });
     });
   });
 

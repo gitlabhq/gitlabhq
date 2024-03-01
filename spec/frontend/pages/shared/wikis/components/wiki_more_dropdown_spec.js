@@ -2,6 +2,7 @@ import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiMoreDropdown from '~/pages/shared/wikis/components/wiki_more_dropdown.vue';
 import printMarkdownDom from '~/lib/print_markdown_dom';
+import { mockLocation, restoreLocation } from '../test_utils';
 
 jest.mock('~/lib/print_markdown_dom');
 
@@ -30,6 +31,22 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
   const findPrintItem = () => wrapper.findByTestId('page-print-button');
 
   describe('history', () => {
+    it('shows label "Page history"', () => {
+      createComponent();
+
+      expect(findHistoryItem().text()).toBe('Page history');
+    });
+
+    it('shows label "Template history" when page is a template', () => {
+      mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/templates/abc');
+
+      createComponent();
+
+      expect(findHistoryItem().text()).toBe('Template history');
+
+      restoreLocation();
+    });
+
     it('renders if `history` is set', () => {
       createComponent({ history: false });
 

@@ -16,6 +16,12 @@ Test cases in GitLab can help your teams create testing scenarios in their exist
 Now your Implementation and Testing teams can collaborate better, as they no longer have to
 use external test planning tools, which require additional overhead, context switching, and expense.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+To learn how to use issues and epics to manage your requirements and testing needs
+while integrating with your development workflows, see
+[Streamline Software Development: Integrating Requirements, Testing, and Development Workflows](https://www.youtube.com/watch?v=wbfWM4y2VmM).
+<!-- Video published on 2024-02-21 -->
+
 NOTE:
 [Requirements](../../user/project/requirements/index.md) and test cases are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171).

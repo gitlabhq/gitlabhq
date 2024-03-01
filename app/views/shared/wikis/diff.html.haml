@@ -14,7 +14,7 @@
 
   .nav-controls.pb-md-3.pb-lg-0
     = link_button_to wiki_page_path(@wiki, @page, action: :history), role: 'button', data: { testid: 'page-history-button' } do
-      = s_('Wiki|Page history')
+      = @page.template? ? s_('Wiki|Template history') : s_('Wiki|Page history')
 
 .page-content-header
   .header-main-content

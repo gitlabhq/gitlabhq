@@ -275,5 +275,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       expect(page).to have_selector(".atwho-view")
     end
+
+    it_behaves_like 'user applies wiki templates'
   end
 end

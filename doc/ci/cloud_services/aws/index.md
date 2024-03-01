@@ -29,7 +29,7 @@ Create GitLab as a IAM OIDC provider in AWS following these [instructions](https
 
 Include the following information:
 
-- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
+- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. This address must be publically accessible.
 - **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
   - The address must include `https://`.
   - Do not include a trailing slash.
@@ -125,3 +125,22 @@ review the certificate chain, replacing `gitlab.example.com` with your GitLab ho
 ```shell
 echo | /opt/gitlab/embedded/bin/openssl s_client -connect gitlab.example.com:443
 ```
+
+### `Couldn't retrieve verification key from your identity provider` error
+
+You might receive an error similar to:
+
+- `An error occurred (InvalidIdentityToken) when calling the AssumeRoleWithWebIdentity operation: Couldn't retrieve verification key from your identity provider, please reference AssumeRoleWithWebIdentity documentation for requirements`
+
+This error might be because:
+
+- The `.well_known` URL and `jwks_uri` of the identity provider (IdP) are inaccessible from the public internet.
+- A custom firewall is blocking the requests.
+- There's latency of more than 5 seconds in API requests from the IdP to reach the AWS STS endpoint.
+- STS is making too many requests to your `.well_known` URL or the `jwks_uri` of the IdP.
+ 
+As documented in the [AWS Knowledge Center article for this error](https://repost.aws/knowledge-center/iam-sts-invalididentitytoken),
+your GitLab instance needs to be publicly accessible so that the `.well_known` URL and `jwks_uri` can be resolved.
+If this is not possible, for example if your GitLab instance is in an offline environment,
+you can follow [issue #391928](https://gitlab.com/gitlab-org/gitlab/-/issues/391928)
+where a workaround and more permanent solution is being investigated.

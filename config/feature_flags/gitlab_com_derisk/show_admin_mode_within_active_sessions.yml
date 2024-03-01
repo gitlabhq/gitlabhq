@@ -1,0 +1,9 @@
+---
+name: show_admin_mode_within_active_sessions
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438674
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145523
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444188
+milestone: '16.10'
+group: group::anti-abuse
+type: gitlab_com_derisk
+default_enabled: false
