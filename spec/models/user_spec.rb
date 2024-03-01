@@ -6069,7 +6069,9 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#assign_personal_namespace' do
-    subject(:personal_namespace) { user.assign_personal_namespace }
+    let(:organization) { create(:organization) }
+
+    subject(:personal_namespace) { user.assign_personal_namespace(organization) }
 
     context 'when namespace exists' do
       let(:user) { build(:user) }
@@ -6086,15 +6088,27 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when namespace does not exist' do
       let(:user) { described_class.new attributes_for(:user) }
 
-      it 'builds a new namespace' do
+      it 'builds a new namespace using assigned organization' do
         subject
 
         expect(user.namespace).to be_kind_of(Namespaces::UserNamespace)
         expect(user.namespace.namespace_settings).to be_present
+        expect(user.namespace.organization).to eq(organization)
       end
 
       it 'returns the personal namespace' do
         expect(personal_namespace).to eq(user.namespace)
+      end
+
+      context 'when organization is nil' do
+        let!(:default_organization) { create(:organization, :default) }
+
+        # This logic will be removed when organization becomes a required argument
+        it 'builds a new namespace using default organization' do
+          user.assign_personal_namespace
+
+          expect(user.namespace.organization).to eq(Organizations::Organization.default_organization)
+        end
       end
     end
   end

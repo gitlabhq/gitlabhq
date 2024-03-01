@@ -1654,7 +1654,7 @@ that is available now. We recommend this alternative solution because it provide
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.9</span>
 - Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431123).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/412060).
 </div>
 
 We're reducing the number of supported [analyzers](https://docs.gitlab.com/ee/user/application_security/sast/analyzers/) used by default in GitLab SAST.
@@ -1678,7 +1678,7 @@ The vulnerability management system will update most existing findings so that t
 Findings that aren't migrated to the new analyzer will be [automatically resolved](https://docs.gitlab.com/ee/user/application_security/sast/#automatic-vulnerability-resolution).
 See [Vulnerability translation documentation](https://docs.gitlab.com/ee/user/application_security/sast/analyzers.html#vulnerability-translation) for further details.
 
-If you applied customizations to the removed analyzers, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/431123#breaking-change).
+If you applied customizations to the removed analyzers, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/412060#action-required).
 
 </div>
 

@@ -5,7 +5,7 @@ import { METRIC_POPOVER_LABEL } from '~/analytics/shared/constants';
 
 const MOCK_METRIC = {
   key: 'deployment-frequency',
-  label: 'Deployment Frequency',
+  label: 'Deployment frequency',
   value: '10.0',
   unit: '/day',
   description: 'Average number of deployments to production per day.',

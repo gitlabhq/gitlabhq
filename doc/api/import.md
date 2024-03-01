@@ -36,7 +36,7 @@ POST /import/github
 |----------------------------|---------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `personal_access_token`    | string  | yes      | GitHub personal access token                                                                                                                                                        |
 | `repo_id`                  | integer | yes      | GitHub repository ID                                                                                                                                                                |
-| `new_name`                 | string  | no       | New repository name                                                                                                                                                                 |
+| `new_name`                 | string  | no       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
 | `target_namespace`         | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. In GitLab 15.8 and later, must not be blank                                                     |
 | `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                                                                                                                       |
 | `optional_stages`          | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
@@ -204,7 +204,7 @@ POST /import/bitbucket_server
 | `personal_access_token` | string | yes | Bitbucket Server personal access token/password |
 | `bitbucket_server_project` | string | yes | Bitbucket Project Key |
 | `bitbucket_server_repo` | string | yes | Bitbucket Repository Name |
-| `new_name` | string | no | New repository name |
+| `new_name` | string | no | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. Between GitLab 15.1 and GitLab 16.9, the project path [was copied](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88845) from Bitbucket instead. In GitLab 16.10, the behavior was [changed back](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145793) to the original behavior. |
 | `target_namespace` | string | no | Namespace to import repository into. Supports subgroups like `/namespace/subgroup` |
 | `timeout_strategy`          | string | no  | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
 
@@ -218,7 +218,8 @@ curl --request POST \
     "bitbucket_server_username": "root",
     "personal_access_token": "Nzk4MDcxODY4MDAyOiP8y410zF3tGAyLnHRv/E0+3xYs",
     "bitbucket_server_project": "NEW",
-    "bitbucket_server_repo": "my-repo"
+    "bitbucket_server_repo": "my-repo",
+    "new_name": "NEW-NAME"
 }'
 ```
 

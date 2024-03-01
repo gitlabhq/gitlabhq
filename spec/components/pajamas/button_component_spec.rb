@@ -253,11 +253,35 @@ RSpec.describe Pajamas::ButtonComponent, type: :component do
   end
 
   context 'button component renders a link' do
-    let(:options) { { href: 'https://gitlab.com', target: '_blank' } }
+    let(:options) { { href: 'https://gitlab.com', target: '_self' } }
 
     it "renders a link instead of the button" do
       expect(page).not_to have_css "button[type='button']"
-      expect(page).to have_css "a[href='https://gitlab.com'][target='_blank']"
+      expect(page).to have_css "a[href='https://gitlab.com'][target='_self']"
+    end
+
+    context 'with target="_blank"' do
+      let(:options) { { href: 'https://gitlab.com', target: '_blank' } }
+
+      it 'adds rel="noopener noreferrer"' do
+        expect(page).to have_css "a[href='https://gitlab.com'][target='_blank'][rel='noopener noreferrer']"
+      end
+
+      context 'with a value for "rel" already given' do
+        let(:options) { { href: 'https://gitlab.com', target: '_blank', button_options: { rel: 'help next' } } }
+
+        it 'keeps given value and adds "noopener noreferrer"' do
+          expect(page).to have_css "a[href='https://gitlab.com'][target='_blank'][rel='help next noopener noreferrer']"
+        end
+      end
+
+      context 'with "noopener noreferrer" for "rel" already given' do
+        let(:options) { { href: 'https://gitlab.com', target: '_blank', button_options: { rel: 'noopener noreferrer' } } }
+
+        it 'does not duplicate "noopener noreferrer"' do
+          expect(page).to have_css "a[href='https://gitlab.com'][target='_blank'][rel='noopener noreferrer']"
+        end
+      end
     end
 
     include_examples 'basic button behavior'

@@ -53,7 +53,7 @@ module API
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
 
-        order_groups(groups)
+        order_groups(groups).with_api_scopes
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

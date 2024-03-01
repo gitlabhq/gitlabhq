@@ -24,7 +24,8 @@ module Groups
           case user_or_deploy_token
           when User
             @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :user, [])
-            sign_in(user_or_deploy_token) unless user_or_deploy_token.project_bot?
+            sign_in(user_or_deploy_token) unless user_or_deploy_token.project_bot? ||
+              user_or_deploy_token.service_account?
           when DeployToken
             @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :deploy_token, [])
           end

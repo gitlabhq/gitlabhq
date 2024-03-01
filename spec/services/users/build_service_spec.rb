@@ -7,8 +7,15 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
 
   describe '#execute' do
     let_it_be(:current_user) { nil }
+    let_it_be(:organization) { create(:organization) }
 
-    let(:params) { build_stubbed(:user).slice(:first_name, :last_name, :username, :email, :password) }
+    let(:base_params) do
+      build_stubbed(:user)
+        .slice(:first_name, :last_name, :name, :username, :email, :password)
+        .merge(organization_id: organization.id)
+    end
+
+    let(:params) { base_params }
     let(:service) { described_class.new(current_user, params) }
 
     context 'with nil current_user' do
@@ -80,7 +87,6 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
     context 'with an admin current_user' do
       let_it_be(:current_user) { create(:admin) }
 
-      let(:params) { build_stubbed(:user).slice(:name, :username, :email, :password) }
       let(:service) { described_class.new(current_user, ActionController::Parameters.new(params).permit!) }
 
       subject(:user) { service.execute }
@@ -120,12 +126,15 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
             public_email: 1,
             user_type: 'project_bot',
             note: 1,
-            view_diffs_file_by_file: 1
+            view_diffs_file_by_file: 1,
+            organization_id: organization.id
           }
         end
 
+        let(:user_params) { params.except(:organization_id) }
+
         it 'sets all allowed attributes' do
-          expect(User).to receive(:new).with(hash_including(params)).and_call_original
+          expect(User).to receive(:new).with(hash_including(user_params)).and_call_original
 
           service.execute
         end

@@ -277,6 +277,7 @@ Example response:
   "projects_api_rate_limit_unauthenticated": 400,
   "silent_mode_enabled": false,
   "security_policy_global_group_approvers_enabled": true,
+  "security_approval_policies_limit": 5,
   "package_registry_allow_anyone_to_pull_option": true,
   "bulk_import_max_download_file_size": 5120,
   "project_jobs_api_rate_limit": 600,
@@ -297,6 +298,7 @@ these parameters:
 - `deletion_adjourned_period`
 - `disable_personal_access_tokens`
 - `security_policy_global_group_approvers_enabled`
+- `security_approval_policies_limit`
 - `delete_unconfirmed_users`
 - `unconfirmed_users_delete_after_days`
 
@@ -559,6 +561,7 @@ listed in the descriptions of the relevant settings.
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes. |
 | `security_policy_global_group_approvers_enabled` | boolean  | no                                   | Whether to look up merge request approval policy approval groups globally or within project hierarchies. |
+| `security_approval_policies_limit`       | integer          | no                                   | Maximum number of active merge request approval policies per security policy project. Default: 5. Maximum: 20 |
 | `security_txt_content`                    | string          | no                                   | [Public security contact information](../administration/settings/security_contact_information.md). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433210) in GitLab 16.7. |
 | `service_access_tokens_expiration_enforced` | boolean       | no                                   | Flag to indicate if token expiry date can be optional for service account users |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |

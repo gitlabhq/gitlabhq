@@ -25,6 +25,10 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -59,7 +63,7 @@ export default {
 <template>
   <div>
     <template v-if="showGoogleCloudRegistration">
-      <google-cloud-registration-instructions :runner-id="runnerId" />
+      <google-cloud-registration-instructions :runner-id="runnerId" :project-path="projectPath" />
     </template>
     <template v-else>
       <registration-instructions

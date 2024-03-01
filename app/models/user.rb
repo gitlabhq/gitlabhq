@@ -1682,10 +1682,13 @@ class User < MainClusterwide::ApplicationRecord
     end
   end
 
-  def assign_personal_namespace
+  def assign_personal_namespace(organization = nil)
     return namespace if namespace
 
-    build_namespace(path: username, name: name)
+    namespace_attributes = { path: username, name: name }
+    namespace_attributes[:organization] = organization if organization
+
+    build_namespace(namespace_attributes)
     namespace.build_namespace_settings
 
     namespace

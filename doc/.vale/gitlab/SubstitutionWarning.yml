@@ -64,5 +64,6 @@ swap:
   sub-groups: "subgroups"
   timezone: "time zone"
   utiliz(?:es?|ing): "use"
+  VSCode: "VS Code"
   we recommend: "you should"
   within: "in"

@@ -11,6 +11,7 @@ module Users
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
+      @organization_id = params.delete(:organization_id)
       @identity_params = params.slice(*identity_attributes)
     end
 
@@ -37,7 +38,9 @@ module Users
         standard_build_user
       end
 
-      user.assign_personal_namespace
+      user.assign_personal_namespace(
+        Organizations::Organization.find_by_id(@organization_id)
+      )
     end
 
     def admin?

@@ -16213,6 +16213,38 @@ CREATE SEQUENCE target_branch_rules_id_seq
 
 ALTER SEQUENCE target_branch_rules_id_seq OWNED BY target_branch_rules.id;
 
+CREATE TABLE temp_notes_backup (
+    note text,
+    noteable_type character varying,
+    author_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    project_id integer,
+    attachment character varying,
+    line_code character varying,
+    commit_id character varying,
+    noteable_id integer,
+    system boolean NOT NULL,
+    st_diff text,
+    updated_by_id integer,
+    type character varying,
+    "position" text,
+    original_position text,
+    resolved_at timestamp without time zone,
+    resolved_by_id integer,
+    discussion_id character varying,
+    note_html text,
+    cached_markdown_version integer,
+    change_position text,
+    resolved_by_push boolean,
+    review_id bigint,
+    confidential boolean,
+    last_edited_at timestamp with time zone,
+    internal boolean NOT NULL,
+    id bigint NOT NULL,
+    namespace_id bigint
+);
+
 CREATE TABLE term_agreements (
     id integer NOT NULL,
     term_id integer NOT NULL,
@@ -21994,6 +22026,9 @@ ALTER TABLE ONLY tags
 
 ALTER TABLE ONLY target_branch_rules
     ADD CONSTRAINT target_branch_rules_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY temp_notes_backup
+    ADD CONSTRAINT temp_notes_backup_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY term_agreements
     ADD CONSTRAINT term_agreements_pkey PRIMARY KEY (id);

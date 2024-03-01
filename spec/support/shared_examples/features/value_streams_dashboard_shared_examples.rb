@@ -31,18 +31,18 @@ RSpec.shared_examples 'renders metrics comparison table' do
   let(:metric_table) { find_by_testid('panel-dora-chart') }
 
   available_metrics = [
-    { name: "Deployment Frequency", values: ["0.0/d"] * 3, identifier: 'deployment-frequency' },
-    { name: "Lead Time for Changes", values: ["0.0 d"] * 3, identifier: 'lead-time-for-changes' },
-    { name: "Time to Restore Service", values: ["0.0 d"] * 3, identifier: 'time-to-restore-service' },
-    { name: "Change Failure Rate", values: ["0.0%"] * 3, identifier: 'change-failure-rate' },
+    { name: "Deployment frequency", values: ["0.0/d"] * 3, identifier: 'deployment-frequency' },
+    { name: "Lead time for changes", values: ["0.0 d"] * 3, identifier: 'lead-time-for-changes' },
+    { name: "Time to restore service", values: ["0.0 d"] * 3, identifier: 'time-to-restore-service' },
+    { name: "Change failure rate", values: ["0.0%"] * 3, identifier: 'change-failure-rate' },
     { name: "Lead time", values: ["-"] * 3, identifier: 'lead-time' },
     { name: "Cycle time", values: ["-"] * 3, identifier: 'cycle-time' },
     { name: "Issues created", values: ["-"] * 3, identifier: 'issues' },
     { name: "Issues closed", values: ["-"] * 3, identifier: 'issues-completed' },
     { name: "Deploys", values: ["-"] * 3, identifier: 'deploys' },
     { name: "Merge request throughput", values: ["-"] * 3, identifier: 'merge-request-throughput' },
-    { name: "Critical Vulnerabilities over time", values: ["-"] * 3, identifier: "vulnerability-critical" },
-    { name: "High Vulnerabilities over time", values: ["-"] * 3, identifier: 'vulnerability-high' }
+    { name: "Critical vulnerabilities over time", values: ["-"] * 3, identifier: "vulnerability-critical" },
+    { name: "High vulnerabilities over time", values: ["-"] * 3, identifier: 'vulnerability-high' }
   ]
 
   it 'renders the metrics comparison visualization' do

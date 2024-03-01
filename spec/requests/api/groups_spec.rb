@@ -78,6 +78,23 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   end
 
   describe "GET /groups" do
+    shared_examples 'groups list N+1' do
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        # warm-up
+        get api("/groups", user)
+
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/groups", user)
+        end
+
+        create(:group, :public)
+
+        expect do
+          get api("/groups", user)
+        end.not_to exceed_all_query_limit(control)
+      end
+    end
+
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -91,16 +108,8 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
-      it 'avoids N+1 queries', :use_sql_query_cache do
-        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
-          get api("/groups")
-        end
-
-        create(:group)
-
-        expect do
-          get api("/groups")
-        end.not_to exceed_all_query_limit(control)
+      it_behaves_like 'groups list N+1' do
+        let(:user) { nil }
       end
 
       context 'when statistics are requested' do
@@ -116,6 +125,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context "when authenticated as user" do
+      it_behaves_like 'groups list N+1' do
+        let(:user) { user1 }
+      end
+
       it "normal user: returns an array of groups of user1", :aggregate_failures do
         get api("/groups", user1)
 

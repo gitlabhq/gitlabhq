@@ -20,7 +20,7 @@ FactoryBot.define do
                     true
                   end
 
-      user.assign_personal_namespace if assign_ns
+      user.assign_personal_namespace(create(:organization)) if assign_ns
     end
 
     trait :without_default_org do
@@ -28,7 +28,9 @@ FactoryBot.define do
     end
 
     trait :with_namespace do
-      namespace { assign_personal_namespace }
+      # rubocop: disable RSpec/FactoryBot/InlineAssociation -- We need to pass an Organization to this method
+      namespace { assign_personal_namespace(create(:organization)) }
+      # rubocop: enable RSpec/FactoryBot/InlineAssociation
     end
 
     trait :admin do

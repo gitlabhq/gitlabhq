@@ -374,6 +374,10 @@ class Group < Namespace
       left_joins(:group_members).group(:id).count(:members)
     end
 
+    def with_api_scopes
+      preload(:namespace_settings, :group_feature, :parent)
+    end
+
     private
 
     def public_to_user_arel(user)

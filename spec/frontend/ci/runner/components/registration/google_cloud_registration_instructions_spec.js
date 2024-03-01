@@ -1,3 +1,4 @@
+import { GlAlert } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -7,7 +8,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import GoogleCloudRegistrationInstructions from '~/ci/runner/components/registration/google_cloud_registration_instructions.vue';
 import runnerForRegistrationQuery from '~/ci/runner/graphql/register/runner_for_registration.query.graphql';
-import { runnerForRegistration, mockAuthenticationToken } from '../../mock_data';
+import provisionGoogleCloudRunnerQueryProject from '~/ci/runner/graphql/register/provision_google_cloud_runner_project.query.graphql';
+import {
+  runnerForRegistration,
+  mockAuthenticationToken,
+  googleCloudRunnerProvisionResponse,
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -28,6 +34,14 @@ const mockRunnerWithoutTokenResponse = {
   },
 };
 
+const mockGoogleCloudRunnerProvisionResponse = {
+  data: {
+    project: {
+      ...googleCloudRunnerProvisionResponse,
+    },
+  },
+};
+
 const mockRunnerId = `${getIdFromGraphQLId(runnerForRegistration.data.runner.id)}`;
 
 describe('GoogleCloudRegistrationInstructions', () => {
@@ -42,9 +56,19 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findMachineTypeLink = () => wrapper.findByTestId('machine-types-link');
   const findToken = () => wrapper.findByTestId('runner-token');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
+  const findModalTerrarformInstructions = () =>
+    wrapper.findByTestId('terraform-script-instructions');
+  const findModalTerrarformApplyInstructions = () =>
+    wrapper.findByTestId('terraform-apply-instructions');
+  const findModalBashInstructions = () => wrapper.findByTestId('bash-instructions');
+  const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
   const runnerWithTokenResolver = jest.fn().mockResolvedValue(mockRunnerResponse);
   const runnerWithoutTokenResolver = jest.fn().mockResolvedValue(mockRunnerWithoutTokenResponse);
+  const googleCloudRunnerResolver = jest
+    .fn()
+    .mockResolvedValue(mockGoogleCloudRunnerProvisionResponse);
 
   const defaultHandlers = [[runnerForRegistrationQuery, runnerWithTokenResolver]];
 
@@ -53,6 +77,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
       apolloProvider: createMockApollo(handlers),
       propsData: {
         runnerId: mockRunnerId,
+        projectPath: 'test/project',
       },
     });
   };
@@ -110,5 +135,52 @@ describe('GoogleCloudRegistrationInstructions', () => {
 
     expect(findToken().exists()).toBe(false);
     expect(findClipboardButton().exists()).toBe(false);
+  });
+
+  it('Shows an alert when the form is not valid', async () => {
+    createComponent();
+
+    findInstructionsButton().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(findAlert().exists()).toBe(true);
+  });
+
+  it('Hides an alert when the form is valid', async () => {
+    createComponent(mountExtended, [
+      [provisionGoogleCloudRunnerQueryProject, googleCloudRunnerResolver],
+    ]);
+
+    findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
+    findRegionInput().vm.$emit('input', 'us-central1');
+    findZoneInput().vm.$emit('input', 'us-central1');
+    findMachineTypeInput().vm.$emit('input', 'n2d-standard-2');
+
+    findInstructionsButton().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(findAlert().exists()).toBe(false);
+  });
+
+  it('Shows a modal with the correspondent scripts', async () => {
+    createComponent(shallowMountExtended, [
+      [provisionGoogleCloudRunnerQueryProject, googleCloudRunnerResolver],
+    ]);
+
+    findProjectIdInput().vm.$emit('input', 'dev-gcp-xxx-integrati-xxxxxxxx');
+    findRegionInput().vm.$emit('input', 'us-central1');
+    findZoneInput().vm.$emit('input', 'us-central1');
+
+    findInstructionsButton().vm.$emit('click');
+
+    await waitForPromises();
+
+    expect(googleCloudRunnerResolver).toHaveBeenCalled();
+
+    expect(findModalBashInstructions().text()).not.toBeNull();
+    expect(findModalTerrarformInstructions().text()).not.toBeNull();
+    expect(findModalTerrarformApplyInstructions().text).not.toBeNull();
   });
 });

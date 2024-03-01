@@ -1,19 +1,22 @@
 <script>
 import {
+  GlAlert,
   GlButton,
   GlFormInput,
   GlFormGroup,
   GlLink,
   GlIcon,
+  GlModal,
   GlPopover,
   GlSprintf,
 } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { createAlert } from '~/alert';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../../graphql/register/runner_for_registration.query.graphql';
+import provisionGoogleCloudRunnerProject from '../../graphql/register/provision_google_cloud_runner_project.query.graphql';
 import {
   I18N_FETCH_ERROR,
   STATUS_ONLINE,
@@ -56,6 +59,33 @@ export default {
       'Runners|For most CI/CD jobs, use a %{linkStart}N2D standard machine type.%{linkEnd}',
     ),
     runnerSetupBtnText: s__('Runners|Setup instructions'),
+    modal: {
+      subtitle: s__(
+        'Runners|These setup instructions use your specifications and follow the best practices for performance and security',
+      ),
+      step2_1Header: s__('Runners|Step 1: Configure Google Cloud project'),
+      step2_1Body: s__(
+        `Runners|If you haven't already configured your Google Cloud project, this step enables the required services and creates a service account with the required permissions. `,
+      ),
+      step2_1Substep1: s__(
+        'Runners|Run the following on your command line. You might be prompted to sign in to Google',
+      ),
+      step2_2Header: s__('Runners|Step 2: Install and register GitLab Runner'),
+      step2_2Body: s__(
+        'Runners|This step creates the required infrastructure in Google Cloud, installs GitLab Runner, and registers it to this GitLab project. ',
+      ),
+      step2_2Substep1: s__(
+        'Runners|Use a text editor to create a main.tf file with the following Terraform configuration',
+      ),
+      step2_2Substep2: s__(
+        'Runners|In the directory with that Terraform configuration file, run the following on your command line.',
+      ),
+      step2_2Substep3: s__(
+        'Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud',
+      ),
+    },
+    alertBody: s__('Runners|To view the setup instructions, complete the previous form'),
+    invalidFormButton: s__('Runners|Go to first invalid form field'),
   },
   links: {
     projectIdLink:
@@ -67,11 +97,13 @@ export default {
   },
   components: {
     ClipboardButton,
+    GlAlert,
     GlButton,
     GlFormInput,
     GlFormGroup,
     GlIcon,
     GlLink,
+    GlModal,
     GlPopover,
     GlSprintf,
   },
@@ -79,6 +111,16 @@ export default {
     runnerId: {
       type: String,
       required: true,
+    },
+    projectPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    groupPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -89,6 +131,15 @@ export default {
       machineType: 'n2d-standard-2',
       token: '',
       runner: null,
+      showInstructionsModal: false,
+      validations: {
+        projectId: false,
+        region: false,
+        zone: false,
+      },
+      provisioningSteps: [],
+      setupBashScript: '',
+      showAlert: false,
     };
   },
   apollo: {
@@ -122,6 +173,29 @@ export default {
         return RUNNER_REGISTRATION_POLLING_INTERVAL_MS;
       },
     },
+    project: {
+      query: provisionGoogleCloudRunnerProject,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+          cloudProjectId: this.projectId,
+          region: this.region,
+          zone: this.zone,
+          machineType: this.machineType,
+          runnerToken: this.token,
+        };
+      },
+      result({ data }) {
+        this.provisioningSteps = data.project.runnerCloudProvisioning?.provisioningSteps;
+        this.setupBashScript = data.project.runnerCloudProvisioning?.projectSetupShellScript;
+      },
+      error(error) {
+        captureException({ error, component: this.$options.name });
+      },
+      skip() {
+        return !this.projectPath || this.invalidFields.length > 0;
+      },
+    },
   },
   computed: {
     isRunnerOnline() {
@@ -137,6 +211,71 @@ export default {
         'Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner.',
       );
     },
+    invalidFields() {
+      return Object.keys(this.validations).filter((field) => {
+        return this.validations[field] === false;
+      });
+    },
+    bashInstructions() {
+      return this.setupBashScript.length > 0 ? this.setupBashScript : '';
+    },
+    terraformScriptInstructions() {
+      return this.provisioningSteps.length > 0 ? this.provisioningSteps[0].instructions : '';
+    },
+    terraformApplyInstructions() {
+      return this.provisioningSteps.length > 0 ? this.provisioningSteps[1].instructions : '';
+    },
+    codeStyles() {
+      return {
+        height: '300px',
+      };
+    },
+  },
+  watch: {
+    invalidFields() {
+      if (this.invalidFields.length === 0) {
+        this.showAlert = false;
+      }
+    },
+  },
+  methods: {
+    showInstructions() {
+      if (this.invalidFields.length > 0) {
+        this.showAlert = true;
+      } else {
+        this.showAlert = false;
+        this.showInstructionsModal = true;
+      }
+    },
+    validateZone() {
+      if (this.zone.length > 0) {
+        this.validations.zone = true;
+      } else {
+        this.validations.zone = false;
+      }
+    },
+    validateRegion() {
+      if (this.region.length > 0) {
+        this.validations.region = true;
+      } else {
+        this.validations.region = false;
+      }
+    },
+    validateProjectId() {
+      if (this.projectId.length > 0) {
+        this.validations.projectId = true;
+      } else {
+        this.validations.projectId = false;
+      }
+    },
+    goToFirstInvalidField() {
+      if (this.invalidFields.length > 0) {
+        this.$refs[this.invalidFields[0]].$el.focus();
+      }
+    },
+  },
+  cancelModalOptions: {
+    text: __('Cancel'),
   },
 };
 </script>
@@ -192,9 +331,11 @@ export default {
       </template>
       <gl-form-input
         id="project-id"
+        ref="projectId"
         v-model="projectId"
         type="text"
         data-testid="project-id-input"
+        @input="validateProjectId"
       />
     </gl-form-group>
     <gl-form-group label-for="region-id">
@@ -216,7 +357,13 @@ export default {
           </gl-popover>
         </div>
       </template>
-      <gl-form-input id="region-id" v-model="region" data-testid="region-input" />
+      <gl-form-input
+        id="region-id"
+        ref="region"
+        v-model="region"
+        data-testid="region-input"
+        @input="validateRegion"
+      />
     </gl-form-group>
     <gl-form-group label-for="zone-id">
       <template #label>
@@ -243,7 +390,13 @@ export default {
           <gl-icon name="external-link" />
         </gl-link>
       </template>
-      <gl-form-input id="zone-id" v-model="zone" data-testid="zone-input" />
+      <gl-form-input
+        id="zone-id"
+        ref="zone"
+        v-model="zone"
+        data-testid="zone-input"
+        @input="validateZone"
+      />
     </gl-form-group>
     <gl-form-group label-for="machine-type-id">
       <template #label>
@@ -281,8 +434,62 @@ export default {
       <h2 class="gl-font-lg">{{ $options.i18n.stepTwoHeading }}</h2>
       <p>{{ $options.i18n.stepTwoDescription }}</p>
     </div>
-    <gl-button>{{ $options.i18n.runnerSetupBtnText }}</gl-button>
+    <gl-alert
+      v-if="showAlert"
+      :primary-button-text="$options.i18n.invalidFormButton"
+      :dismissible="false"
+      variant="danger"
+      class="gl-mb-4"
+      @primaryAction="goToFirstInvalidField"
+    >
+      {{ $options.i18n.alertBody }}
+    </gl-alert>
+    <gl-button data-testid="show-instructions-button" @click="showInstructions">{{
+      $options.i18n.runnerSetupBtnText
+    }}</gl-button>
+    <gl-modal
+      v-model="showInstructionsModal"
+      cancel-variant="light"
+      size="md"
+      :scrollable="true"
+      modal-id="setup-instructions"
+      :action-cancel="$options.cancelModalOptions"
+      :title="s__('Runners|Setup instructions')"
+    >
+      <p>{{ $options.i18n.modal.subtitle }}</p>
+      <strong>{{ $options.i18n.modal.step2_1Header }}</strong>
+      <p>{{ $options.i18n.modal.step2_1Body }}</p>
+      <p>{{ $options.i18n.modal.step2_1Substep1 }}</p>
+      <div class="gl-display-flex gl-my-4">
+        <pre
+          class="gl-w-full gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0"
+          data-testid="bash-instructions"
+          :style="codeStyles"
+          >{{ bashInstructions }}</pre
+        >
+      </div>
 
+      <strong>{{ $options.i18n.modal.step2_2Header }}</strong>
+      <p>{{ $options.i18n.modal.step2_2Body }}</p>
+      <p>{{ $options.i18n.modal.step2_2Substep1 }}</p>
+      <div class="gl-display-flex gl-my-4">
+        <pre
+          class="gl-w-full gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0"
+          data-testid="terraform-script-instructions"
+          :style="codeStyles"
+          >{{ terraformScriptInstructions }}</pre
+        >
+      </div>
+      <p>{{ $options.i18n.modal.step2_2Substep2 }}</p>
+      <div class="gl-display-flex gl-my-4">
+        <pre
+          class="gl-w-full gl-py-4 gl-display-flex gl-justify-content-space-between gl-m-0"
+          data-testid="terraform-apply-instructions"
+          >{{ terraformApplyInstructions }}</pre
+        >
+      </div>
+      <p>{{ $options.i18n.modal.step2_2Substep3 }}</p>
+    </gl-modal>
     <hr />
     <!-- end: step two -->
   </div>

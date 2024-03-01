@@ -122,6 +122,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     subscriptions: %w[user_id subscribable_id],
     suggestions: %w[commit_id],
     taggings: %w[tag_id taggable_id tagger_id],
+    # temp_notes_backup is a temporary table created to store orphaned records from the notes table to insure against data loss.
+    temp_notes_backup: %w[author_id project_id commit_id noteable_id updated_by_id resolved_by_id discussion_id review_id namespace_id],
     timelogs: %w[user_id],
     todos: %w[target_id commit_id],
     uploads: %w[model_id],
