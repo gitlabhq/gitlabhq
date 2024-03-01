@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - i_code_review_saved_replies_use_in_other
 events:
   - name: i_code_review_saved_replies_use_in_other

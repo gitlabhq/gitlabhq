@@ -7,7 +7,7 @@ product_group: respond
 performance_indicator_type: []
 value_type: number
 status: active
-milestone: "16.7"
+milestone: '16.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138178
 time_frame: 28d
 data_source: internal_events
@@ -19,9 +19,6 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - i_quickactions_remove_email_single
 events:
-  - name: i_quickactions_remove_email_single
-    unique: user.id
+- name: i_quickactions_remove_email_single
+  unique: user.id

@@ -98,6 +98,10 @@ module Gitlab
           data['desired_sharding_key']
         end
 
+        def exempt_from_sharding?
+          !!data['exempt_from_sharding']
+        end
+
         def classes
           data['classes']
         end

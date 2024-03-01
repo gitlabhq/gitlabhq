@@ -19,9 +19,6 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - ci_template_included
 events:
   - name: ci_template_included
     unique: project.id

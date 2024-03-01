@@ -19,8 +19,5 @@ tier:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - i_quickactions_convert_to_ticket
 events:
 - name: i_quickactions_convert_to_ticket

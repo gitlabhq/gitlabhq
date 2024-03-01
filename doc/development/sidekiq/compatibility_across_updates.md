@@ -172,8 +172,6 @@ To remove a worker class, follow these steps over two minor releases:
      # Always use `disable_ddl_transaction!` while using the `sidekiq_remove_jobs` method, as we had multiple production incidents due to `idle-in-transaction` timeout.
      disable_ddl_transaction!
      def up
-       sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
-
        # If the job has been scheduled via `sidekiq-cron`, we must also remove
        # it from the scheduled worker set using the key used to define the cron
        # schedule in config/initializers/1_settings.rb.
@@ -182,6 +180,9 @@ To remove a worker class, follow these steps over two minor releases:
        job_to_remove.destroy if job_to_remove
        # The job may be disabled:
        job_to_remove.disable! if job_to_remove
+
+       # Removes scheduled instances from Sidekiq queues
+       sidekiq_remove_jobs(job_klasses: DEPRECATED_JOB_CLASSES)
      end
 
      def down

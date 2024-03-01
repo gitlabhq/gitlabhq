@@ -51173,7 +51173,7 @@ msgstr ""
 msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
-msgid "This feature is only allowed in groups that enable this feature."
+msgid "This feature is only allowed in groups or projects that enable this feature."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

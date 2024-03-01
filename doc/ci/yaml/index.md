@@ -365,7 +365,7 @@ Use `include:template` to include [`.gitlab-ci.yml` templates](https://gitlab.co
 
 A [CI/CD template](../examples/index.md#cicd-templates):
 
-- Templates are stored in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
+- All templates can be viewed in [`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
   Not all templates are designed to be used with `include:template`, so check template
   comments before using one.
 - You can use [certain CI/CD variables](includes.md#use-variables-with-include).

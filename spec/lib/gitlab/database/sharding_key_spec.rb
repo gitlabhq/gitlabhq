@@ -148,6 +148,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
+  it 'does not allow tables that are permanently exempted from sharding to have sharding keys' do
+    tables_exempted_from_sharding.each do |entry|
+      expect(entry.sharding_key).to be_nil,
+        "#{entry.table_name} is exempted from sharding and hence should not have a sharding key defined"
+    end
+  end
+
   private
 
   def error_message(table_name)
@@ -176,5 +183,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     entries_with_sharding_key.to_h do |entry|
       [entry.table_name, entry.sharding_key]
     end
+  end
+
+  def tables_exempted_from_sharding
+    ::Gitlab::Database::Dictionary.entries.select(&:exempt_from_sharding?)
   end
 end
