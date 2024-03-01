@@ -1,8 +1,8 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import { omit } from 'lodash';
 import { shallowMount } from '@vue/test-utils';
-import OrganizationsList from '~/organizations/index/components/organizations_list.vue';
-import OrganizationsListItem from '~/organizations/index/components/organizations_list_item.vue';
+import OrganizationsList from '~/organizations/shared/components/list/organizations_list.vue';
+import OrganizationsListItem from '~/organizations/shared/components/list/organizations_list_item.vue';
 import { organizations as nodes, pageInfo, pageInfoOnePage } from '~/organizations/mock_data';
 
 describe('OrganizationsList', () => {

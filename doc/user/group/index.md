@@ -12,23 +12,33 @@ DETAILS:
 
 In GitLab, you use groups to manage one or more related projects at the same time.
 
-You can use groups to manage permissions for your projects. If someone has access to
-the group, they get access to all the projects in the group.
+You can use groups to communicate with all group members and manage permissions for your projects.
+If someone has access to the group, they get access to all the projects in the group.
 
 You can also view all of the issues and merge requests for the projects in the group,
-and view analytics that show the group's activity.
-
-You can use groups to communicate with all of the members of the group at once.
+and analytics about the group's activity.
 
 For larger organizations, you can also create [subgroups](subgroups/index.md).
 
 For more information about creating and managing your groups, see [Manage groups](manage.md).
 
+## Group structure
+
+The way to set up a group depends on your use cases, team size, and access requirements.
+The following table describes the most common models of structuring groups.
+
+| Model | Structure | Use cases |
+| ----- | --------- | --------- |
+| Simple | One group for all your projects. | Work in a small team or on specific solutions (for example, a marketing website) that require seamless collaboration and access to resources. |
+| Team | Different groups or subgroups for different types of teams (for example, product and engineering). | Work in a large organization where some teams work autonomously or require centralized resources and limited access from external team members. |
+| Client | One group for each client. | Provide custom solutions for multiple clients that require different resources and access levels. |
+| Functionality | One group or subgroup for one type of functionality (for example, AI/ML). | Develop complex products where one functionality requires specific resources and collaboration of subject-matter experts. |
+
 NOTE:
-For self-managed customers it could be beneficial to create one single top-level group, so you can see an overview of
-your entire organization. For more information about efforts to create an
-organization view of all groups, [see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
-A single top-level group provides insights in your entire organization via a complete
+On self-managed GitLab, if you want to see an overview of your entire organization, you should create one top-level group.
+For more information about efforts to create an organization view of all groups,
+[see epic 9266](https://gitlab.com/groups/gitlab-org/-/epics/9266).
+A single top-level group provides insights in your entire organization through a complete
 [Security Dashboard and Center](../application_security/security_dashboard/index.md),
 [Vulnerability](../application_security/vulnerability_report/index.md#vulnerability-report) and
 [Compliance center](../compliance/compliance_center/index.md), and

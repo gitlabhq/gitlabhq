@@ -31,6 +31,16 @@ export default {
     headingDescription: s__(
       'Runners|After you complete the steps below, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager automatically creates temporary runners.',
     ),
+    beforeHeading: s__('Runners|Before you begin'),
+    permissionsText: s__(
+      'Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your Google Cloud project.',
+    ),
+    billingLinkText: s__(
+      'Runners|Ensure that %{linkStart}billing is enabled for your Google Cloud project%{linkEnd}.',
+    ),
+    preInstallText: s__(
+      'Runners|To follow the setup instructions, %{gcloudLinkStart}install the Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}install Terraform%{terraformLinkEnd}.',
+    ),
     stepOneHeading: s__('Runners|Step 1: Specify environment'),
     stepOneDescription: s__(
       'Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand.',
@@ -86,8 +96,14 @@ export default {
     },
     alertBody: s__('Runners|To view the setup instructions, complete the previous form'),
     invalidFormButton: s__('Runners|Go to first invalid form field'),
+    externalLink: __('(external link)'),
   },
   links: {
+    permissionsLink: 'https://cloud.google.com/iam/docs/understanding-roles#owner',
+    billingLink:
+      'https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project',
+    gcloudLink: 'https://cloud.google.com/sdk/docs/install',
+    terraformLink: 'https://developer.hashicorp.com/terraform/install',
     projectIdLink:
       'https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects',
     regionAndZonesLink: 'https://cloud.google.com/compute/docs/regions-zones',
@@ -308,6 +324,51 @@ export default {
       <p>{{ $options.i18n.headingDescription }}</p>
     </div>
     <hr />
+
+    <!-- start: before you begin -->
+    <div>
+      <h2 class="gl-font-lg">{{ $options.i18n.beforeHeading }}</h2>
+      <ul>
+        <li>
+          <gl-sprintf :message="$options.i18n.permissionsText">
+            <template #link="{ content }">
+              <gl-link :href="$options.links.permissionsLink" target="_blank">
+                {{ content }}
+                <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </li>
+        <li>
+          <gl-sprintf :message="$options.i18n.billingLinkText">
+            <template #link="{ content }">
+              <gl-link :href="$options.links.billingLink" target="_blank">
+                {{ content }}
+                <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </li>
+        <li>
+          <gl-sprintf :message="$options.i18n.preInstallText">
+            <template #gcloudLink="{ content }">
+              <gl-link :href="$options.links.gcloudLink" target="_blank">
+                {{ content }}
+                <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+              </gl-link>
+            </template>
+            <template #terraformLink="{ content }">
+              <gl-link :href="$options.links.terraformLink" target="_blank">
+                {{ content }}
+                <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </li>
+      </ul>
+    </div>
+    <hr />
+    <!-- end: before you begin -->
 
     <!-- start: step one -->
     <div class="gl-pb-4">

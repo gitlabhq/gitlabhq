@@ -7,7 +7,8 @@ require_migration!
 RSpec.describe FinalizeNullifyCreatorIdOfOrphanedProjects, :migration, feature_category: :groups_and_projects do
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:batch_failed_status) { 2 }
-  let(:batch_finalized_status) { 3 }
+  let(:batch_finalized_status) { 6 }
+  let(:job_finished_status) { 3 }
 
   let!(:migration) { described_class::MIGRATION }
 
@@ -19,8 +20,8 @@ RSpec.describe FinalizeNullifyCreatorIdOfOrphanedProjects, :migration, feature_c
 
           migration_record.reload
           failed_job.reload
-        end.to change { migration_record.status }.from(migration_record.status).to(3).and(
-          change { failed_job.status }.from(batch_failed_status).to(batch_finalized_status)
+        end.to change { migration_record.status }.from(migration_record.status).to(batch_finalized_status).and(
+          change { failed_job.status }.from(batch_failed_status).to(job_finished_status)
         )
       end
     end

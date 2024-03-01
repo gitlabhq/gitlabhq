@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Organize work with projects
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 In GitLab, you can create projects to host
 your codebase. You can also use projects to track issues, plan work,
 collaborate on code, and continuously build, test, and use

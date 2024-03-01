@@ -73,7 +73,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       end
 
       format.json do
-        Gitlab::UsageDataCounters::ServiceUsageDataCounter.count(:download_payload_click)
+        Gitlab::InternalEvents.track_event('usage_data_download_payload_clicked', user: current_user)
 
         render json: Gitlab::Json.dump(prerecorded_service_ping_data)
       end

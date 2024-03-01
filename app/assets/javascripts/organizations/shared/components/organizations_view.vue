@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import OrganizationsList from './organizations_list.vue';
+import OrganizationsList from './list/organizations_list.vue';
 
 export default {
   name: 'OrganizationsView',

@@ -38,6 +38,7 @@ export default {
         :key="tab.hash"
         :title="tab.title"
         :active="isActive(tab.hash)"
+        :data-testid="tab.hash"
         @click="updateActiveTab(tab.hash)"
       >
         <component :is="tab.component" :data-testid="`${tab.hash}-app`" />

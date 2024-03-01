@@ -1,3 +1,3 @@
 import { getStorageTabMetadata } from './storage/tab_metadata';
 
-export const usageQuotasTabsMetadata = [getStorageTabMetadata()];
+export const usageQuotasTabsMetadata = [getStorageTabMetadata()].filter(Boolean);

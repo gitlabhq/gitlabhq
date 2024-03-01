@@ -20,6 +20,22 @@ self-managed instances. If you are an administrator, to access the Admin Area:
 NOTE:
 Only administrators can access the Admin Area.
 
+## Administering organizations
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419540) in GitLab 16.10 [with a flag](feature_flags.md) named `ui_for_organizations`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](feature_flags.md) named `ui_for_organizations`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+You can administer all organizations in the GitLab instance from the Admin Area's Organizations page.
+
+To access the Organizations page:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Overview > Organizations**.
+
 ## Administering projects
 
 You can administer all projects in the GitLab instance from the Admin Area's Projects page.

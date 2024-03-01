@@ -346,7 +346,7 @@ export const runnerInstallHelpPage = 'https://docs.example.com/runner/install/';
 
 export const googleCloudRunnerProvisionResponse = {
   __typename: 'Project',
-  id: 'gid://gitlab/Project/23',
+  id: 'gid://gitlab/Project/1',
   runnerCloudProvisioning: {
     __typename: 'CiRunnerGoogleCloudProvisioning',
     projectSetupShellScript: '#!/bin/bash echo "hello world!"',
@@ -355,15 +355,13 @@ export const googleCloudRunnerProvisionResponse = {
         __typename: 'CiRunnerCloudProvisioningStep',
         title: 'Save the Terraform script to a file',
         languageIdentifier: 'terraform',
-        instructions:
-          'terraform {\n  required_version = "~> 1.5"\n\n  required_providers {\n    google = {\n      source  = "hashicorp/google"\n      version = "~> 5.12"\n    }\n\n    tls = {\n      source  = "hashicorp/tls"\n      version = "~> 4.0"\n    }\n  }\n}\n\nlocals {\n  google_project = "dev-gcp-s3c-integrati-9abafed1"\n  google_region  = "us-central1"\n  google_zone    = "us-central1-a"\n}\n\nprovider "google" {\n  project = local.google_project\n  region  = local.google_region\n  zone    = local.google_zone\n}\n\nvariable "runner_token" {\n  type      = string\n  sensitive = true\n}\n\n# Added available customisation\nmodule "runner-deployment" {\n  source = "git::https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit.git//scenarios/google/linux/docker-autoscaler-default"\n\n  google_project = local.google_project\n  google_region  = local.google_region\n  google_zone    = local.google_zone\n\n  name = "grit-BQQkbs5X_"\n\n  gitlab_url = "http://gdk.test:3000"\n\n  runner_token = var.runner_token\n\n  ephemeral_runner = {\n    # disk_type    = "pd-ssd"\n    # disk_size    = 50\n    machine_type = "n2d-standard-2"\n    # source_image = "projects/cos-cloud/global/images/family/cos-stable"\n  }\n}\n\noutput "runner-manager-external-ip" {\n  value = module.runner-deployment.runner_manager_external_ip\n}\n',
+        instructions: 'terraform...',
       },
       {
         __typename: 'CiRunnerCloudProvisioningStep',
         title: 'Apply the Terraform script',
         languageIdentifier: 'shell',
-        instructions:
-          '#!/bin/bash\n\nterraform plan -var gitlab_runner="glrt-BQQkbs5X_f-ys6wLEy2V" -out plan.out\nterraform apply plan.out\n',
+        instructions: '#!/bin/bash\n\nterraform plan...',
       },
     ],
   },

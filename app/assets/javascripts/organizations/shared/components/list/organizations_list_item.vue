@@ -1,10 +1,16 @@
 <script>
 import { GlAvatarLabeled, GlTruncateText } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'OrganizationsListItem',
+  i18n: {
+    showMore: __('Show more'),
+    showLess: __('Show less'),
+  },
+  truncateTextToggleButtonProps: { class: 'gl-font-sm!' },
   components: {
     GlAvatarLabeled,
     GlTruncateText,
@@ -21,17 +27,20 @@ export default {
       required: true,
     },
   },
-  avatarSize: { default: 32, md: 48 },
-  getIdFromGraphQLId,
+  methods: {
+    getIdFromGraphQLId,
+  },
 };
 </script>
 
 <template>
-  <li class="organization-row gl-py-3 gl-border-b gl-display-flex gl-align-items-flex-start">
+  <li
+    class="organization-row gl-py-5 gl-px-5 gl-border-b gl-display-flex gl-align-items-flex-start"
+  >
     <gl-avatar-labeled
-      :size="$options.avatarSize"
+      :size="48"
       :src="organization.avatarUrl"
-      :entity-id="$options.getIdFromGraphQLId(organization.id)"
+      :entity-id="getIdFromGraphQLId(organization.id)"
       :entity-name="organization.name"
       :label="organization.name"
       :label-link="organization.webUrl"
@@ -41,12 +50,15 @@ export default {
         v-if="organization.descriptionHtml"
         :lines="2"
         :mobile-lines="2"
-        class="gl-mt-2"
+        :show-more-text="$options.i18n.showMore"
+        :show-less-text="$options.i18n.showLess"
+        :toggle-button-props="$options.truncateTextToggleButtonProps"
+        class="gl-mt-2 gl-max-w-88"
       >
         <div
           v-safe-html:[$options.safeHtmlConfig]="organization.descriptionHtml"
           data-testid="organization-description-html"
-          class="organization-description gl-text-secondary gl-font-sm"
+          class="gl-text-secondary gl-font-sm md"
         ></div>
       </gl-truncate-text>
     </gl-avatar-labeled>

@@ -7759,6 +7759,7 @@ CREATE TABLE dependency_list_exports (
     group_id bigint,
     pipeline_id bigint,
     export_type smallint DEFAULT 0 NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_fff6fc9b2f CHECK ((char_length(file) <= 255))
 );
 
@@ -24751,6 +24752,8 @@ CREATE UNIQUE INDEX index_dep_prox_manifests_on_group_id_file_name_and_status ON
 
 CREATE INDEX index_dependency_list_exports_on_group_id ON dependency_list_exports USING btree (group_id);
 
+CREATE INDEX index_dependency_list_exports_on_organization_id ON dependency_list_exports USING btree (organization_id);
+
 CREATE INDEX index_dependency_list_exports_on_pipeline_id ON dependency_list_exports USING btree (pipeline_id);
 
 CREATE INDEX index_dependency_list_exports_on_project_id ON dependency_list_exports USING btree (project_id);
@@ -30188,6 +30191,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c34dd2b036 FOREIGN KEY (tmp_epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_list_exports
+    ADD CONSTRAINT fk_c348f16f10 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_group_callouts
     ADD CONSTRAINT fk_c366e12ec3 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

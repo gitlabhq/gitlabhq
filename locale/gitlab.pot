@@ -34800,6 +34800,9 @@ msgstr ""
 msgid "Organization|An error occurred deleting the project. Please refresh the page to try again."
 msgstr ""
 
+msgid "Organization|An error occurred loading organizations. Please refresh the page to try again."
+msgstr ""
+
 msgid "Organization|An error occurred loading the groups. Please refresh the page to try again."
 msgstr ""
 
@@ -42752,6 +42755,9 @@ msgstr ""
 msgid "Runners|Available to all projects and subgroups in the group"
 msgstr ""
 
+msgid "Runners|Before you begin"
+msgstr ""
+
 msgid "Runners|Can run untagged jobs"
 msgstr ""
 
@@ -42866,6 +42872,12 @@ msgid "Runners|Enable stale runner cleanup"
 msgstr ""
 
 msgid "Runners|Enable stale runner cleanup?"
+msgstr ""
+
+msgid "Runners|Ensure that %{linkStart}billing is enabled for your Google Cloud project%{linkEnd}."
+msgstr ""
+
+msgid "Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your Google Cloud project."
 msgstr ""
 
 msgid "Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds."
@@ -43462,6 +43474,9 @@ msgid "Runners|This runner is outdated, an upgrade is recommended"
 msgstr ""
 
 msgid "Runners|This step creates the required infrastructure in Google Cloud, installs GitLab Runner, and registers it to this GitLab project. "
+msgstr ""
+
+msgid "Runners|To follow the setup instructions, %{gcloudLinkStart}install the Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}install Terraform%{terraformLinkEnd}."
 msgstr ""
 
 msgid "Runners|To improve security, use a dedicated project for CI/CD, separate from resources and identity management projects. %{linkStart}Where’s my project ID in Google Cloud?%{linkEnd}"

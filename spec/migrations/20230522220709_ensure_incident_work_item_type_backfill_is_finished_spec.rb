@@ -9,6 +9,7 @@ RSpec.describe EnsureIncidentWorkItemTypeBackfillIsFinished, :migration, feature
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:work_item_types) { table(:work_item_types) }
   let(:batch_failed_status) { 2 }
+  let(:batch_finalized_status) { 6 }
 
   let!(:migration_class) { described_class::MIGRATION }
 
@@ -68,7 +69,7 @@ RSpec.describe EnsureIncidentWorkItemTypeBackfillIsFinished, :migration, feature
               migrate!
 
               backfill_migration.reload
-            end.to change { backfill_migration.status }.from(status).to(3)
+            end.to change { backfill_migration.status }.from(status).to(batch_finalized_status)
           end
         end
       end

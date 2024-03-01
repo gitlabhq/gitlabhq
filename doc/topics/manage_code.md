@@ -7,10 +7,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Manage your code
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 Store your source files in a repository and create merge requests. Write, debug, and collaborate on code.
 
 - [Repositories](../user/project/repository/index.md)

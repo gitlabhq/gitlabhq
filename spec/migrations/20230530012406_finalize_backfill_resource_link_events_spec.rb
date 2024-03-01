@@ -60,7 +60,7 @@ RSpec.describe FinalizeBackfillResourceLinkEvents, feature_category: :team_plann
             migrate!
 
             batched_migration.reload
-          end.to change { batched_migration.status }.from(status).to(3)
+          end.to change { batched_migration.status }.from(status).to(6)
         end
       end
     end

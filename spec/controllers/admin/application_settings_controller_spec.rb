@@ -120,14 +120,21 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       end
 
       describe 'usage data counter' do
-        let(:counter) { Gitlab::UsageDataCounters::ServiceUsageDataCounter }
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'usage_data_download_payload_clicked' }
+          let(:user) { admin }
+          let(:project) { nil }
+          let(:namespace) { nil }
 
-        it 'incremented when json generated' do
-          expect { get :usage_data, format: :json }.to change { counter.read(:download_payload_click) }.by(1)
+          subject(:track_event) { get :usage_data, format: :json }
         end
 
-        it 'not incremented when html format requested' do
-          expect { get :usage_data }.not_to change { counter.read(:download_payload_click) }
+        context 'with html format requested' do
+          it 'not incremented when html format requested' do
+            expect(Gitlab::InternalEvents).not_to receive(:track_event)
+
+            get :usage_data, format: :html
+          end
         end
       end
     end

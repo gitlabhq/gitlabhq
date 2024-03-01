@@ -302,4 +302,15 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       )
     end
   end
+
+  describe '#admin_organizations_index_app_data' do
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.admin_organizations_index_app_data)).to eq(
+        {
+          'new_organization_url' => new_organization_path,
+          'organizations_empty_state_svg_path' => organizations_empty_state_svg_path
+        }
+      )
+    end
+  end
 end

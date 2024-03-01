@@ -43,6 +43,12 @@ NOTE:
 Audit event types with the `-` scope are limited to either project, group, or instance and user audit events, but the
 [information on the scope](https://gitlab.com/gitlab-org/gitlab/-/issues/438620) is still being added to the documentation.
 
+### Ai framework
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`duo_features_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145509) | GitLab Duo Features enabled setting on group or project changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.10](https://gitlab.com/gitlab-org/gitlab/-/issues/442485) | Group, Project |
+
 ### Audit events
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

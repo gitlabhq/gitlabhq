@@ -9,8 +9,8 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { organizations as nodes, pageInfo, pageInfoEmpty } from '~/organizations/mock_data';
 import organizationsQuery from '~/organizations/shared/graphql/queries/organizations.query.graphql';
 import OrganizationsIndexApp from '~/organizations/index/components/app.vue';
-import OrganizationsView from '~/organizations/index/components/organizations_view.vue';
-import { MOCK_NEW_ORG_URL } from '../mock_data';
+import OrganizationsView from '~/organizations/shared/components/organizations_view.vue';
+import { MOCK_NEW_ORG_URL } from '../../shared/mock_data';
 
 jest.mock('~/alert');
 

@@ -7,7 +7,8 @@ require_migration!
 RSpec.describe FinalizeEncryptCiTriggerToken, migration: :gitlab_ci, feature_category: :continuous_integration do
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:batch_failed_status) { 2 }
-  let(:batch_finalized_status) { 3 }
+  let(:batch_finalized_status) { 6 }
+  let(:job_finished_status) { 3 }
 
   let!(:migration) { described_class::MIGRATION }
 
@@ -85,7 +86,7 @@ RSpec.describe FinalizeEncryptCiTriggerToken, migration: :gitlab_ci, feature_cat
             end.to(
               change { migration_record.status }.from(status).to(batch_finalized_status)
                 .and(
-                  change { failed_job.status }.from(batch_failed_status).to(batch_finalized_status)
+                  change { failed_job.status }.from(batch_failed_status).to(job_finished_status)
                 )
             )
           end

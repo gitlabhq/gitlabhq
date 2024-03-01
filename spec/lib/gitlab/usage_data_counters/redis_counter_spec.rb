@@ -14,11 +14,14 @@ RSpec.describe Gitlab::UsageDataCounters::RedisCounter, :clean_gitlab_redis_shar
       end.to change { subject.total_count(redis_key) }.by(1)
     end
 
-    context 'with aliased legacy key' do
-      let(:redis_key) { '{event_counters}_web_ide_viewed' }
+    context 'for every aliased legacy key' do
+      let(:key_overrides) { YAML.safe_load(File.read(described_class::KEY_OVERRIDES_PATH)) }
 
       it 'counter is increased for a legacy key' do
-        expect { subject.increment(redis_key) }.to change { subject.total_count('WEB_IDE_VIEWS_COUNT') }.by(1)
+        key_overrides.each do |alias_key, legacy_key|
+          expect { subject.increment(alias_key) }.to change { subject.total_count(legacy_key) }.by(1),
+            "Incrementing #{alias_key} did not increase #{legacy_key}"
+        end
       end
     end
   end

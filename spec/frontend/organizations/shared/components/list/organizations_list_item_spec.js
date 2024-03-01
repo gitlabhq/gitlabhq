@@ -1,7 +1,7 @@
 import { GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import OrganizationsListItem from '~/organizations/index/components/organizations_list_item.vue';
+import OrganizationsListItem from '~/organizations/shared/components/list/organizations_list_item.vue';
 import { organizations } from '~/organizations/mock_data';
 
 const MOCK_ORGANIZATION = organizations[0];

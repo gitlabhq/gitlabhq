@@ -158,11 +158,11 @@ To see the full list of customizations available, see the Helm chart's [README](
 ##### Use the agent when KAS is behind a self-signed certificate
 
 When [KAS](../../../../administration/clusters/kas.md) is behind a self-signed certificate,
-you can set the value of `config.caCert` to the certificate. For example:
+you can set the value of `config.kasCaCert` to the certificate. For example:
 
 ```shell
 helm upgrade --install gitlab-agent gitlab/gitlab-agent \
-  --set-file config.caCert=my-custom-ca.pem
+  --set-file config.kasCaCert=my-custom-ca.pem
 ```
 
 In this example, `my-custom-ca.pem` is the path to a local file that contains

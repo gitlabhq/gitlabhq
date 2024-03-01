@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigration, type: :m
   end
 
   describe '.valid_status' do
-    valid_status = [:paused, :active, :finished, :failed, :finalizing]
+    valid_status = [:paused, :active, :finished, :failed, :finalizing, :finalized]
 
     it 'returns valid status' do
       expect(described_class.valid_status).to eq(valid_status)
