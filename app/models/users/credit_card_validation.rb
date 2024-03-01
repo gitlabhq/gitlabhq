@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class CreditCardValidation < ApplicationRecord
+  class CreditCardValidation < MainClusterwide::ApplicationRecord
     include IgnorableColumns
 
     RELEASE_DAY = Date.new(2021, 5, 17)

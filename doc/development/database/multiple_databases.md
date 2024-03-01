@@ -194,6 +194,26 @@ background migration. It also specifies a `belongs_to` relation which
 will be added to the model to automatically populate the `sharding_key` in
 the `before_save`.
 
+##### Defining a `desired_sharding_key` when the parent table also has a `desired_sharding_key`
+
+By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
+exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration
+and is itself waiting to be backfilled, you need to include the `awaiting_backfill_on_parent` field.
+For example:
+
+```yaml
+desired_sharding_key:
+  project_id:
+    references: projects
+    backfill_via:
+      parent:
+        foreign_key: package_file_id
+        table: packages_package_files
+        sharding_key: project_id
+        belongs_to: package_file
+    awaiting_backfill_on_parent: true
+```
+
 There are likely edge cases where this `desired_sharding_key` structure is not
 suitable for backfilling a `sharding_key`. In such cases the team owning the
 table will need to create the necessary merge requests to add the

@@ -3329,7 +3329,6 @@
 - './spec/features/admin/admin_health_check_spec.rb'
 - './spec/features/admin/admin_hook_logs_spec.rb'
 - './spec/features/admin/admin_hooks_spec.rb'
-- './spec/features/admin/admin_jobs_spec.rb'
 - './spec/features/admin/admin_labels_spec.rb'
 - './spec/features/admin/admin_manage_applications_spec.rb'
 - './spec/features/admin/admin_mode/login_spec.rb'

@@ -14,8 +14,8 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
   describe 'GET /admin/jobs' do
     let(:pipeline) { create(:ci_pipeline) }
 
-    context 'All tab' do
-      context 'when have jobs' do
+    describe '"All" tab' do
+      context 'with jobs' do
         it 'shows all jobs', :js do
           create(:ci_build, pipeline: pipeline, status: :pending)
           create(:ci_build, pipeline: pipeline, status: :running)
@@ -27,7 +27,13 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
           wait_for_requests
 
           expect(page).to have_selector('[data-testid="jobs-all-tab"]')
-          expect(page.all('[data-testid="jobs-table-row"]').size).to eq(4)
+
+          jobs = page.all('[data-testid="jobs-table-row"]')
+          expect(jobs.size).to eq(4)
+          expect(jobs.at(0)).to have_button('Retry')
+          expect(jobs.at(1)).to have_button('Run again')
+          expect(jobs.at(2)).to have_button('Cancel')
+          expect(jobs.at(3)).to have_button('Cancel')
 
           click_button 'Cancel all jobs'
 
@@ -36,7 +42,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
         end
       end
 
-      context 'when have no jobs' do
+      context 'with no jobs' do
         it 'shows a message' do
           visit admin_jobs_path
 
@@ -49,7 +55,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
       end
     end
 
-    context 'Finished tab' do
+    describe '"Finished" tab' do
       context 'when have finished jobs' do
         it 'shows finished jobs' do
           build1 = create(:ci_build, pipeline: pipeline, status: :pending)
@@ -72,7 +78,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
         end
       end
 
-      context 'when have no jobs finished' do
+      context 'when no jobs have finished' do
         it 'shows a message' do
           create(:ci_build, pipeline: pipeline, status: :running)
 
@@ -91,7 +97,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
       end
     end
 
-    context 'jobs table links' do
+    describe 'jobs table links' do
       let_it_be(:namespace) { create(:namespace) }
       let_it_be(:project) { create(:project, namespace: namespace) }
       let_it_be(:runner) { create(:ci_runner, :instance) }
@@ -113,7 +119,7 @@ RSpec.describe 'Admin Jobs', :js, feature_category: :continuous_integration do
       end
     end
 
-    context 'job filtering' do
+    describe 'job filtering' do
       it 'filters jobs by status' do
         create(:ci_build, pipeline: pipeline, status: :success)
         create(:ci_build, pipeline: pipeline, status: :failed)

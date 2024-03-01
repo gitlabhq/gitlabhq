@@ -1029,7 +1029,6 @@ RSpec/ContextWording:
     - 'spec/features/admin/admin_disables_git_access_protocol_spec.rb'
     - 'spec/features/admin/admin_hook_logs_spec.rb'
     - 'spec/features/admin/admin_hooks_spec.rb'
-    - 'spec/features/admin/admin_jobs_spec.rb'
     - 'spec/features/admin/admin_mode/login_spec.rb'
     - 'spec/features/admin/admin_mode_spec.rb'
     - 'spec/features/admin/admin_settings_spec.rb'
