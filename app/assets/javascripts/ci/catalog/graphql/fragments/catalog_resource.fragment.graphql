@@ -5,6 +5,7 @@ fragment CatalogResourceFields on CiCatalogResource {
   name
   description
   starCount
+  starrersPath
   latestVersion {
     id
     components {

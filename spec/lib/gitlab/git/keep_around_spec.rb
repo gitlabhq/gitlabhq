@@ -8,13 +8,14 @@ RSpec.describe Gitlab::Git::KeepAround do
   let(:repository) { create(:project, :repository).repository }
   let(:service) { described_class.new(repository) }
   let(:keep_around_ref_name) { "refs/#{::Repository::REF_KEEP_AROUND}/#{sample_commit.id}" }
+  let(:metric_labels) { { full_path: repository.full_path, source: 'keeparound_spec' } }
 
   def expect_metrics_change(requested, created, &block)
     requested_metric = Gitlab::Metrics.registry.get(:gitlab_keeparound_refs_requested_total)
     created_metric = Gitlab::Metrics.registry.get(:gitlab_keeparound_refs_created_total)
 
-    expect(&block).to change { requested_metric.get(source: 'keeparound_spec') }.by(requested)
-      .and change { created_metric.get(source: 'keeparound_spec') }.by(created)
+    expect(&block).to change { requested_metric.get(metric_labels) }.by(requested)
+      .and change { created_metric.get(metric_labels) }.by(created)
   end
 
   it "does not fail if we attempt to reference bad commit" do
@@ -79,6 +80,20 @@ RSpec.describe Gitlab::Git::KeepAround do
 
       expect(service.kept_around?(sample_commit.id)).to be_truthy
       expect(repository.list_refs([keep_around_ref_name])).to be_empty
+    end
+  end
+
+  context 'when label_keep_around_ref_metrics feature flag is disabled' do
+    let(:metric_labels) { { full_path: '', source: 'keeparound_spec' } }
+
+    before do
+      stub_feature_flags(label_keep_around_ref_metrics: false)
+    end
+
+    it 'does not label keep-around refs' do
+      expect_metrics_change(1, 1) do
+        service.execute([sample_commit.id], source: 'keeparound_spec')
+      end
     end
   end
 end

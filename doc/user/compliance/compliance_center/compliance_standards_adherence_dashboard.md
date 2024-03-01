@@ -16,6 +16,7 @@ DETAILS:
 > - [Feature flag `compliance_adherence_report` and `adherence_report_ui`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137398) removed in GitLab 16.7.
 > - Standards adherence filtering [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413734) in GitLab 16.7.
 > - Standards adherence grouping [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413735) in GitLab 16.9.
+> - Standards adherence grouping by standards that a check belongs to and grouping by projects that a check belongs to [added](https://gitlab.com/gitlab-org/gitlab/-/issues/413735) in GitLab 16.10.
 > - **Last Scanned** column [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/439545) to **Date since last status change** in GitLab 16.10.
 
 The compliance standards adherence dashboard lists the adherence status of projects complying to the _GitLab standard_.
@@ -42,7 +43,9 @@ You can filter the compliance standards adherence dashboard on:
 
 You can group the compliance standards adherence dashboard on:
 
+- The project that the check was performed on.
 - The type of check that was performed on a project.
+- The standard that the check belongs to.
 
 ## GitLab standard
 

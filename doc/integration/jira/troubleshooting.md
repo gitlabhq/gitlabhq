@@ -272,7 +272,7 @@ has permission to view issues associated with the specified Jira project key.
 
 To verify the Jira user has this permission, do one of the following:
 
-- In your browser, sign into Jira with the user you configured in the Jira issue integration. Because the Jira API supports
+- In your browser, sign in to Jira with the user you configured in the Jira issue integration. Because the Jira API supports
   [cookie-based authentication](https://developer.atlassian.com/server/jira/platform/security-overview/#cookie-based-authentication),
   you can see if any issues are returned in the browser:
 

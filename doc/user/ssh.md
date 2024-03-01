@@ -418,9 +418,9 @@ Your existing SSH keys are listed at the bottom of the page. The information inc
   - Public fingerprint.
   - Expiry date.
   - Permitted usage types.
-- The time a key was last used. On GitLab.com this value is unavailable, and you are unable to see if or when an SSH key has been used. For more information, see [issue 324764](https://gitlab.com/gitlab-org/gitlab/-/issues/324764).
+- The time a key was last used.
 
-Select **Delete** to permanently delete an SSH key.
+Select **Remove** to permanently delete an SSH key.
 
 ## Use different accounts on a single GitLab instance
 

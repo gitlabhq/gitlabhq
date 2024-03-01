@@ -29,17 +29,19 @@ module Gitlab
       def execute(shas, source:)
         return if disabled?
 
+        labels = project_labels.merge(source: source)
+
         shas.uniq.each do |sha|
           next unless sha.present? && commit_by(oid: sha)
 
-          @keeparound_requested_counter.increment(source: source)
+          @keeparound_requested_counter.increment(labels)
 
           next if kept_around?(sha)
 
           # This will still fail if the file is corrupted (e.g. 0 bytes)
           raw_repository.write_ref(keep_around_ref_name(sha), sha)
 
-          @keeparound_created_counter.increment(source: source)
+          @keeparound_created_counter.increment(labels)
         rescue Gitlab::Git::CommandError => ex
           Gitlab::AppLogger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
         end
@@ -55,6 +57,17 @@ module Gitlab
       private :commit_by, :raw_repository, :ref_exists?, :disk_path
 
       private
+
+      def project_labels
+        return { full_path: '' } unless add_project_labels?
+
+        { full_path: @repository.full_path }
+      end
+
+      def add_project_labels?
+        Feature.enabled?(:label_keep_around_ref_metrics, @repository, type: :ops) ||
+          (@repository.project && Feature.enabled?(:label_keep_around_ref_metrics, @repository.project, type: :ops))
+      end
 
       def disabled?
         Feature.enabled?(:disable_keep_around_refs, @repository, type: :ops) ||

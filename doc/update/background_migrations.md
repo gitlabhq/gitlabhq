@@ -84,7 +84,7 @@ Prerequisites:
 
 To query the database directly for the status of batched background migrations:
 
-1. Log into a `psql` prompt, according to the directions for your instance's
+1. Sign in to a `psql` prompt, according to the directions for your instance's
    installation method. For example, `sudo gitlab-psql` for Linux package installations.
 1. To see details on incomplete batched background migrations, run this query in
    the `psql` session:

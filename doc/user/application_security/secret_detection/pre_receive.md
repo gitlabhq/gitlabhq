@@ -26,7 +26,7 @@ Prerequisites:
 
 - You must be an administrator for your GitLab Dedicated instance.
 
-1. Sign into your GitLab Dedicated instance as an administrator.
+1. Sign in to your GitLab Dedicated instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
 1. Expand **Secret Detection**.

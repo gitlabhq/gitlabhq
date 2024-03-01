@@ -5,6 +5,8 @@ import { getDateWithUTC, newDateAsLocaleTime } from '~/lib/utils/datetime/date_c
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { formatDate, pikadayToString } from '~/lib/utils/datetime_utility';
+import { Mousetrap } from '~/lib/mousetrap';
+import { keysFor, SIDEBAR_CLOSE_WIDGET } from '~/behaviors/shortcuts/keybindings';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
@@ -146,6 +148,12 @@ export default {
       immediate: true,
     },
   },
+  mounted() {
+    Mousetrap.bind(keysFor(SIDEBAR_CLOSE_WIDGET), this.collapseWidget);
+  },
+  beforeDestroy() {
+    Mousetrap.unbind(keysFor(SIDEBAR_CLOSE_WIDGET));
+  },
   methods: {
     clearDueDatePicker() {
       this.dirtyDueDate = null;
@@ -253,10 +261,10 @@ export default {
             :disabled="isDatepickerDisabled"
             :input-id="$options.startDateInputId"
             show-clear-button
-            :target="null"
             class="work-item-date-picker"
             @clear="clearStartDatePicker"
             @close="handleStartDateInput"
+            @keydown.esc.native="collapseWidget"
           />
         </gl-form-group>
         <gl-form-group
@@ -272,10 +280,10 @@ export default {
             :input-id="$options.dueDateInputId"
             :min-date="dirtyStartDate"
             show-clear-button
-            :target="null"
             class="work-item-date-picker"
             data-testid="due-date-picker"
             @clear="clearDueDatePicker"
+            @keydown.esc.native="collapseWidget"
           />
         </gl-form-group>
       </div>

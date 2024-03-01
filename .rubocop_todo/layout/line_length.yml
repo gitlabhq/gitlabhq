@@ -1183,7 +1183,6 @@ Layout/LineLength:
     - 'ee/lib/gitlab/auth/group_saml/user.rb'
     - 'ee/lib/gitlab/auth/group_saml/xml_response.rb'
     - 'ee/lib/gitlab/authority_analyzer.rb'
-    - 'ee/lib/gitlab/ci/config/security_orchestration_policies/processor.rb'
     - 'ee/lib/gitlab/ci/reports/security/locations/cluster_image_scanning.rb'
     - 'ee/lib/gitlab/contribution_analytics/data_collector.rb'
     - 'ee/lib/gitlab/elastic/group_search_results.rb'

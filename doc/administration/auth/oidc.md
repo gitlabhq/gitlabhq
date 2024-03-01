@@ -477,7 +477,7 @@ To use symmetric key encryption:
 
    For example, if you use PostgreSQL as the backend database for Keycloak:
 
-   - Sign into the database console.
+   - Sign in to the database console.
    - Run the following SQL query to extract the key:
 
      ```sql

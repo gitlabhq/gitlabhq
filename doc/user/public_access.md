@@ -27,7 +27,7 @@ For private projects, only members of the private project or group can:
 
 Users with the Guest role cannot clone the project.
 
-Private groups can have only private subgroups.
+Private groups can have only private subgroups and projects.
 
 NOTE:
 When you [share a private group with another group](group/manage.md#share-a-group-with-another-group),
@@ -50,7 +50,7 @@ Only internal members can view internal content.
 
 [External users](../administration/external_users.md) cannot clone the project.
 
-Internal groups can have internal or private subgroups.
+Internal groups can have internal or private subgroups and projects.
 
 ## Public projects and groups
 
@@ -59,7 +59,7 @@ For public projects, **unauthenticated users**, including users with the Guest r
 - Clone the project.
 - View the public access directory (`/public`).
 
-Public groups can have public, internal, or private subgroups.
+Public groups can have public, internal, or private subgroups and projects.
 
 NOTE:
 If an administrator restricts the

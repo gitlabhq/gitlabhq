@@ -17,31 +17,39 @@ In GitLab 16.10 and later, threaded notifications are enabled by default
 in Google Chat for the same GitLab object (for example, an issue or merge request).
 For more information, see [issue 438452](https://gitlab.com/gitlab-org/gitlab/-/issues/438452).
 
-## Enable the integration in Google Chat
+## Configure the integration
 
-To enable the integration in Google Chat:
+### In Google Chat
 
-1. Enter the space where you want to receive notifications from GitLab.
-1. In the upper-left corner, from the space dropdown list, select **Apps & integrations**.
+To configure the integration in Google Chat:
+
+1. Go to the space where you want to receive notifications from GitLab.
+1. In the upper left, next to the space name, select the down arrow (**{chevron-down}**) > **Apps & integrations**.
 1. In the **Webhooks** section, select **Add webhooks**.
-1. Enter the name for your webhook (for example, `GitLab integration`).
-1. Optional. Add an avatar for your bot.
+1. On the **Incoming webhooks** dialog:
+   - In **Name**, enter a name for your webhook (for example, `GitLab integration`).
+   - Optional. In **Avatar URL**, enter an avatar for your bot.
 1. Select **Save**.
-1. Copy the webhook URL.
+1. Next to the webhook URL, select the vertical ellipsis (**{ellipsis_v}**) > **Copy link**.
 
-For more information, see the
-[Google Chat documentation for webhooks](https://developers.google.com/chat/how-tos/webhooks).
+For more information about webhooks, see the
+[Google Chat documentation](https://developers.google.com/chat/how-tos/webhooks).
 
-## Enable the integration in GitLab
+### In GitLab
 
-To enable the integration in GitLab:
+To configure the integration in GitLab:
 
-1. In your project, go to **Settings > Integrations** and select **Google Chat**.
-1. Scroll down to the end of the page where you find a **Webhook** field.
-1. Enter the webhook URL you copied from Google Chat.
-1. Select the events you want to be notified about in your Google Chat space.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Integrations**.
+1. Select **Google Chat**.
+1. Under **Enable integration**, select the **Active** checkbox.
+1. In **Webhook**, [paste the URL you copied from Google Chat](#in-google-chat).
+1. In the **Trigger** section, select the checkbox for each GitLab event
+   you want to receive notifications for in your Google Chat space.
+1. Optional. In the **Notification settings** section:
+   - Select the **Notify only broken pipelines** checkbox
+     to receive notifications for failed pipelines only.
+   - From the **Branches for which notifications are to be sent** dropdown list,
+     select the branches you want to receive notifications for.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
-
-To test the integration, make a change based on the events you selected and
-see the notification in your Google Chat space.

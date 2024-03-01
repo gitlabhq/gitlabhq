@@ -218,6 +218,27 @@ describe('CiResourcesListItem', () => {
   });
 
   describe('statistics', () => {
+    describe('starrers link button', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders the correct link to starrers', () => {
+        expect(findFavorites().attributes('href')).toBe(resource.starrersPath);
+      });
+
+      it('has the correct attributes', () => {
+        expect(findFavorites().attributes('icon')).toBe('star-o');
+        expect(findFavorites().attributes('size')).toBe('small');
+        expect(findFavorites().attributes('variant')).toBe('link');
+        expect(findFavorites().attributes('title')).toBe('Stars');
+      });
+
+      it('has the correct styling', () => {
+        expect(findFavorites().classes()).toEqual(['gl-reset-color!']);
+      });
+    });
+
     describe('when there are no statistics', () => {
       it('render favorites as 0', () => {
         createComponent({

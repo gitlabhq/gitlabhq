@@ -18,36 +18,18 @@ module Packages
         @dependency_ids = Hash.new { |h, key| h[key] = {} }
         @tags = {}
         @tags_updated_at = {}
-        @versions_hash = {}
+        @versions = {}
         @latest_version = nil
       end
 
       def execute(only_dist_tags: false)
-        payload = if Feature.enabled?(:package_registry_npm_fetch_all_tags, Feature.current_request,
-          type: :gitlab_com_derisk)
-                    metadata(only_dist_tags)
-                  else
-                    legacy_metadata(only_dist_tags)
-                  end
-
-        ServiceResponse.success(payload: payload)
+        ServiceResponse.success(payload: metadata(only_dist_tags))
       end
 
       private
 
-      attr_reader :name, :packages, :dependencies, :dependency_ids, :tags, :tags_updated_at, :versions_hash
+      attr_reader :name, :packages, :dependencies, :dependency_ids, :tags, :tags_updated_at, :versions
       attr_accessor :latest_version
-
-      def legacy_metadata(only_dist_tags)
-        result = { dist_tags: dist_tags }
-
-        unless only_dist_tags
-          result[:name] = name
-          result[:versions] = versions
-        end
-
-        result
-      end
 
       def metadata(only_dist_tags)
         packages.each_batch do |batch|
@@ -64,86 +46,19 @@ module Packages
 
         {
           name: only_dist_tags ? nil : name,
-          versions: versions_hash,
+          versions: versions,
           dist_tags: tags.tap { |t| t['latest'] ||= latest_version }
         }.compact_blank
       end
 
-      def versions
-        package_versions = {}
+      def preload_needed_relations(batch, only_dist_tags)
+        relation = batch.preload_tags
+        return relation if only_dist_tags
 
-        packages.each_batch do |relation|
-          load_dependencies(relation)
-          load_dependency_ids(relation)
+        load_dependencies(relation)
+        load_dependency_ids(relation)
 
-          batched_packages = relation.preload_files
-                             .preload_npm_metadatum
-
-          batched_packages.each do |package|
-            package_file = package.installable_package_files.last
-
-            next unless package_file
-
-            package_versions[package.version] = build_package_version(package, package_file)
-          end
-        end
-
-        package_versions
-      end
-
-      def dist_tags
-        build_package_tags.tap { |t| t['latest'] ||= sorted_versions.last }
-      end
-
-      def build_package_tags
-        package_tags.to_h { |tag| [tag.name, tag.package.version] }
-      end
-
-      def build_package_version(package, package_file)
-        abbreviated_package_json(package).merge(
-          name: package.name,
-          version: package.version,
-          dist: {
-            shasum: package_file.file_sha1,
-            tarball: tarball_url(package, package_file)
-          }
-        ).tap do |package_version|
-          package_version.merge!(build_package_dependencies(package))
-        end
-      end
-
-      def tarball_url(package, package_file)
-        expose_url api_v4_projects_packages_npm_package_name___file_name_path(
-          { id: package.project_id, package_name: package.name, file_name: package_file.file_name }, true
-        )
-      end
-
-      def build_package_dependencies(package)
-        dependency_ids[package.id].each_with_object(Hash.new { |h, key| h[key] = {} }) do |(type, ids), memo|
-          ids.each do |id|
-            memo[inverted_dependency_types[type]].merge!(dependencies[id])
-          end
-        end
-      end
-
-      def inverted_dependency_types
-        Packages::DependencyLink.dependency_types.invert.stringify_keys
-      end
-      strong_memoize_attr :inverted_dependency_types
-
-      def sorted_versions
-        versions = packages.pluck_versions.compact
-        VersionSorter.sort(versions)
-      end
-
-      def package_tags
-        Packages::Tag.for_package_ids_with_distinct_names(packages)
-                     .preload_package
-      end
-
-      def abbreviated_package_json(package)
-        json = package.npm_metadatum&.package_json || {}
-        json.slice(*PACKAGE_JSON_ALLOWED_FIELDS)
+        relation.preload_files.preload_npm_metadatum
       end
 
       def load_dependencies(packages)
@@ -171,19 +86,6 @@ module Packages
           end
       end
 
-      def preload_needed_relations(batch, only_dist_tags)
-        relation = batch.preload_tags
-
-        unless only_dist_tags
-          load_dependencies(relation)
-          load_dependency_ids(relation)
-
-          relation = relation.preload_files.preload_npm_metadatum
-        end
-
-        relation
-      end
-
       def build_tags(package)
         package.tags.each do |tag|
           next if tags.key?(tag.name) && tags_updated_at[tag.name] > tag.updated_at
@@ -202,8 +104,45 @@ module Packages
 
         return unless package_file
 
-        versions_hash[package.version] = build_package_version(package, package_file)
+        versions[package.version] = build_package_version(package, package_file)
       end
+
+      def build_package_version(package, package_file)
+        abbreviated_package_json(package).merge(
+          name: package.name,
+          version: package.version,
+          dist: {
+            shasum: package_file.file_sha1,
+            tarball: tarball_url(package, package_file)
+          }
+        ).tap do |package_version|
+          package_version.merge!(build_package_dependencies(package))
+        end
+      end
+
+      def abbreviated_package_json(package)
+        json = package.npm_metadatum&.package_json || {}
+        json.slice(*PACKAGE_JSON_ALLOWED_FIELDS)
+      end
+
+      def tarball_url(package, package_file)
+        expose_url api_v4_projects_packages_npm_package_name___file_name_path(
+          { id: package.project_id, package_name: package.name, file_name: package_file.file_name }, true
+        )
+      end
+
+      def build_package_dependencies(package)
+        dependency_ids[package.id].each_with_object(Hash.new { |h, key| h[key] = {} }) do |(type, ids), memo|
+          ids.each do |id|
+            memo[inverted_dependency_types[type]].merge!(dependencies[id])
+          end
+        end
+      end
+
+      def inverted_dependency_types
+        Packages::DependencyLink.dependency_types.invert.stringify_keys
+      end
+      strong_memoize_attr :inverted_dependency_types
     end
   end
 end

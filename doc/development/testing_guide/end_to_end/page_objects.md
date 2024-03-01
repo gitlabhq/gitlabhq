@@ -24,7 +24,7 @@ fields.
 We need page objects because we need to reduce duplication and avoid problems
 whenever someone changes some selectors in the GitLab source code.
 
-Imagine that we have a hundred specs in GitLab QA, and we need to sign into
+Imagine that we have a hundred specs in GitLab QA, and we need to sign in to
 GitLab each time, before we make assertions. Without a page object, one would
 need to rely on volatile helpers or invoke Capybara methods directly. Imagine
 invoking `fill_in :user_login` in every `*_spec.rb` file / test example.

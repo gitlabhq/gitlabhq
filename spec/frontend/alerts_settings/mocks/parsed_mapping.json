@@ -1,5 +1,5 @@
 {
-  "payloadAlerFields": [
+  "payloadAlertFields": [
     {
       "path": [
         "dashboardId"
@@ -98,25 +98,35 @@
       "fieldName": "title",
       "label": "Title",
       "type": "STRING",
-      "path": ["title"]
+      "path": [
+        "title"
+      ]
     },
     {
       "fieldName": "description",
       "label": "description",
       "type": "STRING",
-      "path": ["description"]
+      "path": [
+        "description"
+      ]
     },
     {
       "fieldName": "hosts",
       "label": "Host",
       "type": "ARRAY",
-      "path": ["hosts", "host"]
+      "path": [
+        "hosts",
+        "host"
+      ]
     },
     {
       "fieldName": "startTime",
       "label": "Created Atd",
       "type": "STRING",
-      "path": ["time", "createdAt"]
+      "path": [
+        "time",
+        "createdAt"
+      ]
     }
   ]
 }

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 If you use a password to sign in to GitLab, a strong password is very important. A weak or guessable password makes it
-easier for unauthorized people to log into your account.
+easier for unauthorized people to sign in to your account.
 
 Some organizations require you to meet certain requirements when choosing a password.
 

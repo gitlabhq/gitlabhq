@@ -10440,9 +10440,6 @@ msgstr ""
 msgid "Checkout|x %{quantity} %{units} per pack ="
 msgstr ""
 
-msgid "Checks"
-msgstr ""
-
 msgid "Cherry-pick this commit"
 msgstr ""
 
@@ -11129,6 +11126,9 @@ msgid "Close epic"
 msgstr ""
 
 msgid "Close milestone"
+msgstr ""
+
+msgid "Close sidebar widget"
 msgstr ""
 
 msgid "Close this %{quick_action_target}"
@@ -13015,6 +13015,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Check"
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|Checks"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Date since last status change"
 msgstr ""
 
@@ -13063,6 +13066,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|No rule is configured to require two approvals."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|None"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
 msgstr ""
 
@@ -13070,6 +13076,9 @@ msgid "ComplianceStandardsAdherence|Prevent committers as approvers"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Project"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Projects"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Raw filter values is not currently supported. Please use available values."
@@ -13082,6 +13091,9 @@ msgid "ComplianceStandardsAdherence|Requirement"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Standard"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Standards"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Status"

@@ -161,18 +161,16 @@ To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 ## GitLab VS Code fork
 
 By default, workspaces inject and start the [GitLab VS Code fork](https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork)
-in the container with the `gl/inject-editor` attribute in the devfile.
+in the container that has a defined `gl/inject-editor` attribute in the devfile.
+The workspace container where the GitLab VS Code fork is injected
+must meet the following system requirements:
 
-The workspace container where the GitLab VS Code fork is injected must meet
-the following system requirements:
-
-- System architecture: AMD64
-- System libraries:
+- **System architecture:** AMD64
+- **System libraries:**
   - `glibc` 2.28 and later
   - `glibcxx` 3.4.25 and later
 
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
-
 For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/remote/linux).
 
 ## Personal access token

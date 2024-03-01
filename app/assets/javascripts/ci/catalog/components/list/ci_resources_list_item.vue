@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlBadge, GlIcon, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlAvatar, GlBadge, GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { s__, n__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
@@ -15,7 +15,7 @@ export default {
   components: {
     GlAvatar,
     GlBadge,
-    GlIcon,
+    GlButton,
     GlLink,
     GlSprintf,
   },
@@ -87,6 +87,9 @@ export default {
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
     },
+    starsHref() {
+      return this.resource.starrersPath;
+    },
   },
   methods: {
     navigateToDetailsPage(e) {
@@ -132,17 +135,18 @@ export default {
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
           <gl-badge size="sm" class="gl-h-5 gl-align-self-center">{{ name }}</gl-badge>
-          <span class="gl-display-flex gl-align-items-center gl-ml-5">
-            <span
-              v-gl-tooltip.top
-              :title="starCountText"
-              class="gl--flex-center"
-              data-testid="stats-favorites"
-            >
-              <gl-icon name="star-o" :size="14" class="gl-mr-2" />
-              <span class="gl-mr-3">{{ starCount }}</span>
-            </span>
-          </span>
+          <gl-button
+            v-gl-tooltip.top
+            data-testid="stats-favorites"
+            class="gl-reset-color!"
+            icon="star-o"
+            :title="starCountText"
+            :href="starsHref"
+            size="small"
+            variant="link"
+          >
+            {{ starCount }}
+          </gl-button>
         </div>
       </div>
       <div

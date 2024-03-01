@@ -20,7 +20,7 @@ A service account:
   - Billable user.
   - Bot user.
 - Is listed in group membership as a service account.
-- Cannot sign into GitLab through the UI.
+- Cannot sign in to GitLab through the UI.
 
 You should use service accounts in pipelines or integrations where credentials must be
 set up and maintained without being impacted by changes in human user membership.

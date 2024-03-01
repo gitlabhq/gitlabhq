@@ -213,25 +213,41 @@ For the second log, you might have one of the following scenarios:
   - `json.exception.class` and `json.exception.message` are present.
   - `json.exception.class` and `json.exception.message` contain whether an issue occurred while contacting the self-managed instance.
 
-## Error when connecting the app
+## `Failed to link group`
 
-When you connect the GitLab for Jira Cloud app, you might get one of these errors:
-
-```plaintext
-Failed to load Jira Connect Application ID. Please try again.
-```
+When you link a group, you might get the following error:
 
 ```plaintext
 Failed to link group. Please try again.
 ```
 
-When you check the browser console, you might see the following message:
+A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+
+To resolve this issue, ensure the Jira user that installs and configures the app
+meets certain [requirements](jira_cloud_app.md#jira-user-requirements).
+
+## `Failed to load Jira Connect Application ID`
+
+When you sign in to the GitLab for Jira Cloud app after you point the app
+to your self-managed instance, you might get the following error:
+
+```plaintext
+Failed to load Jira Connect Application ID. Please try again.
+```
+
+When you check the browser console, you might also see the following message:
 
 ```plaintext
 Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://gitlab.example.com/-/jira_connect/oauth_application_id. (Reason: CORS header 'Access-Control-Allow-Origin' missing). Status code: 403.
 ```
 
-A `403 Forbidden` is returned if the user information cannot be fetched from Jira because of insufficient permissions.
+To resolve this issue:
 
-To resolve this issue, ensure the Jira user that installs and configures the app meets certain
-[requirements](jira_cloud_app.md#jira-user-requirements).
+1. Ensure `/-/jira_connect/oauth_application_id` is publicly accessible and returns a JSON response:
+
+   ```shell
+   curl --include "https://gitlab.example.com/-/jira_connect/oauth_application_id"
+   ```
+
+1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
+   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.

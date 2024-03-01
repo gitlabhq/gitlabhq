@@ -412,4 +412,49 @@ RSpec.describe BlobHelper do
       })
     end
   end
+
+  describe "#copy_blob_source_button" do
+    let(:project) { build_stubbed(:project) }
+
+    context 'when blob is rendered as text' do
+      let(:blob) { fake_blob }
+
+      it 'returns HTML content for a copy button' do
+        expect(blob).to receive(:rendered_as_text?).and_return(true)
+
+        button_html = helper.copy_blob_source_button(blob)
+
+        expect(button_html).to include('<span class="btn-group has-tooltip js-copy-blob-source-btn-tooltip"')
+        expect(button_html).to include('<button class="gl-button btn btn-icon btn-md btn-default btn-default-tertiary js-copy-blob-source-btn"')
+      end
+    end
+
+    context 'when blob is not rendered as text' do
+      let(:blob) { fake_blob }
+
+      it 'returns nil' do
+        expect(blob).to receive(:rendered_as_text?).and_return(false)
+        expect(helper.copy_blob_source_button(blob)).to be_nil
+      end
+    end
+  end
+
+  describe '#edit_fork_button_tag' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
+
+    let(:current_user) { user }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    it 'renders the edit fork button' do
+      rendered_button = helper.edit_fork_button_tag('common-class', project, 'Edit Fork', { param_key: 'param_value' })
+
+      expect(rendered_button).to have_selector('button.gl-button.btn.btn-md.btn-confirm.common-class.js-edit-blob-link-fork-toggler', text: 'Edit Fork')
+      expect(rendered_button).to have_selector('button[data-action="edit"]')
+    end
+  end
 end

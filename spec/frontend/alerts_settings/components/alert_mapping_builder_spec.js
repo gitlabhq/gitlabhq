@@ -1,4 +1,4 @@
-import { GlIcon, GlFormInput, GlDropdown, GlSearchBoxByType, GlDropdownItem } from '@gitlab/ui';
+import { GlIcon, GlFormInput, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AlertMappingBuilder, { i18n } from '~/alerts_settings/components/alert_mapping_builder.vue';
 import * as transformationUtils from '~/alerts_settings/utils/mapping_transformations';
@@ -12,7 +12,7 @@ describe('AlertMappingBuilder', () => {
   function mountComponent() {
     wrapper = shallowMount(AlertMappingBuilder, {
       propsData: {
-        parsedPayload: parsedMapping.payloadAlerFields,
+        parsedPayload: parsedMapping.payloadAlertFields,
         savedMapping: parsedMapping.payloadAttributeMappings,
         alertFields,
       },
@@ -26,13 +26,8 @@ describe('AlertMappingBuilder', () => {
   const findColumnInRow = (row, column) =>
     wrapper.findAll('.gl-display-table-row').at(row).findAll('.gl-display-table-cell ').at(column);
 
-  const getDropdownContent = (dropdown, types) => {
-    const searchBox = dropdown.findComponent(GlSearchBoxByType);
-    const dropdownItems = dropdown.findAllComponents(GlDropdownItem);
-    const mappingOptions = parsedMapping.payloadAlerFields.filter(({ type }) =>
-      types.includes(type),
-    );
-    return { searchBox, dropdownItems, mappingOptions };
+  const getMappingOptions = (types) => {
+    return parsedMapping.payloadAlertFields.filter(({ type }) => types.includes(type));
   };
 
   it('renders column captions', () => {
@@ -62,26 +57,23 @@ describe('AlertMappingBuilder', () => {
     });
   });
 
-  it('renders mapping dropdown for each field', () => {
+  it('renders mapping listbox for each field', () => {
     alertFields.forEach(({ types }, index) => {
-      const dropdown = findColumnInRow(index + 1, 2).findComponent(GlDropdown);
-      const { searchBox, dropdownItems, mappingOptions } = getDropdownContent(dropdown, types);
+      const listbox = findColumnInRow(index + 1, 2).findComponent(GlCollapsibleListbox);
+      const mappingOptions = getMappingOptions(types);
 
-      expect(dropdown.exists()).toBe(true);
-      expect(searchBox.exists()).toBe(true);
-      expect(dropdownItems).toHaveLength(mappingOptions.length);
+      expect(listbox.props('items')).toHaveLength(mappingOptions.length);
     });
   });
 
-  it('renders fallback dropdown only for the fields that have fallback', () => {
+  it('renders fallback listbox only for the fields that have fallback', () => {
     alertFields.forEach(({ types, numberOfFallbacks }, index) => {
-      const dropdown = findColumnInRow(index + 1, 3).findComponent(GlDropdown);
-      expect(dropdown.exists()).toBe(Boolean(numberOfFallbacks));
+      const listbox = findColumnInRow(index + 1, 3).findComponent(GlCollapsibleListbox);
+      expect(listbox.exists()).toBe(Boolean(numberOfFallbacks));
 
       if (numberOfFallbacks) {
-        const { searchBox, dropdownItems, mappingOptions } = getDropdownContent(dropdown, types);
-        expect(searchBox.exists()).toBe(Boolean(numberOfFallbacks));
-        expect(dropdownItems).toHaveLength(mappingOptions.length);
+        const mappingOptions = getMappingOptions(types);
+        expect(listbox.props('items')).toHaveLength(mappingOptions.length);
       }
     });
   });
@@ -89,9 +81,8 @@ describe('AlertMappingBuilder', () => {
   it('emits event with selected mapping', () => {
     const mappingToSave = { fieldName: 'TITLE', mapping: 'PARSED_TITLE' };
     jest.spyOn(transformationUtils, 'transformForSave').mockReturnValue(mappingToSave);
-    const dropdown = findColumnInRow(1, 2).findComponent(GlDropdown);
-    const option = dropdown.findComponent(GlDropdownItem);
-    option.vm.$emit('click');
+    const listbox = findColumnInRow(1, 2).findComponent(GlCollapsibleListbox);
+    listbox.vm.$emit('select', 'Dashboard Id');
     expect(wrapper.emitted('onMappingUpdate')[0]).toEqual([mappingToSave]);
   });
 });

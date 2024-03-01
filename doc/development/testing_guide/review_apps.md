@@ -79,7 +79,7 @@ This grants you the following permissions for:
 - [Retrieving pod logs](#dig-into-a-pods-logs). Granted by [Viewer (`roles/viewer`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
 - [Running a Rails console](#run-a-rails-console). Granted by [Kubernetes Engine Developer (`roles/container.pods.exec`)](https://cloud.google.com/iam/docs/understanding-roles#kubernetes-engine-roles).
 
-### Log into my review app
+### Sign in to my review app
 
 For GitLab Team Members only. If you want to sign in to the review app, review
 the GitLab handbook information for the [shared 1Password account](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams).
@@ -198,7 +198,7 @@ subgraph "CNG-mirror pipeline"
      unique to each branch.
 1. Once the [`review-deploy`](https://gitlab.com/gitlab-org/gitlab/-/jobs/467724810) job succeeds, you should be able to
    use your review app thanks to the direct link to it from the MR widget. To log
-   into the review app, see "Log into my review app?" below.
+   into the review app, see "Sign in to my review app?" below.
 
 **Additional notes:**
 

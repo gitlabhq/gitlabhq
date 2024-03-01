@@ -71,21 +71,23 @@ To configure your project settings in GitLab:
 1. Optional. In the **Issues** section:
    - To [view Jira issues](#view-jira-issues) in GitLab:
      1. Select the **Enable Jira issues** checkbox.
+
+        WARNING:
+        When you enable this setting, all users with access to your GitLab project
+        can view all issues from the Jira project you've specified.
+
      1. Enter the Jira project key.
-
-   WARNING:
-   When you enable Jira issues, all users with access to your GitLab project
-   can view all issues from the Jira project you've specified.
-
    - To [create Jira issues for vulnerabilities](#create-a-jira-issue-for-a-vulnerability):
      1. Select the **Enable Jira issue creation from vulnerabilities** checkbox.
+
+        NOTE:
+        You can enable this setting at the project and group levels only.
+
      1. Select the type of Jira issues to create.
 
-     WARNING:
-     Before you select the issue type, you must enter the Jira project key and select **Save changes**.
-
-   NOTE:
-   You can enable this setting at the project and group levels only.
+        WARNING:
+        Before you select the issue type, you must enter
+        the Jira project key and select **Save changes**.
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
