@@ -229,7 +229,7 @@ export default {
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && this.workItemsMvc2Enabled && !this.editMode;
+      return !this.isModal && this.workItemsBetaEnabled && !this.editMode;
     },
     hasLinkedWorkItems() {
       return this.glFeatures.linkedWorkItems;
@@ -261,7 +261,10 @@ export default {
       };
     },
     shouldShowEditButton() {
-      return this.workItemsMvc2Enabled && !this.editMode && this.canUpdate;
+      return this.workItemsBetaEnabled && !this.editMode && this.canUpdate;
+    },
+    workItemsBetaEnabled() {
+      return this.glFeatures.workItemsBeta;
     },
   },
   mounted() {
@@ -448,7 +451,7 @@ export default {
             data-testid="work-item-type"
           >
             <work-item-title-with-edit
-              v-if="workItem.title && workItemsMvc2Enabled"
+              v-if="workItem.title && workItemsBetaEnabled"
               ref="title"
               :is-editing="editMode"
               :title="workItem.title"
@@ -515,7 +518,7 @@ export default {
         </div>
         <div>
           <work-item-title-with-edit
-            v-if="workItem.title && workItemsMvc2Enabled && parentWorkItem"
+            v-if="workItem.title && workItemsBetaEnabled && parentWorkItem"
             ref="title"
             :is-editing="editMode"
             :class="titleClassComponent"
@@ -561,12 +564,12 @@ export default {
         />
         <div
           data-testid="work-item-overview"
-          :class="{ 'work-item-overview': workItemsMvc2Enabled }"
+          :class="{ 'work-item-overview': workItemsBetaEnabled }"
         >
           <section>
             <work-item-attributes-wrapper
-              v-if="!workItemsMvc2Enabled"
-              :class="{ 'gl-md-display-none!': workItemsMvc2Enabled }"
+              v-if="!workItemsBetaEnabled"
+              :class="{ 'gl-md-display-none!': workItemsBetaEnabled }"
               class="gl-border-b"
               :full-path="fullPath"
               :work-item="workItem"
@@ -574,8 +577,8 @@ export default {
             />
             <work-item-description
               v-if="hasDescriptionWidget"
-              :class="workItemsMvc2Enabled ? '' : 'gl-pt-5'"
-              :disable-inline-editing="workItemsMvc2Enabled"
+              :class="workItemsBetaEnabled ? '' : 'gl-pt-5'"
+              :disable-inline-editing="workItemsBetaEnabled"
               :edit-mode="editMode"
               :full-path="fullPath"
               :work-item-id="workItem.id"
@@ -597,7 +600,7 @@ export default {
             />
           </section>
           <aside
-            v-if="workItemsMvc2Enabled"
+            v-if="workItemsBetaEnabled"
             data-testid="work-item-overview-right-sidebar"
             class="work-item-overview-right-sidebar"
             :class="{ 'is-modal': isModal }"

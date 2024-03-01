@@ -1,6 +1,6 @@
 ---
 description: Tracks the number of internal Ci pipelines created
-category: InternalEventTracking
+internal_events: true
 action: create_ci_internal_pipeline
 identifiers:
 - project

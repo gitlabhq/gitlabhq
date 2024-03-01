@@ -398,7 +398,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # RAILS
 
-        Gitlab::InternalEvents.track_event(
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(
           'internal_events_cli_used',
           project: project,
           namespace: project.namespace,
@@ -456,7 +458,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # RAILS
 
-        Gitlab::InternalEvents.track_event('internal_events_cli_opened')
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event('internal_events_cli_opened')
 
         --------------------------------------------------
         TEXT
@@ -627,7 +631,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # RAILS
 
-        Gitlab::InternalEvents.track_event(
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(
           'internal_events_cli_used',
           project: project,
           namespace: project.namespace,
@@ -643,7 +649,9 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # RAILS
 
-        Gitlab::InternalEvents.track_event('internal_events_cli_opened')
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event('internal_events_cli_opened')
 
         --------------------------------------------------
         TEXT

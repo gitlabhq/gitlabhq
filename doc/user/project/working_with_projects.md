@@ -201,8 +201,17 @@ To restore a project marked for deletion:
 
 ## Archive a project
 
-When you archive a project, the repository, packages, issues, merge requests, and all
-other features become read-only, with the exception of active pipeline schedules.
+When you archive a project, some features become read-only.
+These features are still accessible, but not writable.
+
+- Repository
+- Packages
+- Issues
+- Merge requests
+- Feature flags
+- All other project features
+
+Active pipeline schedules of archived projects don't become read-only.
 
 Archived projects are:
 

@@ -1,6 +1,6 @@
 ---
 description: A comment on a design was removed
-category: InternalEventTracking
+internal_events: true
 action: g_project_management_issue_design_comments_removed
 label_description:
 property_description:

@@ -1,6 +1,6 @@
 ---
 description: A design was added to an issue
-category: InternalEventTracking
+internal_events: true
 action: g_project_management_issue_designs_added
 label_description:
 property_description:

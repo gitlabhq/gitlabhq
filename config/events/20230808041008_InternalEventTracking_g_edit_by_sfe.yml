@@ -1,6 +1,6 @@
 ---
 description: A file has been edited from the single file editor
-category: InternalEventTracking
+internal_events: true
 action: g_edit_by_sfe
 label_description:
 property_description:

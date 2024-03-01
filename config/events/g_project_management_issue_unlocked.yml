@@ -1,6 +1,6 @@
 ---
 description: An issue was unlocked
-category: InternalEventTracking
+internal_events: true
 action: g_project_management_issue_unlocked
 label_description:
 property_description:

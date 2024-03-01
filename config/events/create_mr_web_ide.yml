@@ -1,6 +1,6 @@
 ---
 description: Create new MR from WebIDE
-category: InternalEventTracking
+internal_events: true
 action: create_mr_web_ide
 identifiers:
   - project

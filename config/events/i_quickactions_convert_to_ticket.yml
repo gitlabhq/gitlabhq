@@ -1,6 +1,6 @@
 ---
 description: When the quickaction /convert_to_ticket is executed on an issue
-category: InternalEventTracking
+internal_events: true
 action: i_quickactions_convert_to_ticket
 identifiers:
 - user

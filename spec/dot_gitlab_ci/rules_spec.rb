@@ -51,6 +51,51 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
     end
   end
 
+  describe '.rails:rules:ee-and-foss-default-rules' do
+    let(:base_rules) { config.dig('.rails:rules:ee-and-foss-default-rules', 'rules') }
+
+    context 'with .rails:rules:rspec-predictive' do
+      let(:derived_rules) { config.dig('.rails:rules:rspec-predictive', 'rules') }
+
+      it 'has the "when: never" in reverse compared to the base' do
+        base_rules.zip(derived_rules).each do |(base, derived)|
+          # exception: `.if-merge-request-labels-pipeline-expedite` should both be set to "never",
+          #            because when we set this label on an MR, we don't want to run either jobs.
+          if base['if'] == config['.if-merge-request-labels-pipeline-expedite']['if']
+            expect(derived).to eq(base)
+            expect(derived['when']).to eq('never')
+            next
+          end
+
+          # exception: `.if-merge-request-not-approved` in the base should be `.if-merge-request-approved` in derived.
+          #            The base wants to run when the MR is approved, and the derived wants to run if it's not approved,
+          #            and both are specifying this with `when: never`.
+          if base['if'] == config['.if-merge-request-not-approved']['if']
+            expect(derived).to eq(base.merge(config['.if-merge-request-approved']))
+            expect(derived['when']).to eq('never')
+            next
+          end
+
+          if base['when'] == 'never'
+            expect(derived).to eq(base.except('when'))
+          elsif base['when'].nil?
+            expect(derived).to eq(base.merge('when' => 'never'))
+          end
+        end
+      end
+
+      it 'contains an additional allow rule about code-backstage-patterns not present in the base' do
+        expected_rule = {
+          'if' => config['.if-merge-request']['if'],
+          'changes' => config['.code-backstage-patterns']
+        }
+
+        expect(base_rules).not_to include(expected_rule)
+        expect(derived_rules).to include(expected_rule)
+      end
+    end
+  end
+
   describe 'start-as-if-foss' do
     let(:base_rules) { config.dig('.as-if-foss:rules:start-as-if-foss', 'rules') }
 

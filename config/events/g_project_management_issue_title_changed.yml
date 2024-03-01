@@ -1,6 +1,6 @@
 ---
 description: Title of an issue changed
-category: InternalEventTracking
+internal_events: true
 action: g_project_management_issue_title_changed
 label_description:
 property_description:

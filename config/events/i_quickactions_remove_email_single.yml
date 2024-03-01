@@ -1,6 +1,6 @@
 ---
 description: Count usage of /remove_email quickaction with a single argument
-category: InternalEventTracking
+internal_events: true
 action: i_quickactions_remove_email_single
 label_description:
 property_description:

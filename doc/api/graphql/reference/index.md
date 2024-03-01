@@ -20639,6 +20639,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupgroupmembersaccesslevels"></a>`accessLevels` | [`[AccessLevelEnum!]`](#accesslevelenum) | Filter members by the given access levels. |
+| <a id="groupgroupmembersenterprise"></a>`enterprise` | [`Boolean`](#boolean) | Filter members by enterprise users. |
 | <a id="groupgroupmembersrelations"></a>`relations` | [`[GroupMemberRelation!]`](#groupmemberrelation) | Filter members by the given member relations. |
 | <a id="groupgroupmemberssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="groupgroupmemberssort"></a>`sort` | [`MemberSort`](#membersort) | sort query. |

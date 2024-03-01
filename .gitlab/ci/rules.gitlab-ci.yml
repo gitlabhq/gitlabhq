@@ -47,14 +47,14 @@
 .if-merge-request-approved: &if-merge-request-approved
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
+.if-merge-request-not-approved: &if-merge-request-not-approved
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
+
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
 
 .if-merge-request-and-devops-fulfillment: &if-merge-request-and-devops-fulfillment
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
-
-.if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-automated-merge-request: &if-automated-merge-request
   if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/'
@@ -351,7 +351,7 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
-# Redis patterns + feature flags
+# Redis patterns
 .redis-patterns: &redis-patterns
   - "{,ee/,jh/}{,spec/}app/models/concerns/redis_cacheable{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}app/models/ci/build_trace_chunks/redis{,_base,_trace_chunks}{,_spec}.rb"
@@ -364,9 +364,6 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/instrumentation/*.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/redis.rb"
   - "{,ee/,jh/}config/initializers/7_redis.rb"
-  # Feature flag changes
-  - "{,ee/,jh/}{,spec/}lib/feature.rb"
-  - "config/feature_flags/**/*"
 
 # AI patterns:
 .ai-patterns: &ai-patterns
@@ -681,6 +678,9 @@
 
 .rails:rules:ee-and-foss-default-rules:
   rules:
+    - <<: *if-fork-merge-request
+      changes: *code-backstage-patterns
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-run-all-rspec
@@ -1851,6 +1851,10 @@
     - if: '$ENABLE_RSPEC_SINGLE_REDIS == "true"'
     - <<: *if-merge-request
       changes: *redis-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request
+      changes: *feature-flag-development-config-patterns
     - <<: *if-default-branch-schedule-nightly
 
 .rails:rules:single-redis-ee:
@@ -1962,22 +1966,27 @@
     - <<: *if-default-refs
       changes: *db-patterns
 
+# Reverse rules compared to .rails:rules:ee-and-foss-default-rules
+#
+# See CI specs in spec/dot_gitlab_ci/rules_spec.rb for details.
 .rails:rules:rspec-predictive:
   rules:
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-merge-request-labels-run-all-rspec
+      when: never
     - <<: *if-merge-request
       changes: *core-backend-patterns
       when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-merge-request-approved
-      when: never
     - <<: *if-automated-merge-request
+      changes: *backend-patterns
       when: never
     - <<: *if-security-merge-request
+      changes: *backend-patterns
       when: never
-    - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-approved
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns

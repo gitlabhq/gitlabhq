@@ -1,6 +1,6 @@
 ---
 description: User visited /admin/dev_ops_reports
-category: InternalEventTracking
+internal_events: true
 action: i_analytics_dev_ops_score
 label_description:
 property_description:

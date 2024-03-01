@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with work_items_mvc_2' do |flag|
+RSpec.shared_context 'with work_items_beta' do |flag|
   before do
-    stub_feature_flags(work_items_mvc_2: flag)
+    stub_feature_flags(work_items_beta: flag)
 
     page.refresh
     wait_for_all_requests
@@ -13,8 +13,8 @@ RSpec.shared_examples 'work items title' do
   let(:title_selector) { '[data-testid="work-item-title"]' }
   let(:title_with_edit_selector) { '[data-testid="work-item-title-with-edit"]' }
 
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
@@ -27,8 +27,8 @@ RSpec.shared_examples 'work items title' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
-    include_context 'with work_items_mvc_2', true
+  context 'when the work_items_beta FF is enabled' do
+    include_context 'with work_items_beta', true
 
     it 'successfully shows and changes the title of the work item' do
       expect(work_item.reload.title).to eq work_item.title
@@ -167,8 +167,8 @@ RSpec.shared_examples 'work items comments' do |type|
 end
 
 RSpec.shared_examples 'work items assignees' do
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully assigns the current user by searching',
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
@@ -237,10 +237,10 @@ RSpec.shared_examples 'work items assignees' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
+  context 'when the work_items_beta FF is enabled' do
     let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'successfully assigns the current user by searching',
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/413074' do
@@ -294,8 +294,8 @@ RSpec.shared_examples 'work items labels' do
   let(:label_title_selector) { '[data-testid="labels-title"]' }
   let(:labels_input_selector) { '[data-testid="work-item-labels-input"]' }
 
-  context 'when work_items_mvc_2 is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when work_items_beta is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully assigns a label' do
       find(labels_input_selector).fill_in(with: label.title)
@@ -386,10 +386,10 @@ RSpec.shared_examples 'work items labels' do
     end
   end
 
-  context 'when work_items_mvc_2 is enabled' do
+  context 'when work_items_beta is enabled' do
     let(:work_item_labels_selector) { '[data-testid="work-item-labels-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'successfully applies the label by searching' do
       expect(work_item.reload.labels).not_to include(label)
@@ -452,11 +452,11 @@ RSpec.shared_examples 'work items labels' do
 end
 
 RSpec.shared_examples 'work items description' do
-  context 'for work_items_mvc_2 FF' do
-    [true, false].each do |work_items_mvc_2_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
-      let(:edit_button) { work_items_mvc_2_flag ? 'Edit' : 'Edit description' }
+  context 'for work_items_beta FF' do
+    [true, false].each do |work_items_beta_flag| # rubocop:disable RSpec/UselessDynamicDefinition -- check it for both off and on
+      let(:edit_button) { work_items_beta_flag ? 'Edit' : 'Edit description' }
 
-      include_context 'with work_items_mvc_2', work_items_mvc_2_flag
+      include_context 'with work_items_beta', work_items_beta_flag
 
       it 'shows GFM autocomplete', :aggregate_failures do
         click_button edit_button, match: :first
@@ -515,8 +515,8 @@ end
 RSpec.shared_examples 'work items invite members' do
   include Features::InviteMembersModalHelpers
 
-  context 'when the work_items_mvc_2 FF is disabled' do
-    include_context 'with work_items_mvc_2', false
+  context 'when the work_items_beta FF is disabled' do
+    include_context 'with work_items_beta', false
 
     it 'successfully assigns the current user by searching' do
       # The button is only when the mouse is over the input
@@ -531,10 +531,10 @@ RSpec.shared_examples 'work items invite members' do
     end
   end
 
-  context 'when the work_items_mvc_2 FF is enabled' do
+  context 'when the work_items_beta FF is enabled' do
     let(:work_item_assignees_selector) { '[data-testid="work-item-assignees-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'successfully assigns the current user by searching' do
       # The button is only when the mouse is over the input
@@ -551,8 +551,8 @@ RSpec.shared_examples 'work items invite members' do
 end
 
 RSpec.shared_examples 'work items milestone' do
-  context 'on work_items_mvc_2 FF off' do
-    include_context 'with work_items_mvc_2', false
+  context 'on work_items_beta FF off' do
+    include_context 'with work_items_beta', false
 
     it 'searches and sets or removes milestone for the work item' do
       click_button s_('WorkItem|Add to milestone')
@@ -568,10 +568,10 @@ RSpec.shared_examples 'work items milestone' do
     end
   end
 
-  context 'on work_items_mvc_2 FF on' do
+  context 'on work_items_beta FF on' do
     let(:work_item_milestone_selector) { '[data-testid="work-item-milestone-with-edit"]' }
 
-    include_context 'with work_items_mvc_2', true
+    include_context 'with work_items_beta', true
 
     it 'passes axe automated accessibility testing in closed state' do
       expect(page).to be_axe_clean.within(work_item_milestone_selector)
@@ -787,7 +787,7 @@ RSpec.shared_examples 'work items iteration' do
     )
   end
 
-  include_context 'with work_items_mvc_2', true
+  include_context 'with work_items_beta', true
 
   context 'for accessibility' do
     it 'has the work item iteration with edit' do

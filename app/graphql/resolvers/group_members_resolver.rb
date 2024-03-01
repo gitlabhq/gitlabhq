@@ -15,6 +15,10 @@ module Resolvers
               description: 'Filter members by the given access levels.',
               required: false
 
+    argument :enterprise, GraphQL::Types::Boolean,
+              description: 'Filter members by enterprise users.',
+              required: false
+
     private
 
     def finder_class

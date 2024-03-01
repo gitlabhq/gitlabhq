@@ -41,7 +41,7 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
-    workItemsMvc2 = true,
+    workItemsBeta = true,
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       propsData: {
@@ -55,8 +55,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
-          workItemsBeta: true,
-          workItemsMvc2,
+          workItemsBeta,
         },
       },
       stubs: {
@@ -96,17 +95,17 @@ describe('WorkItemAttributesWrapper component', () => {
     });
 
     it.each`
-      description                                                   | labelsWidgetInlinePresent | labelsWidgetWithEditPresent | workItemsMvc2FlagEnabled
-      ${'renders WorkItemLabels when workItemsMvc2 enabled'}        | ${false}                  | ${true}                     | ${true}
-      ${'renders WorkItemLabelsInline when workItemsMvc2 disabled'} | ${true}                   | ${false}                    | ${false}
+      description                                                   | labelsWidgetInlinePresent | labelsWidgetWithEditPresent | workItemsBetaFlagEnabled
+      ${'renders WorkItemLabels when workItemsBeta enabled'}        | ${false}                  | ${true}                     | ${true}
+      ${'renders WorkItemLabelsInline when workItemsBeta disabled'} | ${true}                   | ${false}                    | ${false}
     `(
       '$description',
       async ({
         labelsWidgetInlinePresent,
         labelsWidgetWithEditPresent,
-        workItemsMvc2FlagEnabled,
+        workItemsBetaFlagEnabled,
       }) => {
-        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+        createComponent({ workItemsBeta: workItemsBetaFlagEnabled });
 
         await waitForPromises();
 
@@ -131,17 +130,17 @@ describe('WorkItemAttributesWrapper component', () => {
     });
 
     it.each`
-      description                                                     | dueDateWidgetInlinePresent | dueDateWidgetWithEditPresent | workItemsMvc2FlagEnabled
-      ${'renders WorkItemDueDateWithEdit when workItemsMvc2 enabled'} | ${false}                   | ${true}                      | ${true}
-      ${'renders WorkItemDueDateInline when workItemsMvc2 disabled'}  | ${true}                    | ${false}                     | ${false}
+      description                                                     | dueDateWidgetInlinePresent | dueDateWidgetWithEditPresent | workItemsBetaFlagEnabled
+      ${'renders WorkItemDueDateWithEdit when workItemsBeta enabled'} | ${false}                   | ${true}                      | ${true}
+      ${'renders WorkItemDueDateInline when workItemsBeta disabled'}  | ${true}                    | ${false}                     | ${false}
     `(
       '$description',
       async ({
         dueDateWidgetInlinePresent,
         dueDateWidgetWithEditPresent,
-        workItemsMvc2FlagEnabled,
+        workItemsBetaFlagEnabled,
       }) => {
-        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+        createComponent({ workItemsBeta: workItemsBetaFlagEnabled });
 
         await waitForPromises();
 
@@ -164,17 +163,17 @@ describe('WorkItemAttributesWrapper component', () => {
     });
 
     it.each`
-      description                                                      | milestoneWidgetInlinePresent | milestoneWidgetWithEditPresent | workItemsMvc2FlagEnabled
-      ${'renders WorkItemMilestone when workItemsMvc2 enabled'}        | ${false}                     | ${true}                        | ${true}
-      ${'renders WorkItemMilestoneInline when workItemsMvc2 disabled'} | ${true}                      | ${false}                       | ${false}
+      description                                                      | milestoneWidgetInlinePresent | milestoneWidgetWithEditPresent | workItemsBetaFlagEnabled
+      ${'renders WorkItemMilestone when workItemsBeta enabled'}        | ${false}                     | ${true}                        | ${true}
+      ${'renders WorkItemMilestoneInline when workItemsBeta disabled'} | ${true}                      | ${false}                       | ${false}
     `(
       '$description',
       async ({
         milestoneWidgetInlinePresent,
         milestoneWidgetWithEditPresent,
-        workItemsMvc2FlagEnabled,
+        workItemsBetaFlagEnabled,
       }) => {
-        createComponent({ workItemsMvc2: workItemsMvc2FlagEnabled });
+        createComponent({ workItemsBeta: workItemsBetaFlagEnabled });
 
         await waitForPromises();
 
@@ -203,7 +202,7 @@ describe('WorkItemAttributesWrapper component', () => {
       });
     });
 
-    it('renders WorkItemParent when workItemsMvc2 enabled', async () => {
+    it('renders WorkItemParent when workItemsBeta enabled', async () => {
       createComponent();
 
       await waitForPromises();
@@ -212,8 +211,8 @@ describe('WorkItemAttributesWrapper component', () => {
       expect(findWorkItemParentInline().exists()).toBe(false);
     });
 
-    it('renders WorkItemParentInline when workItemsMvc2 disabled', async () => {
-      createComponent({ workItemsMvc2: false });
+    it('renders WorkItemParentInline when workItemsBeta disabled', async () => {
+      createComponent({ workItemsBeta: false });
 
       await waitForPromises();
 

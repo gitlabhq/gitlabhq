@@ -1,6 +1,6 @@
 ---
 description: Tracks when Web IDE is viewed
-category: InternalEventTracking
+internal_events: true
 action: web_ide_viewed
 label_description:
 property_description:

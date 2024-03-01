@@ -42,9 +42,9 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_button _('More actions')
     end
 
-    context 'when work_items_mvc_2 is disabled' do
+    context 'when work_items_beta is disabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: false)
+        stub_feature_flags(work_items_beta: false)
 
         page.refresh
         wait_for_all_requests
@@ -70,9 +70,9 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
     end
 
-    context 'when work_items_mvc_2 is enabled' do
+    context 'when work_items_beta is enabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: true)
+        stub_feature_flags(work_items_beta: true)
 
         page.refresh
         wait_for_all_requests
@@ -158,9 +158,9 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       expect(page).to have_selector('[data-testid="award-button"].disabled')
     end
 
-    context 'when work_items_mvc_2 is disabled' do
+    context 'when work_items_beta is disabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: false)
+        stub_feature_flags(work_items_beta: false)
 
         page.refresh
         wait_for_all_requests
@@ -179,9 +179,9 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
       end
     end
 
-    context 'when work_items_mvc_2 is enabled' do
+    context 'when work_items_beta is enabled' do
       before do
-        stub_feature_flags(work_items_mvc_2: true)
+        stub_feature_flags(work_items_beta: true)
 
         page.refresh
         wait_for_all_requests

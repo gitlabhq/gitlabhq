@@ -46,7 +46,7 @@ A typical Git user encounters these concepts soon after starting to use Git:
 - [`git add`](../../gitlab-basics/add-file.md) to start tracking files with Git.
 - [Tags](../../user/project/repository/tags/index.md) and
   [branches](../../user/project/repository/branches/index.md).
-- [How to undo mistakes](numerous_undo_possibilities_in_git/index.md),
+- [How to undo mistakes](undo.md),
   including [`git reset`](rollback_commits.md).
 - View a chronological list of changes to a file with
   [Git history](../../user/project/repository/git_history.md).

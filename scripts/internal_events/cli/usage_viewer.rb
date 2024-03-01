@@ -97,7 +97,9 @@ module InternalEventsCli
         #{divider}
         #{format_help('# RAILS')}
 
-        Gitlab::InternalEvents.track_event(#{action}#{args.join(",\n")}#{"\n" unless args.empty?})
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(#{action}#{args.join(",\n")}#{"\n" unless args.empty?})
 
         #{divider}
       TEXT

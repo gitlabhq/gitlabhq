@@ -157,8 +157,9 @@ module InternalEventsCli
 
       #{format_info('BACKEND')}: Attributes must be specified when the event is triggered
         ex) User, project, and namespace are the identifiers available for backend instrumentation:
+          include Gitlab::InternalEventsTracking
 
-          Gitlab::InternalEvents.track_event(
+          track_internal_event(
             '%s',
             user: user,
             project: project,

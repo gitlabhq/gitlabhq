@@ -1,6 +1,6 @@
 ---
 description: User viewed analytics devops adoption
-category: InternalEventTracking
+internal_events: true
 action: i_analytics_dev_ops_adoption
 label_description:
 property_description:

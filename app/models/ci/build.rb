@@ -146,9 +146,7 @@ module Ci
       where('EXISTS (?)', ::Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").merge(query))
     end
 
-    scope :without_archived_trace, -> do
-      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").trace)
-    end
+    scope :without_archived_trace, -> { where_not_exists(Ci::JobArtifact.scoped_build.trace) }
 
     scope :with_artifacts, ->(artifact_scope) do
       with_existing_job_artifacts(artifact_scope)

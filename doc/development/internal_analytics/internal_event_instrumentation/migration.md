@@ -37,7 +37,9 @@ Gitlab::Tracking.event(name, 'ci_templates_unique', namespace: namespace,
 The code above can be replaced by this:
 
 ```ruby
-Gitlab::InternalEvents.track_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
+include Gitlab::InternalEventsTracking
+
+track_internal_event('ci_templates_unique', namespace: namespace, project: project, user: user, additional_properties: { label: label })
 ```
 
 The `label`, `property` and `value` attributes need to be sent inside the `additional_properties` hash. In case they were not included in the original call, the `additional_properties` argument can be skipped.
@@ -140,18 +142,20 @@ To start using Internal Events Tracking, follow these steps:
 
    Use `project.id` or `namespace.id` instead of `user.id` if your metric is counting something other than unique users.
 1. Remove the `options` section from both metric definition files.
-1. Call `InternalEvents.track_event` instead of `HLLRedisCounter.track_event`:
+1. Include the `Gitlab::InternalEventsTracking` module and call `track_internal_event` instead of `HLLRedisCounter.track_event`:
 
     ```diff
     - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + Gitlab::InternalEvents.track_event('project_created', user: current_user)
+    + include Gitlab::InternalEventsTracking
+    + track_internal_event('project_created', user: current_user)
     ```
 
 1. Optional. Add additional values to the event. You typically want to add `project` and `namespace` as it is useful information to have in the data warehouse.
 
     ```diff
     - Gitlab::UsageDataCounters::HLLRedisCounter.track_event(:git_write_action, values: current_user.id)
-    + Gitlab::InternalEvents.track_event('project_created', user: current_user, project: project, namespace: namespace)
+    + include Gitlab::InternalEventsTracking
+    + track_internal_event('project_created', user: current_user, project: project, namespace: namespace)
     ```
 
 1. Update your test to use the `internal event tracking` shared example.

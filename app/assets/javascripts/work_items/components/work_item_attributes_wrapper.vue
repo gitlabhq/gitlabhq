@@ -128,6 +128,9 @@ export default {
     workItemAuthor() {
       return this.workItem?.author;
     },
+    workItemsBetaFeaturesEnabled() {
+      return this.glFeatures.workItemsBeta;
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -141,7 +144,7 @@ export default {
   <div class="work-item-attributes-wrapper">
     <template v-if="workItemAssignees">
       <work-item-assignees-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
@@ -168,7 +171,7 @@ export default {
     </template>
     <template v-if="workItemLabels">
       <work-item-labels-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :can-update="canUpdate"
         :full-path="fullPath"
@@ -188,7 +191,7 @@ export default {
     </template>
     <template v-if="workItemWeight">
       <work-item-weight
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :can-update="canUpdate"
         :weight="workItemWeight.weight"
@@ -210,7 +213,7 @@ export default {
     </template>
     <template v-if="workItemMilestone">
       <work-item-milestone-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :full-path="fullPath"
         :work-item-id="workItem.id"
@@ -232,7 +235,7 @@ export default {
     </template>
     <template v-if="workItemIteration">
       <work-item-iteration
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :full-path="fullPath"
         :iteration="workItemIteration.iteration"
@@ -256,7 +259,7 @@ export default {
     </template>
     <template v-if="workItemDueDate">
       <work-item-due-date-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         :can-update="canUpdate"
         :due-date="workItemDueDate.dueDate"
         :start-date="workItemDueDate.startDate"
@@ -276,7 +279,7 @@ export default {
     </template>
     <template v-if="workItemProgress">
       <work-item-progress-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :can-update="canUpdate"
         :progress="workItemProgress.progress"
@@ -296,7 +299,7 @@ export default {
     </template>
     <template v-if="workItemHealthStatus">
       <work-item-health-status
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :health-status="workItemHealthStatus.healthStatus"
         :can-update="canUpdate"
@@ -318,7 +321,7 @@ export default {
     </template>
     <template v-if="workItemColor">
       <work-item-color-with-edit
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5"
         :work-item="workItem"
         :can-update="canUpdate"
@@ -334,7 +337,7 @@ export default {
     </template>
     <template v-if="workItemHierarchy">
       <work-item-parent
-        v-if="glFeatures.workItemsMvc2"
+        v-if="workItemsBetaFeaturesEnabled"
         class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
         :can-update="canUpdate"
         :work-item-id="workItem.id"
@@ -353,13 +356,13 @@ export default {
       />
     </template>
     <work-item-time-tracking
-      v-if="workItemTimeTracking && glFeatures.workItemsMvc2"
+      v-if="workItemTimeTracking && workItemsBetaFeaturesEnabled"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :time-estimate="workItemTimeTracking.timeEstimate"
       :total-time-spent="workItemTimeTracking.totalTimeSpent"
     />
     <participants
-      v-if="workItemParticipants && glFeatures.workItemsBeta"
+      v-if="workItemParticipants && workItemsBetaFeaturesEnabled"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
       :number-of-less-participants="10"
       :participants="workItemParticipants.participants.nodes"

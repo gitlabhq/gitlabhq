@@ -1,6 +1,6 @@
 ---
 description: When a pipeline is created with a CI Template file included in its configuration.
-category: InternalEventTracking
+internal_events: true
 action: ci_template_included
 label_description:
 property_description:

@@ -172,6 +172,10 @@ module Ci
     scope :id_before, ->(id) { where(arel_table[:id].lteq(id)) }
     scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
     scope :ordered_by_id, -> { order(:id) }
+    scope :scoped_build, -> {
+      where(arel_table[:job_id].eq(Ci::Build.arel_table[:id]))
+      .where(arel_table[:partition_id].eq(Ci::Build.arel_table[:partition_id]))
+    }
 
     scope :with_job, -> { joins(:job).includes(:job) }
 
