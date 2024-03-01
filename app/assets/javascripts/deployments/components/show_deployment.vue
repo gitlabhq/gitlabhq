@@ -1,11 +1,14 @@
 <script>
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
+import { toggleQueryPollingByVisibility, etagQueryHeaders } from '~/graphql_shared/utils';
 import { s__ } from '~/locale';
 import deploymentQuery from '../graphql/queries/deployment.query.graphql';
 import environmentQuery from '../graphql/queries/environment.query.graphql';
 import DeploymentHeader from './deployment_header.vue';
 import DeploymentAside from './deployment_aside.vue';
+
+const DEPLOYMENT_QUERY_POLLING_INTERVAL = 3000;
 
 export default {
   components: {
@@ -17,7 +20,7 @@ export default {
       import('ee_component/deployments/components/deployment_approvals.vue'),
     DeploymentTimeline: () => import('ee_component/deployments/components/deployment_timeline.vue'),
   },
-  inject: ['projectPath', 'deploymentIid', 'environmentName'],
+  inject: ['projectPath', 'deploymentIid', 'environmentName', 'graphqlEtagKey'],
   apollo: {
     deployment: {
       query: deploymentQuery,
@@ -31,6 +34,10 @@ export default {
         captureException(error);
         this.errorMessage = this.$options.i18n.errorMessage;
       },
+      context() {
+        return etagQueryHeaders('deployment_details', this.graphqlEtagKey);
+      },
+      poll: DEPLOYMENT_QUERY_POLLING_INTERVAL,
     },
     environment: {
       query: environmentQuery,
@@ -56,6 +63,12 @@ export default {
     hasApprovalSummary() {
       return Boolean(this.deployment.approvalSummary);
     },
+  },
+  mounted() {
+    toggleQueryPollingByVisibility(
+      this.$apollo.queries.deployment,
+      DEPLOYMENT_QUERY_POLLING_INTERVAL,
+    );
   },
   i18n: {
     header: s__('Deployment|Deployment #%{iid}'),
@@ -86,6 +99,7 @@ export default {
           :approval-summary="deployment.approvalSummary"
           :deployment="deployment"
           class="gl-mt-8 gl-w-90p"
+          @change="$apollo.queries.deployment.refetch()"
         />
         <deployment-timeline
           v-if="hasApprovalSummary"

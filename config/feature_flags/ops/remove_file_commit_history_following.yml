@@ -1,0 +1,9 @@
+---
+name: remove_file_commit_history_following
+feature_issue_url: https://gitlab.com/gitlab-org/gitaly/-/issues/5821
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144263
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441312
+milestone: '16.10'
+group: group::gitaly
+type: ops
+default_enabled: false

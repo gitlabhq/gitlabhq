@@ -712,18 +712,16 @@ Instead, follow the [API topic template](../restful_api_styleguide.md#api-topic-
 
 ### Footnotes
 
-Use footnotes below tables when it's not suitable to include the content in the table
-itself. For example, use footnotes when you need to:
+Use footnotes below tables only when you cannot include the content in the table itself.
+For example, use footnotes when you must:
 
-- Provide the same reference information on several table cells.
+- Provide the same information in several table cells.
 - Include content that would disrupt the table's layout.
 
 #### Footnote format
 
-For each footnote, use the HTML superscript tag `<sup>`.
-Put the tag at the end of the sentence or term.
-
-When you add a footnote, do not re-sort the existing tags in the table.
+In the table, use the HTML superscript tag `<sup>` for each footnote.
+Put the tag at the end after any punctuation mark.
 
 For example:
 
@@ -734,39 +732,30 @@ For example:
 | App B    | Description text. <sup>2</sup> |
 ```
 
-For the footnotes below the table, use the HTML tags `<small>`, `<ol>` and `<li>`.
+When you add a footnote, do not re-sort the existing tags in the table.
 
-NOTE:
-To format text in footnotes (for example, to use emphasis or links), you must use HTML rather than Markdown.
+For the footnotes below the table, use **Footnotes:** followed by an ordered list.
 
 For example:
 
-```html
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+```markdown
+**Footnotes:**
+
+1. This is the footnote.
+1. This is the other footnote.
 ```
 
-This text renders as this output:
+The table and footnotes would render as follows:
 
 | App name | Description                    |
 |:---------|:-------------------------------|
 | App A    | Description text. <sup>1</sup> |
 | App B    | Description text. <sup>2</sup> |
 
-<html>
-<small>Footnotes:
-  <ol>
-    <li>This is the footnote.</li>
-    <li>This is the other footnote.</li>
-  </ol>
-</small>
-</html>
+**Footnotes:**
+
+1. This is the footnote.
+1. This is the other footnote.
 
 ## Quotes
 

@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Use Git branches to develop new features. Add branch protections to critical branches to ensure only trusted users can merge into them."
 ---
 
 # Default branch

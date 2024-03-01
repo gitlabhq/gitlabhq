@@ -1029,40 +1029,59 @@ describe('buildClient', () => {
   });
 
   describe('fetchLogs', () => {
-    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
-    it('fetches logs from the tracing URL', async () => {
-      const mockResponse = {
-        results: [
-          {
-            timestamp: '2024-01-28T10:36:08.2960655Z',
-            trace_id: 'trace-id',
-            span_id: 'span-id',
-            trace_flags: 1,
-            severity_text: 'Information',
-            severity_number: 1,
-            service_name: 'a/service/name',
-            body: 'GetCartAsync called with userId={userId} ',
-            resource_attributes: {
-              'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
-              'k8s.deployment.name': 'otel-demo-cartservice',
-              'k8s.namespace.name': 'otel-demo-app',
-            },
-            log_attributes: {
-              userId: '',
-            },
+    const mockResponse = {
+      results: [
+        {
+          timestamp: '2024-01-28T10:36:08.2960655Z',
+          trace_id: 'trace-id',
+          span_id: 'span-id',
+          trace_flags: 1,
+          severity_text: 'Information',
+          severity_number: 1,
+          service_name: 'a/service/name',
+          body: 'GetCartAsync called with userId={userId} ',
+          resource_attributes: {
+            'container.id': '8aae63236c224245383acd38611a4e32d09b7630573421fcc801918eda378bf5',
+            'k8s.deployment.name': 'otel-demo-cartservice',
+            'k8s.namespace.name': 'otel-demo-app',
           },
-        ],
-      };
+          log_attributes: {
+            userId: '',
+          },
+        },
+      ],
+      next_page_token: 'test-token',
+    };
+    const FETCHING_LOGS_ERROR = 'logs are missing/invalid in the response';
 
+    beforeEach(() => {
       axiosMock.onGet(logsSearchUrl).reply(200, mockResponse);
+    });
 
+    it('fetches logs from the tracing URL', async () => {
       const result = await client.fetchLogs();
 
       expect(axios.get).toHaveBeenCalledTimes(1);
       expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
         withCredentials: true,
+        params: expect.any(URLSearchParams),
       });
-      expect(result).toEqual(mockResponse.results);
+      expect(result).toEqual({
+        logs: mockResponse.results,
+        nextPageToken: mockResponse.next_page_token,
+      });
+    });
+
+    it('appends page_token if specified', async () => {
+      await client.fetchLogs({ pageToken: 'page-token' });
+
+      expect(getQueryParam()).toContain('page_token=page-token');
+    });
+
+    it('appends page_size if specified', async () => {
+      await client.fetchLogs({ pageSize: 10 });
+
+      expect(getQueryParam()).toContain('page_size=10');
     });
 
     it('rejects if logs are missing', async () => {
@@ -1073,7 +1092,7 @@ describe('buildClient', () => {
     });
 
     it('rejects if logs are invalid', async () => {
-      axiosMock.onGet(logsSearchUrl).reply(200, { logs: 'invalid' });
+      axiosMock.onGet(logsSearchUrl).reply(200, { results: 'invalid' });
 
       await expect(client.fetchLogs()).rejects.toThrow(FETCHING_LOGS_ERROR);
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));

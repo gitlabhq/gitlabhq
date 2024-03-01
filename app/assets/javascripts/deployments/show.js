@@ -11,7 +11,7 @@ export const initializeShowDeployment = (selector = 'js-deployment-details') => 
     const apolloProvider = new VueApollo({
       defaultClient: createDefaultClient(),
     });
-    const { projectPath, deploymentIid, environmentName } = el.dataset;
+    const { projectPath, deploymentIid, environmentName, graphqlEtagKey } = el.dataset;
 
     return new Vue({
       el,
@@ -20,6 +20,7 @@ export const initializeShowDeployment = (selector = 'js-deployment-details') => 
         projectPath,
         deploymentIid,
         environmentName,
+        graphqlEtagKey,
       },
       render(h) {
         return h(ShowDeployment);

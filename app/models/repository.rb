@@ -153,7 +153,7 @@ class Repository
       ref: ref,
       path: opts[:path],
       author: opts[:author],
-      follow: Array(opts[:path]).length == 1,
+      follow: Array(opts[:path]).length == 1 && Feature.disabled?(:remove_file_commit_history_following, type: :ops),
       limit: opts[:limit],
       offset: opts[:offset],
       skip_merges: !!opts[:skip_merges],

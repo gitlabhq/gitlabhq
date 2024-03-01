@@ -446,15 +446,27 @@ async function fetchMetricSearchMetadata(searchMetadataUrl, name, type) {
   }
 }
 
-export async function fetchLogs(logsSearchUrl) {
+export async function fetchLogs(logsSearchUrl, { pageToken, pageSize } = {}) {
   try {
+    const params = new URLSearchParams();
+    if (pageToken) {
+      params.append('page_token', pageToken);
+    }
+    if (pageSize) {
+      params.append('page_size', pageSize);
+    }
+
     const { data } = await axios.get(logsSearchUrl, {
       withCredentials: true,
+      params,
     });
     if (!Array.isArray(data.results)) {
       throw new Error('logs are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
     }
-    return data.results;
+    return {
+      logs: data.results,
+      nextPageToken: data.next_page_token,
+    };
   } catch (e) {
     return reportErrorAndThrow(e);
   }
@@ -526,6 +538,6 @@ export function buildClient(config) {
       fetchMetric(metricsSearchUrl, metricName, metricType, options),
     fetchMetricSearchMetadata: (metricName, metricType) =>
       fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
-    fetchLogs: () => fetchLogs(logsSearchUrl),
+    fetchLogs: (options) => fetchLogs(logsSearchUrl, options),
   };
 }

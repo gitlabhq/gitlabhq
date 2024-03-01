@@ -4,7 +4,7 @@
 require 'json'
 
 class ReleaseEnvironmentsModel
-  COMPONENTS = %w[gitaly registry kas mailroom pages gitlab shell].freeze
+  COMPONENTS = %w[gitaly registry kas mailroom pages gitlab shell praefect].freeze
 
   # Will generate a json object that has a key for every component and a value which is the environment combined with
   # short sha

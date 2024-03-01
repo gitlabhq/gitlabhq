@@ -14,11 +14,6 @@ module Resolvers
       alias_method :organization, :object
 
       def finder_params(args)
-        if %w[path_asc path_desc].include?(args[:sort]) &&
-            Feature.disabled?(:project_path_sort, current_user, type: :gitlab_com_derisk)
-          args.delete(:sort)
-        end
-
         super.merge(organization: organization)
       end
     end

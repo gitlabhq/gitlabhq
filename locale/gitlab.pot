@@ -33983,6 +33983,9 @@ msgstr ""
 msgid "ObservabilityLogs|Service"
 msgstr ""
 
+msgid "ObservabilityLogs|Showing %{count} logs"
+msgstr ""
+
 msgid "ObservabilityLogs|Trace"
 msgstr ""
 

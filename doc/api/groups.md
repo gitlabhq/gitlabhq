@@ -328,7 +328,7 @@ Parameters:
 <html>
 <small>Footnotes:
   <ol>
-    <li>Order by similarity: Orders the results by a similarity score calculated from the provided `search` URL parameter. When using `order_by=similarity`, the `sort` parameter is ignored. When the `search` parameter is not provided, the API returns the projects ordered by `name`.</li>
+    <li>Order by similarity: Orders the results by a similarity score calculated from the provided <code>search</code> URL parameter. When using <code>order_by=similarity</code>, the <code>sort</code> parameter is ignored. When the <code>search</code> parameter is not provided, the API returns the projects ordered by <code>name</code>.</li>
   </ol>
 </small>
 </html>

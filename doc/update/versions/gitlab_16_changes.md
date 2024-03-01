@@ -64,6 +64,21 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   packaged GitLab 16.0 and later does not automatically create the directory structure.
   [Read the issue for more details and the workaround](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8320).
 
+## 16.10.0
+
+### Linux package installations
+
+Linux package installations for GitLab 16.10 include an upgrade to a new major version of Patroni, from version 2.1.0 to version 3.0.1.
+
+If you're using one of the [reference architectures](../../administration/reference_architectures/index.md)
+that enables [High Availability (HA)](../../administration/reference_architectures/index.md#high-availability-ha)
+(3k users or more), you're using
+[PostgreSQL replication and failover for Linux package installations](../../administration/postgresql/replication_and_failover.md), which uses Patroni.
+
+If this is your case, read [Multi-node upgrades with downtime](../../update/with_downtime.md) on how to upgrade your multi-node instance.
+
+For more information on the changes introduced between version 2.1.0 and version 3.0.1, see the [Patroni release notes](https://patroni.readthedocs.io/en/latest/releases.html).
+
 ## 16.9.0
 
 You might encounter the following error while upgrading to GitLab 16.9.0:

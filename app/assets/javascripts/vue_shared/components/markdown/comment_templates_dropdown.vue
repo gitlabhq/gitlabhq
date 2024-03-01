@@ -3,18 +3,33 @@ import { GlCollapsibleListbox, GlTooltip, GlButton } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { getDerivedMergeRequestInformation } from '~/diffs/utils/merge_request';
 import { InternalEvents } from '~/tracking';
-import savedRepliesQuery from './saved_replies.query.graphql';
+import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import {
   TRACKING_SAVED_REPLIES_USE,
   TRACKING_SAVED_REPLIES_USE_IN_MR,
   TRACKING_SAVED_REPLIES_USE_IN_OTHER,
-} from './constants';
+  COMMENT_TEMPLATES_KEYS,
+  COMMENT_TEMPLATES_TITLES,
+} from 'ee_else_ce/vue_shared/components/markdown/constants';
 
 export default {
   apollo: {
     savedReplies: {
       query: savedRepliesQuery,
-      update: (r) => r.currentUser?.savedReplies?.nodes,
+      manual: true,
+      result({ data, loading }) {
+        if (!loading) {
+          this.savedReplies = data;
+        }
+      },
+      variables() {
+        const groupPath = document.body.dataset.groupFullPath;
+
+        return {
+          groupPath,
+          hideGroup: !groupPath,
+        };
+      },
       skip() {
         return !this.shouldFetchCommentTemplates;
       },
@@ -35,18 +50,37 @@ export default {
   data() {
     return {
       shouldFetchCommentTemplates: false,
-      savedReplies: [],
+      savedReplies: {},
       commentTemplateSearch: '',
       loadingSavedReplies: false,
     };
   },
   computed: {
+    allSavedReplies() {
+      return COMMENT_TEMPLATES_KEYS.map((key) => ({
+        text: COMMENT_TEMPLATES_TITLES[key],
+        options: (this.savedReplies[key]?.savedReplies?.nodes || []).map((r) => ({
+          value: r.id,
+          text: r.name,
+          content: r.content,
+        })),
+      }));
+    },
     filteredSavedReplies() {
-      const savedReplies = this.commentTemplateSearch
-        ? fuzzaldrinPlus.filter(this.savedReplies, this.commentTemplateSearch, { key: ['name'] })
-        : this.savedReplies;
+      let savedReplies = this.allSavedReplies;
 
-      return savedReplies.map((r) => ({ value: r.id, text: r.name, content: r.content }));
+      if (this.commentTemplateSearch) {
+        savedReplies = savedReplies
+          .map((group) => ({
+            ...group,
+            options: fuzzaldrinPlus.filter(group.options, this.commentTemplateSearch, {
+              key: ['text'],
+            }),
+          }))
+          .filter(({ options }) => options.length);
+      }
+
+      return savedReplies.filter(({ options }) => options.length);
     },
   },
   mounted() {
@@ -60,8 +94,16 @@ export default {
       this.commentTemplateSearch = search;
     },
     onSelect(id) {
+      let savedReply;
       const isInMr = Boolean(getDerivedMergeRequestInformation({ endpoint: window.location }).id);
-      const savedReply = this.savedReplies.find((r) => r.id === id);
+
+      for (let i = 0, len = this.allSavedReplies.length; i < len; i += 1) {
+        const { options } = this.allSavedReplies[i];
+        savedReply = options.find(({ value }) => value === id);
+
+        if (savedReply) break;
+      }
+
       if (savedReply) {
         this.$emit('select', savedReply.content);
         this.trackEvent(TRACKING_SAVED_REPLIES_USE);

@@ -3,12 +3,11 @@ import { createAlert, VARIANT_SUCCESS } from '~/alert';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import runnerCreateMutation from '~/ci/runner/graphql/new/runner_create.mutation.graphql';
 import RegistrationCompatibilityAlert from '~/ci/runner/components/registration/registration_compatibility_alert.vue';
 import RunnerGoogleCloudOption from '~/ci/runner/components/runner_google_cloud_option.vue';
 import RunnerPlatformsRadioGroup from '~/ci/runner/components/runner_platforms_radio_group.vue';
 import RunnerCreateForm from '~/ci/runner/components/runner_create_form.vue';
-import { DEFAULT_PLATFORM, GROUP_TYPE, PARAM_KEY_PLATFORM, I18N_CREATE_ERROR } from '../constants';
+import { DEFAULT_PLATFORM, GROUP_TYPE, PARAM_KEY_PLATFORM } from '../constants';
 import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 
 export default {
@@ -37,36 +36,6 @@ export default {
     },
   },
   methods: {
-    async createRunner(runnerInfo) {
-      try {
-        const {
-          data: {
-            runnerCreate: { errors, runner },
-          },
-        } = await this.$apollo.mutate({
-          mutation: runnerCreateMutation,
-          variables: {
-            input: runnerInfo,
-          },
-        });
-
-        if (errors?.length) {
-          this.onError(new Error(errors.join(' ')), true);
-          return;
-        }
-
-        if (!runner?.ephemeralRegisterUrl) {
-          // runner is missing information, report issue and
-          // fail naviation to register page.
-          this.onError(new Error(I18N_CREATE_ERROR));
-        }
-
-        // TODO: Find out what we want to display
-        // this.onSuccess(runner);
-      } catch (error) {
-        this.onError(error);
-      }
-    },
     onSaved(runner) {
       const params = { [PARAM_KEY_PLATFORM]: this.platform };
       const ephemeralRegisterUrl = setUrlParams(params, runner.ephemeralRegisterUrl);

@@ -272,24 +272,6 @@ RSpec.describe 'getting organization information', feature_category: :cell do
             let(:all_records) { sorted_projects.map { |p| global_id_of(p).to_s } }
           end
         end
-
-        context 'with project_path_sort disabled sorts the projects by id_desc' do
-          before do
-            stub_feature_flags(project_path_sort: false)
-          end
-
-          where(:field, :direction) do
-            'path' | 'asc'
-            'path' | 'desc'
-          end
-
-          with_them do
-            it_behaves_like 'sorted paginated query' do
-              let(:sort_param) { "#{field}_#{direction}" }
-              let(:all_records) { all_projects.sort_by(&:id).reverse.map { |p| global_id_of(p).to_s } }
-            end
-          end
-        end
       end
 
       def pagination_query(params)

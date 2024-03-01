@@ -398,8 +398,21 @@ RSpec.describe Repository, feature_category: :source_code_management do
       end
 
       context 'with path' do
-        it 'sets follow when it is a single path' do
-          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+        context 'when remove_file_commit_history_following feature flag is disabled' do
+          before do
+            stub_feature_flags(remove_file_commit_history_following: false)
+          end
+
+          it 'sets follow when it is a single path' do
+            expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: true)).and_call_original.twice
+
+            repository.commits('master', limit: 1, path: 'README.md')
+            repository.commits('master', limit: 1, path: ['README.md'])
+          end
+        end
+
+        it 'does not set follow when it is a single path' do
+          expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original.twice
 
           repository.commits('master', limit: 1, path: 'README.md')
           repository.commits('master', limit: 1, path: ['README.md'])
