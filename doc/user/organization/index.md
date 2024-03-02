@@ -76,6 +76,17 @@ To view the organizations you have access to:
    - To view only groups or projects, from the **Display** dropdown list select an option.
 1. Optional. To sort the results by name, date created, or date updated, from the dropdown list select an option. Then select ascending (**{sort-lowest}**) or descending (**{sort-highest}**) order.
 
+## Create a group in an organization
+
+1. On the left sidebar, select **Organizations** and find the organization you want to create a group in.
+1. Select **Manage > Groups and projects**.
+1. Select **New group**.
+1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
+   [reserved names](../reserved_names.md).
+1. In the **Group URL** text box, enter the path for the group used for the [namespace](../namespace/index.md).
+1. Select the [**Visibility level**](../public_access.md) of the group.
+1. Select **Create group**.
+
 ## Manage users
 
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.

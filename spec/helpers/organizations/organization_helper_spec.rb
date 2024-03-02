@@ -9,7 +9,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
   let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
-  let_it_be(:new_group_path) { '/groups/new' }
+  let_it_be(:new_group_path) { '/-/organizations/default/groups/new' }
   let_it_be(:new_project_path) { '/projects/new' }
   let_it_be(:organizations_empty_state_svg_path) { 'illustrations/empty-state/empty-organizations-md.svg' }
   let_it_be(:organizations_path) { '/-/organizations/' }
@@ -30,7 +30,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
 
   before do
     allow(organization).to receive(:to_global_id).and_return(organization_gid)
-    allow(helper).to receive(:new_group_path).and_return(new_group_path)
+    allow(helper).to receive(:new_groups_organization_path).with(organization).and_return(new_group_path)
     allow(helper).to receive(:new_project_path).and_return(new_project_path)
     allow(helper).to receive(:image_path).with(organizations_empty_state_svg_path)
       .and_return(organizations_empty_state_svg_path)

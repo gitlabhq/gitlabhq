@@ -1,9 +1,15 @@
 import MockAdapter from 'axios-mock-adapter';
 import getGroupTransferLocationsResponse from 'test_fixtures/api/groups/transfer_locations.json';
+import group from 'test_fixtures/api/groups/post.json';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { updateGroup, getGroupTransferLocations, getGroupMembers } from '~/api/groups_api';
+import {
+  updateGroup,
+  getGroupTransferLocations,
+  getGroupMembers,
+  createGroup,
+} from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
 const mockUrlRoot = '/gitlab';
@@ -86,6 +92,19 @@ describe('GroupsApi', () => {
 
       await expect(getGroupMembers(mockGroupId, true)).resolves.toMatchObject({
         data: response,
+      });
+    });
+  });
+
+  describe('createGroup', () => {
+    it('posts to the correct URL and returns the data', async () => {
+      const body = { name: 'Foo bar', path: 'foo-bar' };
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups.json`;
+
+      mock.onPost(expectedUrl, body).replyOnce(HTTP_STATUS_OK, group);
+
+      await expect(createGroup(body)).resolves.toMatchObject({
+        data: group,
       });
     });
   });

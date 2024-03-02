@@ -3,11 +3,11 @@ const tailwindDefaults = require('@gitlab/ui/tailwind.defaults');
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './{ee,}/app/assets/javascripts/**/*.{vue,js}',
+    './{ee,jh,}/app/assets/javascripts/**/*.{vue,js}',
     '!./app/assets/javascripts/locale/',
-    './{ee,}/app/helpers/**/*.rb',
-    './{ee,}/app/components/**/*.{haml,rb}',
-    './{ee,}/app/views/**/*.haml',
+    './{ee,jh,}/app/helpers/**/*.rb',
+    './{ee,jh,}/app/components/**/*.{haml,rb}',
+    './{ee,jh,}/app/views/**/*.haml',
     './node_modules/@gitlab/ui/dist/**/*.{vue,js}',
   ],
   presets: [tailwindDefaults],

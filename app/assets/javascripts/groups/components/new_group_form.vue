@@ -28,6 +28,10 @@ export default {
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
   formId: 'organization-new-group-form',
   props: {
+    loading: {
+      type: Boolean,
+      required: true,
+    },
     basePath: {
       type: String,
       required: true,
@@ -173,6 +177,7 @@ export default {
       <gl-button
         type="submit"
         variant="confirm"
+        :loading="loading"
         class="js-no-auto-disable"
         data-testid="submit-button"
         >{{ $options.i18n.submitButtonText }}</gl-button

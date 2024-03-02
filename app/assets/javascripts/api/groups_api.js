@@ -61,3 +61,8 @@ export const getGroupMembers = (groupId, inherited = false) => {
 
   return axios.get(url);
 };
+
+export const createGroup = (params) => {
+  const url = buildApiUrl(GROUPS_PATH);
+  return axios.post(url, params);
+};

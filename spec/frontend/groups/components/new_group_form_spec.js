@@ -15,6 +15,7 @@ describe('NewGroupForm', () => {
   let wrapper;
 
   const defaultPropsData = {
+    loading: false,
     basePath: 'http://127.0.0.1:3000/',
     cancelPath: '/-/organizations/default/groups_and_projects?display=groups',
     pathMaxlength: 10,
@@ -39,6 +40,7 @@ describe('NewGroupForm', () => {
   const findNameField = () => wrapper.findByLabelText('Group name');
   const findPathField = () => wrapper.findComponent(GroupPathField);
   const findVisibilityLevelField = () => wrapper.findComponent(VisibilityLevelRadioButtons);
+  const findSubmitButton = () => wrapper.findByRole('button', { name: 'Create group' });
 
   const setPathFieldValue = async (value) => {
     findPathField().vm.$emit('input', value);
@@ -49,7 +51,7 @@ describe('NewGroupForm', () => {
     await nextTick();
   };
   const submitForm = async () => {
-    await wrapper.findByRole('button', { name: 'Create group' }).trigger('click');
+    await findSubmitButton().trigger('click');
   };
 
   it('renders `Group name` field', () => {
@@ -166,5 +168,11 @@ describe('NewGroupForm', () => {
     expect(wrapper.findByRole('link', { name: 'Cancel' }).attributes('href')).toBe(
       defaultPropsData.cancelPath,
     );
+  });
+
+  it('passes `loading` prop to submit button', () => {
+    createComponent();
+
+    expect(findSubmitButton().props('loading')).toBe(false);
   });
 });

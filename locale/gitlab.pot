@@ -34794,6 +34794,9 @@ msgstr ""
 msgid "Organization|An error occurred changing your organization URL. Please try again."
 msgstr ""
 
+msgid "Organization|An error occurred creating a group in this organization. Please try again."
+msgstr ""
+
 msgid "Organization|An error occurred creating an organization. Please try again."
 msgstr ""
 

@@ -379,24 +379,8 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'POST /:source_type/:id/invitations', 'project' do
+      let(:source) { project }
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -458,24 +442,8 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'POST /groups/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'POST /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
     end
 
     it 'does not exceed expected queries count for emails', :request_store, :use_sql_query_cache do
@@ -587,46 +555,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'GET /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'GET /:source_type/:id/invitations', 'project' do
+      let(:source) { project }
     end
   end
 
   describe 'GET /groups/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'GET /:source_type/:id/invitations', 'group' do
+      let(:source) { group }
     end
   end
 
@@ -712,46 +648,14 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
   end
 
   describe 'DELETE /projects/:id/inviations/:email' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'project' do
+      let(:source) { project }
     end
   end
 
   describe 'DELETE /groups/:id/inviations/:email' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
-    end
-
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'DELETE /:source_type/:id/invitations/:email', 'group' do
+      let(:source) { group }
     end
   end
 
@@ -859,27 +763,9 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
     end
   end
 
-  describe 'PUT /projects/:id/invitations' do
-    context 'with admin_group_member FF disabled' do
-      before do
-        stub_feature_flags(admin_group_member: false)
-      end
-
-      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'project' do
-        let(:source) { project }
-      end
-    end
-  end
-
   describe 'PUT /groups/:id/invitations' do
-    context 'with admin_group_member FF enabled' do
-      before do
-        stub_feature_flags(admin_group_member: true)
-      end
-
-      it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
-        let(:source) { group }
-      end
+    it_behaves_like 'PUT /:source_type/:id/invitations/:email', 'group' do
+      let(:source) { group }
     end
   end
 end
