@@ -1473,11 +1473,10 @@ GEM
     rspec-support (3.12.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
-    rspec_profiling (0.0.6)
+    rspec_profiling (0.0.8)
       activerecord
-      pg
+      get_process_mem
       rails
-      sqlite3
     rubocop (1.57.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -1634,8 +1633,6 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.6.0)
-      mini_portile2 (~> 2.8.0)
     ssh_data (1.3.0)
     ssrf_filter (1.0.8)
     stackprof (0.2.25)
@@ -2082,7 +2079,7 @@ DEPENDENCIES
   rspec-rails (~> 6.1.0)
   rspec-retry (~> 0.6.2)
   rspec_junit_formatter
-  rspec_profiling (~> 0.0.6)
+  rspec_profiling (~> 0.0.8)
   rubocop
   ruby-fogbugz (~> 0.3.0)
   ruby-lsp (~> 0.14.2)
