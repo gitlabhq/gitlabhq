@@ -3094,6 +3094,9 @@ msgstr ""
 msgid "AddMember|No users specified."
 msgstr ""
 
+msgid "AddMember|Not enough seats for this many users."
+msgstr ""
+
 msgid "AddMember|Too many users specified (limit is %{user_limit})"
 msgstr ""
 

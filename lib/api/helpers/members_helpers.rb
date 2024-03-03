@@ -101,7 +101,7 @@ module API
 
         # prefer responding with model validations, if present
         member = instance.single_member
-        render_validation_error!(member) if member.invalid?
+        render_validation_error!(member) if member&.invalid?
 
         # if errors occurred besides model validations or authorization failures,
         # render those appropriately

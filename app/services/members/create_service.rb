@@ -5,6 +5,7 @@ module Members
     BlankInvitesError = Class.new(StandardError)
     TooManyInvitesError = Class.new(StandardError)
     MembershipLockedError = Class.new(StandardError)
+    SeatLimitExceededError = Class.new(StandardError)
 
     DEFAULT_INVITE_LIMIT = 100
 
@@ -37,13 +38,13 @@ module Members
       publish_event!
 
       result
-    rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError => e
+    rescue BlankInvitesError, TooManyInvitesError, MembershipLockedError, SeatLimitExceededError => e
       Gitlab::ErrorTracking.log_exception(e, class: self.class.to_s, user_id: current_user.id)
       error(e.message)
     end
 
     def single_member
-      members.last
+      members&.last
     end
 
     private
