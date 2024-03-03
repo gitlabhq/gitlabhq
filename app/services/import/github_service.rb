@@ -125,7 +125,7 @@ module Import
 
       collaborators_import = params.dig(:optional_stages, :collaborators_import) || false # if not set, default to false to skip collaborator import validation
 
-      return if collaborators_import == false || scopes.intersect?(COLLAB_IMPORT_SCOPES)
+      return if collaborators_import == false || scopes.intersection(COLLAB_IMPORT_SCOPES).any?
 
       log_and_return_error('Invalid scope', format(s_("GithubImport|Your GitHub access token does not have the correct scope to import collaborators. Please use a token with the '%{scope}' scope."), scope: 'read:org'), :unprocessable_entity)
     end
